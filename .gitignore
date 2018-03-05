@@ -1,0 +1,15 @@
+build*/
+installer/
+unittest/
+prj/
+*.o
+debug/
+*.lib
+*.a
+*.dll
+Makefile
+Makefile.*
+.vs/
+*.user
+*.qmake.*
+*.pyc

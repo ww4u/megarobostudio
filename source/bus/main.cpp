@@ -1,0 +1,4 @@
+//#include <QApplication>
+
+void main()
+{}

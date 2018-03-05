@@ -1,0 +1,38 @@
+<RCC>
+    <qresource prefix="/res">
+        <file>image/logo.png</file>
+        <file>image/bus.png</file>
+        <file>image/mrq.png</file>
+        <file>image/mrh.png</file>
+        <file>image/robo.png</file>
+        <file>image/script.png</file>
+        <file>image/com.png</file>
+        <file>image/mrqinfo.png</file>
+        <file>image/mrqaxes.png</file>
+        <file>image/mrqio.png</file>
+        <file>image/mrqsensor.png</file>
+        <file>image/mrqsys.png</file>
+        <file>image/save.png</file>
+        <file>image/new.png</file>
+        <file>image/open.png</file>
+        <file>image/axesfile.png</file>
+        <file>image/plot.png</file>
+        <file>image/download.png</file>
+        <file>image/play.png</file>
+        <file>image/pause.png</file>
+        <file>image/stop.png</file>
+        <file>image/robopref.png</file>
+        <file>image/roboinfo.png</file>
+        <file>image/splash.png</file>
+        <file>image/dial.png</file>
+        <file>image/motionprj.png</file>
+        <file>image/motionfile.png</file>
+        <file>image/toolsave.png</file>
+        <file>image/toolopen.png</file>
+        <file>image/zoomin.png</file>
+        <file>image/forcestop.png</file>
+        <file>image/warn.png</file>
+        <file>qss/black.qss</file>
+        <file>qss/white.qss</file>
+    </qresource>
+</RCC>

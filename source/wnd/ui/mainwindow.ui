@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1024</width>
+    <height>768</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>1024</width>
+    <height>768</height>
+   </size>
+  </property>
+  <property name="font">
+   <font>
+    <family>Arial</family>
+    <pointsize>12</pointsize>
+   </font>
+  </property>
+  <property name="windowTitle">
+   <string>Mega Robo Studio</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="../res/res.qrc">
+    <normaloff>:/res/image/motionprj.png</normaloff>:/res/image/motionprj.png</iconset>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
+    <item>
+     <widget class="QScrollArea" name="scrollArea">
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::NoFrame</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Plain</enum>
+      </property>
+      <property name="widgetResizable">
+       <bool>true</bool>
+      </property>
+      <widget class="cfgTab" name="widget">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>1024</width>
+         <height>710</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QToolBar" name="mainToolBar">
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1024</width>
+     <height>24</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Arial</family>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+   <widget class="QMenu" name="menu_F">
+    <property name="title">
+     <string>File(&amp;F)</string>
+    </property>
+    <widget class="QMenu" name="menuNew_N_2">
+     <property name="title">
+      <string>New(&amp;N)</string>
+     </property>
+     <addaction name="actionNewMotion"/>
+     <addaction name="actionNewPVT"/>
+     <addaction name="actionScene"/>
+     <addaction name="separator"/>
+     <addaction name="actionProject"/>
+    </widget>
+    <addaction name="menuNew_N_2"/>
+    <addaction name="actionOpen"/>
+    <addaction name="actionSave"/>
+    <addaction name="actionSave_As"/>
+    <addaction name="actionImport_I"/>
+    <addaction name="separator"/>
+    <addaction name="actionOpen_Prj"/>
+    <addaction name="actionSave_Prj"/>
+    <addaction name="actionSave_Prj_As"/>
+    <addaction name="separator"/>
+    <addaction name="actionSave_All_A"/>
+    <addaction name="separator"/>
+    <addaction name="actionExit"/>
+   </widget>
+   <widget class="QMenu" name="menu_D">
+    <property name="title">
+     <string>Device(&amp;D)</string>
+    </property>
+    <property name="separatorsCollapsible">
+     <bool>true</bool>
+    </property>
+    <addaction name="separator"/>
+    <addaction name="separator"/>
+    <addaction name="actionpref"/>
+    <addaction name="actionSpy"/>
+    <addaction name="actionEvent_E"/>
+   </widget>
+   <widget class="QMenu" name="menu">
+    <property name="title">
+     <string>Help(&amp;H)</string>
+    </property>
+    <addaction name="actionAbout"/>
+    <addaction name="actionDocs"/>
+   </widget>
+   <widget class="QMenu" name="menuView_V">
+    <property name="title">
+     <string>View(&amp;V)</string>
+    </property>
+    <addaction name="separator"/>
+    <addaction name="actionWindows_W"/>
+   </widget>
+   <widget class="QMenu" name="menuControl">
+    <property name="title">
+     <string>Control(&amp;C)</string>
+    </property>
+    <addaction name="actionReset"/>
+    <addaction name="actionForceStop"/>
+   </widget>
+   <addaction name="menu_F"/>
+   <addaction name="menu_D"/>
+   <addaction name="menuView_V"/>
+   <addaction name="menuControl"/>
+   <addaction name="menu"/>
+  </widget>
+  <action name="actionAbout">
+   <property name="text">
+    <string>About(A)...</string>
+   </property>
+  </action>
+  <action name="actionReset">
+   <property name="text">
+    <string>Reset</string>
+   </property>
+  </action>
+  <action name="actionForceStop">
+   <property name="icon">
+    <iconset resource="../res/res.qrc">
+     <normaloff>:/res/image/forcestop.png</normaloff>:/res/image/forcestop.png</iconset>
+   </property>
+   <property name="text">
+    <string>Force Stop</string>
+   </property>
+  </action>
+  <action name="actionOpen">
+   <property name="text">
+    <string>Open(O)...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
+   </property>
+  </action>
+  <action name="actionSave">
+   <property name="text">
+    <string>Save(&amp;S)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="actionSave_As">
+   <property name="text">
+    <string>Save As...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+S</string>
+   </property>
+  </action>
+  <action name="actionExit">
+   <property name="text">
+    <string>Exit</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+X</string>
+   </property>
+  </action>
+  <action name="actionpref">
+   <property name="text">
+    <string>Attribute(&amp;A)...</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+F7</string>
+   </property>
+  </action>
+  <action name="actionSave_Prj">
+   <property name="text">
+    <string>Save Prj</string>
+   </property>
+  </action>
+  <action name="actionSave_Prj_As">
+   <property name="text">
+    <string>Save Prj As...</string>
+   </property>
+  </action>
+  <action name="actionOpen_Prj">
+   <property name="text">
+    <string>Open Prj...</string>
+   </property>
+  </action>
+  <action name="actionImport_I">
+   <property name="text">
+    <string>Import(&amp;I)...</string>
+   </property>
+  </action>
+  <action name="actionSave_All_A">
+   <property name="text">
+    <string>Save All(&amp;A)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+S</string>
+   </property>
+  </action>
+  <action name="actionSpy">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Spy(&amp;S)...</string>
+   </property>
+  </action>
+  <action name="actionEvent_E">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Event(&amp;E)...</string>
+   </property>
+  </action>
+  <action name="actionWindows_W">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Windows(W)...</string>
+   </property>
+  </action>
+  <action name="actionNewMotion">
+   <property name="text">
+    <string>Motion</string>
+   </property>
+  </action>
+  <action name="actionNewPVT">
+   <property name="text">
+    <string>PVT</string>
+   </property>
+  </action>
+  <action name="actionScene">
+   <property name="text">
+    <string>Scene</string>
+   </property>
+  </action>
+  <action name="actionProject">
+   <property name="text">
+    <string>Project</string>
+   </property>
+  </action>
+  <action name="actionDocs">
+   <property name="text">
+    <string>Document...</string>
+   </property>
+  </action>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>cfgTab</class>
+   <extends>QWidget</extends>
+   <header>cfgTab.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources>
+  <include location="../res/res.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>actionExit</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>263</x>
+     <y>233</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

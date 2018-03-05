@@ -1,0 +1,105 @@
+#ifndef SCRIPTMGR_H
+#define SCRIPTMGR_H
+
+#include <QtWidgets>
+
+#include "../../model/motionitem.h"
+#include "../../model/scriptmodel.h"
+#include "../../model/roboscenemodel.h"
+
+namespace Ui {
+class scriptMgr;
+}
+
+class scriptMgr : public QWidget
+{
+    Q_OBJECT
+
+public:
+    explicit scriptMgr(QWidget *parent = 0);
+    ~scriptMgr();
+
+protected:
+    virtual void contextMenuEvent(QContextMenuEvent *event);
+
+public:
+    void setExpand( bool b );
+
+    void setName( const QString &name );
+    QString getName();
+
+    QString getPath();
+
+    QString getFullName();
+
+    int save( const QString &path, const QString &name );
+    int load( const QString &path, const QString &name );
+    void reNew( const QString &path, const QString &prjName );
+
+    //! current file
+    int saveActiveFile();
+    int saveActiveFile( const QString &file );
+
+    int openFile( const QString &path, const QString &file );
+
+    int openMotionGroup( const QString &path, const QString &file );
+    int openTpv( const QString &path, const QString &file );
+    int openScene( const QString &path, const QString &file );
+    int openSetup( const QString &path, const QString &file );
+    int openPy( const QString &path, const QString &file );
+
+    //! save all
+    //! prj + motion
+    int saveAll();
+
+    //! prompt
+    void newFile( const QString &path, const QString &name );
+    void newGroup( const QString &name );
+    void deleteCurrent();
+
+    QString defaultName();
+
+    QStringList sceneList( QStringList &pathList );
+    QStringList sceneList( QStringList &pathList,
+                           scriptGroup *pGroup );
+
+    roboSceneModel *createScene( const QString &path,
+                               const QString &file
+                                );
+
+    void iterAllItems();
+
+protected:
+    void setupUi();
+    void buildConnection();
+
+Q_SIGNALS:
+    void itemXActivated( mcModelObj* );
+    void signal_scriptmgr_changed();
+
+private Q_SLOTS:
+    void on_scriptView_activated(const QModelIndex &index);
+
+//    void slot_context_newfile();
+    void slot_context_newgroup();
+    void slot_context_import();
+    void slot_context_delete();
+
+private:
+    Ui::scriptMgr *ui;
+
+    QMenu *m_pContextMenu;
+    QMenu *m_pFileContextMenu;
+
+    QAction *m_pNewGroupAction;
+    QAction *m_pRemoveAction;
+    QAction *m_pImportAction;
+
+    scriptModel *m_pRootModel;   //! root group
+    int mUntitleId;
+
+    QFileSystemModel *m_pFileSysModel;
+
+};
+
+#endif // SCRIPTMGR_H

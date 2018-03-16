@@ -17,7 +17,6 @@
 #undef MEGA_EXPORT
 #define MEGA_EXPORT
 
-// 导出函数
 
 //! for 4 angle
 struct jointsAngle
@@ -38,17 +37,53 @@ struct jointsTrace
     };
 };
 
+
 namespace ns_kinematic {
 
-// 正解求末端位置
-MEGA_EXPORT int  GetEndPosition(double* angles,double* res);
-// 逆解求关节PVT
-MEGA_EXPORT int  GetArmPosition(double* posLast,
-                                double* posIn, int skipP,
-                                double* vIn, int skipV,
-                                double* tIn, int skipT,
-                                int len,
-                                double* res);
+
+int MEGA_EXPORT GetEndPosition(
+                                double* armLengthArray, //! foreach arm
+                                int armCount,			//! arm count: 6
+
+                                double* deltAngles,		//! delta angle: degree
+                                double* angles,			//! current angle 0~360
+                                int angleCount,
+
+                                double* res )			//! out: x, y, z
+;
+
+
+//! return: 0 -- no error
+int  MEGA_EXPORT getArmPosition_Size(
+    double* armLength, int armCount,
+
+    double* deltAngles, int angleCount,    //! angles: [0~3]
+    double* posRef,                        //!
+
+    double* posIn, int skipP,
+    double* vIn, int skipV,
+    double* tIn, int skipT,
+    int len,                               //! points len in
+    int *pOutSize
+);
+
+//! return: 0 -- no error
+int  MEGA_EXPORT getArmPosition_Data(
+    double* armLength, int armCount,
+
+    double* deltAngles, int angleCount,    //! angles: [0~3]
+    double* posRef,                        //!
+
+    double* posIn, int skipP,
+    double* vIn, int skipV,
+    double* tIn, int skipT,
+    int len,                               //! points len in
+
+    double *outRes,
+    int nCap
+    );
+
+int zeroCrossTest();
 
 }
 

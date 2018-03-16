@@ -17,6 +17,9 @@ public:
     tpvItem( tpvType t=0, tpvType p=0, tpvType v = 0 );
     tpvItem( const tpvItem &item );
 
+    virtual ~tpvItem()
+    {}
+
 public:
     int serialOut(ImcStream &stream);
     int serialIn_tpv( ImcStream &stream );

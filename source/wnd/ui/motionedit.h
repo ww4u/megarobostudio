@@ -6,18 +6,20 @@
 #include "../../model/motiongroup.h"
 #include "../../model/comboxdelegate.h"
 
+#include "../../arith/pathplan/pathplan.h"
+#include "../../arith/kinematic/kinematic.h"
+
 #include "tableedit.h"
 #include "roboAxes.h"
+#include "tpvplot.h"
 
 #include "../ui/progressgroup.h"
+#include "motionpref.h"
 
 namespace Ui {
 class motionEdit;
 }
 
-//! for joints trace
-class jointsTrace;
-class tracePoint;
 
 class motionEdit : public tableEdit
 {
@@ -95,51 +97,57 @@ protected:
 
     void jointsRotate( jointsTrace *pJ, int len );
 
-signals:
-
 protected Q_SLOTS:
     void on_btnAdd_clicked();
     void on_btnDel_clicked();
     void on_btnClr_clicked();
-    void on_btnGraph_clicked();
+
 
     void slot_download_cancel( const QString &name, int id );
+
+protected Q_SLOTS:
+    void on_btnGraph_clicked();
+
+protected:
+    void updatePlot();
 
 protected:
     virtual void context_remove();
     virtual void context_add_before();
     virtual void context_add_below();
+    virtual void context_clear();
 
 private slots:
     void on_btnKnob_clicked();
-
     void on_btnDown_clicked();
-
     void on_btnStart_clicked();
-
     void on_btnStop_clicked();
 
     void on_toolButton_clicked();
+
+    void on_btnPref_clicked();
+
+    void on_btnExport_clicked();
 
 private:
     Ui::motionEdit *ui;
 
     motionGroup *mMotionGroup;
     roboAxes *m_pRoboAxes;
+    tpvPlot *m_pPlot;
 
-    jointsTrace *m_pJointsTrace;
-    int mJointsTraceSize;
+    xxxGroup< tracePoint > mTracePlan;
+    xxxGroup< jointsTrace > mJointsPlan;
 
-    tracePoint *m_pTracePoint;          //! all trace point
-    int mTracePointSize;
-
-    QIntValidator *m_pLoopValidator;
     ProgressGroup *m_pProgress;
 
     comboxDelegate *m_pActionDelegate;
 
     QList< tpvGroup *> mJointsTpvGroup;
     tpvGroup mHandTpvGroup;
+
+    MotionModel mMotionPref;
+
 };
 
 #endif // MOTIONEDIT_H

@@ -31,8 +31,20 @@
    </property>
    <item>
     <widget class="QLabel" name="label">
+     <property name="maximumSize">
+      <size>
+       <width>24</width>
+       <height>24</height>
+      </size>
+     </property>
      <property name="text">
-      <string>Robot</string>
+      <string/>
+     </property>
+     <property name="pixmap">
+      <pixmap resource="../res/res.qrc">:/res/image/icon/51.png</pixmap>
+     </property>
+     <property name="scaledContents">
+      <bool>true</bool>
      </property>
     </widget>
    </item>
@@ -59,6 +71,8 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../res/res.qrc"/>
+ </resources>
  <connections/>
 </ui>

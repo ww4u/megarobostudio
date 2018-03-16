@@ -29,7 +29,6 @@ bool CANApi::load( QString str )
 
     if ( !mDll.load() )
     {
-        qDebug()<<mDll.errorString();
         return false;
     }
 

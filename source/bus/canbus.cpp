@@ -41,14 +41,31 @@ int CANBus::open( int devType, int devId, int canId )
     mDevId = devId;
     mCanId = canId;
 
-    if ( !mApi.load("MegaCanDevice.dll") )
+    //! full dll path
+    QString dllName;
+    if ( mPId == 1 )
+    { dllName = "usbcanii.dll"; }
+    else
+    { dllName = "MegaCanDevice.dll"; }
+
+    QString fullPath ;
+    fullPath = QCoreApplication::applicationDirPath() + QDir::separator() + dllName;
+
+    fullPath = QDir::toNativeSeparators( fullPath );
+    if ( !mApi.load( fullPath) )
     {
+        sysLog( fullPath );
+        sysError( dllName, "load fail" );
+        sysError( mApi.mDll.errorString() );
         return -1;
     }
 
     mHandle = mApi.open( mDevType, mDevId, mCanId );
     if ( mHandle != 1 )
-    { logDbg()<<mHandle; return -2; }
+    {
+        sysError( "can open fail" );
+        return -2;
+    }
 
     //! init
     if ( 0 != initBus() )
@@ -60,7 +77,7 @@ int CANBus::open( int devType, int devId, int canId )
     return 0;
 }
 void CANBus::close()
-{logDbg()<<mHandle;
+{
     if ( mHandle != 0 )
     {
         int ret;
@@ -72,24 +89,83 @@ void CANBus::close()
     }
 }
 
+struct canSpeedTimer
+{
+    int speed;
+    int timer0, timer1;
+};
+
+#define _K_( k )    (k)*1000
+#define _M_( m )    (m)*_K_(1000)
+static canSpeedTimer _bps_timer_matrix[]
+{
+    { _M_(1),   0X00, 0x14, },
+    { _K_(800), 0X00, 0x16, },
+    { _K_(666), 0X80, 0xB6, },
+    { _K_(500), 0X00, 0x1C, },
+
+    { _K_(400), 0X80, 0xFA, },
+    { _K_(250), 0X01, 0x1C, },
+    { _K_(200), 0X81, 0xFA, },
+    { _K_(125), 0X03, 0x1C, },
+
+    { _K_(100), 0X04, 0x1C, },
+    { _K_(80),  0X83, 0xFF, },
+    { _K_(50),  0X09, 0x1C, },
+    { _K_(40),  0X87, 0xFF, },
+
+    { _K_(20),  0X18, 0x1C, },
+    { _K_(10),  0X31, 0x1C, },
+    { _K_(5),   0XBF, 0xFF, },
+};
+
 int CANBus::initBus()
 {
     mApi.clear( mDevType, mDevId, mCanId );
 
     INIT_CONFIG canConfig;
 
+    //! config
     canConfig.AccCode = 0xffffffff;
     canConfig.AccMask = 0xffffffff;
-    canConfig.baud = 1000000;
     canConfig.Filter = 0;
-    canConfig.Timing0 = 0;
-    canConfig.Timing1 = 0x14;
-
     canConfig.Mode = 0;
 
-    mApi.init( mDevType, mDevId, mCanId, &canConfig );
+    //! speed
+    int speedId = matchSpeed( mSpeed );
+    if ( speedId < 0 )
+    {
+        sysError( "Invalid speed", QString::number(mSpeed) );
+        return -1;
+    }
+
+    canConfig.baud = mSpeed;
+    canConfig.Timing0 = _bps_timer_matrix[speedId].timer0;
+    canConfig.Timing1 = _bps_timer_matrix[speedId].timer1;
+
+    int ret = mApi.init( mDevType, mDevId, mCanId, &canConfig );
+    if ( ret != 1 )
+    {
+        sysError( "Can init fail" );
+        return -1;
+    }
 
     return 0;
+}
+
+int CANBus::matchSpeed( int speed )
+{
+    //! find the timer
+    for ( int i = 0; i < sizeof_array(_bps_timer_matrix); i++ )
+    {
+        //! config the timer
+        if ( _bps_timer_matrix[i].speed == mSpeed )
+        {
+            return i;
+        }
+    }
+
+    return -1;
 }
 
 //! total size
@@ -100,7 +176,6 @@ int CANBus::size()
 
     int len;
 
-//    len = mApi.getSize( mDevType, mDevId, mCanId );
     Q_ASSERT( m_pRecvCache != NULL );
     len = m_pRecvCache->frameCount();
 
@@ -132,10 +207,10 @@ int CANBus::doWrite(DeviceId &nodeId, byte *pBuf, int len)
 
     CAN_OBJ canObj;
 
-    canObj.ID = nodeId.recvId();        //! \note receive id
+    canObj.ID = nodeId.recvId();                //! \note receive id
     canObj.TimeStamp = 0;
     canObj.TimeFlag = 0;
-    canObj.SendType = 0;
+    canObj.SendType = (mPId == 1 ? 1 : 0);      //! \note USB CAN II be 1, do not know why
     canObj.RemoteFlag = 0;
     canObj.ExternFlag = 1;
     canObj.DataLen = len;
@@ -300,11 +375,6 @@ int CANBus::enumerate( const modelSysPref &pref )
     return 0;
 }
 
-//QString CANBus::getDesc()
-//{
-//    return ("CAN-BUS");
-//}
-
 int CANBus::getDevType()
 { return mDevType; }
 int CANBus::getDevId()
@@ -331,6 +401,7 @@ int CANBus::collectHash()
     if ( ret != 0 )
     { return ret; }
 
+    logDbg()<<mEnumerateTmo;
     wait_us( mEnumerateTmo );
 
     //! 2. frame count

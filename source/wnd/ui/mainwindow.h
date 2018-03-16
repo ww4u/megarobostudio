@@ -198,8 +198,8 @@ private:
     //! toolbar
     QToolBar *m_pToolbarRoboConn;
     QToolBar *m_pToolbarAxesConn;
+    QToolBar *m_pToolbarQuickOp;
 
-    runTool *m_pRunTool;
     roboConnection *m_pRoboConnTool;
     axesConnection *m_pAxesConnTool;
 

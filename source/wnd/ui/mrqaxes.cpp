@@ -1,7 +1,11 @@
 #include "mrqaxes.h"
 #include "ui_mrqaxes.h"
 
+//! convert
 #define driver_current_unit (0.1f)
+
+#define motor_volt_unit     (0.1f)
+#define motor_current_unit  (0.1f)
 
 mrqAxes::mrqAxes(QWidget *parent) :
     mrqView(parent),
@@ -26,18 +30,18 @@ int mrqAxes::setApply()
 
 void mrqAxes::modelChanged()
 {
-    updateData();
+    updateUi();
 }
 
 void mrqAxes::setupUi()
 {
-    ui->maxVolt->setValidator( &dValidator );
-    ui->maxCurrent->setValidator( &dValidator );
-    ui->maxSpeed->setValidator( &dValidator );
-    ui->maxAcc->setValidator( &dValidator );
+//    ui->spinMaxVolt->setValidator( &dValidator );
+//    ui->spinMaxCurrent->setValidator( &dValidator );
+//    ui->spinMaxVelocity->setValidator( &dValidator );
+//    ui->spinMaxAcc->setValidator( &dValidator );
 
-    ui->cmbIdleCurrent->setValidator( &dValidator );
-    ui->cmbIdleTime->setValidator( &dValidator );
+//    ui->spinIdleCurrent->setValidator( &dValidator );
+//    ui->spinIdleTime->setValidator( &dValidator );
 }
 void mrqAxes::desetupUi()
 {}
@@ -60,18 +64,17 @@ int mrqAxes::apply()
     pDevice->setMOTOR_POSITIONUNIT( mAxesId,
                                         (MRQ_MOTOR_POSITIONUNIT)ui->cmbPosUnit->currentIndex() );
 
-    //! \todo limit
-
-    pDevice->setMOTOR_VOLTAGE( mAxesId, ui->maxVolt->currentText().toFloat() );
-    pDevice->setMOTOR_CURRENT( mAxesId, ui->maxCurrent->currentText().toFloat() );
-    pDevice->setMOTOR_PEAKSPEED( mAxesId, ui->maxSpeed->currentText().toFloat() );
-    pDevice->setMOTOR_PEAKACCELERATION( mAxesId, ui->maxAcc->currentText().toFloat() );
+    //! volt
+    pDevice->setMOTOR_VOLTAGE( mAxesId, ui->spinMaxVolt->value()/motor_volt_unit );
+    pDevice->setMOTOR_CURRENT( mAxesId, ui->spinMaxCurrent->value()/motor_current_unit );
+    pDevice->setMOTOR_PEAKSPEED( mAxesId, ui->spinMaxVelocity->value() );
+    pDevice->setMOTOR_PEAKACCELERATION( mAxesId, ui->spinMaxAcc->value() );
 
     //! \todo idle
     //! idle current
     //! idle time
 
-    //! \todo float->u8
+    //! driver
     pDevice->setDRIVER_CURRENT( mAxesId, ui->dblCurrent->value()/driver_current_unit );
     pDevice->setDRIVER_MICROSTEPS( mAxesId, (MRQ_DRIVER_MICROSTEPS)ui->cmbDrvVernier->currentIndex() );
 
@@ -84,47 +87,51 @@ int mrqAxes::apply()
                                       (MRQ_ENCODER_MULTIPLE)ui->cmbEncMul->currentIndex() );
 
     //! lead
-    //! \todo
-    pDevice->setMOTOR_GEARRATIONUM( mAxesId, ui->cmbTransN->currentText().toInt() );
-    pDevice->setMOTOR_GEARRATIODEN( mAxesId, ui->cmbTransM->currentText().toInt() );
+    pDevice->setMOTOR_GEARRATIONUM( mAxesId, ui->spinSlowMotor->value() );
+    pDevice->setMOTOR_GEARRATIODEN( mAxesId, ui->spinSlowGear->value() );
 
-    pDevice->setMOTOR_LEAD( mAxesId, ui->cmbTransDist->currentText().toFloat() );
-    pDevice->setMOTOR_BACKLASH( mAxesId, ui->cmbInverseGap->currentText().toFloat() );
+    pDevice->setMOTOR_LEAD( mAxesId, ui->spinDistance->value() );
+    pDevice->setMOTOR_BACKLASH( mAxesId, ui->spinInvertGap->value() );
 
     return 0;
 }
 
 //! model -> view
-int mrqAxes::updateData()
+int mrqAxes::updateUi()
 {
     if ( NULL == m_pMrqModel )
-    { return -1; }
+    { return ERR_NULL_POINTER; }
 
     MegaDevice::MRQ_model *pModel;
     pModel = m_pMrqModel->getModel();
 
+    //! motor
     ui->cmbSize->setCurrentIndex( pModel->mMOTOR_SIZE[ mAxesId ] );
     ui->cmbStepAngle->setCurrentIndex( pModel->mMOTOR_STEPANGLE[mAxesId] );
     ui->cmbMotionType->setCurrentIndex( pModel->mMOTOR_TYPE[mAxesId] );
     ui->cmbPosUnit->setCurrentIndex( pModel->mMOTOR_POSITIONUNIT[mAxesId] );
 
-    ui->maxVolt->setCurrentText( QString::number( pModel->mMOTOR_VOLTAGE[mAxesId] ) );
-    ui->maxCurrent->setCurrentText( QString::number( pModel->mMOTOR_CURRENT[mAxesId] ) );
-    ui->maxSpeed->setCurrentText( QString::number( pModel->mMOTOR_PEAKSPEED[mAxesId] ) );
-    ui->maxAcc->setCurrentText( QString::number( pModel->mMOTOR_PEAKACCELERATION[mAxesId] ) );
+    //! volt
+    ui->spinMaxVolt->setValue( pModel->mMOTOR_VOLTAGE[mAxesId]*motor_volt_unit );
+    ui->spinMaxCurrent->setValue( ( pModel->mMOTOR_CURRENT[mAxesId]*motor_current_unit ) );
+    ui->spinMaxVelocity->setValue( ( pModel->mMOTOR_PEAKSPEED[mAxesId] ) );
+    ui->spinMaxAcc->setValue( ( pModel->mMOTOR_PEAKACCELERATION[mAxesId] ) );
 
+    //! driver
     ui->dblCurrent->setValue( pModel->mDRIVER_CURRENT[mAxesId]*driver_current_unit );
     ui->cmbDrvVernier->setCurrentIndex( pModel->mDRIVER_MICROSTEPS[mAxesId] );
 
+    //! encoder
     ui->cmbEncType->setCurrentIndex( pModel->mENCODER_TYPE[mAxesId] );
     ui->cmbEncChs->setCurrentIndex( pModel->mENCODER_CHANNELNUM[mAxesId] );
     ui->cmbEncMul->setCurrentIndex( pModel->mENCODER_MULTIPLE[mAxesId] );
 
-    ui->cmbTransN->setCurrentText( QString::number( pModel->mMOTOR_GEARRATIODEN[mAxesId]) );
-    ui->cmbTransM->setCurrentText( QString::number( pModel->mMOTOR_GEARRATIONUM[mAxesId]) );
+    //! transfer
+    ui->spinSlowGear->setValue( ( pModel->mMOTOR_GEARRATIODEN[mAxesId]) );
+    ui->spinSlowMotor->setValue( ( pModel->mMOTOR_GEARRATIONUM[mAxesId]) );
 
-    ui->cmbTransDist->setCurrentText( QString::number( pModel->mMOTOR_LEAD[mAxesId]) );
-    ui->cmbInverseGap->setCurrentText( QString::number( pModel->mMOTOR_BACKLASH[mAxesId]) );
+    ui->spinDistance->setValue( ( pModel->mMOTOR_LEAD[mAxesId]) );
+    ui->spinInvertGap->setValue( ( pModel->mMOTOR_BACKLASH[mAxesId]) );
 
     return 0;
 }

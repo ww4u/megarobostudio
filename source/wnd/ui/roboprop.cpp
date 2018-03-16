@@ -91,18 +91,18 @@ void roboProp::setupUi()
     //! list
     QListWidgetItem *pItem;
     pItem = new QListWidgetItem();
-    pItem->setText( tr("info") );
-    pItem->setIcon( QIcon(":/res/image/roboinfo.png") );
+    pItem->setText( tr("Info") );
+    pItem->setIcon( QIcon(":/res/image/icon2/info.png") );
     ui->listWidget->addItem( pItem );
 
     pItem = new QListWidgetItem();
-    pItem->setText( tr("pref") );
-    pItem->setIcon( QIcon(":/res/image/robopref.png") );
+    pItem->setText( tr("Pref") );
+    pItem->setIcon( QIcon(":/res/image/icon2/settings_light.png") );
     ui->listWidget->addItem( pItem );
 
     pItem = new QListWidgetItem();
-    pItem->setText( tr("hand") );
-    pItem->setIcon( QIcon(":/res/image/robopref.png") );
+    pItem->setText( tr("Action") );
+    pItem->setIcon( QIcon(":/res/image/icon2/activity.png") );
     ui->listWidget->addItem( pItem );
 }
 

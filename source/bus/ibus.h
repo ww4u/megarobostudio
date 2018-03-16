@@ -33,7 +33,11 @@ protected:
     int mEnumerateTmo;    //! us -- enumerate timeout
 
     int mWtInterval;      //! us
+    int mFailTry;         //! time
 
+    int mSpeed;           //! speed
+    int mPId;             //! productId: 0 -- mega can
+                          //! 1 -- usb can ii
 
     QString mName;
 
@@ -55,6 +59,12 @@ public :
 
     void setBusType( eBusType type );
     eBusType busType();
+
+    void setSpeed( int speed );
+    int speed();
+
+    void setPId( int pid );
+    int pId();
 
     virtual int open(QString dev);
     virtual int open( int devType, int devId, int canId );
@@ -115,6 +125,11 @@ public :
     { mWtInterval = interval; }
     int wtInterval()
     { return mWtInterval; }
+
+    void setFailTry( int failTry )
+    { mFailTry = failTry; }
+    int failTry()
+    { return mFailTry; }
 
     void attachReceiveCache( receiveCache *pCache );
 

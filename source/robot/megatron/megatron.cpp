@@ -24,13 +24,40 @@ robotMegatron::robotMegatron()
 
     //! debug used
     //! alter the axes name
-    mAxesConnectionName[4] = "CH1@device2";
+    mAxesConnectionName[0] = "CH1@device2"; //! base
+    mAxesConnectionName[1] = "CH1@device1"; //! b Arm
+    mAxesConnectionName[2] = "CH2@device1"; //! s Arm
+    mAxesConnectionName[3] = "CH3@device1"; //! wrist
+    mAxesConnectionName[4] = "CH4@device1"; //! hand
 
+    //! rotate angle
+    //! 0,90,180,180
+    mRotateAngles.append( 0 );
+    mRotateAngles.append( 90 );
+    mRotateAngles.append( 180 );
+    mRotateAngles.append( 180 );
+
+    //! arm length
+    //! 247.75, 255, 250, 0, 0, 0
+    mArmLengths.append( 247.75 );
+    mArmLengths.append( 255 );
+    mArmLengths.append( 250 );
+    mArmLengths.append( 0 );
+
+    mArmLengths.append( 0 );
+    mArmLengths.append( 0 );
+
+    //! ref point
     mRefAngles.append( 0 );
     mRefAngles.append( 90 );
     mRefAngles.append( -90 );
-    mRefAngles.append( -0 );
+    mRefAngles.append( -90 );
     mRefAngles.append( 0 );
+}
+
+robotMegatron::~robotMegatron()
+{
+    delete_all( mJointsGroup );
 }
 
 static msg_type _msg_patterns[]={
@@ -149,6 +176,24 @@ int robotMegatron::stop( )
 
     return 0;
 }
+
+int robotMegatron::setLoop( int n )
+{
+    MegaDevice::deviceMRQ *pMrq;
+    int ax;
+    for ( int i = 0; i < axes(); i++ )
+    {
+        pMrq = jointDevice( i, &ax );
+
+        Q_ASSERT( NULL != pMrq );
+
+        pMrq->setMOTIONPLAN_CYCLENUM( ax, n );
+    }
+
+    return 0;
+}
+int robotMegatron::loopNow()
+{ return 0; }
 
 void robotMegatron::onLine()
 {

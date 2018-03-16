@@ -10,7 +10,7 @@ modelSysPref::modelSysPref()
 void modelSysPref::rst()
 {
     mPort = 0;
-    mSpeed = 1000000;
+    mSpeed = 0;                     //! 1M index
 
     mTimeout = time_ms(100);
     mInterval = time_us(100);       //! by port
@@ -40,6 +40,9 @@ void modelSysPref::rst()
     mDbMeta.mTableName = "test";
     mDbMeta.mUserName = "root";
     mDbMeta.mPassword = "a";
+
+    //! motion
+    mSpaceResolution = 5;
 }
 
 //! save to xml
@@ -118,6 +121,13 @@ int modelSysPref::save( const QString &str )
 
     writer.writeTextElement( "username", mDbMeta.mUserName );
     writer.writeTextElement( "password", mDbMeta.mPassword );
+
+    writer.writeEndElement();
+
+    //! motion
+    writer.writeStartElement("motion");
+
+    writer.writeTextElement( "space_resolution", QString::number( mSpaceResolution ) );
 
     writer.writeEndElement();
 
@@ -219,6 +229,15 @@ int modelSysPref::load( const QString &str )
                 if ( reader.name() == "database" )
                 {
                     loadDatabase( reader );
+                }
+
+                if ( reader.name() == "motion" )
+                {
+                    while( reader.readNextStartElement() )
+                    {
+                        if ( reader.name() == "space_resolution" )
+                        { mSpaceResolution = reader.readElementText().toInt(); }
+                    }
                 }
             }
         }

@@ -58,7 +58,7 @@ void MainWindow::init()
     m_pToolbarAxesConn = NULL;
     m_pToolbarRoboConn = NULL;
 
-    m_pRunTool = NULL;
+    m_pToolbarQuickOp = NULL;
     m_pRoboConnTool = NULL;
     m_pAxesConnTool = NULL;
 
@@ -99,7 +99,7 @@ void MainWindow::setupUi_docks()
     QDockWidget *pScriptDock, *pRoboDock, *pDeviceDock, *pLogDock;
 
     //! left dock
-    pScriptDock = new QDockWidget( tr("Script"), this );
+    pScriptDock = new QDockWidget( tr("Project"), this );
     pScriptDock->setAllowedAreas(  Qt::RightDockWidgetArea | Qt::LeftDockWidgetArea );
     addDockWidget( Qt::LeftDockWidgetArea, pScriptDock );
 
@@ -119,23 +119,54 @@ void MainWindow::setupUi_docks()
     addDockWidget( Qt::BottomDockWidgetArea, pLogDock );
 
     //! menu action
+    QIcon icon;
+    QAction *pAction;
+
     m_pScriptMgr = new scriptMgr();
     pScriptDock->setWidget( m_pScriptMgr );
-    ui->menuView_V->addAction( pScriptDock->toggleViewAction() );
+
+    icon = QIcon( QString(":/res/image/icon/manage.png") );
+    pScriptDock->setWindowIcon( icon );
+    pAction = pScriptDock->toggleViewAction();
+
+    pAction->setIcon( icon );
+    pAction->setToolTip( tr("Project") );
+    ui->menuView_V->addAction( pAction );
 
     m_pRoboMgr = new roboMgr();
     pRoboDock->setWidget( m_pRoboMgr );
-    ui->menuView_V->addAction( pRoboDock->toggleViewAction() );
+
+    icon = QIcon( QString(":/res/image/icon/group.png") );
+    pRoboDock->setWindowIcon( icon );
+
+    pAction = pRoboDock->toggleViewAction();
+    pAction->setIcon( icon );
+    pAction->setToolTip( tr("Robot") );
+    ui->menuView_V->addAction( pAction );
 
     m_pDeviceMgr = new deviceMgr();
     pDeviceDock->setWidget( m_pDeviceMgr );
-    ui->menuView_V->addAction( pDeviceDock->toggleViewAction() );
+
+    icon = QIcon( QIcon( QString(":/res/image/icon2/mobile.png") ) );
+    pDeviceDock->setWindowIcon( icon );
+
+    pAction = pDeviceDock->toggleViewAction();
+    pAction->setIcon( icon );
+    pAction->setToolTip( tr("Device") );
+    ui->menuView_V->addAction( pAction );
 
     ui->menuView_V->addSeparator();
 
     m_pLogout = new logOut();
     pLogDock->setWidget( m_pLogout );
-    ui->menuView_V->addAction( pLogDock->toggleViewAction() );
+
+    icon = QIcon( QIcon( QString(":/res/image/icon2/write.png") ) );
+    pLogDock->setWindowIcon( icon );
+
+    pAction = pLogDock->toggleViewAction();
+    pAction->setIcon( icon );
+    pAction->setToolTip( tr("Log") );
+    ui->menuView_V->addAction( pAction );
 
     //! menu event
     m_pEventViewer = new eventViewer( mMcModel.m_pInstMgr->getInterruptSource(),
@@ -145,28 +176,29 @@ void MainWindow::setupUi_docks()
 
 void MainWindow::setupToolbar()
 {
-    QToolBar *pToolBar;
-
-    //! run tool
-    pToolBar = new QToolBar();
-    m_pRunTool = new runTool();
-    pToolBar->addWidget( m_pRunTool );
-    addToolBar( pToolBar );
-
+    //! file tool
     ui->mainToolBar->addAction( ui->actionOpen_Prj );
+    ui->mainToolBar->addSeparator();
     ui->mainToolBar->addAction( ui->actionOpen );
     ui->mainToolBar->addAction( ui->actionSave );
-//    ui->mainToolBar->addAction( ui->actionSave_All_A );
 
+    //! device conn
     m_pToolbarAxesConn = new QToolBar();
     m_pAxesConnTool = new axesConnection();
     m_pToolbarAxesConn->addWidget( m_pAxesConnTool );
     addToolBar( m_pToolbarAxesConn );
 
+    //! robo conn
     m_pToolbarRoboConn = new QToolBar();
     m_pRoboConnTool = new roboConnection();
     m_pToolbarRoboConn->addWidget( m_pRoboConnTool );
     addToolBar( m_pToolbarRoboConn );
+
+    //! op tool
+    m_pToolbarQuickOp = new QToolBar();
+    m_pToolbarQuickOp->addAction( ui->actionReset );
+    m_pToolbarQuickOp->addAction( ui->actionForceStop );
+    addToolBar( m_pToolbarQuickOp );
 
     m_pToolbarAxesConn->setVisible( false );
     m_pToolbarRoboConn->setVisible( false );
@@ -249,9 +281,6 @@ void MainWindow::buildConnection()
     connect( m_pRoboNetThread, SIGNAL(signal_net( const QString&,int,RoboMsg)),
              this, SLOT(slot_net_event( const QString &,int,RoboMsg)) );
 
-    //! tools
-    connect( m_pRunTool, SIGNAL(sigForceStop()),
-             this, SLOT(on_actionForceStop_triggered()));
 
     //! robo conn
     connect( m_pRoboConnTool->getCombName(),
@@ -586,13 +615,13 @@ void MainWindow::slot_tabwidget_currentChanged(int index)
     m_pToolbarAxesConn->setVisible( false );
     m_pToolbarRoboConn->setVisible( false );
 
+    m_pRoboMgr->setEnabled( false );
+
     //! to enable
     modelView *pViewModel;
     pViewModel = (modelView*)ui->widget->widget(index);
     if ( NULL == pViewModel )
-    {
-        return;
-    }
+    { return; }
 
     Q_ASSERT( pViewModel->getModelObj() != NULL );
     mcModelObj::obj_type objType = pViewModel->getModelObj()->getType();
@@ -608,6 +637,10 @@ void MainWindow::slot_tabwidget_currentChanged(int index)
     else if ( objType == mcModelObj::model_scene_variable )
     {
         m_pToolbarAxesConn->setVisible( true );
+    }
+    else if ( objType == mcModelObj::model_scene_file )
+    {
+        m_pRoboMgr->setEnabled( true );
     }
     else
     {}

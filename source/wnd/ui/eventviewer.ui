@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>EventViewer</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="../res/res.qrc">
+    <normaloff>:/res/image/icon/flashlight.png</normaloff>:/res/image/icon/flashlight.png</iconset>
+  </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="leftMargin">
     <number>0</number>
@@ -29,13 +33,29 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tab">
+      <attribute name="icon">
+       <iconset resource="../res/res.qrc">
+        <normaloff>:/res/image/icon/browse.png</normaloff>:/res/image/icon/browse.png</iconset>
+      </attribute>
       <attribute name="title">
        <string>EventView</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_4">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
        <item>
         <layout class="QVBoxLayout" name="verticalLayout_2">
          <item>
@@ -45,12 +65,32 @@
              <property name="text">
               <string>Export</string>
              </property>
+             <property name="icon">
+              <iconset resource="../res/res.qrc">
+               <normaloff>:/res/image/icon/219.png</normaloff>:/res/image/icon/219.png</iconset>
+             </property>
+             <property name="iconSize">
+              <size>
+               <width>24</width>
+               <height>24</height>
+              </size>
+             </property>
             </widget>
            </item>
            <item>
             <widget class="QToolButton" name="btnClear">
              <property name="text">
               <string>Clear</string>
+             </property>
+             <property name="icon">
+              <iconset resource="../res/res.qrc">
+               <normaloff>:/res/image/icon/trash.png</normaloff>:/res/image/icon/trash.png</iconset>
+             </property>
+             <property name="iconSize">
+              <size>
+               <width>24</width>
+               <height>24</height>
+              </size>
              </property>
             </widget>
            </item>
@@ -76,10 +116,30 @@
            </item>
            <item>
             <widget class="QCheckBox" name="chkView">
+             <property name="layoutDirection">
+              <enum>Qt::RightToLeft</enum>
+             </property>
              <property name="text">
               <string>View</string>
              </property>
+             <property name="icon">
+              <iconset resource="../res/res.qrc">
+               <normaloff>:/res/image/icon/browse.png</normaloff>:/res/image/icon/browse.png</iconset>
+             </property>
             </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_2">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
            </item>
           </layout>
          </item>
@@ -95,10 +155,26 @@
       </layout>
      </widget>
      <widget class="QWidget" name="tab_2">
+      <attribute name="icon">
+       <iconset resource="../res/res.qrc">
+        <normaloff>:/res/image/icon/flashlight.png</normaloff>:/res/image/icon/flashlight.png</iconset>
+      </attribute>
       <attribute name="title">
        <string>Event</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_5">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
        <item>
         <layout class="QVBoxLayout" name="verticalLayout_3">
          <item>
@@ -108,12 +184,32 @@
              <property name="text">
               <string>Export</string>
              </property>
+             <property name="icon">
+              <iconset resource="../res/res.qrc">
+               <normaloff>:/res/image/icon/219.png</normaloff>:/res/image/icon/219.png</iconset>
+             </property>
+             <property name="iconSize">
+              <size>
+               <width>24</width>
+               <height>24</height>
+              </size>
+             </property>
             </widget>
            </item>
            <item>
             <widget class="QToolButton" name="btnEventLoad">
              <property name="text">
               <string>Load</string>
+             </property>
+             <property name="icon">
+              <iconset resource="../res/res.qrc">
+               <normaloff>:/res/image/icon/218.png</normaloff>:/res/image/icon/218.png</iconset>
+             </property>
+             <property name="iconSize">
+              <size>
+               <width>24</width>
+               <height>24</height>
+              </size>
              </property>
             </widget>
            </item>
@@ -122,12 +218,32 @@
              <property name="text">
               <string>+</string>
              </property>
+             <property name="icon">
+              <iconset resource="../res/res.qrc">
+               <normaloff>:/res/image/icon/addition.png</normaloff>:/res/image/icon/addition.png</iconset>
+             </property>
+             <property name="iconSize">
+              <size>
+               <width>24</width>
+               <height>24</height>
+              </size>
+             </property>
             </widget>
            </item>
            <item>
             <widget class="QToolButton" name="btnEventDel">
              <property name="text">
               <string>-</string>
+             </property>
+             <property name="icon">
+              <iconset resource="../res/res.qrc">
+               <normaloff>:/res/image/icon/delete.png</normaloff>:/res/image/icon/delete.png</iconset>
+             </property>
+             <property name="iconSize">
+              <size>
+               <width>24</width>
+               <height>24</height>
+              </size>
              </property>
             </widget>
            </item>
@@ -168,7 +284,9 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../res/res.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>btnClear</sender>

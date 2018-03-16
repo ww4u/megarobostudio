@@ -29,12 +29,13 @@ logDbg();
     jointTabId<<0<<1<<2<<3<<4;
     ret = doDownload( mJointsTpvGroup, jointTabId );
 logDbg()<<ret;
+
     return ret;
 }
 void motionEdit::beginDownload( void *pPara)
 { logDbg(); }
 void motionEdit::endDownload( int ret, void *pPara )
-{ logDbg(); }
+{ logDbg()<<ret; }
 
 int motionEdit::doDownload( QList<tpvGroup *> &groups,
                             QList<int> &jointTabId )
@@ -45,10 +46,13 @@ int motionEdit::doDownload( QList<tpvGroup *> &groups,
     if ( NULL == pRobo )
     { return ERR_INVALID_ROBOT_NAME; }
 
+    //! ui info
+    setAgent( pRobo->name() );
+    setLink( true );
+
     setChildAgents( pRobo->axesDeviceName() );
 
     pRobo->onLine();
-
     pRobo->download( groups, jointTabId );
 
     return 0;
@@ -58,8 +62,8 @@ int motionEdit::buildTpvGroups()
 {
     delete_all( mJointsTpvGroup );
 
-    if ( mJointsTraceSize > 0 && m_pJointsTrace != NULL )
-    { }
+    if( mJointsPlan.size() > 0 )
+    {}
     else
     { return ERR_NO_TPV_DATA; }
 
@@ -70,11 +74,13 @@ int motionEdit::buildTpvGroups()
         tpvGroup *pGroup = new tpvGroup();
         Q_ASSERT( NULL != pGroup );
 
-        for ( int j = 0; j < mJointsTraceSize; j++ )
+        for ( int j = 0; j < mJointsPlan.size(); j++ )
         {
-            ret = pGroup->addItem( m_pJointsTrace[j].t,
-                             m_pJointsTrace[j].p[i],
-                             m_pJointsTrace[j].v[i] );
+            ret = pGroup->addItem(
+                             mJointsPlan.data()[j].t,
+                             mJointsPlan.data()[j].p[i],
+                             mJointsPlan.data()[j].v[i]
+                             );
             if ( ret != 0 )
             {
                 delete_all( mJointsTpvGroup );
@@ -122,3 +128,5 @@ void motionEdit::jointsRotate( jointsTrace *pJ, int len )
         }
     }
 }
+
+

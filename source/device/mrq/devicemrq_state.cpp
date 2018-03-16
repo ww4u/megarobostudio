@@ -158,6 +158,8 @@ void MrqUnit::onTimer( int id )
 //        sysLog( __FUNCTION__ );
         logWarning()<<id;
     }
+    else
+    { logDbg()<<id; }
 }
 
 MrqFsm *MrqUnit::selfFsm()
@@ -626,10 +628,9 @@ RunningMrqUnit::RunningMrqUnit( RoboFsm *pFsm ) : MrqUnit( pFsm )
 { setName("running"); }
 void RunningMrqUnit::proc( int msg, int para )
 {
-    int ret;
     if ( msg == mrq_msg_stop )
     {
-        ret = selfFsm()->Mrq()->setMOTION_SWITCH( selfFsm()->axes(),
+        selfFsm()->Mrq()->setMOTION_SWITCH( selfFsm()->axes(),
                                              MRQ_MOTION_SWITCH_STOP );
 
         toState( mrq_state_prestop );

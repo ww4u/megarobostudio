@@ -6,6 +6,7 @@
 #define DEG_TO_RAD( deg )       ( deg * MATH_PI/180 )
 
 #define sizeof_array( array )	 	(int)( sizeof(array)/sizeof(array[0]) )
+#define i_sizeof( a )                   (int)( sizeof(a) )
 
 #define sizeof_double( item )           (int)( sizeof(item)/sizeof(double) )
 #define offsetof_double( a, b )         (int)( offsetof( a, b )/sizeof(double) )

@@ -25,7 +25,6 @@ public:
 public:
     virtual void setMcModel( mcModel *pMcModel );
 
-
 protected:
     void init();
     void deinit();
@@ -51,9 +50,12 @@ protected Q_SLOTS:
     void context_import();
     void context_export();
     void context_upload();
-    void context_alias();
 
-    void context_console();
+    void context_mrq_alias();
+    void context_robo_alias();
+
+    void context_mrq_console();
+    void context_robo_console();
 
 protected:
     virtual void contextMenuEvent(QContextMenuEvent *event);
@@ -100,6 +102,7 @@ public:
     Ui::deviceMgr *ui;
 
     QMenu *m_pDeviceMenu;
+    QMenu *m_pRoboMenu;
 
     MegaDevice::InstMgr *m_pMgr;
     deviceDb *m_pDeviceDb;

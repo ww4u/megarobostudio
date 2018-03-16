@@ -5,6 +5,20 @@
 #include "../../device/vrobot.h"
 #include "../../device/robostate.h"
 
+enum eRoboPlanMode
+{
+    plan_linear = 0,
+    plan_3rd,
+    plan_5rd,
+};
+
+struct WorldPoint
+{
+    float x, y, z;
+    float hand;
+    WorldPoint( float px=0, float py=0, float pz=0, float phand=0 );
+};
+
 class RawRoboStateCondition : public MegaDevice::RoboStateCondition
 {
 public:
@@ -28,6 +42,7 @@ public:
                             int para );
 
     virtual void toState( int stat );
+    int state();
 
 public:
     void attachRobot( RawRobo *pRobot );
@@ -41,6 +56,7 @@ protected:
     RawRobo *m_pRobot;
 
     QMap< int, RawRoboUnit *> mStateMap;
+    int mState;
 
     bool mbRunReqed;
 };
@@ -59,14 +75,28 @@ public:
     virtual void switchPrepare();
     virtual void switchEmergStop();
 
+    virtual void toState( int stat );
+    int state();
+
 public:
     virtual void attachCondition(
                                   MegaDevice::RoboCondition *pCond );
     virtual bool waitCondition(
                                 MegaDevice::RoboCondition *pCond,
                                 int tmoms=-1 );
+
+public:
+    void setPlanStep( float step );
+    float planStep();
+
+    void setPlanMode( eRoboPlanMode mode );
+    eRoboPlanMode getPlanMode();
+
 protected:
     RawRoboFsm mFsm;
+                                //! pref
+    float mPlanStep;
+    eRoboPlanMode mPlanMode;
 };
 
 //! base state
@@ -75,7 +105,7 @@ class RawRoboUnit : public MegaDevice::RoboStateUnit
 public:
     RawRoboUnit( MegaDevice::RoboFsm *pFsm,
                  int members );
-
+    virtual ~RawRoboUnit();
 public:
     virtual void toState( int stat );
 

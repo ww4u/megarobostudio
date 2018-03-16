@@ -5,6 +5,7 @@
 
 #include "../../model/modelsyspref.h"
 
+
 namespace Ui {
 class sysPref;
 }
@@ -26,6 +27,10 @@ public:
 
 private slots:
     void on_buttonBox_clicked(QAbstractButton *button);
+
+    void on_cmbPort_currentIndexChanged(int index);
+
+    void on_btnDetail_clicked();
 
 private:
     Ui::sysPref *ui;

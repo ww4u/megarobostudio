@@ -24,30 +24,12 @@ public:
 public:
     void setDevice( MegaDevice::VDevice *pDevice,
                     int axesId );
-
-protected:
-//    void clearTpvRows();
-
-//    double value();
-//    double sliderStep();
-//    int    sliderValue( double value );
-
-//    void appendAngle( double val );
-
-Q_SIGNALS:
-    void sig_start();
+    void setConnection( const QString &conn );
 
 private slots:
-//    void slot_transtimer_timeout();
-
-//    void on_spinFrom_valueChanged(double arg1);
-//    void on_spinTo_valueChanged(double arg1);
-
     void on_sliderValue_valueChanged(int value);
 
     void on_spinNow_valueChanged(double arg1);
-
-//    void on_spinRst_valueChanged(double arg1);
 
     void on_sliderValue_sliderPressed();
 
@@ -60,10 +42,6 @@ private:
 
     MegaDevice::VDevice *m_pDevice;
     int mAxesId;
-
-//    QList<tpvRow*> mTpvRows;
-//    int mCurIndex;
-//    QTimer mTransTimer;
 };
 
 #endif // AXESKNOB_H

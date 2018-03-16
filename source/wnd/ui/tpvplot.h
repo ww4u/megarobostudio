@@ -2,11 +2,42 @@
 #define TPVPLOT_H
 
 #include <QtWidgets>
+#include <QtCharts>
 
 namespace Ui {
 class tpvPlot;
 }
 
+class NameCache
+{
+public:
+    NameCache();
+    ~NameCache();
+
+    void setName( const QString &name );
+    QString name();
+
+    void setLength( int len );
+    int length();
+
+    int size();
+
+    void clear();
+
+    int alloc( int n, int size );
+
+    double *operator[]( int id );
+
+public:
+    QString mName;
+    QList< double *> mResource;
+
+    int mLength;
+};
+
+#define curve_type  double
+#define animation_time  500
+#define animation_option    QChart::AllAnimations
 class tpvPlot : public QDialog
 {
     Q_OBJECT
@@ -18,6 +49,8 @@ public:
 protected Q_SLOTS:
     void on_btnImage_clicked();
     void on_btnZoomOut_clicked();
+    void on_tabWidget_currentChanged(int index);
+    void on_cmbLineType_currentIndexChanged(int index);
 
 public:
     void setDumpDir( const QString &dir );
@@ -25,25 +58,58 @@ public:
 
     void setName( const QString &name );
     void setCurve( const QString &name,
-                   double *pX, int skipX,
-                   double *pY, int skipY,
+                   curve_type *pX, int skipX,
+                   curve_type *pY, int skipY,
                    int dataLen );
+    void setCurve( const QString &name,
+                   QList< QPointF> &curve  );
+
     void setCurves( const QString &name,
-                    double *pX, int skipX,
-                    double *y[],int pSkipy[],
+                    const QStringList &names,
+                    curve_type *pX, int skipX,
+                    curve_type *y[],int pSkipy[],
+                    int yCount,
+                    int dataLen );
+
+    //! create
+    QChartView * createCurve( const QString &name );
+    QChartView * createCurves( const QString &name,
+                               const QStringList &names,
+                               int yCount
+                                );
+    void updateSeriesLineType( QLineSeries *pSeries );
+
+    //! update
+    void updateCurve( const QString &name,
+                   curve_type *pX, int skipX,
+                   curve_type *pY, int skipY,
+                   int dataLen );
+
+    void updateCurves( const QString &name,
+                    curve_type *pX, int skipX,
+                    curve_type *y[],int pSkipy[],
                     int yCount,
                     int dataLen );
 
 protected:
-    bool dumpData( const QString &name, double *pData, int skip, int len );
+    QChartView *findView( const QString &name );
 
+    NameCache *getCache( const QString &name,
+                         int n,
+                         int size );
+
+    NameCache *findCache( const QString &name );
+
+    bool dumpData( const QString &name, double *pData, int skip, int len );
 
 private:
     Ui::tpvPlot *ui;
 
-    QStringList mDumpFiles;
-
     QString mDumpDir;
+
+    QList< NameCache *> mNameCaches;
+
+    int mLineCap;
 };
 
 #endif // TPVPLOT_H

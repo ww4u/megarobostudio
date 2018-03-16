@@ -13,7 +13,7 @@ deviceMgr::deviceMgr(QWidget *parent) :
     init();
 
     ui->setupUi(this);
-    ui->btnTest->hide();
+    ui->btnTest->hide();        //! debug
 
     setupUi();
 
@@ -57,16 +57,44 @@ void deviceMgr::deinit()
 
 void deviceMgr::setupUi()
 {
+    //! device menu
     m_pDeviceMenu = new QMenu( this );
 
-    m_pDeviceMenu->addAction( tr("Export setup..."), this, SLOT(context_export()) );
-    m_pDeviceMenu->addAction( tr("Import setup..."), this, SLOT(context_import()) );
+    m_pDeviceMenu->addAction( QIcon( ":/res/image/icon/219.png" ),
+                              tr("Export setup..."),
+                              this,
+                              SLOT(context_export()) );
+    m_pDeviceMenu->addAction( QIcon( ":/res/image/icon/218.png" ),
+                              tr("Import setup..."),
+                              this,
+                              SLOT(context_import()) );
     m_pDeviceMenu->addSeparator();
-    m_pDeviceMenu->addAction( tr("Upload from device"), this, SLOT(context_upload()) );
+    m_pDeviceMenu->addAction( QIcon( ":/res/image/icon/332.png" ),
+                              tr("Upload from device"),
+                              this,
+                              SLOT(context_upload()) );
     m_pDeviceMenu->addSeparator();
-    m_pDeviceMenu->addAction( tr("Alias..."), this, SLOT( context_alias() ) );
+    m_pDeviceMenu->addAction( QIcon( ":/res/image/icon/54.png" ),
+                              tr("Alias..."),
+                              this,
+                              SLOT( context_mrq_alias() ) );
     m_pDeviceMenu->addSeparator();
-    m_pDeviceMenu->addAction( tr("Console..."), this, SLOT( context_console() ) );
+    m_pDeviceMenu->addAction( QIcon( ":/res/image/icon/55.png" ),
+                              tr("Console..."),
+                              this,
+                              SLOT( context_mrq_console() ) );
+
+    //! robo menu
+    m_pRoboMenu = new QMenu( this );
+    m_pRoboMenu->addAction( QIcon( ":/res/image/icon/54.png" ),
+                              tr("Alias..."),
+                              this,
+                              SLOT( context_robo_alias() ) );
+    m_pRoboMenu->addSeparator();
+    m_pRoboMenu->addAction( QIcon( ":/res/image/icon/55.png" ),
+                              tr("Console..."),
+                              this,
+                              SLOT( context_robo_console() ) );
 }
 
 void deviceMgr::desetupUi()
@@ -114,23 +142,23 @@ void deviceMgr::updateData()
 void deviceMgr::updatePhyBusTree( VRoboList *pRoboList )
 {
     Q_ASSERT( NULL != pRoboList );
-logDbg()<<pRoboList->size();
+
     //! bus
     QTreeWidgetItem *pItemBus;
     pItemBus = new QTreeWidgetItem( ui->treeWidget );
     Q_ASSERT( NULL != pItemBus );
     Q_ASSERT( pRoboList->bus() != NULL );
     pItemBus->setText( 0, pRoboList->bus()->name() );
-    pItemBus->setIcon( 0, QIcon(":/res/image/bus.png") );
-logDbg();
+    pItemBus->setIcon( 0, QIcon(":/res/image/icon2/order.png") );
+
     //! device
     QTreeWidgetItem *pItemDev;
     QTreeWidgetItem *pItemAxes;
     MegaDevice::MRQ_model *pMrqModel;
-logDbg()<<QString::number( (quint32)pRoboList, 16 );
+
     //! robot
     foreach( VRobot *pDev, *pRoboList )
-    {logDbg();
+    {
         Q_ASSERT( NULL != pDev );
 
         pItemDev = new QTreeWidgetItem( pItemBus );
@@ -142,13 +170,13 @@ logDbg()<<QString::number( (quint32)pRoboList, 16 );
 
         pItemDev->setText( 0, pMrqModel->getFullDesc() );
         pItemDev->setToolTip( 0, pDev->name() );
-logDbg();
+
         //! obj type
         pDev->setType( mcModelObj::model_device );
 
         pItemDev->setData( 0, Qt::UserRole, QVariant::fromValue(pDev) );
-        pItemDev->setIcon( 0, QIcon(":/res/image/mrq.png") );
-logDbg();
+        pItemDev->setIcon( 0, QIcon(":/res/image/icon2/mobile.png") );
+
         //! foreach axes
         QString strName;
         for ( int i = 0; i < pDev->axes(); i++ )
@@ -160,31 +188,28 @@ logDbg();
             pItemAxes->setText( 0, strName );
             pItemAxes->setToolTip( 0, strName );
 
-            pItemAxes->setIcon( 0, QIcon(":/res/image/axesfile.png") );
+            pItemAxes->setIcon( 0, QIcon(":/res/image/icon2/focus.png") );
         }
     }
-    logDbg();
+
 }
 
 void deviceMgr::updateVirBusTree( VRoboList *pRoboList )
 {
     Q_ASSERT( NULL != pRoboList );
-logDbg();
+
     //! bus
     QTreeWidgetItem *pItemBus;
     pItemBus = new QTreeWidgetItem( ui->treeWidget );
     Q_ASSERT( NULL != pItemBus );
     Q_ASSERT( pRoboList->bus() != NULL );
-logDbg()<<QString::number( (quint32)pRoboList, 16 );
-logDbg();logDbg()<<pRoboList->size();
-logDbg()<<QString::number( (quint32)pRoboList->bus(), 16 );
-logDbg()<<pRoboList->bus()->name();
+
     pItemBus->setText( 0, pRoboList->bus()->name() );
-    pItemBus->setIcon( 0, QIcon(":/res/image/bus.png") );
-logDbg()<<pRoboList->size();
+    pItemBus->setIcon( 0, QIcon(":/res/image/icon2/circle.png") );
+
     //! device
     QTreeWidgetItem *pItemDev;
-logDbg();
+
     //! robot
     foreach( VRobot *pDev, *pRoboList )
     {
@@ -195,10 +220,10 @@ logDbg();
 
         pItemDev->setText( 0, pDev->name() );
         pItemDev->setToolTip( 0, pDev->name() + "-" + pDev->getClass() );
-logDbg();
+
         //! obj type
         pDev->setType( mcModelObj::model_device );
-logDbg();
+
         pItemDev->setData( 0, Qt::UserRole, QVariant::fromValue(pDev) );
         pItemDev->setIcon( 0, QIcon( QPixmap::fromImage( pDev->getImage() ) ) );
     }
@@ -208,7 +233,7 @@ int deviceMgr::postSearchDevice( appMsg msg, void *pPara )
 {
     Q_ASSERT( NULL != m_pMgr );
 
-    m_pMgr->probeBus(  );
+    m_pMgr->probeBus();
 
     return 0;
 }
@@ -218,7 +243,6 @@ void deviceMgr::beginSearchDevice( void *pPara )
     emit signal_instmgr_changed( false, m_pMgr );
 
     sysLog( tr("begin search") );
-    logDbg();
 }
 void deviceMgr::endSearchDevice( int ret, void *pPara )
 {
@@ -245,6 +269,8 @@ void deviceMgr::beginLoadOn( void *pPara )
     if ( m_pProgress == NULL )
     {
         m_pProgress = new QProgressDialog(this);
+        Q_ASSERT( NULL != m_pProgress );
+        m_pProgress->setWindowTitle( tr("Progress") );
     }
 
     m_pProgress->show();
@@ -261,13 +287,14 @@ void deviceMgr::endLoadOn( int ret, void *pPara )
     if ( ret != 0 )
     {
         emit signalReport( ret, tr("upload fail") );
+        sysError( "upload fail" );
     }
     else
     {
         emit signalReport( ret, tr("success") );
+        sysLog( "upload success" );
     }
 }
-
 
 int deviceMgr::doTest( appMsg msg, void *pPara )
 {
@@ -301,31 +328,35 @@ void deviceMgr::on_treeWidget_itemActivated(QTreeWidgetItem *item, int column)
     }
 }
 
+//! quick
 void deviceMgr::context_import()
 {
     QFileDialog fDlg;
 
     fDlg.setAcceptMode( QFileDialog::AcceptOpen );
-    fDlg.setNameFilter( tr("device setup (*.stp)") );
+    fDlg.setNameFilter( tr("Device setup (*.stp)") );
     if ( QDialog::Accepted != fDlg.exec() )
     { return; }
 
     Q_ASSERT( m_pMRQ != NULL );
     m_pMRQ->getModel()->load( fDlg.selectedFiles().first() );
 
+    sysLog( fDlg.selectedFiles().first(), "load success" );
 }
 void deviceMgr::context_export()
 {
     QFileDialog fDlg;
 
     fDlg.setAcceptMode( QFileDialog::AcceptSave );
-    fDlg.setNameFilter( tr("device setup (*.stp)") );
+    fDlg.setNameFilter( tr("Device setup (*.stp)") );
     fDlg.selectFile( m_pMRQ->name() + ".stp" );
     if ( QDialog::Accepted != fDlg.exec() )
     { return; }
 
     Q_ASSERT( m_pMRQ != NULL );
     m_pMRQ->getModel()->save( fDlg.selectedFiles().first() );
+
+    sysLog( fDlg.selectedFiles().first(), "save success" );
 }
 
 void deviceMgr::context_upload()
@@ -333,7 +364,7 @@ void deviceMgr::context_upload()
     post_request( msg_upload_device, deviceMgr, LoadOn );
 }
 
-void deviceMgr::context_alias()
+void deviceMgr::context_mrq_alias()
 {
     Q_ASSERT( NULL != m_pMRQ );
     Q_ASSERT( NULL != m_pCurrTreeItem );
@@ -353,7 +384,27 @@ void deviceMgr::context_alias()
     }
 }
 
-void deviceMgr::context_console()
+void deviceMgr::context_robo_alias()
+{
+    Q_ASSERT( NULL != m_pRobo );
+    Q_ASSERT( NULL != m_pCurrTreeItem );
+
+    bool ok;
+    QString text = QInputDialog::getText(this,
+                                         tr("Alias"),
+                                         tr("Alias"),
+                                         QLineEdit::Normal,
+                                         m_pRobo->name(),
+                                         &ok);
+    if (ok && !text.isEmpty())
+    {
+        m_pRobo->setName( text );
+        m_pCurrTreeItem->setText( 0, text );
+        m_pCurrTreeItem->setToolTip( 0, text );
+    }
+}
+
+void deviceMgr::context_mrq_console()
 {
     deviceConsole *pConsole;
 
@@ -361,9 +412,30 @@ void deviceMgr::context_console()
     if ( NULL == pConsole )
     { return; }
 
+    pConsole->setMrq( true );
+
     //! title name
     pConsole->setWindowTitle( m_pMRQ->getModel()->getFullDesc( mCurrentAxes ) );
     pConsole->setShell( m_pMRQ );
+
+    pConsole->show();
+}
+
+void deviceMgr::context_robo_console()
+{
+    deviceConsole *pConsole;
+
+    pConsole = new deviceConsole(this);
+    if ( NULL == pConsole )
+    { return; }
+
+    pConsole->setMrq( false );
+
+    Q_ASSERT( NULL != m_pRobo );
+
+    //! title name
+    pConsole->setWindowTitle( m_pRobo->name() );
+    pConsole->setShell( m_pRobo );
 
     pConsole->show();
 }
@@ -392,9 +464,6 @@ void deviceMgr::contextMenuEvent(QContextMenuEvent *event)
     //! current device
     if ( pObj->Type() == mcModelObj::model_device )
     {
-        m_pDeviceMenu->popup( mapToGlobal( event->pos() ) );
-        event->accept();
-
         m_pRobo = ( pObj );
         m_pCurrTreeItem = pItem;
         mCurrentAxes = -1;
@@ -403,20 +472,23 @@ void deviceMgr::contextMenuEvent(QContextMenuEvent *event)
         if ( robot_is_mrq( m_pRobo->getId() ) )
         {
             m_pMRQ = (MegaDevice::deviceMRQ*)( m_pRobo );
+
+            m_pDeviceMenu->popup( mapToGlobal( event->pos() ) );
+            event->accept();
+        }
+        //! robot
+        else if ( robot_is_robot( m_pRobo->getId() ) )
+        {
+            m_pRoboMenu->popup( mapToGlobal( event->pos() ) );
+            event->accept();
         }
         else
         {
             m_pMRQ = NULL;
         }
-
     }
     else if ( pObj->Type() == mcModelObj::model_tpv )
     {
-//        m_pAxesMenu->popup( event->globalPos() );
-
-//        m_pMRQ = static_cast<MegaDevice::deviceMRQ*>( pObj->Obj() );
-//        m_pCurrTreeItem = pItem;
-//        mCurrentAxes = pObj->getVar( 0 )->toInt();
     }
     else
     {}

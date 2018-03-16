@@ -108,6 +108,9 @@ public:
     virtual int run( );
     virtual int stop( );
 
+    virtual int setLoop( int n );
+    virtual int loopNow();
+
     virtual void startTimer( void *pContext, int id=0, int tmous=1000 );
     virtual void killTimer( void *pContext, int id=0 );
     virtual void onTimer( void *pContext, int id );
@@ -204,6 +207,9 @@ public:
     QStringList mJointName;             //! by config
 
     QList <double> mRefAngles;          //! ref angles for each joint by joint id
+    QList <double> mRotateAngles;       //! rotate angle for the coordinate
+    QList <double> mArmLengths;         //! arm lengths from base:[0]
+
     double mBaseCompensation;
     double mLengthUnit;                 //! mm
 

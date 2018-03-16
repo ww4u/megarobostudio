@@ -8,6 +8,7 @@ enum mcError {
 	ERR_NULL_POINTER,
         ERR_ALLOC_FAIL,
 	ERR_INVALID_INPUT,
+        ERR_INVALID_DATA,
 	ERR_OVER_RAGNE,
 	ERR_OVER_UPPER,
 	ERR_OVER_LOWER,
@@ -30,10 +31,14 @@ enum mcError {
         ERR_INVALID_TPV_T,
         ERR_INVALID_TPV_COUNT,
         ERR_INVALID_TPV_CMD,
+        ERR_FAIL_ADD_TPV,
 
         ERR_FETCH_FAIL,
         ERR_PLAN_FAIL,
         ERR_PLAN_SPLIT_FAIL,
+        ERR_PLAN_SLOVE_FAIL,
+
+        ERR_CAN_NOT_RUN,
 };
 
 #endif

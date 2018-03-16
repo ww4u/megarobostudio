@@ -29,7 +29,7 @@ protected:
     void desetupUi();
 
     int apply();
-    int updateData();
+    int updateUi();
 
 private:
     Ui::mrqaxes2 *ui;

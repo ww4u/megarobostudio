@@ -42,11 +42,11 @@ public:
     static SysTimerThread *_sys_timer_;
     static QMutex mTimerMutex;
 
-    static sysStartTimer( VRobot *pRobot,
+    static void sysStartTimer( VRobot *pRobot,
                           void *pContext,
                           int id,
                           int tmous );
-    static sysStopTimer( VRobot *pRobot,
+    static void sysStopTimer( VRobot *pRobot,
                          void *pContext,
                          int id );
 

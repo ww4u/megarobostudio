@@ -17,6 +17,9 @@ public:
     motionItem();
     motionItem( const motionItem &item );
 
+    virtual ~motionItem()
+    {}
+
     motionItem &operator=( const motionItem &item );
 
 public:

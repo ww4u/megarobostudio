@@ -9,18 +9,18 @@ roboPref::roboPref(QWidget *parent) :
 
     //! fill table
     int i = 0;
-    mLabels[i] = ui->label_3;i++;
-    mLabels[i] = ui->label_4;i++;
-    mLabels[i] = ui->label_5;i++;
-    mLabels[i] = ui->label_6;i++;
     mLabels[i] = ui->label_7;i++;
+    mLabels[i] = ui->label_6;i++;
+    mLabels[i] = ui->label_5;i++;
+    mLabels[i] = ui->label_4;i++;
+    mLabels[i] = ui->label_3;i++;
 
     i = 0;
-    mEdits[i] = ui->lineEdit_2;i++;
-    mEdits[i] = ui->lineEdit_3;i++;
-    mEdits[i] = ui->lineEdit_4;i++;
-    mEdits[i] = ui->lineEdit_5;i++;
     mEdits[i] = ui->lineEdit_6;i++;
+    mEdits[i] = ui->lineEdit_5;i++;
+    mEdits[i] = ui->lineEdit_4;i++;
+    mEdits[i] = ui->lineEdit_3;i++;
+    mEdits[i] = ui->lineEdit_2;i++;
 
     //! config validator
     m_pGroupIdValidaor = new QIntValidator( this );

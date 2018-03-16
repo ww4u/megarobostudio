@@ -6,6 +6,7 @@ CONFIG += static
 
 #QMAKE_LFLAGS += -enable-stdcall-fixup
 
+
 INCLUDEPATH += ../scpi-parser/libscpi/inc
 
 TARGET = ../../../lib/bus

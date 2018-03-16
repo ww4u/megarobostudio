@@ -27,7 +27,7 @@ protected:
 
 public:
     int mPort;
-    int mSpeed;
+    int mSpeed;     //! speed index
     int mTimeout;
     int mInterval;
     int mFailTryCnt;
@@ -51,6 +51,8 @@ public:
     bool mbAutoLoadSetup;
 
     dbMeta mDbMeta;
+                            //! motion
+    int mSpaceResolution;   //! 5mm
 
 };
 

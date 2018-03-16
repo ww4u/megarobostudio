@@ -36,7 +36,7 @@ qint64 RoboMsg::operator- ( const RoboMsg &rMsg ) const
 
 #define check_tx( x ) if ( t##x != QMetaType::UnknownType && size() > x ) \
                         {\
-                            if ( t##x != at( x ).type() )\
+                            if ( t##x != (QMetaType::Type)at( x ).type() )\
                             { return false; }\
                         }
 

@@ -95,7 +95,7 @@ class RoboStateUnit
 {
 public:
     RoboStateUnit( RoboFsm *pFsm = NULL );
-
+    virtual ~RoboStateUnit();
 public:
     virtual void proc( int msg, int para );
     virtual void proc( int msg, int para1, int p2 );

@@ -10,7 +10,7 @@
 #define expand_dw( dw ) lw_lb( dw ), lw_hb( dw ), hw_lb( dw ), hw_hb( dw )
 #define expand_w( w )   lw_lb( w ), lw_hb( w )
 
-#define FAIL_TRY        2
+#define FAIL_TRY        failTry()
 
 namespace MegaDevice {
 
@@ -19,6 +19,7 @@ static QMutex _bus_mutext;
 IBus::IBus()
 {
     mWtInterval = time_us(100);
+    mFailTry = 2;
 
     mRdTmo = time_ms(200);
     mRdInterval = time_us(50);
@@ -29,6 +30,8 @@ IBus::IBus()
     m_pRecvCache = NULL;
 
     mBusType = e_bus_unk;
+    mSpeed = 1000000;
+    mPId = 0;
 }
 
 void IBus::setName( const QString & name )
@@ -44,6 +47,16 @@ void IBus::setBusType( IBus::eBusType type )
 }
 IBus::eBusType IBus::busType()
 { return mBusType; }
+
+void IBus::setSpeed( int speed )
+{ mSpeed = speed; }
+int IBus::speed()
+{ return mSpeed; }
+
+void IBus::setPId( int pid )
+{ mPId = pid; }
+int IBus::pId()
+{ return mPId; }
 
 int IBus::open(QString dev)
 { return 0; }

@@ -37,6 +37,16 @@
      <property name="text">
       <string>Export</string>
      </property>
+     <property name="icon">
+      <iconset resource="../res/res.qrc">
+       <normaloff>:/res/image/icon/219.png</normaloff>:/res/image/icon/219.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>24</width>
+       <height>24</height>
+      </size>
+     </property>
     </widget>
    </item>
    <item row="2" column="0" colspan="4">
@@ -140,6 +150,8 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../res/res.qrc"/>
+ </resources>
  <connections/>
 </ui>

@@ -2,7 +2,7 @@
 #define MOTIONGROUP_H
 
 #include <QtCore>
-#include <QAbstractTableModel>
+#include "megatablemodel.h"
 
 #include "motionitem.h"
 
@@ -10,7 +10,7 @@
 
 #include "scriptfile.h"
 
-class motionGroup : public QAbstractTableModel, public scriptFile
+class motionGroup : public MegaTableModel, public scriptFile
 {
     Q_OBJECT
 

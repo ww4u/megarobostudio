@@ -26,7 +26,11 @@ protected:
     void desetupUi();
 
     int apply();
-    int updateData();
+    int updateUi();
+
+
+private slots:
+    void on_btnApply_clicked();
 
 private:
     Ui::mrqSensor *ui;

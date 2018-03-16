@@ -247,6 +247,8 @@ int tpvGroup::remove( int id )
     tpvItem *pItem = mItems[ id ];
     mItems.removeAll( pItem );
     delete pItem;
+
+    return 0;
 }
 
 int tpvGroup::clear()

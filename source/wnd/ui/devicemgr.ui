@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>185</width>
-    <height>212</height>
+    <height>379</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -74,12 +74,18 @@
        <property name="text">
         <string>Refresh</string>
        </property>
+       <property name="icon">
+        <iconset resource="../res/res.qrc">
+         <normaloff>:/res/image/icon/331.png</normaloff>:/res/image/icon/331.png</iconset>
+       </property>
       </widget>
      </item>
     </layout>
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../res/res.qrc"/>
+ </resources>
  <connections/>
 </ui>

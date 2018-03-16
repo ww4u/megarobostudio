@@ -13,8 +13,14 @@
   <property name="windowTitle">
    <string>Progress</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="../res/res.qrc">
+    <normaloff>:/res/image/icon/33.png</normaloff>:/res/image/icon/33.png</iconset>
+  </property>
   <layout class="QVBoxLayout" name="verticalLayout"/>
  </widget>
- <resources/>
+ <resources>
+  <include location="../res/res.qrc"/>
+ </resources>
  <connections/>
 </ui>

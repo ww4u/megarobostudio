@@ -3,16 +3,9 @@
 mcConnection::mcConnection()
 {
     mAxesId = 0;
-
-//    m_pRobot = NULL;
 }
 mcConnection::~mcConnection()
 {
-//    if ( NULL != m_pRobot )
-//    {
-//        delete m_pRobot;
-//        m_pRobot = NULL;
-//    }
 }
 
 void mcConnection::setRoboName( const QString &str )
@@ -39,25 +32,3 @@ QString mcConnection::getDeviceName()
 int mcConnection::getDeviceCH()
 { return mAxesId; }
 
-//void mcConnection::setRobot( VRobot *pRobo )
-//{
-//    //! \note can be null
-
-//    //! gc
-//    if ( m_pRobot != pRobo )
-//    {
-//        if ( NULL != m_pRobot )
-//        {
-//            delete m_pRobot;
-//            m_pRobot = NULL;
-//        }
-//    }
-
-//    m_pRobot = pRobo;
-//}
-//VRobot *mcConnection::getRobot()
-//{
-//    return m_pRobot;
-//}
-//VRobot *mcConnection::robot()
-//{ return m_pRobot; }

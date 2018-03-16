@@ -3,7 +3,7 @@
 
 #include <QtCore>
 
-#define ULONG   uint32
+//#define ULONG   uint32
 #include "./include/MegaCanDevice.h"
 
 namespace MegaDevice {

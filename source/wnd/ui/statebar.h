@@ -15,6 +15,10 @@ public:
     explicit stateBar(QWidget *parent = 0);
     ~stateBar();
 
+    void showInfo( const QString &str );
+
+    void showProgress( int from, int to, int now,
+                       const QString &info="" );
     void showState( const QString &str );
 
 private:

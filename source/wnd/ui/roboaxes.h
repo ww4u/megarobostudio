@@ -3,7 +3,7 @@
 
 #include <QDateTime>
 #include <QDialog>
-
+#include <QLabel>
 #include "../../device/vrobot.h"
 
 namespace Ui {
@@ -69,6 +69,8 @@ private:
 
     QDateTime mFromTime, mEndTime;
     float mAngleFrom, mAngleTo;
+
+    QLabel *mJointLabels[ 5 ];
 };
 
 #endif // ROBOAXES_H

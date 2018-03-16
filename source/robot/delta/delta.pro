@@ -2,7 +2,6 @@ TEMPLATE=lib
 QT       += gui
 CONFIG += static
 
-
 TARGET = ../../../../lib/delta
 
 OBJECTS_DIR = ../obj

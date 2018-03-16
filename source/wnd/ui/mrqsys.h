@@ -26,7 +26,7 @@ protected:
     void desetupUi();
 
     int apply();
-    int updateData();
+    int updateUi();
 
 protected:
     void on_chkLed_toggled( bool b );

@@ -1,7 +1,6 @@
 #include "motionedit.h"
 
 #include "ui_motionedit.h"
-#include "tpvplot.h"
 
 #include "../../model/tpvgroup.h"
 
@@ -20,19 +19,10 @@ motionEdit::motionEdit(QWidget *parent) : tableEdit(parent),
     mFilePattern<<motion_desc<<motion_ext;
 
     m_pRoboAxes = NULL;
+    m_pPlot = NULL;
+
     m_pProgress = NULL;
     m_pActionDelegate = NULL;
-
-    m_pJointsTrace = NULL;
-    mJointsTraceSize = 0;
-
-    m_pTracePoint = NULL;
-    mTracePointSize = 0;
-
-    //! setup ui
-    m_pLoopValidator = new QIntValidator( this );
-    Q_ASSERT( NULL != m_pLoopValidator );
-    m_pLoopValidator->setRange( min_loops, max_loops );
 
     //! delegate
     m_pActionDelegate = new comboxDelegate();
@@ -40,7 +30,7 @@ motionEdit::motionEdit(QWidget *parent) : tableEdit(parent),
     ui->tableView->setItemDelegateForColumn( 1, m_pActionDelegate );
 
     //! debug
-    setAgent( "c", -1 );
+    setAgent( "test_2" );
     setLink( true );
 }
 
@@ -55,12 +45,6 @@ motionEdit::~motionEdit()
     delete ui;
 
     delete m_pActionDelegate;
-
-    if ( NULL != m_pJointsTrace )
-    { delete []m_pJointsTrace; }
-
-    if ( NULL != m_pTracePoint )
-    { delete []m_pTracePoint; }
 
     delete_all( mJointsTpvGroup );
 }
@@ -100,15 +84,24 @@ logDbg();
 //! update the status by
 void motionEdit::slot_joints_trace_changed( )
 {
-    if ( m_pJointsTrace != NULL )
+    if ( mJointsPlan.size() > 0 )
     { ui->btnDown->setEnabled(true); }
     else
     { ui->btnDown->setEnabled(false); }
 
-    if ( m_pJointsTrace != NULL )
-    { ui->btnGraph->setEnabled(true); }
+    if ( mJointsPlan.size() > 0 )
+    {
+        ui->btnGraph->setEnabled(true);
+
+        if ( m_pPlot != NULL && m_pPlot->isVisible() )
+        {
+            updatePlot();
+        }
+    }
     else
     { ui->btnGraph->setEnabled(false); }
+
+    ui->btnExport->setEnabled( ui->btnGraph->isEnabled() );
 }
 
 void motionEdit::setModelObj( mcModelObj *pObj )
@@ -235,6 +228,13 @@ void motionEdit::onMotionStatus( int axes,
 //    mrq_state_running,
 //    mrq_state_prestop,
 
+    //! dis link
+    if ( MegaDevice::mrq_msg_idle == stat )
+    {
+        setLink( false );
+        logDbg()<<"dis link";
+    }
+
     if ( MegaDevice::mrq_state_idle == stat
          || MegaDevice::mrq_state_run_reqed == stat )
     {
@@ -306,22 +306,7 @@ int motionEdit::setLoop( int loop )
     if ( NULL == pRobo )
     { return ERR_INVALID_ROBOT_NAME; }
 
-    //! set loop
-    int ax;
-    int ret;
-    MegaDevice::deviceMRQ *pMrq;
-    for ( int i = 0; i < pRobo->axes(); i++ )
-    {
-        pMrq = pRobo->jointDevice( i, &ax );
-        if ( NULL == pMrq )
-        { return ERR_DEVICE_WRITE_FAIL; }
-
-        ret = pMrq->setMOTIONPLAN_CYCLENUM( ax, loop );
-        if ( ret != 0 )
-        { return ERR_DEVICE_WRITE_FAIL; }
-    }
-
-    return 0;
+    return pRobo->setLoop( loop );
 }
 
 void motionEdit::testDownload()
@@ -466,7 +451,6 @@ int motionEdit::buildTrace()
 #endif
 
 
-
 void motionEdit::on_btnAdd_clicked()
 {
     int curRow;
@@ -481,65 +465,24 @@ void motionEdit::on_btnAdd_clicked()
 void motionEdit::on_btnDel_clicked()
 { mMotionGroup->removeRow( ui->tableView->currentIndex().row() ); }
 void motionEdit::on_btnClr_clicked()
-{ mMotionGroup->removeRows( 0, mMotionGroup->rowCount(QModelIndex()), QModelIndex() ); }
-
-void motionEdit::on_btnGraph_clicked()
 {
-    if ( m_pTracePoint != NULL && mTracePointSize > 0 )
-    { }
-    else
-    { return; }
-
-    tpvPlot *pPlot;
-    pPlot = new tpvPlot( this );
-    Q_ASSERT( NULL != pPlot );
-    pPlot->setDumpDir( m_pmcModel->mSysPref.mDumpPath );
-
-    //! now for the joints
-    int skipUnit;
-    skipUnit = sizeof(jointsTrace)/sizeof(double);
-    for ( int i = 0; i < 4; i++ )
+    QMessageBox msgBox;
+    msgBox.setText( tr("Sure to delete all?") );
+    msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel );
+    msgBox.setDefaultButton(QMessageBox::Ok);
+    int ret = msgBox.exec();
+    if ( ret == QMessageBox::Ok )
     {
-        pPlot->setCurve( QString("t-p%1").arg( i + 1 ), &m_pJointsTrace->t, skipUnit,
-                         &m_pJointsTrace->p[i], skipUnit,
-                         mJointsTraceSize );
-
-        pPlot->setCurve( QString("t-v%1").arg( i + 1 ), &m_pJointsTrace->t, skipUnit,
-                         &m_pJointsTrace->v[i], skipUnit,
-                         mJointsTraceSize );
+        mMotionGroup->removeRows( 0, mMotionGroup->rowCount(QModelIndex()), QModelIndex() );
     }
-    //! xyz
-    //!
-    double *xyz[]={ &m_pTracePoint[0].x,
-                    &m_pTracePoint[0].y,
-                    &m_pTracePoint[0].z };
-    skipUnit = sizeof(tracePoint)/sizeof(double);
-    int skipYs[ ] = { skipUnit,skipUnit,skipUnit } ;
-
-    pPlot->setCurve( "t-x", &m_pTracePoint[0].t, skipUnit,
-                            &m_pTracePoint[0].x, skipUnit,
-                            mTracePointSize );
-    pPlot->setCurve( "t-y", &m_pTracePoint[0].t, skipUnit,
-                            &m_pTracePoint[0].y, skipUnit,
-                            mTracePointSize );
-    pPlot->setCurve( "t-z", &m_pTracePoint[0].t, skipUnit,
-                            &m_pTracePoint[0].z, skipUnit,
-                            mTracePointSize );
-
-    pPlot->setCurves( "t-xyz",
-                       &m_pTracePoint[0].t, skipUnit,
-                       xyz, skipYs,
-                       sizeof_array(skipYs),
-                       mTracePointSize );
-
-    pPlot->show();
 }
 
 void motionEdit::slot_download_cancel( const QString &name, int id )
 {
-
+    //! \todo
 }
 
+//! context menu
 void motionEdit::context_remove()
 {
     on_btnDel_clicked();
@@ -558,6 +501,11 @@ void motionEdit::context_add_before()
 void motionEdit::context_add_below()
 {
     on_btnAdd_clicked();
+}
+
+void motionEdit::context_clear()
+{
+    on_btnClr_clicked();
 }
 
 void motionEdit::on_btnKnob_clicked()
@@ -604,15 +552,97 @@ void motionEdit::on_btnStop_clicked()
      pRobot->stop();
 }
 
+//! compile
 void motionEdit::on_toolButton_clicked()
 {
-//    buildTrace();
-
     preCompileTrace();
 
     int ret;
     ret = compileTrace();
 
     postCompileTrace( ret );
+
+}
+
+void motionEdit::on_btnPref_clicked()
+{
+    MotionPref dlg(this);
+
+    dlg.setModal( true );
+    dlg.setModel( &mMotionPref );
+
+    dlg.exec();
+}
+
+void motionEdit::on_btnExport_clicked()
+{
+    QFileDialog fDlg;
+
+    fDlg.setAcceptMode( QFileDialog::AcceptSave );
+    fDlg.setNameFilter( ("CSV(*.csv)") );
+    if ( QDialog::Accepted != fDlg.exec() )
+    { return; }
+
+    QFile fileCsv( fDlg.selectedFiles().first() );
+    if ( fileCsv.open( QIODevice::WriteOnly ) )
+    {}
+    else
+    { return; }
+
+    QTextStream outStream( &fileCsv );
+
+    //! switch type
+    if ( ui->cmbExport->currentIndex() == 0 )       //! joints
+    {
+        //! title
+        outStream<<"t,p1,v1,p2,v2,p3,v3,p4,v4"<<"\n";
+
+        //! items
+        for ( int i = 0; i < mJointsPlan.size(); i++ )
+        {
+            //! t
+            outStream<<QString::number( mJointsPlan.data()[i].t )<<",";
+
+            for ( int j = 0; j < 4; j++ )
+            {
+                outStream<<QString::number( mJointsPlan.data()[i].p[j] )<<",";
+                outStream<<QString::number( mJointsPlan.data()[i].v[j] )<<",";
+            }
+
+            outStream<<"\n";
+        }
+    }
+    else if ( ui->cmbExport->currentIndex() == 1 )  //! hand
+    {
+        //! title
+        outStream<<"t,p"<<"\n";
+
+        for ( int i = 0; i < mHandTpvGroup.mItems.size(); i++ )
+        {
+            outStream<<mHandTpvGroup[i]->getT()<<","<<mHandTpvGroup[i]->getP()<<"\n";
+        }
+    }
+    else if ( ui->cmbExport->currentIndex() == 2 )  //! xyz
+    {
+        //! title
+        outStream<<"t,x,y,z"<<"\n";
+
+        //! items
+        for ( int i = 0; i < mTracePlan.size(); i++ )
+        {
+            //! t
+            outStream<<QString::number( mTracePlan.data()[i].t )<<",";
+
+            outStream<<QString::number( mTracePlan.data()[i].x )<<",";
+            outStream<<QString::number( mTracePlan.data()[i].y )<<",";
+            outStream<<QString::number( mTracePlan.data()[i].z )<<",";
+
+            outStream<<"\n";
+        }
+    }
+    else
+    {}
+
+    fileCsv.close();
 
 }

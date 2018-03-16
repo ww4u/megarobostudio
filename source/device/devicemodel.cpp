@@ -26,7 +26,7 @@ int enum_toValue( const char* pStr, value_desc pDescs[], int cnt, int *pVal )
     char space[]={' ', '\r', '\n' };
     for ( int i = strlen(trimStr)-1; i >= 0; i-- )
     {
-        for ( int j = 0; j < sizeof(space); j++ )
+        for ( int j = 0; j < i_sizeof(space); j++ )
         {
             if ( trimStr[i] == space[j] )
             {

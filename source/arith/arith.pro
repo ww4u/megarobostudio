@@ -1,4 +1,5 @@
 TEMPLATE = subdirs
 
 SUBDIRS = ./pathplan \
-          ./kinematic
+          ./kinematic \
+          ./pvt

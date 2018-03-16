@@ -13,7 +13,16 @@ stateBar::~stateBar()
     delete ui;
 }
 
-void stateBar::showState( const QString &str )
+void stateBar::showInfo( const QString &str )
+{ ui->labeIInfo->setText(str); }
+
+void stateBar::showProgress( int from, int to, int now,
+                   const QString &info )
 {
-    ui->label->setText( str );
+    ui->progressBar->setRange(from,to);
+    ui->progressBar->setValue( now );
 }
+void stateBar::showState( const QString &str )
+{ ui->labelState->setText( str ); }
+
+

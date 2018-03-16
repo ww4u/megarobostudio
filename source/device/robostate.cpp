@@ -154,6 +154,8 @@ RoboStateUnit::RoboStateUnit( RoboFsm *pFsm )
 {
     m_pFsm = pFsm;
 }
+RoboStateUnit::~RoboStateUnit()
+{}
 
 void RoboStateUnit::proc( int msg, int para )
 {}

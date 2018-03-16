@@ -1,6 +1,8 @@
 #include "mrqsys.h"
 #include "ui_mrqsys.h"
 
+#define otp_temprature_unit (0.1f)
+
 mrqSys::mrqSys(QWidget *parent) :
     mrqView(parent),
     ui(new Ui::mrqSys)
@@ -19,7 +21,7 @@ int mrqSys::setApply()
 }
 
 void mrqSys::modelChanged()
-{ updateData(); }
+{ updateUi(); }
 
 void mrqSys::setupUi()
 {}
@@ -32,11 +34,14 @@ int mrqSys::apply()
     pDevice = getDevice();
     Q_ASSERT( NULL != pDevice );
 
+    //! otp
     pDevice->setOTP_STATE( (MRQ_SYSTEM_REPORTSWITCH)ui->chkOtp->isChecked() );
-    pDevice->setOTP_THRESHOLD( ui->cmbTemp->currentText().toFloat());
+    pDevice->setOTP_THRESHOLD( ui->spinOtpTemperature->value()/otp_temprature_unit );
     pDevice->setOTP_RESPONSE(
                 (MRQ_OUTOFSTEP_LINERESPONSE)ui->cmbAction->currentIndex()
                 );
+
+    //! name
     pDevice->setName(
                  ui->edtAlias->text()
                 );
@@ -44,14 +49,19 @@ int mrqSys::apply()
 
 }
 
-int mrqSys::updateData()
+int mrqSys::updateUi()
 {
+    //! otp
     ui->chkOtp->setChecked( (bool)m_pMrqModel->mOTP_STATE );
-    ui->cmbTemp->setCurrentText( QString::number( m_pMrqModel->mOTP_THRESHOLD));
+    ui->spinOtpTemperature->setValue( ( m_pMrqModel->mOTP_THRESHOLD)*otp_temprature_unit );
     ui->cmbAction->setCurrentIndex( m_pMrqModel->mOTP_RESPONSE );
-    ui->edtAlias->setText( m_pMrqModel->getName() );
-    return 0;
 
+    //! name
+    ui->edtAlias->setText( m_pMrqModel->getName() );
+
+    //! \todo warning
+
+    return 0;
 }
 
 void mrqSys::on_chkLed_toggled( bool b )

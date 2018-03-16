@@ -48,6 +48,11 @@ int VRobot::stop()
     return 0;
 }
 
+int VRobot::setLoop( int n )
+{ return 0;  }
+int VRobot::loopNow()
+{ return 0; }
+
 void VRobot::startTimer( void *pContext, int id, int tmous )
 {
     SysTimerThread::sysStartTimer( this, pContext, id, tmous );

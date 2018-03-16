@@ -11,8 +11,7 @@ OBJECTS_DIR = ./obj
 MOC_DIR = ../obj
 
 SOURCES = \
-    functions.cpp
+    pathplan.cpp
 	
 HEADERS = \
-    param.h \
         pathplan.h

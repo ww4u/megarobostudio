@@ -73,7 +73,7 @@ QMutex SysTimerThread::mTimerMutex;
 
 #define tick_ms     5
 
-SysTimerThread::sysStartTimer( VRobot *pRobot,
+void SysTimerThread::sysStartTimer( VRobot *pRobot,
                                void *pContext,
                       int id,
                       int tmous )
@@ -95,7 +95,7 @@ SysTimerThread::sysStartTimer( VRobot *pRobot,
 
     pTimer->start(tmous);logDbg()<<SysTimerThread::_sys_timer_->mTimers.size();
 }
-SysTimerThread::sysStopTimer( VRobot *pRobot,
+void SysTimerThread::sysStopTimer( VRobot *pRobot,
                               void *pContext,
                      int id )
 {

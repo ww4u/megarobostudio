@@ -6,6 +6,7 @@ CONFIG += static
 
 TARGET = ../../../lib/device
 
+
 INCLUDEPATH += ../scpi-parser/libscpi/inc
 
 OBJECTS_DIR = ./obj
@@ -45,6 +46,4 @@ HEADERS = vdevice.h \
     mrq/devicemrq_state.h \
     robostate.h \
     mrq/devicemrq_msg.h
-
-
 

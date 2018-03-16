@@ -2,7 +2,6 @@ TEMPLATE=lib
 QT       += gui
 CONFIG += static
 
-
 TARGET = ../../../../lib/motor
 
 OBJECTS_DIR = ../obj

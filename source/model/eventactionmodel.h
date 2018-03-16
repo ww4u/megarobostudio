@@ -2,7 +2,7 @@
 #define EVENTACTIONMODEL_H
 
 #include <QtCore>
-#include <QAbstractTableModel>
+#include "megatablemodel.h"
 
 enum deviceEvent
 {
@@ -49,15 +49,12 @@ protected:
     QString mComment;
 };
 
-class EventActionModel : public QAbstractTableModel
+class EventActionModel : public MegaTableModel
 {
     Q_OBJECT
 public:
     EventActionModel();
     ~EventActionModel();
-
-Q_SIGNALS:
-    void signal_data_changed();
 
 public:
     virtual int rowCount(const QModelIndex &parent) const;

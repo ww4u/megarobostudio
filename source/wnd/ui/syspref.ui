@@ -6,9 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>640</width>
-    <height>510</height>
+    <width>708</width>
+    <height>533</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="font">
    <font>
@@ -16,7 +22,14 @@
    </font>
   </property>
   <property name="windowTitle">
-   <string>属性</string>
+   <string>Preference</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="../res/res.qrc">
+    <normaloff>:/res/image/icon/205.png</normaloff>:/res/image/icon/205.png</iconset>
+  </property>
+  <property name="sizeGripEnabled">
+   <bool>false</bool>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="spacing">
@@ -36,11 +49,23 @@
    </property>
    <item>
     <widget class="QTabWidget" name="tabWidget">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>700</width>
+       <height>500</height>
+      </size>
+     </property>
      <property name="tabPosition">
       <enum>QTabWidget::North</enum>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>3</number>
      </property>
      <widget class="QWidget" name="tab">
       <attribute name="title">
@@ -143,73 +168,24 @@
             <string>Communication</string>
            </property>
            <layout class="QGridLayout" name="gridLayout_3">
-            <item row="0" column="2">
-             <spacer name="horizontalSpacer_3">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item row="0" column="1">
-             <widget class="QComboBox" name="cmbPort">
-              <property name="minimumSize">
-               <size>
-                <width>150</width>
-                <height>0</height>
-               </size>
-              </property>
-              <item>
-               <property name="text">
-                <string>USB-MEGA-CAN</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>USB-CAN2</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>RS232</string>
-               </property>
-              </item>
-             </widget>
-            </item>
-            <item row="2" column="1">
-             <widget class="QComboBox" name="cmbTimeout">
-              <property name="editable">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="0">
-             <widget class="QLabel" name="label_4">
-              <property name="text">
-               <string>Speed(bps)</string>
-              </property>
-             </widget>
-            </item>
-            <item row="5" column="0">
-             <widget class="QLabel" name="label_18">
-              <property name="text">
-               <string>Fail Try Count</string>
-              </property>
-             </widget>
-            </item>
             <item row="1" column="1">
              <widget class="QComboBox" name="cmbSpeed">
               <property name="editable">
-               <bool>true</bool>
+               <bool>false</bool>
               </property>
               <item>
                <property name="text">
                 <string>1000000</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>800000</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>666000</string>
                </property>
               </item>
               <item>
@@ -219,12 +195,57 @@
               </item>
               <item>
                <property name="text">
+                <string>400000</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
                 <string>250000</string>
                </property>
               </item>
               <item>
                <property name="text">
+                <string>200000</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
                 <string>125000</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>100000</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>80000</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>50000</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>40000</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>20000</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>10000</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>5000</string>
                </property>
               </item>
              </widget>
@@ -238,6 +259,13 @@
             </item>
             <item row="5" column="1">
              <widget class="QSpinBox" name="spinFailTry"/>
+            </item>
+            <item row="6" column="0">
+             <widget class="QLabel" name="label_22">
+              <property name="text">
+               <string>Enumerate Timeout(us)</string>
+              </property>
+             </widget>
             </item>
             <item row="3" column="1">
              <widget class="QComboBox" name="cmbInterval">
@@ -260,13 +288,6 @@
               </property>
              </widget>
             </item>
-            <item row="6" column="0">
-             <widget class="QLabel" name="label_22">
-              <property name="text">
-               <string>Enumerate Timeout(us)</string>
-              </property>
-             </widget>
-            </item>
             <item row="6" column="1">
              <widget class="QSpinBox" name="spinEnumTmo">
               <property name="minimum">
@@ -276,6 +297,90 @@
                <number>10000000</number>
               </property>
              </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QComboBox" name="cmbPort">
+              <property name="enabled">
+               <bool>true</bool>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>150</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>16</width>
+                <height>16</height>
+               </size>
+              </property>
+              <item>
+               <property name="text">
+                <string>USB-MEGA-CAN</string>
+               </property>
+               <property name="icon">
+                <iconset resource="../res/res.qrc">
+                 <normaloff>:/res/image/megacan.png</normaloff>:/res/image/megacan.png</iconset>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>USB-CAN II</string>
+               </property>
+               <property name="icon">
+                <iconset resource="../res/res.qrc">
+                 <normaloff>:/res/image/can2.png</normaloff>:/res/image/can2.png</iconset>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_4">
+              <property name="text">
+               <string>Speed(bps)</string>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="0">
+             <widget class="QLabel" name="label_18">
+              <property name="text">
+               <string>Fail Try Count</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QComboBox" name="cmbTimeout">
+              <property name="editable">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="2" rowspan="7">
+             <widget class="QLabel" name="labelCanPic">
+              <property name="text">
+               <string/>
+              </property>
+              <property name="pixmap">
+               <pixmap resource="../res/res.qrc">:/res/image/megacan.png</pixmap>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="3">
+             <spacer name="horizontalSpacer_3">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
             </item>
            </layout>
           </widget>
@@ -604,17 +709,69 @@
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_4">
             <item>
-             <widget class="QPlainTextEdit" name="plainTextEdit">
-              <property name="readOnly">
+             <widget class="QTextBrowser" name="textBrowser">
+              <property name="enabled">
                <bool>true</bool>
               </property>
-              <property name="plainText">
-               <string>aggrement</string>
+              <property name="autoFormatting">
+               <set>QTextEdit::AutoNone</set>
               </property>
-              <property name="backgroundVisible">
+              <property name="lineWrapMode">
+               <enum>QTextEdit::WidgetWidth</enum>
+              </property>
+              <property name="html">
+               <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'SimSun'; font-size:12pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a name=&quot;OLE_LINK2&quot;&gt;&lt;/a&gt;&lt;span style=&quot; font-family:'宋体';&quot;&gt;用&lt;/span&gt;&lt;span style=&quot; font-family:'宋体';&quot;&gt;户体验改进计划&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'宋体';&quot;&gt;尊敬的用户，&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'宋体';&quot;&gt;感谢您选择镁伽，欢迎使用Upload功能，参与用户体验改进计划（以下简称“体验计划”）。&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'宋体';&quot;&gt;为了提升用户体验，帮助镁伽持续不断的改进我们的产品和服务，现诚挚的邀请您参与镁伽的体验计划。请您注意，参加此体验计划是完全出于您的自愿。如果您选择参与，请仔细阅读本“隐私声明”，参与体验计划即表示您接受本隐私声明，并同意从您的设备获取以下数据，以供镁伽进行数据分析、帮助镁伽提供更好的服务：&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'宋体';&quot;&gt;（1）您使用的MRQ/MRX/MRV/MRH等由镁伽提供的产品中、通过输入/输出接口传输的数据，例如：电机状态数据、角度传感器状态数据等；&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'宋体';&quot;&gt;（2）您的电机数据经过处理后再传输给镁伽，镁伽将对收集到的数据进行分析处理，以改进镁伽的产品、服务以及用户体验。&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'宋体';&quot;&gt;（3）若要开始或停止参与本计划，只需要选择/取消“Upload”功能来启用/禁用对您的数据收集和传输。&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'宋体';&quot;&gt;（4）从您的设备中收集的数据将存储在安全的“镁伽云”环境中，数据的传输和使用遵守所有关于隐私和数据保护的法律和法规。&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'宋体';&quot;&gt;（5）当镁伽的数据分析完成后，为了本计划的目的而从您的设备中收集到的所有数据都将被删除。&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'宋体';&quot;&gt;（6）根据您的需要，您可以和镁伽联系，镁伽可以提供给您上述我们获取的所有您使用的设备的数据，以帮助您提高设备使用体验。&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'宋体';&quot;&gt;（7）对于从您的设备收集的所有信息，镁伽将严格保密。&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'宋体';&quot;&gt;    镁伽重视数据的安全。我们采取业内标准的数据保密做法来保护您的数据，防止数据遭到未经授权的访问、纰漏、使用、修改、损坏或丢失。&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'宋体';&quot;&gt;（8）联系方式&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'宋体';&quot;&gt;您如果有任何疑问、需求、意见或建议，请发送电子邮件给：&lt;/span&gt;&lt;a href=&quot;mailto:officialmail@megarobo.tech&quot;&gt;&lt;span style=&quot; font-family:'宋体'; text-decoration: underline; color:#0563c1;&quot;&gt;officialmail@megarobo.tech&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:'宋体';&quot;&gt;与我们联系，或访问我们的网站&lt;/span&gt;&lt;a href=&quot;http://www.megarobo.cc&quot;&gt;&lt;span style=&quot; font-family:'宋体'; text-decoration: underline; color:#0563c1;&quot;&gt;www.megarobo.cc&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:'宋体';&quot;&gt;。&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'宋体';&quot;&gt; &lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'宋体';&quot;&gt;版权所有©北京镁伽机器人科技有限公司2018，保留一切权利。&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
+              <property name="acceptRichText">
+               <bool>true</bool>
+              </property>
+              <property name="openLinks">
                <bool>false</bool>
               </property>
              </widget>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout">
+              <item>
+               <spacer name="horizontalSpacer_4">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
+               <widget class="QPushButton" name="btnDetail">
+                <property name="text">
+                 <string>Detail...</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
             </item>
            </layout>
           </widget>
@@ -636,18 +793,81 @@
        </item>
       </layout>
      </widget>
+     <widget class="QWidget" name="tab_3">
+      <attribute name="title">
+       <string>Motion</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_9">
+       <item>
+        <widget class="QGroupBox" name="groupBox_8">
+         <property name="title">
+          <string>GroupBox</string>
+         </property>
+         <layout class="QFormLayout" name="formLayout_4">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_24">
+            <property name="text">
+             <string>Resolution(mm)</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QSpinBox" name="spinBox">
+            <property name="minimum">
+             <number>1</number>
+            </property>
+            <property name="maximum">
+             <number>20</number>
+            </property>
+            <property name="value">
+             <number>5</number>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
     </widget>
    </item>
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>700</width>
+       <height>16777215</height>
+      </size>
+     </property>
      <property name="standardButtons">
       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok|QDialogButtonBox::Reset</set>
      </property>
     </widget>
    </item>
+   <item>
+    <spacer name="verticalSpacer_2">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>1</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../res/res.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>buttonBox</sender>

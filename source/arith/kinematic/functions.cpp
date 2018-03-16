@@ -1,799 +1,1285 @@
-// DllManager.cpp : ∂®“Â DLL ”¶”√≥Ã–Úµƒµº≥ˆ∫Ø ˝°£
 
-#include "kinematic.h"
 
 #include "math.h"
 #include <vector>
+#include <algorithm>
 
-namespace ns_kinematic {
+using namespace std;
 
-#include "param.h"
+//! configs
+#define ARITH_ERROR (1E-4)
+#define ANGLE_ERROR (1E-3)
+#define POSITION_ERROR  (0.1)
 
-// ’˝Ω‚«Ûƒ©∂ÀŒª÷√
-// angles--Àƒ∏ˆπÿΩ⁄µƒµ±«∞Ω«∂»
-// res--’˝Ω‚µƒƒ©∂ÀŒª÷√(X,Y,Z)
-MEGA_EXPORT int GetEndPosition(double* angles,double* res)
+//#define armLen0  247.75
+//#define armLen1  255
+//#define armLen2  250
+//#define armLen3 0
+//#define armLen4 0
+//#define armLen5 0
+
+#define PI 3.1415926
+#define E 2.7182818
+
+struct ResInfo
 {
-	double s1, c1, s2, c2, s2a3, c2a3, s2a3a4, c2a3a4;      // ∂®“Â»˝Ω«∫Ø ˝
-	/*-------------- - ≥£”√»˝Ω«∫Ø ˝º∆À„--------------*/
-	s1 = sin(armLen0);     // sin(theta1)
-	c1 = cos(armLen0);     // cos(theta1)
-	s2 = sin(armLen1);     // sin(theta2)
-	c2 = cos(armLen1);     // cos(theta2)
-	s2a3 = sin(armLen1 + armLen2);      // sin(theta2 + theta3)
-	c2a3 = cos(armLen1 + armLen2);      // cos(theta2 + theta3)
-	s2a3a4 = sin(armLen1 + armLen2 + armLen3);      // sin(theta2 + theta3 + theta4)
-	c2a3a4 = cos(armLen1 + armLen2 + armLen3);      // cos(theta2 + theta3 + theta4)
+    double P[4];
+    double V[4];
+    double T;
+};
 
-															/*-------------- - Œª÷√’˝Ω‚«ÛΩ‚--------------*/
+struct tpvPoint
+{
+    double mT;
+    double mP;
+    double mV;
 
-	bool flag = CheckInputAngles(angles);		// ≈–∂œŒª÷√ «∑Ò‘⁄œﬁ÷∆∑∂Œßƒ⁄
-	if (!flag) // ∑«∑®πÿΩ⁄Œª÷√
-		return 0;     // ÕÀ≥ˆ≥Ã–Ú
-	double** endOut = new double*[4];
-	for (int i = 0; i < 4; i++)
-	{
-		endOut[i] = new double[4];
-	}
-	endOut[0][0] = c1* c2a3a4;   // º∆À„Œª◊Àæÿ’Û
-	endOut[0][1] = -c1* s2a3a4;
-	endOut[0][2] = s1;
-	endOut[0][3] = armLen4 * s1 - armLen5 * c1 * s2a3a4 + c1*(armLen1 * c2 + armLen2 * c2a3 + armLen3 * c2a3a4);
+    tpvPoint( double t = 0, double p = 0, double v = 0 )
+    {
+        mT = t;
+        mP = p;
+        mV = v;
+    }
+};
 
-	endOut[1][0] = s1* c2a3a4;
-	endOut[1][1] = -s1* s2a3a4;
-	endOut[1][2] = -c1;
-	endOut[1][3] = -c1 * armLen4 - armLen5 * s1 * s2a3a4 + s1*(armLen1 * c2 + armLen2 * c2a3 + armLen3 * c2a3a4);
-
-	endOut[2][0] = s2a3a4;
-	endOut[2][1] = c2a3a4;
-	endOut[2][3] = armLen5 * c2a3a4 + armLen0 + armLen1 * s2 + armLen2 * s2a3 + armLen3 * s2a3a4;
-
-	endOut[3][3] = 1;
-	res[0] = endOut[0][3];
-	res[1] = endOut[1][3];
-	res[2] = endOut[2][3];
-	return 1;
+//! a * pi/180
+static void degToRad(double *degs,
+    int count,
+    double *rads)
+{
+    for (int i = 0; i < count; i++)
+    {
+        rads[i] = degs[i] * PI / 180;
+    }
 }
-bool CheckInputAngles(double* input)
+
+//! a * 180/pi
+static void radToDeg(double *rads,
+    int count,
+    double *degs)
 {
-	for(int i =0;i<4;i++)
-	{
-		if (input[i] > PI  || input[i] < -PI)
-		{
-			return false;
-		}
-		else
-		{
-			return true;
-		}
-	}
-	return false;
+    for (int i = 0; i < count; i++)
+    {
+        degs[i] = rads[i] * 180 / PI;
+    }
 }
-// ƒÊΩ‚‘ÀÀ„
-// posLast -- ≤ŒøºŒª÷√£¨”√”⁄»∑∂®◊Ó”≈¬∑æ∂
-// posIn -- ”√”⁄ƒÊΩ‚µƒƒ©∂ÀŒª÷√(X,Y,Z)
-// vIn--ƒ©∂ÀÀŸ∂»(VX,VY,VZ)
-// tIn-- ±º‰Ω⁄µ„
-// «ÛΩ‚µƒµ„µƒ∏ˆ ˝
-// «ÛΩ‚µƒ∑µªÿ÷µ : return trace count
-MEGA_EXPORT int  GetArmPosition(double* posLast,
-                                double* posIn, int skipP,
-                                double* vIn, int skipV,
-                                double* tIn, int skipT,
-                                int len,
-                                double* res )
+
+//! vector op
+static void vectorAdd(double *pIn1,
+    double *pIn2,
+    int count,
+    double *pOut)
 {
-	// µ„∏ˆ ˝
+    for (int i = 0; i < count; i++)
+    {
+        pOut[i] = pIn1[i] + pIn2[i];
+    }
+}
+
+static void vectorSub(double *pIn1,
+    double *pIn2,
+    int count,
+    double *pOut)
+{
+    for (int i = 0; i < count; i++)
+    {
+        pOut[i] = pIn1[i] - pIn2[i];
+    }
+}
+
+//! normalize to [ -PI, PI ]
+static double normalize_pi(double a)
+{
+    while (a > PI)
+    {
+        a -= PI * 2;
+    }
+
+    while (a < -PI)
+    {
+        a += PI * 2;
+    }
+
+    return a;
+}
+
+static void normalize_pis(double *p, int n)
+{
+    for (int i = 0; i < n; i++)
+    {
+        p[i] = normalize_pi(p[i]);
+    }
+}
+
+//! linear x by a, b, m
+static double linearSlove( double a, double b, double m,
+                      double c, double d )
+{
+    //! ( m - a ) / ( b - m ) = ( x-c)/(d-x)
+
+    if ( fabs( b - a ) < ARITH_ERROR )
+    { return (c+d)/2; }
+
+    if ( fabs( d - c ) < ARITH_ERROR )
+    { return (c+d)/2; }
+
+    if ( fabs( m - a ) < ARITH_ERROR )
+    { return c; }
+
+    if ( fabs( m - b ) < ARITH_ERROR )
+    { return d; }
+
+    //! linear poly
+    double x;
+
+    x = ( ( m - a) * d + ( b - m ) *c ) / ( b - a );
+
+    return x;
+}
+
+static bool CheckError(double data)
+{
+    //! over range
+    if (data < (-1 - ARITH_ERROR) || data>(1 + ARITH_ERROR))
+    {
+        return false;
+    }
+    else
+    {
+        return true;
+    }
+}
+
+static int CheckPos(int flg[2], double input[4], int len)
+{
+    //! Â≠òÂú®ÊúâÊïàËß£
+    if (flg[0] == 1 || flg[1] == 1)
+    {
+        //! Â≠òÂú®‰∏§‰∏™ÊúâÊïàËß£
+        //! 1 1
+        if (flg[0] == 1 && flg[1] == 1)
+        {
+            for (int i = 0; i < len; i++)
+            {
+                if (input[i] > PI || input[i] < -PI)
+                {
+                    return 0;
+                }
+            }
+            return 3;
+        }
+        //! 1 0
+        else if (flg[0] == 1)
+        {
+            for (int j = 0; j < 4; j++)
+            {
+                if (input[j] > PI || input[j] < -PI)
+                {
+                    return 0;
+                }
+            }
+            return 1;
+        }
+        //! 0 0
+        //! 0 1
+        else
+        {
+            for (int j = 4; j < len; j++)
+            {
+                if (input[j] > PI || input[j] < -PI)
+                {
+                    return 0;
+                }
+            }
+            return 2;
+        }
+    }
+
+    return 0;
+}
+
+static double* CalPose(double* armLength, int armCount,
+    double* pIn, double* pLast, int index,
+    double pose[16])
+{
+    //! Êú´Á´ØÁõ∏ÂØπÊ∞¥Âπ≥ÁöÑÂ§πËßí
+    double theta = pLast[1] + pLast[2] + pLast[3];
+    double d = armLength[4];
+    double px = pIn[0];
+    double py = pIn[1];
+    double temp = sqrt(px * px + py * py);
+    double det = -armLength[5] * sin(theta) + armLength[3] * cos(theta);
+    double t1 = 0;
+
+    if (index == 0)
+    {
+        if (d != 0)
+        {
+            if (det >= 0)
+            {
+                t1 = atan2(py, px) - asin(-d / temp);
+            }
+            else
+            {
+                t1 = atan2(-py, -px) - asin(d / temp);
+            }
+        }
+        else
+        {
+            if (det >= 0)
+            {
+                t1 = atan2(py, px);
+            }
+            else
+            {
+                t1 = atan2(-py, -px);
+            }
+        }
+    }
+    //! index != 0
+    else
+    {
+        if (d != 0)
+        {
+            if (det > 0)
+            {
+                t1 = atan2(-py, -px) - asin(d / temp);
+            }
+            else
+            {
+                t1 = atan2(py, px) - asin(-d / temp);
+            }
+        }
+        else
+        {
+            if (det > 0)
+            {
+                t1 = atan2(-py, -px);
+            }
+            else
+            {
+                t1 = atan2(py, px);
+            }
+        }
+    }
+
+    //! Êú´Á´ØÂßøÊÄÅ
+    pose[0] = cos(t1) * cos(theta);
+    pose[1] = -cos(t1) * sin(theta);
+    pose[2] = sin(t1);
+    pose[3] = pIn[0];
+
+    pose[4] = sin(t1)* cos(theta);
+    pose[5] = -sin(t1) * sin(theta);
+    pose[6] = -cos(t1);
+    pose[7] = pIn[1];
+
+    pose[8] = sin(theta);
+    pose[9] = cos(theta);
+    pose[10] = 0;
+    pose[11] = pIn[2];
+
+    pose[12] = 0;
+    pose[13] = 0;
+    pose[14] = 0;
+    pose[15] = 1;
+
+    return pose;
+}
+
+static double* GetPosition(int index, double* input, double res[4])
+{
+    if (index == 1)
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            res[i] = input[2 * i];
+        }
+
+        return res;
+    }
+    else if (index == 2)
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            res[i] = input[2 * i + 1];
+        }
+
+        return res;
+    }
+    else
+    {
+        return NULL;
+    }
+}
+
+static double* SelPos(double* pLast, double* input, double result[4])
+{
+    double temp[2];
+
+    //! sum
+    for (int i = 0; i < 2; i++)
+    {
+        temp[i] = 0;
+        for (int j = 0; j < 4; j++)
+        {
+            temp[i] = temp[i] + pow(input[2 * j + i] - pLast[j], 2);
+        }
+    }
+
+    //! check
+    if (temp[0] > temp[1])
+    {
+        return GetPosition(2, input, result);
+    }
+    else
+    {
+        return GetPosition(1, input, result);
+    }
+}
+
+//! return -- NULL: no slove
+static double* CalPosition(double* armLength, int armCount,
+    double* posIn,     //! [16]
+    double* posLast,   //! [4]
+
+    double result[4])
+{
+    //	int len = 4*2;
+    //	double* posOrg = new double[len];
+    //	memset(posOrg, 0, len * sizeof(double));
+
+    //! ÂàùÂßãÂåñ‰ΩçÂßøÁü©Èòµ
+    double posOrg[8];
+
+    //	int* mark = new int[2];
+
+        //! ÂàùÂßãÂåñÊ†áÂøó
+    int mark[2] = { 0, 0 };
+
+    //! ÂÖ≥ËäÇ1ËßíÂ∫¶
+    //! [0] [1]
+    posOrg[0] = atan2(posIn[2], -posIn[6]);
+    posOrg[1] = posOrg[0];
+
+    //! local vars
+    double c0 = cos(posOrg[0]);
+    double s0 = sin(posOrg[0]);
+    double bx = posIn[3] - c0 * armLength[3] * posIn[9] - armLength[4] * s0 + c0 * armLength[5] * posIn[8];
+    double by = posIn[7] - s0 * armLength[3] * posIn[9] + armLength[4] * c0 + s0 * armLength[5] * posIn[8];
+    double bz = posIn[11] - armLength[3] * posIn[8] - armLength[5] * posIn[9];
+
+    double A, B, C;
+    if (fabs(c0) > POSITION_ERROR)
+    {
+        //! ËÆ°ÁÆóÂêÑÂÖ≥ËäÇ‰ΩçÁΩÆ
+        A = pow(c0, 2)*(pow(bz - armLength[0], 2)
+            - pow(armLength[1], 2)
+            - pow(armLength[2], 2))
+            + pow(bx, 2);
+        B = 2 * pow(c0, 2)* armLength[1] * armLength[2];
+    }
+    else
+    {
+        A = pow(s0, 2)*(pow(bz - armLength[0], 2)
+            - pow(armLength[1], 2)
+            - pow(armLength[2], 2))
+            + pow(by, 2);
+        B = 2 * pow(s0, 2)* armLength[1] * armLength[2];
+    }
+
+    double delt = A / B;
+    bool flg = CheckError(delt);        //! <-1 || > 1
+
+    //! slove
+    if (flg)
+    {
+        posOrg[4] = acos(delt);
+        posOrg[5] = -acos(delt);
+
+        //! mark
+        mark[0] = 1;
+        mark[1] = 1;
+
+        //! ÂîØ‰∏ÄËß£
+        if (posOrg[4] - posOrg[5] < ARITH_ERROR)
+        {
+            mark[1] = 0;
+        }
+        else
+        {
+        }
+    }
+    //! fail
+    else
+    {
+        return NULL;
+    }
+
+    for (int i = 0; i < 2; i++)
+    {
+        //! [4] [5]
+        double c2 = cos(posOrg[4 + i]);
+        double s2 = sin(posOrg[4 + i]);
+        if (fabs(c0) > POSITION_ERROR)
+        {
+            //! ËÆ°ÁÆóÂêÑÂÖ≥ËäÇ‰ΩçÁΩÆ
+            A = -bx * s2* armLength[2] + (bz - armLength[0])*c0*(armLength[1] + c2 * armLength[2]);
+            B = (armLength[1] + c2 * armLength[2])*bx + c0 * s2* armLength[2] * (bz - armLength[0]);
+            C = c0 * (pow(armLength[1], 2) + 2 * c2* armLength[1] * armLength[2] + pow(armLength[2], 2));
+        }
+        else
+        {
+            A = -by * s2* armLength[2] + (bz - armLength[0])*s0*(armLength[1] + c2 * armLength[2]);
+            B = (armLength[1] + c2 * armLength[2])*by + s0 * s2* armLength[2] * (bz - armLength[0]);
+            C = s0 * (pow(armLength[1], 2) + 2 * c2* armLength[1] * armLength[2] + pow(armLength[2], 2));
+        }
+
+        double s1 = A / C;
+        double c1 = B / C;
+        bool flg1 = CheckError(s1);
+        bool flg2 = CheckError(c1);
+
+        //! ÊúâËß£
+        if (flg1 && flg2)
+        {
+            //! posOrg[2], posOrg[3]
+            posOrg[2 + i] = atan2(s1, c1);
+            //! posOrg[6], posOrg[7]
+            posOrg[6 + i] = atan2(posIn[8], posIn[9]) - posOrg[1 * 2 + i] - posOrg[2 * 2 + i];
+        }
+        //! fail
+        else
+        {
+            mark[i] = 0;
+            return NULL;
+        }
+    }
+
+    //! ËßíÂ∫¶Ê†áÂáÜÂåñ
+    normalize_pis(posOrg, 8);
+
+    //! Ëß£ÁöÑ‰∏™Êï∞ÂèäÁ¥¢Âºï‰ΩçÁΩÆ
+    int count = CheckPos(mark, posOrg, 8);
+
+    switch (count)
+    {
+        // Êó†Ëß£
+    case 0:
+        return NULL;
+
+    case 1:
+        return GetPosition(1, posOrg, result);
+
+    case 2:
+        return GetPosition(2, posOrg, result);
+
+    case 3:
+        return SelPos(posLast, posOrg, result);
+
+    default:
+        return NULL;
+    }
+}
+
+//! return: 0 -- equal
+static int CompareAngle(double data1, double date2)
+{
+    //    double n1, n2;
+
+    //    n1 = normalize_pi( data1 );
+    //    n2 = normalize_pi( date2 );
+
+    //    if ( (n1 - n2) > ANGLE_ERROR )
+    //    { return 1; }
+    //    else if ( (n1 - n2) < -ANGLE_ERROR )
+    //    { return -1; }
+    //    else
+    //    { return 0; }
+
+    double delt = fabs(data1 - date2);
+    if (delt > PI)
+    {
+        delt = fabs(delt - 2 * PI);
+    }
+    if (delt < 1e-3)
+    {
+        return 0;
+    }
+    return -1;
+}
+
+static void CalV(double pos[7],
+    double v[3],
+
+    double poseV[6]       //! out
+)                         //! 0 -- v[0]
+                          //! 1 -- v[1]
+                          //! 2 -- v[2]
+                          //! 3 --
+                          //! 4 --
+                          //! 5 -- tail speed
+{
+    //! Êú´Á´ØÈÄüÂ∫¶
+    double c1 = cos(pos[0]);
+    double s1 = sin(pos[0]);
+
+    double px = pos[4];
+    double py = pos[5];
+
+    double vx = v[0];
+    double vy = v[1];
+
+    //! ‰øùÂ≠òÊú´Á´ØÈÄüÂ∫¶
+    poseV[0] = v[0];
+    poseV[1] = v[1];
+    poseV[2] = v[2];
+
+    poseV[3] = 0;
+    poseV[4] = 0;
+
+    //! ËÆ°ÁÆóÊú´Á´ØËßíÈÄüÂ∫¶
+    poseV[5] = (c1 * vy - s1 * vx) / (c1 * px + s1 * py);
+}
+
+static double BizarreAvoid(double input)
+{
+    double temp;
+    if (fabs(input) < POSITION_ERROR)
+    {
+        temp = 0.1 * (1 - fabs(input) / 0.1);       //! \todo why 0.1?
+    }
+    else
+    {
+        temp = 0;
+    }
+
+    return input / (pow(input, 2) + pow(E, -fabs(input)) * pow(temp, 2));
+}
+
+static void CalVelocity(double *armLength, int armCount,
+    double pos[4],
+    double v[6],
+
+    double vOut[4]
+)
+{
+    //! local vars
+    double s1 = sin(pos[0]);
+    double c1 = cos(pos[0]);
+    double s2 = sin(pos[1]);
+    double c2 = cos(pos[1]);
+    double s3 = sin(pos[2]);
+    double s2a3 = sin(pos[1] + pos[2]);
+    double c2a3 = cos(pos[1] + pos[2]);
+    double s2a3a4 = sin(pos[1] + pos[2] + pos[3]);
+    double c2a3a4 = cos(pos[1] + pos[2] + pos[3]);
+
+    //! ---------------ÈÄüÂ∫¶ÈõÖÂÖãÊØîÁü©ÈòµËÆ°ÁÆó---------------
+    double J[6][4];
+
+    double temp1 = -armLength[3] * c1*s2a3a4 - armLength[5] * c1*c2a3a4;
+    J[0][0] = -armLength[1] * s1 * c2 - armLength[2] * s1 * c2a3 - s1 * armLength[3] * c2a3a4 + armLength[4] * c1 + armLength[5] * s1*s2a3a4;
+    J[0][1] = -armLength[1] * c1 * s2 - armLength[2] * c1 * s2a3 + temp1;
+    J[0][2] = -armLength[2] * c1 * s2a3 + temp1;
+    J[0][3] = temp1;
+
+    double temp2 = -armLength[3] * s1 * s2a3a4 - armLength[5] * s1 * c2a3a4;
+    J[1][0] = armLength[1] * c1 * c2 + armLength[2] * c1 * c2a3 + c1 * armLength[3] * c2a3a4 + armLength[4] * s1 - armLength[5] * c1*s2a3a4;
+    J[1][1] = -armLength[1] * s1 * s2 - armLength[2] * s1 * s2a3 + temp2;
+    J[1][2] = -armLength[2] * s1*s2a3 + temp2;
+    J[1][3] = temp2;
+
+    double temp3 = armLength[3] * c2a3a4 - armLength[5] * s2a3a4;
+    J[2][1] = armLength[1] * c2 + armLength[2] * c2a3 + temp3;
+    J[2][2] = armLength[2] * c2a3 + temp3;
+    J[2][3] = temp3;
+
+    J[3][1] = s1;
+    J[3][2] = s1;
+    J[3][3] = s1;
+
+    J[4][1] = -c1;
+    J[4][2] = -c1;
+    J[4][3] = -c1;
+
+    J[5][0] = 1;
+
+    //	double* vOut = new double[4];
+    //	memset(vOut, 0, 4 * sizeof(double));
+
+        //! v out
+    vOut[0] = v[5];
+
+    //! Â•áÂÅ∂ËßÑÈÅø
+    double P = BizarreAvoid(s3);
+    if (fabs(c1) > POSITION_ERROR)
+    {
+        double A = J[0][1] - J[0][3];
+        double B = J[0][2] - J[0][3];
+        double C = J[2][1] - J[2][3];
+        double D = J[2][2] - J[2][3];
+
+        double b1 = v[0] - (J[0][0] * vOut[0] + J[0][3] * v[4] / J[4][3]);
+        double b2 = v[2] - v[4] * J[2][3] / J[4][3];
+
+        P = P / (armLength[1] * armLength[2] * c1);
+        vOut[1] = (D*b1 - B * b2)*P;
+        vOut[2] = -(C*b1 - A * b2)*P;
+        vOut[3] = v[4] / J[4][3] - vOut[1] - vOut[2];
+    }
+    else
+    {
+        double A = J[1][1] - J[1][3];
+        double B = J[1][2] - J[1][3];
+        double C = J[2][1] - J[2][3];
+        double D = J[2][2] - J[2][3];
+
+        double b1 = v[1] - (J[1][0] * vOut[0] + J[1][3] * v[3] / J[3][3]);
+        double b2 = v[2] - v[4] * J[2][3] / J[3][3];
+
+        P = P / (armLength[1] * armLength[2] * s1);
+        vOut[1] = (D*b1 - B * b2)*P;
+        vOut[2] = -(C*b1 - A * b2)*P;
+        vOut[3] = v[3] / J[3][3] - vOut[1] - vOut[2];
+    }
+}
+
+static void GetContinueAngle(double* last,
+    double* pos,        //! [0,count)
+    int count,
+
+    double* pRet)
+{
+    //	double* res = new double[4];
+
+    for (int i = 0; i < count; i++)
+    {
+        double temp1 = last[i] - floor(last[i] / (2 * PI)) * 2 * PI;
+        double temp2 = pos[i] - floor(pos[i] / (2 * PI)) * 2 * PI;
+        double delt = temp2 - temp1;
+
+        delt = normalize_pi(delt);
+
+        pRet[i] = last[i] + delt;
+    }
+}
+
+static void appendTpvLine( vector<tpvPoint> &tpvLine,
+
+                        double t,
+                        double p,
+                        double v
+                       )
+{
+    tpvLine.push_back( tpvPoint( t, p, v ) );
+}
+
+//! v stick to 0
+static void stickTpvLine( vector<tpvPoint> &tpvLine )
+{
+    for ( int i = 0; i < tpvLine.size(); i++ )
+    {
+        if ( fabs(tpvLine.at(i).mV) < ARITH_ERROR )
+        { tpvLine.at(i).mV = 0; }
+    }
+}
+
+//! find the cross point
+static void zeroCrossTpvLine( vector<tpvPoint> &tpvLine,
+                              vector<tpvPoint> &outLine )
+{
+    double t,p,v,t1;
+    double dT;
+
+    //! more than 2
+    if ( tpvLine.size() < 2 )
+    { return; }
+
+    //! for each
+    for ( int i = 0; i < tpvLine.size() - 1; i++ )
+    {
+        outLine.push_back( tpvLine.at(i) );
+
+        //! cross zero
+        if ( tpvLine.at(i).mV * tpvLine.at(i+1).mV < 0 )
+        {
+            //! calc the new point
+            t = 0;
+            p = 0;
+            v = 0;
+
+            //! guess the p at v=0
+            dT = tpvLine.at( i + 1 ).mT - tpvLine.at( i ).mT;
+            t1 = dT * ( -tpvLine.at( i ).mV / ( tpvLine.at(i+1).mV - tpvLine.at( i ).mV ) );
+
+            t = tpvLine.at(i).mT + t1;
+            p = tpvLine.at(i).mP + tpvLine.at(i).mV * t1 / 2;
+
+            outLine.push_back( tpvPoint( t, p, v ) );
+        }
+        else
+        {
+
+        }
+    }
+
+    //! the last one
+    outLine.push_back( tpvLine.at( tpvLine.size() - 1 ) );
+}
+
+//! union all the line
+static void unionTpvLineTime( vector<tpvPoint> &tpvLine,
+                              vector<double> &timeLine )
+{
+    for ( int i = 0; i < tpvLine.size(); i++ )
+    {
+        timeLine.push_back( tpvLine.at(i).mT );
+    }
+}
+
+//! sort and trim by err
+//! asc
+static void trimTpvLineTime( vector<double> &timeLine,
+                             double err = ARITH_ERROR )
+{
+    //! <
+    sort( timeLine.begin(), timeLine.end() );
+
+    //! trim by resolution
+    vector<double> backup = timeLine;
+
+    //! clear
+    timeLine.clear();
+
+    double tNow;
+
+    //! the first
+    tNow = backup.at(0);
+    timeLine.push_back( tNow );
+
+    //! for next
+    for ( int i = 1; i < backup.size(); i++ )
+    {
+        if ( (backup.at(i) - tNow ) > err )
+        {
+            tNow = backup.at(i);
+            timeLine.push_back( tNow );
+        }
+    }
+}
+
+//! sample the line by time
+static void resampleTpvLine( vector<tpvPoint> &tpvLine,
+                             vector<double> &timeLine,
+                             vector<tpvPoint> &tpvOutLine )
+{
+    double t;
+
+    double xt, xp, xv;
+
+    //! init
+    tpvOutLine.clear();
+
+    for ( int i = 0; i < timeLine.size(); i++ )
+    {
+        t = timeLine.at(i);
+
+        do
+        {
+            //! 1. low than the first
+            if ( t <= tpvLine.at(0).mT )
+            {
+                //! stick to the first
+                tpvOutLine.push_back( tpvLine.at(0) );
+                break;
+            }
+            else
+            { }
+
+            //! 2. find t
+            for ( int j = 1; j < tpvLine.size(); j++ )
+            {
+                //! more than
+                if ( t > tpvLine.at(j).mT )
+                {}
+                //! t <= tj
+                else
+                {
+                    xp = linearSlove( tpvLine.at(j-1).mT, tpvLine.at(j).mT, t,
+                                      tpvLine.at(j-1).mP, tpvLine.at(j).mP );
+                    xv = linearSlove( tpvLine.at(j-1).mT, tpvLine.at(j).mT, t,
+                                      tpvLine.at(j-1).mV, tpvLine.at(j).mV );
+
+                    tpvOutLine.push_back( tpvPoint( t, xp, xv ) );
+                    goto _nnext;
+                }
+            }
+
+            //! 3. last one, t not in the range
+            tpvOutLine.push_back( tpvPoint( t,
+                                            tpvLine.at( tpvLine.size() -1 ).mP,
+                                            tpvLine.at( tpvLine.size() -1 ).mV
+                                            ) );
+
+        }while(0);
+_nnext:
+        //! next iter
+        ;
+    }
+}
+
+static void zeroCrossProc( vector<ResInfo> &infoList,
+                           int lineCount )
+{
+    vector<tpvPoint> tpvLine[4];
+//    lineCount = sizeof(tpvLine)/sizeof( tpvLine[0] );
+
+    //! 1. to line
+    for ( int i = 0; i < infoList.size(); i++ )
+    {
+        for ( int j = 0; j < lineCount; j++ )
+        {
+            appendTpvLine( tpvLine[j], infoList.at(i).T, infoList.at(i).P[j], infoList.at(i).V[j] );
+        }
+    }
+
+    //! 2. foreach line stick
+    for( int i = 0; i < lineCount; i++ )
+    {
+        stickTpvLine( tpvLine[i] );
+    }
+
+    //! 3. zcp line
+    vector<tpvPoint> tpvOutLine[4];
+    for ( int i = 0; i < lineCount; i++ )
+    {
+        zeroCrossTpvLine( tpvLine[i], tpvOutLine[i] );
+    }
+
+    //! time line
+    vector<double> timeLine;
+    for ( int i = 0; i < lineCount; i++ )
+    {
+        unionTpvLineTime( tpvOutLine[i], timeLine );
+    }
+    trimTpvLineTime( timeLine );
+
+    //! resample
+    for ( int i = 0; i < lineCount; i++ )
+    {
+        tpvLine[i].clear();
+        resampleTpvLine( tpvOutLine[i], timeLine, tpvLine[i] );
+    }
+
+    //! export
+    infoList.clear();
+    ResInfo localInfo;
+    for ( int i = 0; i < timeLine.size(); i++ )
+    {
+        //! set info
+        localInfo.T = timeLine.at(i);
+
+        for ( int j = 0; j < lineCount; j++ )
+        {
+            localInfo.P[j] = tpvLine[j].at(i).mP;
+            localInfo.V[j] = tpvLine[j].at(i).mV;
+        }
+
+        infoList.push_back( localInfo );
+    }
+}
+
+#ifdef QT_VERSION
+//! debug
+#include <QDebug>
+#include <QFile>
+
+int zeroCrossTest()
+{
+    //! data
+//
+    double ps[]={ +0, 1, 2, +1, };
+
+    double vs0[]={ -1, 1, 1, -1, };
+    double vs1[]={ -1, 2, 4, -3, };
+    double vs2[]={ -2, 3, 2, -5, };
+    double vs3[]={ -0, 1, 3, -1, };
+
+//    double vs0[]={ +1, +2, +3, +4, +5, +6, +7 };
+//    double vs1[]={ +1, +2, +3, +4, +5, +6, +7 };
+//    double vs2[]={ +1, +2, +3, +4, +5, +6, +7 };
+//    double vs3[]={ +1, +2, +3, +4, +5, +6, +7 };
+//    double ps[]={ +0, +1, +2, +3, +4, +5, +6 };
+
+//    double vs0[]={ -1, -2, -3, -4, -5, -6, -7 };
+//    double vs1[]={ -1, -2, -3, -4, -5, -6, -7 };
+//    double vs2[]={ -1, -2, -3, -4, -5, -6, -7 };
+//    double vs3[]={ -1, -2, -3, -4, -5, -6, -7 };
+//    double ps[]={ +0, -1, -2, -3, -4, -5, -6 };
+
+    vector<ResInfo> infoList;
+    ResInfo aInfo;
+    for( int i = 0; i < sizeof(vs0)/sizeof(vs0[0]); i++ )
+    {
+        for ( int j = 0; j < 1; j++ )
+        {
+            aInfo.V[j] = vs0[i];
+//            aInfo.V[j] = vs1[i];
+            aInfo.P[j] = ps[i];
+        }
+
+        for ( int j = 1; j < 2; j++ )
+        {
+            aInfo.V[j] = vs1[i];
+            aInfo.P[j] = ps[i];
+        }
+
+        for ( int j = 2; j < 3; j++ )
+        {
+            aInfo.V[j] = vs2[i];
+            aInfo.P[j] = ps[i];
+        }
+
+        for ( int j = 3; j < 4; j++ )
+        {
+            aInfo.V[j] = vs3[i];
+            aInfo.P[j] = ps[i];
+        }
+
+
+        aInfo.T = i;
+
+        infoList.push_back( aInfo );
+    }
+
+    //! calc, cross check only
+    int lineCnt = 4;
+    zeroCrossProc( infoList, lineCnt );
+
+    if ( infoList.size() > 0 )
+    { }
+    else
+    { return -1; }
+
+    //! for save
+    QFile file("E:/trash/a.csv");
+    file.open( QIODevice::WriteOnly );
+    QTextStream textStream( &file );
+
+    for ( int i = 0; i < infoList.size(); i++ )
+    {
+        textStream<<infoList.at(i).T<<",";
+        for ( int j = 0; j < lineCnt; j++ )
+        {
+            textStream<<infoList.at(i).P[j]<<","<<infoList.at(i).V[j]<<",";
+        }
+
+        textStream<<"\n";
+    }
+
+    file.close();
+
+    return 0;
+}
+#endif
+
+// Ê≠£Ëß£Ê±ÇÊú´Á´Ø‰ΩçÁΩÆ
+// armLength Êú∫Ê¢∞ËáÇÁöÑËáÇÈïø
+// angles--Âõõ‰∏™ÂÖ≥ËäÇÁöÑÂΩìÂâçËßíÂ∫¶
+// res--Ê≠£Ëß£ÁöÑÊú´Á´Ø‰ΩçÁΩÆ(X,Y,Z)
+
+//! arm count: 6
+//!
+//!               2
+//!             ____
+//!            /     | 3
+//!         1 /      |
+//!          /    4------
+//!         ||          | 5
+//!         || 0        |
+//!         ||
+//! return: 0 -- no error
+int MEGA_EXPORT GetEndPosition(
+    double* armLengthArray,     //! foreach arm
+    int armCount,		//! arm count: 6
+
+    double* deltAngles,		//! delta angle: degree
+    double* angles,		//! current angle 0~360
+    int angleCount,             //! 4
+
+    double* res)		//! out: x, y, z
+{
+    if (NULL == armLengthArray
+        || NULL == deltAngles
+        || NULL == angles
+        || NULL == res)
+    {
+        return -1;
+    }
+
+    double localRads[4];                              //! Ms Builder can not variable array
+                                                        //! compensation
+    vectorSub(angles, deltAngles, angleCount, localRads);
+
+    degToRad(localRads, angleCount, localRads);       //! convert angle to rad
+
+                                                        //! const vars
+    double s1, c1, s2, c2, s2a3, c2a3, s2a3a4, c2a3a4;
+
+    s1 = sin(localRads[0]);     						//! sin(theta1)
+    c1 = cos(localRads[0]);     						//! cos(theta1)
+    s2 = sin(localRads[1]);     						//! sin(theta2)
+    c2 = cos(localRads[1]);     						//! cos(theta2)
+    s2a3 = sin(localRads[1] + localRads[2]);      		//! sin(theta2 + theta3)
+    c2a3 = cos(localRads[1] + localRads[2]);      		//! cos(theta2 + theta3)
+    s2a3a4 = sin(localRads[1] + localRads[2] + localRads[3]);      //! sin(theta2 + theta3 + theta4)
+    c2a3a4 = cos(localRads[1] + localRads[2] + localRads[3]);      //! cos(theta2 + theta3 + theta4)
+
+                                                        //! end pos
+    double endOut[4][4];
+    //	double endX, endY, endZ;
+
+    //	endOut[0][0] = c1 * c2a3a4;   						// ËÆ°ÁÆó‰ΩçÂßøÁü©Èòµ
+    //	endOut[0][1] = -c1 * s2a3a4;
+    //	endOut[0][2] = s1;
+    endOut[0][3] = armLengthArray[4] * s1 - armLengthArray[5] * c1 * s2a3a4 + c1 * (armLengthArray[1] * c2 + armLengthArray[2] * c2a3 + armLengthArray[3] * c2a3a4);
+
+    //	endOut[1][0] = s1* c2a3a4;
+    //	endOut[1][1] = -s1* s2a3a4;
+    //	endOut[1][2] = -c1;
+    endOut[1][3] = -c1 * armLengthArray[4] - armLengthArray[5] * s1 * s2a3a4 + s1 * (armLengthArray[1] * c2 + armLengthArray[2] * c2a3 + armLengthArray[3] * c2a3a4);
+
+    //	endOut[2][0] = s2a3a4;
+    //	endOut[2][1] = c2a3a4;
+    endOut[2][3] = armLengthArray[5] * c2a3a4 + armLengthArray[0] + armLengthArray[1] * s2 + armLengthArray[2] * s2a3 + armLengthArray[3] * s2a3a4;
+
+    //	endOut[3][3] = 1;
+
+    res[0] = endOut[0][3];
+    res[1] = endOut[1][3];
+    res[2] = endOut[2][3];
+
+    return 0;
+}
+
+// ÈÄÜËß£ËøêÁÆó
+// posLast -- ÂèÇËÄÉ‰ΩçÁΩÆÔºåÁî®‰∫éÁ°ÆÂÆöÊúÄ‰ºòË∑ØÂæÑ,ËæìÂÖ•‰∏∫4‰∏™ÂÖ≥ËäÇÁöÑËßíÂ∫¶
+// posIn -- Áî®‰∫éÈÄÜËß£ÁöÑÊú´Á´Ø‰ΩçÁΩÆ(X,Y,Z)
+// vIn--Êú´Á´ØÈÄüÂ∫¶(VX,VY,VZ)
+// tIn--Êó∂Èó¥ËäÇÁÇπ
+// Ê±ÇËß£ÁöÑÁÇπÁöÑ‰∏™Êï∞
+// Ê±ÇËß£ÁöÑËøîÂõûÂÄº
+
+//! return : 0 -- no error
+int sloveArmPosition(
+    double* armLength, int armCount,
+
+    double* deltAngles, int angleCount,    //! angles: [0~3]
+    double* posRef,                        //!
+
+    double* posIn, int skipP,
+    double* vIn, int skipV,
+    double* tIn, int skipT,
+    int len,                                //! points len in
+
+    vector<ResInfo> &resInfo )
+{
+    double posLast[4];
+
+    //! rotate the angle
+    vectorSub(posRef, deltAngles, angleCount, posLast);       //! ref - delta = last
+
+    //! to rad
+    degToRad(posLast, angleCount, posLast);                   //! last * 180/pi
+
+    //! normalize
+    normalize_pis(posLast, angleCount);
+
+    //! cache clear
     resInfo.clear();
 
-    double P[3];
-    double V[3];
+    //! for each point
+    for (int i = 0; i < len; i++)
+    {
+        //! foreach axis pv
+        //!
+        double P[3];
+        double V[3];
+        for (int j = 0; j < 3; j++)
+        {
+            P[j] = posIn[skipP * i + j];
+            V[j] = vIn[skipV * i + j];
+        }
 
-	for (int i = 0; i < len; i++)
-	{
-//		double* P = new double[3];
-//		double* V = new double[3];
+        //! epoch
+        //!
+        double pose[16];
+        double poseOut[4];
+        for (int k = 0; k < 2; k++)
+        {
+            //! Êú´Á´Ø‰ΩçÂßø
+            if (NULL == CalPose(armLength, armCount,
+                P, posLast, k, pose))
+            {
+                return -1;
+            }
 
-		for (int j = 0; j < 3; j++)
-		{
-//			P[j] = posIn[3*i+j];
-//			V[j] = vIn[3 * i + j];
+            //! Ê±ÇËß£ÂÖ≥ËäÇ‰ΩçÁΩÆ
+            if (NULL == CalPosition(armLength, armCount,
+                pose, posLast, poseOut))
+            {
+                return -1;
+            }
 
-            P[j] = posIn[ skipP * i + j ];
-            V[j] = vIn[ skipV * i + j ];
-		}
-		double* poseOut = NULL;
-		for (int k = 0; k < 2; k++)
-		{
-			//ƒ©∂ÀŒª◊À
-			double* pose = CalPose(P, posLast, k);
-			// «ÛΩ‚πÿΩ⁄Œª÷√
-			poseOut = CalPosition(pose, posLast);
-			if (poseOut == NULL)
-			{
-				return -1;
-			}
-			double p1 = posLast[1] + posLast[2] + posLast[3];
-			double p2 = poseOut[1] + poseOut[2] + poseOut[3];
-			int res = CompareAngle(p1, p2);
-			if (res == 0)
-			{
-				break;
-			}
-		}
-        ResInfo _info;
-		if (poseOut != NULL)
-		{
-			double* allPos = new double[7];
-			allPos[0] = poseOut[0];
-			allPos[1] = poseOut[1];
-			allPos[2] = poseOut[2];
-			allPos[3] = poseOut[3];
-			allPos[4] = P[0];
-			allPos[5] = P[1];
-			allPos[6] = P[2];
-			double* res = CalV(allPos, V);
-			// «ÛΩ‚πÿΩ⁄ÀŸ∂»
-			double* vLast;
-			double* vOut = CalVelocity(poseOut, res);
-			double* newPose = GetContinueAngle(posLast, poseOut);			
-            _info.P1 = newPose[0];
-            _info.P2 = newPose[1];
-            _info.P3 = newPose[2];
-            _info.P4 = newPose[3];
-            _info.V1 = vOut[0];
-            _info.V2 = vOut[1];
-            _info.V3 = vOut[2];
-            _info.V4 = vOut[3];
-            _info.T = tIn[ skipT*i ];
-		}
-		else
-		{
-			return -1;
-		}
-        resInfo.push_back(_info);
-	}
-    resInfo = AddZeroPoint(resInfo);
-    int size = resInfo.size();
-	for (int m = 0; m < size; m++)
-	{
-        res[m * 9] = resInfo[m].P1;
-        res[m * 9 + 1] = resInfo[m].P2;
-        res[m * 9 + 2] = resInfo[m].P3;
-        res[m * 9 + 3] = resInfo[m].P4;
-        res[m * 9 + 4] = resInfo[m].V1;
-        res[m * 9 + 5] = resInfo[m].V2;
-        res[m * 9 + 6] = resInfo[m].V3;
-        res[m * 9 + 7] = resInfo[m].V4;
-        res[m * 9 + 8] = resInfo[m].T;
-	}
+            //! same as before
+            double p1 = posLast[1] + posLast[2] + posLast[3];
+            double p2 = poseOut[1] + poseOut[2] + poseOut[3];
 
-    return size;
+            //! angle == angle2
+            if (0 == CompareAngle(p1, p2))
+            {
+                break;
+            }
+        }
+
+        ResInfo info;
+        // if (poseOut != NULL)
+        {
+            double allPos[7];
+            allPos[0] = poseOut[0];
+            allPos[1] = poseOut[1];
+            allPos[2] = poseOut[2];
+            allPos[3] = poseOut[3];
+            allPos[4] = P[0];
+            allPos[5] = P[1];
+            allPos[6] = P[2];
+
+            //! end v
+            double endV[6];
+            CalV(allPos, V, endV);        //! endV[3],endV[4] invalid
+
+            double vOut[4];
+            CalVelocity(armLength, armCount,
+                        poseOut, endV,
+                        vOut);
+
+            //! pos
+            double newPose[4];
+            GetContinueAngle(posLast,
+                            poseOut,
+                            angleCount,
+                            newPose
+                            );
+
+            memcpy( info.P, newPose, sizeof(newPose) );
+
+            memcpy( info.V, vOut, sizeof(vOut) );
+
+            info.T = tIn[i*skipT];
+        }
+
+        resInfo.push_back(info);
+    }
+
+    //! add
+    zeroCrossProc( resInfo, 4 );
+
+    return 0;
 }
-double* CalPose(double* pIn, double* pLast,int index)
+
+//! return: 0 -- no error
+int  MEGA_EXPORT getArmPosition_Size(
+    double* armLength, int armCount,
+
+    double* deltAngles, int angleCount,    //! angles: [0~3]
+    double* posRef,                        //!
+
+    double* posIn, int skipP,
+    double* vIn, int skipV,
+    double* tIn, int skipT,
+    int len,                               //! points len in
+    int *pOutSize
+                                )
 {
-	// ƒ©∂Àœ‡∂‘ÀÆ∆Ωµƒº–Ω«
-	double theta = pLast[1] + pLast[2] + pLast[3];
-	double d = armLen4;
-	double px = pIn[0];
-	double py = pIn[1];
-	double temp = sqrt(px * px + py * py);
-	double det = -armLen5 * sin(theta) + armLen3 * cos(theta);
-	double t1 = 0;
-	//double theta = -Math.PI/2;
-	if (index == 0)
-	{
-		if (d != 0)
-		{
-			if (det >= 0)
-				t1 = atan2(py, px) - asin(-d / temp);
-			else
-				t1 = atan2(-py, -px) - asin(d / temp);
-		}
-		else
-		{
-			if (det >= 0)
-				t1 = atan2(py, px);
-			else
-				t1 = atan2(-py, -px);
-		}
-	}
-	else
-	{
-		if (d != 0)
-		{
-			if (det > 0)
-				t1 = atan2(-py, -px) - asin(d / temp);
-			else
-				t1 = atan2(py, px) - asin(-d / temp);
-		}
-		else
-		{
-			if (det > 0)
-				t1 = atan2(-py, -px);
-			else
-				t1 = atan2(py, px);
-		}
-		
-	}
-	// ƒ©∂À◊ÀÃ¨
-	double* pose = new double[4*4];
-	memset(pose, 0, 16* sizeof(double));
-	// º∆À„πÿΩ⁄1Ω«∂»÷µ
-	//double t1 = atan2(pIn[1], pIn[0]);
-	pose[0] =cos(t1) * cos(theta);
-	pose[1] = -cos(t1) * sin(theta);
-	pose[2] = sin(t1);
-	pose[3] = pIn[0];
+    vector<ResInfo> resInfo;
 
-	pose[4] = sin(t1)* cos(theta);
-	pose[5] = -sin(t1) * sin(theta);
-	pose[6] = -cos(t1);
-	pose[7] = pIn[1];
+    int ret;
+    ret = sloveArmPosition( armLength, armCount,
+                            deltAngles, angleCount,
+                            posRef,
 
-	pose[8] =sin(theta);
-	pose[9] = cos(theta);
-	pose[11] = pIn[2];
+                            posIn, skipP,
+                            vIn, skipV,
+                            tIn, skipT,
+                            len,
+                            resInfo );
 
-	pose[15] = 1;
-	return pose;
-}
-double* CalPosition(double* posIn, double* posLast)
-{
-	// ≥ı ºªØŒª◊Àæÿ’Û
-	int len = 4*2;
-	double* posOrg = new double[len];
-	memset(posOrg, 0, len * sizeof(double));
-	// ≥ı ºªØ±Í÷æ
-	int* mark = new int[2];
-	// double[] posOut = new double[2];
-	// πÿΩ⁄1Ω«∂»
-	posOrg[0] = atan2(posIn[2], -posIn[6]);
-	posOrg[1] = posOrg[0];
-	double c0 = cos(posOrg[0]);
-	double s0 = sin(posOrg[0]);
-	double bx = posIn[3] - c0* armLen3 * posIn[9] - armLen4 * s0 + c0 * armLen5 * posIn[8];
-	double by = posIn[7] - s0* armLen3 * posIn[9] + armLen4 * c0 + s0 * armLen5 * posIn[8];
-	double bz = posIn[11] - armLen3 * posIn[8] - armLen5 * posIn[9];
-	double A, B, C;
-	if (abs(c0) > 0.1)
-	{
-		// º∆À„∏˜πÿΩ⁄Œª÷√
-		A =pow(c0, 2)*(pow(bz - armLen0, 2) - pow(armLen1, 2) - pow(armLen2, 2)) +
-			pow(bx, 2);
-		B = 2 * pow(c0, 2)* armLen1 * armLen2;
-	}
-	else
-	{
-		A = pow(s0, 2)*(pow(bz - armLen0, 2) - pow(armLen1, 2) - pow(armLen2, 2)) +
-			pow(by, 2);
-		B = 2 * pow(s0, 2)* armLen1 * armLen2;
-	}
-	double delt = A / B;
-	bool flg = CheckError(delt);
-	// ”–Ω‚
-	if (flg)
-	{
-		posOrg[4] = acos(delt);
-		posOrg[5] = -acos(delt);
-		mark[0] = 1;
-		mark[1] = 1;
-		// Œ®“ªΩ‚
-        if (posOrg[4] - posOrg[5] < error )
-		{
-			mark[1] = 0;
-		}
-	}
-	// ŒﬁΩ‚
-	else
-	{
-		return NULL;
-	}
-	for (int i = 0; i < 2; i++)
-	{
-		double c2 = cos(posOrg[4+i]);
-		double s2 = sin(posOrg[4+i]);
-		if (abs(c0) > 0.1)
-		{
-			// º∆À„∏˜πÿΩ⁄Œª÷√
-			A = -bx*s2* armLen2 + (bz - armLen0)*c0*(armLen1 + c2* armLen2);
-			B = (armLen1 + c2* armLen2)*bx + c0*s2* armLen2 * (bz - armLen0);
-			C = c0*(pow(armLen1, 2) + 2 * c2* armLen1 * armLen2 + pow(armLen2, 2));
-		}
-		else
-		{
-			A = -by*s2* armLen2 + (bz - armLen0)*s0*(armLen1 + c2* armLen2);
-			B = (armLen1+ c2* armLen2)*by + s0*s2* armLen2 * (bz - armLen0);
-			C = s0*(pow(armLen1, 2) + 2 * c2* armLen1 * armLen2 + pow(armLen2, 2));
-		}
-		double s1 = A / C;
-		double c1 = B / C;
-		bool flg1 = CheckError(s1);
-		bool flg2 = CheckError(c1);
-		// ”–Ω‚
-		if (flg1 && flg2)
-		{
-			posOrg[2+i] = atan2(s1, c1);
-			posOrg[6+i] = atan2(posIn[8], posIn[9]) - posOrg[1*2+ i] - posOrg[2*2 + i];
-		}
-		else
-		{
-			mark[i] = 0;
-			return NULL;
-		}
-	}
-	// Ω«∂»±Í◊ºªØ
-	CorrectAngles(posOrg, len);
-	// Ω‚µƒ∏ˆ ˝º∞À˜“˝Œª÷√
-	int count = CheckPos(mark, posOrg, len);
-	double* result = new double[4];
-	switch (count)
-	{
-		// ŒﬁΩ‚
-	case 0:
-		result = new double[4];
-		break;
-	case 1:
-		result = GetPosition(1, posOrg,len);
-		break;
-	case 2:
-		result = GetPosition(2, posOrg,len);
-		break;
-	case 3:
-		result = SelPos(posLast, posOrg,len);
-		break;
-	default:
-		break;
-	}
-	return result;
-}
-bool CheckError(double data)
-{
-	// ≥¨≥ˆ∑∂Œß
-    if (data < -1 - error || data>1 + error)
-	{
-		return false;
-	}
-	else
-	{
-		return true;
-	}
-}
-void CorrectAngles(double* input,int len)
-{
-	for (int i = 0; i < len; i++)
-	{
-		if (input[i] > PI)
-		{
-			input[i] = input[i] - 2 * PI;
-		}
-		if (input[i] < -PI)
-		{
-			input[i] = input[i] + 2 * PI;
-		}
-	}
-}
-int CheckPos(int* flg, double* input, int len)
-{
-	// ¥Ê‘⁄”––ßΩ‚
-	if (flg[0] == 1 || flg[1] == 1)
-	{
-		// ¥Ê‘⁄¡Ω∏ˆ”––ßΩ‚
-		if (flg[0] == 1 && flg[1] == 1)
-		{
-			for (int i = 0; i <len; i++)
-			{
-				if (input[i] > PI || input[i] < -PI)
-				{
-					return 0;
-				}
-			}
-			return 3;
-		}
-		else if (flg[0] == 1)
-		{
-			for (int j = 0; j < 4; j++)
-			{
-				if (input[j] > PI || input[j] < -PI)
-				{
-					return 0;
-				}
-			}
-			return 1;
-		}
-		else
-		{
-			for (int j = 4; j < len; j++)
-			{
-				if (input[j] > PI || input[j] < -PI)
-				{
-					return 0;
-				}
-			}
-			return 2;
-		}
-	}
-	return 0;
-}
-double* GetPosition(int index, double* input,int len)
-{
-	double* res = new double[4];
-	memset(res, 0, 4 * sizeof(double));
-	if (index == 1)
-	{
-		for (int i = 0; i < 4; i++)
-		{
-			res[i] = input[2*i];
-		}
-	}
-	if (index == 2)
-	{
-		for (int i = 0; i < 4; i++)
-		{
-			res[i] = input[2*i + 1];
-		}
-	}
-	return res;
-}
-double* SelPos(double* pLast, double* input, int len)
-{
-	double* temp = new double[2];	
-	double* res = new double[4];
-	memset(temp, 0, 2 * sizeof(double));
-	memset(res, 0, 4 * sizeof(double));
-	for (int i = 0; i < 2; i++)
-	{
-		for (int j = 0; j < 4; j++)
-		{
-			temp[i] = temp[i] + pow(input[2*j+i] - pLast[j], 2);
-		}
-	}
-	if (temp[0] > temp[1])
-	{
-		res = GetPosition(2, input,len);
-	}
-	else
-	{
-		res = GetPosition(1, input,len);
-	}
-	return res;
-}
-int CompareAngle(double data1, double date2)
-{
-	double delt = abs(data1 - date2);
-	if (delt > PI)
-	{
-		delt = abs(delt - 2 * PI);
-	}
-	if (delt < 1e-3)
-	{
-		return 0;
-	}
-	return -1;
-}
-double * CalV(double* pos, double* v)
-{
-	// ƒ©∂ÀÀŸ∂»
-	double c1 = cos(pos[0]);
-	double s1 = sin(pos[0]);
-	double px = pos[4];
-	double py = pos[5];
-	double vx = v[0];
-	double vy = v[1];
-	double* poseV = new double[6];
-	memset(poseV, 0, 6 * sizeof(double));
-	// ±£¥Êƒ©∂ÀÀŸ∂»
-	poseV[0] = v[0];
-	poseV[1] = v[1];
-	poseV[2] = v[2];
-	// º∆À„ƒ©∂ÀΩ«ÀŸ∂»
-	poseV[5] = (c1 * vy - s1 * vx) / (c1 * px + s1 * py);
-	return poseV;
-}
-double* CalVelocity(double* pos, double* v)
-{
-	double s1 = sin(pos[0]);
-	double c1 = cos(pos[0]);
-	double s2 = sin(pos[1]);
-	double c2 = cos(pos[1]);
-	double s3 = sin(pos[2]);
-	double s2a3 = sin(pos[1] + pos[2]);
-	double c2a3 = cos(pos[1] + pos[2]);
-	double s2a3a4 = sin(pos[1] + pos[2] + pos[3]);
-	double c2a3a4 = cos(pos[1] + pos[2] + pos[3]);
-	// ---------------ÀŸ∂»—≈øÀ±»æÿ’Ûº∆À„-------------- -
-	double** J = new double*[6];
-	for (int i = 0; i < 6; i++)
-	{
-		J[i] = new double[4];			
-	}
-	double temp1 = -armLen3 * c1*s2a3a4 - armLen5 * c1*c2a3a4;
-	J[0][0] = -armLen1 * s1 * c2 - armLen2 * s1 * c2a3 - s1 * armLen3 * c2a3a4 + armLen4 * c1 + armLen5 * s1*s2a3a4;
-	J[0][1] = -armLen1 * c1 * s2 - armLen2 * c1 * s2a3 + temp1;
-	J[0][2] = -armLen2 * c1 * s2a3 + temp1;
-	J[0][3] = temp1;
+    if ( ret != 0 )
+    { return ret; }
 
-	double temp2 = -armLen3 * s1 * s2a3a4 - armLen5 * s1 * c2a3a4;
-	J[1][0] = armLen1 * c1 * c2 + armLen2 * c1 * c2a3 + c1 * armLen3 * c2a3a4 + armLen4 * s1 - armLen5 * c1*s2a3a4;
-	J[1][1] = -armLen1 * s1 * s2 - armLen2 * s1 * s2a3 + temp2;
-	J[1][2] = -armLen2 * s1*s2a3 + temp2;
-	J[1][3] = temp2;
-
-	double temp3 = armLen3 * c2a3a4 - armLen5 * s2a3a4;
-	J[2][1] = armLen1 * c2 + armLen2* c2a3 + temp3;
-	J[2][2] = armLen2 * c2a3 + temp3;
-	J[2][3] = temp3;
-
-	J[3][1] = s1;
-	J[3][2] = s1;
-	J[3][3] = s1;
-
-	J[4][1] = -c1;
-	J[4][2] = -c1;
-	J[4][3] = -c1;
-
-	J[5][0] = 1;
-	double* vOut = new double[4];
-	memset(vOut, 0, 4 * sizeof(double));
-	vOut[0] = v[5];
-	//∆Ê≈ºπÊ±‹
-	double P = BizarreAvoid(s3);
-	if (abs(c1) > 0.1)
-	{
-		double A = J[0][1] - J[0][3];
-		double B = J[0][2] - J[0][3];
-		double C = J[2][1] - J[2][3];
-		double D = J[2][2] - J[2][3];
-
-		double b1 = v[0] - (J[0][0] * vOut[0] + J[0][3] * v[4] / J[4][3]);
-		double b2 = v[2] - v[4] * J[2][3] / J[4][3];
-
-		P = P / (armLen1 * armLen2 * c1);
-		vOut[1] = (D*b1 - B*b2)*P;
-		vOut[2] = -(C*b1 - A*b2)*P;
-		vOut[3] = v[4] / J[4][3] - vOut[1] - vOut[2];
-	}
-	else
-	{
-		double A = J[1][1] - J[1][3];
-		double B = J[1][2] - J[1][3];
-		double C = J[2][1] - J[2][3];
-		double D = J[2][2] - J[2][3];
-
-		double b1 = v[1] - (J[1][0] * vOut[0] + J[1][3] * v[3] / J[3][3]);
-		double b2 = v[2] - v[4] * J[2][3] / J[3][3];
-
-		P = P / (armLen1 * armLen2 * s1);
-		vOut[1] = (D*b1 - B*b2)*P;
-		vOut[2] = -(C*b1 - A*b2)*P;
-		vOut[3] = v[3] / J[3][3] - vOut[1] - vOut[2];
-	}
-	return vOut;
-}
-double BizarreAvoid(double input)
-{
-	double temp;
-	if (abs(input) < 0.1)
-	{
-		temp = 0.1 * (1 - abs(input) / 0.1);
-	}
-	else
-	{
-		temp = 0;
-	}
-	return input / (pow(input, 2) + pow(E, -abs(input)) * pow(temp, 2));
-}
-double* GetContinueAngle(double* last, double* pos)
-{
-	double* res = new double[4];
-	for (int i = 0; i < 4; i++)
-	{
-		double temp1 = last[i] - floor(last[i] / (2 * PI)) * 2 * PI;
-		double temp2 = pos[i] - floor(pos[i] / (2 * PI)) * 2 * PI;
-		double delt = temp2 - temp1;
-		if (delt > PI)
-		{
-			delt -= 2 * PI;
-		}
-		if (delt < -PI)
-		{
-			delt += 2 * PI;
-		}
-		res[i] = last[i] + delt;
-	}
-	return res;
+    *pOutSize = resInfo.size();
+    return 0;
 }
 
-std::vector<ResInfo> AddZeroPoint(std::vector<ResInfo> infoList)
-{
-    std::vector<ResInfo> resList;
-	int count = infoList.size();
-    double** tempP = new double*[count];Q_ASSERT( NULL != tempP );
-    double** tempV = new double*[count];Q_ASSERT( NULL != tempV );
-	for (int index = 0; index < count; index++)
-	{
-        tempP[index] = new double[4];Q_ASSERT( NULL != tempP[index] );
-        tempV[index] = new double[4];Q_ASSERT( NULL != tempV[index] );
-	}
-	double* tempT = new double[count];
-    Q_ASSERT( tempT != NULL );
-	for (int i = 0; i < count; i++)
-	{
-		tempP[i][0] = infoList[i].P1;
-		tempP[i][1] = infoList[i].P2;
-		tempP[i][2] = infoList[i].P3;
-		tempP[i][3] = infoList[i].P4;
-		tempV[i][0] = infoList[i].V1;
-		tempV[i][1] = infoList[i].V2;
-		tempV[i][2] = infoList[i].V3;
-		tempV[i][3] = infoList[i].V4;
-		tempT[i] = infoList[i].T;
-	}
-	// ¥Ê‘⁄ÀŸ∂»∑¥œÚµ„µƒ ±º‰«¯º‰µƒ∏ˆ ˝
-	int tCount = 0;
-	// “ª∏ˆ ±º‰«¯º‰ƒ⁄ÀŸ∂»∑¥œÚµ„µƒ∏ˆ ˝
-	int tInnerCount = 0;
-	// ±£¥Ê“ª∏ˆ«¯º‰µƒ∂‡∏ˆ¡„µ„◊Û«¯º‰œ¬±Í
-	int* selZCP = new int[4];
-	// ±£¥Ê“ª∏ˆ«¯º‰µƒ◊Û±ﬂΩÁ÷¡∂‡∏ˆ¡„µ„«¯º‰µƒ±»¿˝
-	double* selSca = new double[4];
-	// º«¬ºπ˝¡„µ„«¯º‰◊Û±ﬂΩÁ‘™Àÿœ¬±Í
-	int* ZCP = new int[4 * count - 1];
-	// º«¬ºπ˝¡„µ„À˘‘⁄«¯º‰±»¿˝
-	double* sca = new double[4 * count - 1];
-	for (int k = 0; k < count - 1; k++)
-	{
-		for (int j = 0; j < 4; j++)
-		{
-			if (tempV[k][j] * tempV[k + 1][j] < 0)
-			{
-                if (abs(tempV[k][j]) < error )
-				{
-					tempV[k][j] = 0;
-				}
-                else if (abs(tempV[k + 1][j]) < error )
-				{
-					tempV[k + 1, j] = 0;
-				}
-				else
-				{
-					selZCP[tInnerCount] = k + 1;
-					selSca[tInnerCount] = abs(tempV[k][ j] / (tempV[k + 1][ j] - tempV[k][j]));
-					tCount++;
-					tInnerCount++;
-				}
-			}
-		}
-		// ¡„µ„≈≈–Ú£¨±£÷§ ±º‰Œ™µ›‘ˆπÿœµ£®sca”Î ±º‰≥…’˝±»πÿœµ£©
-		selSca = Rank(selSca,4);
-		for (int m = 0; m < tInnerCount; m++)
-		{
-			int n = tCount - tInnerCount + m;
-			ZCP[n] = selZCP[m];
-			sca[n] = selSca[4 - tInnerCount + m];
-		}
-		tInnerCount = 0;
-	}
-	double** resP = new double*[count + tCount];
-	double** resV = new double*[count + tCount];
-	for (int p = 0; p < count + tCount; p++)
-	{
-		resP[p] = new double[4];
-		resV[p] = new double[4];
-	}
-	double* resT = new double[count + tCount];
-    Q_ASSERT( NULL != resT );
-	// ¡„µ„¥¶≤Â÷µ
-	int index1 = 0, index2 = 0;
-	for (int a = 0; a < 4; a++)
-	{
-		for (int b = 0; b < count; b++)
-		{
-			// ±£¡Ù‘≠±æµƒ‘™Àÿ
-			resP[index1][a] = tempP[b][a];
-			resV[index1][a] = tempV[b][a];
-			if (a == 0)
-			{
-				resT[index1] = tempT[b];
-			}
-			index1++;
-			if (b < count - 1)
-			{
-				for (int c = 0; c < 4; c++)
-				{
-					if (b == ZCP[index2] - 1 && index2 <= count)
-					{
-						resP[index1][a] = tempP[b][a] * (1 - sca[index2]) + tempP[b + 1][a] * sca[index2];
-						resV[index1][a] = tempV[b][a] * (1 - sca[index2]) + tempV[b + 1][a] * sca[index2];
-						if (a == 1)
-						{
-							resT[index1] = tempT[b] * (1 - sca[index2]) + tempT[b + 1] * sca[index2];
-						}
-                        if (abs(resV[index1][a]) < error)
-						{
-							resV[index1, a] = 0;
-						}
-						index2++;
-						index1++;
-					}
-				}
-			}
-		}
-		index1 = 0;
-		index2 = 0;
-	}
-	int plen = count + tCount;
-	resList = DeleteRedundantPVT(resP, resV, resT,plen);
-	return resList;
-}
-double* Rank(double* input,int len)
-{
-	for (int i = 0; i < len; i++)
-	{
-		for (int j = i + 1; j < len; j++)
-		{
-			if (input[i] > input[j])
-			{
-				double temp = input[i];
-				input[i] = input[j];
-				input[j] = temp;
-			}
-		}
-	}
-	return input;
-}
-std::vector<ResInfo> DeleteRedundantPVT(double** inputP, double** inputV, double* inputT,int len)
-{
-    std::vector<ResInfo> lresInfo;
-	double** tempP = new double*[len];
-	double** tempV = new double*[len];
-	double* tempT = new double[len];
-	for (int i = 0; i < len; i++)
-	{
-		tempP[i] = new double[4];
-		tempV[i] = new double[4];
-	}	
-	// º«¬º ‰»Îæÿ’Û≤ª÷ÿ∏¥‘™Àÿµƒœ¬±Í
-	int index1 = 0;
-	// º«¬º ‰≥ˆæÿ’Ûµƒ‘™Àÿ∏ˆ ˝
-	int index2 = 0;
-	// º«¬ºœ‡¡⁄÷ÿ∏¥‘™Àÿµƒ∏ˆ ˝
-	int index3 = 1;
-	while (index1 <= len - 1)
-	{
-		if (index1 < len - 1)
-		{
-            while ( fabs(inputT[index1 + index3] - inputT[index1] ) < error )
-			{
-				index3++;
-			}
-		}
-		for (int i = 0; i < 4; i++)
-		{
-			tempP[index2][i] = inputP[index1][i];
-			tempV[index2][i] = inputV[index1][i];
-		}
-		tempT[index2] = inputT[index1];
-		index1 = index1 + index3;
-		index3 = 1;
-		index2++;
-	};
-	for (int j = 0; j < index2; j++)
-	{
-        ResInfo res;
-		res.P1 = tempP[j][0];
-		res.P2 = tempP[j][1];
-		res.P3 = tempP[j][2];
-		res.P4 = tempP[j][3];
-		res.V1 = tempV[j][0];
-		res.V2 = tempV[j][1];
-		res.V3 = tempV[j][2];
-		res.V4 =tempV[j][3];
-		res.T = tempT[j];
-        lresInfo.push_back(res);
-	}
-    return lresInfo;
-}
+int  MEGA_EXPORT getArmPosition_Data(
+    double* armLength, int armCount,
 
+    double* deltAngles, int angleCount,    //! angles: [0~3]
+    double* posRef,                        //!
+
+    double* posIn, int skipP,
+    double* vIn, int skipV,
+    double* tIn, int skipT,
+    int len,                               //! points len in
+
+    double *outRes,
+    int nCap
+    )
+{
+    //! slove
+    vector<ResInfo> resInfo;
+
+    int ret;
+    ret = sloveArmPosition( armLength, armCount,
+                            deltAngles, angleCount,
+                            posRef,
+
+                            posIn, skipP,
+                            vIn, skipV,
+                            tIn, skipT,
+                            len,
+                            resInfo );
+
+    if ( ret != 0 )
+    { return ret; }
+
+    //! checkSize
+    if ( nCap < resInfo.size() )
+    { return -2; }
+
+    //! export
+    for (int m = 0; m < resInfo.size(); m++)
+    {
+        //! p:rad
+        memcpy( outRes + m * 9, resInfo.at(m).P, 4 * sizeof(double) );
+
+        //! rad to deg
+        //! [0~3)
+        radToDeg(&outRes[m * 9], 4, &outRes[m * 9]);
+
+        //! compensation
+        vectorAdd(&outRes[m * 9], deltAngles, 4, &outRes[m * 9]);
+
+        //! v
+        memcpy( outRes + m * 9 + 4, resInfo.at(m).V, 4 * sizeof(double) );
+        //! v rad to deg
+        //! [4~7)
+        radToDeg(&outRes[m * 9 + 4], 4, &outRes[m * 9 + 4] );
+
+        //! t
+        outRes[m * 9 + 8] = resInfo[m].T;
+    }
+
+    return 0;
 }

@@ -27,18 +27,8 @@ int motionEdit::preCompileTrace()
 {
     mHandTpvGroup.clear();
 
-    //! pre build
-    if ( NULL != m_pJointsTrace )
-    {
-        delete []m_pJointsTrace;
-        m_pJointsTrace = NULL;
-    }
-
-    if ( NULL != m_pTracePoint )
-    {
-        delete []m_pTracePoint;
-        m_pTracePoint = NULL;
-    }
+    mTracePlan.clear();
+    mJointsPlan.clear();
 
     return 0;
 }
@@ -50,18 +40,13 @@ int motionEdit::postCompileTrace( int ret )
     {
         mHandTpvGroup.clear();
 
-        //! pre build
-        if ( NULL != m_pJointsTrace )
-        {
-            delete []m_pJointsTrace;
-            m_pJointsTrace = NULL;
-        }
-
-        if ( NULL != m_pTracePoint )
-        {
-            delete []m_pTracePoint;
-            m_pTracePoint = NULL;
-        }
+        mTracePlan.clear();
+        mJointsPlan.clear();
+        sysError( "Compile Fail" );
+    }
+    else
+    {
+        sysLog("Compile success", QString::number( mTracePlan.size()), QString::number(mJointsPlan.size()) );
     }
 
     emit sig_joints_trace_changed();
@@ -224,50 +209,57 @@ logDbg();
 //! x,y,z --> sub x,y,z
 int  motionEdit::planJointsTrace()
 {
+    //! fetch
     int dataSize = mMotionGroup->mItems.size();
+logDbg()<<dataSize;
+    xxxGroup<endPoint> endPoints;
 
-    //! data cache
-    endPoint *pEndPoints = new endPoint[ dataSize ];
-    if ( NULL == pEndPoints )
+    if (  0 != endPoints.alloc( dataSize ) )
     { return ERR_ALLOC_FAIL; }
-    memset( pEndPoints, 1, sizeof(endPoint)*dataSize );     //! interpd by all items
 
-    int count = mMotionGroup->fetech( &pEndPoints->datas + offsetof_double(endPoint,t), sizeof_double(endPoint),
-                                      &pEndPoints->datas + offsetof_double(endPoint,x), sizeof_double(endPoint),
-                                      &pEndPoints->datas + offsetof_double(endPoint,y), sizeof_double(endPoint),
-                                      &pEndPoints->datas + offsetof_double(endPoint,z), sizeof_double(endPoint),
+    //! fill 0
+    memset( endPoints.data(), 0, sizeof(endPoints)*dataSize );
+
+    //! interp fill
+    for ( int i = 0; i < dataSize; i++ )
+    { endPoints.data()[i].flagInterp = 1; }
+
+    double *pBase;
+    pBase = &endPoints.data()->datas;
+    int count = mMotionGroup->fetech( pBase + offsetof_double(endPoint,t), sizeof_double(endPoint),
+                                      pBase + offsetof_double(endPoint,x), sizeof_double(endPoint),
+                                      pBase + offsetof_double(endPoint,y), sizeof_double(endPoint),
+                                      pBase + offsetof_double(endPoint,z), sizeof_double(endPoint),
                                       dataSize );
     if ( count != dataSize )
-    {
-        delete []pEndPoints;
-        return ERR_FETCH_FAIL;
-    }
-
+    { return ERR_FETCH_FAIL; }
+for ( int i = 0; i < dataSize; i++ )
+{
+    logDbg()<<endPoints.data()[i].t<<endPoints.data()[i].x<<endPoints.data()[i].y<<endPoints.data()[i].z<<endPoints.data()[i].flagInterp;
+}
     //! trace plan
     int xyzResLen;
-    int ret = ns_pathplan::GetPvtLen( &pEndPoints->datas,
+    int ret = ns_pathplan::GetPvtLen( pBase,
                                       count,
                                       ui->spinStep->value(),
                                       ui->cmbInterp->currentIndex(),
                                       &xyzResLen );
     if ( ret != 0 )
-    {
-        delete []pEndPoints;
-        return ERR_FETCH_FAIL;
-    }
-    delete []pEndPoints;
+    { return ERR_PLAN_FAIL; }
 
     //! trace size
-    mTracePointSize = xyzResLen * sizeof(double) / sizeof(tracePoint);
-    if ( mTracePointSize > 1 )
+    int traceSize;
+    traceSize = xyzResLen * sizeof(double) / sizeof(tracePoint);
+    if ( traceSize > 1 )
     { }
     else
     { return ERR_PLAN_FAIL; }
-    m_pTracePoint = new tracePoint[ mTracePointSize ];
-    if ( NULL == m_pTracePoint )
-    { return ERR_ALLOC_FAIL; }
 
-    ret = ns_pathplan::GetPvtInfo( &m_pTracePoint->datas, xyzResLen );
+    mTracePlan.clear();
+    if ( 0 != mTracePlan.alloc( traceSize ) )
+    { return ERR_ALLOC_FAIL; }
+logDbg()<<traceSize;
+    ret = ns_pathplan::GetPvtInfo( &mTracePlan.data()->datas, xyzResLen );
     if ( ret != 0 )
     { return ERR_PLAN_FAIL; }
 
@@ -283,51 +275,66 @@ int  motionEdit::splitJointsTrace()
     //! arm tune
     VRobot *pRobot;
     pRobot = currentRobot();logDbg()<<pRobot->mRefAngles.size();
-    jointsAngle angle = {
-                            DEG_TO_RAD( pRobot->mRefAngles.at(0) ),
-                            DEG_TO_RAD( pRobot->mRefAngles.at(1) ),
-                            DEG_TO_RAD( pRobot->mRefAngles.at(2) ),
-                            DEG_TO_RAD( pRobot->mRefAngles.at(3) ),
-                            };
 
-    m_pJointsTrace = new jointsTrace[ mTracePointSize ];
-    if ( NULL == m_pJointsTrace )
+    mJointsPlan.clear();
+    if ( 0 != mJointsPlan.alloc( mTracePlan.size() ) )
     {
-        delete []m_pTracePoint;
-        m_pTracePoint = NULL;
         return ERR_ALLOC_FAIL;
     }
 
+    //! init angle
+    //! { 0, 90, -90, -90 };
+    jointsAngle refAngle={ pRobot->mRefAngles.at(0),
+                           pRobot->mRefAngles.at(1),
+                           pRobot->mRefAngles.at(2),
+                           pRobot->mRefAngles.at(3) };
+    jointsAngle convertAngle={ 0, 90, 180, 180 };
+    double armLength[]={ 247.75, 255, 250, 0, 0, 0 };
+logDbg()<<pRobot->mRefAngles.at(0)<<pRobot->mRefAngles.at(1)<<pRobot->mRefAngles.at(2)<<pRobot->mRefAngles.at(3);
     //! split
-    ret = ns_kinematic::GetArmPosition( (double*)(&angle),
+    int nRes;
+    ret = ns_kinematic::getArmPosition_Size(
 
-                    &m_pTracePoint->datas + offsetof_double( tracePoint, x ), sizeof_double(tracePoint),
-                    &m_pTracePoint->datas + offsetof_double( tracePoint, vx ),sizeof_double(tracePoint),
-                    &m_pTracePoint->datas + offsetof_double( tracePoint, t ), sizeof_double(tracePoint),
+                    armLength,sizeof_array(armLength),
+                    convertAngle.angles, 4,
+                    refAngle.angles,
 
-                    mTracePointSize,
-                    &m_pJointsTrace->datas
+                    &mTracePlan.data()->datas + offsetof_double( tracePoint, x ), sizeof_double(tracePoint),
+                    &mTracePlan.data()->datas + offsetof_double( tracePoint, vx ),sizeof_double(tracePoint),
+                    &mTracePlan.data()->datas + offsetof_double( tracePoint, t ), sizeof_double(tracePoint),
+
+                    mTracePlan.size(),
+
+                    &nRes
                     );
-    if ( ret <= 0 )
-    {
-        mJointsTraceSize = 0;
-        delete []m_pJointsTrace;
-        m_pJointsTrace = NULL;
-
-        delete []m_pTracePoint;
-        m_pTracePoint = NULL;
-
-        return ERR_PLAN_SPLIT_FAIL;
-    }
+    if ( ret == 0 && nRes > 0 )
+    {}
     else
-    {
-        mJointsTraceSize = ret;
+    { return ERR_PLAN_SLOVE_FAIL; }
 
-        //! rotate by cal
-        jointsRotate( m_pJointsTrace, mJointsTraceSize );
+    //! get data
+    if ( 0 != mJointsPlan.alloc( nRes ) )
+    { return ERR_ALLOC_FAIL; }
 
-        return 0;
-    }
+    ret = ns_kinematic::getArmPosition_Data(
+
+                armLength,sizeof_array(armLength),
+                convertAngle.angles, 4,
+                refAngle.angles,
+
+                &mTracePlan.data()->datas + offsetof_double( tracePoint, x ), sizeof_double(tracePoint),
+                &mTracePlan.data()->datas + offsetof_double( tracePoint, vx ),sizeof_double(tracePoint),
+                &mTracePlan.data()->datas + offsetof_double( tracePoint, t ), sizeof_double(tracePoint),
+
+                mTracePlan.size(),
+
+                &mJointsPlan.data()->datas,
+                mJointsPlan.size()
+                );
+    if ( ret != 0 )
+    { return ERR_PLAN_SLOVE_FAIL; }
+
+    return 0;
 }
 
 int motionEdit::buildHandTrace()

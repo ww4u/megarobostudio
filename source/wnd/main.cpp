@@ -74,73 +74,6 @@ int _main( int argc, char *argv[] )
 }
 
 
-#include "../../arith/pathplan/pathplan.h"
-#include "../../arith/kinematic/kinematic.h"
-int __main(int argc, char *argv[] )
-{
-    QApplication app( argc, argv );
-
-    //! test plan
-    endPoint points[]=
-    {
-        { 250,0,502.75,0,0,1,},
-        { 250,0,462.25,0,1,1,},
-    };
-
-    int resLen;
-    int ret = ns_pathplan::GetPvtLen( (double*)points, sizeof_array(points), 5, 0, &resLen );
-
-    logDbg()<<resLen<<ret;
-
-    double *pData = new double[ resLen ];
-    Q_ASSERT( NULL != pData );
-    ns_pathplan::GetPvtInfo( pData, resLen );
-
-    tracePoint *pTrace = (tracePoint*)pData;
-    int traceCount = resLen * sizeof(double)/ sizeof(tracePoint);
-    for( int i = 0; i < traceCount; i++ )
-    {
-        logDbg()<<pTrace[i].t<<pTrace[i].x<<pTrace[i].y<<pTrace[i].z<<pTrace[i].vx<<pTrace[i].vy<<pTrace[i].vz;
-    }
-
-    //! arm
-    jointsAngle angle={ 0, MATH_PI / 2, -MATH_PI / 2, -MATH_PI / 2 };
-    jointsTrace *pJointsTrace = new jointsTrace[ traceCount ];
-    Q_ASSERT( NULL != pJointsTrace );
-
-//    logDbg()<<offsetof(tracePoint,y);
-    logDbg()<<sizeof(tracePoint)/sizeof(double)<<traceCount<<sizeof(jointsTrace);
-
-    ret = ns_kinematic::GetArmPosition( (double*)(&angle),
-
-                    &pTrace->datas + offsetof( tracePoint, x )/sizeof(double), sizeof(tracePoint)/sizeof(double),
-                    &pTrace->datas + offsetof( tracePoint, vx )/sizeof(double),sizeof(tracePoint)/sizeof(double),
-                    &pTrace->datas + offsetof( tracePoint, t )/sizeof(double),sizeof(tracePoint)/sizeof(double),
-
-                    traceCount,
-                    (double*)pJointsTrace
-
-                    );
-    logDbg()<<ret;
-    for ( int i = 0; i < ret; i++ )
-    {
-        logDbg()<<i<<pJointsTrace[i].t
-                <<pJointsTrace[i].p[0]
-                <<pJointsTrace[i].p[1]
-                <<pJointsTrace[i].p[2]
-                <<pJointsTrace[i].p[3]
-                <<pJointsTrace[i].v[0]
-                <<pJointsTrace[i].v[1]
-                <<pJointsTrace[i].v[2]
-                <<pJointsTrace[i].v[3];
-    }
-
-    delete []pJointsTrace;
-    delete []pData;
-
-    return 0;
-}
-
 //#include "../ui/progressgroup.h"
 //int main(int argc, char *argv[])
 //{
@@ -169,7 +102,7 @@ int main(int argc, char *argv[])
     qRegisterMetaType<RoboMsg>("RoboMsg");
 
     //! --splash
-    QPixmap pixmap(":/res/image/splash.png");
+    QPixmap pixmap(":/res/image/logo/full.png");
     QSplashScreen splash(pixmap);
     splash.show();
     a.processEvents();

@@ -199,7 +199,7 @@ int deviceMRQ::loadOn()
     checked_call( getCLOCK_COUNT(&mCLOCK_COUNT) );
 
     //! motion 1--4
-    for ( int i = 0; i < 4; i++ )
+    for ( int i = 0; i < axes(); i++ )
     {
         checked_call( getMOTION_STATE( i, mMOTION_STATE+i) );
         checked_call( getMOTION_STATEREPORT( i, mMOTION_STATEREPORT+i) );
@@ -920,7 +920,7 @@ int deviceMRQ::rotate( int ax, float t, float ang )
 
 int deviceMRQ::fsmState( int ax )
 {
-    Q_ASSERT( ax >= 0 && ax < sizeof(mMrqFsms) );
+    Q_ASSERT( ax >= 0 && ax < i_sizeof(mMrqFsms) );
     return mMrqFsms[ax].state();
 }
 

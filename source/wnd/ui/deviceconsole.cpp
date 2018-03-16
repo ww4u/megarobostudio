@@ -29,6 +29,12 @@ scpiShell *deviceConsole::getShell()
     return m_pScpiShell;
 }
 
+void deviceConsole::setMrq( bool b )
+{
+    ui->btnCls->setVisible(b);
+    ui->btnRst->setVisible(b);
+}
+
 void deviceConsole::on_btnWrite_clicked()
 {   
     QString str = ui->comboBox->currentText();
@@ -81,7 +87,12 @@ void deviceConsole::on_btnRead_clicked()
 }
 void deviceConsole::on_btnRst_clicked()
 {
-    doWrite( "*RST" );
+    doWrite( "ROTATE 0,0.1,360" );
+}
+
+void deviceConsole::on_btnCls_clicked()
+{
+    doWrite( "ROTATE 0,0.1,-360" );
 }
 
 void deviceConsole::on_comboBox_editTextChanged(const QString &arg1)
@@ -96,8 +107,6 @@ void deviceConsole::doWrite( const QString &str )
     //! add to list
     ui->listWidget->addItem( str  );
     ui->listWidget->setCurrentRow( ui->listWidget->count()-1 );
-
-    //! \todo add to the combox list
 
     Q_ASSERT( NULL != m_pScpiShell );
 
@@ -114,3 +123,4 @@ void deviceConsole::on_comboBox_currentTextChanged(const QString &arg1)
 {
     ui->btnWrite->setEnabled( arg1.trimmed().length() > 0 );
 }
+

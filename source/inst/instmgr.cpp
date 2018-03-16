@@ -102,13 +102,18 @@ int InstMgr::probeCanBus()
 {
     int ret;
 
+    //! bus prop.
+    mCanBus.setPId( m_pMainModel->mSysPref.mPort );
+    mCanBus.setSpeed( m_pMainModel->mSysPref.mSpeed );
+    mCanBus.setWtInterval( m_pMainModel->mSysPref.mInterval );
+    mCanBus.setRdTmo( m_pMainModel->mSysPref.mTimeout );
+    mCanBus.setEnumTmo( m_pMainModel->mSysPref.mEnumerateTimeout );
+    mCanBus.setFailTry( m_pMainModel->mSysPref.mFailTryCnt );
+
+    //! open
     ret = mCanBus.open();
     if ( ret != 0 )
     { logDbg()<<ret; return ret; }
-
-    //! bus prop.
-    mCanBus.setWtInterval( m_pMainModel->mSysPref.mInterval );
-    mCanBus.setRdTmo( m_pMainModel->mSysPref.mTimeout );
 
     //! start the receive cache
     m_pReceiveCache->attachBus( &mCanBus );
@@ -271,6 +276,9 @@ void InstMgr::appendFileDeviceTree( DeviceTree &devTree )
         {
             Q_ASSERT( NULL != pRobo );
             pRobo->setInstMgr( this );
+
+            //! scpi open
+            pRobo->open();
         }
 
         //! attach bus
@@ -540,7 +548,7 @@ QString InstMgr::sendIdToName( int sendId )
             { return QString(); }
 
             //! check axes
-            if ( pMrq->getModel()->mCAN_SENDID == sendId )
+            if ( pMrq->getModel()->mCAN_SENDID == (quint32)sendId )
             { return pDev->name(); }
 
         }
@@ -639,7 +647,20 @@ void InstMgr::gcFileBus()
 
 scpiShell *InstMgr::findShell( const QString &name )
 {
+    //! device
     foreach( VRoboList *pRoboList, mDeviceTree )
+    {
+        Q_ASSERT( NULL != pRoboList );
+        foreach( scpiShell * pDev, *pRoboList )
+        {
+            Q_ASSERT( NULL != pDev );
+            if ( pDev->getName() == name )
+            { return pDev; }
+        }
+    }
+
+    //! robo
+    foreach( VRoboList *pRoboList, mFileDeviceTree )
     {
         Q_ASSERT( NULL != pRoboList );
         foreach( scpiShell * pDev, *pRoboList )

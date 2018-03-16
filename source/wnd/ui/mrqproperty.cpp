@@ -161,41 +161,41 @@ void mrqProperty::setupUi()
     //! list
     QListWidgetItem *pItem;
     pItem = new QListWidgetItem();
-    pItem->setText( tr("info") );
-    pItem->setIcon( QIcon(":/res/image/mrqinfo.png") );
+    pItem->setText( tr("Info") );
+    pItem->setIcon( QIcon(":/res/image/icon2/info.png") );
     ui->listWidget->addItem( pItem );
 
     QString str;
     for ( int i = 0; i < mAxes; i++ )
     {
         //! axes 0
-        str = QString("axes%1 1/2").arg(i+1);
+        str = QString("Axes%1 1/2").arg(i+1);
         pItem = new QListWidgetItem();
         pItem->setText( str );
-        pItem->setIcon( QIcon(":/res/image/mrqaxes.png") );
+        pItem->setIcon( QIcon(":/res/image/icon2/focus.png") );
         ui->listWidget->addItem( pItem );
 
         //! axes 1
-        str = QString("axes%1 2/2").arg(i+1);
+        str = QString("Axes%1 2/2").arg(i+1);
         pItem = new QListWidgetItem();
         pItem->setText( str );
-        pItem->setIcon( QIcon(":/res/image/mrqaxes.png") );
+        pItem->setIcon( QIcon(":/res/image/icon2/focus.png") );
         ui->listWidget->addItem( pItem );
     }
 
     pItem = new QListWidgetItem();
     pItem->setText( tr("IO") );
-    pItem->setIcon( QIcon(":/res/image/mrqio.png") );
+    pItem->setIcon( QIcon(":/res/image/icon2/link.png") );
     ui->listWidget->addItem( pItem );
 
     pItem = new QListWidgetItem();
     pItem->setText( tr("Sensor") );
-    pItem->setIcon( QIcon(":/res/image/mrqsensor.png") );
+    pItem->setIcon( QIcon(":/res/image/icon2/pick.png") );
     ui->listWidget->addItem( pItem );
 
     pItem = new QListWidgetItem();
     pItem->setText( tr("System") );
-    pItem->setIcon( QIcon(":/res/image/mrqsys.png") );
+    pItem->setIcon( QIcon(":/res/image/icon2/settings_light.png") );
     ui->listWidget->addItem( pItem );
 }
 
@@ -208,33 +208,4 @@ void mrqProperty::buildConnection()
 {
     connect( ui->listWidget, SIGNAL(currentRowChanged(int)),
                   ui->stackedWidget, SLOT(setCurrentIndex(int)));
-
-//    //! sub pages
-//    connect( this, SIGNAL(sigModelChanged(mcModelObj *)),
-//             m_pInfoPage,
-//             SLOT(mrq_model_changed(mcModelObj *)));
-
-//    for ( int i = 0; i < axesCnt; i++ )
-//    {
-//        connect( this, SIGNAL(sigModelChanged(mcModelObj *)),
-//                 m_pAxesPage[i],
-//                 SLOT(mrq_model_changed(mcModelObj *)));
-
-//        connect( this, SIGNAL(sigModelChanged(mcModelObj *)),
-//                 m_pAxesPage2[i],
-//                 SLOT(mrq_model_changed(mcModelObj *)));
-//    }
-
-//    connect( this, SIGNAL(sigModelChanged(mcModelObj *)),
-//             m_pIoPage,
-//             SLOT(mrq_model_changed(mcModelObj *)));
-
-//    connect( this, SIGNAL(sigModelChanged(mcModelObj *)),
-//             m_pSensorPage,
-//             SLOT(mrq_model_changed(mcModelObj *)));
-
-//    connect( this, SIGNAL(sigModelChanged(mcModelObj *)),
-//             m_pSysPage,
-//             SLOT(mrq_model_changed(mcModelObj *)));
-
 }

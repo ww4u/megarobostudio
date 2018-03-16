@@ -3,8 +3,19 @@
 #include "../../device/mrq/devicemrq_state.h"
 #include "../../device/board/_MRQ_enum.h"
 
+WorldPoint::WorldPoint( float px, float py, float pz, float phand )
+{
+    x = px;
+    y = py;
+    z = pz;
+
+    hand = phand;
+}
+
 RawRobo::RawRobo()
 {
+    mPlanStep = 5.0;  //! mm
+    mPlanMode = plan_linear;
 }
 
 void RawRobo::switchReset()
@@ -38,6 +49,11 @@ void RawRobo::switchEmergStop()
     m_pBus->write( id, mc_MOTION, sc_MOTION_SWITCH, mSubGroupId, (byte)MRQ_MOTION_SWITCH_EMERGSTOP );
 }
 
+void RawRobo::toState( int stat )
+{}
+int RawRobo::state()
+{ return mFsm.state(); }
+
 void RawRobo::attachCondition(
                               MegaDevice::RoboCondition *pCond )
 {
@@ -50,6 +66,16 @@ bool RawRobo::waitCondition(
     return mFsm.waitCondition( pCond, tmoms );
 }
 
+void RawRobo::setPlanStep( float step )
+{ mPlanStep = step; }
+float RawRobo::planStep()
+{ return mPlanStep; }
+
+void RawRobo::setPlanMode( eRoboPlanMode mode )
+{ mPlanMode = mode; }
+eRoboPlanMode RawRobo::getPlanMode()
+{ return mPlanMode; }
+
 //! state condition
 RawRoboStateCondition::RawRoboStateCondition( int stat )
                       : RoboStateCondition( -1, stat )
@@ -60,6 +86,7 @@ RawRoboFsm::RawRoboFsm()
     m_pRobot = NULL;
 
     mbRunReqed = false;
+    mState = 0;
 }
 RawRoboFsm::~RawRoboFsm()
 {
@@ -120,6 +147,7 @@ void RawRoboFsm::toState( int stat )
         Q_ASSERT( mStateMap[stat] != NULL );
 
         RoboFsm::toState( mStateMap[stat] );
+        mState = stat;
 
         //! subscribe to leader
         if ( m_pLeader != NULL )
@@ -128,10 +156,16 @@ void RawRoboFsm::toState( int stat )
         //! trigger condition
         if ( m_pCond != NULL )
         { m_pCond->trigger( (void*)stat ); logDbg()<<stat<<m_pNowState->name(); }
+
+        Q_ASSERT( NULL != m_pRobot );
+        m_pRobot->toState( stat );
     }
     else
     { Q_ASSERT(false); }
 }
+
+int RawRoboFsm::state()
+{ return mState; }
 
 void RawRoboFsm::attachRobot( RawRobo *pRobot )
 {
@@ -154,7 +188,8 @@ RawRoboUnit::RawRoboUnit( MegaDevice::RoboFsm *pFsm,
 
     rstState();
 }
-
+RawRoboUnit::~RawRoboUnit()
+{}
 void RawRoboUnit::toState( int stat )
 {
     selfFsm()->toState( stat );
@@ -165,6 +200,7 @@ void RawRoboUnit::toState( int stat )
                          stat );
 
     logDbg()<<selfFsm()->Robot()->name();
+
 }
 
 void RawRoboUnit::proc( int msg, int subAx, int para )

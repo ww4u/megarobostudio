@@ -147,9 +147,9 @@ QVariant scriptModel::data(const QModelIndex &index, int role) const
     {
         scriptNode *pNode = getItem( index );
         if ( pNode->getNodeType() == scriptNode::node_file )
-        { return (QVariant)QIcon(":/res/image/motionfile.png"); }
+        { return (QVariant)QIcon(":/res/image/icon/activity.png"); }
         else
-        { return (QVariant)QIcon(":/res/image/motionprj.png"); }
+        { return (QVariant)QIcon(":/res/image/icon/workbench.png"); }
     }
     else
     {}

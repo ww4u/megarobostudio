@@ -27,7 +27,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="../res/res.qrc">
-    <normaloff>:/res/image/motionprj.png</normaloff>:/res/image/motionprj.png</iconset>
+    <normaloff>:/res/image/logo/m.png</normaloff>:/res/image/logo/m.png</iconset>
   </property>
   <widget class="QWidget" name="centralWidget">
    <property name="autoFillBackground">
@@ -106,8 +106,15 @@
      <string>File(&amp;F)</string>
     </property>
     <widget class="QMenu" name="menuNew_N_2">
+     <property name="toolTip">
+      <string>Create a certain new file</string>
+     </property>
      <property name="title">
       <string>New(&amp;N)</string>
+     </property>
+     <property name="icon">
+      <iconset resource="../res/res.qrc">
+       <normaloff>:/res/image/icon/document.png</normaloff>:/res/image/icon/document.png</iconset>
      </property>
      <addaction name="actionNewMotion"/>
      <addaction name="actionNewPVT"/>
@@ -170,41 +177,76 @@
    <addaction name="menu"/>
   </widget>
   <action name="actionAbout">
+   <property name="icon">
+    <iconset resource="../res/res.qrc">
+     <normaloff>:/res/image/icon/feedback.png</normaloff>:/res/image/icon/feedback.png</iconset>
+   </property>
    <property name="text">
     <string>About(A)...</string>
    </property>
+   <property name="toolTip">
+    <string>About</string>
+   </property>
   </action>
   <action name="actionReset">
+   <property name="icon">
+    <iconset resource="../res/res.qrc">
+     <normaloff>:/res/image/icon2/repeal.png</normaloff>:/res/image/icon2/repeal.png</iconset>
+   </property>
    <property name="text">
+    <string>Reset(&amp;R)</string>
+   </property>
+   <property name="toolTip">
     <string>Reset</string>
    </property>
   </action>
   <action name="actionForceStop">
    <property name="icon">
     <iconset resource="../res/res.qrc">
-     <normaloff>:/res/image/forcestop.png</normaloff>:/res/image/forcestop.png</iconset>
+     <normaloff>:/res/image/icon/246.png</normaloff>:/res/image/icon/246.png</iconset>
    </property>
    <property name="text">
+    <string>Force Stop(&amp;F)</string>
+   </property>
+   <property name="toolTip">
     <string>Force Stop</string>
    </property>
   </action>
   <action name="actionOpen">
+   <property name="icon">
+    <iconset resource="../res/res.qrc">
+     <normaloff>:/res/image/icon/questions.png</normaloff>:/res/image/icon/questions.png</iconset>
+   </property>
    <property name="text">
     <string>Open(O)...</string>
+   </property>
+   <property name="toolTip">
+    <string>Open</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
    </property>
   </action>
   <action name="actionSave">
+   <property name="icon">
+    <iconset resource="../res/res.qrc">
+     <normaloff>:/res/image/icon/223.png</normaloff>:/res/image/icon/223.png</iconset>
+   </property>
    <property name="text">
     <string>Save(&amp;S)</string>
+   </property>
+   <property name="toolTip">
+    <string>Save</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+S</string>
    </property>
   </action>
   <action name="actionSave_As">
+   <property name="icon">
+    <iconset resource="../res/res.qrc">
+     <normaloff>:/res/image/icon/219.png</normaloff>:/res/image/icon/219.png</iconset>
+   </property>
    <property name="text">
     <string>Save As...</string>
    </property>
@@ -213,6 +255,10 @@
    </property>
   </action>
   <action name="actionExit">
+   <property name="icon">
+    <iconset resource="../res/res.qrc">
+     <normaloff>:/res/image/icon2/exit.png</normaloff>:/res/image/icon2/exit.png</iconset>
+   </property>
    <property name="text">
     <string>Exit</string>
    </property>
@@ -221,36 +267,69 @@
    </property>
   </action>
   <action name="actionpref">
+   <property name="icon">
+    <iconset resource="../res/res.qrc">
+     <normaloff>:/res/image/icon/205.png</normaloff>:/res/image/icon/205.png</iconset>
+   </property>
    <property name="text">
     <string>Attribute(&amp;A)...</string>
+   </property>
+   <property name="toolTip">
+    <string>Attribute</string>
    </property>
    <property name="shortcut">
     <string>Alt+F7</string>
    </property>
   </action>
   <action name="actionSave_Prj">
+   <property name="icon">
+    <iconset resource="../res/res.qrc">
+     <normaloff>:/res/image/icon/supply.png</normaloff>:/res/image/icon/supply.png</iconset>
+   </property>
    <property name="text">
     <string>Save Prj</string>
    </property>
   </action>
   <action name="actionSave_Prj_As">
+   <property name="icon">
+    <iconset resource="../res/res.qrc">
+     <normaloff>:/res/image/icon/supply.png</normaloff>:/res/image/icon/supply.png</iconset>
+   </property>
    <property name="text">
     <string>Save Prj As...</string>
    </property>
   </action>
   <action name="actionOpen_Prj">
+   <property name="icon">
+    <iconset resource="../res/res.qrc">
+     <normaloff>:/res/image/icon/03.png</normaloff>:/res/image/icon/03.png</iconset>
+   </property>
    <property name="text">
     <string>Open Prj...</string>
    </property>
   </action>
   <action name="actionImport_I">
+   <property name="icon">
+    <iconset resource="../res/res.qrc">
+     <normaloff>:/res/image/icon/218.png</normaloff>:/res/image/icon/218.png</iconset>
+   </property>
    <property name="text">
     <string>Import(&amp;I)...</string>
    </property>
+   <property name="toolTip">
+    <string>Import</string>
+   </property>
   </action>
   <action name="actionSave_All_A">
+   <property name="icon">
+    <iconset resource="../res/res.qrc">
+     <normaloff>:/res/image/icon/33.png</normaloff>:/res/image/icon/33.png</iconset>
+   </property>
    <property name="text">
     <string>Save All(&amp;A)</string>
+   </property>
+   <property name="toolTip">
+    <string>Save All</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+S</string>
@@ -260,49 +339,93 @@
    <property name="checkable">
     <bool>true</bool>
    </property>
+   <property name="icon">
+    <iconset resource="../res/res.qrc">
+     <normaloff>:/res/image/icon/browse.png</normaloff>:/res/image/icon/browse.png</iconset>
+   </property>
    <property name="text">
     <string>Spy(&amp;S)...</string>
+   </property>
+   <property name="toolTip">
+    <string>Spy</string>
    </property>
   </action>
   <action name="actionEvent_E">
    <property name="checkable">
     <bool>true</bool>
    </property>
+   <property name="icon">
+    <iconset resource="../res/res.qrc">
+     <normaloff>:/res/image/icon/flashlight.png</normaloff>:/res/image/icon/flashlight.png</iconset>
+   </property>
    <property name="text">
     <string>Event(&amp;E)...</string>
+   </property>
+   <property name="toolTip">
+    <string>Event</string>
    </property>
   </action>
   <action name="actionWindows_W">
    <property name="checkable">
     <bool>true</bool>
    </property>
+   <property name="icon">
+    <iconset resource="../res/res.qrc">
+     <normaloff>:/res/image/icon/order.png</normaloff>:/res/image/icon/order.png</iconset>
+   </property>
    <property name="text">
     <string>Windows(W)...</string>
    </property>
+   <property name="toolTip">
+    <string>Windows</string>
+   </property>
   </action>
   <action name="actionNewMotion">
+   <property name="icon">
+    <iconset resource="../res/res.qrc">
+     <normaloff>:/res/image/icon/36.png</normaloff>:/res/image/icon/36.png</iconset>
+   </property>
    <property name="text">
     <string>Motion</string>
    </property>
   </action>
   <action name="actionNewPVT">
+   <property name="icon">
+    <iconset resource="../res/res.qrc">
+     <normaloff>:/res/image/icon/document.png</normaloff>:/res/image/icon/document.png</iconset>
+   </property>
    <property name="text">
     <string>PVT</string>
    </property>
   </action>
   <action name="actionScene">
+   <property name="icon">
+    <iconset resource="../res/res.qrc">
+     <normaloff>:/res/image/icon/group.png</normaloff>:/res/image/icon/group.png</iconset>
+   </property>
    <property name="text">
     <string>Scene</string>
    </property>
   </action>
   <action name="actionProject">
+   <property name="icon">
+    <iconset resource="../res/res.qrc">
+     <normaloff>:/res/image/icon/manage.png</normaloff>:/res/image/icon/manage.png</iconset>
+   </property>
    <property name="text">
     <string>Project</string>
    </property>
   </action>
   <action name="actionDocs">
+   <property name="icon">
+    <iconset resource="../res/res.qrc">
+     <normaloff>:/res/image/icon/22.png</normaloff>:/res/image/icon/22.png</iconset>
+   </property>
    <property name="text">
-    <string>Document...</string>
+    <string>Document(&amp;D)...</string>
+   </property>
+   <property name="toolTip">
+    <string>Document</string>
    </property>
   </action>
  </widget>

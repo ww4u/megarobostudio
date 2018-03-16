@@ -71,7 +71,7 @@ void mrqInfo::deinitModel()
     }
 }
 
-void mrqInfo::updateData()
+void mrqInfo::updateUi()
 {
     if ( m_pMrqModel == NULL )
     { return; }
@@ -105,7 +105,7 @@ void mrqInfo::updateData()
 
 void mrqInfo::modelChanged()
 {
-    updateData();
+    updateUi();
 }
 
 

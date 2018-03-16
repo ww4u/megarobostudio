@@ -2,7 +2,6 @@ TEMPLATE=lib
 QT       += gui
 CONFIG += static
 
-
 TARGET = ../../../../lib/slide1
 
 OBJECTS_DIR = ../obj

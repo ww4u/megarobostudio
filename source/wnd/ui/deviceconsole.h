@@ -20,6 +20,8 @@ public:
     void setShell( scpiShell *pShell );
     scpiShell *getShell();
 
+    void setMrq( bool b );
+
 protected Q_SLOTS:
     void on_btnWrite_clicked();
     void on_btnRead_clicked();
@@ -28,6 +30,7 @@ private slots:
     void on_comboBox_editTextChanged(const QString &arg1);
 
     void on_btnRst_clicked();
+    void on_btnCls_clicked();
 
     void on_comboBox_currentTextChanged(const QString &arg1);
 

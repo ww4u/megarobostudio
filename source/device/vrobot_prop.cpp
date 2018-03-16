@@ -21,6 +21,8 @@ int VRobot::setAxes(int n)
     {
         m_pAxesWorkers[i].attachRobot( this, i );
     }
+
+    return 0;
 }
 int VRobot::getAxes()
 { return mAxes; }

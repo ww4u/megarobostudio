@@ -29,7 +29,7 @@ struct endPoint
             double x,y,z;
             double end;
             double t;
-            double _res[1];
+            double flagInterp;
         };
 
         double datas;
@@ -48,8 +48,55 @@ struct tracePoint
 
         double datas;
     };
+};
+
+template <typename T>
+class xxxGroup
+{
+protected:
+    int mSize;
+    T *mDatas;
+
+public:
+    void clear()
+    {
+        mSize = 0;
+        if ( NULL != mDatas )
+        {
+            delete []mDatas;
+            mDatas = NULL;
+        }
+    }
+    int size()
+    { return mSize; }
+    T *data()
+    { return mDatas; }
+
+    int alloc( int n )
+    {
+        Q_ASSERT( n > 0 );
+        mDatas = new T[ n ];
+        if ( NULL == mDatas )
+        { return -1; }
+
+        mSize = n;
+        return 0;
+    }
+
+public:
+    xxxGroup()
+    {
+        mSize = 0;
+        mDatas = NULL;
+    }
+
+    ~xxxGroup()
+    {
+        clear();
+    }
 
 };
+
 
 namespace ns_pathplan {
 

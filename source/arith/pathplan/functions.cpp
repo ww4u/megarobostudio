@@ -1,16 +1,13 @@
 // DllManager.cpp : 定义 DLL 应用程序的导出函数。
 
-#include "pathplan.h"
 
 #include "math.h"
 #include <vector>
 
-namespace ns_pathplan {
-
 //! only once
 #include "param.h"
 
-//获取轨迹规划的结果的长度
+// 获取轨迹规划的结果的长度
 // 输入: 
 // 1:pIn 输入的轨迹点集
 // 2:length 点的个数
@@ -24,6 +21,10 @@ MEGA_EXPORT int  GetPvtLen(double* pIn, int length, double pStep, int pMode, int
 	posIn = pIn;
 	step = pStep;
 	mode = pMode;
+
+    //! trim the dot
+    trimPoints( pIn, length );
+
 	CallRobot(length, resLength);
     return 0;
 }
@@ -77,11 +78,16 @@ void CallRobot(int len, int* resLength)
 		double delt[3] = { (pos[1].x - pos[0].x) / deltDis ,(pos[1].y - pos[0].y) / deltDis ,(pos[1].z - pos[0].z) / deltDis };
 		// 生成轨迹
 		CalStepTraj();
-		for (int k = 0; k < tempLen; k++)
+        int index = 0;
+        if(i >0)
+        {
+            index =1;
+        }
+        for (int k = index; k < tempLen; k++)
 		{
-			res.Px = tempP[k] * delt[0] + posIn[0];
-			res.Py = tempP[k] * delt[1] + posIn[1];
-			res.Pz = tempP[k] * delt[2] + posIn[2];
+            res.Px = tempP[k] * delt[0] + posIn[ i * 6 + 0 ];
+            res.Py = tempP[k] * delt[1] + posIn[ i * 6 + 1 ];
+            res.Pz = tempP[k] * delt[2] + posIn[ i * 6 + 2 ];
 			res.Vx = tempV[k] * delt[0];
 			res.Vy = tempV[k] * delt[1];
 			res.Vz = tempV[k] * delt[2];
@@ -947,6 +953,4 @@ double* SolAmountSolution(double* pIn, int plen, double* xIn, double* yIn, int y
 		tempT[0] = res[i];
 	}
 	return res;
-}
-
 }

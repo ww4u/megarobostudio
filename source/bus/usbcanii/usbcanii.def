@@ -1,0 +1,14 @@
+LIBRARY usbcanii
+;DESCRIPTION "usb can ii dll"
+EXPORTS
+	VCI_OpenDevice
+	VCI_CloseDevice
+	VCI_InitCAN
+
+	VCI_GetReceiveNum
+	VCI_ClearBuffer
+	VCI_StartCAN
+	VCI_Transmit
+
+	VCI_Receive
+	

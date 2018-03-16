@@ -2,14 +2,14 @@
 #define TPVGROUP_H
 
 #include <QtCore>
-#include <QAbstractTableModel>
+#include "megatablemodel.h"
 #include "tpvitem.h"
 
 //#include "../../intf/iserial.h"
 
 #include "scriptfile.h"
 
-class tpvGroup : public QAbstractTableModel, public scriptFile
+class tpvGroup : public MegaTableModel, public scriptFile
 {
     Q_OBJECT
 

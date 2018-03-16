@@ -14,12 +14,6 @@ roboMgr::roboMgr(QWidget *parent) :
 
 roboMgr::~roboMgr()
 {
-    //! delete on model obj
-//    foreach( robotBase *pRobo, mRobots )
-//    {
-//        delete pRobo;
-//    }
-
     delete_all( mRobots );
 
     delete ui;

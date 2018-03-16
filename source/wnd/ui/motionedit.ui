@@ -47,19 +47,43 @@
        </property>
        <property name="icon">
         <iconset resource="../res/res.qrc">
-         <normaloff>:/res/image/download.png</normaloff>:/res/image/download.png</iconset>
+         <normaloff>:/res/image/icon/218.png</normaloff>:/res/image/icon/218.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>24</width>
+         <height>24</height>
+        </size>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QLabel" name="label_2">
+       <property name="maximumSize">
+        <size>
+         <width>24</width>
+         <height>24</height>
+        </size>
+       </property>
        <property name="text">
-        <string>Loop</string>
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap resource="../res/res.qrc">:/res/image/icon/332.png</pixmap>
+       </property>
+       <property name="scaledContents">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QSpinBox" name="spinLoop">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="minimum">
         <number>1</number>
        </property>
@@ -78,7 +102,13 @@
        </property>
        <property name="icon">
         <iconset resource="../res/res.qrc">
-         <normaloff>:/res/image/play.png</normaloff>:/res/image/play.png</iconset>
+         <normaloff>:/res/image/icon/playon.png</normaloff>:/res/image/icon/playon.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>24</width>
+         <height>24</height>
+        </size>
        </property>
       </widget>
      </item>
@@ -94,6 +124,12 @@
         <iconset resource="../res/res.qrc">
          <normaloff>:/res/image/stop.png</normaloff>:/res/image/stop.png</iconset>
        </property>
+       <property name="iconSize">
+        <size>
+         <width>24</width>
+         <height>24</height>
+        </size>
+       </property>
       </widget>
      </item>
      <item>
@@ -103,7 +139,13 @@
        </property>
        <property name="icon">
         <iconset resource="../res/res.qrc">
-         <normaloff>:/res/image/dial.png</normaloff>:/res/image/dial.png</iconset>
+         <normaloff>:/res/image/icon/23.png</normaloff>:/res/image/icon/23.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>24</width>
+         <height>24</height>
+        </size>
        </property>
       </widget>
      </item>
@@ -115,39 +157,19 @@
       </widget>
      </item>
      <item>
-      <widget class="QToolButton" name="btnAdd">
-       <property name="toolTip">
-        <string>Insert a new item</string>
-       </property>
+      <widget class="QToolButton" name="toolButton">
        <property name="text">
-        <string>+</string>
+        <string>Build</string>
        </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QToolButton" name="btnDel">
-       <property name="toolTip">
-        <string>Remove the current item</string>
+       <property name="icon">
+        <iconset resource="../res/res.qrc">
+         <normaloff>:/res/image/icon/stealth.png</normaloff>:/res/image/icon/stealth.png</iconset>
        </property>
-       <property name="text">
-        <string>-</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QToolButton" name="btnClr">
-       <property name="toolTip">
-        <string>Clear all item</string>
-       </property>
-       <property name="text">
-        <string>Clear</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="Line" name="line_2">
-       <property name="orientation">
-        <enum>Qt::Vertical</enum>
+       <property name="iconSize">
+        <size>
+         <width>24</width>
+         <height>24</height>
+        </size>
        </property>
       </widget>
      </item>
@@ -164,7 +186,76 @@
        </property>
        <property name="icon">
         <iconset resource="../res/res.qrc">
-         <normaloff>:/res/image/plot.png</normaloff>:/res/image/plot.png</iconset>
+         <normaloff>:/res/image/icon/dynamic.png</normaloff>:/res/image/icon/dynamic.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>24</width>
+         <height>24</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="cmbExport">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>76</width>
+         <height>24</height>
+        </size>
+       </property>
+       <item>
+        <property name="text">
+         <string>Joints pvt</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../res/res.qrc">
+          <normaloff>:/res/image/icon/36.png</normaloff>:/res/image/icon/36.png</iconset>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Hand pvt</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../res/res.qrc">
+          <normaloff>:/res/image/icon/36.png</normaloff>:/res/image/icon/36.png</iconset>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Hand t-xyz</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../res/res.qrc">
+          <normaloff>:/res/image/icon/409.png</normaloff>:/res/image/icon/409.png</iconset>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="btnExport">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>...</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../res/res.qrc">
+         <normaloff>:/res/image/icon/219.png</normaloff>:/res/image/icon/219.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>24</width>
+         <height>24</height>
+        </size>
        </property>
       </widget>
      </item>
@@ -172,6 +263,9 @@
       <spacer name="horizontalSpacer">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeType">
+        <enum>QSizePolicy::Expanding</enum>
        </property>
        <property name="sizeHint" stdset="0">
         <size>
@@ -198,6 +292,73 @@
       <number>0</number>
      </property>
      <item>
+      <widget class="QToolButton" name="btnAdd">
+       <property name="toolTip">
+        <string>Insert a new item</string>
+       </property>
+       <property name="text">
+        <string>+</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../res/res.qrc">
+         <normaloff>:/res/image/icon/addition.png</normaloff>:/res/image/icon/addition.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>24</width>
+         <height>24</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="btnDel">
+       <property name="toolTip">
+        <string>Remove the current item</string>
+       </property>
+       <property name="text">
+        <string>-</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../res/res.qrc">
+         <normaloff>:/res/image/icon/delete.png</normaloff>:/res/image/icon/delete.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>24</width>
+         <height>24</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="btnClr">
+       <property name="toolTip">
+        <string>Clear all item</string>
+       </property>
+       <property name="text">
+        <string>Clear</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../res/res.qrc">
+         <normaloff>:/res/image/icon/trash.png</normaloff>:/res/image/icon/trash.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>24</width>
+         <height>24</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="Line" name="line_2">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QLabel" name="label_3">
        <property name="text">
         <string>Step(mm)</string>
@@ -206,6 +367,12 @@
      </item>
      <item>
       <widget class="QDoubleSpinBox" name="spinStep">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="decimals">
         <number>3</number>
        </property>
@@ -223,6 +390,15 @@
      </item>
      <item>
       <widget class="QComboBox" name="cmbInterp">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <item>
         <property name="text">
          <string>Line</string>
@@ -248,9 +424,19 @@
       </widget>
      </item>
      <item>
-      <widget class="QToolButton" name="toolButton">
+      <widget class="QToolButton" name="btnPref">
        <property name="text">
-        <string>Build</string>
+        <string>...</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../res/res.qrc">
+         <normaloff>:/res/image/icon/205.png</normaloff>:/res/image/icon/205.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>24</width>
+         <height>24</height>
+        </size>
        </property>
       </widget>
      </item>
@@ -271,6 +457,9 @@
    </item>
    <item>
     <widget class="QTableView" name="tableView">
+     <property name="frameShape">
+      <enum>QFrame::NoFrame</enum>
+     </property>
      <property name="verticalScrollBarPolicy">
       <enum>Qt::ScrollBarAsNeeded</enum>
      </property>

@@ -78,7 +78,7 @@ public:
     void setAgentAxes( int axes );
     int getAgentAxes();
 
-    void setAgent( const QString &name, int axes );
+    void setAgent( const QString &name, int axes = -1 );
 
     void setChildAgents( const QStringList &childAgents );
     QStringList childAgents();

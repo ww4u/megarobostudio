@@ -25,7 +25,7 @@ protected:
     void deinitModel();
 
 public:
-    void updateData();
+    void updateUi();
 
 protected:
     virtual void modelChanged();

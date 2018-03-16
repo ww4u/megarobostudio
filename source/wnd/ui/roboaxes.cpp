@@ -11,6 +11,12 @@ roboAxes::roboAxes(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    mJointLabels[0] = ui->label_11;
+    mJointLabels[1] = ui->label_12;
+    mJointLabels[2] = ui->label_13;
+    mJointLabels[3] = ui->label_14;
+    mJointLabels[4] = ui->label_15;
+
     setModal( false );
 
     m_pRobo = NULL;
@@ -136,7 +142,7 @@ void roboAxes::buildConnection()
 }
 
 //! convert the time by t
-#define time_to_s( t )  (t/1000)
+#define time_to_s( t )  ((t)/1000.0)
 void roboAxes::rotate( int jointId,
                        float t1, float a1,
                        float t2, float a2 )
@@ -151,9 +157,19 @@ void roboAxes::rotate( int jointId,
     { return; }
 
     logDbg()<<subAx<<pMrq->name();
+
+    //! only one time
+    pMrq->setMOTIONPLAN_CYCLENUM( subAx, 1 );
+
     pMrq->pvtWrite( subAx,
                     time_to_s(t1), a1,
                     time_to_s(t2), a2
                     );
     pMrq->run( subAx );
+
+    //! info
+    Q_ASSERT( jointId < sizeof_array( mJointLabels) );
+    QString strInfo;
+    strInfo = QString( "%1ms %2%3" ).arg( (t2-t1) ).arg( a2-a1 ).arg(QChar(0x00B0));
+    mJointLabels[ jointId ]->setText( strInfo );
 }

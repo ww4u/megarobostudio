@@ -48,7 +48,7 @@ static scpi_result_t _scpi_rotate( scpi_t * context )
     // read
     DEF_LOCAL_VAR();
 
-    int val1, ret;
+    int val1;
     float val2, val3;
 
     if ( SCPI_RES_OK != SCPI_ParamInt32( context, &val1, true ) )
@@ -60,7 +60,7 @@ static scpi_result_t _scpi_rotate( scpi_t * context )
     if ( SCPI_RES_OK != SCPI_ParamFloat( context, &val3, true ) )
     { return SCPI_RES_ERR; }
 
-    ret = ((MegaDevice::deviceMRQ*)context->user_context)->rotate( val1, val2, val3 );
+    ((MegaDevice::deviceMRQ*)context->user_context)->rotate( val1, val2, val3 );
 
     return SCPI_RES_OK;
 }
@@ -87,13 +87,13 @@ static scpi_command_t _mrq_scpi_cmds[]=
 {
     #include "../board/_MRQ_scpi_cmd.h"
 
-    {"*IDN?", _scpi_idn, 0 },
+    CMD_ITEM( "*IDN?", _scpi_idn ),
 
-    {"TEST:ADD", _scpi_testAdd, 0 },
+    CMD_ITEM( "TEST:ADD", _scpi_testAdd ),
 
-    {"ROTATE", _scpi_rotate },
+    CMD_ITEM( "ROTATE", _scpi_rotate ),
 
-    {"FSMSTATE?", _scpi_fsmState },
+    CMD_ITEM( "FSMSTATE?", _scpi_fsmState ),
 
     SCPI_CMD_LIST_END
 };

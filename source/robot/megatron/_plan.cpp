@@ -1,0 +1,148 @@
+#include "megatron.h"
+
+
+
+int robotMegatron::buildTrace( WorldPoint &pt1, WorldPoint &pt2, float dt,
+                               xxxGroup<jointsTrace> &jointsPlan )
+{
+    int ret;
+
+    xxxGroup<tracePoint> tracePlan;
+    ret = planTrace( pt1, pt2, dt, tracePlan );
+    if ( ret != 0 )
+    { return ret; }
+
+    ret = splitTrace( tracePlan, jointsPlan );
+    if ( ret != 0 )
+    { return ret; }
+
+    return 0;
+}
+
+int robotMegatron::planTrace( WorldPoint &pt1,
+          WorldPoint &pt2,
+          float dt,
+          xxxGroup<tracePoint> &tracePlan
+          )
+{
+    xxxGroup<endPoint> endPoints;
+
+    if ( 0 != endPoints.alloc( 2 ) )
+    { return ERR_ALLOC_FAIL; }
+
+    //! fill 0
+    memset( endPoints.data(), 0, sizeof(endPoints)*2 );
+
+    //! interp fill
+    for ( int i = 0; i < 2; i++ )
+    { endPoints.data()[i].flagInterp = 1; }
+
+    //! fill data
+    endPoints.data()[0].x = pt1.x;
+    endPoints.data()[0].y = pt1.y;
+    endPoints.data()[0].z = pt1.z;
+    endPoints.data()[0].t = 0;
+
+    endPoints.data()[1].x = pt2.x;
+    endPoints.data()[1].y = pt2.y;
+    endPoints.data()[1].z = pt2.z;
+    endPoints.data()[1].t = dt;
+
+    int xyzResLen;
+    int ret = ns_pathplan::GetPvtLen( &endPoints.data()->datas,
+                                      2,
+                                      mPlanStep,
+                                      mPlanMode,
+                                      &xyzResLen );
+    if ( ret != 0 )
+    { return ERR_PLAN_FAIL; }
+
+    int traceSize;
+    traceSize = xyzResLen * sizeof(double) / sizeof(tracePoint);
+    if ( traceSize > 1 )
+    { }
+    else
+    { return ERR_PLAN_FAIL; }
+
+    tracePlan.clear();
+    if ( 0 != tracePlan.alloc( traceSize ) )
+    { return ERR_ALLOC_FAIL; }
+
+    ret = ns_pathplan::GetPvtInfo( &tracePlan.data()->datas, xyzResLen );
+    if ( ret != 0 )
+    { return ERR_PLAN_FAIL; }
+
+    return 0;
+}
+
+#define ref_angle(id)   mRefAngles.at(id)
+#define rot_angle(id)   mRotateAngles.at(id)
+#define arm_len(id)     mArmLengths.at(id)
+
+#define ref_angles( id1,id2,id3,id4 )   ref_angle( id1 ),\
+                                        ref_angle( id2 ),\
+                                        ref_angle( id3 ),\
+                                        ref_angle( id4 ),
+#define rot_angles( id1,id2,id3,id4 )   rot_angle( id1 ),\
+                                        rot_angle( id2 ),\
+                                        rot_angle( id3 ),\
+                                        rot_angle( id4 ),
+#define arm_lens( id1,id2,id3,id4,id5,id6 )     arm_len( id1 ),\
+                                                arm_len( id2 ),\
+                                                arm_len( id3 ),\
+                                                arm_len( id4 ),\
+                                                arm_len( id5 ),\
+                                                arm_len( id6 ),
+
+int robotMegatron::splitTrace( xxxGroup<tracePoint> &tracePoints,
+           xxxGroup<jointsTrace> &traceJoints )
+{
+    jointsAngle refAngle={ ref_angles(0,1,2,3) };       //! \todo ref angle by now
+    jointsAngle convertAngle={ rot_angles(0,1,2,3) };
+    double armLength[]={ arm_lens(0,1,2,3,4,5) };
+
+    //! size
+    int ret, nRes;
+    ret = ns_kinematic::getArmPosition_Size(
+
+                    armLength,sizeof_array(armLength),
+                    convertAngle.angles, sizeof_array(convertAngle.angles),
+                    refAngle.angles,
+
+                    &tracePoints.data()->datas + offsetof_double( tracePoint, x ), sizeof_double(tracePoint),
+                    &tracePoints.data()->datas + offsetof_double( tracePoint, vx ),sizeof_double(tracePoint),
+                    &tracePoints.data()->datas + offsetof_double( tracePoint, t ), sizeof_double(tracePoint),
+
+                    tracePoints.size(),
+
+                    &nRes
+                    );
+    if ( ret == 0 && nRes > 0 )
+    {}
+    else
+    { return ERR_PLAN_SLOVE_FAIL; }
+
+    //! data
+    if ( 0 != traceJoints.alloc( nRes ) )
+    { return ERR_ALLOC_FAIL; }
+
+    ret = ns_kinematic::getArmPosition_Data(
+
+                armLength,sizeof_array(armLength),
+                convertAngle.angles, sizeof_array(convertAngle.angles),
+                refAngle.angles,
+
+                &tracePoints.data()->datas + offsetof_double( tracePoint, x ), sizeof_double(tracePoint),
+                &tracePoints.data()->datas + offsetof_double( tracePoint, vx ),sizeof_double(tracePoint),
+                &tracePoints.data()->datas + offsetof_double( tracePoint, t ), sizeof_double(tracePoint),
+
+                tracePoints.size(),
+
+                &traceJoints.data()->datas,
+                traceJoints.size()
+                );
+    if ( ret != 0 )
+    { return ERR_PLAN_SLOVE_FAIL; }
+
+    return 0;
+}

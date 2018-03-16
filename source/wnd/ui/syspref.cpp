@@ -3,13 +3,14 @@
 
 #include "../../../include/mcstd.h"
 
+
+
 sysPref::sysPref(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::sysPref)
 {
     ui->setupUi(this);
 
-    ui->cmbSpeed->setValidator( new QIntValidator(125000,1000000,this) );
     ui->cmbTimeout->setValidator( new QIntValidator( time_ms(1),time_s(1),this) );
     ui->cmbInterval->setValidator( new QIntValidator( time_us(100), time_ms(100), this) );
 
@@ -20,7 +21,6 @@ sysPref::sysPref(QWidget *parent) :
     ui->cmbSendTo->setValidator( pIntValidator );
     ui->cmbRecvFrom->setValidator( pIntValidator );
     ui->cmbRecvTo->setValidator( pIntValidator );
-
 }
 
 sysPref::~sysPref()
@@ -42,7 +42,7 @@ modelSysPref sysPref::getPref()
 
 void sysPref::updateUi()
 {
-    ui->cmbPort->setCurrentIndex( mPref.mPort );
+    ui->cmbPort->setCurrentIndex( mPref.mPort ); on_cmbPort_currentIndexChanged( mPref.mPort );
     ui->cmbSpeed->setCurrentText( QString::number(mPref.mSpeed) );
     ui->cmbTimeout->setCurrentText( QString::number(mPref.mTimeout) );
     ui->cmbInterval->setCurrentText( QString::number(mPref.mInterval) );
@@ -127,4 +127,30 @@ void sysPref::on_buttonBox_clicked(QAbstractButton *button)
     {
         updateData();
     }
+}
+
+void sysPref::on_cmbPort_currentIndexChanged(int index)
+{
+    if ( index == 0 )
+    {
+         ui->labelCanPic->setPixmap( QPixmap(QString::fromUtf8(":/res/image/megacan.png")) );
+    }
+    else if ( index == 1 )
+    {
+        ui->labelCanPic->setPixmap( QPixmap(QString::fromUtf8(":/res/image/can2.png")) );
+    }
+    else
+    {}
+}
+
+void sysPref::on_btnDetail_clicked()
+{
+    QStringList args;
+    QString str;
+    str = QCoreApplication::applicationDirPath() + QStringLiteral("/doc/aggrement.txt");
+    str.replace("/","\\");
+    args<<str;
+    //! \todo linux
+    logDbg()<<str;
+    QProcess::execute( "explorer.exe", args );
 }

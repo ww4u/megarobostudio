@@ -8,11 +8,15 @@
 #include "../../model/tpvgroup.h"
 #include "tableedit.h"
 #include "axesknob.h"
+#include "tpvplot.h"
+
+#include "pvtpref.h"
 
 namespace Ui {
 class pvtEdit;
 }
 
+#define tpv_type    double
 class pvtEdit :  public tableEdit
 {
     Q_OBJECT
@@ -45,6 +49,7 @@ protected:
     virtual void context_remove();
     virtual void context_add_before();
     virtual void context_add_below();
+    virtual void context_clear();
 
     int postDownload( appMsg msg, void *pPara );
     void beginDownload( void *pPara);
@@ -61,7 +66,20 @@ protected:
 
     QProgressDialog *progress();
 
+    //! dot->line
+    int buildLine( );
+
+    void gcLine();
+    int  checkLine();
+    int  compileLine();
+
+    void updatePlot();
+
+Q_SIGNALS:
+    void sigLineChanged();
+
 protected Q_SLOTS:
+    void on_btnBuild_clicked();     //! build line
 
     void on_btnDown_clicked();
     void on_btnStart_clicked();
@@ -76,6 +94,11 @@ protected Q_SLOTS:
     void slot_download_cancel();
 
     void on_spinLoop_valueChanged(int arg1);
+    void on_btnPref_clicked();
+
+    void slot_data_changed();
+    void slot_line_changed();
+
 
 private:
     Ui::pvtEdit *ui;
@@ -84,9 +107,15 @@ private:
     QProgressDialog *m_pProgress;
     axesKnob *m_pWndKnob;
 
+    tpvPlot *m_pPlot;
+
     int mCurT, mCurP, mCurV;
     int mTStep, mPStep;
-};
 
+    QList< QPointF > mTPs;
+    QList< QPointF > mTVs;
+
+    modelPvtPref mPvtPref;
+};
 
 #endif // PVTEDIT_H

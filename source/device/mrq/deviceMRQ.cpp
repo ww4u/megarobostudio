@@ -6,6 +6,8 @@
 #include "../../app/dpcobj.h"
 #endif
 
+#define ANGLE_TO_DEG( angle )   (360.0f*angle)/(1<<18)
+
 namespace MegaDevice
 {
 
@@ -160,7 +162,7 @@ MRQ_model *deviceMRQ::getModel()
 }
 
 //! upload all data
-int deviceMRQ::loadOn()
+int deviceMRQ::uploadSetting()
 {
     int ret;
 
@@ -367,6 +369,7 @@ int deviceMRQ::loadOn()
         checked_call( getISOLATOROUTPUT_RESPONSE( (MRQ_ISOLATOROUTPUT_STATE)i, mISOLATOROUTPUT_RESPONSE + i) );
     }
 
+    //! sensor uart
     for ( int i = 0; i < 2; i++ )
     {
         checked_call( getSENSORUART_BAUD( (MRQ_SENSORUART_BAUD)i, mSENSORUART_BAUD + i) );
@@ -377,9 +380,10 @@ int deviceMRQ::loadOn()
         checked_call( getSENSORUART_STOPBIT( (MRQ_SENSORUART_BAUD)i, mSENSORUART_STOPBIT + i) );
     }
 
+    //! uart, s[4]
     for( int i = 0; i < 2; i++ )
     {
-        for ( int j = 0; j < 2; j++ )
+        for ( int j = 0; j < axes(); j++ )
         {
             checked_call( getSENSORUART_STATE( (MRQ_SENSORUART_BAUD)i, (MRQ_SENSORUART_STATE_1)j, mSENSORUART_STATE[i] + j) );
             checked_call( getSENSORUART_SOF( (MRQ_SENSORUART_BAUD)i, (MRQ_SENSORUART_STATE_1)j, mSENSORUART_SOF[i] + j) );
@@ -654,6 +658,21 @@ QString deviceMRQ::loadBtVer()
     }
 
     return mBtVer;
+}
+
+//! [0~360)
+float deviceMRQ::getAngle( int ax )
+{
+    int ret;
+    quint32 xangle;
+
+    ret = getREPORT_DATA( ax, MRQ_REPORT_STATE_XANGLE, &xangle );
+    if ( ret != 0 )
+    { return -1; }
+    else
+    {
+        return ANGLE_TO_DEG( xangle );
+    }
 }
 
 int deviceMRQ::loadTpvCap()

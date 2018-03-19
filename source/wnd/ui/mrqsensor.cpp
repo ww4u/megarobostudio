@@ -73,7 +73,37 @@ int mrqSensor::apply()
 }
 
 int mrqSensor::updateUi()
-{ return 0; }
+{
+    //! update by uart && s
+    int uartId, sId;
+
+    uartId = ui->cmbPort->currentIndex();
+    sId = ui->cmbSensor->currentIndex();
+
+    //! get device
+    MegaDevice::deviceMRQ *pDevice;
+    pDevice = getDevice();
+    Q_ASSERT( NULL != pDevice );
+
+    Q_ASSERT( uartId < sizeof_array(pDevice->mSENSORUART_BAUD) );
+    Q_ASSERT( sId < sizeof_array(pDevice->mSENSORUART_STATE[0]) );
+
+    MegaDevice::MRQ_model *pModel = pDevice->getModel();
+
+    ui->cmbBaud->setCurrentIndex(  pModel->mSENSORUART_BAUD[uartId]  );
+    ui->cmbDataLen->setCurrentIndex( pModel->mSENSORUART_WORDLEN[uartId] );
+    ui->cmbParity->setCurrentIndex( pModel->mSENSORUART_PARITY[uartId] );
+    ui->cmbStop->setCurrentIndex( pModel->mSENSORUART_STOPBIT[uartId] );
+    ui->cmbFlow->setCurrentIndex( pModel->mSENSORUART_FLOWCTL[uartId] );
+
+    ui->chkSensor->setChecked( pModel->mSENSORUART_STATE[uartId][sId] );
+    ui->spinSof->setValue( pModel->mSENSORUART_SOF[uartId][sId] );
+    ui->spinFrameLen->setValue( pModel->mSENSORUART_FRAMELEN[uartId][sId] );
+    ui->spinReceiveLen->setValue( pModel->mSENSORUART_RECEIVENUM[uartId][sId] );
+    ui->spinInvterval->setValue( pModel->mSENSORUART_SWITCHTIME[uartId][sId]*interval_unit_time );
+
+    return 0;
+}
 
 void mrqSensor::on_btnApply_clicked()
 {
@@ -85,4 +115,14 @@ void mrqSensor::on_btnApply_clicked()
     { sysError( "Sensor apply fail" ); }
     else
     { sysLog( "Sensor apply success" ); }
+}
+
+void mrqSensor::on_cmbPort_currentIndexChanged(int index)
+{
+    updateUi();
+}
+
+void mrqSensor::on_cmbSensor_currentIndexChanged(int index)
+{
+    updateUi();
 }

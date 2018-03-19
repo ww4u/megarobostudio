@@ -36,6 +36,7 @@
 #include "axesconnection.h"
 
 #include "warnprompt.h"
+#include "anglemonitor.h"
 
 //! models
 #include "../../model/mcmodel.h"
@@ -190,6 +191,8 @@ private slots:
 
     void on_actionReset_triggered();
 
+    void on_actionAngle_A_triggered();
+
 private:
     //! uis
     Ui::MainWindow *ui;
@@ -231,6 +234,9 @@ private:
 
     //! warn prompt
     WarnPrompt *m_pWarnPrompt;
+
+    //! angle monitor
+    AngleMonitor *m_pAngleMonitor;
 
     //! interrupt
     interruptThread *m_pInterruptThread;

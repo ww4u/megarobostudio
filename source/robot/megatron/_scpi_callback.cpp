@@ -76,6 +76,26 @@ static scpi_result_t _scpi_fsmState( scpi_t * context )
     return SCPI_RES_OK;
 }
 
+static scpi_result_t _scpi_pose( scpi_t * context )
+{
+    DEF_LOCAL_VAR();
+    DEF_ROBO();
+
+    WorldPoint pose;
+
+    int ret = pRobo->nowPose( pose );
+    if ( ret != 0 )
+    { return SCPI_RES_ERR; }
+
+    //! x,y,z,h
+    SCPI_ResultInt32( context, pose.x );
+    SCPI_ResultInt32( context, pose.y );
+    SCPI_ResultInt32( context, pose.z );
+    SCPI_ResultInt32( context, pose.hand );
+
+    return SCPI_RES_OK;
+}
+
 static scpi_result_t _scpi_test1( scpi_t * context )
 {
     DEF_LOCAL_VAR();
@@ -104,6 +124,7 @@ static scpi_command_t _scpi_cmds[]=
     CMD_ITEM( "MOVE", _scpi_move ),
 
     CMD_ITEM( "STATE?", _scpi_fsmState ),
+    CMD_ITEM( "POSE?", _scpi_pose ),
 
     CMD_ITEM( "TEST1", _scpi_test1 ),
     CMD_ITEM( "TEST2", _scpi_test2 ),

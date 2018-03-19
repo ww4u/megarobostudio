@@ -7,6 +7,7 @@
 #include "../../bus/filebus.h"
 
 
+
 MainWindow::MainWindow(dpcObj *pObj, QWidget *parent) :
     QMainWindow(parent),
      m_pDpcObj(pObj)
@@ -67,6 +68,7 @@ void MainWindow::init()
 
     m_pDlgWndList = NULL;
     m_pWarnPrompt = NULL;
+    m_pAngleMonitor = NULL;
 
     m_pInterruptThread = NULL;
 }
@@ -329,6 +331,9 @@ void MainWindow::setupData()
 
 void MainWindow::setupService()
 {
+    //! load
+    mMcModel.postload();
+
     //! thread
     m_pInterruptThread = new interruptThread();
     Q_ASSERT( NULL != m_pInterruptThread );
@@ -951,6 +956,23 @@ void MainWindow::on_actionReset_triggered()
     { m_pDeviceMgr->m_pMgr->hardReset(); }
 }
 
+void MainWindow::on_actionAngle_A_triggered()
+{
+    if ( NULL == m_pAngleMonitor )
+    {
+        m_pAngleMonitor = new AngleMonitor(this);
+    }
 
+    //! fail to open window
+    if ( NULL == m_pAngleMonitor )
+    { return; }
 
+    m_pAngleMonitor->show();
+    //! set connection
 
+    QStringList strList = mMcModel.m_pInstMgr->getChans();
+
+    m_pAngleMonitor->setModel( &mMcModel );
+    m_pAngleMonitor->setConnections( strList );
+
+}

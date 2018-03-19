@@ -94,3 +94,15 @@ int robotMegatron::moveTest( WorldPoint &pt1,
 
     return 0;
 }
+
+int robotMegatron::nowPose( WorldPoint &pos )
+{
+    //! \todo get x,y,z by angles
+
+    pos.hand = 0;
+    pos.x = 0;
+    pos.y = 0;
+    pos.z = 0;
+
+    return 0;
+}

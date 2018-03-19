@@ -43,6 +43,7 @@ static scpi_result_t _scpi_idn( scpi_t * context )
 }
 
 //! int, float, float
+//! ax, t, angle
 static scpi_result_t _scpi_rotate( scpi_t * context )
 {
     // read
@@ -83,6 +84,25 @@ static scpi_result_t _scpi_fsmState( scpi_t * context )
     return SCPI_RES_OK;
 }
 
+//! int
+static scpi_result_t _scpi_angle( scpi_t * context )
+{
+    // read
+    DEF_LOCAL_VAR();
+
+    int val1;
+
+    if ( SCPI_RES_OK != SCPI_ParamInt32( context, &val1, true ) )
+    { return SCPI_RES_ERR; }
+
+    float val = 0;
+    val = ((MegaDevice::deviceMRQ*)context->user_context)->getAngle( val1 );
+
+    SCPI_ResultFloat( context, val );
+
+    return SCPI_RES_OK;
+}
+
 static scpi_command_t _mrq_scpi_cmds[]=
 {
     #include "../board/_MRQ_scpi_cmd.h"
@@ -94,6 +114,8 @@ static scpi_command_t _mrq_scpi_cmds[]=
     CMD_ITEM( "ROTATE", _scpi_rotate ),
 
     CMD_ITEM( "FSMSTATE?", _scpi_fsmState ),
+
+    CMD_ITEM( "ANGLE?", _scpi_angle ),
 
     SCPI_CMD_LIST_END
 };

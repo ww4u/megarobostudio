@@ -15,6 +15,7 @@ public:
     ~mcModel();
 
     void preload();
+    void postload();
 
     mcConnection& getConnection();
 

@@ -51,6 +51,10 @@ public:
     bool mbAutoLoadSetup;
 
     dbMeta mDbMeta;
+                            //! misa
+    bool mMisaEn;
+    quint32 mMisaSocket;
+
                             //! motion
     int mSpaceResolution;   //! 5mm
 

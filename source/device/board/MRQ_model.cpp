@@ -321,10 +321,10 @@ int MRQ_model::save_motor( int id, QXmlStreamWriter &writer )
 
     writer.writeTextElement( "mTRIGGER_PATTERN", toString( mTRIGGER_PATTERN[id]) );
     writer.writeTextElement( "mTRIGGER_PATTERN1", toString( mTRIGGER_PATTERN1[id]) );
-    writer.writeTextElement( "mTRIGGER_PATTERN2", toString( mTRIGGER_PATTERN2[id]) );
-    writer.writeTextElement( "mTRIGGER_PATTERN3", toString( mTRIGGER_PATTERN3[id]) );
+//    writer.writeTextElement( "mTRIGGER_PATTERN2", toString( mTRIGGER_PATTERN2[id]) );
+//    writer.writeTextElement( "mTRIGGER_PATTERN3", toString( mTRIGGER_PATTERN3[id]) );
 
-    writer.writeTextElement( "mTRIGGER_PATTERN4", toString( mTRIGGER_PATTERN4[id]) );
+//    writer.writeTextElement( "mTRIGGER_PATTERN4", toString( mTRIGGER_PATTERN4[id]) );
     writer.writeTextElement( "mTRIGGER_PATTRESP", toString( mTRIGGER_PATTRESP[id]) );
     writer.writeTextElement( "mTRIGGER_PATTSMODE", toString( mTRIGGER_PATTSMODE[id]) );
     writer.writeTextElement( "mTRIGGER_PATTSPERIOD", DeviceModel::toString( mTRIGGER_PATTSPERIOD[id]) );
@@ -509,13 +509,13 @@ int MRQ_model::load_motor( int id, QXmlStreamReader &reader )
         { toValue( reader.readElementText(), &mTRIGGER_PATTERN[id] ); }
         if ( reader.name() == "mTRIGGER_PATTERN1" )
         { toValue( reader.readElementText(), &mTRIGGER_PATTERN1[id] ); }
-        if ( reader.name() == "mTRIGGER_PATTERN2" )
-        { toValue( reader.readElementText(), &mTRIGGER_PATTERN2[id] ); }
-        if ( reader.name() == "mTRIGGER_PATTERN3" )
-        { toValue( reader.readElementText(), &mTRIGGER_PATTERN3[id] ); }
+//        if ( reader.name() == "mTRIGGER_PATTERN2" )
+//        { toValue( reader.readElementText(), &mTRIGGER_PATTERN2[id] ); }
+//        if ( reader.name() == "mTRIGGER_PATTERN3" )
+//        { toValue( reader.readElementText(), &mTRIGGER_PATTERN3[id] ); }
 
-        if ( reader.name() == "mTRIGGER_PATTERN4" )
-        { toValue( reader.readElementText(), &mTRIGGER_PATTERN4[id] ); }
+//        if ( reader.name() == "mTRIGGER_PATTERN4" )
+//        { toValue( reader.readElementText(), &mTRIGGER_PATTERN4[id] ); }
         if ( reader.name() == "mTRIGGER_PATTRESP" )
         { toValue( reader.readElementText(), &mTRIGGER_PATTRESP[id] ); }
         if ( reader.name() == "mTRIGGER_PATTSMODE" )

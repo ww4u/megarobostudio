@@ -118,7 +118,7 @@ int mrqAxes2::updateUi()
     ui->spinInitPosition->setValue( ( m_pMrqModel->mMOTION_INITPOSITION[mAxesId]) );
 
     //! out of line
-    ui->chkOutOfLineState->setEnabled( m_pMrqModel->mOUTOFSTEP_LINESTATE[mAxesId] );
+    ui->chkOutOfLineState->setChecked( m_pMrqModel->mOUTOFSTEP_LINESTATE[mAxesId] );
     ui->spinOutOfLine->setValue( m_pMrqModel->mOUTOFSTEP_LINEOUTNUM[mAxesId] );
     ui->cmbLineResponse->setCurrentIndex( m_pMrqModel->mOUTOFSTEP_LINERESPONSE[mAxesId] );
 

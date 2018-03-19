@@ -25,12 +25,20 @@ public:
     void updateUi();
     void updateData();
 
+protected:
+    bool validateDb();
+    bool updateValidateEn();
+
 private slots:
     void on_buttonBox_clicked(QAbstractButton *button);
 
     void on_cmbPort_currentIndexChanged(int index);
 
     void on_btnDetail_clicked();
+
+    void on_btnVerify_clicked();
+
+    void slot_updateValidateEn();
 
 private:
     Ui::sysPref *ui;

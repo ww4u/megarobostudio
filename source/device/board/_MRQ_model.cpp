@@ -22,17 +22,18 @@ static value_desc _value_desc_MRQ_SYSTEM_TYPE_1[] = {
 	{0,"C17D",},
 	{1,"C23D",},
 	{2,"M1703",},
-	{3,"M2303",},
-	{4,"M1704",},
-	{5,"M2304",},
-	{6,"M1706",},
-	{7,"M2306",},
-	{8,"M1707",},
-	{9,"M2307",},
-	{10,"M1708",},
-	{11,"M2308",},
-	{12,"C17S",},
-	{13,"C23S",},
+	{3,"",},
+	{4,"M2303",},
+	{5,"M1704",},
+	{6,"M2304",},
+	{7,"M1706",},
+	{8,"M2306",},
+	{9,"M1707",},
+	{10,"M2307",},
+	{11,"M1708",},
+	{12,"M2308",},
+	{13,"C17S",},
+	{14,"C23S",},
 };
 static value_desc _value_desc_MRQ_SYSTEM_REPORTSWITCH[] = {
 	{0,"OFF",},
@@ -266,6 +267,10 @@ static value_desc _value_desc_MRQ_TRIGGER_PATTSMODE[] = {
 	{1,"INTERVAL",},
 	{2,"SINGLE",},
 };
+static value_desc _value_desc_MRQ_TRIGGER_LEVELSTATE[] = {
+	{0,"TRIGL",},
+	{1,"TRIGR",},
+};
 static value_desc _value_desc_MRQ_TRIGGER_LEVELTYPE_1[] = {
 	{0,"RESERVE",},
 	{1,"LOW",},
@@ -313,6 +318,8 @@ static value_desc _value_desc_MRQ_DRIVER_SGPARASET[] = {
 static value_desc _value_desc_MRQ_DIGITALOUT_STATE[] = {
 	{0,"DO1",},
 	{1,"DO2",},
+	{2,"DO3",},
+	{3,"DO4",},
 };
 static value_desc _value_desc_MRQ_DIGITALOUT_STATE_1[] = {
 	{0,"DISABLE",},
@@ -344,7 +351,9 @@ static value_desc _value_desc_MRQ_SENSORUART_BAUD[] = {
 };
 static value_desc _value_desc_MRQ_SENSORUART_STATE_1[] = {
 	{0,"S1",},
-	{1,"NONE",},
+	{1,"S2",},
+	{2,"S3",},
+	{3,"S4",},
 };
 static value_desc _value_desc_MRQ_PRESET_PVTCONFIG[] = {
 	{0,"PRESET1",},
@@ -761,19 +770,6 @@ mTRIGGER_PATTERN1[i0] = (MRQ_TRIGGER_PATTERN)0;
 }
 for ( int i0=0; i0 < 4; i0++ )
 {
-mTRIGGER_PATTERN2[i0] = (MRQ_TRIGGER_PATTERN)0;
-}
-for ( int i0=0; i0 < 4; i0++ )
-{
-mTRIGGER_PATTERN3[i0] = (MRQ_TRIGGER_PATTERN)0;
-}
-for ( int i0=0; i0 < 4; i0++ )
-{
-mTRIGGER_PATTERN4[i0] = (MRQ_TRIGGER_PATTERN)0;
-}
-
-for ( int i0=0; i0 < 4; i0++ )
-{
 mTRIGGER_PATTRESP[i0] = (MRQ_OUTOFSTEP_LINERESPONSE)0;
 }
 for ( int i0=0; i0 < 4; i0++ )
@@ -784,43 +780,43 @@ for ( int i0=0; i0 < 4; i0++ )
 {
 mTRIGGER_PATTSPERIOD[i0] = (uint32)0;
 }
+
 for ( int i0=0; i0 < 4; i0++ )
 {
-for ( int i1=0; i1 < 5; i1++ )
+for ( int i1=0; i1 < 2; i1++ )
 {
 mTRIGGER_LEVELSTATE[i0][i1] = (MRQ_SYSTEM_REPORTSWITCH)0;
 }
 }
-
 for ( int i0=0; i0 < 4; i0++ )
 {
-for ( int i1=0; i1 < 5; i1++ )
+for ( int i1=0; i1 < 2; i1++ )
 {
 mTRIGGER_LEVELTYPE[i0][i1] = (MRQ_TRIGGER_LEVELTYPE_1)0;
 }
 }
 for ( int i0=0; i0 < 4; i0++ )
 {
-for ( int i1=0; i1 < 5; i1++ )
+for ( int i1=0; i1 < 2; i1++ )
 {
 mTRIGGER_LEVELRESP[i0][i1] = (MRQ_OUTOFSTEP_LINERESPONSE)0;
 }
 }
 for ( int i0=0; i0 < 4; i0++ )
 {
-for ( int i1=0; i1 < 5; i1++ )
+for ( int i1=0; i1 < 2; i1++ )
 {
 mTRIGGER_LEVELSMODE[i0][i1] = (MRQ_TRIGGER_PATTSMODE)0;
 }
 }
+
 for ( int i0=0; i0 < 4; i0++ )
 {
-for ( int i1=0; i1 < 5; i1++ )
+for ( int i1=0; i1 < 2; i1++ )
 {
 mTRIGGER_LEVELSPERIOD[i0][i1] = (f32)0;
 }
 }
-
 for ( int i0=0; i0 < 4; i0++ )
 {
 mDRIVER_TYPE[i0] = (MRQ_DRIVER_TYPE)0;
@@ -836,11 +832,11 @@ for ( int i0=0; i0 < 4; i0++ )
 {
 mDRIVER_CURRENT[i0] = (byte)0;
 }
+
 for ( int i0=0; i0 < 4; i0++ )
 {
 mDRIVER_MICROSTEPS[i0] = (MRQ_DRIVER_MICROSTEPS)0;
 }
-
 for ( int i0=0; i0 < 4; i0++ )
 {
 mDRIVER_SWITCH[i0] = (MRQ_SYSTEM_REPORTSWITCH)0;
@@ -854,10 +850,12 @@ mDRIVER_REGCONFIG[i0][i1] = (uint32)0;
 }
 for ( int i0=0; i0 < 4; i0++ )
 {
-for ( int i1=0; i1 < 2; i1++ )
-{
-mDRIVER_SGLIMIT[i0][i1] = (int8)0;
+mDRIVER_SGLIMIT[i0] = (MRQ_DRIVER_SGLIMIT)0;
 }
+
+for ( int i0=0; i0 < 4; i0++ )
+{
+mDRIVER_SGLIMIT1[i0] = (int8)0;
 }
 for ( int i0=0; i0 < 4; i0++ )
 {
@@ -866,33 +864,33 @@ for ( int i1=0; i1 < 4; i1++ )
 mDRIVER_SGPARASET[i0][i1] = (int16)0;
 }
 }
-
-for ( int i0=0; i0 < 2; i0++ )
+for ( int i0=0; i0 < 4; i0++ )
 {
 mDIGITALOUT_STATE[i0] = (MRQ_DIGITALOUT_STATE_1)0;
 }
-for ( int i0=0; i0 < 2; i0++ )
+for ( int i0=0; i0 < 4; i0++ )
 {
 mDIGITALOUT_SIGNAL[i0] = (MRQ_DIGITALOUT_SIGNAL_1)0;
 }
-for ( int i0=0; i0 < 2; i0++ )
+
+for ( int i0=0; i0 < 4; i0++ )
 {
 mDIGITALOUT_POLARITY[i0] = (MRQ_DIGITALOUT_POLARITY_1)0;
 }
-for ( int i0=0; i0 < 2; i0++ )
+for ( int i0=0; i0 < 4; i0++ )
 {
 mDIGITALOUT_SOURCE[i0] = (byte)0;
 }
-
-for ( int i0=0; i0 < 2; i0++ )
+for ( int i0=0; i0 < 4; i0++ )
 {
 mDIGITALOUT_CONDITION[i0] = (MRQ_DIGITALOUT_CONDITION_1)0;
 }
-for ( int i0=0; i0 < 2; i0++ )
+for ( int i0=0; i0 < 4; i0++ )
 {
 mDIGITALOUT_PERIOD[i0] = (uint32)0;
 }
-for ( int i0=0; i0 < 2; i0++ )
+
+for ( int i0=0; i0 < 4; i0++ )
 {
 mDIGITALOUT_DUTY[i0] = (uint16)0;
 }
@@ -900,7 +898,6 @@ for ( int i0=0; i0 < 2; i0++ )
 {
 mISOLATOROUTPUT_STATE[i0] = (MRQ_DIGITALOUT_STATE_1)0;
 }
-
 for ( int i0=0; i0 < 2; i0++ )
 {
 mISOLATOROUTPUT_SOURCE[i0] = (byte)0;
@@ -909,6 +906,7 @@ for ( int i0=0; i0 < 2; i0++ )
 {
 mISOLATOROUTPUT_CONDITION[i0] = (MRQ_DIGITALOUT_CONDITION_1)0;
 }
+
 for ( int i0=0; i0 < 2; i0++ )
 {
 mISOLATOROUTPUT_RESPONSE[i0] = (MRQ_ISOLATOROUTPUT_RESPONSE_1)0;
@@ -917,7 +915,6 @@ for ( int i0=0; i0 < 2; i0++ )
 {
 mSENSORUART_BAUD[i0] = (MRQ_RS232_BAUD)0;
 }
-
 for ( int i0=0; i0 < 2; i0++ )
 {
 mSENSORUART_WORDLEN[i0] = (MRQ_RS232_WORDLEN)0;
@@ -926,6 +923,7 @@ for ( int i0=0; i0 < 2; i0++ )
 {
 mSENSORUART_FLOWCTL[i0] = (MRQ_RS232_FLOWCTL)0;
 }
+
 for ( int i0=0; i0 < 2; i0++ )
 {
 mSENSORUART_PARITY[i0] = (MRQ_RS232_PARITY)0;
@@ -934,68 +932,67 @@ for ( int i0=0; i0 < 2; i0++ )
 {
 mSENSORUART_STOPBIT[i0] = (MRQ_RS232_STOPBIT)0;
 }
-
 for ( int i0=0; i0 < 2; i0++ )
 {
-for ( int i1=0; i1 < 2; i1++ )
+for ( int i1=0; i1 < 4; i1++ )
 {
 mSENSORUART_STATE[i0][i1] = (MRQ_SYSTEM_REPORTSWITCH)0;
 }
 }
 for ( int i0=0; i0 < 2; i0++ )
 {
-for ( int i1=0; i1 < 2; i1++ )
+for ( int i1=0; i1 < 4; i1++ )
 {
 mSENSORUART_SOF[i0][i1] = (byte)0;
 }
 }
+
 for ( int i0=0; i0 < 2; i0++ )
 {
-for ( int i1=0; i1 < 2; i1++ )
+for ( int i1=0; i1 < 4; i1++ )
 {
 mSENSORUART_FRAMELEN[i0][i1] = (byte)0;
 }
 }
 for ( int i0=0; i0 < 2; i0++ )
 {
-for ( int i1=0; i1 < 2; i1++ )
+for ( int i1=0; i1 < 4; i1++ )
 {
 mSENSORUART_RECEIVENUM[i0][i1] = (byte)0;
 }
 }
-
 for ( int i0=0; i0 < 2; i0++ )
 {
-for ( int i1=0; i1 < 2; i1++ )
+for ( int i1=0; i1 < 4; i1++ )
 {
 mSENSORUART_SWITCHTIME[i0][i1] = (uint32)0;
 }
 }
 for ( int i0=0; i0 < 2; i0++ )
 {
-for ( int i1=0; i1 < 2; i1++ )
+for ( int i1=0; i1 < 4; i1++ )
 {
 mSENSORUART_DATA[i0][i1] = (byte)0;
 }
 }
+
 for ( int i0=0; i0 < 2; i0++ )
 {
-for ( int i1=0; i1 < 2; i1++ )
+for ( int i1=0; i1 < 4; i1++ )
 {
 mSENSORUART_DATA1[i0][i1] = (char)0;
 }
 }
 for ( int i0=0; i0 < 2; i0++ )
 {
-for ( int i1=0; i1 < 2; i1++ )
+for ( int i1=0; i1 < 4; i1++ )
 {
 mSENSORUART_DATA2[i0][i1] = (char)0;
 }
 }
-
 for ( int i0=0; i0 < 2; i0++ )
 {
-for ( int i1=0; i1 < 2; i1++ )
+for ( int i1=0; i1 < 4; i1++ )
 {
 mSENSORUART_DATA3[i0][i1] = (char)0;
 }
@@ -1007,6 +1004,7 @@ for ( int i1=0; i1 < 2; i1++ )
 mPRESET_PVTCONFIG[i0][i1] = (MRQ_MOTIONPLAN_PVTCONFIG)0;
 }
 }
+
 for ( int i0=0; i0 < 4; i0++ )
 {
 for ( int i1=0; i1 < 4; i1++ )
@@ -1021,7 +1019,6 @@ for ( int i1=0; i1 < 4; i1++ )
 mPRESET_SPEED[i0][i1] = (f32)0;
 }
 }
-
 for ( int i0=0; i0 < 4; i0++ )
 {
 for ( int i1=0; i1 < 4; i1++ )
@@ -1036,6 +1033,7 @@ for ( int i1=0; i1 < 2; i1++ )
 mPRESET_REMAINPOINT[i0][i1] = (byte)0;
 }
 }
+
 for ( int i0=0; i0 < 4; i0++ )
 {
 for ( int i1=0; i1 < 2; i1++ )
@@ -1050,7 +1048,6 @@ for ( int i1=0; i1 < 2; i1++ )
 mPRESET_ENDSTATE[i0][i1] = (MRQ_MOTIONPLAN_ENDSTATE)0;
 }
 }
-
 for ( int i0=0; i0 < 4; i0++ )
 {
 for ( int i1=0; i1 < 2; i1++ )
@@ -1065,19 +1062,14 @@ for ( int i1=0; i1 < 2; i1++ )
 mPRESET_STOPDISTANCE[i0][i1] = (f32)0;
 }
 }
-	mOTP_STATE = (MRQ_SYSTEM_REPORTSWITCH)0;
-	mOTP_THRESHOLD = (uint16)0;
 
-	mOTP_RESPONSE = (MRQ_OUTOFSTEP_LINERESPONSE)0;
-	mOTP_PERIOD = (uint32)0;
-	mOTP_DATA = (uint32)0;
-	mANALOGIN_STATE = (MRQ_SYSTEM_REPORTSWITCH)0;
+	mISOLATORIN_STATE = (MRQ_SYSTEM_REPORTSWITCH)0;
+	mISOLATORIN_TYPE = (MRQ_TRIGGER_LEVELTYPE_1)0;
+	mISOLATORIN_RESPONSE = (MRQ_OUTOFSTEP_LINERESPONSE)0;
+	mISOLATORIN_RESPCHAN = (byte)0;
 
-	mANALOGIN_THRESHOLDH = (f32)0;
-	mANALOGIN_THRESHOLDL = (f32)0;
-	mANALOGIN_RESPONSEH = (MRQ_OUTOFSTEP_LINERESPONSE)0;
-	mANALOGIN_RESPONSEL = (MRQ_OUTOFSTEP_LINERESPONSE)0;
-
+	mISOLATORIN_SMODE = (MRQ_TRIGGER_PATTSMODE)0;
+	mISOLATORIN_SPERIOD = (uint32)0;
 }
 QString _MRQ_model::toString( MRQ_LINK_INTFC eType )
 {
@@ -1258,6 +1250,10 @@ QString _MRQ_model::toString( MRQ_TRIGGER_PATTERN eType )
 QString _MRQ_model::toString( MRQ_TRIGGER_PATTSMODE eType )
 {
 	return QString( MRQ_TRIGGER_PATTSMODE_toString( eType ) );
+}
+QString _MRQ_model::toString( MRQ_TRIGGER_LEVELSTATE eType )
+{
+	return QString( MRQ_TRIGGER_LEVELSTATE_toString( eType ) );
 }
 QString _MRQ_model::toString( MRQ_TRIGGER_LEVELTYPE_1 eType )
 {
@@ -1510,6 +1506,10 @@ int _MRQ_model::toValue( const QString &str, MRQ_TRIGGER_PATTERN *pEVal )
 int _MRQ_model::toValue( const QString &str, MRQ_TRIGGER_PATTSMODE *pEVal )
 {
 	return ( MRQ_TRIGGER_PATTSMODE_toValue( str.toLatin1().data(), pEVal) );
+}
+int _MRQ_model::toValue( const QString &str, MRQ_TRIGGER_LEVELSTATE *pEVal )
+{
+	return ( MRQ_TRIGGER_LEVELSTATE_toValue( str.toLatin1().data(), pEVal) );
 }
 int _MRQ_model::toValue( const QString &str, MRQ_TRIGGER_LEVELTYPE_1 *pEVal )
 {
@@ -2500,10 +2500,10 @@ int _MRQ_model::getMOTION_MINACCELERATION( byte val0, f32 * val1, bool bQuery )
 	*val1 = mMOTION_MINACCELERATION[ (int)val0 ];
 	return 0;
 }
-//! U8,U32
+//! U8,F32
 //! [CHANNUM]
 int _MRQ_model::setMOTION_ORIGIN( byte val0
-,uint32 val1 )
+,f32 val1 )
 {
 	//! 21 24
 	int ret=0; 
@@ -3846,42 +3846,30 @@ int _MRQ_model::getTRIGGER_PATTSTATE( byte val0, MRQ_SYSTEM_REPORTSWITCH * val1,
 	*val1 = mTRIGGER_PATTSTATE[ (int)val0 ];
 	return 0;
 }
-//! U8,ENUM,ENUM,ENUM,ENUM,ENUM
-//! [CHANNUM],X|L|R|F|H,X|L|R|F|H,X|L|R|F|H,X|L|R|F|H,X|L|R|F|H
+//! U8,ENUM,ENUM
+//! [CHANNUM],X|L|R|F|H,X|L|R|F|H
 int _MRQ_model::setTRIGGER_PATTERN( byte val0
 ,MRQ_TRIGGER_PATTERN val1
-,MRQ_TRIGGER_PATTERN val2
-,MRQ_TRIGGER_PATTERN val3
-,MRQ_TRIGGER_PATTERN val4
-,MRQ_TRIGGER_PATTERN val5 )
+,MRQ_TRIGGER_PATTERN val2 )
 {
 	//! 57 4
 	int ret=0; 
 	mTRIGGER_PATTERN[ (int)val0 ] = val1;
 	mTRIGGER_PATTERN1[ (int)val0 ] = val2;
-	mTRIGGER_PATTERN2[ (int)val0 ] = val3;
-	mTRIGGER_PATTERN3[ (int)val0 ] = val4;
-	mTRIGGER_PATTERN4[ (int)val0 ] = val5;
 
 	return ret;
 }
 //! U8
 //! [CHANNUM]
-int _MRQ_model::getTRIGGER_PATTERN( byte val0, MRQ_TRIGGER_PATTERN * val1, MRQ_TRIGGER_PATTERN * val2, MRQ_TRIGGER_PATTERN * val3, MRQ_TRIGGER_PATTERN * val4, MRQ_TRIGGER_PATTERN * val5, bool bQuery )
+int _MRQ_model::getTRIGGER_PATTERN( byte val0, MRQ_TRIGGER_PATTERN * val1, MRQ_TRIGGER_PATTERN * val2, bool bQuery )
 {
 	//! 57 5
 	int ret = 0;
 
 	byte lval0 = 0;
 	byte lval1 = 0;
-	byte lval2 = 0;
-	byte lval3 = 0;
-	byte lval4 = 0;
 	*val1 = mTRIGGER_PATTERN[ (int)val0 ];
 	*val2 = mTRIGGER_PATTERN1[ (int)val0 ];
-	*val3 = mTRIGGER_PATTERN2[ (int)val0 ];
-	*val4 = mTRIGGER_PATTERN3[ (int)val0 ];
-	*val5 = mTRIGGER_PATTERN4[ (int)val0 ];
 	return 0;
 }
 //! U8,ENUM
@@ -3951,9 +3939,9 @@ int _MRQ_model::getTRIGGER_PATTSPERIOD( byte val0, uint32 * val1, bool bQuery )
 	return 0;
 }
 //! U8,ENUM,ENUM
-//! [CHANNUM],TRIG1|TRIG2|TRIG3|TRIG4|TRIG5,OFF|ON
+//! [CHANNUM],TRIGL|TRIGR,OFF|ON
 int _MRQ_model::setTRIGGER_LEVELSTATE( byte val0
-,MRQ_MOTION_INITIOSIGNAL val1
+,MRQ_TRIGGER_LEVELSTATE val1
 ,MRQ_SYSTEM_REPORTSWITCH val2 )
 {
 	//! 57 12
@@ -3963,9 +3951,9 @@ int _MRQ_model::setTRIGGER_LEVELSTATE( byte val0
 	return ret;
 }
 //! U8,ENUM
-//! [CHANNUM],TRIG1|TRIG2|TRIG3|TRIG4|TRIG5
+//! [CHANNUM],TRIGL|TRIGR
 int _MRQ_model::getTRIGGER_LEVELSTATE( byte val0
-,MRQ_MOTION_INITIOSIGNAL val1, MRQ_SYSTEM_REPORTSWITCH * val2, bool bQuery )
+,MRQ_TRIGGER_LEVELSTATE val1, MRQ_SYSTEM_REPORTSWITCH * val2, bool bQuery )
 {
 	//! 57 13
 	int ret = 0;
@@ -3975,9 +3963,9 @@ int _MRQ_model::getTRIGGER_LEVELSTATE( byte val0
 	return 0;
 }
 //! U8,ENUM,ENUM
-//! [CHANNUM],TRIG1|TRIG2|TRIG3|TRIG4|TRIG5,RESERVE|LOW|RISE|FALL|HIGH
+//! [CHANNUM],TRIGL|TRIGR,RESERVE|LOW|RISE|FALL|HIGH
 int _MRQ_model::setTRIGGER_LEVELTYPE( byte val0
-,MRQ_MOTION_INITIOSIGNAL val1
+,MRQ_TRIGGER_LEVELSTATE val1
 ,MRQ_TRIGGER_LEVELTYPE_1 val2 )
 {
 	//! 57 14
@@ -3987,9 +3975,9 @@ int _MRQ_model::setTRIGGER_LEVELTYPE( byte val0
 	return ret;
 }
 //! U8,ENUM
-//! [CHANNUM],TRIG1|TRIG2|TRIG3|TRIG4|TRIG5
+//! [CHANNUM],TRIGL|TRIGR
 int _MRQ_model::getTRIGGER_LEVELTYPE( byte val0
-,MRQ_MOTION_INITIOSIGNAL val1, MRQ_TRIGGER_LEVELTYPE_1 * val2, bool bQuery )
+,MRQ_TRIGGER_LEVELSTATE val1, MRQ_TRIGGER_LEVELTYPE_1 * val2, bool bQuery )
 {
 	//! 57 15
 	int ret = 0;
@@ -3999,9 +3987,9 @@ int _MRQ_model::getTRIGGER_LEVELTYPE( byte val0
 	return 0;
 }
 //! U8,ENUM,ENUM
-//! [CHANNUM],TRIG1|TRIG2|TRIG3|TRIG4|TRIG5,NONE|ALARM|STOP|ALARM&STOP
+//! [CHANNUM],TRIGL|TRIGR,NONE|ALARM|STOP|ALARM&STOP
 int _MRQ_model::setTRIGGER_LEVELRESP( byte val0
-,MRQ_MOTION_INITIOSIGNAL val1
+,MRQ_TRIGGER_LEVELSTATE val1
 ,MRQ_OUTOFSTEP_LINERESPONSE val2 )
 {
 	//! 57 16
@@ -4011,9 +3999,9 @@ int _MRQ_model::setTRIGGER_LEVELRESP( byte val0
 	return ret;
 }
 //! U8,ENUM
-//! [CHANNUM],TRIG1|TRIG2|TRIG3|TRIG4|TRIG5
+//! [CHANNUM],TRIGL|TRIGR
 int _MRQ_model::getTRIGGER_LEVELRESP( byte val0
-,MRQ_MOTION_INITIOSIGNAL val1, MRQ_OUTOFSTEP_LINERESPONSE * val2, bool bQuery )
+,MRQ_TRIGGER_LEVELSTATE val1, MRQ_OUTOFSTEP_LINERESPONSE * val2, bool bQuery )
 {
 	//! 57 17
 	int ret = 0;
@@ -4023,9 +4011,9 @@ int _MRQ_model::getTRIGGER_LEVELRESP( byte val0
 	return 0;
 }
 //! U8,ENUM,ENUM
-//! [CHANNUM],TRIG1|TRIG2|TRIG3|TRIG4|TRIG5,CONTINUED|INTERVAL|SINGLE
+//! [CHANNUM],TRIGL|TRIGR,CONTINUED|INTERVAL|SINGLE
 int _MRQ_model::setTRIGGER_LEVELSMODE( byte val0
-,MRQ_MOTION_INITIOSIGNAL val1
+,MRQ_TRIGGER_LEVELSTATE val1
 ,MRQ_TRIGGER_PATTSMODE val2 )
 {
 	//! 57 18
@@ -4035,9 +4023,9 @@ int _MRQ_model::setTRIGGER_LEVELSMODE( byte val0
 	return ret;
 }
 //! U8,ENUM
-//! [CHANNUM],TRIG1|TRIG2|TRIG3|TRIG4|TRIG5
+//! [CHANNUM],TRIGL|TRIGR
 int _MRQ_model::getTRIGGER_LEVELSMODE( byte val0
-,MRQ_MOTION_INITIOSIGNAL val1, MRQ_TRIGGER_PATTSMODE * val2, bool bQuery )
+,MRQ_TRIGGER_LEVELSTATE val1, MRQ_TRIGGER_PATTSMODE * val2, bool bQuery )
 {
 	//! 57 19
 	int ret = 0;
@@ -4047,9 +4035,9 @@ int _MRQ_model::getTRIGGER_LEVELSMODE( byte val0
 	return 0;
 }
 //! U8,ENUM,F32
-//! [CHANNUM],TRIG1|TRIG2|TRIG3|TRIG4|TRIG5
+//! [CHANNUM],TRIGL|TRIGR
 int _MRQ_model::setTRIGGER_LEVELSPERIOD( byte val0
-,MRQ_MOTION_INITIOSIGNAL val1
+,MRQ_TRIGGER_LEVELSTATE val1
 ,f32 val2 )
 {
 	//! 57 20
@@ -4059,9 +4047,9 @@ int _MRQ_model::setTRIGGER_LEVELSPERIOD( byte val0
 	return ret;
 }
 //! U8,ENUM
-//! [CHANNUM],TRIG1|TRIG2|TRIG3|TRIG4|TRIG5
+//! [CHANNUM],TRIGL|TRIGR
 int _MRQ_model::getTRIGGER_LEVELSPERIOD( byte val0
-,MRQ_MOTION_INITIOSIGNAL val1, f32 * val2, bool bQuery )
+,MRQ_TRIGGER_LEVELSTATE val1, f32 * val2, bool bQuery )
 {
 	//! 57 21
 	int ret = 0;
@@ -4191,20 +4179,22 @@ int _MRQ_model::setDRIVER_SGLIMIT( byte val0
 {
 	//! 58 10
 	int ret=0; 
-	mDRIVER_SGLIMIT[ (int)val0 ][ (int)val1 ] = val2;
+	mDRIVER_SGLIMIT[ (int)val0 ] = val1;
+	mDRIVER_SGLIMIT1[ (int)val0 ] = val2;
 
 	return ret;
 }
-//! U8,ENUM
-//! [CHANNUM],UPLIMIT|DOWNLIMIT
-int _MRQ_model::getDRIVER_SGLIMIT( byte val0
-,MRQ_DRIVER_SGLIMIT val1, int8 * val2, bool bQuery )
+//! U8
+//! [CHANNUM]
+int _MRQ_model::getDRIVER_SGLIMIT( byte val0, MRQ_DRIVER_SGLIMIT * val1, int8 * val2, bool bQuery )
 {
 	//! 58 11
 	int ret = 0;
 
-	int8 lval0 = 0;
-	*val2 = mDRIVER_SGLIMIT[ (int)val0 ][ (int)val1 ];
+	byte lval0 = 0;
+	int8 lval1 = 0;
+	*val1 = mDRIVER_SGLIMIT[ (int)val0 ];
+	*val2 = mDRIVER_SGLIMIT1[ (int)val0 ];
 	return 0;
 }
 //! U8,ENUM,S16
@@ -4232,7 +4222,7 @@ int _MRQ_model::getDRIVER_SGPARASET( byte val0
 	return 0;
 }
 //! ENUM,ENUM
-//! DO1|DO2,DISABLE|ENABLE
+//! DO1|DO2|DO3|DO4,DISABLE|ENABLE
 int _MRQ_model::setDIGITALOUT_STATE( MRQ_DIGITALOUT_STATE val0
 ,MRQ_DIGITALOUT_STATE_1 val1 )
 {
@@ -4243,7 +4233,7 @@ int _MRQ_model::setDIGITALOUT_STATE( MRQ_DIGITALOUT_STATE val0
 	return ret;
 }
 //! ENUM
-//! DO1|DO2
+//! DO1|DO2|DO3|DO4
 int _MRQ_model::getDIGITALOUT_STATE( MRQ_DIGITALOUT_STATE val0, MRQ_DIGITALOUT_STATE_1 * val1, bool bQuery )
 {
 	//! 59 1
@@ -4254,7 +4244,7 @@ int _MRQ_model::getDIGITALOUT_STATE( MRQ_DIGITALOUT_STATE val0, MRQ_DIGITALOUT_S
 	return 0;
 }
 //! ENUM,ENUM
-//! DO1|DO2,LEVEL|NONE
+//! DO1|DO2|DO3|DO4,LEVEL|NONE
 int _MRQ_model::setDIGITALOUT_SIGNAL( MRQ_DIGITALOUT_STATE val0
 ,MRQ_DIGITALOUT_SIGNAL_1 val1 )
 {
@@ -4265,7 +4255,7 @@ int _MRQ_model::setDIGITALOUT_SIGNAL( MRQ_DIGITALOUT_STATE val0
 	return ret;
 }
 //! ENUM
-//! DO1|DO2
+//! DO1|DO2|DO3|DO4
 int _MRQ_model::getDIGITALOUT_SIGNAL( MRQ_DIGITALOUT_STATE val0, MRQ_DIGITALOUT_SIGNAL_1 * val1, bool bQuery )
 {
 	//! 59 3
@@ -4276,7 +4266,7 @@ int _MRQ_model::getDIGITALOUT_SIGNAL( MRQ_DIGITALOUT_STATE val0, MRQ_DIGITALOUT_
 	return 0;
 }
 //! ENUM,ENUM
-//! DO1|DO2,POSITIVE|NEGATIVE
+//! DO1|DO2|DO3|DO4,POSITIVE|NEGATIVE
 int _MRQ_model::setDIGITALOUT_POLARITY( MRQ_DIGITALOUT_STATE val0
 ,MRQ_DIGITALOUT_POLARITY_1 val1 )
 {
@@ -4287,7 +4277,7 @@ int _MRQ_model::setDIGITALOUT_POLARITY( MRQ_DIGITALOUT_STATE val0
 	return ret;
 }
 //! ENUM
-//! DO1|DO2
+//! DO1|DO2|DO3|DO4
 int _MRQ_model::getDIGITALOUT_POLARITY( MRQ_DIGITALOUT_STATE val0, MRQ_DIGITALOUT_POLARITY_1 * val1, bool bQuery )
 {
 	//! 59 5
@@ -4298,7 +4288,7 @@ int _MRQ_model::getDIGITALOUT_POLARITY( MRQ_DIGITALOUT_STATE val0, MRQ_DIGITALOU
 	return 0;
 }
 //! ENUM,U8
-//! DO1|DO2,[CHANNUM]
+//! DO1|DO2|DO3|DO4,[CHANNUM]
 int _MRQ_model::setDIGITALOUT_SOURCE( MRQ_DIGITALOUT_STATE val0
 ,byte val1 )
 {
@@ -4309,7 +4299,7 @@ int _MRQ_model::setDIGITALOUT_SOURCE( MRQ_DIGITALOUT_STATE val0
 	return ret;
 }
 //! ENUM
-//! DO1|DO2
+//! DO1|DO2|DO3|DO4
 int _MRQ_model::getDIGITALOUT_SOURCE( MRQ_DIGITALOUT_STATE val0, byte * val1, bool bQuery )
 {
 	//! 59 7
@@ -4320,7 +4310,7 @@ int _MRQ_model::getDIGITALOUT_SOURCE( MRQ_DIGITALOUT_STATE val0, byte * val1, bo
 	return 0;
 }
 //! ENUM,ENUM
-//! DO1|DO2,AUTO|NONE
+//! DO1|DO2|DO3|DO4,AUTO|NONE
 int _MRQ_model::setDIGITALOUT_CONDITION( MRQ_DIGITALOUT_STATE val0
 ,MRQ_DIGITALOUT_CONDITION_1 val1 )
 {
@@ -4331,7 +4321,7 @@ int _MRQ_model::setDIGITALOUT_CONDITION( MRQ_DIGITALOUT_STATE val0
 	return ret;
 }
 //! ENUM
-//! DO1|DO2
+//! DO1|DO2|DO3|DO4
 int _MRQ_model::getDIGITALOUT_CONDITION( MRQ_DIGITALOUT_STATE val0, MRQ_DIGITALOUT_CONDITION_1 * val1, bool bQuery )
 {
 	//! 59 9
@@ -4342,7 +4332,7 @@ int _MRQ_model::getDIGITALOUT_CONDITION( MRQ_DIGITALOUT_STATE val0, MRQ_DIGITALO
 	return 0;
 }
 //! ENUM,U32
-//! DO1|DO2
+//! DO1|DO2|DO3|DO4
 int _MRQ_model::setDIGITALOUT_PERIOD( MRQ_DIGITALOUT_STATE val0
 ,uint32 val1 )
 {
@@ -4353,7 +4343,7 @@ int _MRQ_model::setDIGITALOUT_PERIOD( MRQ_DIGITALOUT_STATE val0
 	return ret;
 }
 //! ENUM
-//! DO1|DO2
+//! DO1|DO2|DO3|DO4
 int _MRQ_model::getDIGITALOUT_PERIOD( MRQ_DIGITALOUT_STATE val0, uint32 * val1, bool bQuery )
 {
 	//! 59 11
@@ -4364,7 +4354,7 @@ int _MRQ_model::getDIGITALOUT_PERIOD( MRQ_DIGITALOUT_STATE val0, uint32 * val1, 
 	return 0;
 }
 //! ENUM,U16
-//! DO1|DO2
+//! DO1|DO2|DO3|DO4
 int _MRQ_model::setDIGITALOUT_DUTY( MRQ_DIGITALOUT_STATE val0
 ,uint16 val1 )
 {
@@ -4375,7 +4365,7 @@ int _MRQ_model::setDIGITALOUT_DUTY( MRQ_DIGITALOUT_STATE val0
 	return ret;
 }
 //! ENUM
-//! DO1|DO2
+//! DO1|DO2|DO3|DO4
 int _MRQ_model::getDIGITALOUT_DUTY( MRQ_DIGITALOUT_STATE val0, uint16 * val1, bool bQuery )
 {
 	//! 59 13
@@ -4593,7 +4583,7 @@ int _MRQ_model::setSENSORUART_APPLYPARA( MRQ_SENSORUART_BAUD val0 )
 	return ret;
 }
 //! ENUM,ENUM,ENUM
-//! UART1|UART2,S1|NONE,OFF|ON
+//! UART1|UART2,S1|S2|S3|S4,OFF|ON
 int _MRQ_model::setSENSORUART_STATE( MRQ_SENSORUART_BAUD val0
 ,MRQ_SENSORUART_STATE_1 val1
 ,MRQ_SYSTEM_REPORTSWITCH val2 )
@@ -4605,7 +4595,7 @@ int _MRQ_model::setSENSORUART_STATE( MRQ_SENSORUART_BAUD val0
 	return ret;
 }
 //! ENUM,ENUM
-//! UART1|UART2,S1|NONE
+//! UART1|UART2,S1|S2|S3|S4
 int _MRQ_model::getSENSORUART_STATE( MRQ_SENSORUART_BAUD val0
 ,MRQ_SENSORUART_STATE_1 val1, MRQ_SYSTEM_REPORTSWITCH * val2, bool bQuery )
 {
@@ -4617,7 +4607,7 @@ int _MRQ_model::getSENSORUART_STATE( MRQ_SENSORUART_BAUD val0
 	return 0;
 }
 //! ENUM,ENUM,U8
-//! UART1|UART2,S1|NONE
+//! UART1|UART2,S1|S2|S3|S4
 int _MRQ_model::setSENSORUART_SOF( MRQ_SENSORUART_BAUD val0
 ,MRQ_SENSORUART_STATE_1 val1
 ,byte val2 )
@@ -4629,7 +4619,7 @@ int _MRQ_model::setSENSORUART_SOF( MRQ_SENSORUART_BAUD val0
 	return ret;
 }
 //! ENUM,ENUM
-//! UART1|UART2,S1|NONE
+//! UART1|UART2,S1|S2|S3|S4
 int _MRQ_model::getSENSORUART_SOF( MRQ_SENSORUART_BAUD val0
 ,MRQ_SENSORUART_STATE_1 val1, byte * val2, bool bQuery )
 {
@@ -4641,7 +4631,7 @@ int _MRQ_model::getSENSORUART_SOF( MRQ_SENSORUART_BAUD val0
 	return 0;
 }
 //! ENUM,ENUM,U8
-//! UART1|UART2,S1|NONE
+//! UART1|UART2,S1|S2|S3|S4
 int _MRQ_model::setSENSORUART_FRAMELEN( MRQ_SENSORUART_BAUD val0
 ,MRQ_SENSORUART_STATE_1 val1
 ,byte val2 )
@@ -4653,7 +4643,7 @@ int _MRQ_model::setSENSORUART_FRAMELEN( MRQ_SENSORUART_BAUD val0
 	return ret;
 }
 //! ENUM,ENUM
-//! UART1|UART2,S1|NONE
+//! UART1|UART2,S1|S2|S3|S4
 int _MRQ_model::getSENSORUART_FRAMELEN( MRQ_SENSORUART_BAUD val0
 ,MRQ_SENSORUART_STATE_1 val1, byte * val2, bool bQuery )
 {
@@ -4665,7 +4655,7 @@ int _MRQ_model::getSENSORUART_FRAMELEN( MRQ_SENSORUART_BAUD val0
 	return 0;
 }
 //! ENUM,ENUM,U8
-//! UART1|UART2,S1|NONE
+//! UART1|UART2,S1|S2|S3|S4
 int _MRQ_model::setSENSORUART_RECEIVENUM( MRQ_SENSORUART_BAUD val0
 ,MRQ_SENSORUART_STATE_1 val1
 ,byte val2 )
@@ -4677,7 +4667,7 @@ int _MRQ_model::setSENSORUART_RECEIVENUM( MRQ_SENSORUART_BAUD val0
 	return ret;
 }
 //! ENUM,ENUM
-//! UART1|UART2,S1|NONE
+//! UART1|UART2,S1|S2|S3|S4
 int _MRQ_model::getSENSORUART_RECEIVENUM( MRQ_SENSORUART_BAUD val0
 ,MRQ_SENSORUART_STATE_1 val1, byte * val2, bool bQuery )
 {
@@ -4689,7 +4679,7 @@ int _MRQ_model::getSENSORUART_RECEIVENUM( MRQ_SENSORUART_BAUD val0
 	return 0;
 }
 //! ENUM,ENUM,U32
-//! UART1|UART2,S1|NONE
+//! UART1|UART2,S1|S2|S3|S4
 int _MRQ_model::setSENSORUART_SWITCHTIME( MRQ_SENSORUART_BAUD val0
 ,MRQ_SENSORUART_STATE_1 val1
 ,uint32 val2 )
@@ -4701,7 +4691,7 @@ int _MRQ_model::setSENSORUART_SWITCHTIME( MRQ_SENSORUART_BAUD val0
 	return ret;
 }
 //! ENUM,ENUM
-//! UART1|UART2,S1|NONE
+//! UART1|UART2,S1|S2|S3|S4
 int _MRQ_model::getSENSORUART_SWITCHTIME( MRQ_SENSORUART_BAUD val0
 ,MRQ_SENSORUART_STATE_1 val1, uint32 * val2, bool bQuery )
 {
@@ -4713,7 +4703,7 @@ int _MRQ_model::getSENSORUART_SWITCHTIME( MRQ_SENSORUART_BAUD val0
 	return 0;
 }
 //! ENUM,ENUM
-//! UART1|UART2,S1|NONE
+//! UART1|UART2,S1|S2|S3|S4
 int _MRQ_model::getSENSORUART_DATA( MRQ_SENSORUART_BAUD val0
 ,MRQ_SENSORUART_STATE_1 val1, byte * val2, char * val3, char * val4, char * val5, bool bQuery )
 {
@@ -4935,202 +4925,128 @@ int _MRQ_model::getPRESET_STOPDISTANCE( byte val0
 }
 //! ENUM
 //! OFF|ON
-int _MRQ_model::setOTP_STATE( MRQ_SYSTEM_REPORTSWITCH val0 )
+int _MRQ_model::setISOLATORIN_STATE( MRQ_SYSTEM_REPORTSWITCH val0 )
 {
-	//! 70 0
+	//! 72 0
 	int ret=0; 
-	mOTP_STATE = val0;
+	mISOLATORIN_STATE = val0;
 
 	return ret;
 }
 //! 
 //! 
-int _MRQ_model::getOTP_STATE(  MRQ_SYSTEM_REPORTSWITCH * val0, bool bQuery )
+int _MRQ_model::getISOLATORIN_STATE(  MRQ_SYSTEM_REPORTSWITCH * val0, bool bQuery )
 {
-	//! 70 1
+	//! 72 1
 	int ret = 0;
 
 	byte lval0 = 0;
-	*val0 = mOTP_STATE;
+	*val0 = mISOLATORIN_STATE;
 	return 0;
 }
-//! U16
-//! 
-int _MRQ_model::setOTP_THRESHOLD( uint16 val0 )
+//! ENUM
+//! RESERVE|LOW|RISE|FALL|HIGH
+int _MRQ_model::setISOLATORIN_TYPE( MRQ_TRIGGER_LEVELTYPE_1 val0 )
 {
-	//! 70 2
+	//! 72 2
 	int ret=0; 
-	mOTP_THRESHOLD = val0;
+	mISOLATORIN_TYPE = val0;
 
 	return ret;
 }
 //! 
 //! 
-int _MRQ_model::getOTP_THRESHOLD(  uint16 * val0, bool bQuery )
+int _MRQ_model::getISOLATORIN_TYPE(  MRQ_TRIGGER_LEVELTYPE_1 * val0, bool bQuery )
 {
-	//! 70 3
+	//! 72 3
 	int ret = 0;
 
-	uint16 lval0 = 0;
-	*val0 = mOTP_THRESHOLD;
+	byte lval0 = 0;
+	*val0 = mISOLATORIN_TYPE;
 	return 0;
 }
 //! ENUM
 //! NONE|ALARM|STOP|ALARM&STOP
-int _MRQ_model::setOTP_RESPONSE( MRQ_OUTOFSTEP_LINERESPONSE val0 )
+int _MRQ_model::setISOLATORIN_RESPONSE( MRQ_OUTOFSTEP_LINERESPONSE val0 )
 {
-	//! 70 4
+	//! 72 4
 	int ret=0; 
-	mOTP_RESPONSE = val0;
+	mISOLATORIN_RESPONSE = val0;
 
 	return ret;
 }
 //! 
 //! 
-int _MRQ_model::getOTP_RESPONSE(  MRQ_OUTOFSTEP_LINERESPONSE * val0, bool bQuery )
+int _MRQ_model::getISOLATORIN_RESPONSE(  MRQ_OUTOFSTEP_LINERESPONSE * val0, bool bQuery )
 {
-	//! 70 5
+	//! 72 5
 	int ret = 0;
 
 	byte lval0 = 0;
-	*val0 = mOTP_RESPONSE;
+	*val0 = mISOLATORIN_RESPONSE;
+	return 0;
+}
+//! U8
+//! [CHANNUM]
+int _MRQ_model::setISOLATORIN_RESPCHAN( byte val0 )
+{
+	//! 72 6
+	int ret=0; 
+	mISOLATORIN_RESPCHAN = val0;
+
+	return ret;
+}
+//! 
+//! 
+int _MRQ_model::getISOLATORIN_RESPCHAN(  byte * val0, bool bQuery )
+{
+	//! 72 7
+	int ret = 0;
+
+	byte lval0 = 0;
+	*val0 = mISOLATORIN_RESPCHAN;
+	return 0;
+}
+//! ENUM
+//! CONTINUED|INTERVAL|SINGLE
+int _MRQ_model::setISOLATORIN_SMODE( MRQ_TRIGGER_PATTSMODE val0 )
+{
+	//! 72 8
+	int ret=0; 
+	mISOLATORIN_SMODE = val0;
+
+	return ret;
+}
+//! 
+//! 
+int _MRQ_model::getISOLATORIN_SMODE(  MRQ_TRIGGER_PATTSMODE * val0, bool bQuery )
+{
+	//! 72 9
+	int ret = 0;
+
+	byte lval0 = 0;
+	*val0 = mISOLATORIN_SMODE;
 	return 0;
 }
 //! U32
 //! 
-int _MRQ_model::setOTP_PERIOD( uint32 val0 )
+int _MRQ_model::setISOLATORIN_SPERIOD( uint32 val0 )
 {
-	//! 70 6
+	//! 72 10
 	int ret=0; 
-	mOTP_PERIOD = val0;
+	mISOLATORIN_SPERIOD = val0;
 
 	return ret;
 }
 //! 
 //! 
-int _MRQ_model::getOTP_PERIOD(  uint32 * val0, bool bQuery )
+int _MRQ_model::getISOLATORIN_SPERIOD(  uint32 * val0, bool bQuery )
 {
-	//! 70 7
+	//! 72 11
 	int ret = 0;
 
 	uint32 lval0 = 0;
-	*val0 = mOTP_PERIOD;
-	return 0;
-}
-//! 
-//! 
-int _MRQ_model::getOTP_DATA(  uint32 * val0, bool bQuery )
-{
-	//! 70 8
-	int ret = 0;
-
-	uint32 lval0 = 0;
-	*val0 = mOTP_DATA;
-	return 0;
-}
-//! ENUM
-//! OFF|ON
-int _MRQ_model::setANALOGIN_STATE( MRQ_SYSTEM_REPORTSWITCH val0 )
-{
-	//! 71 0
-	int ret=0; 
-	mANALOGIN_STATE = val0;
-
-	return ret;
-}
-//! 
-//! 
-int _MRQ_model::getANALOGIN_STATE(  MRQ_SYSTEM_REPORTSWITCH * val0, bool bQuery )
-{
-	//! 71 1
-	int ret = 0;
-
-	byte lval0 = 0;
-	*val0 = mANALOGIN_STATE;
-	return 0;
-}
-//! F32
-//! 
-int _MRQ_model::setANALOGIN_THRESHOLDH( f32 val0 )
-{
-	//! 71 2
-	int ret=0; 
-	mANALOGIN_THRESHOLDH = val0;
-
-	return ret;
-}
-//! 
-//! 
-int _MRQ_model::getANALOGIN_THRESHOLDH(  f32 * val0, bool bQuery )
-{
-	//! 71 3
-	int ret = 0;
-
-	f32 lval0 = 0;
-	*val0 = mANALOGIN_THRESHOLDH;
-	return 0;
-}
-//! F32
-//! 
-int _MRQ_model::setANALOGIN_THRESHOLDL( f32 val0 )
-{
-	//! 71 4
-	int ret=0; 
-	mANALOGIN_THRESHOLDL = val0;
-
-	return ret;
-}
-//! 
-//! 
-int _MRQ_model::getANALOGIN_THRESHOLDL(  f32 * val0, bool bQuery )
-{
-	//! 71 5
-	int ret = 0;
-
-	f32 lval0 = 0;
-	*val0 = mANALOGIN_THRESHOLDL;
-	return 0;
-}
-//! ENUM
-//! NONE|ALARM|STOP|ALARM&STOP
-int _MRQ_model::setANALOGIN_RESPONSEH( MRQ_OUTOFSTEP_LINERESPONSE val0 )
-{
-	//! 71 6
-	int ret=0; 
-	mANALOGIN_RESPONSEH = val0;
-
-	return ret;
-}
-//! 
-//! 
-int _MRQ_model::getANALOGIN_RESPONSEH(  MRQ_OUTOFSTEP_LINERESPONSE * val0, bool bQuery )
-{
-	//! 71 7
-	int ret = 0;
-
-	byte lval0 = 0;
-	*val0 = mANALOGIN_RESPONSEH;
-	return 0;
-}
-//! ENUM
-//! NONE|ALARM|STOP|ALARM&STOP
-int _MRQ_model::setANALOGIN_RESPONSEL( MRQ_OUTOFSTEP_LINERESPONSE val0 )
-{
-	//! 71 8
-	int ret=0; 
-	mANALOGIN_RESPONSEL = val0;
-
-	return ret;
-}
-//! 
-//! 
-int _MRQ_model::getANALOGIN_RESPONSEL(  MRQ_OUTOFSTEP_LINERESPONSE * val0, bool bQuery )
-{
-	//! 71 9
-	int ret = 0;
-
-	byte lval0 = 0;
-	*val0 = mANALOGIN_RESPONSEL;
+	*val0 = mISOLATORIN_SPERIOD;
 	return 0;
 }
 }

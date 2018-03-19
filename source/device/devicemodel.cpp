@@ -23,7 +23,7 @@ int enum_toValue( const char* pStr, value_desc pDescs[], int cnt, int *pVal )
     strcpy( trimStr, pStr );
 
     //! remove the space
-    char space[]={' ', '\r', '\n' };
+    char space[]={' ', '\r', '\n', ',' };
     for ( int i = strlen(trimStr)-1; i >= 0; i-- )
     {
         for ( int j = 0; j < i_sizeof(space); j++ )

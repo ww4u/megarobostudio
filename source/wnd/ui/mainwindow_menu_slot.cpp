@@ -277,6 +277,8 @@ void MainWindow::on_actionpref_triggered( )
                                          mMcModel.mSysPref.mVelUnit );
 
         m_pSampleThread->setSampleInterval( mMcModel.mSysPref.mSampleTick );
+
+        mMcModel.postload();
     }
 }
 

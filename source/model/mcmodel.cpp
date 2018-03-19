@@ -17,6 +17,22 @@ void mcModel::preload()
     mDeviceDbs.load( DEVICE_TALBE_NAME );
 }
 
+void mcModel::postload()
+{
+    if ( m_pInstMgr->isListening() )
+    {
+        m_pInstMgr->stop();
+        sysLog( "port closed" );
+    }
+
+    if ( mSysPref.mMisaEn )
+    {
+        Q_ASSERT( NULL != m_pInstMgr );
+        m_pInstMgr->start( mSysPref.mMisaSocket );
+        sysLog( "port", QString::number( mSysPref.mMisaSocket ), "opened" );
+    }
+}
+
 mcConnection& mcModel::getConnection()
 {
     return mConn;
@@ -28,7 +44,7 @@ void mcModel::init()
 
     Q_ASSERT( NULL != m_pInstMgr );
 
-    m_pInstMgr->start();        //! start the server
+
 }
 void mcModel::deinit()
 {

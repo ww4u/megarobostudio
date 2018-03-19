@@ -5,6 +5,8 @@
 #include <QTcpSocket>
 #include <QSignalMapper>
 
+#define LISTEN_PORT     1234
+
 namespace MegaDevice
 {
 
@@ -29,8 +31,9 @@ protected Q_SLOTS:
     void slot_readyRead( QObject *pObj );
 
 public:
-    void start();
+    void start( quint32 port = LISTEN_PORT );
     void stop();
+    bool isListening();
 
 protected:
     QTcpServer mServer;

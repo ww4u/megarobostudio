@@ -35,11 +35,11 @@ int mrqSys::apply()
     Q_ASSERT( NULL != pDevice );
 
     //! otp
-    pDevice->setOTP_STATE( (MRQ_SYSTEM_REPORTSWITCH)ui->chkOtp->isChecked() );
-    pDevice->setOTP_THRESHOLD( ui->spinOtpTemperature->value()/otp_temprature_unit );
-    pDevice->setOTP_RESPONSE(
-                (MRQ_OUTOFSTEP_LINERESPONSE)ui->cmbAction->currentIndex()
-                );
+//    pDevice->setOTP_STATE( (MRQ_SYSTEM_REPORTSWITCH)ui->chkOtp->isChecked() );
+//    pDevice->setOTP_THRESHOLD( ui->spinOtpTemperature->value()/otp_temprature_unit );
+//    pDevice->setOTP_RESPONSE(
+//                (MRQ_OUTOFSTEP_LINERESPONSE)ui->cmbAction->currentIndex()
+//                );
 
     //! name
     pDevice->setName(
@@ -52,9 +52,9 @@ int mrqSys::apply()
 int mrqSys::updateUi()
 {
     //! otp
-    ui->chkOtp->setChecked( (bool)m_pMrqModel->mOTP_STATE );
-    ui->spinOtpTemperature->setValue( ( m_pMrqModel->mOTP_THRESHOLD)*otp_temprature_unit );
-    ui->cmbAction->setCurrentIndex( m_pMrqModel->mOTP_RESPONSE );
+//    ui->chkOtp->setChecked( (bool)m_pMrqModel->mOTP_STATE );
+//    ui->spinOtpTemperature->setValue( ( m_pMrqModel->mOTP_THRESHOLD)*otp_temprature_unit );
+//    ui->cmbAction->setCurrentIndex( m_pMrqModel->mOTP_RESPONSE );
 
     //! name
     ui->edtAlias->setText( m_pMrqModel->getName() );
@@ -64,7 +64,9 @@ int mrqSys::updateUi()
     return 0;
 }
 
-void mrqSys::on_chkLed_toggled( bool b )
+void mrqSys::on_chkLed_clicked(bool checked)
 {
-    m_pMrqModel->setCAN_NETMANAGELED( (MRQ_SYSTEM_REPORTSWITCH)b );
+    Q_ASSERT( getDevice() != NULL );
+
+    getDevice()->setCAN_NETMANAGELED( (MRQ_SYSTEM_REPORTSWITCH)checked );
 }

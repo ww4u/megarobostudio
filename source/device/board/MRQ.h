@@ -4,7 +4,7 @@
 
 namespace MegaDevice
 {
-class MRQ : public MRQ_model
+class MRQ :  public MRQ_model
 {
 public:
 MRQ();
@@ -105,7 +105,7 @@ int setMOTION_MINACCELERATION( byte val0
 ,f32 val1 );
 int getMOTION_MINACCELERATION( byte val0, f32 * val1, bool bQuery=true );
 int setMOTION_ORIGIN( byte val0
-,uint32 val1 );
+,f32 val1 );
 int getMOTION_ORIGIN( byte val0, uint32 * val1, bool bQuery=true );
 int setMOTION_GOORIGIN( byte val0 );
 int setMOTION_INITPOSITIONUNIT( byte val0
@@ -290,11 +290,8 @@ int setTRIGGER_PATTSTATE( byte val0
 int getTRIGGER_PATTSTATE( byte val0, MRQ_SYSTEM_REPORTSWITCH * val1, bool bQuery=true );
 int setTRIGGER_PATTERN( byte val0
 ,MRQ_TRIGGER_PATTERN val1
-,MRQ_TRIGGER_PATTERN val2
-,MRQ_TRIGGER_PATTERN val3
-,MRQ_TRIGGER_PATTERN val4
-,MRQ_TRIGGER_PATTERN val5 );
-int getTRIGGER_PATTERN( byte val0, MRQ_TRIGGER_PATTERN * val1, MRQ_TRIGGER_PATTERN * val2, MRQ_TRIGGER_PATTERN * val3, MRQ_TRIGGER_PATTERN * val4, MRQ_TRIGGER_PATTERN * val5, bool bQuery=true );
+,MRQ_TRIGGER_PATTERN val2 );
+int getTRIGGER_PATTERN( byte val0, MRQ_TRIGGER_PATTERN * val1, MRQ_TRIGGER_PATTERN * val2, bool bQuery=true );
 int setTRIGGER_PATTRESP( byte val0
 ,MRQ_OUTOFSTEP_LINERESPONSE val1 );
 int getTRIGGER_PATTRESP( byte val0, MRQ_OUTOFSTEP_LINERESPONSE * val1, bool bQuery=true );
@@ -305,30 +302,30 @@ int setTRIGGER_PATTSPERIOD( byte val0
 ,uint32 val1 );
 int getTRIGGER_PATTSPERIOD( byte val0, uint32 * val1, bool bQuery=true );
 int setTRIGGER_LEVELSTATE( byte val0
-,MRQ_MOTION_INITIOSIGNAL val1
+,MRQ_TRIGGER_LEVELSTATE val1
 ,MRQ_SYSTEM_REPORTSWITCH val2 );
 int getTRIGGER_LEVELSTATE( byte val0
-,MRQ_MOTION_INITIOSIGNAL val1, MRQ_SYSTEM_REPORTSWITCH * val2, bool bQuery=true );
+,MRQ_TRIGGER_LEVELSTATE val1, MRQ_SYSTEM_REPORTSWITCH * val2, bool bQuery=true );
 int setTRIGGER_LEVELTYPE( byte val0
-,MRQ_MOTION_INITIOSIGNAL val1
+,MRQ_TRIGGER_LEVELSTATE val1
 ,MRQ_TRIGGER_LEVELTYPE_1 val2 );
 int getTRIGGER_LEVELTYPE( byte val0
-,MRQ_MOTION_INITIOSIGNAL val1, MRQ_TRIGGER_LEVELTYPE_1 * val2, bool bQuery=true );
+,MRQ_TRIGGER_LEVELSTATE val1, MRQ_TRIGGER_LEVELTYPE_1 * val2, bool bQuery=true );
 int setTRIGGER_LEVELRESP( byte val0
-,MRQ_MOTION_INITIOSIGNAL val1
+,MRQ_TRIGGER_LEVELSTATE val1
 ,MRQ_OUTOFSTEP_LINERESPONSE val2 );
 int getTRIGGER_LEVELRESP( byte val0
-,MRQ_MOTION_INITIOSIGNAL val1, MRQ_OUTOFSTEP_LINERESPONSE * val2, bool bQuery=true );
+,MRQ_TRIGGER_LEVELSTATE val1, MRQ_OUTOFSTEP_LINERESPONSE * val2, bool bQuery=true );
 int setTRIGGER_LEVELSMODE( byte val0
-,MRQ_MOTION_INITIOSIGNAL val1
+,MRQ_TRIGGER_LEVELSTATE val1
 ,MRQ_TRIGGER_PATTSMODE val2 );
 int getTRIGGER_LEVELSMODE( byte val0
-,MRQ_MOTION_INITIOSIGNAL val1, MRQ_TRIGGER_PATTSMODE * val2, bool bQuery=true );
+,MRQ_TRIGGER_LEVELSTATE val1, MRQ_TRIGGER_PATTSMODE * val2, bool bQuery=true );
 int setTRIGGER_LEVELSPERIOD( byte val0
-,MRQ_MOTION_INITIOSIGNAL val1
+,MRQ_TRIGGER_LEVELSTATE val1
 ,f32 val2 );
 int getTRIGGER_LEVELSPERIOD( byte val0
-,MRQ_MOTION_INITIOSIGNAL val1, f32 * val2, bool bQuery=true );
+,MRQ_TRIGGER_LEVELSTATE val1, f32 * val2, bool bQuery=true );
 int getDRIVER_TYPE( byte val0, MRQ_DRIVER_TYPE * val1, bool bQuery=true );
 int getDRIVER_STATEREG( byte val0
 ,MRQ_DRIVER_STATEREG val1, uint32 * val2, bool bQuery=true );
@@ -349,8 +346,7 @@ int getDRIVER_REGCONFIG( byte val0
 int setDRIVER_SGLIMIT( byte val0
 ,MRQ_DRIVER_SGLIMIT val1
 ,int8 val2 );
-int getDRIVER_SGLIMIT( byte val0
-,MRQ_DRIVER_SGLIMIT val1, int8 * val2, bool bQuery=true );
+int getDRIVER_SGLIMIT( byte val0, MRQ_DRIVER_SGLIMIT * val1, int8 * val2, bool bQuery=true );
 int setDRIVER_SGPARASET( byte val0
 ,MRQ_DRIVER_SGPARASET val1
 ,int16 val2 );
@@ -474,25 +470,18 @@ int setPRESET_STOPDISTANCE( byte val0
 ,f32 val2 );
 int getPRESET_STOPDISTANCE( byte val0
 ,MRQ_PRESET_PVTCONFIG val1, f32 * val2, bool bQuery=true );
-int setOTP_STATE( MRQ_SYSTEM_REPORTSWITCH val0 );
-int getOTP_STATE(  MRQ_SYSTEM_REPORTSWITCH * val0, bool bQuery=true );
-int setOTP_THRESHOLD( uint16 val0 );
-int getOTP_THRESHOLD(  uint16 * val0, bool bQuery=true );
-int setOTP_RESPONSE( MRQ_OUTOFSTEP_LINERESPONSE val0 );
-int getOTP_RESPONSE(  MRQ_OUTOFSTEP_LINERESPONSE * val0, bool bQuery=true );
-int setOTP_PERIOD( uint32 val0 );
-int getOTP_PERIOD(  uint32 * val0, bool bQuery=true );
-int getOTP_DATA(  uint32 * val0, bool bQuery=true );
-int setANALOGIN_STATE( MRQ_SYSTEM_REPORTSWITCH val0 );
-int getANALOGIN_STATE(  MRQ_SYSTEM_REPORTSWITCH * val0, bool bQuery=true );
-int setANALOGIN_THRESHOLDH( f32 val0 );
-int getANALOGIN_THRESHOLDH(  f32 * val0, bool bQuery=true );
-int setANALOGIN_THRESHOLDL( f32 val0 );
-int getANALOGIN_THRESHOLDL(  f32 * val0, bool bQuery=true );
-int setANALOGIN_RESPONSEH( MRQ_OUTOFSTEP_LINERESPONSE val0 );
-int getANALOGIN_RESPONSEH(  MRQ_OUTOFSTEP_LINERESPONSE * val0, bool bQuery=true );
-int setANALOGIN_RESPONSEL( MRQ_OUTOFSTEP_LINERESPONSE val0 );
-int getANALOGIN_RESPONSEL(  MRQ_OUTOFSTEP_LINERESPONSE * val0, bool bQuery=true );
+int setISOLATORIN_STATE( MRQ_SYSTEM_REPORTSWITCH val0 );
+int getISOLATORIN_STATE(  MRQ_SYSTEM_REPORTSWITCH * val0, bool bQuery=true );
+int setISOLATORIN_TYPE( MRQ_TRIGGER_LEVELTYPE_1 val0 );
+int getISOLATORIN_TYPE(  MRQ_TRIGGER_LEVELTYPE_1 * val0, bool bQuery=true );
+int setISOLATORIN_RESPONSE( MRQ_OUTOFSTEP_LINERESPONSE val0 );
+int getISOLATORIN_RESPONSE(  MRQ_OUTOFSTEP_LINERESPONSE * val0, bool bQuery=true );
+int setISOLATORIN_RESPCHAN( byte val0 );
+int getISOLATORIN_RESPCHAN(  byte * val0, bool bQuery=true );
+int setISOLATORIN_SMODE( MRQ_TRIGGER_PATTSMODE val0 );
+int getISOLATORIN_SMODE(  MRQ_TRIGGER_PATTSMODE * val0, bool bQuery=true );
+int setISOLATORIN_SPERIOD( uint32 val0 );
+int getISOLATORIN_SPERIOD(  uint32 * val0, bool bQuery=true );
 };
 }
 #endif

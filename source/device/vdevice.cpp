@@ -75,4 +75,7 @@ void VDevice::rst()
 int VDevice::upload()
 { return 0; }
 
+int VDevice::uploadSetting()
+{ return 0; }
+
 }

@@ -1,7 +1,6 @@
 #include "instserver.h"
 #include <QDebug>
 
-#define LISTEN_PORT     1234
 
 namespace MegaDevice
 {
@@ -63,7 +62,7 @@ void instServer::slot_readyRead( QObject *pObj )
     Q_ASSERT( NULL != pObj );
 
     QTcpSocket *pSocket = (QTcpSocket *)pObj;
-
+qDebug()<<__FUNCTION__<<__LINE__;
     //! set obj name
     //! do not set name
     if ( pSocket->objectName().length() < 1 )
@@ -86,9 +85,9 @@ void instServer::slot_readyRead( QObject *pObj )
     }
 }
 
-void instServer::start()
+void instServer::start( quint32 port )
 {
-    if ( mServer.listen( QHostAddress::Any, LISTEN_PORT ) )
+    if ( mServer.listen( QHostAddress::Any, port ) )
     {
         qDebug()<<__FUNCTION__<<__LINE__<<mServer.serverAddress()<<mServer.serverPort();
         qDebug()<<mServer.errorString();
@@ -99,6 +98,10 @@ void instServer::start()
 void instServer::stop()
 {
     mServer.close();
+}
+bool instServer::isListening()
+{
+    return mServer.isListening();
 }
 
 }

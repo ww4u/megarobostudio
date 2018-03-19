@@ -147,7 +147,8 @@ bool sampleProxy::sample( int tickus,
     if ( mTimer.tick(tickus) )
     {}
     else
-    { logDbg(); return false; }
+    { //logDbg();
+        return false; }
 
     Q_ASSERT( NULL != pItem );
     Q_ASSERT( NULL != pMrq );

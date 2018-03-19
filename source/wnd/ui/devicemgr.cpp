@@ -167,7 +167,7 @@ void deviceMgr::updatePhyBusTree( VRoboList *pRoboList )
         //! model
         pMrqModel = ((MegaDevice::deviceMRQ *)pDev)->getModel();
         Q_ASSERT( NULL != pMrqModel );
-
+logDbg()<<QString::number( (quint32)pMrqModel, 16 );
         pItemDev->setText( 0, pMrqModel->getFullDesc() );
         pItemDev->setToolTip( 0, pDev->name() );
 
@@ -258,7 +258,7 @@ int deviceMgr::postLoadOn( appMsg msg, void *pPara )
 {
     Q_ASSERT( m_pMRQ != NULL );
 
-    int ret = m_pMRQ->loadOn();
+    int ret = m_pMRQ->uploadSetting();
 
     return ret;
 }

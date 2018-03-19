@@ -62,6 +62,8 @@ public:
 
     int moveTest( WorldPoint &pt1, WorldPoint &pt2, float dt );
 
+    int nowPose( WorldPoint &pos );
+
 protected:
     int buildTrace( WorldPoint &pt1,
                     WorldPoint &pt2,

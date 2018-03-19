@@ -3,7 +3,7 @@
 
 #include "../../../include/mcstd.h"
 
-
+#include <QtSql>
 
 sysPref::sysPref(QWidget *parent) :
     QDialog(parent),
@@ -21,6 +21,19 @@ sysPref::sysPref(QWidget *parent) :
     ui->cmbSendTo->setValidator( pIntValidator );
     ui->cmbRecvFrom->setValidator( pIntValidator );
     ui->cmbRecvTo->setValidator( pIntValidator );
+
+    //! db changed
+    connect( ui->edtHost, SIGNAL(textChanged(const QString &)),
+             this, SLOT(slot_updateValidateEn()) );
+    connect( ui->edtDbName, SIGNAL(textChanged(const QString &)),
+             this, SLOT(slot_updateValidateEn()) );
+    connect( ui->edtUserName, SIGNAL(textChanged(const QString &)),
+             this, SLOT(slot_updateValidateEn()) );
+    connect( ui->edtTableName, SIGNAL(textChanged(const QString &)),
+             this, SLOT(slot_updateValidateEn()) );
+    connect( ui->edtPassword, SIGNAL(textChanged(const QString &)),
+             this, SLOT(slot_updateValidateEn()) );
+
 }
 
 sysPref::~sysPref()
@@ -76,6 +89,12 @@ void sysPref::updateUi()
     ui->edtUserName->setText( mPref.mDbMeta.mUserName );
     ui->edtPassword->setText( mPref.mDbMeta.mPassword );
 
+    //    slot_updateValidateEn();
+
+    //! misa
+    ui->chkMisaEn->setChecked( mPref.mMisaEn );
+    ui->spinMisaSocket->setValue( mPref.mMisaSocket );
+logDbg()<<mPref.mMisaEn<<mPref.mMisaSocket;
     ui->tempPath->setText( mPref.mDumpPath );
 }
 
@@ -114,6 +133,72 @@ void sysPref::updateData()
     mPref.mDbMeta.mTableName = ui->edtTableName->text();
     mPref.mDbMeta.mUserName = ui->edtUserName->text();
     mPref.mDbMeta.mPassword = ui->edtPassword->text();
+
+    //! misa
+    mPref.mMisaEn = ui->chkMisaEn->isChecked();
+    mPref.mMisaSocket = ui->spinMisaSocket->value();
+}
+
+bool sysPref::validateDb()
+{
+    bool bRet = false;
+    do
+    {
+        //! db
+        QSqlDatabase db = QSqlDatabase::addDatabase( "QMYSQL", "verify" );
+        if ( !db.isValid() )
+        {
+            logDbg()<<db.lastError().text();
+            return false;
+        }
+
+        //! open db
+        db.setHostName( ui->edtHost->text() );
+        db.setDatabaseName( ui->edtDbName->text() );
+        db.setUserName( ui->edtUserName->text() );
+        db.setPassword( ui->edtPassword->text() );
+        bRet = db.open();
+        if ( !bRet )
+        {
+            logDbg();
+            break;
+        }
+
+        //! open table
+        QString str;
+        QSqlQuery query(db);
+        str = QString( "SELECT * from %1" ).arg( ui->edtTableName->text() );
+        logDbg()<<str;
+        bRet = query.exec( str );
+
+
+    }while( 0 );
+
+    //! remove the database
+    QSqlDatabase::removeDatabase( "verify" );
+
+    return bRet;
+}
+
+bool sysPref::updateValidateEn()
+{
+    QLineEdit *lineEdits[]= {
+        ui->edtDbName,
+        ui->edtHost,
+        ui->edtTableName,
+        ui->edtUserName,
+        ui->edtPassword,
+    };
+
+    for ( int i = 0; i < sizeof_array(lineEdits); i++ )
+    {
+        if ( lineEdits[i]->text().length() > 0 )
+        {}
+        else
+        { return false; }
+    }
+
+    return true;
 }
 
 void sysPref::on_buttonBox_clicked(QAbstractButton *button)
@@ -153,4 +238,23 @@ void sysPref::on_btnDetail_clicked()
     //! \todo linux
     logDbg()<<str;
     QProcess::execute( "explorer.exe", args );
+}
+
+void sysPref::on_btnVerify_clicked()
+{
+    if ( validateDb() )
+    {
+        QMessageBox::information( this, tr("Success"), tr("Success") );
+    }
+    else
+    {
+        QMessageBox::warning( this, tr("Fail"), tr("Fail") );
+    }
+}
+
+void sysPref::slot_updateValidateEn()
+{
+    bool bRet = updateValidateEn();
+
+    ui->btnVerify->setEnabled( bRet );
 }

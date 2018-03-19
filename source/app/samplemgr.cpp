@@ -119,7 +119,7 @@ void sampleMgr::sampleProc( int tickus,
     }
 
     //! commit to db
-//    commitProc( commitList, valList );
+    commitProc( commitList, valList );
 }
 
 bool sampleMgr::proxySample( sampleProxy *pProxy, int tickus, spyItem *pItem )
@@ -170,7 +170,7 @@ void sampleMgr::commitProc( QList< sampleProxy *> &commitList,
         }
 
         //! upload
-        QSqlQuery query;
+        QSqlQuery query(db);
         QString str;
         sampleProxy *pItem;
         spyItem *pValItem;

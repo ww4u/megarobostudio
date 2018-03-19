@@ -79,12 +79,15 @@ int mrqAxes::apply()
     pDevice->setDRIVER_MICROSTEPS( mAxesId, (MRQ_DRIVER_MICROSTEPS)ui->cmbDrvVernier->currentIndex() );
 
     //! encoder
+    pDevice->setENCODER_STATE( mAxesId, (MRQ_ENCODER_STATE)ui->cmbEncState->currentIndex() );
     pDevice->setENCODER_TYPE( mAxesId,
                                   (MRQ_ENCODER_TYPE)ui->cmbEncType->currentIndex() );
     pDevice->setENCODER_CHANNELNUM( mAxesId,
                                         (MRQ_ENCODER_CHANNELNUM)ui->cmbEncChs->currentIndex() );
     pDevice->setENCODER_MULTIPLE( mAxesId,
                                       (MRQ_ENCODER_MULTIPLE)ui->cmbEncMul->currentIndex() );
+    pDevice->setENCODER_LINENUM( mAxesId,
+                                 ui->spinEncLine->value() );
 
     //! lead
     pDevice->setMOTOR_GEARRATIONUM( mAxesId, ui->spinSlowMotor->value() );
@@ -122,9 +125,11 @@ int mrqAxes::updateUi()
     ui->cmbDrvVernier->setCurrentIndex( pModel->mDRIVER_MICROSTEPS[mAxesId] );
 
     //! encoder
+    ui->cmbEncState->setCurrentIndex( pModel->mENCODER_STATE[mAxesId] );
     ui->cmbEncType->setCurrentIndex( pModel->mENCODER_TYPE[mAxesId] );
     ui->cmbEncChs->setCurrentIndex( pModel->mENCODER_CHANNELNUM[mAxesId] );
     ui->cmbEncMul->setCurrentIndex( pModel->mENCODER_MULTIPLE[mAxesId] );
+    ui->spinEncLine->setValue( pModel->mENCODER_LINENUM[mAxesId] );
 
     //! transfer
     ui->spinSlowGear->setValue( ( pModel->mMOTOR_GEARRATIODEN[mAxesId]) );

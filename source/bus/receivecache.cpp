@@ -384,6 +384,9 @@ void receiveCache::run()
 {
     Q_ASSERT( NULL!=m_pBus );
 
+    //! highest
+//    QThread::setPriority( QThread::TimeCriticalPriority );
+
     int len;
     int ret, frameId;
 logDbg();

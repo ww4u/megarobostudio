@@ -70,6 +70,8 @@ void interruptThread::setInstMgr( MegaDevice::InstMgr *pInstMgr )
 
 void interruptThread::run()
 {
+//    setPriority( QThread::TimeCriticalPriority );
+
     QThread::run();
 }
 

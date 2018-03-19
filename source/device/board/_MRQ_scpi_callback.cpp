@@ -1388,10 +1388,9 @@ static scpi_result_t _scpi_setMOTION_ORIGIN( scpi_t * context )
         { return SCPI_RES_ERR; }
 	val0 = (byte)localIntVal;
 
-	uint32 val1;
-	if ( SCPI_ParamInt32(context, &localIntVal, true) != SCPI_RES_OK ) 
+	f32 val1;
+	if ( SCPI_ParamFloat(context, &val1, true) != SCPI_RES_OK )
         { return SCPI_RES_ERR; }
-	val1 = (uint32)localIntVal;
 
 	(SET_OBJ(context))->setMOTION_ORIGIN( val0, val1 );
 	return SCPI_RES_OK;
@@ -3789,31 +3788,7 @@ static scpi_result_t _scpi_setTRIGGER_PATTERN( scpi_t * context )
 	if ( MRQ_TRIGGER_PATTERN_toValue( pLocalStr, &val2) != 0 ) 
         { return SCPI_RES_ERR; }
 
-	MRQ_TRIGGER_PATTERN val3;
-	if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
-        { return SCPI_RES_ERR; }
-	if (strLen < 1)
-        { return SCPI_RES_ERR; }
-	if ( MRQ_TRIGGER_PATTERN_toValue( pLocalStr, &val3) != 0 ) 
-        { return SCPI_RES_ERR; }
-
-	MRQ_TRIGGER_PATTERN val4;
-	if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
-        { return SCPI_RES_ERR; }
-	if (strLen < 1)
-        { return SCPI_RES_ERR; }
-	if ( MRQ_TRIGGER_PATTERN_toValue( pLocalStr, &val4) != 0 ) 
-        { return SCPI_RES_ERR; }
-
-	MRQ_TRIGGER_PATTERN val5;
-	if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
-        { return SCPI_RES_ERR; }
-	if (strLen < 1)
-        { return SCPI_RES_ERR; }
-	if ( MRQ_TRIGGER_PATTERN_toValue( pLocalStr, &val5) != 0 ) 
-        { return SCPI_RES_ERR; }
-
-	(SET_OBJ(context))->setTRIGGER_PATTERN( val0, val1, val2, val3, val4, val5 );
+	(SET_OBJ(context))->setTRIGGER_PATTERN( val0, val1, val2 );
 	return SCPI_RES_OK;
 }
 static scpi_result_t _scpi_getTRIGGER_PATTERN( scpi_t * context )
@@ -3830,34 +3805,13 @@ static scpi_result_t _scpi_getTRIGGER_PATTERN( scpi_t * context )
 
 	MRQ_TRIGGER_PATTERN oval1;
 
-	MRQ_TRIGGER_PATTERN oval2;
-
-	MRQ_TRIGGER_PATTERN oval3;
-
-	MRQ_TRIGGER_PATTERN oval4;
-
-	(GET_OBJ(context))->getTRIGGER_PATTERN( val0, &oval0, &oval1, &oval2, &oval3, &oval4 );
+	(GET_OBJ(context))->getTRIGGER_PATTERN( val0, &oval0, &oval1 );
 	pLocalStr = MRQ_TRIGGER_PATTERN_toString( oval0);
 	if ( pLocalStr == NULL ) 
         { return SCPI_RES_ERR; } 
 	SCPI_ResultText(context, pLocalStr);
 
 	pLocalStr = MRQ_TRIGGER_PATTERN_toString( oval1);
-	if ( pLocalStr == NULL ) 
-        { return SCPI_RES_ERR; } 
-	SCPI_ResultText(context, pLocalStr);
-
-	pLocalStr = MRQ_TRIGGER_PATTERN_toString( oval2);
-	if ( pLocalStr == NULL ) 
-        { return SCPI_RES_ERR; } 
-	SCPI_ResultText(context, pLocalStr);
-
-	pLocalStr = MRQ_TRIGGER_PATTERN_toString( oval3);
-	if ( pLocalStr == NULL ) 
-        { return SCPI_RES_ERR; } 
-	SCPI_ResultText(context, pLocalStr);
-
-	pLocalStr = MRQ_TRIGGER_PATTERN_toString( oval4);
 	if ( pLocalStr == NULL ) 
         { return SCPI_RES_ERR; } 
 	SCPI_ResultText(context, pLocalStr);
@@ -3995,12 +3949,12 @@ static scpi_result_t _scpi_setTRIGGER_LEVELSTATE( scpi_t * context )
         { return SCPI_RES_ERR; }
 	val0 = (byte)localIntVal;
 
-	MRQ_MOTION_INITIOSIGNAL val1;
+	MRQ_TRIGGER_LEVELSTATE val1;
 	if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
         { return SCPI_RES_ERR; }
 	if (strLen < 1)
         { return SCPI_RES_ERR; }
-	if ( MRQ_MOTION_INITIOSIGNAL_toValue( pLocalStr, &val1) != 0 ) 
+	if ( MRQ_TRIGGER_LEVELSTATE_toValue( pLocalStr, &val1) != 0 ) 
         { return SCPI_RES_ERR; }
 
 	MRQ_SYSTEM_REPORTSWITCH val2;
@@ -4024,12 +3978,12 @@ static scpi_result_t _scpi_getTRIGGER_LEVELSTATE( scpi_t * context )
         { return SCPI_RES_ERR; }
 	val0 = (byte)localIntVal;
 
-	MRQ_MOTION_INITIOSIGNAL val1;
+	MRQ_TRIGGER_LEVELSTATE val1;
 	if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
         { return SCPI_RES_ERR; }
 	if (strLen < 1)
         { return SCPI_RES_ERR; }
-	if ( MRQ_MOTION_INITIOSIGNAL_toValue( pLocalStr, &val1) != 0 ) 
+	if ( MRQ_TRIGGER_LEVELSTATE_toValue( pLocalStr, &val1) != 0 ) 
         { return SCPI_RES_ERR; }
 
 	MRQ_SYSTEM_REPORTSWITCH oval0;
@@ -4053,12 +4007,12 @@ static scpi_result_t _scpi_setTRIGGER_LEVELTYPE( scpi_t * context )
         { return SCPI_RES_ERR; }
 	val0 = (byte)localIntVal;
 
-	MRQ_MOTION_INITIOSIGNAL val1;
+	MRQ_TRIGGER_LEVELSTATE val1;
 	if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
         { return SCPI_RES_ERR; }
 	if (strLen < 1)
         { return SCPI_RES_ERR; }
-	if ( MRQ_MOTION_INITIOSIGNAL_toValue( pLocalStr, &val1) != 0 ) 
+	if ( MRQ_TRIGGER_LEVELSTATE_toValue( pLocalStr, &val1) != 0 ) 
         { return SCPI_RES_ERR; }
 
 	MRQ_TRIGGER_LEVELTYPE_1 val2;
@@ -4082,12 +4036,12 @@ static scpi_result_t _scpi_getTRIGGER_LEVELTYPE( scpi_t * context )
         { return SCPI_RES_ERR; }
 	val0 = (byte)localIntVal;
 
-	MRQ_MOTION_INITIOSIGNAL val1;
+	MRQ_TRIGGER_LEVELSTATE val1;
 	if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
         { return SCPI_RES_ERR; }
 	if (strLen < 1)
         { return SCPI_RES_ERR; }
-	if ( MRQ_MOTION_INITIOSIGNAL_toValue( pLocalStr, &val1) != 0 ) 
+	if ( MRQ_TRIGGER_LEVELSTATE_toValue( pLocalStr, &val1) != 0 ) 
         { return SCPI_RES_ERR; }
 
 	MRQ_TRIGGER_LEVELTYPE_1 oval0;
@@ -4111,12 +4065,12 @@ static scpi_result_t _scpi_setTRIGGER_LEVELRESP( scpi_t * context )
         { return SCPI_RES_ERR; }
 	val0 = (byte)localIntVal;
 
-	MRQ_MOTION_INITIOSIGNAL val1;
+	MRQ_TRIGGER_LEVELSTATE val1;
 	if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
         { return SCPI_RES_ERR; }
 	if (strLen < 1)
         { return SCPI_RES_ERR; }
-	if ( MRQ_MOTION_INITIOSIGNAL_toValue( pLocalStr, &val1) != 0 ) 
+	if ( MRQ_TRIGGER_LEVELSTATE_toValue( pLocalStr, &val1) != 0 ) 
         { return SCPI_RES_ERR; }
 
 	MRQ_OUTOFSTEP_LINERESPONSE val2;
@@ -4140,12 +4094,12 @@ static scpi_result_t _scpi_getTRIGGER_LEVELRESP( scpi_t * context )
         { return SCPI_RES_ERR; }
 	val0 = (byte)localIntVal;
 
-	MRQ_MOTION_INITIOSIGNAL val1;
+	MRQ_TRIGGER_LEVELSTATE val1;
 	if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
         { return SCPI_RES_ERR; }
 	if (strLen < 1)
         { return SCPI_RES_ERR; }
-	if ( MRQ_MOTION_INITIOSIGNAL_toValue( pLocalStr, &val1) != 0 ) 
+	if ( MRQ_TRIGGER_LEVELSTATE_toValue( pLocalStr, &val1) != 0 ) 
         { return SCPI_RES_ERR; }
 
 	MRQ_OUTOFSTEP_LINERESPONSE oval0;
@@ -4169,12 +4123,12 @@ static scpi_result_t _scpi_setTRIGGER_LEVELSMODE( scpi_t * context )
         { return SCPI_RES_ERR; }
 	val0 = (byte)localIntVal;
 
-	MRQ_MOTION_INITIOSIGNAL val1;
+	MRQ_TRIGGER_LEVELSTATE val1;
 	if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
         { return SCPI_RES_ERR; }
 	if (strLen < 1)
         { return SCPI_RES_ERR; }
-	if ( MRQ_MOTION_INITIOSIGNAL_toValue( pLocalStr, &val1) != 0 ) 
+	if ( MRQ_TRIGGER_LEVELSTATE_toValue( pLocalStr, &val1) != 0 ) 
         { return SCPI_RES_ERR; }
 
 	MRQ_TRIGGER_PATTSMODE val2;
@@ -4198,12 +4152,12 @@ static scpi_result_t _scpi_getTRIGGER_LEVELSMODE( scpi_t * context )
         { return SCPI_RES_ERR; }
 	val0 = (byte)localIntVal;
 
-	MRQ_MOTION_INITIOSIGNAL val1;
+	MRQ_TRIGGER_LEVELSTATE val1;
 	if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
         { return SCPI_RES_ERR; }
 	if (strLen < 1)
         { return SCPI_RES_ERR; }
-	if ( MRQ_MOTION_INITIOSIGNAL_toValue( pLocalStr, &val1) != 0 ) 
+	if ( MRQ_TRIGGER_LEVELSTATE_toValue( pLocalStr, &val1) != 0 ) 
         { return SCPI_RES_ERR; }
 
 	MRQ_TRIGGER_PATTSMODE oval0;
@@ -4227,12 +4181,12 @@ static scpi_result_t _scpi_setTRIGGER_LEVELSPERIOD( scpi_t * context )
         { return SCPI_RES_ERR; }
 	val0 = (byte)localIntVal;
 
-	MRQ_MOTION_INITIOSIGNAL val1;
+	MRQ_TRIGGER_LEVELSTATE val1;
 	if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
         { return SCPI_RES_ERR; }
 	if (strLen < 1)
         { return SCPI_RES_ERR; }
-	if ( MRQ_MOTION_INITIOSIGNAL_toValue( pLocalStr, &val1) != 0 ) 
+	if ( MRQ_TRIGGER_LEVELSTATE_toValue( pLocalStr, &val1) != 0 ) 
         { return SCPI_RES_ERR; }
 
 	f32 val2;
@@ -4252,12 +4206,12 @@ static scpi_result_t _scpi_getTRIGGER_LEVELSPERIOD( scpi_t * context )
         { return SCPI_RES_ERR; }
 	val0 = (byte)localIntVal;
 
-	MRQ_MOTION_INITIOSIGNAL val1;
+	MRQ_TRIGGER_LEVELSTATE val1;
 	if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
         { return SCPI_RES_ERR; }
 	if (strLen < 1)
         { return SCPI_RES_ERR; }
-	if ( MRQ_MOTION_INITIOSIGNAL_toValue( pLocalStr, &val1) != 0 ) 
+	if ( MRQ_TRIGGER_LEVELSTATE_toValue( pLocalStr, &val1) != 0 ) 
         { return SCPI_RES_ERR; }
 
 	f32 oval0;
@@ -4521,18 +4475,17 @@ static scpi_result_t _scpi_getDRIVER_SGLIMIT( scpi_t * context )
         { return SCPI_RES_ERR; }
 	val0 = (byte)localIntVal;
 
-	MRQ_DRIVER_SGLIMIT val1;
-	if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
-        { return SCPI_RES_ERR; }
-	if (strLen < 1)
-        { return SCPI_RES_ERR; }
-	if ( MRQ_DRIVER_SGLIMIT_toValue( pLocalStr, &val1) != 0 ) 
-        { return SCPI_RES_ERR; }
+	MRQ_DRIVER_SGLIMIT oval0;
 
-	int8 oval0;
+	int8 oval1;
 
-	(GET_OBJ(context))->getDRIVER_SGLIMIT( val0, val1, &oval0 );
-	SCPI_ResultInt32(context, oval0);
+	(GET_OBJ(context))->getDRIVER_SGLIMIT( val0, &oval0, &oval1 );
+	pLocalStr = MRQ_DRIVER_SGLIMIT_toString( oval0);
+	if ( pLocalStr == NULL ) 
+        { return SCPI_RES_ERR; } 
+	SCPI_ResultText(context, pLocalStr);
+
+	SCPI_ResultInt32(context, oval1);
 
 	return SCPI_RES_OK;
 }
@@ -5100,7 +5053,7 @@ static scpi_result_t _scpi_setSENSORUART_BAUD( scpi_t * context )
 
 	MRQ_SENSORUART_BAUD val0;
 	if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
-        { return SCPI_RES_ERR; }
+        { return SCPI_RES_ERR; }logDbg()<<pLocalStr<<strLen;
 	if (strLen < 1)
         { return SCPI_RES_ERR; }
 	if ( MRQ_SENSORUART_BAUD_toValue( pLocalStr, &val0) != 0 ) 
@@ -5108,7 +5061,7 @@ static scpi_result_t _scpi_setSENSORUART_BAUD( scpi_t * context )
 
 	MRQ_RS232_BAUD val1;
 	if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
-        { return SCPI_RES_ERR; }
+        { return SCPI_RES_ERR; }logDbg()<<pLocalStr;
 	if (strLen < 1)
         { return SCPI_RES_ERR; }
 	if ( MRQ_RS232_BAUD_toValue( pLocalStr, &val1) != 0 ) 
@@ -5377,7 +5330,7 @@ static scpi_result_t _scpi_setSENSORUART_STATE( scpi_t * context )
 	if (strLen < 1)
         { return SCPI_RES_ERR; }
 	if ( MRQ_SYSTEM_REPORTSWITCH_toValue( pLocalStr, &val2) != 0 ) 
-        { return SCPI_RES_ERR; }
+        { return SCPI_RES_ERR; }logDbg()<<pLocalStr<<val2;
 
 	(SET_OBJ(context))->setSENSORUART_STATE( val0, val1, val2 );
 	return SCPI_RES_OK;
@@ -6128,7 +6081,7 @@ static scpi_result_t _scpi_getPRESET_STOPDISTANCE( scpi_t * context )
 
 	return SCPI_RES_OK;
 }
-static scpi_result_t _scpi_setOTP_STATE( scpi_t * context )
+static scpi_result_t _scpi_setISOLATORIN_STATE( scpi_t * context )
 {
 	// write
 	CHECK_CONTEXT();
@@ -6142,17 +6095,17 @@ static scpi_result_t _scpi_setOTP_STATE( scpi_t * context )
 	if ( MRQ_SYSTEM_REPORTSWITCH_toValue( pLocalStr, &val0) != 0 ) 
         { return SCPI_RES_ERR; }
 
-	(SET_OBJ(context))->setOTP_STATE( val0 );
+	(SET_OBJ(context))->setISOLATORIN_STATE( val0 );
 	return SCPI_RES_OK;
 }
-static scpi_result_t _scpi_getOTP_STATE( scpi_t * context )
+static scpi_result_t _scpi_getISOLATORIN_STATE( scpi_t * context )
 {
 	// read
 	DEF_LOCAL_VAR();
 
 	MRQ_SYSTEM_REPORTSWITCH oval0;
 
-	(GET_OBJ(context))->getOTP_STATE( &oval0 );
+	(GET_OBJ(context))->getISOLATORIN_STATE( &oval0 );
 	pLocalStr = MRQ_SYSTEM_REPORTSWITCH_toString( oval0);
 	if ( pLocalStr == NULL ) 
         { return SCPI_RES_ERR; } 
@@ -6160,33 +6113,39 @@ static scpi_result_t _scpi_getOTP_STATE( scpi_t * context )
 
 	return SCPI_RES_OK;
 }
-static scpi_result_t _scpi_setOTP_THRESHOLD( scpi_t * context )
+static scpi_result_t _scpi_setISOLATORIN_TYPE( scpi_t * context )
 {
 	// write
 	CHECK_CONTEXT();
 	DEF_LOCAL_VAR();
 
-	uint16 val0;
-	if ( SCPI_ParamInt32(context, &localIntVal, true) != SCPI_RES_OK ) 
+	MRQ_TRIGGER_LEVELTYPE_1 val0;
+	if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
         { return SCPI_RES_ERR; }
-	val0 = (uint16)localIntVal;
+	if (strLen < 1)
+        { return SCPI_RES_ERR; }
+	if ( MRQ_TRIGGER_LEVELTYPE_1_toValue( pLocalStr, &val0) != 0 ) 
+        { return SCPI_RES_ERR; }
 
-	(SET_OBJ(context))->setOTP_THRESHOLD( val0 );
+	(SET_OBJ(context))->setISOLATORIN_TYPE( val0 );
 	return SCPI_RES_OK;
 }
-static scpi_result_t _scpi_getOTP_THRESHOLD( scpi_t * context )
+static scpi_result_t _scpi_getISOLATORIN_TYPE( scpi_t * context )
 {
 	// read
 	DEF_LOCAL_VAR();
 
-	uint16 oval0;
+	MRQ_TRIGGER_LEVELTYPE_1 oval0;
 
-	(GET_OBJ(context))->getOTP_THRESHOLD( &oval0 );
-	SCPI_ResultInt32(context, oval0);
+	(GET_OBJ(context))->getISOLATORIN_TYPE( &oval0 );
+	pLocalStr = MRQ_TRIGGER_LEVELTYPE_1_toString( oval0);
+	if ( pLocalStr == NULL ) 
+        { return SCPI_RES_ERR; } 
+	SCPI_ResultText(context, pLocalStr);
 
 	return SCPI_RES_OK;
 }
-static scpi_result_t _scpi_setOTP_RESPONSE( scpi_t * context )
+static scpi_result_t _scpi_setISOLATORIN_RESPONSE( scpi_t * context )
 {
 	// write
 	CHECK_CONTEXT();
@@ -6200,17 +6159,17 @@ static scpi_result_t _scpi_setOTP_RESPONSE( scpi_t * context )
 	if ( MRQ_OUTOFSTEP_LINERESPONSE_toValue( pLocalStr, &val0) != 0 ) 
         { return SCPI_RES_ERR; }
 
-	(SET_OBJ(context))->setOTP_RESPONSE( val0 );
+	(SET_OBJ(context))->setISOLATORIN_RESPONSE( val0 );
 	return SCPI_RES_OK;
 }
-static scpi_result_t _scpi_getOTP_RESPONSE( scpi_t * context )
+static scpi_result_t _scpi_getISOLATORIN_RESPONSE( scpi_t * context )
 {
 	// read
 	DEF_LOCAL_VAR();
 
 	MRQ_OUTOFSTEP_LINERESPONSE oval0;
 
-	(GET_OBJ(context))->getOTP_RESPONSE( &oval0 );
+	(GET_OBJ(context))->getISOLATORIN_RESPONSE( &oval0 );
 	pLocalStr = MRQ_OUTOFSTEP_LINERESPONSE_toString( oval0);
 	if ( pLocalStr == NULL ) 
         { return SCPI_RES_ERR; } 
@@ -6218,7 +6177,65 @@ static scpi_result_t _scpi_getOTP_RESPONSE( scpi_t * context )
 
 	return SCPI_RES_OK;
 }
-static scpi_result_t _scpi_setOTP_PERIOD( scpi_t * context )
+static scpi_result_t _scpi_setISOLATORIN_RESPCHAN( scpi_t * context )
+{
+	// write
+	CHECK_CONTEXT();
+	DEF_LOCAL_VAR();
+
+	byte val0;
+	if ( SCPI_ParamInt32(context, &localIntVal, true) != SCPI_RES_OK ) 
+        { return SCPI_RES_ERR; }
+	val0 = (byte)localIntVal;
+
+	(SET_OBJ(context))->setISOLATORIN_RESPCHAN( val0 );
+	return SCPI_RES_OK;
+}
+static scpi_result_t _scpi_getISOLATORIN_RESPCHAN( scpi_t * context )
+{
+	// read
+	DEF_LOCAL_VAR();
+
+	byte oval0;
+
+	(GET_OBJ(context))->getISOLATORIN_RESPCHAN( &oval0 );
+	SCPI_ResultInt32(context, oval0);
+
+	return SCPI_RES_OK;
+}
+static scpi_result_t _scpi_setISOLATORIN_SMODE( scpi_t * context )
+{
+	// write
+	CHECK_CONTEXT();
+	DEF_LOCAL_VAR();
+
+	MRQ_TRIGGER_PATTSMODE val0;
+	if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
+        { return SCPI_RES_ERR; }
+	if (strLen < 1)
+        { return SCPI_RES_ERR; }
+	if ( MRQ_TRIGGER_PATTSMODE_toValue( pLocalStr, &val0) != 0 ) 
+        { return SCPI_RES_ERR; }
+
+	(SET_OBJ(context))->setISOLATORIN_SMODE( val0 );
+	return SCPI_RES_OK;
+}
+static scpi_result_t _scpi_getISOLATORIN_SMODE( scpi_t * context )
+{
+	// read
+	DEF_LOCAL_VAR();
+
+	MRQ_TRIGGER_PATTSMODE oval0;
+
+	(GET_OBJ(context))->getISOLATORIN_SMODE( &oval0 );
+	pLocalStr = MRQ_TRIGGER_PATTSMODE_toString( oval0);
+	if ( pLocalStr == NULL ) 
+        { return SCPI_RES_ERR; } 
+	SCPI_ResultText(context, pLocalStr);
+
+	return SCPI_RES_OK;
+}
+static scpi_result_t _scpi_setISOLATORIN_SPERIOD( scpi_t * context )
 {
 	// write
 	CHECK_CONTEXT();
@@ -6229,176 +6246,18 @@ static scpi_result_t _scpi_setOTP_PERIOD( scpi_t * context )
         { return SCPI_RES_ERR; }
 	val0 = (uint32)localIntVal;
 
-	(SET_OBJ(context))->setOTP_PERIOD( val0 );
+	(SET_OBJ(context))->setISOLATORIN_SPERIOD( val0 );
 	return SCPI_RES_OK;
 }
-static scpi_result_t _scpi_getOTP_PERIOD( scpi_t * context )
+static scpi_result_t _scpi_getISOLATORIN_SPERIOD( scpi_t * context )
 {
 	// read
 	DEF_LOCAL_VAR();
 
 	uint32 oval0;
 
-	(GET_OBJ(context))->getOTP_PERIOD( &oval0 );
+	(GET_OBJ(context))->getISOLATORIN_SPERIOD( &oval0 );
 	SCPI_ResultInt32(context, oval0);
-
-	return SCPI_RES_OK;
-}
-static scpi_result_t _scpi_getOTP_DATA( scpi_t * context )
-{
-	// read
-	DEF_LOCAL_VAR();
-
-	uint32 oval0;
-
-	(GET_OBJ(context))->getOTP_DATA( &oval0 );
-	SCPI_ResultInt32(context, oval0);
-
-	return SCPI_RES_OK;
-}
-static scpi_result_t _scpi_setANALOGIN_STATE( scpi_t * context )
-{
-	// write
-	CHECK_CONTEXT();
-	DEF_LOCAL_VAR();
-
-	MRQ_SYSTEM_REPORTSWITCH val0;
-	if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
-        { return SCPI_RES_ERR; }
-	if (strLen < 1)
-        { return SCPI_RES_ERR; }
-	if ( MRQ_SYSTEM_REPORTSWITCH_toValue( pLocalStr, &val0) != 0 ) 
-        { return SCPI_RES_ERR; }
-
-	(SET_OBJ(context))->setANALOGIN_STATE( val0 );
-	return SCPI_RES_OK;
-}
-static scpi_result_t _scpi_getANALOGIN_STATE( scpi_t * context )
-{
-	// read
-	DEF_LOCAL_VAR();
-
-	MRQ_SYSTEM_REPORTSWITCH oval0;
-
-	(GET_OBJ(context))->getANALOGIN_STATE( &oval0 );
-	pLocalStr = MRQ_SYSTEM_REPORTSWITCH_toString( oval0);
-	if ( pLocalStr == NULL ) 
-        { return SCPI_RES_ERR; } 
-	SCPI_ResultText(context, pLocalStr);
-
-	return SCPI_RES_OK;
-}
-static scpi_result_t _scpi_setANALOGIN_THRESHOLDH( scpi_t * context )
-{
-	// write
-	CHECK_CONTEXT();
-	DEF_LOCAL_VAR();
-
-	f32 val0;
-	if ( SCPI_ParamFloat(context, &val0, true) != SCPI_RES_OK )
-        { return SCPI_RES_ERR; }
-
-	(SET_OBJ(context))->setANALOGIN_THRESHOLDH( val0 );
-	return SCPI_RES_OK;
-}
-static scpi_result_t _scpi_getANALOGIN_THRESHOLDH( scpi_t * context )
-{
-	// read
-	DEF_LOCAL_VAR();
-
-	f32 oval0;
-
-	(GET_OBJ(context))->getANALOGIN_THRESHOLDH( &oval0 );
-	SCPI_ResultFloat(context, oval0);
-
-	return SCPI_RES_OK;
-}
-static scpi_result_t _scpi_setANALOGIN_THRESHOLDL( scpi_t * context )
-{
-	// write
-	CHECK_CONTEXT();
-	DEF_LOCAL_VAR();
-
-	f32 val0;
-	if ( SCPI_ParamFloat(context, &val0, true) != SCPI_RES_OK )
-        { return SCPI_RES_ERR; }
-
-	(SET_OBJ(context))->setANALOGIN_THRESHOLDL( val0 );
-	return SCPI_RES_OK;
-}
-static scpi_result_t _scpi_getANALOGIN_THRESHOLDL( scpi_t * context )
-{
-	// read
-	DEF_LOCAL_VAR();
-
-	f32 oval0;
-
-	(GET_OBJ(context))->getANALOGIN_THRESHOLDL( &oval0 );
-	SCPI_ResultFloat(context, oval0);
-
-	return SCPI_RES_OK;
-}
-static scpi_result_t _scpi_setANALOGIN_RESPONSEH( scpi_t * context )
-{
-	// write
-	CHECK_CONTEXT();
-	DEF_LOCAL_VAR();
-
-	MRQ_OUTOFSTEP_LINERESPONSE val0;
-	if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
-        { return SCPI_RES_ERR; }
-	if (strLen < 1)
-        { return SCPI_RES_ERR; }
-	if ( MRQ_OUTOFSTEP_LINERESPONSE_toValue( pLocalStr, &val0) != 0 ) 
-        { return SCPI_RES_ERR; }
-
-	(SET_OBJ(context))->setANALOGIN_RESPONSEH( val0 );
-	return SCPI_RES_OK;
-}
-static scpi_result_t _scpi_getANALOGIN_RESPONSEH( scpi_t * context )
-{
-	// read
-	DEF_LOCAL_VAR();
-
-	MRQ_OUTOFSTEP_LINERESPONSE oval0;
-
-	(GET_OBJ(context))->getANALOGIN_RESPONSEH( &oval0 );
-	pLocalStr = MRQ_OUTOFSTEP_LINERESPONSE_toString( oval0);
-	if ( pLocalStr == NULL ) 
-        { return SCPI_RES_ERR; } 
-	SCPI_ResultText(context, pLocalStr);
-
-	return SCPI_RES_OK;
-}
-static scpi_result_t _scpi_setANALOGIN_RESPONSEL( scpi_t * context )
-{
-	// write
-	CHECK_CONTEXT();
-	DEF_LOCAL_VAR();
-
-	MRQ_OUTOFSTEP_LINERESPONSE val0;
-	if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
-        { return SCPI_RES_ERR; }
-	if (strLen < 1)
-        { return SCPI_RES_ERR; }
-	if ( MRQ_OUTOFSTEP_LINERESPONSE_toValue( pLocalStr, &val0) != 0 ) 
-        { return SCPI_RES_ERR; }
-
-	(SET_OBJ(context))->setANALOGIN_RESPONSEL( val0 );
-	return SCPI_RES_OK;
-}
-static scpi_result_t _scpi_getANALOGIN_RESPONSEL( scpi_t * context )
-{
-	// read
-	DEF_LOCAL_VAR();
-
-	MRQ_OUTOFSTEP_LINERESPONSE oval0;
-
-	(GET_OBJ(context))->getANALOGIN_RESPONSEL( &oval0 );
-	pLocalStr = MRQ_OUTOFSTEP_LINERESPONSE_toString( oval0);
-	if ( pLocalStr == NULL ) 
-        { return SCPI_RES_ERR; } 
-	SCPI_ResultText(context, pLocalStr);
 
 	return SCPI_RES_OK;
 }

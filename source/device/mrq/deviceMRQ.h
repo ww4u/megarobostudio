@@ -56,7 +56,8 @@ public:
 public:
     MRQ_model *getModel();
 
-    int loadOn();
+public:
+    virtual int uploadSetting();
 
 protected:
     int applyIds( int siblingCnt );
@@ -70,6 +71,7 @@ public:
     int testAdd( int a, int b );
 
 public:
+    //! prop
     QString loadDesc();
     QString loadSN();
     QString loadSwVer();
@@ -79,6 +81,11 @@ public:
 
     QString loadName();
 
+public:
+    float getAngle( int ax );
+
+public:
+    //! pvt
     int     loadTpvCap();
 
     int goInit(  int axesId,

@@ -13,7 +13,6 @@ InstMgr::InstMgr( QObject *parent ) : instServer( parent )
     m_pMainModel = NULL;
 
     m_pReceiveCache = new receiveCache();
-    m_pReceiveCache->setPriority( QThread::TimeCriticalPriority );
 }
 
 InstMgr::~InstMgr()
@@ -64,11 +63,15 @@ void InstMgr::dataIn(  QTcpSocket *socket,
     int retSize = pShell->size();
     if ( retSize > 0 )
     {
-        char retData[ retSize ];
+        char retData[ retSize + 1];
+        retData[ retSize ] = 0;
         int rdSize;
         rdSize = pShell->read( retData, retSize );
 
         dataOut( socket, retData, rdSize );
+//        logDbg()<<rdSize<<retData;
+//        for ( int i = 0; i < rdSize; i++ )
+//        { logDbg()<<QString::number( retData[i],16); }
     }
     logDbg()<<retSize;
 }
@@ -122,7 +125,7 @@ int InstMgr::probeCanBus()
     {}
     else
     {
-        m_pReceiveCache->start();
+        m_pReceiveCache->start( QThread::TimeCriticalPriority );
     }
 
     //! enumerate
@@ -169,6 +172,7 @@ int InstMgr::probeCanBus()
             pMRQ->rst();
             pMRQ->upload();
 
+            logDbg()<<QString::number( (uint32)pMRQ, 16 );
             logDbg()<<seq<<pMRQ->getModel()->mCAN_SENDID;
             logDbg()<<seq<<pMRQ->getModel()->mCAN_RECEIVEID;
         }
@@ -204,6 +208,15 @@ int InstMgr::probeCanBus()
             //! get info
             pRobo->rst();
             pRobo->upload();
+
+            //! auto load setup
+            if ( m_pMainModel->mSysPref.mbAutoLoadSetup )
+            {
+                if ( 0!= pRobo->uploadSetting() )
+                { sysError("load fail"); }
+                else
+                { sysLog( "load success", pRobo->name() );}
+            }
 
             pRoboList->append( pRobo );
 

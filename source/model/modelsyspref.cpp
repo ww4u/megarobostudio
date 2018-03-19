@@ -41,6 +41,10 @@ void modelSysPref::rst()
     mDbMeta.mUserName = "root";
     mDbMeta.mPassword = "a";
 
+    //! misa
+    mMisaEn = true;
+    mMisaSocket = 1234;
+
     //! motion
     mSpaceResolution = 5;
 }
@@ -124,6 +128,14 @@ int modelSysPref::save( const QString &str )
 
     writer.writeEndElement();
 
+    //! misa
+    writer.writeStartElement("misa");
+
+    writer.writeTextElement( "enable", QString::number( mMisaEn ) );
+    writer.writeTextElement( "socket", QString::number( mMisaSocket ) );
+
+    writer.writeEndElement();
+
     //! motion
     writer.writeStartElement("motion");
 
@@ -183,16 +195,16 @@ int modelSysPref::load( const QString &str )
                         {
                             loadFromTo( reader, mRecvIdFrom, mRecvIdTo );
                         }
-
-                        if ( reader.name() == "send" )
+                        else if ( reader.name() == "send" )
                         {
                             loadFromTo( reader, mSendIdFrom, mSendIdTo );
                         }
-
-                        if ( reader.name() == "group" )
+                        else if ( reader.name() == "group" )
                         {
                             loadFromTo( reader, mGroupIdFrom, mGroupIdTo );
                         }
+                        else
+                        {}
                     }
                 }
 
@@ -202,12 +214,12 @@ int modelSysPref::load( const QString &str )
                     {
                         if ( reader.name() == "time" )
                         { mTimeUnit = reader.readElementText().toDouble(); }
-
-                        if ( reader.name() == "position" )
+                        else if ( reader.name() == "position" )
                         { mPosUnit = reader.readElementText().toDouble(); }
-
-                        if ( reader.name() == "velocity" )
+                        else if ( reader.name() == "velocity" )
                         { mVelUnit = reader.readElementText().toDouble(); }
+                        else
+                        {}
                     }
                 }
 
@@ -217,18 +229,33 @@ int modelSysPref::load( const QString &str )
                     {
                         if ( reader.name() == "auto_expand" )
                         { mAutoExpand = reader.readElementText().toInt() > 0; }
-                        if ( reader.name() == "search_onopen" )
+                        else if ( reader.name() == "search_onopen" )
                         { mbSearchOnOpen = reader.readElementText().toInt() > 0; }
-                        if ( reader.name() == "sample_tick" )
+                        else if ( reader.name() == "sample_tick" )
                         { mSampleTick = reader.readElementText().toInt(); }
-                        if ( reader.name() == "auto_load" )
+                        else if ( reader.name() == "auto_load" )
                         { mbAutoLoadSetup = reader.readElementText().toInt() > 0 ; }
+                        else
+                        {}
                     }
                 }
 
                 if ( reader.name() == "database" )
                 {
                     loadDatabase( reader );
+                }
+
+                if ( reader.name() == "misa" )
+                {
+                    while( reader.readNextStartElement() )
+                    {
+                        if ( reader.name() == "enable" )
+                        { mMisaEn = reader.readElementText().toInt() > 0; }
+                        else if ( reader.name() == "socket" )
+                        { mMisaSocket = reader.readElementText().toInt(); }
+                        else
+                        {}
+                    }
                 }
 
                 if ( reader.name() == "motion" )

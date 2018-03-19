@@ -28,8 +28,8 @@ protected:
     int apply();
     int updateUi();
 
-protected:
-    void on_chkLed_toggled( bool b );
+private slots:
+    void on_chkLed_clicked(bool checked);
 
 private:
     Ui::mrqSys *ui;

@@ -377,7 +377,17 @@
            </item>
            <item>
             <property name="text">
-             <string>None</string>
+             <string>Sensor2</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Sensor3</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Sensor4</string>
             </property>
            </item>
           </widget>

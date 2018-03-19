@@ -100,12 +100,12 @@ int mrqIo::aiApply()
     int ret;
 
     //! ai
-    checked_call( pDevice->setANALOGIN_STATE( (MRQ_SYSTEM_REPORTSWITCH)ui->chkAi->isEnabled() ) );
-    checked_call( pDevice->setANALOGIN_THRESHOLDH( ui->spinHighLevel->value() ) );
-    checked_call( pDevice->setANALOGIN_THRESHOLDL( ui->spinLowLevel->value() ) );
+//    checked_call( pDevice->setANALOGIN_STATE( (MRQ_SYSTEM_REPORTSWITCH)ui->chkAi->isEnabled() ) );
+//    checked_call( pDevice->setANALOGIN_THRESHOLDH( ui->spinHighLevel->value() ) );
+//    checked_call( pDevice->setANALOGIN_THRESHOLDL( ui->spinLowLevel->value() ) );
 
-    checked_call( pDevice->setANALOGIN_RESPONSEH( (MRQ_OUTOFSTEP_LINERESPONSE)ui->cmbHighResp->currentIndex() ) );
-    checked_call( pDevice->setANALOGIN_RESPONSEL( (MRQ_OUTOFSTEP_LINERESPONSE)ui->cmbLowResp->currentIndex() ) );
+//    checked_call( pDevice->setANALOGIN_RESPONSEH( (MRQ_OUTOFSTEP_LINERESPONSE)ui->cmbHighResp->currentIndex() ) );
+//    checked_call( pDevice->setANALOGIN_RESPONSEL( (MRQ_OUTOFSTEP_LINERESPONSE)ui->cmbLowResp->currentIndex() ) );
 
     return ret;
 }

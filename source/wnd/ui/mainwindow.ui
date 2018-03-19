@@ -170,10 +170,17 @@
     <addaction name="actionReset"/>
     <addaction name="actionForceStop"/>
    </widget>
+   <widget class="QMenu" name="menuTool_T">
+    <property name="title">
+     <string>Tool(&amp;T)</string>
+    </property>
+    <addaction name="actionAngle_A"/>
+   </widget>
    <addaction name="menu_F"/>
    <addaction name="menu_D"/>
    <addaction name="menuView_V"/>
    <addaction name="menuControl"/>
+   <addaction name="menuTool_T"/>
    <addaction name="menu"/>
   </widget>
   <action name="actionAbout">
@@ -426,6 +433,11 @@
    </property>
    <property name="toolTip">
     <string>Document</string>
+   </property>
+  </action>
+  <action name="actionAngle_A">
+   <property name="text">
+    <string>Angle(&amp;A)...</string>
    </property>
   </action>
  </widget>

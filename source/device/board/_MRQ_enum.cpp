@@ -19,17 +19,18 @@ static value_desc _value_desc_MRQ_SYSTEM_TYPE_1[] = {
 	{0,"C17D",},
 	{1,"C23D",},
 	{2,"M1703",},
-	{3,"M2303",},
-	{4,"M1704",},
-	{5,"M2304",},
-	{6,"M1706",},
-	{7,"M2306",},
-	{8,"M1707",},
-	{9,"M2307",},
-	{10,"M1708",},
-	{11,"M2308",},
-	{12,"C17S",},
-	{13,"C23S",},
+	{3,"",},
+	{4,"M2303",},
+	{5,"M1704",},
+	{6,"M2304",},
+	{7,"M1706",},
+	{8,"M2306",},
+	{9,"M1707",},
+	{10,"M2307",},
+	{11,"M1708",},
+	{12,"M2308",},
+	{13,"C17S",},
+	{14,"C23S",},
 };
 static value_desc _value_desc_MRQ_SYSTEM_REPORTSWITCH[] = {
 	{0,"OFF",},
@@ -263,6 +264,10 @@ static value_desc _value_desc_MRQ_TRIGGER_PATTSMODE[] = {
 	{1,"INTERVAL",},
 	{2,"SINGLE",},
 };
+static value_desc _value_desc_MRQ_TRIGGER_LEVELSTATE[] = {
+	{0,"TRIGL",},
+	{1,"TRIGR",},
+};
 static value_desc _value_desc_MRQ_TRIGGER_LEVELTYPE_1[] = {
 	{0,"RESERVE",},
 	{1,"LOW",},
@@ -310,6 +315,8 @@ static value_desc _value_desc_MRQ_DRIVER_SGPARASET[] = {
 static value_desc _value_desc_MRQ_DIGITALOUT_STATE[] = {
 	{0,"DO1",},
 	{1,"DO2",},
+	{2,"DO3",},
+	{3,"DO4",},
 };
 static value_desc _value_desc_MRQ_DIGITALOUT_STATE_1[] = {
 	{0,"DISABLE",},
@@ -341,7 +348,9 @@ static value_desc _value_desc_MRQ_SENSORUART_BAUD[] = {
 };
 static value_desc _value_desc_MRQ_SENSORUART_STATE_1[] = {
 	{0,"S1",},
-	{1,"NONE",},
+	{1,"S2",},
+	{2,"S3",},
+	{3,"S4",},
 };
 static value_desc _value_desc_MRQ_PRESET_PVTCONFIG[] = {
 	{0,"PRESET1",},
@@ -533,6 +542,10 @@ const char* MRQ_TRIGGER_PATTERN_toString( MRQ_TRIGGER_PATTERN eType )
 const char* MRQ_TRIGGER_PATTSMODE_toString( MRQ_TRIGGER_PATTSMODE eType )
 {
 	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_TRIGGER_PATTSMODE ) ); 
+}
+const char* MRQ_TRIGGER_LEVELSTATE_toString( MRQ_TRIGGER_LEVELSTATE eType )
+{
+	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_TRIGGER_LEVELSTATE ) ); 
 }
 const char* MRQ_TRIGGER_LEVELTYPE_1_toString( MRQ_TRIGGER_LEVELTYPE_1 eType )
 {
@@ -964,6 +977,14 @@ int MRQ_TRIGGER_PATTSMODE_toValue( const char *pStr, MRQ_TRIGGER_PATTSMODE *pEVa
 	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_TRIGGER_PATTSMODE ), &lval );
 	if ( ret != 0 ) return ret; 
 	*pEVal=(MRQ_TRIGGER_PATTSMODE)lval;
+	return 0;
+}
+int MRQ_TRIGGER_LEVELSTATE_toValue( const char *pStr, MRQ_TRIGGER_LEVELSTATE *pEVal )
+{
+	int ret, lval;
+	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_TRIGGER_LEVELSTATE ), &lval );
+	if ( ret != 0 ) return ret; 
+	*pEVal=(MRQ_TRIGGER_LEVELSTATE)lval;
 	return 0;
 }
 int MRQ_TRIGGER_LEVELTYPE_1_toValue( const char *pStr, MRQ_TRIGGER_LEVELTYPE_1 *pEVal )

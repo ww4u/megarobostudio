@@ -70,7 +70,9 @@ public:
 
 public:
     virtual void rst();
-    virtual int upload();
+    virtual int upload();       //! upload a few data
+
+    virtual int uploadSetting();
 
 protected:
                         //! can ids

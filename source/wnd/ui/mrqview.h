@@ -18,6 +18,9 @@ public:
     void setAxesId( int id );
     int getAxesId();
 
+    void setPage( MRQ_AX_PAGE pg );
+    MRQ_AX_PAGE page();
+
     virtual void setModelObj( mcModelObj *pObj );
 
 protected:
@@ -34,6 +37,7 @@ protected:
 
 protected:
     byte mAxesId;
+    MRQ_AX_PAGE mPage;
     MegaDevice::deviceMRQ *m_pMrqModel;
     MegaDevice::MRQ_model *m_pProxy;
 

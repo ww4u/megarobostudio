@@ -18,6 +18,8 @@ static msg_type _msg_patterns[]
     },
     { mrq_msg_program, { QMetaType::Int, },
     },
+    { mrq_msg_prepare, { QMetaType::Int, },
+    },
 
     { mrq_msg_idle, { QMetaType::Int, },
     },

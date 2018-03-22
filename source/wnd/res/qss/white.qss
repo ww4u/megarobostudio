@@ -8,7 +8,7 @@ QGroupBox, QStatusBar, QToolButton, QComboBox, QDialog {
 
 /* === QWidget === */
 QWidget:window {
-    background: #222222;
+    background: #2c3d4f;
     color: #BBBBBB;
     font-family: "Segoe UI";
 }

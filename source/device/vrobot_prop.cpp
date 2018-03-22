@@ -29,9 +29,12 @@ int VRobot::getAxes()
 int VRobot::axes()
 { return mAxes; }
 QImage & VRobot::getImage()
-{
-    return mImage;
-}
+{ return mImage; }
+
+void VRobot::setPages( int page )
+{ mPages = page; }
+int VRobot::pages()
+{ return mPages; }
 
 RoboWorker *VRobot::lpc( int ax )
 {

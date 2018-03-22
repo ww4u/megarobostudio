@@ -2,7 +2,7 @@
 
 static QString _headers[]=
 {
-    QStringLiteral("Active"),
+    QStringLiteral("Enable"),
     QStringLiteral("Action"),
     QStringLiteral("t(s)"),
     QStringLiteral("x(mm)"),
@@ -20,12 +20,25 @@ QString motionItem::header( int col )
 {
     Q_ASSERT( col >= 0 && col < motionItem::columns() );
 
-    return _headers[ col ];
+    if ( col == 0 )
+    { return QObject::tr("Enable"); }
+    else if ( col == 1 )
+    { return QObject::tr("Hand Action"); }
+    else if ( col == 2 )
+    { return QObject::tr("t(s)"); }
+    else if ( col == 3 )
+    { return QObject::tr("x(mm)"); }
+    else if ( col == 4 )
+    { return QObject::tr("y(mm)"); }
+    else if ( col == 5 )
+    { return QObject::tr("z(mm)"); }
+    else
+    { return QObject::tr("Comment"); }
 }
 
 motionItem::motionItem()
 {
-    mBreak = false;
+    mBreak = true;
     mCmd = "command";
     mX = 0;
     mY = 0;

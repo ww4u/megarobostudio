@@ -13,6 +13,7 @@ enum mrqMsg
     mrq_msg_stop,       //! int axes
     mrq_msg_force_stop, //! int axes
     mrq_msg_rst,        //! int axes
+    mrq_msg_prepare,    //! int axes
 
     mrq_msg_program,    //! int axes
 

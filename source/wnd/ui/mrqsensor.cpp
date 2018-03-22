@@ -1,5 +1,6 @@
 #include "mrqsensor.h"
 #include "ui_mrqsensor.h"
+#include "../../com/comassist.h"
 
 //! \todo interval time
 #define interval_unit_time  (0.001f)
@@ -41,10 +42,10 @@ int mrqSensor::apply()
     Q_ASSERT( NULL != pDevice );
 
     MRQ_SENSORUART_BAUD sensPort;
-    MRQ_SENSORUART_STATE_1 subSens;
+    MRQ_IDENTITY_LABEL_1 subSens;
 
     sensPort = (MRQ_SENSORUART_BAUD)ui->cmbPort->currentIndex();
-    subSens = (MRQ_SENSORUART_STATE_1)ui->cmbSensor->currentIndex();
+    subSens = (MRQ_IDENTITY_LABEL_1)ui->cmbSensor->currentIndex();
 
     int ret;
     //! port
@@ -65,7 +66,12 @@ int mrqSensor::apply()
     checked_call( pDevice->setSENSORUART_SOF( sensPort, subSens, ui->spinSof->value() ) );
     checked_call( pDevice->setSENSORUART_FRAMELEN( sensPort, subSens, ui->spinFrameLen->value() ) );
     checked_call( pDevice->setSENSORUART_RECEIVENUM( sensPort, subSens, ui->spinReceiveLen->value() ) );
-    checked_call( pDevice->setSENSORUART_SWITCHTIME( sensPort, subSens, ui->spinInvterval->value() / interval_unit_time ) );
+    checked_call( pDevice->setSENSORUART_SWITCHTIME( sensPort, subSens,
+                                                     comAssist::align( ui->spinInvterval->value(), interval_unit_time) ) );
+
+    checked_call( pDevice->setSENSORUART_STATE( sensPort,
+                                                subSens,
+                                                (MRQ_SYSTEM_DIOREFREAD)ui->chkSensor->isChecked() ) );
 
     checked_call( pDevice->setSENSORUART_APPLYPARA( sensPort ) );
 
@@ -112,9 +118,9 @@ void mrqSensor::on_btnApply_clicked()
     ret = apply();
 
     if ( ret != 0 )
-    { sysError( "Sensor apply fail" ); }
+    { sysError( tr("Sensor apply fail" )); }
     else
-    { sysLog( "Sensor apply success" ); }
+    { sysLog( tr("Sensor apply success") ); }
 }
 
 void mrqSensor::on_cmbPort_currentIndexChanged(int index)

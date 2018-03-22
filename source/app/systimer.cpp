@@ -123,6 +123,9 @@ roboTimer * SysTimerThread::sysFindTimer( VRobot *pRobot,
 {
     Q_ASSERT( NULL != pRobot );
 
+    if( NULL == SysTimerThread::_sys_timer_ )
+    { return NULL; }
+
     foreach( roboTimer *theTimer, SysTimerThread::_sys_timer_->mTimers )
     {
         Q_ASSERT( NULL != theTimer );

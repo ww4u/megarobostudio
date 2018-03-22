@@ -99,6 +99,14 @@ void kinematicFullTest()
     jointsAngle convertAngle={ 0, 90, 180, 180 };
     double armLength[]={ 247.75, 255, 250, 0, 0, 0 };
 
+    double xyz[3];
+    ns_kinematic::GetEndPosition( armLength,sizeof_array(armLength),
+                                  convertAngle.angles,
+                                  refAngle.angles,
+                                  4,
+                                  xyz );
+    logDbg()<<xyz[0]<<xyz[1]<<xyz[2];
+
     int outSize;
     ret = ns_kinematic::getArmPosition_Size(
 

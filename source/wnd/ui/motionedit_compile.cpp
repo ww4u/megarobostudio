@@ -42,11 +42,11 @@ int motionEdit::postCompileTrace( int ret )
 
         mTracePlan.clear();
         mJointsPlan.clear();
-        sysError( "Compile Fail" );
+        sysError( tr("Build Fail" ) );
     }
     else
     {
-        sysLog("Compile success", QString::number( mTracePlan.size()), QString::number(mJointsPlan.size()) );
+        sysLog( tr("Build success"), QString::number( mTracePlan.size()), QString::number(mJointsPlan.size()) );
     }
 
     emit sig_joints_trace_changed();
@@ -61,7 +61,7 @@ int motionEdit::checkRobot()
     pRobo = currentRobot();
     if ( NULL == pRobo )
     {
-        sysError( "invalid robot name",  m_pmcModel->mConn.getRoboName() );
+        sysError( tr("invalid robot name"),  m_pmcModel->mConn.getRoboName() );
         return ERR_INVALID_ROBOT_NAME;
     }
 
@@ -92,7 +92,7 @@ int motionEdit::checkJointsTrace()
     //! > 1 points
     if ( mMotionGroup->mItems.size() < 2 )
     {
-        sysError( "less than 2 points" );
+        sysError( tr("less than 2 points") );
         return ERR_INVALID_TPV_COUNT;
     }
 
@@ -133,14 +133,14 @@ int motionEdit::checkHandTrace()
     QAbstractTableModel *pModel = pRobot->handActions();
     if ( NULL == pModel )
     {
-        sysError( "invalid robot", pRobot->name() );
+        sysError( tr("invalid robot"), pRobot->name() );
         return ERR_INVALID_ROBOT_NAME;
     }
 
     handActionModel *pHandModel = (handActionModel*)pModel;
     if ( NULL == pHandModel )
     {
-        sysError( "invalid robot", pRobot->name() );
+        sysError( tr("invalid robot"), pRobot->name() );
         return ERR_INVALID_ROBOT_NAME;
     }
 
@@ -148,7 +148,7 @@ int motionEdit::checkHandTrace()
     actionMap = pHandModel->actionMap();
     if ( actionMap.size() < 1 )
     {
-        sysError( "invalid hand action" );
+        sysError( tr("invalid hand action") );
         return ERR_INVALID_ROBOT_NAME;
     }
 
@@ -160,13 +160,13 @@ int motionEdit::checkHandTrace()
         if ( pItem->getCmd().isEmpty() )
         {
             ret = ERR_INVALID_TPV_CMD;
-            sysWarn( QString("invalid cmd at line %1").arg(id) );
+            sysWarn( QString( tr("invalid cmd at line %1") ).arg(id) );
         }
 
         if ( !actionMap.contains( pItem->getCmd() ) )
         {
             ret = ERR_INVALID_TPV_CMD;
-            sysWarn( QString("invalid cmd at line %1").arg(id) );
+            sysWarn( QString( tr("invalid cmd at line %1") ).arg(id) );
         }
 
         id++;

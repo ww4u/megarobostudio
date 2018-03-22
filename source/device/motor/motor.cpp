@@ -25,12 +25,13 @@ bool deviceMotor::waitCondition( RoboCondition *pCond,
 
 int deviceMotor::deviceMotor::pvtWrite(
               QList<tpvRow *> &list,
+              int page,
               int from,
               int len )
 {
     Q_ASSERT( NULL != m_pMRQ );
 
-    return m_pMRQ->pvtWrite( mAxes, list, from, len );
+    return m_pMRQ->pvtWrite( mAxes, page, list, from, len );
 }
 
 int deviceMotor::run()

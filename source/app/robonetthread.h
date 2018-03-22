@@ -21,6 +21,11 @@ Q_SIGNALS:
                      int axes,
                      RoboMsg msg
                      );
+    //! progress
+    void signal_progress( int ma, int mi, int n, const QString &info );
+    void signal_progress( bool b );
+    void signal_status( const QString &str );
+    void signal_logout( const QString &str );
 
 protected:
     mcModel *m_pModel;

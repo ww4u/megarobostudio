@@ -41,6 +41,8 @@ Q_SIGNALS:
 
     void signal_instmgr_changed( bool bEnd, MegaDevice::InstMgr *pMgr );
 
+    void signal_btnState_clicked();
+
 protected Q_SLOTS:
     void on_btnTest_clicked();
     void on_pushButton_clicked();

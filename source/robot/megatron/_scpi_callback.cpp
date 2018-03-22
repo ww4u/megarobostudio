@@ -3,6 +3,7 @@
 #include "scpi/scpi.h"
 
 #include "megatron.h"
+#include "../../com/comassist.h"
 
 #define DEF_ROBO()      robotMegatron *pRobo;\
                         pRobo = ((robotMegatron*)context->user_context);\
@@ -55,10 +56,54 @@ static scpi_result_t _scpi_move( scpi_t * context )
     //! robo op
     DEF_ROBO();
 
-    WorldPoint pt1( vals[0], vals[1], vals[2], vals[3] );
-    WorldPoint pt2( vals[4], vals[5], vals[6], vals[7] );
+    TraceKeyPoint pt1( 0, vals[0], vals[1], vals[2], vals[3] );
+    TraceKeyPoint pt2( vals[8], vals[4], vals[5], vals[6], vals[7] );
 
-    pRobo->move( pt1, pt2, vals[8] );
+    TraceKeyPointList curve;
+    curve.append( pt1 );
+    curve.append( pt2 );
+
+    pRobo->move( curve );
+
+    return SCPI_RES_OK;
+}
+
+//! file
+static scpi_result_t _scpi_program( scpi_t * context )
+{
+    // read
+    DEF_LOCAL_VAR();
+
+    if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
+    { return SCPI_RES_ERR; }logDbg()<<strLen<<pLocalStr;
+    if (strLen < 1)
+    { return SCPI_RES_ERR; }
+
+    //! t,x,y,z,h
+    QList<float> dataset;
+    int col = 5;
+    if ( 0 != comAssist::loadDataset( pLocalStr, strLen, 5, dataset ) )
+    { return SCPI_RES_ERR; }
+
+    //! point
+    if ( dataset.size() / col < 2 )
+    { return SCPI_RES_ERR; }
+
+    TraceKeyPointList curve;
+    TraceKeyPoint tp;
+    for ( int i = 0; i < dataset.size()/col; i++ )
+    {
+        for ( int j = 0; j < col; j++ )
+        {
+            tp.datas[j] = dataset.at( i * col + j);
+        }
+
+        curve.append( tp );
+    }
+
+    //! robo op
+    DEF_ROBO();
+    pRobo->move( curve );
 
     return SCPI_RES_OK;
 }
@@ -81,7 +126,7 @@ static scpi_result_t _scpi_pose( scpi_t * context )
     DEF_LOCAL_VAR();
     DEF_ROBO();
 
-    WorldPoint pose;
+    TraceKeyPoint pose;
 
     int ret = pRobo->nowPose( pose );
     if ( ret != 0 )
@@ -92,6 +137,28 @@ static scpi_result_t _scpi_pose( scpi_t * context )
     SCPI_ResultInt32( context, pose.y );
     SCPI_ResultInt32( context, pose.z );
     SCPI_ResultInt32( context, pose.hand );
+
+    return SCPI_RES_OK;
+}
+
+//! a,b,c,d
+static scpi_result_t _scpi_dist( scpi_t * context )
+{
+    DEF_LOCAL_VAR();
+    DEF_ROBO();
+
+    //! 4 dists
+    QList<float> dists;
+
+    int ret = pRobo->nowDist( dists );
+    if ( ret != 0 )
+    { return SCPI_RES_ERR; }
+
+    //! return the dist
+    for ( int i = 0; i <dists.size(); i++ )
+    {
+        SCPI_ResultFloat( context, dists.at(i) );
+    }
 
     return SCPI_RES_OK;
 }
@@ -125,6 +192,9 @@ static scpi_command_t _scpi_cmds[]=
 
     CMD_ITEM( "STATE?", _scpi_fsmState ),
     CMD_ITEM( "POSE?", _scpi_pose ),
+    CMD_ITEM( "DISTANCE?", _scpi_dist ),
+
+    CMD_ITEM( "PROGRAM", _scpi_program ),
 
     CMD_ITEM( "TEST1", _scpi_test1 ),
     CMD_ITEM( "TEST2", _scpi_test2 ),

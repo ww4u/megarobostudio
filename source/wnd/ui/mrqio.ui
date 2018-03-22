@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>529</width>
-    <height>560</height>
+    <height>588</height>
    </rect>
   </property>
   <property name="font">
@@ -37,7 +37,7 @@
    <item>
     <widget class="QGroupBox" name="groupBox_4">
      <property name="title">
-      <string>IO</string>
+      <string/>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <property name="spacing">
@@ -320,6 +320,37 @@
            <property name="text">
             <string>ON/OFF</string>
            </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="label_15">
+           <property name="text">
+            <string>Source</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QComboBox" name="cmbDoSource">
+           <item>
+            <property name="text">
+             <string>CH1</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>CH2</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>CH3</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>CH4</string>
+            </property>
+           </item>
           </widget>
          </item>
         </layout>

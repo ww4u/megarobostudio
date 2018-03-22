@@ -206,6 +206,12 @@ public :
                    byte subCode,
                    byte v0,
                    byte v1,
+                   UInt16 v2);
+
+        int write( DeviceId &id, byte mainCode,
+                   byte subCode,
+                   byte v0,
+                   byte v1,
                    UInt32 v2);
 
         int write( DeviceId &id, byte mainCode,
@@ -256,6 +262,13 @@ public :
                     byte subCode,
                     byte * v0,
                     byte * v1,
+                    quint32 * v2,
+                    bool bQuery = true );
+
+        int read( DeviceId &id, byte mainCode,
+                    byte subCode,
+                    byte * v0,
+                    byte * v1,
                     byte * v2,
                     byte * v3,
                     byte * v4,
@@ -383,6 +396,13 @@ public :
                    byte v0,
                    byte v1,
                    Int16 * v2,
+                   bool bQuery = true );
+
+        int read( DeviceId &id, byte mainCode,
+                   byte subCode,
+                   byte v0,
+                   byte v1,
+                   UInt16 * v2,
                    bool bQuery = true );
 
         int read( DeviceId &id, byte mainCode,
@@ -422,6 +442,13 @@ public :
                     byte subCode,
                     byte * v0,
                     byte * v1,
+                    quint32 * v2,
+                    bool bQuery = true );
+
+        int _read( DeviceId &id, byte mainCode,
+                    byte subCode,
+                    byte * v0,
+                    byte * v1,
                     byte * v2,
                     byte * v3,
                     byte * v4,
@@ -549,6 +576,13 @@ public :
                    byte v0,
                    byte v1,
                    Int16 * v2,
+                   bool bQuery = true );
+
+        int _read( DeviceId &id, byte mainCode,
+                   byte subCode,
+                   byte v0,
+                   byte v1,
+                   UInt16 * v2,
                    bool bQuery = true );
 
         int _read( DeviceId &id, byte mainCode,

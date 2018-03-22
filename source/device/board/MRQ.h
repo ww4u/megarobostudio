@@ -10,19 +10,20 @@ public:
 MRQ();
 int setLINK_INTFC( MRQ_LINK_INTFC val0 );
 int getLINK_INTFC(  MRQ_LINK_INTFC * val0, bool bQuery=true );
+int getLINK_DEVICEINFO(  MRQ_LINK_DEVICEINFO * val0, MRQ_LINK_DEVICEINFO_1 * val1, uint32 * val2, bool bQuery=true );
 int setSYSTEM_WORKMODE( MRQ_SYSTEM_WORKMODE val0 );
 int getSYSTEM_WORKMODE(  MRQ_SYSTEM_WORKMODE * val0, bool bQuery=true );
 int setSYSTEM_POWERON( MRQ_SYSTEM_POWERON val0 );
 int getSYSTEM_POWERON(  MRQ_SYSTEM_POWERON * val0, bool bQuery=true );
 int getSYSTEM_SN(  byte * val0, char * val1, char * val2, char * val3, char * val4, char * val5, bool bQuery=true );
-int getSYSTEM_TYPE(  MRQ_SYSTEM_TYPE * val0, MRQ_SYSTEM_TYPE_1 * val1, bool bQuery=true );
+int getSYSTEM_TYPE(  MRQ_LINK_DEVICEINFO * val0, MRQ_LINK_DEVICEINFO_1 * val1, bool bQuery=true );
 int getSYSTEM_SOFTVER(  char * val0, char * val1, char * val2, bool bQuery=true );
 int getSYSTEM_FPGAVER(  char * val0, char * val1, char * val2, bool bQuery=true );
 int getSYSTEM_HARDVER(  char * val0, char * val1, bool bQuery=true );
 int getSYSTEM_BOOTVER(  char * val0, char * val1, bool bQuery=true );
-int getSYSTEM_ERROR(  char * val0, char * val1, char * val2, char * val3, char * val4, char * val5, bool bQuery=true );
-int setSYSTEM_REPORTSWITCH( MRQ_SYSTEM_REPORTSWITCH val0 );
-int getSYSTEM_REPORTSWITCH(  MRQ_SYSTEM_REPORTSWITCH * val0, bool bQuery=true );
+int getSYSTEM_EVENTCODE(  char * val0, char * val1, char * val2, char * val3, char * val4, char * val5, bool bQuery=true );
+int setSYSTEM_DIOREFREAD( MRQ_SYSTEM_DIOREFREAD val0 );
+int getSYSTEM_DIOREFREAD(  MRQ_SYSTEM_DIOREFREAD * val0, bool bQuery=true );
 int setRS232_BAUD( MRQ_RS232_BAUD val0 );
 int getRS232_BAUD(  MRQ_RS232_BAUD * val0, bool bQuery=true );
 int setRS232_WORDLEN( MRQ_RS232_WORDLEN val0 );
@@ -51,7 +52,7 @@ int getCAN_GROUPID2(  uint32 * val0, bool bQuery=true );
 int setCAN_BROADCASTID( uint32 val0 );
 int getCAN_BROADCASTID(  uint32 * val0, bool bQuery=true );
 int setCAN_APPLYPARA(  );
-int setCAN_NETMANAGELED( MRQ_SYSTEM_REPORTSWITCH val0 );
+int setCAN_NETMANAGELED( MRQ_SYSTEM_DIOREFREAD val0 );
 int setCAN_NETMANAGESTATE( MRQ_CAN_NETMANAGESTATE val0 );
 int getCAN_NETMANAGESTATE(  MRQ_CAN_NETMANAGESTATE * val0, bool bQuery=true );
 int setCAN_NETMANAGEID( MRQ_CAN_NETMANAGEID val0
@@ -61,16 +62,18 @@ int setCAN_NETMANAGEHASH( uint32 val0 );
 int getCAN_NETMANAGEHASH(  uint32 * val0, bool bQuery=true );
 int setCLOCK_FREQUENCY( uint32 val0 );
 int getCLOCK_FREQUENCY(  uint32 * val0, bool bQuery=true );
-int setCLOCK_SYNCREGISTER( MRQ_SYSTEM_REPORTSWITCH val0 );
-int getCLOCK_SYNCREGISTER(  MRQ_SYSTEM_REPORTSWITCH * val0, bool bQuery=true );
+int setCLOCK_SYNCREGISTER( MRQ_SYSTEM_DIOREFREAD val0 );
+int getCLOCK_SYNCREGISTER(  MRQ_SYSTEM_DIOREFREAD * val0, bool bQuery=true );
 int setCLOCK_STARTTYPE( MRQ_CLOCK_STARTTYPE val0 );
 int getCLOCK_STARTTYPE(  MRQ_CLOCK_STARTTYPE * val0, bool bQuery=true );
 int setCLOCK_SYNCSTATE( MRQ_CLOCK_SYNCSTATE val0 );
 int getCLOCK_SYNCSTATE(  MRQ_CLOCK_SYNCSTATE * val0, bool bQuery=true );
 int getCLOCK_COUNT(  uint32 * val0, bool bQuery=true );
 int setMOTION_SWITCH( byte val0
-,MRQ_MOTION_SWITCH val1 );
-int getMOTION_STATE( byte val0, MRQ_MOTION_STATE * val1, bool bQuery=true );
+,MRQ_MOTION_SWITCH val1
+,MRQ_MOTION_SWITCH_1 val2 );
+int getMOTION_STATE( byte val0
+,MRQ_MOTION_SWITCH_1 val1, MRQ_MOTION_STATE_2 * val2, bool bQuery=true );
 int setMOTION_STATEREPORT( byte val0
 ,MRQ_MOTION_STATEREPORT val1 );
 int getMOTION_STATEREPORT( byte val0, MRQ_MOTION_STATEREPORT * val1, bool bQuery=true );
@@ -108,27 +111,9 @@ int setMOTION_ORIGIN( byte val0
 ,f32 val1 );
 int getMOTION_ORIGIN( byte val0, uint32 * val1, bool bQuery=true );
 int setMOTION_GOORIGIN( byte val0 );
-int setMOTION_INITPOSITIONUNIT( byte val0
-,MRQ_MOTION_INITPOSITIONUNIT val1 );
-int getMOTION_INITPOSITIONUNIT( byte val0, MRQ_MOTION_INITPOSITIONUNIT * val1, bool bQuery=true );
-int setMOTION_INITPOSITION( byte val0
-,f32 val1 );
-int getMOTION_INITPOSITION( byte val0, f32 * val1, bool bQuery=true );
-int setMOTION_INITIOSIGNAL( byte val0
-,MRQ_MOTION_INITIOSIGNAL val1 );
-int getMOTION_INITIOSIGNAL( byte val0, MRQ_MOTION_INITIOSIGNAL * val1, bool bQuery=true );
-int setMOTION_GOINITPOSITION( byte val0 );
-int setMOTION_INCHINGMODE( byte val0
-,MRQ_MOTION_INCHINGMODE val1 );
-int getMOTION_INCHINGMODE( byte val0, MRQ_MOTION_INCHINGMODE * val1, bool bQuery=true );
-int setMOTION_INCHINGTIME( byte val0
-,f32 val1 );
-int getMOTION_INCHINGTIME( byte val0, f32 * val1, bool bQuery=true );
-int setMOTION_INCHING( byte val0
-,f32 val1 );
 int setMOTION_OFFSETSTATE( byte val0
-,MRQ_SYSTEM_REPORTSWITCH val1 );
-int getMOTION_OFFSETSTATE( byte val0, MRQ_SYSTEM_REPORTSWITCH * val1, bool bQuery=true );
+,MRQ_SYSTEM_DIOREFREAD val1 );
+int getMOTION_OFFSETSTATE( byte val0, MRQ_SYSTEM_DIOREFREAD * val1, bool bQuery=true );
 int setMOTION_OFFSET( byte val0 );
 int getMOTION_PVTSTEPS( byte val0, int32 * val1, bool bQuery=true );
 int getMOTION_COUNTSTEPS( byte val0, int32 * val1, bool bQuery=true );
@@ -136,44 +121,19 @@ int getMOTION_PVTCIRCLE( byte val0, int16 * val1, bool bQuery=true );
 int getMOTION_COUNTCIRCLE( byte val0, int16 * val1, bool bQuery=true );
 int getMOTION_ABCOUNT( byte val0, int32 * val1, bool bQuery=true );
 int setMOTION_REVMOTION( byte val0
-,MRQ_SYSTEM_REPORTSWITCH val1 );
-int getMOTION_REVMOTION( byte val0, MRQ_SYSTEM_REPORTSWITCH * val1, bool bQuery=true );
+,MRQ_SYSTEM_DIOREFREAD val1 );
+int getMOTION_REVMOTION( byte val0, MRQ_SYSTEM_DIOREFREAD * val1, bool bQuery=true );
 int setIDENTITY_GROUP( byte val0
 ,MRQ_IDENTITY_GROUP val1
 ,byte val2 );
 int getIDENTITY_GROUP( byte val0
 ,MRQ_IDENTITY_GROUP val1, byte * val2, bool bQuery=true );
-int setIDENTITY_DISTDEVICE( MRQ_SYSTEM_REPORTSWITCH val0 );
-int getIDENTITY_DISTDEVICE(  MRQ_SYSTEM_REPORTSWITCH * val0, bool bQuery=true );
-int setSTOPDECEL_MODE( byte val0
-,MRQ_STOPDECEL_MODE val1 );
-int getSTOPDECEL_MODE( byte val0, MRQ_STOPDECEL_MODE * val1, bool bQuery=true );
-int setSTOPDECEL_DISTANCE( byte val0
-,f32 val1 );
-int getSTOPDECEL_DISTANCE( byte val0, f32 * val1, bool bQuery=true );
-int setSTOPDECEL_TIME( byte val0
-,f32 val1 );
-int getSTOPDECEL_TIME( byte val0, f32 * val1, bool bQuery=true );
-int setOUTOFSTEP_LINESTATE( byte val0
-,MRQ_SYSTEM_REPORTSWITCH val1 );
-int getOUTOFSTEP_LINESTATE( byte val0, MRQ_SYSTEM_REPORTSWITCH * val1, bool bQuery=true );
-int setOUTOFSTEP_LINEOUTNUM( byte val0
-,uint32 val1 );
-int getOUTOFSTEP_LINEOUTNUM( byte val0, uint32 * val1, bool bQuery=true );
-int setOUTOFSTEP_LINERESPONSE( byte val0
-,MRQ_OUTOFSTEP_LINERESPONSE val1 );
-int getOUTOFSTEP_LINERESPONSE( byte val0, MRQ_OUTOFSTEP_LINERESPONSE * val1, bool bQuery=true );
-int setOUTOFSTEP_LINEWARN( byte val0 );
-int setOUTOFSTEP_TOTALSTATE( byte val0
-,MRQ_SYSTEM_REPORTSWITCH val1 );
-int getOUTOFSTEP_TOTALSTATE( byte val0, MRQ_SYSTEM_REPORTSWITCH * val1, bool bQuery=true );
-int setOUTOFSTEP_TOTALOUTNUM( byte val0
-,uint32 val1 );
-int getOUTOFSTEP_TOTALOUTNUM( byte val0, uint32 * val1, bool bQuery=true );
-int setOUTOFSTEP_TOTALRESPONSE( byte val0
-,MRQ_OUTOFSTEP_LINERESPONSE val1 );
-int getOUTOFSTEP_TOTALRESPONSE( byte val0, MRQ_OUTOFSTEP_LINERESPONSE * val1, bool bQuery=true );
-int setOUTOFSTEP_TOTALWARN( byte val0 );
+int setIDENTITY_DISTDEVICE( MRQ_SYSTEM_DIOREFREAD val0 );
+int getIDENTITY_DISTDEVICE(  MRQ_SYSTEM_DIOREFREAD * val0, bool bQuery=true );
+int setIDENTITY_LABEL( byte val0
+,MRQ_IDENTITY_LABEL val1
+,MRQ_IDENTITY_LABEL_1 val2 );
+int getIDENTITY_LABEL( byte val0, MRQ_IDENTITY_LABEL * val1, MRQ_IDENTITY_LABEL_1 * val2, bool bQuery=true );
 int setMOTOR_STEPANGLE( byte val0
 ,MRQ_MOTOR_STEPANGLE val1 );
 int getMOTOR_STEPANGLE( byte val0, MRQ_MOTOR_STEPANGLE * val1, bool bQuery=true );
@@ -225,56 +185,139 @@ int getENCODER_MULTIPLE( byte val0, MRQ_ENCODER_MULTIPLE * val1, bool bQuery=tru
 int setENCODER_STATE( byte val0
 ,MRQ_ENCODER_STATE val1 );
 int getENCODER_STATE( byte val0, MRQ_ENCODER_STATE * val1, bool bQuery=true );
-int setMOTIONPLAN_PVTCONFIG( byte val0
-,MRQ_MOTIONPLAN_PVTCONFIG val1 );
-int getMOTIONPLAN_PVTCONFIG( byte val0, MRQ_MOTIONPLAN_PVTCONFIG * val1, bool bQuery=true );
-int setMOTIONPLAN_POSITION( uint16 val0
-,f32 val1 );
-int getMOTIONPLAN_POSITION( uint16 val0, f32 * val1, bool bQuery=true );
-int setMOTIONPLAN_VELOCITY( uint16 val0
-,f32 val1 );
-int getMOTIONPLAN_VELOCITY( uint16 val0, f32 * val1, bool bQuery=true );
-int setMOTIONPLAN_TIME( uint16 val0
-,f32 val1 );
-int getMOTIONPLAN_TIME( uint16 val0, f32 * val1, bool bQuery=true );
-int setMOTIONPLAN_EXECUTEMODE( byte val0
-,MRQ_MOTIONPLAN_EXECUTEMODE val1 );
-int getMOTIONPLAN_EXECUTEMODE( byte val0, MRQ_MOTIONPLAN_EXECUTEMODE * val1, bool bQuery=true );
-int setMOTIONPLAN_PLANMODE( byte val0
-,MRQ_MOTIONPLAN_PLANMODE val1 );
-int getMOTIONPLAN_PLANMODE( byte val0, MRQ_MOTIONPLAN_PLANMODE * val1, bool bQuery=true );
-int setMOTIONPLAN_MOTIONMODE( byte val0
-,MRQ_MOTIONPLAN_MOTIONMODE val1 );
-int getMOTIONPLAN_MOTIONMODE( byte val0, MRQ_MOTIONPLAN_MOTIONMODE * val1, bool bQuery=true );
-int setMOTIONPLAN_MODIFYDUTY( byte val0
-,MRQ_MOTIONPLAN_MODIFYDUTY val1 );
-int getMOTIONPLAN_MODIFYDUTY( byte val0, MRQ_MOTIONPLAN_MODIFYDUTY * val1, bool bQuery=true );
-int getMOTIONPLAN_REMAINPOINT( byte val0, uint16 * val1, bool bQuery=true );
-int getMOTIONPLAN_OUTPUTPOINT( byte val0, uint16 * val1, bool bQuery=true );
-int setMOTIONPLAN_STARTPOINT( byte val0
-,uint16 val1 );
-int getMOTIONPLAN_STARTPOINT( byte val0, uint16 * val1, bool bQuery=true );
-int setMOTIONPLAN_ENDPOINT( byte val0
-,uint16 val1 );
-int getMOTIONPLAN_ENDPOINT( byte val0, uint16 * val1, bool bQuery=true );
-int setMOTIONPLAN_CYCLENUM( byte val0
-,uint32 val1 );
-int getMOTIONPLAN_CYCLENUM( byte val0, uint32 * val1, bool bQuery=true );
-int setMOTIONPLAN_WARNPOINT( byte val0
-,uint16 val1 );
-int getMOTIONPLAN_WARNPOINT( byte val0, uint16 * val1, bool bQuery=true );
-int setMOTIONPLAN_WARN( byte val0 );
-int setMOTIONPLAN_ENDSTATE( byte val0
-,MRQ_MOTIONPLAN_ENDSTATE val1 );
-int getMOTIONPLAN_ENDSTATE( byte val0, MRQ_MOTIONPLAN_ENDSTATE * val1, bool bQuery=true );
-int setMOTIONPLAN_FEEDBACKRATIO( byte val0
+int setENCODER_FEEDBACKRATIO( byte val0
 ,byte val1 );
-int getMOTIONPLAN_FEEDBACKRATIO( byte val0, byte * val1, bool bQuery=true );
+int getENCODER_FEEDBACKRATIO( byte val0, byte * val1, bool bQuery=true );
+int setMOTIONPLAN_PVTCONFIG( byte val0
+,MRQ_MOTION_SWITCH_1 val1
+,MRQ_MOTIONPLAN_PVTCONFIG_1 val2 );
+int getMOTIONPLAN_PVTCONFIG( byte val0
+,MRQ_MOTION_SWITCH_1 val1, MRQ_MOTIONPLAN_PVTCONFIG_1 * val2, bool bQuery=true );
+int setMOTIONPLAN_PRESETSTATE( byte val0
+,MRQ_MOTIONPLAN_PRESETSTATE val1
+,MRQ_MOTIONPLAN_PRESETSTATE_1 val2 );
+int getMOTIONPLAN_PRESETSTATE( byte val0
+,MRQ_MOTIONPLAN_PRESETSTATE val1, MRQ_MOTIONPLAN_PRESETSTATE_1 * val2, bool bQuery=true );
+int setMOTIONPLAN_EXECUTEMODE( byte val0
+,MRQ_MOTION_SWITCH_1 val1
+,MRQ_MOTIONPLAN_EXECUTEMODE_1 val2 );
+int getMOTIONPLAN_EXECUTEMODE( byte val0
+,MRQ_MOTION_SWITCH_1 val1, MRQ_MOTIONPLAN_EXECUTEMODE_1 * val2, bool bQuery=true );
+int setMOTIONPLAN_PLANMODE( byte val0
+,MRQ_MOTION_SWITCH_1 val1
+,MRQ_MOTIONPLAN_PLANMODE_1 val2 );
+int getMOTIONPLAN_PLANMODE( byte val0
+,MRQ_MOTION_SWITCH_1 val1, MRQ_MOTIONPLAN_PLANMODE_1 * val2, bool bQuery=true );
+int setMOTIONPLAN_MOTIONMODE( byte val0
+,MRQ_MOTION_SWITCH_1 val1
+,MRQ_MOTIONPLAN_MOTIONMODE_1 val2 );
+int getMOTIONPLAN_MOTIONMODE( byte val0
+,MRQ_MOTION_SWITCH_1 val1, MRQ_MOTIONPLAN_MOTIONMODE_1 * val2, bool bQuery=true );
+int setMOTIONPLAN_MODIFYDUTY( byte val0
+,MRQ_MOTION_SWITCH_1 val1
+,MRQ_MOTIONPLAN_MODIFYDUTY_1 val2 );
+int getMOTIONPLAN_MODIFYDUTY( byte val0
+,MRQ_MOTION_SWITCH_1 val1, MRQ_MOTIONPLAN_MODIFYDUTY_1 * val2, bool bQuery=true );
+int getMOTIONPLAN_REMAINPOINT( byte val0
+,MRQ_MOTION_SWITCH_1 val1, uint16 * val2, bool bQuery=true );
+int setMOTIONPLAN_CYCLENUM( byte val0
+,MRQ_MOTION_SWITCH_1 val1
+,uint32 val2 );
+int getMOTIONPLAN_CYCLENUM( byte val0
+,MRQ_MOTION_SWITCH_1 val1, uint32 * val2, bool bQuery=true );
+int setMOTIONPLAN_WARNPOINT( byte val0
+,MRQ_MOTION_SWITCH_1 val1
+,byte val2 );
+int getMOTIONPLAN_WARNPOINT( byte val0
+,MRQ_MOTION_SWITCH_1 val1, byte * val2, bool bQuery=true );
+int setMOTIONPLAN_ENDSTATE( byte val0
+,MRQ_MOTION_SWITCH_1 val1
+,MRQ_MOTIONPLAN_ENDSTATE_1 val2 );
+int getMOTIONPLAN_ENDSTATE( byte val0
+,MRQ_MOTION_SWITCH_1 val1, MRQ_MOTIONPLAN_ENDSTATE_1 * val2, bool bQuery=true );
+int getMOTIONPLAN_BUFFERSIZE( byte val0
+,MRQ_MOTION_SWITCH_1 val1, uint32 * val2, bool bQuery=true );
+int setMOTIONPLAN_ACCSCALE( byte val0
+,MRQ_MOTION_SWITCH_1 val1
+,uint16 val2 );
+int getMOTIONPLAN_ACCSCALE( byte val0
+,MRQ_MOTION_SWITCH_1 val1, uint16 * val2, bool bQuery=true );
+int setMOTIONPLAN_DECSCALE( byte val0
+,MRQ_MOTION_SWITCH_1 val1
+,uint16 val2 );
+int getMOTIONPLAN_DECSCALE( byte val0
+,MRQ_MOTION_SWITCH_1 val1, uint16 * val2, bool bQuery=true );
+int setMOTIONPLAN_STOPMODE( byte val0
+,MRQ_MOTION_SWITCH_1 val1
+,MRQ_MOTIONPLAN_STOPMODE_1 val2 );
+int getMOTIONPLAN_STOPMODE( byte val0
+,MRQ_MOTION_SWITCH_1 val1, MRQ_MOTIONPLAN_STOPMODE_1 * val2, bool bQuery=true );
+int setMOTIONPLAN_STOPDISTANCE( byte val0
+,MRQ_MOTION_SWITCH_1 val1
+,f32 val2 );
+int getMOTIONPLAN_STOPDISTANCE( byte val0
+,MRQ_MOTION_SWITCH_1 val1, f32 * val2, bool bQuery=true );
+int setMOTIONPLAN_STOPTIME( byte val0
+,MRQ_MOTION_SWITCH_1 val1
+,f32 val2 );
+int getMOTIONPLAN_STOPTIME( byte val0
+,MRQ_MOTION_SWITCH_1 val1, f32 * val2, bool bQuery=true );
+int setMOTIONPLAN_OOSLINESTATE( byte val0
+,MRQ_MOTION_SWITCH_1 val1
+,MRQ_SYSTEM_DIOREFREAD val2 );
+int getMOTIONPLAN_OOSLINESTATE( byte val0
+,MRQ_MOTION_SWITCH_1 val1, MRQ_SYSTEM_DIOREFREAD * val2, bool bQuery=true );
+int setMOTIONPLAN_OOSLINEOUTNUM( byte val0
+,MRQ_MOTION_SWITCH_1 val1
+,uint16 val2 );
+int getMOTIONPLAN_OOSLINEOUTNUM( byte val0
+,MRQ_MOTION_SWITCH_1 val1, uint16 * val2, bool bQuery=true );
+int setMOTIONPLAN_OOSLINERESPONSE( byte val0
+,MRQ_MOTION_SWITCH_1 val1
+,MRQ_MOTIONPLAN_OOSLINERESPONSE_1 val2 );
+int getMOTIONPLAN_OOSLINERESPONSE( byte val0
+,MRQ_MOTION_SWITCH_1 val1, MRQ_MOTIONPLAN_OOSLINERESPONSE_1 * val2, bool bQuery=true );
+int setMOTIONPLAN_OOSTOTALSTATE( byte val0
+,MRQ_MOTION_SWITCH_1 val1
+,MRQ_SYSTEM_DIOREFREAD val2 );
+int getMOTIONPLAN_OOSTOTALSTATE( byte val0
+,MRQ_MOTION_SWITCH_1 val1, MRQ_SYSTEM_DIOREFREAD * val2, bool bQuery=true );
+int setMOTIONPLAN_OOSTOTALOUTNUM( byte val0
+,MRQ_MOTION_SWITCH_1 val1
+,uint32 val2 );
+int getMOTIONPLAN_OOSTOTALOUTNUM( byte val0
+,MRQ_MOTION_SWITCH_1 val1, uint32 * val2, bool bQuery=true );
+int setMOTIONPLAN_OOSTOTALRESPONSE( byte val0
+,MRQ_MOTION_SWITCH_1 val1
+,MRQ_MOTIONPLAN_OOSLINERESPONSE_1 val2 );
+int getMOTIONPLAN_OOSTOTALRESPONSE( byte val0
+,MRQ_MOTION_SWITCH_1 val1, MRQ_MOTIONPLAN_OOSLINERESPONSE_1 * val2, bool bQuery=true );
+int setPOSITION_( byte val0
+,MRQ_MOTION_SWITCH_1 val1
+,byte val2
+,f32 val3 );
+int getPOSITION_( byte val0
+,MRQ_MOTION_SWITCH_1 val1
+,byte val2, f32 * val3, bool bQuery=true );
+int setVELOCITY_( byte val0
+,MRQ_MOTION_SWITCH_1 val1
+,byte val2
+,f32 val3 );
+int getVELOCITY_( byte val0
+,MRQ_MOTION_SWITCH_1 val1
+,byte val2, f32 * val3, bool bQuery=true );
+int setTIME_( byte val0
+,MRQ_MOTION_SWITCH_1 val1
+,byte val2
+,f32 val3 );
+int getTIME_( byte val0
+,MRQ_MOTION_SWITCH_1 val1
+,byte val2, f32 * val3, bool bQuery=true );
 int setREPORT_STATE( byte val0
 ,MRQ_REPORT_STATE val1
-,MRQ_SYSTEM_REPORTSWITCH val2 );
+,MRQ_SYSTEM_DIOREFREAD val2 );
 int getREPORT_STATE( byte val0
-,MRQ_REPORT_STATE val1, MRQ_SYSTEM_REPORTSWITCH * val2, bool bQuery=true );
+,MRQ_REPORT_STATE val1, MRQ_SYSTEM_DIOREFREAD * val2, bool bQuery=true );
 int setREPORT_PERIOD( byte val0
 ,MRQ_REPORT_STATE val1
 ,uint32 val2 );
@@ -286,15 +329,15 @@ int setTRIGGER_MODE( byte val0
 ,MRQ_TRIGGER_MODE val1 );
 int getTRIGGER_MODE( byte val0, MRQ_TRIGGER_MODE * val1, bool bQuery=true );
 int setTRIGGER_PATTSTATE( byte val0
-,MRQ_SYSTEM_REPORTSWITCH val1 );
-int getTRIGGER_PATTSTATE( byte val0, MRQ_SYSTEM_REPORTSWITCH * val1, bool bQuery=true );
+,MRQ_SYSTEM_DIOREFREAD val1 );
+int getTRIGGER_PATTSTATE( byte val0, MRQ_SYSTEM_DIOREFREAD * val1, bool bQuery=true );
 int setTRIGGER_PATTERN( byte val0
 ,MRQ_TRIGGER_PATTERN val1
 ,MRQ_TRIGGER_PATTERN val2 );
 int getTRIGGER_PATTERN( byte val0, MRQ_TRIGGER_PATTERN * val1, MRQ_TRIGGER_PATTERN * val2, bool bQuery=true );
 int setTRIGGER_PATTRESP( byte val0
-,MRQ_OUTOFSTEP_LINERESPONSE val1 );
-int getTRIGGER_PATTRESP( byte val0, MRQ_OUTOFSTEP_LINERESPONSE * val1, bool bQuery=true );
+,MRQ_MOTIONPLAN_OOSLINERESPONSE_1 val1 );
+int getTRIGGER_PATTRESP( byte val0, MRQ_MOTIONPLAN_OOSLINERESPONSE_1 * val1, bool bQuery=true );
 int setTRIGGER_PATTSMODE( byte val0
 ,MRQ_TRIGGER_PATTSMODE val1 );
 int getTRIGGER_PATTSMODE( byte val0, MRQ_TRIGGER_PATTSMODE * val1, bool bQuery=true );
@@ -303,9 +346,9 @@ int setTRIGGER_PATTSPERIOD( byte val0
 int getTRIGGER_PATTSPERIOD( byte val0, uint32 * val1, bool bQuery=true );
 int setTRIGGER_LEVELSTATE( byte val0
 ,MRQ_TRIGGER_LEVELSTATE val1
-,MRQ_SYSTEM_REPORTSWITCH val2 );
+,MRQ_SYSTEM_DIOREFREAD val2 );
 int getTRIGGER_LEVELSTATE( byte val0
-,MRQ_TRIGGER_LEVELSTATE val1, MRQ_SYSTEM_REPORTSWITCH * val2, bool bQuery=true );
+,MRQ_TRIGGER_LEVELSTATE val1, MRQ_SYSTEM_DIOREFREAD * val2, bool bQuery=true );
 int setTRIGGER_LEVELTYPE( byte val0
 ,MRQ_TRIGGER_LEVELSTATE val1
 ,MRQ_TRIGGER_LEVELTYPE_1 val2 );
@@ -313,9 +356,9 @@ int getTRIGGER_LEVELTYPE( byte val0
 ,MRQ_TRIGGER_LEVELSTATE val1, MRQ_TRIGGER_LEVELTYPE_1 * val2, bool bQuery=true );
 int setTRIGGER_LEVELRESP( byte val0
 ,MRQ_TRIGGER_LEVELSTATE val1
-,MRQ_OUTOFSTEP_LINERESPONSE val2 );
+,MRQ_MOTIONPLAN_OOSLINERESPONSE_1 val2 );
 int getTRIGGER_LEVELRESP( byte val0
-,MRQ_TRIGGER_LEVELSTATE val1, MRQ_OUTOFSTEP_LINERESPONSE * val2, bool bQuery=true );
+,MRQ_TRIGGER_LEVELSTATE val1, MRQ_MOTIONPLAN_OOSLINERESPONSE_1 * val2, bool bQuery=true );
 int setTRIGGER_LEVELSMODE( byte val0
 ,MRQ_TRIGGER_LEVELSTATE val1
 ,MRQ_TRIGGER_PATTSMODE val2 );
@@ -335,14 +378,9 @@ int getDRIVER_CURRENT( byte val0, byte * val1, bool bQuery=true );
 int setDRIVER_MICROSTEPS( byte val0
 ,MRQ_DRIVER_MICROSTEPS val1 );
 int getDRIVER_MICROSTEPS( byte val0, MRQ_DRIVER_MICROSTEPS * val1, bool bQuery=true );
-int setDRIVER_SWITCH( byte val0
-,MRQ_SYSTEM_REPORTSWITCH val1 );
-int getDRIVER_SWITCH( byte val0, MRQ_SYSTEM_REPORTSWITCH * val1, bool bQuery=true );
-int setDRIVER_REGCONFIG( byte val0
-,MRQ_DRIVER_REGCONFIG val1
-,uint32 val2 );
-int getDRIVER_REGCONFIG( byte val0
-,MRQ_DRIVER_REGCONFIG val1, uint32 * val2, bool bQuery=true );
+int setDRIVER_STATE( byte val0
+,MRQ_SYSTEM_DIOREFREAD val1 );
+int getDRIVER_STATE( byte val0, MRQ_SYSTEM_DIOREFREAD * val1, bool bQuery=true );
 int setDRIVER_SGLIMIT( byte val0
 ,MRQ_DRIVER_SGLIMIT val1
 ,int8 val2 );
@@ -352,36 +390,50 @@ int setDRIVER_SGPARASET( byte val0
 ,int16 val2 );
 int getDRIVER_SGPARASET( byte val0
 ,MRQ_DRIVER_SGPARASET val1, int16 * val2, bool bQuery=true );
-int setDIGITALOUT_STATE( MRQ_DIGITALOUT_STATE val0
-,MRQ_DIGITALOUT_STATE_1 val1 );
-int getDIGITALOUT_STATE( MRQ_DIGITALOUT_STATE val0, MRQ_DIGITALOUT_STATE_1 * val1, bool bQuery=true );
-int setDIGITALOUT_SIGNAL( MRQ_DIGITALOUT_STATE val0
-,MRQ_DIGITALOUT_SIGNAL_1 val1 );
-int getDIGITALOUT_SIGNAL( MRQ_DIGITALOUT_STATE val0, MRQ_DIGITALOUT_SIGNAL_1 * val1, bool bQuery=true );
-int setDIGITALOUT_POLARITY( MRQ_DIGITALOUT_STATE val0
-,MRQ_DIGITALOUT_POLARITY_1 val1 );
-int getDIGITALOUT_POLARITY( MRQ_DIGITALOUT_STATE val0, MRQ_DIGITALOUT_POLARITY_1 * val1, bool bQuery=true );
-int setDIGITALOUT_SOURCE( MRQ_DIGITALOUT_STATE val0
+int setDRIVER_IDLECURRENT( byte val0
 ,byte val1 );
-int getDIGITALOUT_SOURCE( MRQ_DIGITALOUT_STATE val0, byte * val1, bool bQuery=true );
-int setDIGITALOUT_CONDITION( MRQ_DIGITALOUT_STATE val0
-,MRQ_DIGITALOUT_CONDITION_1 val1 );
-int getDIGITALOUT_CONDITION( MRQ_DIGITALOUT_STATE val0, MRQ_DIGITALOUT_CONDITION_1 * val1, bool bQuery=true );
-int setDIGITALOUT_PERIOD( MRQ_DIGITALOUT_STATE val0
+int getDRIVER_IDLECURRENT( byte val0, byte * val1, bool bQuery=true );
+int setDRIVER_SWITCHTIME( byte val0
 ,uint32 val1 );
-int getDIGITALOUT_PERIOD( MRQ_DIGITALOUT_STATE val0, uint32 * val1, bool bQuery=true );
-int setDIGITALOUT_DUTY( MRQ_DIGITALOUT_STATE val0
+int getDRIVER_SWITCHTIME( byte val0, uint32 * val1, bool bQuery=true );
+int setDRIVER_MINICURRRATIO( byte val0
+,MRQ_DRIVER_MINICURRRATIO val1 );
+int getDRIVER_MINICURRRATIO( byte val0, MRQ_DRIVER_MINICURRRATIO * val1, bool bQuery=true );
+int setDRIVER_REGCONFIG( byte val0
+,MRQ_DRIVER_REGCONFIG val1
+,uint32 val2 );
+int getDRIVER_REGCONFIG( byte val0
+,MRQ_DRIVER_REGCONFIG val1, uint32 * val2, bool bQuery=true );
+int setDIGITALOUTPUT_STATE( MRQ_DIGITALOUTPUT_STATE val0
+,MRQ_DIGITALOUTPUT_STATE_1 val1 );
+int getDIGITALOUTPUT_STATE( MRQ_DIGITALOUTPUT_STATE val0, MRQ_DIGITALOUTPUT_STATE_1 * val1, bool bQuery=true );
+int setDIGITALOUTPUT_SIGNAL( MRQ_DIGITALOUTPUT_STATE val0
+,MRQ_DIGITALOUTPUT_SIGNAL_1 val1 );
+int getDIGITALOUTPUT_SIGNAL( MRQ_DIGITALOUTPUT_STATE val0, MRQ_DIGITALOUTPUT_SIGNAL_1 * val1, bool bQuery=true );
+int setDIGITALOUTPUT_POLARITY( MRQ_DIGITALOUTPUT_STATE val0
+,MRQ_DIGITALOUTPUT_POLARITY_1 val1 );
+int getDIGITALOUTPUT_POLARITY( MRQ_DIGITALOUTPUT_STATE val0, MRQ_DIGITALOUTPUT_POLARITY_1 * val1, bool bQuery=true );
+int setDIGITALOUTPUT_SOURCE( MRQ_DIGITALOUTPUT_STATE val0
+,byte val1 );
+int getDIGITALOUTPUT_SOURCE( MRQ_DIGITALOUTPUT_STATE val0, byte * val1, bool bQuery=true );
+int setDIGITALOUTPUT_CONDITION( MRQ_DIGITALOUTPUT_STATE val0
+,MRQ_DIGITALOUTPUT_CONDITION_1 val1 );
+int getDIGITALOUTPUT_CONDITION( MRQ_DIGITALOUTPUT_STATE val0, MRQ_DIGITALOUTPUT_CONDITION_1 * val1, bool bQuery=true );
+int setDIGITALOUTPUT_PERIOD( MRQ_DIGITALOUTPUT_STATE val0
+,uint32 val1 );
+int getDIGITALOUTPUT_PERIOD( MRQ_DIGITALOUTPUT_STATE val0, uint32 * val1, bool bQuery=true );
+int setDIGITALOUTPUT_DUTY( MRQ_DIGITALOUTPUT_STATE val0
 ,uint16 val1 );
-int getDIGITALOUT_DUTY( MRQ_DIGITALOUT_STATE val0, uint16 * val1, bool bQuery=true );
+int getDIGITALOUTPUT_DUTY( MRQ_DIGITALOUTPUT_STATE val0, uint16 * val1, bool bQuery=true );
 int setISOLATOROUTPUT_STATE( MRQ_ISOLATOROUTPUT_STATE val0
-,MRQ_DIGITALOUT_STATE_1 val1 );
-int getISOLATOROUTPUT_STATE( MRQ_ISOLATOROUTPUT_STATE val0, MRQ_DIGITALOUT_STATE_1 * val1, bool bQuery=true );
+,MRQ_DIGITALOUTPUT_STATE_1 val1 );
+int getISOLATOROUTPUT_STATE( MRQ_ISOLATOROUTPUT_STATE val0, MRQ_DIGITALOUTPUT_STATE_1 * val1, bool bQuery=true );
 int setISOLATOROUTPUT_SOURCE( MRQ_ISOLATOROUTPUT_STATE val0
 ,byte val1 );
 int getISOLATOROUTPUT_SOURCE( MRQ_ISOLATOROUTPUT_STATE val0, byte * val1, bool bQuery=true );
 int setISOLATOROUTPUT_CONDITION( MRQ_ISOLATOROUTPUT_STATE val0
-,MRQ_DIGITALOUT_CONDITION_1 val1 );
-int getISOLATOROUTPUT_CONDITION( MRQ_ISOLATOROUTPUT_STATE val0, MRQ_DIGITALOUT_CONDITION_1 * val1, bool bQuery=true );
+,MRQ_DIGITALOUTPUT_CONDITION_1 val1 );
+int getISOLATOROUTPUT_CONDITION( MRQ_ISOLATOROUTPUT_STATE val0, MRQ_DIGITALOUTPUT_CONDITION_1 * val1, bool bQuery=true );
 int setISOLATOROUTPUT_RESPONSE( MRQ_ISOLATOROUTPUT_STATE val0
 ,MRQ_ISOLATOROUTPUT_RESPONSE_1 val1 );
 int getISOLATOROUTPUT_RESPONSE( MRQ_ISOLATOROUTPUT_STATE val0, MRQ_ISOLATOROUTPUT_RESPONSE_1 * val1, bool bQuery=true );
@@ -402,80 +454,38 @@ int setSENSORUART_STOPBIT( MRQ_SENSORUART_BAUD val0
 int getSENSORUART_STOPBIT( MRQ_SENSORUART_BAUD val0, MRQ_RS232_STOPBIT * val1, bool bQuery=true );
 int setSENSORUART_APPLYPARA( MRQ_SENSORUART_BAUD val0 );
 int setSENSORUART_STATE( MRQ_SENSORUART_BAUD val0
-,MRQ_SENSORUART_STATE_1 val1
-,MRQ_SYSTEM_REPORTSWITCH val2 );
+,MRQ_IDENTITY_LABEL_1 val1
+,MRQ_SYSTEM_DIOREFREAD val2 );
 int getSENSORUART_STATE( MRQ_SENSORUART_BAUD val0
-,MRQ_SENSORUART_STATE_1 val1, MRQ_SYSTEM_REPORTSWITCH * val2, bool bQuery=true );
+,MRQ_IDENTITY_LABEL_1 val1, MRQ_SYSTEM_DIOREFREAD * val2, bool bQuery=true );
 int setSENSORUART_SOF( MRQ_SENSORUART_BAUD val0
-,MRQ_SENSORUART_STATE_1 val1
+,MRQ_IDENTITY_LABEL_1 val1
 ,byte val2 );
 int getSENSORUART_SOF( MRQ_SENSORUART_BAUD val0
-,MRQ_SENSORUART_STATE_1 val1, byte * val2, bool bQuery=true );
+,MRQ_IDENTITY_LABEL_1 val1, byte * val2, bool bQuery=true );
 int setSENSORUART_FRAMELEN( MRQ_SENSORUART_BAUD val0
-,MRQ_SENSORUART_STATE_1 val1
+,MRQ_IDENTITY_LABEL_1 val1
 ,byte val2 );
 int getSENSORUART_FRAMELEN( MRQ_SENSORUART_BAUD val0
-,MRQ_SENSORUART_STATE_1 val1, byte * val2, bool bQuery=true );
+,MRQ_IDENTITY_LABEL_1 val1, byte * val2, bool bQuery=true );
 int setSENSORUART_RECEIVENUM( MRQ_SENSORUART_BAUD val0
-,MRQ_SENSORUART_STATE_1 val1
+,MRQ_IDENTITY_LABEL_1 val1
 ,byte val2 );
 int getSENSORUART_RECEIVENUM( MRQ_SENSORUART_BAUD val0
-,MRQ_SENSORUART_STATE_1 val1, byte * val2, bool bQuery=true );
+,MRQ_IDENTITY_LABEL_1 val1, byte * val2, bool bQuery=true );
 int setSENSORUART_SWITCHTIME( MRQ_SENSORUART_BAUD val0
-,MRQ_SENSORUART_STATE_1 val1
+,MRQ_IDENTITY_LABEL_1 val1
 ,uint32 val2 );
 int getSENSORUART_SWITCHTIME( MRQ_SENSORUART_BAUD val0
-,MRQ_SENSORUART_STATE_1 val1, uint32 * val2, bool bQuery=true );
+,MRQ_IDENTITY_LABEL_1 val1, uint32 * val2, bool bQuery=true );
 int getSENSORUART_DATA( MRQ_SENSORUART_BAUD val0
-,MRQ_SENSORUART_STATE_1 val1, byte * val2, char * val3, char * val4, char * val5, bool bQuery=true );
-int setPRESET_PVTCONFIG( byte val0
-,MRQ_PRESET_PVTCONFIG val1
-,MRQ_MOTIONPLAN_PVTCONFIG val2 );
-int getPRESET_PVTCONFIG( byte val0
-,MRQ_PRESET_PVTCONFIG val1, MRQ_MOTIONPLAN_PVTCONFIG * val2, bool bQuery=true );
-int setPRESET_POSITION( byte val0
-,byte val1
-,f32 val2 );
-int getPRESET_POSITION( byte val0
-,byte val1, f32 * val2, bool bQuery=true );
-int setPRESET_SPEED( byte val0
-,byte val1
-,f32 val2 );
-int getPRESET_SPEED( byte val0
-,byte val1, f32 * val2, bool bQuery=true );
-int setPRESET_TIME( byte val0
-,byte val1
-,f32 val2 );
-int getPRESET_TIME( byte val0
-,byte val1, f32 * val2, bool bQuery=true );
-int getPRESET_REMAINPOINT( byte val0
-,MRQ_PRESET_PVTCONFIG val1, byte * val2, bool bQuery=true );
-int setPRESET_EXECUTE( byte val0
-,MRQ_PRESET_PVTCONFIG val1
-,MRQ_PRESET_EXECUTE_1 val2 );
-int getPRESET_STATE( byte val0
-,MRQ_PRESET_PVTCONFIG val1, MRQ_SYSTEM_REPORTSWITCH * val2, bool bQuery=true );
-int setPRESET_ENDSTATE( byte val0
-,MRQ_PRESET_PVTCONFIG val1
-,MRQ_MOTIONPLAN_ENDSTATE val2 );
-int getPRESET_ENDSTATE( byte val0
-,MRQ_PRESET_PVTCONFIG val1, MRQ_MOTIONPLAN_ENDSTATE * val2, bool bQuery=true );
-int setPRESET_STOPMODE( byte val0
-,MRQ_PRESET_PVTCONFIG val1
-,MRQ_STOPDECEL_MODE val2 );
-int getPRESET_STOPMODE( byte val0
-,MRQ_PRESET_PVTCONFIG val1, MRQ_STOPDECEL_MODE * val2, bool bQuery=true );
-int setPRESET_STOPDISTANCE( byte val0
-,MRQ_PRESET_PVTCONFIG val1
-,f32 val2 );
-int getPRESET_STOPDISTANCE( byte val0
-,MRQ_PRESET_PVTCONFIG val1, f32 * val2, bool bQuery=true );
-int setISOLATORIN_STATE( MRQ_SYSTEM_REPORTSWITCH val0 );
-int getISOLATORIN_STATE(  MRQ_SYSTEM_REPORTSWITCH * val0, bool bQuery=true );
+,MRQ_IDENTITY_LABEL_1 val1, byte * val2, char * val3, char * val4, char * val5, bool bQuery=true );
+int setISOLATORIN_STATE( MRQ_SYSTEM_DIOREFREAD val0 );
+int getISOLATORIN_STATE(  MRQ_SYSTEM_DIOREFREAD * val0, bool bQuery=true );
 int setISOLATORIN_TYPE( MRQ_TRIGGER_LEVELTYPE_1 val0 );
 int getISOLATORIN_TYPE(  MRQ_TRIGGER_LEVELTYPE_1 * val0, bool bQuery=true );
-int setISOLATORIN_RESPONSE( MRQ_OUTOFSTEP_LINERESPONSE val0 );
-int getISOLATORIN_RESPONSE(  MRQ_OUTOFSTEP_LINERESPONSE * val0, bool bQuery=true );
+int setISOLATORIN_RESPONSE( MRQ_MOTIONPLAN_OOSLINERESPONSE_1 val0 );
+int getISOLATORIN_RESPONSE(  MRQ_MOTIONPLAN_OOSLINERESPONSE_1 * val0, bool bQuery=true );
 int setISOLATORIN_RESPCHAN( byte val0 );
 int getISOLATORIN_RESPCHAN(  byte * val0, bool bQuery=true );
 int setISOLATORIN_SMODE( MRQ_TRIGGER_PATTSMODE val0 );

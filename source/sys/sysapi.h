@@ -5,8 +5,7 @@
 
 #include "../../com/robomsgthread.h"
 
-void attachSysLog( QWidget *pLogWig );
-
+//! sys log
 void _sysLog( const QString &preStr = "",
 
               const QString &str = "",
@@ -38,13 +37,23 @@ void sysError( const QString &str,
                                                  const QString &str4=""
                                                   );
 
+//! sys progress
+void sysProgress( int n,
+                  const QString &info="",
+                  int ma = 100, int mi = 0
+                  );
+void sysProgress( bool b );
+
+//! sys status
+void sysStatus( const QString &str );
+
+//! sys queue
 void attachSysQueue( RoboMsgThread* pQueue );
 RoboMsgThread* sysQueue();
 
 class sysRunTime
 {
 public:
-    QWidget *m_pSysLog;
     RoboMsgThread *m_pSysQueue;
 };
 

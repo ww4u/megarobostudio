@@ -132,58 +132,7 @@ void motionEdit::onNetEvent(const QString &name,
                         int axes,
                         RoboMsg &msg)
 {
-    if ( msg.getMsg() == e_download_started )
-    {
-        progress()->progressInfo( name, axes, QString("%1:CH%2 %3").arg(name).arg(axes).arg( tr("started") ) );
-        progress()->progressProg( name, axes, 0 );
-        progress()->progressShow( name, axes, true );
-
-        logDbg()<<name<<axes;
-    }
-    else if ( msg.getMsg() == e_download_processing )
-    {
-        int now, total;
-
-        now = msg.at(2).toInt();
-        total = msg.at(3).toInt();
-
-//        progress()->setRange( 0, total );
-//        progress()->setValue( now );
-
-//        logDbg()<<now<<total;
-
-        logDbg()<<name<<axes;
-
-        progress()->progressInfo( name, axes, QString("%1:CH%2 %3").arg(name).arg(axes).arg( tr("downloading") ) );
-        progress()->progressRange( name, axes, 0, total );
-        progress()->progressProg( name, axes, now );
-    }
-    else if ( msg.getMsg() == e_download_completed )
-    {
-//        progress()->hide();
-//        delete progress();
-//        m_pProgress = NULL;
-
-//        ui->btnDown->setEnabled( true );
-
-        logDbg()<<name<<axes;
-
-        progress()->progressShow( name, axes, false );
-    }
-    else if ( msg.getMsg() == e_download_terminated )
-    {
-//        sysLog( msg.at(0).toString(),
-//                QString("%1").arg( msg.at(1).toInt()),
-//                tr("Terminated") );
-
-//        ui->btnDown->setEnabled( true );
-
-        logDbg()<<name<<axes;
-
-        progress()->progressShow( name, axes, false );
-    }
-
-    else if ( msg.getMsg() == e_robot_status )
+    if ( msg.getMsg() == e_robot_status )
     {
         logDbg()<<axes;
         int stat;
@@ -204,7 +153,7 @@ void motionEdit::onNetEvent(const QString &name,
                                                 ui->btnStart->setEnabled( bstart );\
                                                 ui->btnStop->setEnabled( bstop );
 void motionEdit::onMotionStatus( int axes,
-                                 MRQ_MOTION_STATE stat )
+                                 MRQ_MOTION_STATE_2 stat )
 {
     logDbg()<<stat;
 
@@ -329,127 +278,6 @@ logDbg();
 
     doDownload( groups, joints );
 }
-
-#if 0
-int motionEdit::buildTrace()
-{ return 0;}
-#else
-//int motionEdit::buildTrace()
-//{
-//    //! pre build
-//    if ( NULL != m_pJointsTrace )
-//    {
-//        delete []m_pJointsTrace;
-//        m_pJointsTrace = NULL;
-//    }
-
-//    if ( NULL != m_pTracePoint )
-//    {
-//        delete []m_pTracePoint;
-//        m_pTracePoint = NULL;
-//    }
-
-//    //! data size
-//    int dataSize = mMotionGroup->mItems.size();
-//    if ( dataSize <  1 )
-//    { return -1; }
-
-//    //! data cache
-//    endPoint *pEndPoints = new endPoint[ dataSize ];
-//    if ( NULL == pEndPoints )
-//    { return -2; }
-//    memset( pEndPoints, 1, sizeof(endPoint)*dataSize );
-
-//    int count = mMotionGroup->fetech( &pEndPoints->datas + offsetof(endPoint,t)/sizeof(double), sizeof(endPoint)/sizeof(double),
-//                                      &pEndPoints->datas + offsetof(endPoint,x)/sizeof(double), sizeof(endPoint)/sizeof(double),
-//                                      &pEndPoints->datas + offsetof(endPoint,y)/sizeof(double), sizeof(endPoint)/sizeof(double),
-//                                      &pEndPoints->datas + offsetof(endPoint,z)/sizeof(double), sizeof(endPoint)/sizeof(double),
-//                                      dataSize );
-//    if ( count != dataSize )
-//    {
-//        delete []pEndPoints;
-//        return -3;
-//    }
-
-//    //! trace plan
-//    int xyzResLen;
-//    int ret = ns_pathplan::GetPvtLen( &pEndPoints->datas,
-//                                      count,
-//                                      ui->spinStep->value(),
-//                                      ui->cmbInterp->currentIndex(),
-//                                      &xyzResLen );
-//    if ( ret != 0 )
-//    {
-//        delete []pEndPoints;
-//        return -4;
-//    }
-//    delete []pEndPoints;
-
-//    mTracePointSize = xyzResLen * sizeof(double) / sizeof(tracePoint);
-//    if ( mTracePointSize > 1 )
-//    { }
-//    else
-//    { return -5; }
-//    m_pTracePoint = new tracePoint[ mTracePointSize ];
-//    if ( NULL == m_pTracePoint )
-//    { return -5; }
-
-//    ret = ns_pathplan::GetPvtInfo( &m_pTracePoint->datas, xyzResLen );
-//    if ( ret != 0 )
-//    {
-//        return -6;
-//    }
-
-//    //! trace split
-//    //! arm
-//    VRobot *pRobot;
-//    pRobot = currentRobot();
-//    jointsAngle angle = {
-//                            DEG_TO_RAD( pRobot->mRefAngles.at(0) ),
-//                            DEG_TO_RAD( pRobot->mRefAngles.at(1) ),
-//                            DEG_TO_RAD( pRobot->mRefAngles.at(2) ),
-//                            DEG_TO_RAD( pRobot->mRefAngles.at(3) ),
-//                            };
-
-//    m_pJointsTrace = new jointsTrace[ mTracePointSize ];
-//    if ( NULL == m_pJointsTrace )
-//    {
-//        delete []m_pTracePoint;
-//        m_pTracePoint = NULL;
-//        return -6;
-//    }
-
-//    ret = ns_kinematic::GetArmPosition( (double*)(&angle),
-
-//                    &m_pTracePoint->datas + offsetof( tracePoint, x )/sizeof(double), sizeof(tracePoint)/sizeof(double),
-//                    &m_pTracePoint->datas + offsetof( tracePoint, vx )/sizeof(double),sizeof(tracePoint)/sizeof(double),
-//                    &m_pTracePoint->datas + offsetof( tracePoint, t )/sizeof(double),sizeof(tracePoint)/sizeof(double),
-
-//                    mTracePointSize,
-//                    &m_pJointsTrace->datas
-//                    );
-//    if ( ret <= 0 )
-//    {
-//        mJointsTraceSize = 0;
-//        delete []m_pJointsTrace;
-//        m_pJointsTrace = NULL;
-
-//        delete []m_pTracePoint;
-//        m_pTracePoint = NULL;
-//    }
-//    else
-//    {
-//        mJointsTraceSize = ret;
-
-//        //! rotate by cal
-//        jointsRotate( m_pJointsTrace, mJointsTraceSize );
-//    }
-
-//logDbg()<<mTracePointSize<<mJointsTraceSize;
-//    return 0;
-//}
-#endif
-
 
 void motionEdit::on_btnAdd_clicked()
 {
@@ -645,4 +473,17 @@ void motionEdit::on_btnExport_clicked()
 
     fileCsv.close();
 
+}
+
+void motionEdit::on_spinLoop_valueChanged(int arg1)
+{
+    //! connect to robot
+    VRobot *pRobot = currentRobot();
+    if ( NULL == pRobot )
+    {
+        sysError( tr("Invalid robot") );
+        return;
+    }
+
+    pRobot->setLoop( arg1 );
 }

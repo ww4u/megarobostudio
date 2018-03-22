@@ -1,8 +1,6 @@
 #include "megatron.h"
 
-int robotMegatron::convertTrace(   WorldPoint &pt1,
-                    WorldPoint &pt2,
-                    float dt,
+int robotMegatron::convertTrace(  QList<TraceKeyPoint> &curve,
                     xxxGroup<jointsTrace> &jointsPlan )
 {
     //! 0.check
@@ -25,15 +23,18 @@ int robotMegatron::convertTrace(   WorldPoint &pt1,
     if ( NULL == pGroup )
     { return ERR_ALLOC_FAIL; }
 
-    ret = pGroup->addItem( 0, pt1.hand, 0 );
-    if ( ret != 0 )
-    { return ERR_FAIL_ADD_TPV; }
-    ret = pGroup->addItem( dt, pt2.hand, 0 );
-    if ( ret != 0 )
-    { return ERR_FAIL_ADD_TPV; }
+    for ( int i = 0; i < curve.size(); i++ )
+    {
+        ret = pGroup->addItem( curve.at(i).t, curve.at(i).hand, 0 );
+        if ( ret != 0 )
+        {
+            delete pGroup;
+            return ERR_FAIL_ADD_TPV;
+        }
+    }
 
     mJointsGroup.append( pGroup );
-logDbg()<<dt<<pt1.hand<<pt2.hand;
+
 // MOVE 280,21.5,452.75,0,250,0,502,90,0.5
     return 0;
 }

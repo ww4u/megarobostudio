@@ -26,9 +26,16 @@ QString AngleWidget::connection()
     return ui->cmbConn->currentText();
 }
 
+void AngleWidget::setRange( int mi, int ma )
+{
+    ui->sldAngle->setRange( mi, ma );
+    ui->sldAngle->setTickInterval( (ma - mi)/20 );
+}
+
 void AngleWidget::setValue( float val )
 {
     ui->angleValue->display( val );
+    ui->sldAngle->setValue( val );
 }
 float AngleWidget::value()
 {

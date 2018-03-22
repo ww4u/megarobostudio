@@ -119,7 +119,7 @@ sysLog( QString::number(__LINE__), QString::number(i) );
 //                if ( pMrq->status( i ) != MRQ_MOTION_STATE_CALCEND )
                 if ( motors[i]->status() != MRQ_MOTION_STATE_CALCEND )
                 {
-                    sysLog("err", QString("%1").arg( motors[i]->status() ) );
+                    sysLog( tr("error"), QString("%1").arg( motors[i]->status() ) );
                     return;
                 }
 

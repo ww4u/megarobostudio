@@ -17,7 +17,7 @@
 
 #include "../../../com/comassist.h"
 
-int main(int argc, char *argv[])
+int __main(int argc, char *argv[])
 {
     double v[8]={0,1,2,3,4,5,6,7 };
     double o[5];
@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
 }
 
 #include "../../../arith/pvt/pvt.h"
-int _main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
 
@@ -46,20 +46,32 @@ int _main(int argc, char *argv[])
     QList< QPointF > ends;
     ends.append( QPointF(0,0) );
     ends.append( QPointF(5,90) );
-//    ends.append( QPointF(10,180) );
-//    ends.append( QPointF(20,270) );
+    ends.append( QPointF(10,45) );
+    ends.append( QPointF(15,180) );
+    ends.append( QPointF(20,-360) );
 
-    ret = pvtInterp( (enumInterpMode)1, ends, 64.0*200*10/360, tps, tvs );
+    interpConfig iConfig;
+    iConfig.mEncoderLines = 2000;
+    iConfig.mSteps = 200;
+    iConfig.mVernierStep = 64;
+    iConfig.mSlowRatio = 10;
+
+//    ret = pvtInterp( e_interp_cubic, ends, iConfig, tps, tvs );
+    ret = pvtInterp( e_interp_trapzoid, ends, iConfig, tps, tvs );
+//    ret = pvtInterp( e_interp_linear, ends, iConfig, tps, tvs );
 
     qDebug()<<ret<<tps.size()<<tvs.size();
+    if ( ret != 0 )
+    { return 0; }
 
     QFile file("E:/trash/a.csv");
     file.open( QIODevice::WriteOnly );
     QTextStream textStream( &file );
 
-    for ( int i = 0; i < tps.size(); i++ )
+    for ( int i = 0; i < tvs.size(); i++ )
     {
         textStream<<tps[i].x()<<","<<tps[i].y()<<","<<tvs[i].y()<<"\n";
+//        textStream<<tvs[i].x()<<","<<tvs[i].y()<<"\n";
     }
 
     file.close();

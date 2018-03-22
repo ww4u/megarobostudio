@@ -286,7 +286,7 @@ void roboScene::fromSceneModel( roboSceneModel *pSceneModel,
         if ( file.exists() )
         {
             pNewRobot->load( file.fileName() );
-            sysLog( file.fileName(),"loaded!" );
+            sysLog( file.fileName(), tr("loaded!") );
         }
 
         pNewRobot->setPath( path );

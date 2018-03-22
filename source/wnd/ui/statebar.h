@@ -1,7 +1,7 @@
 #ifndef STATEBAR_H
 #define STATEBAR_H
 
-#include <QWidget>
+#include <QtWidgets>
 
 namespace Ui {
 class stateBar;
@@ -20,6 +20,10 @@ public:
     void showProgress( int from, int to, int now,
                        const QString &info="" );
     void showState( const QString &str );
+
+    QProgressBar *progressBar();
+    QLabel *progressInfo();
+    QLabel *statusLabel();
 
 private:
     Ui::stateBar *ui;

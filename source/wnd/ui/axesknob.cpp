@@ -29,6 +29,7 @@ void axesKnob::setDevice( MegaDevice::VDevice *pDevice,
 void axesKnob::setConnection( const QString &conn )
 {
     ui->labConnection->setText( conn );
+
 }
 
 void axesKnob::on_sliderValue_valueChanged(int val )
@@ -47,6 +48,7 @@ void axesKnob::on_sliderValue_sliderPressed()
     mStartAngle = ui->spinNow->value();
 }
 
+#define time_to_s( t )  ((t)/1000.0)
 void axesKnob::on_sliderValue_sliderReleased()
 {
     mStopTime = QDateTime::currentDateTime();
@@ -55,9 +57,6 @@ void axesKnob::on_sliderValue_sliderReleased()
     MegaDevice::deviceMRQ *pMrq = static_cast<MegaDevice::deviceMRQ*>(m_pDevice);
     Q_ASSERT( NULL != pMrq );
 
-    //! wait for end
-//    if ( pMrq->status( mAxesId) == MRQ_MOTION_STATE_RUNNING )
-//    { logDbg()<<pMrq->status(mAxesId); return; }
 
 //    if ( pMrq->status( mAxesId ) !=  )
     if ( pMrq->fsmState(mAxesId) != MegaDevice::mrq_state_idle )
@@ -68,14 +67,17 @@ void axesKnob::on_sliderValue_sliderReleased()
 
     int ret;
     //! write only one time
-    ret = pMrq->setMOTIONPLAN_CYCLENUM( mAxesId, 1 );
+    ret = pMrq->setMOTIONPLAN_CYCLENUM( mAxesId,
+                                        MRQ_MOTION_SWITCH_1_MAIN,
+                                        1 );
     if ( ret != 0 )
     { return; }
 
     //! run the device
     ret = pMrq->pvtWrite( mAxesId,
+                          MRQ_MOTION_SWITCH_1_MAIN,
                     0,0,
-                    mStartTime.msecsTo( mStopTime )/1000,       //! to s
+                    time_to_s( mStartTime.msecsTo( mStopTime ) ),
                     mStopAngle - mStartAngle
                     );
     if ( ret != 0 )

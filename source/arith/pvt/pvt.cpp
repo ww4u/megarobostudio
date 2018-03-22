@@ -35,10 +35,20 @@ static void outputData( uint8_t /*chanNum*/,
     tDur = pInterpContext->mPStep * pInterpContext->mMicroSteps * outpData / norm_freq;
 
     //! acc v
-    pInterpContext->mtNow += tDur;
+    Q_ASSERT( NULL != pInterpContext->m_pCalcContext );
+    PvtCalcStruct *pCalcContext;
+    pCalcContext = (PvtCalcStruct*)pInterpContext->m_pCalcContext;
+    if ( pCalcContext->lastStepDir == DIR_FORWARD )
+    { pInterpContext->mtNow += tDur; }
+    else
+    { pInterpContext->mtNow -= tDur; }
+
+    //! acc p
+    pInterpContext->mpNow += pInterpContext->mPStep;
 
     //! append
     pInterpContext->mp_tVs->append( QPointF( pInterpContext->mtNow, vNow ) );
+    pInterpContext->mp_tPs->append( QPointF( pInterpContext->mtNow, pInterpContext->mpNow ) );
 
     //! reg
     pInterpContext->mvNow = vNow;
@@ -60,9 +70,11 @@ int pvtInterp(  enumInterpMode eInterp,
 
     //! local para
     PvtCalcStruct pvtDatas;
+
     PvtCalcStruct *pPvtCalcData;
 
     pPvtCalcData = &pvtDatas;
+    memset( pPvtCalcData, 0, sizeof(PvtCalcStruct) );
 
     //
     //
@@ -70,20 +82,24 @@ int pvtInterp(  enumInterpMode eInterp,
     pPvtCalcData->pvtPlanMode    =  (PlanModeEnum)eInterp;
     pPvtCalcData->pvtExecMode    =  EXECMODE_NCYCLE;
     pPvtCalcData->motionMode     =  MTNMODE_PVT;
-    pPvtCalcData->lastStepDir    =  DIR_FORWARD;
+
+    //! current dir
+    pPvtCalcData->lastStepDir    =  p2.y() >= p1.y() ? DIR_FORWARD : DIR_REVERSE;
+
+    //! \note end > start
+    pPvtCalcData->startPosn      =  p1.y();
+    pPvtCalcData->endPosn        =  pPvtCalcData->startPosn + qAbs( p2.y() - p1.y() );
+
     pPvtCalcData->lastPoint    =  2;
     pPvtCalcData->accScale    =  300;        //千分之
     pPvtCalcData->decScale    =  300;        //千分之
     pPvtCalcData->fpgaPwmClock  =  0;
     //
-    pPvtCalcData->startPosn        =  p1.y();
     pPvtCalcData->startSpeed      =  0.0;
-    pPvtCalcData->startTime        =  0.0;
-    pPvtCalcData->endPosn            =  p2.y();
+    pPvtCalcData->startTime        =  0;
     pPvtCalcData->endSpeed          =  0.0;
     pPvtCalcData->motionTime      =  p2.x() - p1.x();
 
-    pPvtCalcData->invsePosition  =  0;
     pPvtCalcData->invsePosition  =  0;
     pPvtCalcData->waitPosition    =  0;
     pPvtCalcData->waitStepError  =  0;
@@ -119,12 +135,13 @@ int pvtInterp(  enumInterpMode eInterp,
     localContext.mPStep = ( p2.y() - p1.y() ) / localContext.mSteps;
     localContext.mMicroSteps = pPvtCalcData->posnConvertInfo.posnToStep;                           //! step count
 
-    localContext.mp_tPs = NULL;
+    localContext.mp_tPs = &tp;
     localContext.mp_tVs = &tv;
+    localContext.m_pCalcContext = pPvtCalcData;
 
     //! p1 -> p2
-    tp.append( p1 );
-    tp.append( p2 );
+//    tp.append( p1 );
+//    tp.append( p2 );
 
     //! calc
     int ret;
@@ -148,6 +165,7 @@ int pvtInterp( enumInterpMode eInterp,
     interpContext localContext;
 
     localContext.mtNow = t1;
+    localContext.mpNow = p1;
 
     return pvtInterp( eInterp,
                       QPointF( t1, p1 ),
@@ -176,6 +194,7 @@ int pvtInterp(  enumInterpMode eInterp,
     interpContext localContext;
 
     localContext.mtNow = ends[0].x();
+    localContext.mpNow = ends[0].y();
 
     //! a->b
     for ( int i = 0; i < ends.size() - 1; i++ )

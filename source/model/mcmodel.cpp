@@ -22,14 +22,14 @@ void mcModel::postload()
     if ( m_pInstMgr->isListening() )
     {
         m_pInstMgr->stop();
-        sysLog( "port closed" );
+        sysLog( QObject::tr("port closed") );
     }
 
     if ( mSysPref.mMisaEn )
     {
         Q_ASSERT( NULL != m_pInstMgr );
         m_pInstMgr->start( mSysPref.mMisaSocket );
-        sysLog( "port", QString::number( mSysPref.mMisaSocket ), "opened" );
+        sysLog( QObject::tr("port"), QString::number( mSysPref.mMisaSocket ), QObject::tr("opened") );
     }
 }
 

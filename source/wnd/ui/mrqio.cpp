@@ -1,5 +1,6 @@
 #include "mrqio.h"
 #include "ui_mrqio.h"
+#include "../../com/comassist.h"
 
 #define peri_unit   0.001f
 #define duty_unit   0.001f
@@ -55,11 +56,11 @@ int mrqIo::isoApply()
     isoCH = (MRQ_ISOLATOROUTPUT_STATE)ui->cmbIsoCH->currentIndex();
 
     checked_call( pDevice->setISOLATOROUTPUT_STATE( isoCH,
-                                      (MRQ_DIGITALOUT_STATE_1)ui->chkIsoCH->isEnabled() ) );
+                                      (MRQ_DIGITALOUTPUT_STATE_1)ui->chkIsoCH->isEnabled() ) );
     checked_call( pDevice->setISOLATOROUTPUT_SOURCE( isoCH,
                                        ui->cmbIsoSource->currentIndex() ) );
     checked_call( pDevice->setISOLATOROUTPUT_CONDITION( isoCH,
-                                          (MRQ_DIGITALOUT_CONDITION_1)ui->cmbIsoCondition->currentIndex() ) );
+                                          (MRQ_DIGITALOUTPUT_CONDITION_1)ui->cmbIsoCondition->currentIndex() ) );
     checked_call( pDevice->setISOLATOROUTPUT_RESPONSE( isoCH,
                                          (MRQ_ISOLATOROUTPUT_RESPONSE_1)ui->cmbIsoAction->currentIndex() ) );
 
@@ -74,20 +75,22 @@ int mrqIo::doApply()
     int ret;
 
     //! do
-    MRQ_DIGITALOUT_STATE doCH;
-    doCH = (MRQ_DIGITALOUT_STATE)ui->cmbDo->currentIndex();
+    MRQ_DIGITALOUTPUT_STATE doCH;
+    doCH = (MRQ_DIGITALOUTPUT_STATE)ui->cmbDo->currentIndex();
 
-    checked_call( pDevice->setDIGITALOUT_STATE( doCH,
-                                  (MRQ_DIGITALOUT_STATE_1)ui->chkDo->isEnabled() ) );
-    checked_call( pDevice->setDIGITALOUT_POLARITY( doCH,
-                                     (MRQ_DIGITALOUT_POLARITY_1)ui->cmbDoPolarity->currentIndex() ) );
-    checked_call( pDevice->setDIGITALOUT_PERIOD( doCH, ui->spinDoPeri->value() / peri_unit ) );
-    checked_call( pDevice->setDIGITALOUT_DUTY( doCH, ui->spinDoDuty->value() / duty_unit ) );
+    checked_call( pDevice->setDIGITALOUTPUT_STATE( doCH,
+                                  (MRQ_DIGITALOUTPUT_STATE_1)ui->chkDo->isEnabled() ) );
+    checked_call( pDevice->setDIGITALOUTPUT_POLARITY( doCH,
+                                     (MRQ_DIGITALOUTPUT_POLARITY_1)ui->cmbDoPolarity->currentIndex() ) );
+    checked_call( pDevice->setDIGITALOUTPUT_PERIOD( doCH, comAssist::align( ui->spinDoPeri->value(), peri_unit) ) );
+    checked_call( pDevice->setDIGITALOUTPUT_DUTY( doCH, comAssist::align( ui->spinDoDuty->value(), duty_unit) ) );
 
-    checked_call( pDevice->setDIGITALOUT_CONDITION( doCH,
-                                      (MRQ_DIGITALOUT_CONDITION_1)ui->cmbDoCondition->currentIndex() ) );
-    checked_call( pDevice->setDIGITALOUT_SIGNAL( doCH,
-                                   (MRQ_DIGITALOUT_SIGNAL_1)ui->cmbDoSignal->currentIndex() ) );
+    checked_call( pDevice->setDIGITALOUTPUT_SOURCE( doCH,
+                                                    ui->cmbDoSource->currentIndex() ) );
+    checked_call( pDevice->setDIGITALOUTPUT_CONDITION( doCH,
+                                      (MRQ_DIGITALOUTPUT_CONDITION_1)ui->cmbDoCondition->currentIndex() ) );
+    checked_call( pDevice->setDIGITALOUTPUT_SIGNAL( doCH,
+                                   (MRQ_DIGITALOUTPUT_SIGNAL_1)ui->cmbDoSignal->currentIndex() ) );
 
     return ret;
 }
@@ -97,7 +100,7 @@ int mrqIo::aiApply()
     pDevice = getDevice();
     Q_ASSERT( NULL != pDevice );
 
-    int ret;
+    int ret = 0;
 
     //! ai
 //    checked_call( pDevice->setANALOGIN_STATE( (MRQ_SYSTEM_REPORTSWITCH)ui->chkAi->isEnabled() ) );
@@ -118,9 +121,9 @@ void mrqIo::on_btnIsoApply_clicked()
     ret = isoApply();
 
     if ( ret != 0 )
-    { sysError("Iso apply fail");}
+    { sysError( tr("Iso apply fail"));}
     else
-    { sysLog("Iso apply success");}
+    { sysLog( tr("Iso apply success") ) ;}
 }
 
 void mrqIo::on_btnDoApply_clicked()
@@ -130,9 +133,9 @@ void mrqIo::on_btnDoApply_clicked()
     ret = doApply();
 
     if ( ret != 0 )
-    { sysError("Do apply fail");}
+    { sysError(tr("Do apply fail"));}
     else
-    { sysLog("Do apply success");}
+    { sysLog(tr("Do apply success"));}
 }
 
 void mrqIo::on_btnAiApply_clicked()
@@ -142,7 +145,7 @@ void mrqIo::on_btnAiApply_clicked()
     ret = isoApply();
 
     if ( ret != 0 )
-    { sysError("Ai apply fail");}
+    { sysError(tr("Ai apply fail"));}
     else
-    { sysLog("Ai apply success");}
+    { sysLog(tr("Ai apply success"));}
 }

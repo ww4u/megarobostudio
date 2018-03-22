@@ -50,6 +50,15 @@ public:
                          const QByteArray &ary
                          );
 
+    void postMsg( eRoboMsg msg,
+                  int mi, int ma, int n,
+                  const QString &str );
+    void postMsg( eRoboMsg msg,
+                  bool b );
+    void postMsg( eRoboMsg msg,
+                  const QString &str );
+
+
     void process( int intervalus = 100,
                          RoboMsgThread *pThread = NULL );
 

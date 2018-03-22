@@ -458,6 +458,7 @@ QChartView * tpvPlot::createCurve( const QString &name )
     QChart *pChart = new QChart();
     pChart->setAnimationDuration( animation_time );
     pChart->setAnimationOptions( animation_option );
+    pChart->setTheme( chart_theme );
     pChart->legend()->hide();
 
     pChart->addSeries( series );
@@ -483,6 +484,7 @@ QChartView * tpvPlot::createCurves( const QString &name,
     QChart *pChart = new QChart();
     pChart->setAnimationDuration( animation_time );
     pChart->setAnimationOptions( animation_option );
+    pChart->setTheme( chart_theme );
 //    pChart->legend()->hide();
     pChart->legend()->show();
 

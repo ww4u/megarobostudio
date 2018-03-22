@@ -110,12 +110,16 @@ int main(int argc, char *argv[])
     //! translator
     QTranslator translator;
 
-    qDebug()<<QDir::currentPath();
-    translator.load( "megaroboide_chn", "../../translate" );
-    a.installTranslator( &translator );
+    if ( translator.load( QLocale(),
+                          QLatin1String("megarobostudio"),
+                          QLatin1String("_"),
+                          a.applicationDirPath() + "/translate"
+                          ) )
+    {  a.installTranslator(&translator); }
+
 
     //! style
-//    CommonHelper::setStyle(":/res/qss/white.qss");
+    CommonHelper::setStyle( a.applicationDirPath() + "/style" + "/mega.qss" );
 
     //! dpc set thread
     QThread thread;

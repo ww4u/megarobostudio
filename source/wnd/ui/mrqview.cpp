@@ -5,18 +5,20 @@
 mrqView::mrqView( QWidget *parent ) : modelView( parent )
 {
     mAxesId = 0;
+    mPage = MRQ_MOTION_SWITCH_1_MAIN;
     m_pMrqModel = NULL;
     m_pModelObj = NULL;
 }
 
 void mrqView::setAxesId( int id )
-{
-    mAxesId = id;
-}
+{ mAxesId = id; }
 int mrqView::getAxesId()
-{
-    return mAxesId;
-}
+{ return mAxesId; }
+
+void mrqView::setPage( MRQ_AX_PAGE pg )
+{ mPage  = pg; }
+MRQ_AX_PAGE mrqView::page()
+{ return mPage; }
 
 void mrqView::setModelObj( mcModelObj *pObj )
 {
@@ -55,7 +57,7 @@ MegaDevice::deviceMRQ *mrqView::getDevice()
                                                                         );
     if ( NULL == pDevice )
     {
-        sysLog( "Invalid Device", m_pmcModel->mConn.mDeviceName );
+        sysLog( tr("Invalid Device"), m_pmcModel->mConn.mDeviceName );
     }
 
     return pDevice;

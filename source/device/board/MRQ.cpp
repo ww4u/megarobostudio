@@ -33,6 +33,24 @@ int MRQ::getLINK_INTFC(  MRQ_LINK_INTFC * val0, bool bQuery )
 	*val0 = (MRQ_LINK_INTFC)lval0;
 	return 0;
 }
+//! 
+//! 
+int MRQ::getLINK_DEVICEINFO(  MRQ_LINK_DEVICEINFO * val0, MRQ_LINK_DEVICEINFO_1 * val1, uint32 * val2, bool bQuery )
+{
+	//! 1 2
+	int ret = 0;
+
+	byte lval0 = 0;
+	byte lval1 = 0;
+	uint32 lval2 = 0;
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 1, 2 , &lval0, &lval1, &lval2, bQuery);
+	if ( ret != 0){ log_device(); } 
+	if ( ret != 0) return ret;
+	*val0 = (MRQ_LINK_DEVICEINFO)lval0;
+	*val1 = (MRQ_LINK_DEVICEINFO_1)lval1;
+	*val2 = lval2;
+	return 0;
+}
 //! ENUM
 //! NORMAL|NONE
 int MRQ::setSYSTEM_WORKMODE( MRQ_SYSTEM_WORKMODE val0 )
@@ -117,7 +135,7 @@ int MRQ::getSYSTEM_SN(  byte * val0, char * val1, char * val2, char * val3, char
 }
 //! 
 //! 
-int MRQ::getSYSTEM_TYPE(  MRQ_SYSTEM_TYPE * val0, MRQ_SYSTEM_TYPE_1 * val1, bool bQuery )
+int MRQ::getSYSTEM_TYPE(  MRQ_LINK_DEVICEINFO * val0, MRQ_LINK_DEVICEINFO_1 * val1, bool bQuery )
 {
 	//! 2 5
 	int ret = 0;
@@ -127,8 +145,8 @@ int MRQ::getSYSTEM_TYPE(  MRQ_SYSTEM_TYPE * val0, MRQ_SYSTEM_TYPE_1 * val1, bool
 	ret = m_pBus->read( DEVICE_RECEIVE_ID, 2, 5 , &lval0, &lval1, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
-	*val0 = (MRQ_SYSTEM_TYPE)lval0;
-	*val1 = (MRQ_SYSTEM_TYPE_1)lval1;
+	*val0 = (MRQ_LINK_DEVICEINFO)lval0;
+	*val1 = (MRQ_LINK_DEVICEINFO_1)lval1;
 	return 0;
 }
 //! 
@@ -201,7 +219,7 @@ int MRQ::getSYSTEM_BOOTVER(  char * val0, char * val1, bool bQuery )
 }
 //! 
 //! 
-int MRQ::getSYSTEM_ERROR(  char * val0, char * val1, char * val2, char * val3, char * val4, char * val5, bool bQuery )
+int MRQ::getSYSTEM_EVENTCODE(  char * val0, char * val1, char * val2, char * val3, char * val4, char * val5, bool bQuery )
 {
 	//! 2 10
 	int ret = 0;
@@ -225,7 +243,7 @@ int MRQ::getSYSTEM_ERROR(  char * val0, char * val1, char * val2, char * val3, c
 }
 //! ENUM
 //! OFF|ON
-int MRQ::setSYSTEM_REPORTSWITCH( MRQ_SYSTEM_REPORTSWITCH val0 )
+int MRQ::setSYSTEM_DIOREFREAD( MRQ_SYSTEM_DIOREFREAD val0 )
 {
 	//! 2 11
 	int ret; 
@@ -233,14 +251,14 @@ int MRQ::setSYSTEM_REPORTSWITCH( MRQ_SYSTEM_REPORTSWITCH val0 )
 
 	if ( ret == 0) 
 	{
-		MRQ_model::setSYSTEM_REPORTSWITCH( val0 );
+		MRQ_model::setSYSTEM_DIOREFREAD( val0 );
 	}
 	if ( ret != 0){ log_device(); } 
 	return ret;
 }
 //! 
 //! 
-int MRQ::getSYSTEM_REPORTSWITCH(  MRQ_SYSTEM_REPORTSWITCH * val0, bool bQuery )
+int MRQ::getSYSTEM_DIOREFREAD(  MRQ_SYSTEM_DIOREFREAD * val0, bool bQuery )
 {
 	//! 2 12
 	int ret = 0;
@@ -249,7 +267,7 @@ int MRQ::getSYSTEM_REPORTSWITCH(  MRQ_SYSTEM_REPORTSWITCH * val0, bool bQuery )
 	ret = m_pBus->read( DEVICE_RECEIVE_ID, 2, 12 , &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
-	*val0 = (MRQ_SYSTEM_REPORTSWITCH)lval0;
+	*val0 = (MRQ_SYSTEM_DIOREFREAD)lval0;
 	return 0;
 }
 //! ENUM
@@ -661,7 +679,7 @@ int MRQ::setCAN_APPLYPARA(  )
 }
 //! ENUM
 //! OFF|ON
-int MRQ::setCAN_NETMANAGELED( MRQ_SYSTEM_REPORTSWITCH val0 )
+int MRQ::setCAN_NETMANAGELED( MRQ_SYSTEM_DIOREFREAD val0 )
 {
 	//! 4 17
 	int ret; 
@@ -793,7 +811,7 @@ int MRQ::getCLOCK_FREQUENCY(  uint32 * val0, bool bQuery )
 }
 //! ENUM
 //! OFF|ON
-int MRQ::setCLOCK_SYNCREGISTER( MRQ_SYSTEM_REPORTSWITCH val0 )
+int MRQ::setCLOCK_SYNCREGISTER( MRQ_SYSTEM_DIOREFREAD val0 )
 {
 	//! 5 2
 	int ret; 
@@ -808,7 +826,7 @@ int MRQ::setCLOCK_SYNCREGISTER( MRQ_SYSTEM_REPORTSWITCH val0 )
 }
 //! 
 //! 
-int MRQ::getCLOCK_SYNCREGISTER(  MRQ_SYSTEM_REPORTSWITCH * val0, bool bQuery )
+int MRQ::getCLOCK_SYNCREGISTER(  MRQ_SYSTEM_DIOREFREAD * val0, bool bQuery )
 {
 	//! 5 3
 	int ret = 0;
@@ -817,7 +835,7 @@ int MRQ::getCLOCK_SYNCREGISTER(  MRQ_SYSTEM_REPORTSWITCH * val0, bool bQuery )
 	ret = m_pBus->read( DEVICE_RECEIVE_ID, 5, 3 , &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
-	*val0 = (MRQ_SYSTEM_REPORTSWITCH)lval0;
+	*val0 = (MRQ_SYSTEM_DIOREFREAD)lval0;
 	return 0;
 }
 //! ENUM
@@ -892,34 +910,36 @@ int MRQ::getCLOCK_COUNT(  uint32 * val0, bool bQuery )
 	*val0 = lval0;
 	return 0;
 }
-//! U8,ENUM
-//! [CHANNUM],RESET|STOP|RUN|PREPARE|EMERGSTOP
+//! U8,ENUM,ENUM
+//! [CHANNUM],RESET|STOP|RUN|PREPARE|EMERGSTOP,MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8
 int MRQ::setMOTION_SWITCH( byte val0
-,MRQ_MOTION_SWITCH val1 )
+,MRQ_MOTION_SWITCH val1
+,MRQ_MOTION_SWITCH_1 val2 )
 {
 	//! 21 0
 	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 21, 0 , val0, (unsigned char)val1 );
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 21, 0 , val0, (unsigned char)val1, (unsigned char)val2 );
 
 	if ( ret == 0) 
 	{
-		MRQ_model::setMOTION_SWITCH( val0, val1 );
+		MRQ_model::setMOTION_SWITCH( val0, val1, val2 );
 	}
 	if ( ret != 0){ log_device(); } 
 	return ret;
 }
-//! U8
-//! [CHANNUM]
-int MRQ::getMOTION_STATE( byte val0, MRQ_MOTION_STATE * val1, bool bQuery )
+//! U8,ENUM
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8
+int MRQ::getMOTION_STATE( byte val0
+,MRQ_MOTION_SWITCH_1 val1, MRQ_MOTION_STATE_2 * val2, bool bQuery )
 {
 	//! 21 1
 	int ret = 0;
 
 	byte lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 21, 1 , val0, &lval0, bQuery);
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 21, 1 , val0, (byte)val1, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
-	*val1 = (MRQ_MOTION_STATE)lval0;
+	*val2 = (MRQ_MOTION_STATE_2)lval0;
 	return 0;
 }
 //! U8,ENUM
@@ -1298,194 +1318,13 @@ int MRQ::setMOTION_GOORIGIN( byte val0 )
 	return ret;
 }
 //! U8,ENUM
-//! [CHANNUM],ANGLE|RADIAN|MILLIMETER|IOSIGNAL
-int MRQ::setMOTION_INITPOSITIONUNIT( byte val0
-,MRQ_MOTION_INITPOSITIONUNIT val1 )
+//! [CHANNUM],OFF|ON
+int MRQ::setMOTION_OFFSETSTATE( byte val0
+,MRQ_SYSTEM_DIOREFREAD val1 )
 {
 	//! 21 27
 	int ret; 
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, 21, 27 , val0, (unsigned char)val1 );
-
-	if ( ret == 0) 
-	{
-		MRQ_model::setMOTION_INITPOSITIONUNIT( val0, val1 );
-	}
-	if ( ret != 0){ log_device(); } 
-	return ret;
-}
-//! U8
-//! [CHANNUM]
-int MRQ::getMOTION_INITPOSITIONUNIT( byte val0, MRQ_MOTION_INITPOSITIONUNIT * val1, bool bQuery )
-{
-	//! 21 28
-	int ret = 0;
-
-	byte lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 21, 28 , val0, &lval0, bQuery);
-	if ( ret != 0){ log_device(); } 
-	if ( ret != 0) return ret;
-	*val1 = (MRQ_MOTION_INITPOSITIONUNIT)lval0;
-	return 0;
-}
-//! U8,F32
-//! [CHANNUM]
-int MRQ::setMOTION_INITPOSITION( byte val0
-,f32 val1 )
-{
-	//! 21 29
-	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 21, 29 , val0, val1 );
-
-	if ( ret == 0) 
-	{
-		MRQ_model::setMOTION_INITPOSITION( val0, val1 );
-	}
-	if ( ret != 0){ log_device(); } 
-	return ret;
-}
-//! U8
-//! [CHANNUM]
-int MRQ::getMOTION_INITPOSITION( byte val0, f32 * val1, bool bQuery )
-{
-	//! 21 30
-	int ret = 0;
-
-	f32 lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 21, 30 , val0, &lval0, bQuery);
-	if ( ret != 0){ log_device(); } 
-	if ( ret != 0) return ret;
-	*val1 = lval0;
-	return 0;
-}
-//! U8,ENUM
-//! [CHANNUM],TRIG1|TRIG2|TRIG3|TRIG4|TRIG5
-int MRQ::setMOTION_INITIOSIGNAL( byte val0
-,MRQ_MOTION_INITIOSIGNAL val1 )
-{
-	//! 21 31
-	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 21, 31 , val0, (unsigned char)val1 );
-
-	if ( ret == 0) 
-	{
-		MRQ_model::setMOTION_INITIOSIGNAL( val0, val1 );
-	}
-	if ( ret != 0){ log_device(); } 
-	return ret;
-}
-//! U8
-//! [CHANNUM]
-int MRQ::getMOTION_INITIOSIGNAL( byte val0, MRQ_MOTION_INITIOSIGNAL * val1, bool bQuery )
-{
-	//! 21 32
-	int ret = 0;
-
-	byte lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 21, 32 , val0, &lval0, bQuery);
-	if ( ret != 0){ log_device(); } 
-	if ( ret != 0) return ret;
-	*val1 = (MRQ_MOTION_INITIOSIGNAL)lval0;
-	return 0;
-}
-//! U8
-//! [CHANNUM]
-int MRQ::setMOTION_GOINITPOSITION( byte val0 )
-{
-	//! 21 33
-	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 21, 33 , val0 );
-
-	if ( ret == 0) 
-	{
-		MRQ_model::setMOTION_GOINITPOSITION( val0 );
-	}
-	if ( ret != 0){ log_device(); } 
-	return ret;
-}
-//! U8,ENUM
-//! [CHANNUM],RELTANGLE|RELTRADIAN|RELTMILLIMETER
-int MRQ::setMOTION_INCHINGMODE( byte val0
-,MRQ_MOTION_INCHINGMODE val1 )
-{
-	//! 21 34
-	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 21, 34 , val0, (unsigned char)val1 );
-
-	if ( ret == 0) 
-	{
-		MRQ_model::setMOTION_INCHINGMODE( val0, val1 );
-	}
-	if ( ret != 0){ log_device(); } 
-	return ret;
-}
-//! U8
-//! [CHANNUM]
-int MRQ::getMOTION_INCHINGMODE( byte val0, MRQ_MOTION_INCHINGMODE * val1, bool bQuery )
-{
-	//! 21 35
-	int ret = 0;
-
-	byte lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 21, 35 , val0, &lval0, bQuery);
-	if ( ret != 0){ log_device(); } 
-	if ( ret != 0) return ret;
-	*val1 = (MRQ_MOTION_INCHINGMODE)lval0;
-	return 0;
-}
-//! U8,F32
-//! [CHANNUM]
-int MRQ::setMOTION_INCHINGTIME( byte val0
-,f32 val1 )
-{
-	//! 21 36
-	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 21, 36 , val0, val1 );
-
-	if ( ret == 0) 
-	{
-		MRQ_model::setMOTION_INCHINGTIME( val0, val1 );
-	}
-	if ( ret != 0){ log_device(); } 
-	return ret;
-}
-//! U8
-//! [CHANNUM]
-int MRQ::getMOTION_INCHINGTIME( byte val0, f32 * val1, bool bQuery )
-{
-	//! 21 37
-	int ret = 0;
-
-	f32 lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 21, 37 , val0, &lval0, bQuery);
-	if ( ret != 0){ log_device(); } 
-	if ( ret != 0) return ret;
-	*val1 = lval0;
-	return 0;
-}
-//! U8,F32
-//! [CHANNUM]
-int MRQ::setMOTION_INCHING( byte val0
-,f32 val1 )
-{
-	//! 21 38
-	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 21, 38 , val0, val1 );
-
-	if ( ret == 0) 
-	{
-		MRQ_model::setMOTION_INCHING( val0, val1 );
-	}
-	if ( ret != 0){ log_device(); } 
-	return ret;
-}
-//! U8,ENUM
-//! [CHANNUM],OFF|ON
-int MRQ::setMOTION_OFFSETSTATE( byte val0
-,MRQ_SYSTEM_REPORTSWITCH val1 )
-{
-	//! 21 39
-	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 21, 39 , val0, (unsigned char)val1 );
 
 	if ( ret == 0) 
 	{
@@ -1496,25 +1335,25 @@ int MRQ::setMOTION_OFFSETSTATE( byte val0
 }
 //! U8
 //! [CHANNUM]
-int MRQ::getMOTION_OFFSETSTATE( byte val0, MRQ_SYSTEM_REPORTSWITCH * val1, bool bQuery )
+int MRQ::getMOTION_OFFSETSTATE( byte val0, MRQ_SYSTEM_DIOREFREAD * val1, bool bQuery )
 {
-	//! 21 40
+	//! 21 28
 	int ret = 0;
 
 	byte lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 21, 40 , val0, &lval0, bQuery);
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 21, 28 , val0, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
-	*val1 = (MRQ_SYSTEM_REPORTSWITCH)lval0;
+	*val1 = (MRQ_SYSTEM_DIOREFREAD)lval0;
 	return 0;
 }
 //! U8
 //! [CHANNUM]
 int MRQ::setMOTION_OFFSET( byte val0 )
 {
-	//! 21 41
+	//! 21 29
 	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 21, 41 , val0 );
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 21, 29 , val0 );
 
 	if ( ret == 0) 
 	{
@@ -1527,11 +1366,11 @@ int MRQ::setMOTION_OFFSET( byte val0 )
 //! [CHANNUM]
 int MRQ::getMOTION_PVTSTEPS( byte val0, int32 * val1, bool bQuery )
 {
-	//! 21 42
+	//! 21 30
 	int ret = 0;
 
 	int32 lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 21, 42 , val0, &lval0, bQuery);
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 21, 30 , val0, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
 	*val1 = lval0;
@@ -1541,11 +1380,11 @@ int MRQ::getMOTION_PVTSTEPS( byte val0, int32 * val1, bool bQuery )
 //! [CHANNUM]
 int MRQ::getMOTION_COUNTSTEPS( byte val0, int32 * val1, bool bQuery )
 {
-	//! 21 43
+	//! 21 31
 	int ret = 0;
 
 	int32 lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 21, 43 , val0, &lval0, bQuery);
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 21, 31 , val0, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
 	*val1 = lval0;
@@ -1555,11 +1394,11 @@ int MRQ::getMOTION_COUNTSTEPS( byte val0, int32 * val1, bool bQuery )
 //! [CHANNUM]
 int MRQ::getMOTION_PVTCIRCLE( byte val0, int16 * val1, bool bQuery )
 {
-	//! 21 44
+	//! 21 32
 	int ret = 0;
 
 	int16 lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 21, 44 , val0, &lval0, bQuery);
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 21, 32 , val0, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
 	*val1 = lval0;
@@ -1569,11 +1408,11 @@ int MRQ::getMOTION_PVTCIRCLE( byte val0, int16 * val1, bool bQuery )
 //! [CHANNUM]
 int MRQ::getMOTION_COUNTCIRCLE( byte val0, int16 * val1, bool bQuery )
 {
-	//! 21 45
+	//! 21 33
 	int ret = 0;
 
 	int16 lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 21, 45 , val0, &lval0, bQuery);
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 21, 33 , val0, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
 	*val1 = lval0;
@@ -1583,11 +1422,11 @@ int MRQ::getMOTION_COUNTCIRCLE( byte val0, int16 * val1, bool bQuery )
 //! [CHANNUM]
 int MRQ::getMOTION_ABCOUNT( byte val0, int32 * val1, bool bQuery )
 {
-	//! 21 46
+	//! 21 34
 	int ret = 0;
 
 	int32 lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 21, 46 , val0, &lval0, bQuery);
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 21, 34 , val0, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
 	*val1 = lval0;
@@ -1596,11 +1435,11 @@ int MRQ::getMOTION_ABCOUNT( byte val0, int32 * val1, bool bQuery )
 //! U8,ENUM
 //! [CHANNUM],OFF|ON
 int MRQ::setMOTION_REVMOTION( byte val0
-,MRQ_SYSTEM_REPORTSWITCH val1 )
+,MRQ_SYSTEM_DIOREFREAD val1 )
 {
-	//! 21 47
+	//! 21 35
 	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 21, 47 , val0, (unsigned char)val1 );
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 21, 35 , val0, (unsigned char)val1 );
 
 	if ( ret == 0) 
 	{
@@ -1611,16 +1450,16 @@ int MRQ::setMOTION_REVMOTION( byte val0
 }
 //! U8
 //! [CHANNUM]
-int MRQ::getMOTION_REVMOTION( byte val0, MRQ_SYSTEM_REPORTSWITCH * val1, bool bQuery )
+int MRQ::getMOTION_REVMOTION( byte val0, MRQ_SYSTEM_DIOREFREAD * val1, bool bQuery )
 {
-	//! 21 48
+	//! 21 36
 	int ret = 0;
 
 	byte lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 21, 48 , val0, &lval0, bQuery);
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 21, 36 , val0, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
-	*val1 = (MRQ_SYSTEM_REPORTSWITCH)lval0;
+	*val1 = (MRQ_SYSTEM_DIOREFREAD)lval0;
 	return 0;
 }
 //! U8,ENUM,U8
@@ -1657,7 +1496,7 @@ int MRQ::getIDENTITY_GROUP( byte val0
 }
 //! ENUM
 //! OFF|ON
-int MRQ::setIDENTITY_DISTDEVICE( MRQ_SYSTEM_REPORTSWITCH val0 )
+int MRQ::setIDENTITY_DISTDEVICE( MRQ_SYSTEM_DIOREFREAD val0 )
 {
 	//! 22 2
 	int ret; 
@@ -1672,7 +1511,7 @@ int MRQ::setIDENTITY_DISTDEVICE( MRQ_SYSTEM_REPORTSWITCH val0 )
 }
 //! 
 //! 
-int MRQ::getIDENTITY_DISTDEVICE(  MRQ_SYSTEM_REPORTSWITCH * val0, bool bQuery )
+int MRQ::getIDENTITY_DISTDEVICE(  MRQ_SYSTEM_DIOREFREAD * val0, bool bQuery )
 {
 	//! 22 3
 	int ret = 0;
@@ -1681,317 +1520,50 @@ int MRQ::getIDENTITY_DISTDEVICE(  MRQ_SYSTEM_REPORTSWITCH * val0, bool bQuery )
 	ret = m_pBus->read( DEVICE_RECEIVE_ID, 22, 3 , &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
-	*val0 = (MRQ_SYSTEM_REPORTSWITCH)lval0;
+	*val0 = (MRQ_SYSTEM_DIOREFREAD)lval0;
 	return 0;
 }
-//! U8,ENUM
-//! [CHANNUM],IMMEDIATE|DISTANCE
-int MRQ::setSTOPDECEL_MODE( byte val0
-,MRQ_STOPDECEL_MODE val1 )
+//! U8,ENUM,ENUM
+//! [CHANNUM],SINANJU|MEGATRON|GOUF,S1|S2|S3|S4
+int MRQ::setIDENTITY_LABEL( byte val0
+,MRQ_IDENTITY_LABEL val1
+,MRQ_IDENTITY_LABEL_1 val2 )
 {
-	//! 51 0
+	//! 22 4
 	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 51, 0 , val0, (unsigned char)val1 );
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 22, 4 , val0, (unsigned char)val1, (unsigned char)val2 );
 
 	if ( ret == 0) 
 	{
-		MRQ_model::setSTOPDECEL_MODE( val0, val1 );
+		MRQ_model::setIDENTITY_LABEL( val0, val1, val2 );
 	}
 	if ( ret != 0){ log_device(); } 
 	return ret;
 }
 //! U8
 //! [CHANNUM]
-int MRQ::getSTOPDECEL_MODE( byte val0, MRQ_STOPDECEL_MODE * val1, bool bQuery )
+int MRQ::getIDENTITY_LABEL( byte val0, MRQ_IDENTITY_LABEL * val1, MRQ_IDENTITY_LABEL_1 * val2, bool bQuery )
 {
-	//! 51 1
+	//! 22 5
 	int ret = 0;
 
 	byte lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 51, 1 , val0, &lval0, bQuery);
+	byte lval1 = 0;
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 22, 5 , val0, &lval0, &lval1, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
-	*val1 = (MRQ_STOPDECEL_MODE)lval0;
+	*val1 = (MRQ_IDENTITY_LABEL)lval0;
+	*val2 = (MRQ_IDENTITY_LABEL_1)lval1;
 	return 0;
-}
-//! U8,F32
-//! [CHANNUM]
-int MRQ::setSTOPDECEL_DISTANCE( byte val0
-,f32 val1 )
-{
-	//! 51 2
-	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 51, 2 , val0, val1 );
-
-	if ( ret == 0) 
-	{
-		MRQ_model::setSTOPDECEL_DISTANCE( val0, val1 );
-	}
-	if ( ret != 0){ log_device(); } 
-	return ret;
-}
-//! U8
-//! [CHANNUM]
-int MRQ::getSTOPDECEL_DISTANCE( byte val0, f32 * val1, bool bQuery )
-{
-	//! 51 3
-	int ret = 0;
-
-	f32 lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 51, 3 , val0, &lval0, bQuery);
-	if ( ret != 0){ log_device(); } 
-	if ( ret != 0) return ret;
-	*val1 = lval0;
-	return 0;
-}
-//! U8,F32
-//! [CHANNUM]
-int MRQ::setSTOPDECEL_TIME( byte val0
-,f32 val1 )
-{
-	//! 51 4
-	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 51, 4 , val0, val1 );
-
-	if ( ret == 0) 
-	{
-		MRQ_model::setSTOPDECEL_TIME( val0, val1 );
-	}
-	if ( ret != 0){ log_device(); } 
-	return ret;
-}
-//! U8
-//! [CHANNUM]
-int MRQ::getSTOPDECEL_TIME( byte val0, f32 * val1, bool bQuery )
-{
-	//! 51 5
-	int ret = 0;
-
-	f32 lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 51, 5 , val0, &lval0, bQuery);
-	if ( ret != 0){ log_device(); } 
-	if ( ret != 0) return ret;
-	*val1 = lval0;
-	return 0;
-}
-//! U8,ENUM
-//! [CHANNUM],OFF|ON
-int MRQ::setOUTOFSTEP_LINESTATE( byte val0
-,MRQ_SYSTEM_REPORTSWITCH val1 )
-{
-	//! 52 0
-	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 52, 0 , val0, (unsigned char)val1 );
-
-	if ( ret == 0) 
-	{
-		MRQ_model::setOUTOFSTEP_LINESTATE( val0, val1 );
-	}
-	if ( ret != 0){ log_device(); } 
-	return ret;
-}
-//! U8
-//! [CHANNUM]
-int MRQ::getOUTOFSTEP_LINESTATE( byte val0, MRQ_SYSTEM_REPORTSWITCH * val1, bool bQuery )
-{
-	//! 52 1
-	int ret = 0;
-
-	byte lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 52, 1 , val0, &lval0, bQuery);
-	if ( ret != 0){ log_device(); } 
-	if ( ret != 0) return ret;
-	*val1 = (MRQ_SYSTEM_REPORTSWITCH)lval0;
-	return 0;
-}
-//! U8,U32
-//! [CHANNUM]
-int MRQ::setOUTOFSTEP_LINEOUTNUM( byte val0
-,uint32 val1 )
-{
-	//! 52 2
-	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 52, 2 , val0, val1 );
-
-	if ( ret == 0) 
-	{
-		MRQ_model::setOUTOFSTEP_LINEOUTNUM( val0, val1 );
-	}
-	if ( ret != 0){ log_device(); } 
-	return ret;
-}
-//! U8
-//! [CHANNUM]
-int MRQ::getOUTOFSTEP_LINEOUTNUM( byte val0, uint32 * val1, bool bQuery )
-{
-	//! 52 3
-	int ret = 0;
-
-	uint32 lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 52, 3 , val0, &lval0, bQuery);
-	if ( ret != 0){ log_device(); } 
-	if ( ret != 0) return ret;
-	*val1 = lval0;
-	return 0;
-}
-//! U8,ENUM
-//! [CHANNUM],NONE|ALARM|STOP|ALARM&STOP
-int MRQ::setOUTOFSTEP_LINERESPONSE( byte val0
-,MRQ_OUTOFSTEP_LINERESPONSE val1 )
-{
-	//! 52 4
-	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 52, 4 , val0, (unsigned char)val1 );
-
-	if ( ret == 0) 
-	{
-		MRQ_model::setOUTOFSTEP_LINERESPONSE( val0, val1 );
-	}
-	if ( ret != 0){ log_device(); } 
-	return ret;
-}
-//! U8
-//! [CHANNUM]
-int MRQ::getOUTOFSTEP_LINERESPONSE( byte val0, MRQ_OUTOFSTEP_LINERESPONSE * val1, bool bQuery )
-{
-	//! 52 5
-	int ret = 0;
-
-	byte lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 52, 5 , val0, &lval0, bQuery);
-	if ( ret != 0){ log_device(); } 
-	if ( ret != 0) return ret;
-	*val1 = (MRQ_OUTOFSTEP_LINERESPONSE)lval0;
-	return 0;
-}
-//! U8
-//! [CHANNUM]
-int MRQ::setOUTOFSTEP_LINEWARN( byte val0 )
-{
-	//! 52 6
-	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 52, 6 , val0 );
-
-	if ( ret == 0) 
-	{
-		MRQ_model::setOUTOFSTEP_LINEWARN( val0 );
-	}
-	if ( ret != 0){ log_device(); } 
-	return ret;
-}
-//! U8,ENUM
-//! [CHANNUM],OFF|ON
-int MRQ::setOUTOFSTEP_TOTALSTATE( byte val0
-,MRQ_SYSTEM_REPORTSWITCH val1 )
-{
-	//! 52 7
-	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 52, 7 , val0, (unsigned char)val1 );
-
-	if ( ret == 0) 
-	{
-		MRQ_model::setOUTOFSTEP_TOTALSTATE( val0, val1 );
-	}
-	if ( ret != 0){ log_device(); } 
-	return ret;
-}
-//! U8
-//! [CHANNUM]
-int MRQ::getOUTOFSTEP_TOTALSTATE( byte val0, MRQ_SYSTEM_REPORTSWITCH * val1, bool bQuery )
-{
-	//! 52 8
-	int ret = 0;
-
-	byte lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 52, 8 , val0, &lval0, bQuery);
-	if ( ret != 0){ log_device(); } 
-	if ( ret != 0) return ret;
-	*val1 = (MRQ_SYSTEM_REPORTSWITCH)lval0;
-	return 0;
-}
-//! U8,U32
-//! [CHANNUM]
-int MRQ::setOUTOFSTEP_TOTALOUTNUM( byte val0
-,uint32 val1 )
-{
-	//! 52 9
-	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 52, 9 , val0, val1 );
-
-	if ( ret == 0) 
-	{
-		MRQ_model::setOUTOFSTEP_TOTALOUTNUM( val0, val1 );
-	}
-	if ( ret != 0){ log_device(); } 
-	return ret;
-}
-//! U8
-//! [CHANNUM]
-int MRQ::getOUTOFSTEP_TOTALOUTNUM( byte val0, uint32 * val1, bool bQuery )
-{
-	//! 52 10
-	int ret = 0;
-
-	uint32 lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 52, 10 , val0, &lval0, bQuery);
-	if ( ret != 0){ log_device(); } 
-	if ( ret != 0) return ret;
-	*val1 = lval0;
-	return 0;
-}
-//! U8,ENUM
-//! [CHANNUM],NONE|ALARM|STOP|ALARM&STOP
-int MRQ::setOUTOFSTEP_TOTALRESPONSE( byte val0
-,MRQ_OUTOFSTEP_LINERESPONSE val1 )
-{
-	//! 52 11
-	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 52, 11 , val0, (unsigned char)val1 );
-
-	if ( ret == 0) 
-	{
-		MRQ_model::setOUTOFSTEP_TOTALRESPONSE( val0, val1 );
-	}
-	if ( ret != 0){ log_device(); } 
-	return ret;
-}
-//! U8
-//! [CHANNUM]
-int MRQ::getOUTOFSTEP_TOTALRESPONSE( byte val0, MRQ_OUTOFSTEP_LINERESPONSE * val1, bool bQuery )
-{
-	//! 52 12
-	int ret = 0;
-
-	byte lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 52, 12 , val0, &lval0, bQuery);
-	if ( ret != 0){ log_device(); } 
-	if ( ret != 0) return ret;
-	*val1 = (MRQ_OUTOFSTEP_LINERESPONSE)lval0;
-	return 0;
-}
-//! U8
-//! [CHANNUM]
-int MRQ::setOUTOFSTEP_TOTALWARN( byte val0 )
-{
-	//! 52 13
-	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 52, 13 , val0 );
-
-	if ( ret == 0) 
-	{
-		MRQ_model::setOUTOFSTEP_TOTALWARN( val0 );
-	}
-	if ( ret != 0){ log_device(); } 
-	return ret;
 }
 //! U8,ENUM
 //! [CHANNUM],1.8|0.9|15|7.5
 int MRQ::setMOTOR_STEPANGLE( byte val0
 ,MRQ_MOTOR_STEPANGLE val1 )
 {
-	//! 53 0
+	//! 51 0
 	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 53, 0 , val0, (unsigned char)val1 );
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 51, 0 , val0, (unsigned char)val1 );
 
 	if ( ret == 0) 
 	{
@@ -2004,11 +1576,11 @@ int MRQ::setMOTOR_STEPANGLE( byte val0
 //! [CHANNUM]
 int MRQ::getMOTOR_STEPANGLE( byte val0, MRQ_MOTOR_STEPANGLE * val1, bool bQuery )
 {
-	//! 53 1
+	//! 51 1
 	int ret = 0;
 
 	byte lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 53, 1 , val0, &lval0, bQuery);
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 51, 1 , val0, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
 	*val1 = (MRQ_MOTOR_STEPANGLE)lval0;
@@ -2019,9 +1591,9 @@ int MRQ::getMOTOR_STEPANGLE( byte val0, MRQ_MOTOR_STEPANGLE * val1, bool bQuery 
 int MRQ::setMOTOR_TYPE( byte val0
 ,MRQ_MOTOR_TYPE val1 )
 {
-	//! 53 2
+	//! 51 2
 	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 53, 2 , val0, (unsigned char)val1 );
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 51, 2 , val0, (unsigned char)val1 );
 
 	if ( ret == 0) 
 	{
@@ -2034,11 +1606,11 @@ int MRQ::setMOTOR_TYPE( byte val0
 //! [CHANNUM]
 int MRQ::getMOTOR_TYPE( byte val0, MRQ_MOTOR_TYPE * val1, bool bQuery )
 {
-	//! 53 3
+	//! 51 3
 	int ret = 0;
 
 	byte lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 53, 3 , val0, &lval0, bQuery);
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 51, 3 , val0, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
 	*val1 = (MRQ_MOTOR_TYPE)lval0;
@@ -2049,9 +1621,9 @@ int MRQ::getMOTOR_TYPE( byte val0, MRQ_MOTOR_TYPE * val1, bool bQuery )
 int MRQ::setMOTOR_POSITIONUNIT( byte val0
 ,MRQ_MOTOR_POSITIONUNIT val1 )
 {
-	//! 53 4
+	//! 51 4
 	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 53, 4 , val0, (unsigned char)val1 );
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 51, 4 , val0, (unsigned char)val1 );
 
 	if ( ret == 0) 
 	{
@@ -2064,11 +1636,11 @@ int MRQ::setMOTOR_POSITIONUNIT( byte val0
 //! [CHANNUM]
 int MRQ::getMOTOR_POSITIONUNIT( byte val0, MRQ_MOTOR_POSITIONUNIT * val1, bool bQuery )
 {
-	//! 53 5
+	//! 51 5
 	int ret = 0;
 
 	byte lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 53, 5 , val0, &lval0, bQuery);
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 51, 5 , val0, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
 	*val1 = (MRQ_MOTOR_POSITIONUNIT)lval0;
@@ -2079,9 +1651,9 @@ int MRQ::getMOTOR_POSITIONUNIT( byte val0, MRQ_MOTOR_POSITIONUNIT * val1, bool b
 int MRQ::setMOTOR_GEARRATIONUM( byte val0
 ,uint16 val1 )
 {
-	//! 53 6
+	//! 51 6
 	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 53, 6 , val0, val1 );
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 51, 6 , val0, val1 );
 
 	if ( ret == 0) 
 	{
@@ -2094,11 +1666,11 @@ int MRQ::setMOTOR_GEARRATIONUM( byte val0
 //! [CHANNUM]
 int MRQ::getMOTOR_GEARRATIONUM( byte val0, uint16 * val1, bool bQuery )
 {
-	//! 53 7
+	//! 51 7
 	int ret = 0;
 
 	uint16 lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 53, 7 , val0, &lval0, bQuery);
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 51, 7 , val0, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
 	*val1 = lval0;
@@ -2109,9 +1681,9 @@ int MRQ::getMOTOR_GEARRATIONUM( byte val0, uint16 * val1, bool bQuery )
 int MRQ::setMOTOR_GEARRATIODEN( byte val0
 ,uint16 val1 )
 {
-	//! 53 8
+	//! 51 8
 	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 53, 8 , val0, val1 );
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 51, 8 , val0, val1 );
 
 	if ( ret == 0) 
 	{
@@ -2124,11 +1696,11 @@ int MRQ::setMOTOR_GEARRATIODEN( byte val0
 //! [CHANNUM]
 int MRQ::getMOTOR_GEARRATIODEN( byte val0, uint16 * val1, bool bQuery )
 {
-	//! 53 9
+	//! 51 9
 	int ret = 0;
 
 	uint16 lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 53, 9 , val0, &lval0, bQuery);
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 51, 9 , val0, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
 	*val1 = lval0;
@@ -2139,9 +1711,9 @@ int MRQ::getMOTOR_GEARRATIODEN( byte val0, uint16 * val1, bool bQuery )
 int MRQ::setMOTOR_LEAD( byte val0
 ,f32 val1 )
 {
-	//! 53 10
+	//! 51 10
 	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 53, 10 , val0, val1 );
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 51, 10 , val0, val1 );
 
 	if ( ret == 0) 
 	{
@@ -2154,11 +1726,11 @@ int MRQ::setMOTOR_LEAD( byte val0
 //! [CHANNUM]
 int MRQ::getMOTOR_LEAD( byte val0, f32 * val1, bool bQuery )
 {
-	//! 53 11
+	//! 51 11
 	int ret = 0;
 
 	f32 lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 53, 11 , val0, &lval0, bQuery);
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 51, 11 , val0, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
 	*val1 = lval0;
@@ -2169,9 +1741,9 @@ int MRQ::getMOTOR_LEAD( byte val0, f32 * val1, bool bQuery )
 int MRQ::setMOTOR_PEAKSPEED( byte val0
 ,f32 val1 )
 {
-	//! 53 12
+	//! 51 12
 	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 53, 12 , val0, val1 );
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 51, 12 , val0, val1 );
 
 	if ( ret == 0) 
 	{
@@ -2184,11 +1756,11 @@ int MRQ::setMOTOR_PEAKSPEED( byte val0
 //! [CHANNUM]
 int MRQ::getMOTOR_PEAKSPEED( byte val0, f32 * val1, bool bQuery )
 {
-	//! 53 13
+	//! 51 13
 	int ret = 0;
 
 	f32 lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 53, 13 , val0, &lval0, bQuery);
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 51, 13 , val0, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
 	*val1 = lval0;
@@ -2199,9 +1771,9 @@ int MRQ::getMOTOR_PEAKSPEED( byte val0, f32 * val1, bool bQuery )
 int MRQ::setMOTOR_PEAKACCELERATION( byte val0
 ,f32 val1 )
 {
-	//! 53 14
+	//! 51 14
 	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 53, 14 , val0, val1 );
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 51, 14 , val0, val1 );
 
 	if ( ret == 0) 
 	{
@@ -2214,11 +1786,11 @@ int MRQ::setMOTOR_PEAKACCELERATION( byte val0
 //! [CHANNUM]
 int MRQ::getMOTOR_PEAKACCELERATION( byte val0, f32 * val1, bool bQuery )
 {
-	//! 53 15
+	//! 51 15
 	int ret = 0;
 
 	f32 lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 53, 15 , val0, &lval0, bQuery);
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 51, 15 , val0, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
 	*val1 = lval0;
@@ -2229,9 +1801,9 @@ int MRQ::getMOTOR_PEAKACCELERATION( byte val0, f32 * val1, bool bQuery )
 int MRQ::setMOTOR_SIZE( byte val0
 ,MRQ_MOTOR_SIZE val1 )
 {
-	//! 53 16
+	//! 51 16
 	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 53, 16 , val0, (unsigned char)val1 );
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 51, 16 , val0, (unsigned char)val1 );
 
 	if ( ret == 0) 
 	{
@@ -2244,11 +1816,11 @@ int MRQ::setMOTOR_SIZE( byte val0
 //! [CHANNUM]
 int MRQ::getMOTOR_SIZE( byte val0, MRQ_MOTOR_SIZE * val1, bool bQuery )
 {
-	//! 53 17
+	//! 51 17
 	int ret = 0;
 
 	byte lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 53, 17 , val0, &lval0, bQuery);
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 51, 17 , val0, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
 	*val1 = (MRQ_MOTOR_SIZE)lval0;
@@ -2259,9 +1831,9 @@ int MRQ::getMOTOR_SIZE( byte val0, MRQ_MOTOR_SIZE * val1, bool bQuery )
 int MRQ::setMOTOR_VOLTAGE( byte val0
 ,byte val1 )
 {
-	//! 53 18
+	//! 51 18
 	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 53, 18 , val0, val1 );
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 51, 18 , val0, val1 );
 
 	if ( ret == 0) 
 	{
@@ -2274,11 +1846,11 @@ int MRQ::setMOTOR_VOLTAGE( byte val0
 //! [CHANNUM]
 int MRQ::getMOTOR_VOLTAGE( byte val0, byte * val1, bool bQuery )
 {
-	//! 53 19
+	//! 51 19
 	int ret = 0;
 
 	byte lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 53, 19 , val0, &lval0, bQuery);
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 51, 19 , val0, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
 	*val1 = lval0;
@@ -2289,9 +1861,9 @@ int MRQ::getMOTOR_VOLTAGE( byte val0, byte * val1, bool bQuery )
 int MRQ::setMOTOR_CURRENT( byte val0
 ,byte val1 )
 {
-	//! 53 20
+	//! 51 20
 	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 53, 20 , val0, val1 );
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 51, 20 , val0, val1 );
 
 	if ( ret == 0) 
 	{
@@ -2304,11 +1876,11 @@ int MRQ::setMOTOR_CURRENT( byte val0
 //! [CHANNUM]
 int MRQ::getMOTOR_CURRENT( byte val0, byte * val1, bool bQuery )
 {
-	//! 53 21
+	//! 51 21
 	int ret = 0;
 
 	byte lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 53, 21 , val0, &lval0, bQuery);
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 51, 21 , val0, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
 	*val1 = lval0;
@@ -2319,9 +1891,9 @@ int MRQ::getMOTOR_CURRENT( byte val0, byte * val1, bool bQuery )
 int MRQ::setMOTOR_BACKLASH( byte val0
 ,f32 val1 )
 {
-	//! 53 22
+	//! 51 22
 	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 53, 22 , val0, val1 );
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 51, 22 , val0, val1 );
 
 	if ( ret == 0) 
 	{
@@ -2334,11 +1906,11 @@ int MRQ::setMOTOR_BACKLASH( byte val0
 //! [CHANNUM]
 int MRQ::getMOTOR_BACKLASH( byte val0, f32 * val1, bool bQuery )
 {
-	//! 53 23
+	//! 51 23
 	int ret = 0;
 
 	f32 lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 53, 23 , val0, &lval0, bQuery);
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 51, 23 , val0, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
 	*val1 = lval0;
@@ -2349,9 +1921,9 @@ int MRQ::getMOTOR_BACKLASH( byte val0, f32 * val1, bool bQuery )
 int MRQ::setENCODER_LINENUM( byte val0
 ,uint32 val1 )
 {
-	//! 54 0
+	//! 52 0
 	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 54, 0 , val0, val1 );
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 52, 0 , val0, val1 );
 
 	if ( ret == 0) 
 	{
@@ -2364,11 +1936,11 @@ int MRQ::setENCODER_LINENUM( byte val0
 //! [CHANNUM]
 int MRQ::getENCODER_LINENUM( byte val0, uint32 * val1, bool bQuery )
 {
-	//! 54 1
+	//! 52 1
 	int ret = 0;
 
 	uint32 lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 54, 1 , val0, &lval0, bQuery);
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 52, 1 , val0, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
 	*val1 = lval0;
@@ -2379,9 +1951,9 @@ int MRQ::getENCODER_LINENUM( byte val0, uint32 * val1, bool bQuery )
 int MRQ::setENCODER_CHANNELNUM( byte val0
 ,MRQ_ENCODER_CHANNELNUM val1 )
 {
-	//! 54 2
+	//! 52 2
 	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 54, 2 , val0, (unsigned char)val1 );
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 52, 2 , val0, (unsigned char)val1 );
 
 	if ( ret == 0) 
 	{
@@ -2394,11 +1966,11 @@ int MRQ::setENCODER_CHANNELNUM( byte val0
 //! [CHANNUM]
 int MRQ::getENCODER_CHANNELNUM( byte val0, MRQ_ENCODER_CHANNELNUM * val1, bool bQuery )
 {
-	//! 54 3
+	//! 52 3
 	int ret = 0;
 
 	byte lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 54, 3 , val0, &lval0, bQuery);
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 52, 3 , val0, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
 	*val1 = (MRQ_ENCODER_CHANNELNUM)lval0;
@@ -2409,9 +1981,9 @@ int MRQ::getENCODER_CHANNELNUM( byte val0, MRQ_ENCODER_CHANNELNUM * val1, bool b
 int MRQ::setENCODER_TYPE( byte val0
 ,MRQ_ENCODER_TYPE val1 )
 {
-	//! 54 4
+	//! 52 4
 	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 54, 4 , val0, (unsigned char)val1 );
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 52, 4 , val0, (unsigned char)val1 );
 
 	if ( ret == 0) 
 	{
@@ -2424,11 +1996,11 @@ int MRQ::setENCODER_TYPE( byte val0
 //! [CHANNUM]
 int MRQ::getENCODER_TYPE( byte val0, MRQ_ENCODER_TYPE * val1, bool bQuery )
 {
-	//! 54 5
+	//! 52 5
 	int ret = 0;
 
 	byte lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 54, 5 , val0, &lval0, bQuery);
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 52, 5 , val0, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
 	*val1 = (MRQ_ENCODER_TYPE)lval0;
@@ -2439,9 +2011,9 @@ int MRQ::getENCODER_TYPE( byte val0, MRQ_ENCODER_TYPE * val1, bool bQuery )
 int MRQ::setENCODER_MULTIPLE( byte val0
 ,MRQ_ENCODER_MULTIPLE val1 )
 {
-	//! 54 6
+	//! 52 6
 	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 54, 6 , val0, (unsigned char)val1 );
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 52, 6 , val0, (unsigned char)val1 );
 
 	if ( ret == 0) 
 	{
@@ -2454,11 +2026,11 @@ int MRQ::setENCODER_MULTIPLE( byte val0
 //! [CHANNUM]
 int MRQ::getENCODER_MULTIPLE( byte val0, MRQ_ENCODER_MULTIPLE * val1, bool bQuery )
 {
-	//! 54 7
+	//! 52 7
 	int ret = 0;
 
 	byte lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 54, 7 , val0, &lval0, bQuery);
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 52, 7 , val0, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
 	*val1 = (MRQ_ENCODER_MULTIPLE)lval0;
@@ -2469,9 +2041,9 @@ int MRQ::getENCODER_MULTIPLE( byte val0, MRQ_ENCODER_MULTIPLE * val1, bool bQuer
 int MRQ::setENCODER_STATE( byte val0
 ,MRQ_ENCODER_STATE val1 )
 {
-	//! 54 8
+	//! 52 8
 	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 54, 8 , val0, (unsigned char)val1 );
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 52, 8 , val0, (unsigned char)val1 );
 
 	if ( ret == 0) 
 	{
@@ -2484,488 +2056,827 @@ int MRQ::setENCODER_STATE( byte val0
 //! [CHANNUM]
 int MRQ::getENCODER_STATE( byte val0, MRQ_ENCODER_STATE * val1, bool bQuery )
 {
-	//! 54 9
+	//! 52 9
 	int ret = 0;
 
 	byte lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 54, 9 , val0, &lval0, bQuery);
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 52, 9 , val0, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
 	*val1 = (MRQ_ENCODER_STATE)lval0;
 	return 0;
 }
-//! U8,ENUM
-//! [CHANNUM],END|START|STOP|CLEAR
-int MRQ::setMOTIONPLAN_PVTCONFIG( byte val0
-,MRQ_MOTIONPLAN_PVTCONFIG val1 )
-{
-	//! 55 0
-	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 55, 0 , val0, (unsigned char)val1 );
-
-	if ( ret == 0) 
-	{
-		MRQ_model::setMOTIONPLAN_PVTCONFIG( val0, val1 );
-	}
-	if ( ret != 0){ log_device(); } 
-	return ret;
-}
-//! U8
-//! [CHANNUM]
-int MRQ::getMOTIONPLAN_PVTCONFIG( byte val0, MRQ_MOTIONPLAN_PVTCONFIG * val1, bool bQuery )
-{
-	//! 55 1
-	int ret = 0;
-
-	byte lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 55, 1 , val0, &lval0, bQuery);
-	if ( ret != 0){ log_device(); } 
-	if ( ret != 0) return ret;
-	*val1 = (MRQ_MOTIONPLAN_PVTCONFIG)lval0;
-	return 0;
-}
-//! U16,F32
-//! [INDEX]
-int MRQ::setMOTIONPLAN_POSITION( uint16 val0
-,f32 val1 )
-{
-	//! 55 2
-	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 55, 2 , val0, val1 );
-
-	if ( ret == 0) 
-	{
-		MRQ_model::setMOTIONPLAN_POSITION( val0, val1 );
-	}
-	if ( ret != 0){ log_device(); } 
-	return ret;
-}
-//! U16
-//! [INDEX]
-int MRQ::getMOTIONPLAN_POSITION( uint16 val0, f32 * val1, bool bQuery )
-{
-	//! 55 3
-	int ret = 0;
-
-	f32 lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 55, 3 , val0, &lval0, bQuery);
-	if ( ret != 0){ log_device(); } 
-	if ( ret != 0) return ret;
-	*val1 = lval0;
-	return 0;
-}
-//! U16,F32
-//! [INDEX]
-int MRQ::setMOTIONPLAN_VELOCITY( uint16 val0
-,f32 val1 )
-{
-	//! 55 4
-	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 55, 4 , val0, val1 );
-
-	if ( ret == 0) 
-	{
-		MRQ_model::setMOTIONPLAN_VELOCITY( val0, val1 );
-	}
-	if ( ret != 0){ log_device(); } 
-	return ret;
-}
-//! U16
-//! [INDEX]
-int MRQ::getMOTIONPLAN_VELOCITY( uint16 val0, f32 * val1, bool bQuery )
-{
-	//! 55 5
-	int ret = 0;
-
-	f32 lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 55, 5 , val0, &lval0, bQuery);
-	if ( ret != 0){ log_device(); } 
-	if ( ret != 0) return ret;
-	*val1 = lval0;
-	return 0;
-}
-//! U16,F32
-//! [INDEX]
-int MRQ::setMOTIONPLAN_TIME( uint16 val0
-,f32 val1 )
-{
-	//! 55 6
-	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 55, 6 , val0, val1 );
-
-	if ( ret == 0) 
-	{
-		MRQ_model::setMOTIONPLAN_TIME( val0, val1 );
-	}
-	if ( ret != 0){ log_device(); } 
-	return ret;
-}
-//! U16
-//! [INDEX]
-int MRQ::getMOTIONPLAN_TIME( uint16 val0, f32 * val1, bool bQuery )
-{
-	//! 55 7
-	int ret = 0;
-
-	f32 lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 55, 7 , val0, &lval0, bQuery);
-	if ( ret != 0){ log_device(); } 
-	if ( ret != 0) return ret;
-	*val1 = lval0;
-	return 0;
-}
-//! U8,ENUM
-//! [CHANNUM],CYCLE|INFINITY|FIFO
-int MRQ::setMOTIONPLAN_EXECUTEMODE( byte val0
-,MRQ_MOTIONPLAN_EXECUTEMODE val1 )
-{
-	//! 55 8
-	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 55, 8 , val0, (unsigned char)val1 );
-
-	if ( ret == 0) 
-	{
-		MRQ_model::setMOTIONPLAN_EXECUTEMODE( val0, val1 );
-	}
-	if ( ret != 0){ log_device(); } 
-	return ret;
-}
-//! U8
-//! [CHANNUM]
-int MRQ::getMOTIONPLAN_EXECUTEMODE( byte val0, MRQ_MOTIONPLAN_EXECUTEMODE * val1, bool bQuery )
-{
-	//! 55 9
-	int ret = 0;
-
-	byte lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 55, 9 , val0, &lval0, bQuery);
-	if ( ret != 0){ log_device(); } 
-	if ( ret != 0) return ret;
-	*val1 = (MRQ_MOTIONPLAN_EXECUTEMODE)lval0;
-	return 0;
-}
-//! U8,ENUM
-//! [CHANNUM],CUBICPOLY|LINEAR|UNIFORM
-int MRQ::setMOTIONPLAN_PLANMODE( byte val0
-,MRQ_MOTIONPLAN_PLANMODE val1 )
-{
-	//! 55 10
-	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 55, 10 , val0, (unsigned char)val1 );
-
-	if ( ret == 0) 
-	{
-		MRQ_model::setMOTIONPLAN_PLANMODE( val0, val1 );
-	}
-	if ( ret != 0){ log_device(); } 
-	return ret;
-}
-//! U8
-//! [CHANNUM]
-int MRQ::getMOTIONPLAN_PLANMODE( byte val0, MRQ_MOTIONPLAN_PLANMODE * val1, bool bQuery )
-{
-	//! 55 11
-	int ret = 0;
-
-	byte lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 55, 11 , val0, &lval0, bQuery);
-	if ( ret != 0){ log_device(); } 
-	if ( ret != 0) return ret;
-	*val1 = (MRQ_MOTIONPLAN_PLANMODE)lval0;
-	return 0;
-}
-//! U8,ENUM
-//! [CHANNUM],PVT|LVT_CORRECT|LVT_NOCORRECT
-int MRQ::setMOTIONPLAN_MOTIONMODE( byte val0
-,MRQ_MOTIONPLAN_MOTIONMODE val1 )
-{
-	//! 55 12
-	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 55, 12 , val0, (unsigned char)val1 );
-
-	if ( ret == 0) 
-	{
-		MRQ_model::setMOTIONPLAN_MOTIONMODE( val0, val1 );
-	}
-	if ( ret != 0){ log_device(); } 
-	return ret;
-}
-//! U8
-//! [CHANNUM]
-int MRQ::getMOTIONPLAN_MOTIONMODE( byte val0, MRQ_MOTIONPLAN_MOTIONMODE * val1, bool bQuery )
-{
-	//! 55 13
-	int ret = 0;
-
-	byte lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 55, 13 , val0, &lval0, bQuery);
-	if ( ret != 0){ log_device(); } 
-	if ( ret != 0) return ret;
-	*val1 = (MRQ_MOTIONPLAN_MOTIONMODE)lval0;
-	return 0;
-}
-//! U8,ENUM
-//! [CHANNUM],1/4|1/8|1/16|1/32
-int MRQ::setMOTIONPLAN_MODIFYDUTY( byte val0
-,MRQ_MOTIONPLAN_MODIFYDUTY val1 )
-{
-	//! 55 14
-	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 55, 14 , val0, (unsigned char)val1 );
-
-	if ( ret == 0) 
-	{
-		MRQ_model::setMOTIONPLAN_MODIFYDUTY( val0, val1 );
-	}
-	if ( ret != 0){ log_device(); } 
-	return ret;
-}
-//! U8
-//! [CHANNUM]
-int MRQ::getMOTIONPLAN_MODIFYDUTY( byte val0, MRQ_MOTIONPLAN_MODIFYDUTY * val1, bool bQuery )
-{
-	//! 55 15
-	int ret = 0;
-
-	byte lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 55, 15 , val0, &lval0, bQuery);
-	if ( ret != 0){ log_device(); } 
-	if ( ret != 0) return ret;
-	*val1 = (MRQ_MOTIONPLAN_MODIFYDUTY)lval0;
-	return 0;
-}
-//! U8
-//! [CHANNUM]
-int MRQ::getMOTIONPLAN_REMAINPOINT( byte val0, uint16 * val1, bool bQuery )
-{
-	//! 55 16
-	int ret = 0;
-
-	uint16 lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 55, 16 , val0, &lval0, bQuery);
-	if ( ret != 0){ log_device(); } 
-	if ( ret != 0) return ret;
-	*val1 = lval0;
-	return 0;
-}
-//! U8
-//! [CHANNUM]
-int MRQ::getMOTIONPLAN_OUTPUTPOINT( byte val0, uint16 * val1, bool bQuery )
-{
-	//! 55 17
-	int ret = 0;
-
-	uint16 lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 55, 17 , val0, &lval0, bQuery);
-	if ( ret != 0){ log_device(); } 
-	if ( ret != 0) return ret;
-	*val1 = lval0;
-	return 0;
-}
-//! U8,U16
-//! [CHANNUM]
-int MRQ::setMOTIONPLAN_STARTPOINT( byte val0
-,uint16 val1 )
-{
-	//! 55 18
-	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 55, 18 , val0, val1 );
-
-	if ( ret == 0) 
-	{
-		MRQ_model::setMOTIONPLAN_STARTPOINT( val0, val1 );
-	}
-	if ( ret != 0){ log_device(); } 
-	return ret;
-}
-//! U8
-//! [CHANNUM]
-int MRQ::getMOTIONPLAN_STARTPOINT( byte val0, uint16 * val1, bool bQuery )
-{
-	//! 55 19
-	int ret = 0;
-
-	uint16 lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 55, 19 , val0, &lval0, bQuery);
-	if ( ret != 0){ log_device(); } 
-	if ( ret != 0) return ret;
-	*val1 = lval0;
-	return 0;
-}
-//! U8,U16
-//! [CHANNUM]
-int MRQ::setMOTIONPLAN_ENDPOINT( byte val0
-,uint16 val1 )
-{
-	//! 55 20
-	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 55, 20 , val0, val1 );
-
-	if ( ret == 0) 
-	{
-		MRQ_model::setMOTIONPLAN_ENDPOINT( val0, val1 );
-	}
-	if ( ret != 0){ log_device(); } 
-	return ret;
-}
-//! U8
-//! [CHANNUM]
-int MRQ::getMOTIONPLAN_ENDPOINT( byte val0, uint16 * val1, bool bQuery )
-{
-	//! 55 21
-	int ret = 0;
-
-	uint16 lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 55, 21 , val0, &lval0, bQuery);
-	if ( ret != 0){ log_device(); } 
-	if ( ret != 0) return ret;
-	*val1 = lval0;
-	return 0;
-}
-//! U8,U32
-//! [CHANNUM]
-int MRQ::setMOTIONPLAN_CYCLENUM( byte val0
-,uint32 val1 )
-{
-	//! 55 22
-	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 55, 22 , val0, val1 );
-
-	if ( ret == 0) 
-	{
-		MRQ_model::setMOTIONPLAN_CYCLENUM( val0, val1 );
-	}
-	if ( ret != 0){ log_device(); } 
-	return ret;
-}
-//! U8
-//! [CHANNUM]
-int MRQ::getMOTIONPLAN_CYCLENUM( byte val0, uint32 * val1, bool bQuery )
-{
-	//! 55 23
-	int ret = 0;
-
-	uint32 lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 55, 23 , val0, &lval0, bQuery);
-	if ( ret != 0){ log_device(); } 
-	if ( ret != 0) return ret;
-	*val1 = lval0;
-	return 0;
-}
-//! U8,U16
-//! [CHANNUM]
-int MRQ::setMOTIONPLAN_WARNPOINT( byte val0
-,uint16 val1 )
-{
-	//! 55 24
-	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 55, 24 , val0, val1 );
-
-	if ( ret == 0) 
-	{
-		MRQ_model::setMOTIONPLAN_WARNPOINT( val0, val1 );
-	}
-	if ( ret != 0){ log_device(); } 
-	return ret;
-}
-//! U8
-//! [CHANNUM]
-int MRQ::getMOTIONPLAN_WARNPOINT( byte val0, uint16 * val1, bool bQuery )
-{
-	//! 55 25
-	int ret = 0;
-
-	uint16 lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 55, 25 , val0, &lval0, bQuery);
-	if ( ret != 0){ log_device(); } 
-	if ( ret != 0) return ret;
-	*val1 = lval0;
-	return 0;
-}
-//! U8
-//! [CHANNUM]
-int MRQ::setMOTIONPLAN_WARN( byte val0 )
-{
-	//! 55 26
-	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 55, 26 , val0 );
-
-	if ( ret == 0) 
-	{
-		MRQ_model::setMOTIONPLAN_WARN( val0 );
-	}
-	if ( ret != 0){ log_device(); } 
-	return ret;
-}
-//! U8,ENUM
-//! [CHANNUM],STOP|HOLD
-int MRQ::setMOTIONPLAN_ENDSTATE( byte val0
-,MRQ_MOTIONPLAN_ENDSTATE val1 )
-{
-	//! 55 27
-	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 55, 27 , val0, (unsigned char)val1 );
-
-	if ( ret == 0) 
-	{
-		MRQ_model::setMOTIONPLAN_ENDSTATE( val0, val1 );
-	}
-	if ( ret != 0){ log_device(); } 
-	return ret;
-}
-//! U8
-//! [CHANNUM]
-int MRQ::getMOTIONPLAN_ENDSTATE( byte val0, MRQ_MOTIONPLAN_ENDSTATE * val1, bool bQuery )
-{
-	//! 55 28
-	int ret = 0;
-
-	byte lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 55, 28 , val0, &lval0, bQuery);
-	if ( ret != 0){ log_device(); } 
-	if ( ret != 0) return ret;
-	*val1 = (MRQ_MOTIONPLAN_ENDSTATE)lval0;
-	return 0;
-}
 //! U8,U8
 //! [CHANNUM]
-int MRQ::setMOTIONPLAN_FEEDBACKRATIO( byte val0
+int MRQ::setENCODER_FEEDBACKRATIO( byte val0
 ,byte val1 )
 {
-	//! 55 29
+	//! 52 10
 	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 55, 29 , val0, val1 );
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 52, 10 , val0, val1 );
 
 	if ( ret == 0) 
 	{
-		MRQ_model::setMOTIONPLAN_FEEDBACKRATIO( val0, val1 );
+		MRQ_model::setENCODER_FEEDBACKRATIO( val0, val1 );
 	}
 	if ( ret != 0){ log_device(); } 
 	return ret;
 }
 //! U8
 //! [CHANNUM]
-int MRQ::getMOTIONPLAN_FEEDBACKRATIO( byte val0, byte * val1, bool bQuery )
+int MRQ::getENCODER_FEEDBACKRATIO( byte val0, byte * val1, bool bQuery )
 {
-	//! 55 30
+	//! 52 11
 	int ret = 0;
 
 	byte lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 55, 30 , val0, &lval0, bQuery);
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 52, 11 , val0, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
 	*val1 = lval0;
 	return 0;
 }
 //! U8,ENUM,ENUM
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8,END|CLEAR
+int MRQ::setMOTIONPLAN_PVTCONFIG( byte val0
+,MRQ_MOTION_SWITCH_1 val1
+,MRQ_MOTIONPLAN_PVTCONFIG_1 val2 )
+{
+	//! 53 0
+	int ret; 
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 53, 0 , val0, (unsigned char)val1, (unsigned char)val2 );
+
+	if ( ret == 0) 
+	{
+		MRQ_model::setMOTIONPLAN_PVTCONFIG( val0, val1, val2 );
+	}
+	if ( ret != 0){ log_device(); } 
+	return ret;
+}
+//! U8,ENUM
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8
+int MRQ::getMOTIONPLAN_PVTCONFIG( byte val0
+,MRQ_MOTION_SWITCH_1 val1, MRQ_MOTIONPLAN_PVTCONFIG_1 * val2, bool bQuery )
+{
+	//! 53 1
+	int ret = 0;
+
+	byte lval0 = 0;
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 53, 1 , val0, (byte)val1, &lval0, bQuery);
+	if ( ret != 0){ log_device(); } 
+	if ( ret != 0) return ret;
+	*val2 = (MRQ_MOTIONPLAN_PVTCONFIG_1)lval0;
+	return 0;
+}
+//! U8,ENUM,ENUM
+//! [CHANNUM],RESERVE|RESERVE1|P1|P2|P3|P4|P5|P6|P7|P8,OFF|ON|CALC
+int MRQ::setMOTIONPLAN_PRESETSTATE( byte val0
+,MRQ_MOTIONPLAN_PRESETSTATE val1
+,MRQ_MOTIONPLAN_PRESETSTATE_1 val2 )
+{
+	//! 53 2
+	int ret; 
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 53, 2 , val0, (unsigned char)val1, (unsigned char)val2 );
+
+	if ( ret == 0) 
+	{
+		MRQ_model::setMOTIONPLAN_PRESETSTATE( val0, val1, val2 );
+	}
+	if ( ret != 0){ log_device(); } 
+	return ret;
+}
+//! U8,ENUM
+//! [CHANNUM],RESERVE|RESERVE1|P1|P2|P3|P4|P5|P6|P7|P8
+int MRQ::getMOTIONPLAN_PRESETSTATE( byte val0
+,MRQ_MOTIONPLAN_PRESETSTATE val1, MRQ_MOTIONPLAN_PRESETSTATE_1 * val2, bool bQuery )
+{
+	//! 53 3
+	int ret = 0;
+
+	byte lval0 = 0;
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 53, 3 , val0, (byte)val1, &lval0, bQuery);
+	if ( ret != 0){ log_device(); } 
+	if ( ret != 0) return ret;
+	*val2 = (MRQ_MOTIONPLAN_PRESETSTATE_1)lval0;
+	return 0;
+}
+//! U8,ENUM,ENUM
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8,CYCLE|FIFO
+int MRQ::setMOTIONPLAN_EXECUTEMODE( byte val0
+,MRQ_MOTION_SWITCH_1 val1
+,MRQ_MOTIONPLAN_EXECUTEMODE_1 val2 )
+{
+	//! 53 4
+	int ret; 
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 53, 4 , val0, (unsigned char)val1, (unsigned char)val2 );
+
+	if ( ret == 0) 
+	{
+		MRQ_model::setMOTIONPLAN_EXECUTEMODE( val0, val1, val2 );
+	}
+	if ( ret != 0){ log_device(); } 
+	return ret;
+}
+//! U8,ENUM
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8
+int MRQ::getMOTIONPLAN_EXECUTEMODE( byte val0
+,MRQ_MOTION_SWITCH_1 val1, MRQ_MOTIONPLAN_EXECUTEMODE_1 * val2, bool bQuery )
+{
+	//! 53 5
+	int ret = 0;
+
+	byte lval0 = 0;
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 53, 5 , val0, (byte)val1, &lval0, bQuery);
+	if ( ret != 0){ log_device(); } 
+	if ( ret != 0) return ret;
+	*val2 = (MRQ_MOTIONPLAN_EXECUTEMODE_1)lval0;
+	return 0;
+}
+//! U8,ENUM,ENUM
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8,CUBICPOLY|LINEAR|UNIFORM|TRAPEZOID
+int MRQ::setMOTIONPLAN_PLANMODE( byte val0
+,MRQ_MOTION_SWITCH_1 val1
+,MRQ_MOTIONPLAN_PLANMODE_1 val2 )
+{
+	//! 53 6
+	int ret; 
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 53, 6 , val0, (unsigned char)val1, (unsigned char)val2 );
+
+	if ( ret == 0) 
+	{
+		MRQ_model::setMOTIONPLAN_PLANMODE( val0, val1, val2 );
+	}
+	if ( ret != 0){ log_device(); } 
+	return ret;
+}
+//! U8,ENUM
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8
+int MRQ::getMOTIONPLAN_PLANMODE( byte val0
+,MRQ_MOTION_SWITCH_1 val1, MRQ_MOTIONPLAN_PLANMODE_1 * val2, bool bQuery )
+{
+	//! 53 7
+	int ret = 0;
+
+	byte lval0 = 0;
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 53, 7 , val0, (byte)val1, &lval0, bQuery);
+	if ( ret != 0){ log_device(); } 
+	if ( ret != 0) return ret;
+	*val2 = (MRQ_MOTIONPLAN_PLANMODE_1)lval0;
+	return 0;
+}
+//! U8,ENUM,ENUM
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8,PVT|LVT_CORRECT|LVT_NOCORRECT
+int MRQ::setMOTIONPLAN_MOTIONMODE( byte val0
+,MRQ_MOTION_SWITCH_1 val1
+,MRQ_MOTIONPLAN_MOTIONMODE_1 val2 )
+{
+	//! 53 8
+	int ret; 
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 53, 8 , val0, (unsigned char)val1, (unsigned char)val2 );
+
+	if ( ret == 0) 
+	{
+		MRQ_model::setMOTIONPLAN_MOTIONMODE( val0, val1, val2 );
+	}
+	if ( ret != 0){ log_device(); } 
+	return ret;
+}
+//! U8,ENUM
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8
+int MRQ::getMOTIONPLAN_MOTIONMODE( byte val0
+,MRQ_MOTION_SWITCH_1 val1, MRQ_MOTIONPLAN_MOTIONMODE_1 * val2, bool bQuery )
+{
+	//! 53 9
+	int ret = 0;
+
+	byte lval0 = 0;
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 53, 9 , val0, (byte)val1, &lval0, bQuery);
+	if ( ret != 0){ log_device(); } 
+	if ( ret != 0) return ret;
+	*val2 = (MRQ_MOTIONPLAN_MOTIONMODE_1)lval0;
+	return 0;
+}
+//! U8,ENUM,ENUM
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8,1/4|1/8|1/16|1/32
+int MRQ::setMOTIONPLAN_MODIFYDUTY( byte val0
+,MRQ_MOTION_SWITCH_1 val1
+,MRQ_MOTIONPLAN_MODIFYDUTY_1 val2 )
+{
+	//! 53 10
+	int ret; 
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 53, 10 , val0, (unsigned char)val1, (unsigned char)val2 );
+
+	if ( ret == 0) 
+	{
+		MRQ_model::setMOTIONPLAN_MODIFYDUTY( val0, val1, val2 );
+	}
+	if ( ret != 0){ log_device(); } 
+	return ret;
+}
+//! U8,ENUM
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8
+int MRQ::getMOTIONPLAN_MODIFYDUTY( byte val0
+,MRQ_MOTION_SWITCH_1 val1, MRQ_MOTIONPLAN_MODIFYDUTY_1 * val2, bool bQuery )
+{
+	//! 53 11
+	int ret = 0;
+
+	byte lval0 = 0;
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 53, 11 , val0, (byte)val1, &lval0, bQuery);
+	if ( ret != 0){ log_device(); } 
+	if ( ret != 0) return ret;
+	*val2 = (MRQ_MOTIONPLAN_MODIFYDUTY_1)lval0;
+	return 0;
+}
+//! U8,ENUM
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8
+int MRQ::getMOTIONPLAN_REMAINPOINT( byte val0
+,MRQ_MOTION_SWITCH_1 val1, uint16 * val2, bool bQuery )
+{
+	//! 53 12
+	int ret = 0;
+
+	uint16 lval0 = 0;
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 53, 12 , val0, (byte)val1, &lval0, bQuery);
+	if ( ret != 0){ log_device(); } 
+	if ( ret != 0) return ret;
+	*val2 = lval0;
+	return 0;
+}
+//! U8,ENUM,U32
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8
+int MRQ::setMOTIONPLAN_CYCLENUM( byte val0
+,MRQ_MOTION_SWITCH_1 val1
+,uint32 val2 )
+{
+	//! 53 13
+	int ret; 
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 53, 13 , val0, (unsigned char)val1, val2 );
+
+	if ( ret == 0) 
+	{
+		MRQ_model::setMOTIONPLAN_CYCLENUM( val0, val1, val2 );
+	}
+	if ( ret != 0){ log_device(); } 
+	return ret;
+}
+//! U8,ENUM
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8
+int MRQ::getMOTIONPLAN_CYCLENUM( byte val0
+,MRQ_MOTION_SWITCH_1 val1, uint32 * val2, bool bQuery )
+{
+	//! 53 14
+	int ret = 0;
+
+	uint32 lval0 = 0;
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 53, 14 , val0, (byte)val1, &lval0, bQuery);
+	if ( ret != 0){ log_device(); } 
+	if ( ret != 0) return ret;
+	*val2 = lval0;
+	return 0;
+}
+//! U8,ENUM,U8
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8
+int MRQ::setMOTIONPLAN_WARNPOINT( byte val0
+,MRQ_MOTION_SWITCH_1 val1
+,byte val2 )
+{
+	//! 53 15
+	int ret; 
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 53, 15 , val0, (unsigned char)val1, val2 );
+
+	if ( ret == 0) 
+	{
+		MRQ_model::setMOTIONPLAN_WARNPOINT( val0, val1, val2 );
+	}
+	if ( ret != 0){ log_device(); } 
+	return ret;
+}
+//! U8,ENUM
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8
+int MRQ::getMOTIONPLAN_WARNPOINT( byte val0
+,MRQ_MOTION_SWITCH_1 val1, byte * val2, bool bQuery )
+{
+	//! 53 16
+	int ret = 0;
+
+	byte lval0 = 0;
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 53, 16 , val0, (byte)val1, &lval0, bQuery);
+	if ( ret != 0){ log_device(); } 
+	if ( ret != 0) return ret;
+	*val2 = lval0;
+	return 0;
+}
+//! U8,ENUM,ENUM
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8,STOP|HOLD
+int MRQ::setMOTIONPLAN_ENDSTATE( byte val0
+,MRQ_MOTION_SWITCH_1 val1
+,MRQ_MOTIONPLAN_ENDSTATE_1 val2 )
+{
+	//! 53 17
+	int ret; 
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 53, 17 , val0, (unsigned char)val1, (unsigned char)val2 );
+
+	if ( ret == 0) 
+	{
+		MRQ_model::setMOTIONPLAN_ENDSTATE( val0, val1, val2 );
+	}
+	if ( ret != 0){ log_device(); } 
+	return ret;
+}
+//! U8,ENUM
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8
+int MRQ::getMOTIONPLAN_ENDSTATE( byte val0
+,MRQ_MOTION_SWITCH_1 val1, MRQ_MOTIONPLAN_ENDSTATE_1 * val2, bool bQuery )
+{
+	//! 53 18
+	int ret = 0;
+
+	byte lval0 = 0;
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 53, 18 , val0, (byte)val1, &lval0, bQuery);
+	if ( ret != 0){ log_device(); } 
+	if ( ret != 0) return ret;
+	*val2 = (MRQ_MOTIONPLAN_ENDSTATE_1)lval0;
+	return 0;
+}
+//! U8,ENUM
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8
+int MRQ::getMOTIONPLAN_BUFFERSIZE( byte val0
+,MRQ_MOTION_SWITCH_1 val1, uint32 * val2, bool bQuery )
+{
+	//! 53 19
+	int ret = 0;
+
+	uint32 lval0 = 0;
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 53, 19 , val0, (byte)val1, &lval0, bQuery);
+	if ( ret != 0){ log_device(); } 
+	if ( ret != 0) return ret;
+	*val2 = lval0;
+	return 0;
+}
+//! U8,ENUM,U16
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8
+int MRQ::setMOTIONPLAN_ACCSCALE( byte val0
+,MRQ_MOTION_SWITCH_1 val1
+,uint16 val2 )
+{
+	//! 53 20
+	int ret; 
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 53, 20 , val0, (unsigned char)val1, val2 );
+
+	if ( ret == 0) 
+	{
+		MRQ_model::setMOTIONPLAN_ACCSCALE( val0, val1, val2 );
+	}
+	if ( ret != 0){ log_device(); } 
+	return ret;
+}
+//! U8,ENUM
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8
+int MRQ::getMOTIONPLAN_ACCSCALE( byte val0
+,MRQ_MOTION_SWITCH_1 val1, uint16 * val2, bool bQuery )
+{
+	//! 53 21
+	int ret = 0;
+
+	uint16 lval0 = 0;
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 53, 21 , val0, (byte)val1, &lval0, bQuery);
+	if ( ret != 0){ log_device(); } 
+	if ( ret != 0) return ret;
+	*val2 = lval0;
+	return 0;
+}
+//! U8,ENUM,U16
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8
+int MRQ::setMOTIONPLAN_DECSCALE( byte val0
+,MRQ_MOTION_SWITCH_1 val1
+,uint16 val2 )
+{
+	//! 53 22
+	int ret; 
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 53, 22 , val0, (unsigned char)val1, val2 );
+
+	if ( ret == 0) 
+	{
+		MRQ_model::setMOTIONPLAN_DECSCALE( val0, val1, val2 );
+	}
+	if ( ret != 0){ log_device(); } 
+	return ret;
+}
+//! U8,ENUM
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8
+int MRQ::getMOTIONPLAN_DECSCALE( byte val0
+,MRQ_MOTION_SWITCH_1 val1, uint16 * val2, bool bQuery )
+{
+	//! 53 23
+	int ret = 0;
+
+	uint16 lval0 = 0;
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 53, 23 , val0, (byte)val1, &lval0, bQuery);
+	if ( ret != 0){ log_device(); } 
+	if ( ret != 0) return ret;
+	*val2 = lval0;
+	return 0;
+}
+//! U8,ENUM,ENUM
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8,IMMEDIATE|DISTANCE
+int MRQ::setMOTIONPLAN_STOPMODE( byte val0
+,MRQ_MOTION_SWITCH_1 val1
+,MRQ_MOTIONPLAN_STOPMODE_1 val2 )
+{
+	//! 53 24
+	int ret; 
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 53, 24 , val0, (unsigned char)val1, (unsigned char)val2 );
+
+	if ( ret == 0) 
+	{
+		MRQ_model::setMOTIONPLAN_STOPMODE( val0, val1, val2 );
+	}
+	if ( ret != 0){ log_device(); } 
+	return ret;
+}
+//! U8,ENUM
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8
+int MRQ::getMOTIONPLAN_STOPMODE( byte val0
+,MRQ_MOTION_SWITCH_1 val1, MRQ_MOTIONPLAN_STOPMODE_1 * val2, bool bQuery )
+{
+	//! 53 25
+	int ret = 0;
+
+	byte lval0 = 0;
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 53, 25 , val0, (byte)val1, &lval0, bQuery);
+	if ( ret != 0){ log_device(); } 
+	if ( ret != 0) return ret;
+	*val2 = (MRQ_MOTIONPLAN_STOPMODE_1)lval0;
+	return 0;
+}
+//! U8,ENUM,F32
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8
+int MRQ::setMOTIONPLAN_STOPDISTANCE( byte val0
+,MRQ_MOTION_SWITCH_1 val1
+,f32 val2 )
+{
+	//! 53 26
+	int ret; 
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 53, 26 , val0, (unsigned char)val1, val2 );
+
+	if ( ret == 0) 
+	{
+		MRQ_model::setMOTIONPLAN_STOPDISTANCE( val0, val1, val2 );
+	}
+	if ( ret != 0){ log_device(); } 
+	return ret;
+}
+//! U8,ENUM
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8
+int MRQ::getMOTIONPLAN_STOPDISTANCE( byte val0
+,MRQ_MOTION_SWITCH_1 val1, f32 * val2, bool bQuery )
+{
+	//! 53 27
+	int ret = 0;
+
+	f32 lval0 = 0;
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 53, 27 , val0, (byte)val1, &lval0, bQuery);
+	if ( ret != 0){ log_device(); } 
+	if ( ret != 0) return ret;
+	*val2 = lval0;
+	return 0;
+}
+//! U8,ENUM,F32
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8
+int MRQ::setMOTIONPLAN_STOPTIME( byte val0
+,MRQ_MOTION_SWITCH_1 val1
+,f32 val2 )
+{
+	//! 53 28
+	int ret; 
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 53, 28 , val0, (unsigned char)val1, val2 );
+
+	if ( ret == 0) 
+	{
+		MRQ_model::setMOTIONPLAN_STOPTIME( val0, val1, val2 );
+	}
+	if ( ret != 0){ log_device(); } 
+	return ret;
+}
+//! U8,ENUM
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8
+int MRQ::getMOTIONPLAN_STOPTIME( byte val0
+,MRQ_MOTION_SWITCH_1 val1, f32 * val2, bool bQuery )
+{
+	//! 53 29
+	int ret = 0;
+
+	f32 lval0 = 0;
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 53, 29 , val0, (byte)val1, &lval0, bQuery);
+	if ( ret != 0){ log_device(); } 
+	if ( ret != 0) return ret;
+	*val2 = lval0;
+	return 0;
+}
+//! U8,ENUM,ENUM
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8,OFF|ON
+int MRQ::setMOTIONPLAN_OOSLINESTATE( byte val0
+,MRQ_MOTION_SWITCH_1 val1
+,MRQ_SYSTEM_DIOREFREAD val2 )
+{
+	//! 53 30
+	int ret; 
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 53, 30 , val0, (unsigned char)val1, (unsigned char)val2 );
+
+	if ( ret == 0) 
+	{
+		MRQ_model::setMOTIONPLAN_OOSLINESTATE( val0, val1, val2 );
+	}
+	if ( ret != 0){ log_device(); } 
+	return ret;
+}
+//! U8,ENUM
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8
+int MRQ::getMOTIONPLAN_OOSLINESTATE( byte val0
+,MRQ_MOTION_SWITCH_1 val1, MRQ_SYSTEM_DIOREFREAD * val2, bool bQuery )
+{
+	//! 53 31
+	int ret = 0;
+
+	byte lval0 = 0;
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 53, 31 , val0, (byte)val1, &lval0, bQuery);
+	if ( ret != 0){ log_device(); } 
+	if ( ret != 0) return ret;
+	*val2 = (MRQ_SYSTEM_DIOREFREAD)lval0;
+	return 0;
+}
+//! U8,ENUM,U16
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8
+int MRQ::setMOTIONPLAN_OOSLINEOUTNUM( byte val0
+,MRQ_MOTION_SWITCH_1 val1
+,uint16 val2 )
+{
+	//! 53 32
+	int ret; 
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 53, 32 , val0, (unsigned char)val1, val2 );
+
+	if ( ret == 0) 
+	{
+		MRQ_model::setMOTIONPLAN_OOSLINEOUTNUM( val0, val1, val2 );
+	}
+	if ( ret != 0){ log_device(); } 
+	return ret;
+}
+//! U8,ENUM
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8
+int MRQ::getMOTIONPLAN_OOSLINEOUTNUM( byte val0
+,MRQ_MOTION_SWITCH_1 val1, uint16 * val2, bool bQuery )
+{
+	//! 53 33
+	int ret = 0;
+
+	uint16 lval0 = 0;
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 53, 33 , val0, (byte)val1, &lval0, bQuery);
+	if ( ret != 0){ log_device(); } 
+	if ( ret != 0) return ret;
+	*val2 = lval0;
+	return 0;
+}
+//! U8,ENUM,ENUM
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8,NONE|ALARM|STOP|ALARM&STOP
+int MRQ::setMOTIONPLAN_OOSLINERESPONSE( byte val0
+,MRQ_MOTION_SWITCH_1 val1
+,MRQ_MOTIONPLAN_OOSLINERESPONSE_1 val2 )
+{
+	//! 53 34
+	int ret; 
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 53, 34 , val0, (unsigned char)val1, (unsigned char)val2 );
+
+	if ( ret == 0) 
+	{
+		MRQ_model::setMOTIONPLAN_OOSLINERESPONSE( val0, val1, val2 );
+	}
+	if ( ret != 0){ log_device(); } 
+	return ret;
+}
+//! U8,ENUM
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8
+int MRQ::getMOTIONPLAN_OOSLINERESPONSE( byte val0
+,MRQ_MOTION_SWITCH_1 val1, MRQ_MOTIONPLAN_OOSLINERESPONSE_1 * val2, bool bQuery )
+{
+	//! 53 35
+	int ret = 0;
+
+	byte lval0 = 0;
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 53, 35 , val0, (byte)val1, &lval0, bQuery);
+	if ( ret != 0){ log_device(); } 
+	if ( ret != 0) return ret;
+	*val2 = (MRQ_MOTIONPLAN_OOSLINERESPONSE_1)lval0;
+	return 0;
+}
+//! U8,ENUM,ENUM
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8,OFF|ON
+int MRQ::setMOTIONPLAN_OOSTOTALSTATE( byte val0
+,MRQ_MOTION_SWITCH_1 val1
+,MRQ_SYSTEM_DIOREFREAD val2 )
+{
+	//! 53 36
+	int ret; 
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 53, 36 , val0, (unsigned char)val1, (unsigned char)val2 );
+
+	if ( ret == 0) 
+	{
+		MRQ_model::setMOTIONPLAN_OOSTOTALSTATE( val0, val1, val2 );
+	}
+	if ( ret != 0){ log_device(); } 
+	return ret;
+}
+//! U8,ENUM
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8
+int MRQ::getMOTIONPLAN_OOSTOTALSTATE( byte val0
+,MRQ_MOTION_SWITCH_1 val1, MRQ_SYSTEM_DIOREFREAD * val2, bool bQuery )
+{
+	//! 53 37
+	int ret = 0;
+
+	byte lval0 = 0;
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 53, 37 , val0, (byte)val1, &lval0, bQuery);
+	if ( ret != 0){ log_device(); } 
+	if ( ret != 0) return ret;
+	*val2 = (MRQ_SYSTEM_DIOREFREAD)lval0;
+	return 0;
+}
+//! U8,ENUM,U32
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8
+int MRQ::setMOTIONPLAN_OOSTOTALOUTNUM( byte val0
+,MRQ_MOTION_SWITCH_1 val1
+,uint32 val2 )
+{
+	//! 53 38
+	int ret; 
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 53, 38 , val0, (unsigned char)val1, val2 );
+
+	if ( ret == 0) 
+	{
+		MRQ_model::setMOTIONPLAN_OOSTOTALOUTNUM( val0, val1, val2 );
+	}
+	if ( ret != 0){ log_device(); } 
+	return ret;
+}
+//! U8,ENUM
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8
+int MRQ::getMOTIONPLAN_OOSTOTALOUTNUM( byte val0
+,MRQ_MOTION_SWITCH_1 val1, uint32 * val2, bool bQuery )
+{
+	//! 53 39
+	int ret = 0;
+
+	uint32 lval0 = 0;
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 53, 39 , val0, (byte)val1, &lval0, bQuery);
+	if ( ret != 0){ log_device(); } 
+	if ( ret != 0) return ret;
+	*val2 = lval0;
+	return 0;
+}
+//! U8,ENUM,ENUM
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8,NONE|ALARM|STOP|ALARM&STOP
+int MRQ::setMOTIONPLAN_OOSTOTALRESPONSE( byte val0
+,MRQ_MOTION_SWITCH_1 val1
+,MRQ_MOTIONPLAN_OOSLINERESPONSE_1 val2 )
+{
+	//! 53 40
+	int ret; 
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 53, 40 , val0, (unsigned char)val1, (unsigned char)val2 );
+
+	if ( ret == 0) 
+	{
+		MRQ_model::setMOTIONPLAN_OOSTOTALRESPONSE( val0, val1, val2 );
+	}
+	if ( ret != 0){ log_device(); } 
+	return ret;
+}
+//! U8,ENUM
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8
+int MRQ::getMOTIONPLAN_OOSTOTALRESPONSE( byte val0
+,MRQ_MOTION_SWITCH_1 val1, MRQ_MOTIONPLAN_OOSLINERESPONSE_1 * val2, bool bQuery )
+{
+	//! 53 41
+	int ret = 0;
+
+	byte lval0 = 0;
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 53, 41 , val0, (byte)val1, &lval0, bQuery);
+	if ( ret != 0){ log_device(); } 
+	if ( ret != 0) return ret;
+	*val2 = (MRQ_MOTIONPLAN_OOSLINERESPONSE_1)lval0;
+	return 0;
+}
+//! U8,ENUM,U8,F32
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8,[INDEX]
+int MRQ::setPOSITION_( byte val0
+,MRQ_MOTION_SWITCH_1 val1
+,byte val2
+,f32 val3 )
+{
+	//! 54 -1
+	int ret; 
+        ret = m_pBus->write( DEVICE_RECEIVE_ID, 54, val0, (unsigned char)val1, val2, val3 );
+
+	if ( ret == 0) 
+	{
+		MRQ_model::setPOSITION_( val0, val1, val2, val3 );
+	}
+	if ( ret != 0){ log_device(); } 
+	return ret;
+}
+//! U8,ENUM,U8
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8,[INDEX]
+int MRQ::getPOSITION_( byte val0
+,MRQ_MOTION_SWITCH_1 val1
+,byte val2, f32 * val3, bool bQuery )
+{
+	//! 55 -1
+	int ret = 0;
+
+	f32 lval0 = 0;
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 55  , val0, (byte)val1, val2, &lval0, bQuery);
+	if ( ret != 0){ log_device(); } 
+	if ( ret != 0) return ret;
+	*val3 = lval0;
+	return 0;
+}
+//! U8,ENUM,U8,F32
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8,[INDEX]
+int MRQ::setVELOCITY_( byte val0
+,MRQ_MOTION_SWITCH_1 val1
+,byte val2
+,f32 val3 )
+{
+	//! 56 -1
+	int ret; 
+        ret = m_pBus->write( DEVICE_RECEIVE_ID, 56,  val0, (unsigned char)val1, val2, val3 );
+
+	if ( ret == 0) 
+	{
+		MRQ_model::setVELOCITY_( val0, val1, val2, val3 );
+	}
+	if ( ret != 0){ log_device(); } 
+	return ret;
+}
+//! U8,ENUM,U8
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8,[INDEX]
+int MRQ::getVELOCITY_( byte val0
+,MRQ_MOTION_SWITCH_1 val1
+,byte val2, f32 * val3, bool bQuery )
+{
+	//! 57 -1
+	int ret = 0;
+
+	f32 lval0 = 0;
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 57  , val0, (byte)val1, val2, &lval0, bQuery);
+	if ( ret != 0){ log_device(); } 
+	if ( ret != 0) return ret;
+	*val3 = lval0;
+	return 0;
+}
+//! U8,ENUM,U8,F32
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8,[INDEX]
+int MRQ::setTIME_( byte val0
+,MRQ_MOTION_SWITCH_1 val1
+,byte val2
+,f32 val3 )
+{
+	//! 58 -1
+	int ret; 
+        ret = m_pBus->write( DEVICE_RECEIVE_ID, 58, val0, (unsigned char)val1, val2, val3 );
+
+	if ( ret == 0) 
+	{
+		MRQ_model::setTIME_( val0, val1, val2, val3 );
+	}
+	if ( ret != 0){ log_device(); } 
+	return ret;
+}
+//! U8,ENUM,U8
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8,[INDEX]
+int MRQ::getTIME_( byte val0
+,MRQ_MOTION_SWITCH_1 val1
+,byte val2, f32 * val3, bool bQuery )
+{
+	//! 59 -1
+	int ret = 0;
+
+	f32 lval0 = 0;
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 59  , val0, (byte)val1, val2, &lval0, bQuery);
+	if ( ret != 0){ log_device(); } 
+	if ( ret != 0) return ret;
+	*val3 = lval0;
+	return 0;
+}
+//! U8,ENUM,ENUM
 //! [CHANNUM],TORQUE|CYCLE|XANGLE|YANGLE|ZANGLE|XVEL|YVEL|ZVEL|XACC|YACC|ZACC|SGALL|SGSE|DIST,OFF|ON
 int MRQ::setREPORT_STATE( byte val0
 ,MRQ_REPORT_STATE val1
-,MRQ_SYSTEM_REPORTSWITCH val2 )
+,MRQ_SYSTEM_DIOREFREAD val2 )
 {
-	//! 56 0
+	//! 60 0
 	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 56, 0 , val0, (unsigned char)val1, (unsigned char)val2 );
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 60, 0 , val0, (unsigned char)val1, (unsigned char)val2 );
 
 	if ( ret == 0) 
 	{
@@ -2977,16 +2888,16 @@ int MRQ::setREPORT_STATE( byte val0
 //! U8,ENUM
 //! [CHANNUM],TORQUE|CYCLE|XANGLE|YANGLE|ZANGLE|XVEL|YVEL|ZVEL|XACC|YACC|ZACC|SGALL|SGSE|DIST
 int MRQ::getREPORT_STATE( byte val0
-,MRQ_REPORT_STATE val1, MRQ_SYSTEM_REPORTSWITCH * val2, bool bQuery )
+,MRQ_REPORT_STATE val1, MRQ_SYSTEM_DIOREFREAD * val2, bool bQuery )
 {
-	//! 56 1
+	//! 60 1
 	int ret = 0;
 
 	byte lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 56, 1 , val0, (byte)val1, &lval0, bQuery);
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 60, 1 , val0, (byte)val1, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
-	*val2 = (MRQ_SYSTEM_REPORTSWITCH)lval0;
+	*val2 = (MRQ_SYSTEM_DIOREFREAD)lval0;
 	return 0;
 }
 //! U8,ENUM,U32
@@ -2995,9 +2906,9 @@ int MRQ::setREPORT_PERIOD( byte val0
 ,MRQ_REPORT_STATE val1
 ,uint32 val2 )
 {
-	//! 56 2
+	//! 60 2
 	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 56, 2 , val0, (unsigned char)val1, val2 );
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 60, 2 , val0, (unsigned char)val1, val2 );
 
 	if ( ret == 0) 
 	{
@@ -3011,11 +2922,11 @@ int MRQ::setREPORT_PERIOD( byte val0
 int MRQ::getREPORT_PERIOD( byte val0
 ,MRQ_REPORT_STATE val1, uint32 * val2, bool bQuery )
 {
-	//! 56 3
+	//! 60 3
 	int ret = 0;
 
 	uint32 lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 56, 3 , val0, (byte)val1, &lval0, bQuery);
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 60, 3 , val0, (byte)val1, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
 	*val2 = lval0;
@@ -3026,11 +2937,11 @@ int MRQ::getREPORT_PERIOD( byte val0
 int MRQ::getREPORT_DATA( byte val0
 ,MRQ_REPORT_STATE val1, uint32 * val2, bool bQuery )
 {
-	//! 56 4
+	//! 60 4
 	int ret = 0;
 
 	uint32 lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 56, 4 , val0, (byte)val1, &lval0, bQuery);
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 60, 4 , val0, (byte)val1, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
 	*val2 = lval0;
@@ -3041,9 +2952,9 @@ int MRQ::getREPORT_DATA( byte val0
 int MRQ::setTRIGGER_MODE( byte val0
 ,MRQ_TRIGGER_MODE val1 )
 {
-	//! 57 0
+	//! 61 0
 	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 57, 0 , val0, (unsigned char)val1 );
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 61, 0 , val0, (unsigned char)val1 );
 
 	if ( ret == 0) 
 	{
@@ -3056,11 +2967,11 @@ int MRQ::setTRIGGER_MODE( byte val0
 //! [CHANNUM]
 int MRQ::getTRIGGER_MODE( byte val0, MRQ_TRIGGER_MODE * val1, bool bQuery )
 {
-	//! 57 1
+	//! 61 1
 	int ret = 0;
 
 	byte lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 57, 1 , val0, &lval0, bQuery);
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 61, 1 , val0, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
 	*val1 = (MRQ_TRIGGER_MODE)lval0;
@@ -3069,11 +2980,11 @@ int MRQ::getTRIGGER_MODE( byte val0, MRQ_TRIGGER_MODE * val1, bool bQuery )
 //! U8,ENUM
 //! [CHANNUM],OFF|ON
 int MRQ::setTRIGGER_PATTSTATE( byte val0
-,MRQ_SYSTEM_REPORTSWITCH val1 )
+,MRQ_SYSTEM_DIOREFREAD val1 )
 {
-	//! 57 2
+	//! 61 2
 	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 57, 2 , val0, (unsigned char)val1 );
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 61, 2 , val0, (unsigned char)val1 );
 
 	if ( ret == 0) 
 	{
@@ -3084,16 +2995,16 @@ int MRQ::setTRIGGER_PATTSTATE( byte val0
 }
 //! U8
 //! [CHANNUM]
-int MRQ::getTRIGGER_PATTSTATE( byte val0, MRQ_SYSTEM_REPORTSWITCH * val1, bool bQuery )
+int MRQ::getTRIGGER_PATTSTATE( byte val0, MRQ_SYSTEM_DIOREFREAD * val1, bool bQuery )
 {
-	//! 57 3
+	//! 61 3
 	int ret = 0;
 
 	byte lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 57, 3 , val0, &lval0, bQuery);
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 61, 3 , val0, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
-	*val1 = (MRQ_SYSTEM_REPORTSWITCH)lval0;
+	*val1 = (MRQ_SYSTEM_DIOREFREAD)lval0;
 	return 0;
 }
 //! U8,ENUM,ENUM
@@ -3102,9 +3013,9 @@ int MRQ::setTRIGGER_PATTERN( byte val0
 ,MRQ_TRIGGER_PATTERN val1
 ,MRQ_TRIGGER_PATTERN val2 )
 {
-	//! 57 4
+	//! 61 4
 	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 57, 4 , val0, (unsigned char)val1, (unsigned char)val2 );
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 61, 4 , val0, (unsigned char)val1, (unsigned char)val2 );
 
 	if ( ret == 0) 
 	{
@@ -3117,12 +3028,12 @@ int MRQ::setTRIGGER_PATTERN( byte val0
 //! [CHANNUM]
 int MRQ::getTRIGGER_PATTERN( byte val0, MRQ_TRIGGER_PATTERN * val1, MRQ_TRIGGER_PATTERN * val2, bool bQuery )
 {
-	//! 57 5
+	//! 61 5
 	int ret = 0;
 
 	byte lval0 = 0;
 	byte lval1 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 57, 5 , val0, &lval0, &lval1, bQuery);
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 61, 5 , val0, &lval0, &lval1, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
 	*val1 = (MRQ_TRIGGER_PATTERN)lval0;
@@ -3132,11 +3043,11 @@ int MRQ::getTRIGGER_PATTERN( byte val0, MRQ_TRIGGER_PATTERN * val1, MRQ_TRIGGER_
 //! U8,ENUM
 //! [CHANNUM],NONE|ALARM|STOP|ALARM&STOP
 int MRQ::setTRIGGER_PATTRESP( byte val0
-,MRQ_OUTOFSTEP_LINERESPONSE val1 )
+,MRQ_MOTIONPLAN_OOSLINERESPONSE_1 val1 )
 {
-	//! 57 6
+	//! 61 6
 	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 57, 6 , val0, (unsigned char)val1 );
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 61, 6 , val0, (unsigned char)val1 );
 
 	if ( ret == 0) 
 	{
@@ -3147,16 +3058,16 @@ int MRQ::setTRIGGER_PATTRESP( byte val0
 }
 //! U8
 //! [CHANNUM]
-int MRQ::getTRIGGER_PATTRESP( byte val0, MRQ_OUTOFSTEP_LINERESPONSE * val1, bool bQuery )
+int MRQ::getTRIGGER_PATTRESP( byte val0, MRQ_MOTIONPLAN_OOSLINERESPONSE_1 * val1, bool bQuery )
 {
-	//! 57 7
+	//! 61 7
 	int ret = 0;
 
 	byte lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 57, 7 , val0, &lval0, bQuery);
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 61, 7 , val0, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
-	*val1 = (MRQ_OUTOFSTEP_LINERESPONSE)lval0;
+	*val1 = (MRQ_MOTIONPLAN_OOSLINERESPONSE_1)lval0;
 	return 0;
 }
 //! U8,ENUM
@@ -3164,9 +3075,9 @@ int MRQ::getTRIGGER_PATTRESP( byte val0, MRQ_OUTOFSTEP_LINERESPONSE * val1, bool
 int MRQ::setTRIGGER_PATTSMODE( byte val0
 ,MRQ_TRIGGER_PATTSMODE val1 )
 {
-	//! 57 8
+	//! 61 8
 	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 57, 8 , val0, (unsigned char)val1 );
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 61, 8 , val0, (unsigned char)val1 );
 
 	if ( ret == 0) 
 	{
@@ -3179,11 +3090,11 @@ int MRQ::setTRIGGER_PATTSMODE( byte val0
 //! [CHANNUM]
 int MRQ::getTRIGGER_PATTSMODE( byte val0, MRQ_TRIGGER_PATTSMODE * val1, bool bQuery )
 {
-	//! 57 9
+	//! 61 9
 	int ret = 0;
 
 	byte lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 57, 9 , val0, &lval0, bQuery);
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 61, 9 , val0, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
 	*val1 = (MRQ_TRIGGER_PATTSMODE)lval0;
@@ -3194,9 +3105,9 @@ int MRQ::getTRIGGER_PATTSMODE( byte val0, MRQ_TRIGGER_PATTSMODE * val1, bool bQu
 int MRQ::setTRIGGER_PATTSPERIOD( byte val0
 ,uint32 val1 )
 {
-	//! 57 10
+	//! 61 10
 	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 57, 10 , val0, val1 );
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 61, 10 , val0, val1 );
 
 	if ( ret == 0) 
 	{
@@ -3209,11 +3120,11 @@ int MRQ::setTRIGGER_PATTSPERIOD( byte val0
 //! [CHANNUM]
 int MRQ::getTRIGGER_PATTSPERIOD( byte val0, uint32 * val1, bool bQuery )
 {
-	//! 57 11
+	//! 61 11
 	int ret = 0;
 
 	uint32 lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 57, 11 , val0, &lval0, bQuery);
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 61, 11 , val0, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
 	*val1 = lval0;
@@ -3223,11 +3134,11 @@ int MRQ::getTRIGGER_PATTSPERIOD( byte val0, uint32 * val1, bool bQuery )
 //! [CHANNUM],TRIGL|TRIGR,OFF|ON
 int MRQ::setTRIGGER_LEVELSTATE( byte val0
 ,MRQ_TRIGGER_LEVELSTATE val1
-,MRQ_SYSTEM_REPORTSWITCH val2 )
+,MRQ_SYSTEM_DIOREFREAD val2 )
 {
-	//! 57 12
+	//! 61 12
 	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 57, 12 , val0, (unsigned char)val1, (unsigned char)val2 );
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 61, 12 , val0, (unsigned char)val1, (unsigned char)val2 );
 
 	if ( ret == 0) 
 	{
@@ -3239,16 +3150,16 @@ int MRQ::setTRIGGER_LEVELSTATE( byte val0
 //! U8,ENUM
 //! [CHANNUM],TRIGL|TRIGR
 int MRQ::getTRIGGER_LEVELSTATE( byte val0
-,MRQ_TRIGGER_LEVELSTATE val1, MRQ_SYSTEM_REPORTSWITCH * val2, bool bQuery )
+,MRQ_TRIGGER_LEVELSTATE val1, MRQ_SYSTEM_DIOREFREAD * val2, bool bQuery )
 {
-	//! 57 13
+	//! 61 13
 	int ret = 0;
 
 	byte lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 57, 13 , val0, (byte)val1, &lval0, bQuery);
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 61, 13 , val0, (byte)val1, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
-	*val2 = (MRQ_SYSTEM_REPORTSWITCH)lval0;
+	*val2 = (MRQ_SYSTEM_DIOREFREAD)lval0;
 	return 0;
 }
 //! U8,ENUM,ENUM
@@ -3257,9 +3168,9 @@ int MRQ::setTRIGGER_LEVELTYPE( byte val0
 ,MRQ_TRIGGER_LEVELSTATE val1
 ,MRQ_TRIGGER_LEVELTYPE_1 val2 )
 {
-	//! 57 14
+	//! 61 14
 	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 57, 14 , val0, (unsigned char)val1, (unsigned char)val2 );
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 61, 14 , val0, (unsigned char)val1, (unsigned char)val2 );
 
 	if ( ret == 0) 
 	{
@@ -3273,11 +3184,11 @@ int MRQ::setTRIGGER_LEVELTYPE( byte val0
 int MRQ::getTRIGGER_LEVELTYPE( byte val0
 ,MRQ_TRIGGER_LEVELSTATE val1, MRQ_TRIGGER_LEVELTYPE_1 * val2, bool bQuery )
 {
-	//! 57 15
+	//! 61 15
 	int ret = 0;
 
 	byte lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 57, 15 , val0, (byte)val1, &lval0, bQuery);
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 61, 15 , val0, (byte)val1, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
 	*val2 = (MRQ_TRIGGER_LEVELTYPE_1)lval0;
@@ -3287,11 +3198,11 @@ int MRQ::getTRIGGER_LEVELTYPE( byte val0
 //! [CHANNUM],TRIGL|TRIGR,NONE|ALARM|STOP|ALARM&STOP
 int MRQ::setTRIGGER_LEVELRESP( byte val0
 ,MRQ_TRIGGER_LEVELSTATE val1
-,MRQ_OUTOFSTEP_LINERESPONSE val2 )
+,MRQ_MOTIONPLAN_OOSLINERESPONSE_1 val2 )
 {
-	//! 57 16
+	//! 61 16
 	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 57, 16 , val0, (unsigned char)val1, (unsigned char)val2 );
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 61, 16 , val0, (unsigned char)val1, (unsigned char)val2 );
 
 	if ( ret == 0) 
 	{
@@ -3303,16 +3214,16 @@ int MRQ::setTRIGGER_LEVELRESP( byte val0
 //! U8,ENUM
 //! [CHANNUM],TRIGL|TRIGR
 int MRQ::getTRIGGER_LEVELRESP( byte val0
-,MRQ_TRIGGER_LEVELSTATE val1, MRQ_OUTOFSTEP_LINERESPONSE * val2, bool bQuery )
+,MRQ_TRIGGER_LEVELSTATE val1, MRQ_MOTIONPLAN_OOSLINERESPONSE_1 * val2, bool bQuery )
 {
-	//! 57 17
+	//! 61 17
 	int ret = 0;
 
 	byte lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 57, 17 , val0, (byte)val1, &lval0, bQuery);
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 61, 17 , val0, (byte)val1, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
-	*val2 = (MRQ_OUTOFSTEP_LINERESPONSE)lval0;
+	*val2 = (MRQ_MOTIONPLAN_OOSLINERESPONSE_1)lval0;
 	return 0;
 }
 //! U8,ENUM,ENUM
@@ -3321,9 +3232,9 @@ int MRQ::setTRIGGER_LEVELSMODE( byte val0
 ,MRQ_TRIGGER_LEVELSTATE val1
 ,MRQ_TRIGGER_PATTSMODE val2 )
 {
-	//! 57 18
+	//! 61 18
 	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 57, 18 , val0, (unsigned char)val1, (unsigned char)val2 );
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 61, 18 , val0, (unsigned char)val1, (unsigned char)val2 );
 
 	if ( ret == 0) 
 	{
@@ -3337,11 +3248,11 @@ int MRQ::setTRIGGER_LEVELSMODE( byte val0
 int MRQ::getTRIGGER_LEVELSMODE( byte val0
 ,MRQ_TRIGGER_LEVELSTATE val1, MRQ_TRIGGER_PATTSMODE * val2, bool bQuery )
 {
-	//! 57 19
+	//! 61 19
 	int ret = 0;
 
 	byte lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 57, 19 , val0, (byte)val1, &lval0, bQuery);
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 61, 19 , val0, (byte)val1, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
 	*val2 = (MRQ_TRIGGER_PATTSMODE)lval0;
@@ -3353,9 +3264,9 @@ int MRQ::setTRIGGER_LEVELSPERIOD( byte val0
 ,MRQ_TRIGGER_LEVELSTATE val1
 ,f32 val2 )
 {
-	//! 57 20
+	//! 61 20
 	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 57, 20 , val0, (unsigned char)val1, val2 );
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 61, 20 , val0, (unsigned char)val1, val2 );
 
 	if ( ret == 0) 
 	{
@@ -3369,11 +3280,11 @@ int MRQ::setTRIGGER_LEVELSPERIOD( byte val0
 int MRQ::getTRIGGER_LEVELSPERIOD( byte val0
 ,MRQ_TRIGGER_LEVELSTATE val1, f32 * val2, bool bQuery )
 {
-	//! 57 21
+	//! 61 21
 	int ret = 0;
 
 	f32 lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 57, 21 , val0, (byte)val1, &lval0, bQuery);
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 61, 21 , val0, (byte)val1, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
 	*val2 = lval0;
@@ -3383,11 +3294,11 @@ int MRQ::getTRIGGER_LEVELSPERIOD( byte val0
 //! [CHANNUM]
 int MRQ::getDRIVER_TYPE( byte val0, MRQ_DRIVER_TYPE * val1, bool bQuery )
 {
-	//! 58 0
+	//! 62 0
 	int ret = 0;
 
 	byte lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 58, 0 , val0, &lval0, bQuery);
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 62, 0 , val0, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
 	*val1 = (MRQ_DRIVER_TYPE)lval0;
@@ -3398,11 +3309,11 @@ int MRQ::getDRIVER_TYPE( byte val0, MRQ_DRIVER_TYPE * val1, bool bQuery )
 int MRQ::getDRIVER_STATEREG( byte val0
 ,MRQ_DRIVER_STATEREG val1, uint32 * val2, bool bQuery )
 {
-	//! 58 1
+	//! 62 1
 	int ret = 0;
 
 	uint32 lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 58, 1 , val0, (byte)val1, &lval0, bQuery);
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 62, 1 , val0, (byte)val1, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
 	*val2 = lval0;
@@ -3413,9 +3324,9 @@ int MRQ::getDRIVER_STATEREG( byte val0
 int MRQ::setDRIVER_CURRENT( byte val0
 ,byte val1 )
 {
-	//! 58 2
+	//! 62 2
 	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 58, 2 , val0, val1 );
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 62, 2 , val0, val1 );
 
 	if ( ret == 0) 
 	{
@@ -3428,11 +3339,11 @@ int MRQ::setDRIVER_CURRENT( byte val0
 //! [CHANNUM]
 int MRQ::getDRIVER_CURRENT( byte val0, byte * val1, bool bQuery )
 {
-	//! 58 3
+	//! 62 3
 	int ret = 0;
 
 	byte lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 58, 3 , val0, &lval0, bQuery);
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 62, 3 , val0, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
 	*val1 = lval0;
@@ -3443,9 +3354,9 @@ int MRQ::getDRIVER_CURRENT( byte val0, byte * val1, bool bQuery )
 int MRQ::setDRIVER_MICROSTEPS( byte val0
 ,MRQ_DRIVER_MICROSTEPS val1 )
 {
-	//! 58 4
+	//! 62 4
 	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 58, 4 , val0, (unsigned char)val1 );
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 62, 4 , val0, (unsigned char)val1 );
 
 	if ( ret == 0) 
 	{
@@ -3458,11 +3369,11 @@ int MRQ::setDRIVER_MICROSTEPS( byte val0
 //! [CHANNUM]
 int MRQ::getDRIVER_MICROSTEPS( byte val0, MRQ_DRIVER_MICROSTEPS * val1, bool bQuery )
 {
-	//! 58 5
+	//! 62 5
 	int ret = 0;
 
 	byte lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 58, 5 , val0, &lval0, bQuery);
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 62, 5 , val0, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
 	*val1 = (MRQ_DRIVER_MICROSTEPS)lval0;
@@ -3470,64 +3381,32 @@ int MRQ::getDRIVER_MICROSTEPS( byte val0, MRQ_DRIVER_MICROSTEPS * val1, bool bQu
 }
 //! U8,ENUM
 //! [CHANNUM],OFF|ON
-int MRQ::setDRIVER_SWITCH( byte val0
-,MRQ_SYSTEM_REPORTSWITCH val1 )
+int MRQ::setDRIVER_STATE( byte val0
+,MRQ_SYSTEM_DIOREFREAD val1 )
 {
-	//! 58 6
+	//! 62 6
 	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 58, 6 , val0, (unsigned char)val1 );
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 62, 6 , val0, (unsigned char)val1 );
 
 	if ( ret == 0) 
 	{
-		MRQ_model::setDRIVER_SWITCH( val0, val1 );
+		MRQ_model::setDRIVER_STATE( val0, val1 );
 	}
 	if ( ret != 0){ log_device(); } 
 	return ret;
 }
 //! U8
 //! [CHANNUM]
-int MRQ::getDRIVER_SWITCH( byte val0, MRQ_SYSTEM_REPORTSWITCH * val1, bool bQuery )
+int MRQ::getDRIVER_STATE( byte val0, MRQ_SYSTEM_DIOREFREAD * val1, bool bQuery )
 {
-	//! 58 7
+	//! 62 7
 	int ret = 0;
 
 	byte lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 58, 7 , val0, &lval0, bQuery);
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 62, 7 , val0, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
-	*val1 = (MRQ_SYSTEM_REPORTSWITCH)lval0;
-	return 0;
-}
-//! U8,ENUM,U32
-//! [CHANNUM],DRVCTRL|CHOPCONF|SMARTEN|SGCSCONF|DRVCONF
-int MRQ::setDRIVER_REGCONFIG( byte val0
-,MRQ_DRIVER_REGCONFIG val1
-,uint32 val2 )
-{
-	//! 58 8
-	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 58, 8 , val0, (unsigned char)val1, val2 );
-
-	if ( ret == 0) 
-	{
-		MRQ_model::setDRIVER_REGCONFIG( val0, val1, val2 );
-	}
-	if ( ret != 0){ log_device(); } 
-	return ret;
-}
-//! U8,ENUM
-//! [CHANNUM],DRVCTRL|CHOPCONF|SMARTEN|SGCSCONF|DRVCONF
-int MRQ::getDRIVER_REGCONFIG( byte val0
-,MRQ_DRIVER_REGCONFIG val1, uint32 * val2, bool bQuery )
-{
-	//! 58 9
-	int ret = 0;
-
-	uint32 lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 58, 9 , val0, (byte)val1, &lval0, bQuery);
-	if ( ret != 0){ log_device(); } 
-	if ( ret != 0) return ret;
-	*val2 = lval0;
+	*val1 = (MRQ_SYSTEM_DIOREFREAD)lval0;
 	return 0;
 }
 //! U8,ENUM,S8
@@ -3536,9 +3415,9 @@ int MRQ::setDRIVER_SGLIMIT( byte val0
 ,MRQ_DRIVER_SGLIMIT val1
 ,int8 val2 )
 {
-	//! 58 10
+	//! 62 8
 	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 58, 10 , val0, (unsigned char)val1, val2 );
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 62, 8 , val0, (unsigned char)val1, val2 );
 
 	if ( ret == 0) 
 	{
@@ -3548,15 +3427,15 @@ int MRQ::setDRIVER_SGLIMIT( byte val0
 	return ret;
 }
 //! U8
-//! [CHANNUM]
+//! [CHANNUM],UPLIMIT|DOWNLIMIT
 int MRQ::getDRIVER_SGLIMIT( byte val0, MRQ_DRIVER_SGLIMIT * val1, int8 * val2, bool bQuery )
 {
-	//! 58 11
+	//! 62 9
 	int ret = 0;
 
 	byte lval0 = 0;
 	int8 lval1 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 58, 11 , val0, &lval0, &lval1, bQuery);
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 62, 9 , val0, &lval0, &lval1, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
 	*val1 = (MRQ_DRIVER_SGLIMIT)lval0;
@@ -3569,9 +3448,9 @@ int MRQ::setDRIVER_SGPARASET( byte val0
 ,MRQ_DRIVER_SGPARASET val1
 ,int16 val2 )
 {
-	//! 58 12
+	//! 62 10
 	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 58, 12 , val0, (unsigned char)val1, val2 );
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 62, 10 , val0, (unsigned char)val1, val2 );
 
 	if ( ret == 0) 
 	{
@@ -3585,11 +3464,133 @@ int MRQ::setDRIVER_SGPARASET( byte val0
 int MRQ::getDRIVER_SGPARASET( byte val0
 ,MRQ_DRIVER_SGPARASET val1, int16 * val2, bool bQuery )
 {
-	//! 58 13
+	//! 62 11
 	int ret = 0;
 
 	int16 lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 58, 13 , val0, (byte)val1, &lval0, bQuery);
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 62, 11 , val0, (byte)val1, &lval0, bQuery);
+	if ( ret != 0){ log_device(); } 
+	if ( ret != 0) return ret;
+	*val2 = lval0;
+	return 0;
+}
+//! U8,U8
+//! [CHANNUM]
+int MRQ::setDRIVER_IDLECURRENT( byte val0
+,byte val1 )
+{
+	//! 62 12
+	int ret; 
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 62, 12 , val0, val1 );
+
+	if ( ret == 0) 
+	{
+		MRQ_model::setDRIVER_IDLECURRENT( val0, val1 );
+	}
+	if ( ret != 0){ log_device(); } 
+	return ret;
+}
+//! U8
+//! [CHANNUM]
+int MRQ::getDRIVER_IDLECURRENT( byte val0, byte * val1, bool bQuery )
+{
+	//! 62 13
+	int ret = 0;
+
+	byte lval0 = 0;
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 62, 13 , val0, &lval0, bQuery);
+	if ( ret != 0){ log_device(); } 
+	if ( ret != 0) return ret;
+	*val1 = lval0;
+	return 0;
+}
+//! U8,U32
+//! [CHANNUM]
+int MRQ::setDRIVER_SWITCHTIME( byte val0
+,uint32 val1 )
+{
+	//! 62 14
+	int ret; 
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 62, 14 , val0, val1 );
+
+	if ( ret == 0) 
+	{
+		MRQ_model::setDRIVER_SWITCHTIME( val0, val1 );
+	}
+	if ( ret != 0){ log_device(); } 
+	return ret;
+}
+//! U8
+//! [CHANNUM]
+int MRQ::getDRIVER_SWITCHTIME( byte val0, uint32 * val1, bool bQuery )
+{
+	//! 62 15
+	int ret = 0;
+
+	uint32 lval0 = 0;
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 62, 15 , val0, &lval0, bQuery);
+	if ( ret != 0){ log_device(); } 
+	if ( ret != 0) return ret;
+	*val1 = lval0;
+	return 0;
+}
+//! U8,ENUM
+//! [CHANNUM],1/2|1/4
+int MRQ::setDRIVER_MINICURRRATIO( byte val0
+,MRQ_DRIVER_MINICURRRATIO val1 )
+{
+	//! 62 16
+	int ret; 
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 62, 16 , val0, (unsigned char)val1 );
+
+	if ( ret == 0) 
+	{
+		MRQ_model::setDRIVER_MINICURRRATIO( val0, val1 );
+	}
+	if ( ret != 0){ log_device(); } 
+	return ret;
+}
+//! U8
+//! [CHANNUM]
+int MRQ::getDRIVER_MINICURRRATIO( byte val0, MRQ_DRIVER_MINICURRRATIO * val1, bool bQuery )
+{
+	//! 62 17
+	int ret = 0;
+
+	byte lval0 = 0;
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 62, 17 , val0, &lval0, bQuery);
+	if ( ret != 0){ log_device(); } 
+	if ( ret != 0) return ret;
+	*val1 = (MRQ_DRIVER_MINICURRRATIO)lval0;
+	return 0;
+}
+//! U8,ENUM,U32
+//! [CHANNUM],DRVCTRL|CHOPCONF|SMARTEN|SGCSCONF|DRVCONF
+int MRQ::setDRIVER_REGCONFIG( byte val0
+,MRQ_DRIVER_REGCONFIG val1
+,uint32 val2 )
+{
+	//! 62 18
+	int ret; 
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 62, 18 , val0, (unsigned char)val1, val2 );
+
+	if ( ret == 0) 
+	{
+		MRQ_model::setDRIVER_REGCONFIG( val0, val1, val2 );
+	}
+	if ( ret != 0){ log_device(); } 
+	return ret;
+}
+//! U8,ENUM
+//! [CHANNUM],DRVCTRL|CHOPCONF|SMARTEN|SGCSCONF|DRVCONF
+int MRQ::getDRIVER_REGCONFIG( byte val0
+,MRQ_DRIVER_REGCONFIG val1, uint32 * val2, bool bQuery )
+{
+	//! 62 19
+	int ret = 0;
+
+	uint32 lval0 = 0;
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 62, 19 , val0, (byte)val1, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
 	*val2 = lval0;
@@ -3597,119 +3598,119 @@ int MRQ::getDRIVER_SGPARASET( byte val0
 }
 //! ENUM,ENUM
 //! DO1|DO2|DO3|DO4,DISABLE|ENABLE
-int MRQ::setDIGITALOUT_STATE( MRQ_DIGITALOUT_STATE val0
-,MRQ_DIGITALOUT_STATE_1 val1 )
+int MRQ::setDIGITALOUTPUT_STATE( MRQ_DIGITALOUTPUT_STATE val0
+,MRQ_DIGITALOUTPUT_STATE_1 val1 )
 {
-	//! 59 0
+	//! 63 0
 	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 59, 0 , (unsigned char)val0, (unsigned char)val1 );
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 63, 0 , (unsigned char)val0, (unsigned char)val1 );
 
 	if ( ret == 0) 
 	{
-		MRQ_model::setDIGITALOUT_STATE( val0, val1 );
+		MRQ_model::setDIGITALOUTPUT_STATE( val0, val1 );
 	}
 	if ( ret != 0){ log_device(); } 
 	return ret;
 }
 //! ENUM
 //! DO1|DO2|DO3|DO4
-int MRQ::getDIGITALOUT_STATE( MRQ_DIGITALOUT_STATE val0, MRQ_DIGITALOUT_STATE_1 * val1, bool bQuery )
+int MRQ::getDIGITALOUTPUT_STATE( MRQ_DIGITALOUTPUT_STATE val0, MRQ_DIGITALOUTPUT_STATE_1 * val1, bool bQuery )
 {
-	//! 59 1
+	//! 63 1
 	int ret = 0;
 
 	byte lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 59, 1 , (byte)val0, &lval0, bQuery);
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 63, 1 , (byte)val0, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
-	*val1 = (MRQ_DIGITALOUT_STATE_1)lval0;
+	*val1 = (MRQ_DIGITALOUTPUT_STATE_1)lval0;
 	return 0;
 }
 //! ENUM,ENUM
 //! DO1|DO2|DO3|DO4,LEVEL|NONE
-int MRQ::setDIGITALOUT_SIGNAL( MRQ_DIGITALOUT_STATE val0
-,MRQ_DIGITALOUT_SIGNAL_1 val1 )
+int MRQ::setDIGITALOUTPUT_SIGNAL( MRQ_DIGITALOUTPUT_STATE val0
+,MRQ_DIGITALOUTPUT_SIGNAL_1 val1 )
 {
-	//! 59 2
+	//! 63 2
 	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 59, 2 , (unsigned char)val0, (unsigned char)val1 );
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 63, 2 , (unsigned char)val0, (unsigned char)val1 );
 
 	if ( ret == 0) 
 	{
-		MRQ_model::setDIGITALOUT_SIGNAL( val0, val1 );
+		MRQ_model::setDIGITALOUTPUT_SIGNAL( val0, val1 );
 	}
 	if ( ret != 0){ log_device(); } 
 	return ret;
 }
 //! ENUM
 //! DO1|DO2|DO3|DO4
-int MRQ::getDIGITALOUT_SIGNAL( MRQ_DIGITALOUT_STATE val0, MRQ_DIGITALOUT_SIGNAL_1 * val1, bool bQuery )
+int MRQ::getDIGITALOUTPUT_SIGNAL( MRQ_DIGITALOUTPUT_STATE val0, MRQ_DIGITALOUTPUT_SIGNAL_1 * val1, bool bQuery )
 {
-	//! 59 3
+	//! 63 3
 	int ret = 0;
 
 	byte lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 59, 3 , (byte)val0, &lval0, bQuery);
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 63, 3 , (byte)val0, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
-	*val1 = (MRQ_DIGITALOUT_SIGNAL_1)lval0;
+	*val1 = (MRQ_DIGITALOUTPUT_SIGNAL_1)lval0;
 	return 0;
 }
 //! ENUM,ENUM
 //! DO1|DO2|DO3|DO4,POSITIVE|NEGATIVE
-int MRQ::setDIGITALOUT_POLARITY( MRQ_DIGITALOUT_STATE val0
-,MRQ_DIGITALOUT_POLARITY_1 val1 )
+int MRQ::setDIGITALOUTPUT_POLARITY( MRQ_DIGITALOUTPUT_STATE val0
+,MRQ_DIGITALOUTPUT_POLARITY_1 val1 )
 {
-	//! 59 4
+	//! 63 4
 	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 59, 4 , (unsigned char)val0, (unsigned char)val1 );
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 63, 4 , (unsigned char)val0, (unsigned char)val1 );
 
 	if ( ret == 0) 
 	{
-		MRQ_model::setDIGITALOUT_POLARITY( val0, val1 );
+		MRQ_model::setDIGITALOUTPUT_POLARITY( val0, val1 );
 	}
 	if ( ret != 0){ log_device(); } 
 	return ret;
 }
 //! ENUM
 //! DO1|DO2|DO3|DO4
-int MRQ::getDIGITALOUT_POLARITY( MRQ_DIGITALOUT_STATE val0, MRQ_DIGITALOUT_POLARITY_1 * val1, bool bQuery )
+int MRQ::getDIGITALOUTPUT_POLARITY( MRQ_DIGITALOUTPUT_STATE val0, MRQ_DIGITALOUTPUT_POLARITY_1 * val1, bool bQuery )
 {
-	//! 59 5
+	//! 63 5
 	int ret = 0;
 
 	byte lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 59, 5 , (byte)val0, &lval0, bQuery);
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 63, 5 , (byte)val0, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
-	*val1 = (MRQ_DIGITALOUT_POLARITY_1)lval0;
+	*val1 = (MRQ_DIGITALOUTPUT_POLARITY_1)lval0;
 	return 0;
 }
 //! ENUM,U8
 //! DO1|DO2|DO3|DO4,[CHANNUM]
-int MRQ::setDIGITALOUT_SOURCE( MRQ_DIGITALOUT_STATE val0
+int MRQ::setDIGITALOUTPUT_SOURCE( MRQ_DIGITALOUTPUT_STATE val0
 ,byte val1 )
 {
-	//! 59 6
+	//! 63 6
 	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 59, 6 , (unsigned char)val0, val1 );
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 63, 6 , (unsigned char)val0, val1 );
 
 	if ( ret == 0) 
 	{
-		MRQ_model::setDIGITALOUT_SOURCE( val0, val1 );
+		MRQ_model::setDIGITALOUTPUT_SOURCE( val0, val1 );
 	}
 	if ( ret != 0){ log_device(); } 
 	return ret;
 }
 //! ENUM
 //! DO1|DO2|DO3|DO4
-int MRQ::getDIGITALOUT_SOURCE( MRQ_DIGITALOUT_STATE val0, byte * val1, bool bQuery )
+int MRQ::getDIGITALOUTPUT_SOURCE( MRQ_DIGITALOUTPUT_STATE val0, byte * val1, bool bQuery )
 {
-	//! 59 7
+	//! 63 7
 	int ret = 0;
 
 	byte lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 59, 7 , (byte)val0, &lval0, bQuery);
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 63, 7 , (byte)val0, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
 	*val1 = lval0;
@@ -3717,59 +3718,59 @@ int MRQ::getDIGITALOUT_SOURCE( MRQ_DIGITALOUT_STATE val0, byte * val1, bool bQue
 }
 //! ENUM,ENUM
 //! DO1|DO2|DO3|DO4,AUTO|NONE
-int MRQ::setDIGITALOUT_CONDITION( MRQ_DIGITALOUT_STATE val0
-,MRQ_DIGITALOUT_CONDITION_1 val1 )
+int MRQ::setDIGITALOUTPUT_CONDITION( MRQ_DIGITALOUTPUT_STATE val0
+,MRQ_DIGITALOUTPUT_CONDITION_1 val1 )
 {
-	//! 59 8
+	//! 63 8
 	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 59, 8 , (unsigned char)val0, (unsigned char)val1 );
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 63, 8 , (unsigned char)val0, (unsigned char)val1 );
 
 	if ( ret == 0) 
 	{
-		MRQ_model::setDIGITALOUT_CONDITION( val0, val1 );
+		MRQ_model::setDIGITALOUTPUT_CONDITION( val0, val1 );
 	}
 	if ( ret != 0){ log_device(); } 
 	return ret;
 }
 //! ENUM
 //! DO1|DO2|DO3|DO4
-int MRQ::getDIGITALOUT_CONDITION( MRQ_DIGITALOUT_STATE val0, MRQ_DIGITALOUT_CONDITION_1 * val1, bool bQuery )
+int MRQ::getDIGITALOUTPUT_CONDITION( MRQ_DIGITALOUTPUT_STATE val0, MRQ_DIGITALOUTPUT_CONDITION_1 * val1, bool bQuery )
 {
-	//! 59 9
+	//! 63 9
 	int ret = 0;
 
 	byte lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 59, 9 , (byte)val0, &lval0, bQuery);
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 63, 9 , (byte)val0, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
-	*val1 = (MRQ_DIGITALOUT_CONDITION_1)lval0;
+	*val1 = (MRQ_DIGITALOUTPUT_CONDITION_1)lval0;
 	return 0;
 }
 //! ENUM,U32
 //! DO1|DO2|DO3|DO4
-int MRQ::setDIGITALOUT_PERIOD( MRQ_DIGITALOUT_STATE val0
+int MRQ::setDIGITALOUTPUT_PERIOD( MRQ_DIGITALOUTPUT_STATE val0
 ,uint32 val1 )
 {
-	//! 59 10
+	//! 63 10
 	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 59, 10 , (unsigned char)val0, val1 );
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 63, 10 , (unsigned char)val0, val1 );
 
 	if ( ret == 0) 
 	{
-		MRQ_model::setDIGITALOUT_PERIOD( val0, val1 );
+		MRQ_model::setDIGITALOUTPUT_PERIOD( val0, val1 );
 	}
 	if ( ret != 0){ log_device(); } 
 	return ret;
 }
 //! ENUM
 //! DO1|DO2|DO3|DO4
-int MRQ::getDIGITALOUT_PERIOD( MRQ_DIGITALOUT_STATE val0, uint32 * val1, bool bQuery )
+int MRQ::getDIGITALOUTPUT_PERIOD( MRQ_DIGITALOUTPUT_STATE val0, uint32 * val1, bool bQuery )
 {
-	//! 59 11
+	//! 63 11
 	int ret = 0;
 
 	uint32 lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 59, 11 , (byte)val0, &lval0, bQuery);
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 63, 11 , (byte)val0, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
 	*val1 = lval0;
@@ -3777,29 +3778,29 @@ int MRQ::getDIGITALOUT_PERIOD( MRQ_DIGITALOUT_STATE val0, uint32 * val1, bool bQ
 }
 //! ENUM,U16
 //! DO1|DO2|DO3|DO4
-int MRQ::setDIGITALOUT_DUTY( MRQ_DIGITALOUT_STATE val0
+int MRQ::setDIGITALOUTPUT_DUTY( MRQ_DIGITALOUTPUT_STATE val0
 ,uint16 val1 )
 {
-	//! 59 12
+	//! 63 12
 	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 59, 12 , (unsigned char)val0, val1 );
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 63, 12 , (unsigned char)val0, val1 );
 
 	if ( ret == 0) 
 	{
-		MRQ_model::setDIGITALOUT_DUTY( val0, val1 );
+		MRQ_model::setDIGITALOUTPUT_DUTY( val0, val1 );
 	}
 	if ( ret != 0){ log_device(); } 
 	return ret;
 }
 //! ENUM
 //! DO1|DO2|DO3|DO4
-int MRQ::getDIGITALOUT_DUTY( MRQ_DIGITALOUT_STATE val0, uint16 * val1, bool bQuery )
+int MRQ::getDIGITALOUTPUT_DUTY( MRQ_DIGITALOUTPUT_STATE val0, uint16 * val1, bool bQuery )
 {
-	//! 59 13
+	//! 63 13
 	int ret = 0;
 
 	uint16 lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 59, 13 , (byte)val0, &lval0, bQuery);
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 63, 13 , (byte)val0, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
 	*val1 = lval0;
@@ -3808,11 +3809,11 @@ int MRQ::getDIGITALOUT_DUTY( MRQ_DIGITALOUT_STATE val0, uint16 * val1, bool bQue
 //! ENUM,ENUM
 //! YO1|YO2,DISABLE|ENABLE
 int MRQ::setISOLATOROUTPUT_STATE( MRQ_ISOLATOROUTPUT_STATE val0
-,MRQ_DIGITALOUT_STATE_1 val1 )
+,MRQ_DIGITALOUTPUT_STATE_1 val1 )
 {
-	//! 60 0
+	//! 64 0
 	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 60, 0 , (unsigned char)val0, (unsigned char)val1 );
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 64, 0 , (unsigned char)val0, (unsigned char)val1 );
 
 	if ( ret == 0) 
 	{
@@ -3823,16 +3824,16 @@ int MRQ::setISOLATOROUTPUT_STATE( MRQ_ISOLATOROUTPUT_STATE val0
 }
 //! ENUM
 //! YO1|YO2
-int MRQ::getISOLATOROUTPUT_STATE( MRQ_ISOLATOROUTPUT_STATE val0, MRQ_DIGITALOUT_STATE_1 * val1, bool bQuery )
+int MRQ::getISOLATOROUTPUT_STATE( MRQ_ISOLATOROUTPUT_STATE val0, MRQ_DIGITALOUTPUT_STATE_1 * val1, bool bQuery )
 {
-	//! 60 1
+	//! 64 1
 	int ret = 0;
 
 	byte lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 60, 1 , (byte)val0, &lval0, bQuery);
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 64, 1 , (byte)val0, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
-	*val1 = (MRQ_DIGITALOUT_STATE_1)lval0;
+	*val1 = (MRQ_DIGITALOUTPUT_STATE_1)lval0;
 	return 0;
 }
 //! ENUM,U8
@@ -3840,9 +3841,9 @@ int MRQ::getISOLATOROUTPUT_STATE( MRQ_ISOLATOROUTPUT_STATE val0, MRQ_DIGITALOUT_
 int MRQ::setISOLATOROUTPUT_SOURCE( MRQ_ISOLATOROUTPUT_STATE val0
 ,byte val1 )
 {
-	//! 60 2
+	//! 64 2
 	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 60, 2 , (unsigned char)val0, val1 );
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 64, 2 , (unsigned char)val0, val1 );
 
 	if ( ret == 0) 
 	{
@@ -3855,11 +3856,11 @@ int MRQ::setISOLATOROUTPUT_SOURCE( MRQ_ISOLATOROUTPUT_STATE val0
 //! YO1|YO2
 int MRQ::getISOLATOROUTPUT_SOURCE( MRQ_ISOLATOROUTPUT_STATE val0, byte * val1, bool bQuery )
 {
-	//! 60 3
+	//! 64 3
 	int ret = 0;
 
 	byte lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 60, 3 , (byte)val0, &lval0, bQuery);
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 64, 3 , (byte)val0, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
 	*val1 = lval0;
@@ -3868,11 +3869,11 @@ int MRQ::getISOLATOROUTPUT_SOURCE( MRQ_ISOLATOROUTPUT_STATE val0, byte * val1, b
 //! ENUM,ENUM
 //! YO1|YO2,AUTO|NONE
 int MRQ::setISOLATOROUTPUT_CONDITION( MRQ_ISOLATOROUTPUT_STATE val0
-,MRQ_DIGITALOUT_CONDITION_1 val1 )
+,MRQ_DIGITALOUTPUT_CONDITION_1 val1 )
 {
-	//! 60 4
+	//! 64 4
 	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 60, 4 , (unsigned char)val0, (unsigned char)val1 );
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 64, 4 , (unsigned char)val0, (unsigned char)val1 );
 
 	if ( ret == 0) 
 	{
@@ -3883,16 +3884,16 @@ int MRQ::setISOLATOROUTPUT_CONDITION( MRQ_ISOLATOROUTPUT_STATE val0
 }
 //! ENUM
 //! YO1|YO2
-int MRQ::getISOLATOROUTPUT_CONDITION( MRQ_ISOLATOROUTPUT_STATE val0, MRQ_DIGITALOUT_CONDITION_1 * val1, bool bQuery )
+int MRQ::getISOLATOROUTPUT_CONDITION( MRQ_ISOLATOROUTPUT_STATE val0, MRQ_DIGITALOUTPUT_CONDITION_1 * val1, bool bQuery )
 {
-	//! 60 5
+	//! 64 5
 	int ret = 0;
 
 	byte lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 60, 5 , (byte)val0, &lval0, bQuery);
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 64, 5 , (byte)val0, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
-	*val1 = (MRQ_DIGITALOUT_CONDITION_1)lval0;
+	*val1 = (MRQ_DIGITALOUTPUT_CONDITION_1)lval0;
 	return 0;
 }
 //! ENUM,ENUM
@@ -3900,9 +3901,9 @@ int MRQ::getISOLATOROUTPUT_CONDITION( MRQ_ISOLATOROUTPUT_STATE val0, MRQ_DIGITAL
 int MRQ::setISOLATOROUTPUT_RESPONSE( MRQ_ISOLATOROUTPUT_STATE val0
 ,MRQ_ISOLATOROUTPUT_RESPONSE_1 val1 )
 {
-	//! 60 6
+	//! 64 6
 	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 60, 6 , (unsigned char)val0, (unsigned char)val1 );
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 64, 6 , (unsigned char)val0, (unsigned char)val1 );
 
 	if ( ret == 0) 
 	{
@@ -3915,11 +3916,11 @@ int MRQ::setISOLATOROUTPUT_RESPONSE( MRQ_ISOLATOROUTPUT_STATE val0
 //! YO1|YO2
 int MRQ::getISOLATOROUTPUT_RESPONSE( MRQ_ISOLATOROUTPUT_STATE val0, MRQ_ISOLATOROUTPUT_RESPONSE_1 * val1, bool bQuery )
 {
-	//! 60 7
+	//! 64 7
 	int ret = 0;
 
 	byte lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 60, 7 , (byte)val0, &lval0, bQuery);
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 64, 7 , (byte)val0, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
 	*val1 = (MRQ_ISOLATOROUTPUT_RESPONSE_1)lval0;
@@ -3930,9 +3931,9 @@ int MRQ::getISOLATOROUTPUT_RESPONSE( MRQ_ISOLATOROUTPUT_STATE val0, MRQ_ISOLATOR
 int MRQ::setSENSORUART_BAUD( MRQ_SENSORUART_BAUD val0
 ,MRQ_RS232_BAUD val1 )
 {
-	//! 61 0
+	//! 65 0
 	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 61, 0 , (unsigned char)val0, (unsigned char)val1 );
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 65, 0 , (unsigned char)val0, (unsigned char)val1 );
 
 	if ( ret == 0) 
 	{
@@ -3945,11 +3946,11 @@ int MRQ::setSENSORUART_BAUD( MRQ_SENSORUART_BAUD val0
 //! UART1|UART2
 int MRQ::getSENSORUART_BAUD( MRQ_SENSORUART_BAUD val0, MRQ_RS232_BAUD * val1, bool bQuery )
 {
-	//! 61 1
+	//! 65 1
 	int ret = 0;
 
 	byte lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 61, 1 , (byte)val0, &lval0, bQuery);
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 65, 1 , (byte)val0, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
 	*val1 = (MRQ_RS232_BAUD)lval0;
@@ -3960,9 +3961,9 @@ int MRQ::getSENSORUART_BAUD( MRQ_SENSORUART_BAUD val0, MRQ_RS232_BAUD * val1, bo
 int MRQ::setSENSORUART_WORDLEN( MRQ_SENSORUART_BAUD val0
 ,MRQ_RS232_WORDLEN val1 )
 {
-	//! 61 2
+	//! 65 2
 	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 61, 2 , (unsigned char)val0, (unsigned char)val1 );
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 65, 2 , (unsigned char)val0, (unsigned char)val1 );
 
 	if ( ret == 0) 
 	{
@@ -3975,11 +3976,11 @@ int MRQ::setSENSORUART_WORDLEN( MRQ_SENSORUART_BAUD val0
 //! UART1|UART2
 int MRQ::getSENSORUART_WORDLEN( MRQ_SENSORUART_BAUD val0, MRQ_RS232_WORDLEN * val1, bool bQuery )
 {
-	//! 61 3
+	//! 65 3
 	int ret = 0;
 
 	byte lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 61, 3 , (byte)val0, &lval0, bQuery);
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 65, 3 , (byte)val0, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
 	*val1 = (MRQ_RS232_WORDLEN)lval0;
@@ -3990,9 +3991,9 @@ int MRQ::getSENSORUART_WORDLEN( MRQ_SENSORUART_BAUD val0, MRQ_RS232_WORDLEN * va
 int MRQ::setSENSORUART_FLOWCTL( MRQ_SENSORUART_BAUD val0
 ,MRQ_RS232_FLOWCTL val1 )
 {
-	//! 61 4
+	//! 65 4
 	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 61, 4 , (unsigned char)val0, (unsigned char)val1 );
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 65, 4 , (unsigned char)val0, (unsigned char)val1 );
 
 	if ( ret == 0) 
 	{
@@ -4005,11 +4006,11 @@ int MRQ::setSENSORUART_FLOWCTL( MRQ_SENSORUART_BAUD val0
 //! UART1|UART2
 int MRQ::getSENSORUART_FLOWCTL( MRQ_SENSORUART_BAUD val0, MRQ_RS232_FLOWCTL * val1, bool bQuery )
 {
-	//! 61 5
+	//! 65 5
 	int ret = 0;
 
 	byte lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 61, 5 , (byte)val0, &lval0, bQuery);
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 65, 5 , (byte)val0, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
 	*val1 = (MRQ_RS232_FLOWCTL)lval0;
@@ -4020,9 +4021,9 @@ int MRQ::getSENSORUART_FLOWCTL( MRQ_SENSORUART_BAUD val0, MRQ_RS232_FLOWCTL * va
 int MRQ::setSENSORUART_PARITY( MRQ_SENSORUART_BAUD val0
 ,MRQ_RS232_PARITY val1 )
 {
-	//! 61 6
+	//! 65 6
 	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 61, 6 , (unsigned char)val0, (unsigned char)val1 );
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 65, 6 , (unsigned char)val0, (unsigned char)val1 );
 
 	if ( ret == 0) 
 	{
@@ -4035,11 +4036,11 @@ int MRQ::setSENSORUART_PARITY( MRQ_SENSORUART_BAUD val0
 //! UART1|UART2
 int MRQ::getSENSORUART_PARITY( MRQ_SENSORUART_BAUD val0, MRQ_RS232_PARITY * val1, bool bQuery )
 {
-	//! 61 7
+	//! 65 7
 	int ret = 0;
 
 	byte lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 61, 7 , (byte)val0, &lval0, bQuery);
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 65, 7 , (byte)val0, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
 	*val1 = (MRQ_RS232_PARITY)lval0;
@@ -4050,9 +4051,9 @@ int MRQ::getSENSORUART_PARITY( MRQ_SENSORUART_BAUD val0, MRQ_RS232_PARITY * val1
 int MRQ::setSENSORUART_STOPBIT( MRQ_SENSORUART_BAUD val0
 ,MRQ_RS232_STOPBIT val1 )
 {
-	//! 61 8
+	//! 65 8
 	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 61, 8 , (unsigned char)val0, (unsigned char)val1 );
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 65, 8 , (unsigned char)val0, (unsigned char)val1 );
 
 	if ( ret == 0) 
 	{
@@ -4065,11 +4066,11 @@ int MRQ::setSENSORUART_STOPBIT( MRQ_SENSORUART_BAUD val0
 //! UART1|UART2
 int MRQ::getSENSORUART_STOPBIT( MRQ_SENSORUART_BAUD val0, MRQ_RS232_STOPBIT * val1, bool bQuery )
 {
-	//! 61 9
+	//! 65 9
 	int ret = 0;
 
 	byte lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 61, 9 , (byte)val0, &lval0, bQuery);
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 65, 9 , (byte)val0, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
 	*val1 = (MRQ_RS232_STOPBIT)lval0;
@@ -4079,9 +4080,9 @@ int MRQ::getSENSORUART_STOPBIT( MRQ_SENSORUART_BAUD val0, MRQ_RS232_STOPBIT * va
 //! UART1|UART2
 int MRQ::setSENSORUART_APPLYPARA( MRQ_SENSORUART_BAUD val0 )
 {
-	//! 61 10
+	//! 65 10
 	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 61, 10 , (unsigned char)val0 );
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 65, 10 , (unsigned char)val0 );
 
 	if ( ret == 0) 
 	{
@@ -4093,12 +4094,12 @@ int MRQ::setSENSORUART_APPLYPARA( MRQ_SENSORUART_BAUD val0 )
 //! ENUM,ENUM,ENUM
 //! UART1|UART2,S1|S2|S3|S4,OFF|ON
 int MRQ::setSENSORUART_STATE( MRQ_SENSORUART_BAUD val0
-,MRQ_SENSORUART_STATE_1 val1
-,MRQ_SYSTEM_REPORTSWITCH val2 )
+,MRQ_IDENTITY_LABEL_1 val1
+,MRQ_SYSTEM_DIOREFREAD val2 )
 {
-	//! 61 11
+	//! 65 11
 	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 61, 11 , (unsigned char)val0, (unsigned char)val1, (unsigned char)val2 );
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 65, 11 , (unsigned char)val0, (unsigned char)val1, (unsigned char)val2 );
 
 	if ( ret == 0) 
 	{
@@ -4110,27 +4111,27 @@ int MRQ::setSENSORUART_STATE( MRQ_SENSORUART_BAUD val0
 //! ENUM,ENUM
 //! UART1|UART2,S1|S2|S3|S4
 int MRQ::getSENSORUART_STATE( MRQ_SENSORUART_BAUD val0
-,MRQ_SENSORUART_STATE_1 val1, MRQ_SYSTEM_REPORTSWITCH * val2, bool bQuery )
+,MRQ_IDENTITY_LABEL_1 val1, MRQ_SYSTEM_DIOREFREAD * val2, bool bQuery )
 {
-	//! 61 12
+	//! 65 12
 	int ret = 0;
 
 	byte lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 61, 12 , (byte)val0, (byte)val1, &lval0, bQuery);
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 65, 12 , (byte)val0, (byte)val1, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
-	*val2 = (MRQ_SYSTEM_REPORTSWITCH)lval0;
+	*val2 = (MRQ_SYSTEM_DIOREFREAD)lval0;
 	return 0;
 }
 //! ENUM,ENUM,U8
 //! UART1|UART2,S1|S2|S3|S4
 int MRQ::setSENSORUART_SOF( MRQ_SENSORUART_BAUD val0
-,MRQ_SENSORUART_STATE_1 val1
+,MRQ_IDENTITY_LABEL_1 val1
 ,byte val2 )
 {
-	//! 61 13
+	//! 65 13
 	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 61, 13 , (unsigned char)val0, (unsigned char)val1, val2 );
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 65, 13 , (unsigned char)val0, (unsigned char)val1, val2 );
 
 	if ( ret == 0) 
 	{
@@ -4142,13 +4143,13 @@ int MRQ::setSENSORUART_SOF( MRQ_SENSORUART_BAUD val0
 //! ENUM,ENUM
 //! UART1|UART2,S1|S2|S3|S4
 int MRQ::getSENSORUART_SOF( MRQ_SENSORUART_BAUD val0
-,MRQ_SENSORUART_STATE_1 val1, byte * val2, bool bQuery )
+,MRQ_IDENTITY_LABEL_1 val1, byte * val2, bool bQuery )
 {
-	//! 61 14
+	//! 65 14
 	int ret = 0;
 
 	byte lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 61, 14 , (byte)val0, (byte)val1, &lval0, bQuery);
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 65, 14 , (byte)val0, (byte)val1, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
 	*val2 = lval0;
@@ -4157,12 +4158,12 @@ int MRQ::getSENSORUART_SOF( MRQ_SENSORUART_BAUD val0
 //! ENUM,ENUM,U8
 //! UART1|UART2,S1|S2|S3|S4
 int MRQ::setSENSORUART_FRAMELEN( MRQ_SENSORUART_BAUD val0
-,MRQ_SENSORUART_STATE_1 val1
+,MRQ_IDENTITY_LABEL_1 val1
 ,byte val2 )
 {
-	//! 61 15
+	//! 65 15
 	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 61, 15 , (unsigned char)val0, (unsigned char)val1, val2 );
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 65, 15 , (unsigned char)val0, (unsigned char)val1, val2 );
 
 	if ( ret == 0) 
 	{
@@ -4174,13 +4175,13 @@ int MRQ::setSENSORUART_FRAMELEN( MRQ_SENSORUART_BAUD val0
 //! ENUM,ENUM
 //! UART1|UART2,S1|S2|S3|S4
 int MRQ::getSENSORUART_FRAMELEN( MRQ_SENSORUART_BAUD val0
-,MRQ_SENSORUART_STATE_1 val1, byte * val2, bool bQuery )
+,MRQ_IDENTITY_LABEL_1 val1, byte * val2, bool bQuery )
 {
-	//! 61 16
+	//! 65 16
 	int ret = 0;
 
 	byte lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 61, 16 , (byte)val0, (byte)val1, &lval0, bQuery);
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 65, 16 , (byte)val0, (byte)val1, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
 	*val2 = lval0;
@@ -4189,12 +4190,12 @@ int MRQ::getSENSORUART_FRAMELEN( MRQ_SENSORUART_BAUD val0
 //! ENUM,ENUM,U8
 //! UART1|UART2,S1|S2|S3|S4
 int MRQ::setSENSORUART_RECEIVENUM( MRQ_SENSORUART_BAUD val0
-,MRQ_SENSORUART_STATE_1 val1
+,MRQ_IDENTITY_LABEL_1 val1
 ,byte val2 )
 {
-	//! 61 17
+	//! 65 17
 	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 61, 17 , (unsigned char)val0, (unsigned char)val1, val2 );
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 65, 17 , (unsigned char)val0, (unsigned char)val1, val2 );
 
 	if ( ret == 0) 
 	{
@@ -4206,13 +4207,13 @@ int MRQ::setSENSORUART_RECEIVENUM( MRQ_SENSORUART_BAUD val0
 //! ENUM,ENUM
 //! UART1|UART2,S1|S2|S3|S4
 int MRQ::getSENSORUART_RECEIVENUM( MRQ_SENSORUART_BAUD val0
-,MRQ_SENSORUART_STATE_1 val1, byte * val2, bool bQuery )
+,MRQ_IDENTITY_LABEL_1 val1, byte * val2, bool bQuery )
 {
-	//! 61 18
+	//! 65 18
 	int ret = 0;
 
 	byte lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 61, 18 , (byte)val0, (byte)val1, &lval0, bQuery);
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 65, 18 , (byte)val0, (byte)val1, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
 	*val2 = lval0;
@@ -4221,12 +4222,12 @@ int MRQ::getSENSORUART_RECEIVENUM( MRQ_SENSORUART_BAUD val0
 //! ENUM,ENUM,U32
 //! UART1|UART2,S1|S2|S3|S4
 int MRQ::setSENSORUART_SWITCHTIME( MRQ_SENSORUART_BAUD val0
-,MRQ_SENSORUART_STATE_1 val1
+,MRQ_IDENTITY_LABEL_1 val1
 ,uint32 val2 )
 {
-	//! 61 19
+	//! 65 19
 	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 61, 19 , (unsigned char)val0, (unsigned char)val1, val2 );
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, 65, 19 , (unsigned char)val0, (unsigned char)val1, val2 );
 
 	if ( ret == 0) 
 	{
@@ -4238,13 +4239,13 @@ int MRQ::setSENSORUART_SWITCHTIME( MRQ_SENSORUART_BAUD val0
 //! ENUM,ENUM
 //! UART1|UART2,S1|S2|S3|S4
 int MRQ::getSENSORUART_SWITCHTIME( MRQ_SENSORUART_BAUD val0
-,MRQ_SENSORUART_STATE_1 val1, uint32 * val2, bool bQuery )
+,MRQ_IDENTITY_LABEL_1 val1, uint32 * val2, bool bQuery )
 {
-	//! 61 20
+	//! 65 20
 	int ret = 0;
 
 	uint32 lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 61, 20 , (byte)val0, (byte)val1, &lval0, bQuery);
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 65, 20 , (byte)val0, (byte)val1, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
 	*val2 = lval0;
@@ -4253,16 +4254,16 @@ int MRQ::getSENSORUART_SWITCHTIME( MRQ_SENSORUART_BAUD val0
 //! ENUM,ENUM
 //! UART1|UART2,S1|S2|S3|S4
 int MRQ::getSENSORUART_DATA( MRQ_SENSORUART_BAUD val0
-,MRQ_SENSORUART_STATE_1 val1, byte * val2, char * val3, char * val4, char * val5, bool bQuery )
+,MRQ_IDENTITY_LABEL_1 val1, byte * val2, char * val3, char * val4, char * val5, bool bQuery )
 {
-	//! 61 21
+	//! 65 21
 	int ret = 0;
 
 	byte lval0 = 0;
 	byte lval1 = 0;
 	byte lval2 = 0;
 	byte lval3 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 61, 21 , (byte)val0, (byte)val1, &lval0, &lval1, &lval2, &lval3, bQuery);
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, 65, 21 , (byte)val0, (byte)val1, &lval0, &lval1, &lval2, &lval3, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
 	*val2 = lval0;
@@ -4271,280 +4272,9 @@ int MRQ::getSENSORUART_DATA( MRQ_SENSORUART_BAUD val0
 	*val5 = (char)lval3;
 	return 0;
 }
-//! U8,ENUM,ENUM
-//! [CHANNUM],PRESET1|2,END|START|STOP|CLEAR
-int MRQ::setPRESET_PVTCONFIG( byte val0
-,MRQ_PRESET_PVTCONFIG val1
-,MRQ_MOTIONPLAN_PVTCONFIG val2 )
-{
-	//! 62 0
-	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 62, 0 , val0, (unsigned char)val1, (unsigned char)val2 );
-
-	if ( ret == 0) 
-	{
-		MRQ_model::setPRESET_PVTCONFIG( val0, val1, val2 );
-	}
-	if ( ret != 0){ log_device(); } 
-	return ret;
-}
-//! U8,ENUM
-//! [CHANNUM],PRESET1|2
-int MRQ::getPRESET_PVTCONFIG( byte val0
-,MRQ_PRESET_PVTCONFIG val1, MRQ_MOTIONPLAN_PVTCONFIG * val2, bool bQuery )
-{
-	//! 62 1
-	int ret = 0;
-
-	byte lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 62, 1 , val0, (byte)val1, &lval0, bQuery);
-	if ( ret != 0){ log_device(); } 
-	if ( ret != 0) return ret;
-	*val2 = (MRQ_MOTIONPLAN_PVTCONFIG)lval0;
-	return 0;
-}
-//! U8,U8,F32
-//! [CHANNUM],[INDEX]
-int MRQ::setPRESET_POSITION( byte val0
-,byte val1
-,f32 val2 )
-{
-	//! 62 2
-	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 62, 2 , val0, val1, val2 );
-
-	if ( ret == 0) 
-	{
-		MRQ_model::setPRESET_POSITION( val0, val1, val2 );
-	}
-	if ( ret != 0){ log_device(); } 
-	return ret;
-}
-//! U8,U8
-//! [CHANNUM],[INDEX]
-int MRQ::getPRESET_POSITION( byte val0
-,byte val1, f32 * val2, bool bQuery )
-{
-	//! 62 3
-	int ret = 0;
-
-	f32 lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 62, 3 , val0, val1, &lval0, bQuery);
-	if ( ret != 0){ log_device(); } 
-	if ( ret != 0) return ret;
-	*val2 = lval0;
-	return 0;
-}
-//! U8,U8,F32
-//! [CHANNUM],[INDEX]
-int MRQ::setPRESET_SPEED( byte val0
-,byte val1
-,f32 val2 )
-{
-	//! 62 4
-	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 62, 4 , val0, val1, val2 );
-
-	if ( ret == 0) 
-	{
-		MRQ_model::setPRESET_SPEED( val0, val1, val2 );
-	}
-	if ( ret != 0){ log_device(); } 
-	return ret;
-}
-//! U8,U8
-//! [CHANNUM],[INDEX]
-int MRQ::getPRESET_SPEED( byte val0
-,byte val1, f32 * val2, bool bQuery )
-{
-	//! 62 5
-	int ret = 0;
-
-	f32 lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 62, 5 , val0, val1, &lval0, bQuery);
-	if ( ret != 0){ log_device(); } 
-	if ( ret != 0) return ret;
-	*val2 = lval0;
-	return 0;
-}
-//! U8,U8,F32
-//! [CHANNUM],[INDEX]
-int MRQ::setPRESET_TIME( byte val0
-,byte val1
-,f32 val2 )
-{
-	//! 62 6
-	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 62, 6 , val0, val1, val2 );
-
-	if ( ret == 0) 
-	{
-		MRQ_model::setPRESET_TIME( val0, val1, val2 );
-	}
-	if ( ret != 0){ log_device(); } 
-	return ret;
-}
-//! U8,U8
-//! [CHANNUM],[INDEX]
-int MRQ::getPRESET_TIME( byte val0
-,byte val1, f32 * val2, bool bQuery )
-{
-	//! 62 7
-	int ret = 0;
-
-	f32 lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 62, 7 , val0, val1, &lval0, bQuery);
-	if ( ret != 0){ log_device(); } 
-	if ( ret != 0) return ret;
-	*val2 = lval0;
-	return 0;
-}
-//! U8,ENUM
-//! [CHANNUM],PRESET1|2
-int MRQ::getPRESET_REMAINPOINT( byte val0
-,MRQ_PRESET_PVTCONFIG val1, byte * val2, bool bQuery )
-{
-	//! 62 8
-	int ret = 0;
-
-	byte lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 62, 8 , val0, (byte)val1, &lval0, bQuery);
-	if ( ret != 0){ log_device(); } 
-	if ( ret != 0) return ret;
-	*val2 = lval0;
-	return 0;
-}
-//! U8,ENUM,ENUM
-//! [CHANNUM],PRESET1|2,CLEAR|RUN|PREPARE|CALC|SAVE
-int MRQ::setPRESET_EXECUTE( byte val0
-,MRQ_PRESET_PVTCONFIG val1
-,MRQ_PRESET_EXECUTE_1 val2 )
-{
-	//! 62 9
-	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 62, 9 , val0, (unsigned char)val1, (unsigned char)val2 );
-
-	if ( ret == 0) 
-	{
-		MRQ_model::setPRESET_EXECUTE( val0, val1, val2 );
-	}
-	if ( ret != 0){ log_device(); } 
-	return ret;
-}
-//! U8,ENUM
-//! [CHANNUM],PRESET1|2
-int MRQ::getPRESET_STATE( byte val0
-,MRQ_PRESET_PVTCONFIG val1, MRQ_SYSTEM_REPORTSWITCH * val2, bool bQuery )
-{
-	//! 62 10
-	int ret = 0;
-
-	byte lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 62, 10 , val0, (byte)val1, &lval0, bQuery);
-	if ( ret != 0){ log_device(); } 
-	if ( ret != 0) return ret;
-	*val2 = (MRQ_SYSTEM_REPORTSWITCH)lval0;
-	return 0;
-}
-//! U8,ENUM,ENUM
-//! [CHANNUM],PRESET1|2,STOP|HOLD
-int MRQ::setPRESET_ENDSTATE( byte val0
-,MRQ_PRESET_PVTCONFIG val1
-,MRQ_MOTIONPLAN_ENDSTATE val2 )
-{
-	//! 62 11
-	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 62, 11 , val0, (unsigned char)val1, (unsigned char)val2 );
-
-	if ( ret == 0) 
-	{
-		MRQ_model::setPRESET_ENDSTATE( val0, val1, val2 );
-	}
-	if ( ret != 0){ log_device(); } 
-	return ret;
-}
-//! U8,ENUM
-//! [CHANNUM],PRESET1|2
-int MRQ::getPRESET_ENDSTATE( byte val0
-,MRQ_PRESET_PVTCONFIG val1, MRQ_MOTIONPLAN_ENDSTATE * val2, bool bQuery )
-{
-	//! 62 12
-	int ret = 0;
-
-	byte lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 62, 12 , val0, (byte)val1, &lval0, bQuery);
-	if ( ret != 0){ log_device(); } 
-	if ( ret != 0) return ret;
-	*val2 = (MRQ_MOTIONPLAN_ENDSTATE)lval0;
-	return 0;
-}
-//! U8,ENUM,ENUM
-//! [CHANNUM],PRESET1|2,IMMEDIATE|DISTANCE
-int MRQ::setPRESET_STOPMODE( byte val0
-,MRQ_PRESET_PVTCONFIG val1
-,MRQ_STOPDECEL_MODE val2 )
-{
-	//! 62 13
-	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 62, 13 , val0, (unsigned char)val1, (unsigned char)val2 );
-
-	if ( ret == 0) 
-	{
-		MRQ_model::setPRESET_STOPMODE( val0, val1, val2 );
-	}
-	if ( ret != 0){ log_device(); } 
-	return ret;
-}
-//! U8,ENUM
-//! [CHANNUM],PRESET1|2
-int MRQ::getPRESET_STOPMODE( byte val0
-,MRQ_PRESET_PVTCONFIG val1, MRQ_STOPDECEL_MODE * val2, bool bQuery )
-{
-	//! 62 14
-	int ret = 0;
-
-	byte lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 62, 14 , val0, (byte)val1, &lval0, bQuery);
-	if ( ret != 0){ log_device(); } 
-	if ( ret != 0) return ret;
-	*val2 = (MRQ_STOPDECEL_MODE)lval0;
-	return 0;
-}
-//! U8,ENUM,F32
-//! [CHANNUM],PRESET1|2
-int MRQ::setPRESET_STOPDISTANCE( byte val0
-,MRQ_PRESET_PVTCONFIG val1
-,f32 val2 )
-{
-	//! 62 15
-	int ret; 
-	ret = m_pBus->write( DEVICE_RECEIVE_ID, 62, 15 , val0, (unsigned char)val1, val2 );
-
-	if ( ret == 0) 
-	{
-		MRQ_model::setPRESET_STOPDISTANCE( val0, val1, val2 );
-	}
-	if ( ret != 0){ log_device(); } 
-	return ret;
-}
-//! U8,ENUM
-//! [CHANNUM],PRESET1|2
-int MRQ::getPRESET_STOPDISTANCE( byte val0
-,MRQ_PRESET_PVTCONFIG val1, f32 * val2, bool bQuery )
-{
-	//! 62 16
-	int ret = 0;
-
-	f32 lval0 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, 62, 16 , val0, (byte)val1, &lval0, bQuery);
-	if ( ret != 0){ log_device(); } 
-	if ( ret != 0) return ret;
-	*val2 = lval0;
-	return 0;
-}
 //! ENUM
 //! OFF|ON
-int MRQ::setISOLATORIN_STATE( MRQ_SYSTEM_REPORTSWITCH val0 )
+int MRQ::setISOLATORIN_STATE( MRQ_SYSTEM_DIOREFREAD val0 )
 {
 	//! 72 0
 	int ret; 
@@ -4559,7 +4289,7 @@ int MRQ::setISOLATORIN_STATE( MRQ_SYSTEM_REPORTSWITCH val0 )
 }
 //! 
 //! 
-int MRQ::getISOLATORIN_STATE(  MRQ_SYSTEM_REPORTSWITCH * val0, bool bQuery )
+int MRQ::getISOLATORIN_STATE(  MRQ_SYSTEM_DIOREFREAD * val0, bool bQuery )
 {
 	//! 72 1
 	int ret = 0;
@@ -4568,7 +4298,7 @@ int MRQ::getISOLATORIN_STATE(  MRQ_SYSTEM_REPORTSWITCH * val0, bool bQuery )
 	ret = m_pBus->read( DEVICE_RECEIVE_ID, 72, 1 , &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
-	*val0 = (MRQ_SYSTEM_REPORTSWITCH)lval0;
+	*val0 = (MRQ_SYSTEM_DIOREFREAD)lval0;
 	return 0;
 }
 //! ENUM
@@ -4602,7 +4332,7 @@ int MRQ::getISOLATORIN_TYPE(  MRQ_TRIGGER_LEVELTYPE_1 * val0, bool bQuery )
 }
 //! ENUM
 //! NONE|ALARM|STOP|ALARM&STOP
-int MRQ::setISOLATORIN_RESPONSE( MRQ_OUTOFSTEP_LINERESPONSE val0 )
+int MRQ::setISOLATORIN_RESPONSE( MRQ_MOTIONPLAN_OOSLINERESPONSE_1 val0 )
 {
 	//! 72 4
 	int ret; 
@@ -4617,7 +4347,7 @@ int MRQ::setISOLATORIN_RESPONSE( MRQ_OUTOFSTEP_LINERESPONSE val0 )
 }
 //! 
 //! 
-int MRQ::getISOLATORIN_RESPONSE(  MRQ_OUTOFSTEP_LINERESPONSE * val0, bool bQuery )
+int MRQ::getISOLATORIN_RESPONSE(  MRQ_MOTIONPLAN_OOSLINERESPONSE_1 * val0, bool bQuery )
 {
 	//! 72 5
 	int ret = 0;
@@ -4626,7 +4356,7 @@ int MRQ::getISOLATORIN_RESPONSE(  MRQ_OUTOFSTEP_LINERESPONSE * val0, bool bQuery
 	ret = m_pBus->read( DEVICE_RECEIVE_ID, 72, 5 , &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
-	*val0 = (MRQ_OUTOFSTEP_LINERESPONSE)lval0;
+	*val0 = (MRQ_MOTIONPLAN_OOSLINERESPONSE_1)lval0;
 	return 0;
 }
 //! U8

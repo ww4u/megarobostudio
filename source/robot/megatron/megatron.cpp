@@ -16,11 +16,19 @@ robotMegatron::robotMegatron()
     setAxesDefName( 5 );
     setJointName( 5 );
 
+    //! joint name
+    mJointName.clear();
+    mJointName<<QObject::tr("Basement")
+              <<QObject::tr("Big Arm")
+              <<QObject::tr("Little Arm")
+              <<QObject::tr("Wrist")
+              <<QObject::tr("Hand");
+
     mImage = QImage::fromData( _megaimage, sizeof(_megaimage) );
 
     //! fsm
-    mFsm.attachRobot( this );
-    mFsm.build();
+    mFsm.attachRobot( this );logDbg();
+    mFsm.build();logDbg();
 
     //! debug used
     //! alter the axes name
@@ -134,7 +142,7 @@ logDbg();
         QList<tpvRow*> rows;
         groups[i]->getRows( rows );
 logDbg();
-        ret = pMrq->pvtWrite( axes, rows );
+        ret = pMrq->pvtWrite( axes, 0, rows );  //! \todo sub page
         if ( ret != 0 )
         { return ret; }
     }
@@ -187,7 +195,7 @@ int robotMegatron::setLoop( int n )
 
         Q_ASSERT( NULL != pMrq );
 
-        pMrq->setMOTIONPLAN_CYCLENUM( ax, n );
+        pMrq->setMOTIONPLAN_CYCLENUM( ax, MRQ_MOTION_SWITCH_1_MAIN, n );   //! \todo sub page
     }
 
     return 0;

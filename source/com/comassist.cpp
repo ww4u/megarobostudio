@@ -45,6 +45,97 @@ bool comAssist::fileSuffixMatch( const QString &src,
     return src.compare( suffix, Qt::CaseInsensitive ) == 0;
 }
 
+int comAssist::align( double val, double unit )
+{
+    int aligned;
+
+    if ( val > 0 )
+    {
+        aligned = ( (val + unit/10) / unit );
+    }
+    else
+    {
+        aligned = ( ( val - unit/10) / unit );
+    }
+
+    return aligned;
+}
+
+bool comAssist::convertDataset( const QStringList &line,
+                               float *pData,
+                               int cols )
+{
+    Q_ASSERT( NULL != pData );
+
+    if ( line.size() < cols )
+    { return false; }
+
+    bool bOk;
+    for ( int i = 0; i < cols; i++ )
+    {
+        pData[i] = line.at(i).toFloat( &bOk );
+        if ( !bOk )
+        { logDbg()<<line;return false; }
+    }
+
+    return true;
+}
+
+int comAssist::loadDataset( const char *pFileName,
+                            int nameLen,
+                            int col,
+                            QList<float> &dataset,
+                            const char &colSep,
+                            const char &lineSep )
+{
+    Q_ASSERT( pFileName != NULL  );
+    QByteArray fileName( pFileName, nameLen );
+
+    return loadDataset( fileName, col, dataset, colSep, lineSep );
+}
+
+int comAssist::loadDataset( const QString &fileName,
+                            int col,
+                            QList<float> &dataset,
+                            const char &colSep,
+                            const char &lineSep )
+{
+    QFile file(fileName);
+    if ( !file.open(QIODevice::ReadOnly) )
+    { return ERR_FILE_OPEN_FAIL; }
+
+    //! read all
+    QByteArray ary = file.readAll();
+    QList<QByteArray> lines = ary.split( lineSep );
+
+    //! convert for each line
+    QString lineStr;
+    QStringList lineArgs;
+
+    float lineDatas[ col ];
+    for ( int i = 0; i < lines.size(); i++ )
+    {
+        lineStr.clear();
+        lineStr.append( lines[i] );
+        lineArgs = lineStr.split( colSep, QString::SkipEmptyParts );
+        if ( lineArgs.size() == col )
+        {
+            if ( convertDataset( lineArgs, lineDatas, col ) )
+            {
+                for ( int j = 0; j < col; j++ )
+                {
+                    dataset.append( lineDatas[j] );
+                }
+            }
+        }
+        else
+        {}
+    }
+
+    return 0;
+}
+
+
 comAssist::comAssist()
 {
 

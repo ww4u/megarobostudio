@@ -48,7 +48,7 @@ protected:
     int mTryInterval;   //! us
 
     MegaDevice::deviceMRQ *m_pMRQ;
-    int mAxesId;
+    int mAxesId, mPageId;
 
     QQueue< tpvRow *> mTpvs;
     QMutex mQueueMutex;

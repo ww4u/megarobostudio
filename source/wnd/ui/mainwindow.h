@@ -37,6 +37,7 @@
 
 #include "warnprompt.h"
 #include "anglemonitor.h"
+#include "motormonitor.h"
 
 //! models
 #include "../../model/mcmodel.h"
@@ -112,6 +113,11 @@ protected Q_SLOTS:
     void slot_net_event( const QString &name,
                          int axes,
                          RoboMsg msg );
+    void slot_progress_para( int mi, int ma, int n, const QString &str );
+    void slot_progress_visible( bool b );
+    void slot_status( const QString &str );
+
+    void slot_logout( const QString &str );
 
     //! connection
     void slot_robo_name_changed( const QString& );
@@ -143,6 +149,12 @@ protected:
     void exceptionProc( const QString &name,
                         int exceptionId,
                         RoboMsg &msg );
+
+    ProgressGroup *progress();
+
+    bool progressProc(  const QString &name,
+                        int axes,
+                        RoboMsg msg );
 
 Q_SIGNALS:
     void itemXActivated( mcModelObj* );
@@ -193,6 +205,12 @@ private slots:
 
     void on_actionAngle_A_triggered();
 
+    void on_actionDistance_D_triggered();
+
+    void on_actionMotor_Panel_triggered();
+
+    void on_actiontest_triggered();
+
 private:
     //! uis
     Ui::MainWindow *ui;
@@ -235,8 +253,13 @@ private:
     //! warn prompt
     WarnPrompt *m_pWarnPrompt;
 
-    //! angle monitor
+    //! monitor
     AngleMonitor *m_pAngleMonitor;
+    AngleMonitor *m_pDistMonitor;
+    MotorMonitor *m_pMotorMonitor;
+
+    //! progress
+    ProgressGroup *m_pProgress;
 
     //! interrupt
     interruptThread *m_pInterruptThread;

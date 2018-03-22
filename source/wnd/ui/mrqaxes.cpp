@@ -1,11 +1,13 @@
 #include "mrqaxes.h"
 #include "ui_mrqaxes.h"
+#include "../../com/comassist.h"
 
 //! convert
 #define driver_current_unit (0.1f)
 
 #define motor_volt_unit     (0.1f)
 #define motor_current_unit  (0.1f)
+#define driver_time_unit    (0.001f)
 
 mrqAxes::mrqAxes(QWidget *parent) :
     mrqView(parent),
@@ -65,17 +67,16 @@ int mrqAxes::apply()
                                         (MRQ_MOTOR_POSITIONUNIT)ui->cmbPosUnit->currentIndex() );
 
     //! volt
-    pDevice->setMOTOR_VOLTAGE( mAxesId, ui->spinMaxVolt->value()/motor_volt_unit );
-    pDevice->setMOTOR_CURRENT( mAxesId, ui->spinMaxCurrent->value()/motor_current_unit );
+    pDevice->setMOTOR_VOLTAGE( mAxesId, comAssist::align( ui->spinMaxVolt->value(),motor_volt_unit) );
+    pDevice->setMOTOR_CURRENT( mAxesId, comAssist::align( ui->spinMaxCurrent->value(),motor_current_unit) );
     pDevice->setMOTOR_PEAKSPEED( mAxesId, ui->spinMaxVelocity->value() );
     pDevice->setMOTOR_PEAKACCELERATION( mAxesId, ui->spinMaxAcc->value() );
 
-    //! \todo idle
-    //! idle current
-    //! idle time
+    pDevice->setDRIVER_IDLECURRENT( mAxesId, comAssist::align( ui->spinIdleCurrent->value(),motor_current_unit) );
+    pDevice->setDRIVER_SWITCHTIME( mAxesId, comAssist::align( ui->spinIdleTime->value(),driver_time_unit) );
 
     //! driver
-    pDevice->setDRIVER_CURRENT( mAxesId, ui->dblCurrent->value()/driver_current_unit );
+    pDevice->setDRIVER_CURRENT( mAxesId, comAssist::align( ui->dblCurrent->value(),driver_current_unit) );
     pDevice->setDRIVER_MICROSTEPS( mAxesId, (MRQ_DRIVER_MICROSTEPS)ui->cmbDrvVernier->currentIndex() );
 
     //! encoder
@@ -119,6 +120,9 @@ int mrqAxes::updateUi()
     ui->spinMaxCurrent->setValue( ( pModel->mMOTOR_CURRENT[mAxesId]*motor_current_unit ) );
     ui->spinMaxVelocity->setValue( ( pModel->mMOTOR_PEAKSPEED[mAxesId] ) );
     ui->spinMaxAcc->setValue( ( pModel->mMOTOR_PEAKACCELERATION[mAxesId] ) );
+
+    ui->spinIdleCurrent->setValue( pModel->mDRIVER_IDLECURRENT[mAxesId]*driver_current_unit );
+    ui->spinIdleTime->setValue( pModel->mDRIVER_SWITCHTIME[mAxesId]*driver_time_unit );
 
     //! driver
     ui->dblCurrent->setValue( pModel->mDRIVER_CURRENT[mAxesId]*driver_current_unit );

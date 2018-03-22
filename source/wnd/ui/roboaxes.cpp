@@ -159,9 +159,9 @@ void roboAxes::rotate( int jointId,
     logDbg()<<subAx<<pMrq->name();
 
     //! only one time
-    pMrq->setMOTIONPLAN_CYCLENUM( subAx, 1 );
+    pMrq->setMOTIONPLAN_CYCLENUM( subAx, MRQ_MOTION_SWITCH_1_MAIN, 1 );
 
-    pMrq->pvtWrite( subAx,
+    pMrq->pvtWrite( subAx,0,
                     time_to_s(t1), a1,
                     time_to_s(t2), a2
                     );

@@ -56,7 +56,11 @@ void RoboFsm::proc( int msg, int para )
 {
     Q_ASSERT( NULL != m_pNowState );
 
-    m_pNowState->proc( msg, para );
+    //! sys proc
+    if ( msg == e_robot_timeout )
+    { m_pNowState->onTimer( para ); }
+    else
+    { m_pNowState->proc( msg, para ); }
 }
 
 void RoboFsm::proc( int msg, int para, int p2 )
@@ -99,7 +103,8 @@ void RoboFsm::startTimer( int id, int tmous )
 }
 void RoboFsm::killTimer( int id )
 {}
-
+void RoboFsm::onTimer( int id )
+{}
 void RoboFsm::attachCondition( RoboCondition *pCond )
 {
     Q_ASSERT( NULL != pCond );

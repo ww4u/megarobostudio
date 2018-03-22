@@ -64,9 +64,9 @@ void MrqFsm::proc( int msg, int para )
     //! sys proc
     if ( msg == e_robot_timeout )
     { m_pNowState->onTimer( para ); }
-
+logDbg()<<m_pNowState->name()<<msg<<para;
     //! base proc
-    RoboFsm::proc( msg, para );logDbg()<<m_pNowState->name()<<msg<<para;
+    RoboFsm::proc( msg, para );
 }
 
 #define create_unit( stat, mold )   \
@@ -182,6 +182,9 @@ void IdleMrqUnit::proc( int msg, int para )
     else if ( msg == mrq_msg_rst )
     { }
 
+    else if ( msg == mrq_msg_prepare )
+    { toState( mrq_state_calcend); }
+
     else if ( msg == mrq_msg_program )
     { toState( mrq_state_program); }
 
@@ -235,6 +238,9 @@ void RunReqedMrqUnit::proc( int msg, int para )
 
     else if ( msg == mrq_msg_program )
     { toState( mrq_state_program); }
+
+    else if ( msg == mrq_msg_prepare )
+    { toState( mrq_state_calcend); }
 
     //! device status
     else if ( msg == mrq_msg_idle )
@@ -418,7 +424,9 @@ void CalcendMrqUnit::proc( int msg, int para )
 
         selfFsm()->Mrq()->setMOTION_SWITCH(
                                                 selfFsm()->axes(),
-                                                MRQ_MOTION_SWITCH_PREPARE
+
+                                                MRQ_MOTION_SWITCH_PREPARE,
+                                                MRQ_MOTION_SWITCH_1_MAIN
                                             );
 
     }
@@ -444,7 +452,9 @@ void CalcendMrqUnit::onEnter()
     int ret;
     ret = selfFsm()->Mrq()->setMOTION_SWITCH(
                                         selfFsm()->axes(),
-                                        MRQ_MOTION_SWITCH_PREPARE
+
+                                        MRQ_MOTION_SWITCH_PREPARE,
+                                        MRQ_MOTION_SWITCH_1_MAIN
                                     );
     if ( ret != 0 )
     {
@@ -471,7 +481,8 @@ void StandbyMrqUnit::proc( int msg, int para )
         //! force run
         int ret;
         ret = selfFsm()->Mrq()->setMOTION_SWITCH( selfFsm()->axes(),
-                                                  MRQ_MOTION_SWITCH_RUN );
+                                                  MRQ_MOTION_SWITCH_RUN,
+                                                  MRQ_MOTION_SWITCH_1_MAIN );
         logDbg();
 
         if ( ret != 0  )
@@ -500,6 +511,7 @@ void StandbyMrqUnit::proc( int msg, int para )
     else if ( msg == mrq_msg_calcing )
     { toState( mrq_state_calcing); }
 
+    //! end
     else if ( msg == mrq_msg_calcend )
     { /*toState( mrq_state_calcend);*/ logDbg(); }
 
@@ -508,7 +520,8 @@ void StandbyMrqUnit::proc( int msg, int para )
         if ( selfFsm()->runReqed() )
         {
             selfFsm()->Mrq()->setMOTION_SWITCH( selfFsm()->axes(),
-                                                          MRQ_MOTION_SWITCH_RUN );
+                                                MRQ_MOTION_SWITCH_RUN,
+                                                MRQ_MOTION_SWITCH_1_MAIN );
 //            sysLog( __FUNCTION__, QString::number(__LINE__) );
             logDbg();
         }
@@ -569,7 +582,8 @@ void PreRunMrqUnit::proc( int msg, int para )
     else if ( msg == mrq_msg_stop )
     {
         selfFsm()->Mrq()->setMOTION_SWITCH( selfFsm()->axes(),
-                                             MRQ_MOTION_SWITCH_STOP );
+                                            MRQ_MOTION_SWITCH_STOP,
+                                            MRQ_MOTION_SWITCH_1_MAIN );
 
         toState(mrq_state_idle);
 
@@ -597,7 +611,8 @@ void PreRunMrqUnit::proc( int msg, int para )
         /*toState( mrq_state_standby);*/
 
         selfFsm()->Mrq()->setMOTION_SWITCH( selfFsm()->axes(),
-                                                  MRQ_MOTION_SWITCH_RUN );
+                                                  MRQ_MOTION_SWITCH_RUN,
+                                            MRQ_MOTION_SWITCH_1_MAIN );
     }
 
     else if ( msg == mrq_msg_running )
@@ -631,7 +646,8 @@ void RunningMrqUnit::proc( int msg, int para )
     if ( msg == mrq_msg_stop )
     {
         selfFsm()->Mrq()->setMOTION_SWITCH( selfFsm()->axes(),
-                                             MRQ_MOTION_SWITCH_STOP );
+                                             MRQ_MOTION_SWITCH_STOP,
+                                            MRQ_MOTION_SWITCH_1_MAIN );
 
         toState( mrq_state_prestop );
     }
@@ -640,7 +656,7 @@ void RunningMrqUnit::proc( int msg, int para )
         //! keep
     }
     else
-    {
+    {   logDbg()<<msg<<para;
         toState( mrq_state_idle );
     }
 }

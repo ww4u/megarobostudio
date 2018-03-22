@@ -1,0 +1,486 @@
+QFrame 
+{
+    border: 1px solid #1f2a3b;
+	/*border : 2px solid red;*/
+    border-radius: 4px;
+	/*background: #1f2a3b;*/
+    /* padding: 2px; */
+}
+
+QLabel
+{
+	border: none;
+	background: none;
+}
+
+QMainWindow::separator {
+      background: #1f2a3b;
+	  width:2px;
+	  height:2px;
+  }
+
+  QWidget#centralWidget {
+      image: url(:/res/image/logo/full.png);
+  }
+
+QWidget 
+{
+/*background: transparent; */
+background: #2c3d4f; 
+color: white;
+padding: 3px 0px,0px,0px;
+}
+
+QGroupBox {
+      border: 2px solid #1f2a3b;
+      border-radius: 4px;
+      margin-top: 1ex; /* leave space at the top for the title */
+  }
+
+
+QTabWidget::pane { /* The tab widget frame */
+      border-top: 0px solid #1f2a3b;
+  }
+
+  QTabWidget::tab-bar {
+      left: 5px; /* move to the right by 5px */
+  }
+
+  /* Style the tab using the tab sub-control. Note that
+      it reads QTabBar _not_ QTabWidget */
+  QTabBar::tab {
+      background: #1f2a3b;
+      border: 1px solid gray;
+      border-bottom-color: #1f2a3b; /* same as the pane color */
+      border-top-left-radius: 4px;
+      border-top-right-radius: 4px;
+      min-width: 10ex;
+      padding: 5px 15px;
+  }
+
+  QTabBar::tab:selected, QTabBar::tab:hover {
+      background: #00a0e0;
+  }
+
+  QTabBar::tab:selected {
+      border-color: #1a5975;
+      border-bottom-color: #1a5975; /* same as pane color */
+	  background:#1a5975;
+  }
+
+  QTabBar::tab:!selected {
+      margin-top: 2px; /* make non-selected tabs look smaller */
+  }
+
+  /* make use of negative margins for overlapping tabs */
+  QTabBar::tab:selected {
+      /* expand/overlap to the left and right by 4px */
+      margin-left: -4px;
+      margin-right: -4px;
+  }
+
+  QTabBar::tab:first:selected {
+      margin-left: 0; /* the first selected tab has nothing to overlap with on the left */
+  }
+
+  QTabBar::tab:last:selected {
+      margin-right: 0; /* the last selected tab has nothing to overlap with on the right */
+  }
+
+  QTabBar::tab:only-one {
+      margin: 0; /* if there is only one tab, we don't want overlapping margins */
+  }
+  
+QTableView,QTableWidget {
+     background-color: #2c3d4f;
+	 border-color: #2c3d4f;
+	 
+	 selection-background-color: #00a3d9;
+	 gridline-color: #1f2a3b;
+	 
+	 alternate-background-color: #1f2a3b;
+     border: none;
+  }
+QTableView QTableCornerButton::section
+{
+	background-color: #1f2a3b;
+	border:none;
+}
+QTableView QTableCornerButton::section:pressed
+{
+	background-color: #00a3d9;
+	border:none;
+}
+
+QHeaderView::section
+{
+	background-color: #2c3d4f;
+	color: white;
+	border-color: #2c3d4f;
+	border: none;
+	padding: 5px,5px,5px,5px;
+	width: 20px;
+	height: 20px;
+}
+
+
+QToolBar {
+      background: #2c3d4f;
+	  border-color:#1f2a3b; 
+	  border: 2px;
+      spacing: 3px; /* spacing between items in the tool bar */
+  }
+QToolBar::separator{
+      background: #2c3d4f;
+	  border-color:#1f2a3b; 
+  }
+QToolBar::handle{
+      background: #2c3d4f;
+	  border-color:#1f2a3b; 
+	  width:4px;
+  }
+  
+QScrollBar:vertical {
+       border: 1px solid #2c3d4f;
+       background: #2c3d4f;
+       width: 15px;
+       margin: 20px 0 20px 0;
+   }
+   QScrollBar::handle:vertical {
+       background: #1a5975;
+       min-height: 10px;
+	   border-radius: 4px;
+   }
+   QScrollBar::add-line:vertical {
+       border: 1px solid #2c3d4f;
+       background: #1a5975;
+       height: 20px;
+       subcontrol-position: bottom;
+       subcontrol-origin: margin;
+	   border-radius: 4px;
+   }
+
+   QScrollBar::sub-line:vertical {
+       border: 1px solid #2c3d4f;
+       background: #1a5975;
+       height: 20px;
+       subcontrol-position: top;
+       subcontrol-origin: margin;
+	   border-radius: 4px;
+   }
+   QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {
+       border: 2px solid #1a5975;
+       width: 3px;
+       height: 3px;
+       background: #1a5975;
+   }
+
+   QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+       background: none;
+   }
+
+     QScrollBar::add-line:vertical:hover,
+  QScrollBar::sub-line:vertical:hover,
+     QScrollBar:top-arrow:vertical:hover, 
+	 QScrollBar::down-arrow:vertical:hover, 
+	 QScrollBar::handle:vertical:hover {
+      background: #00a0e0;
+	  border-color: #00a0e0;
+  }
+   
+   
+/*1a5975*/
+/*00a0e0*/
+QScrollBar:horizontal {
+      border: 1px solid #2c3d4f;
+      background: #2c3d4f;
+      height: 15px;
+      margin: 0px 20px 0px 20px;
+  }
+  QScrollBar::handle:horizontal {
+      background: #1a5975;
+      min-width: 10px;
+	  border-radius: 4px;
+	  border: 1px solid #2c3d4f;
+  }
+  QScrollBar::add-line:horizontal {
+      border: 1px solid #2c3d4f;
+	  border-radius: 4px;
+      background: #1a5975;
+      width: 20px;
+      subcontrol-position: right;
+      subcontrol-origin: margin;
+  }
+
+  QScrollBar::sub-line:horizontal {
+      border: 1px solid #2c3d4f;
+	  border-radius: 4px;
+      background: #1a5975;
+      width: 20px;
+      subcontrol-position: left;
+      subcontrol-origin: margin;
+  }
+
+   QScrollBar:left-arrow:horizontal, QScrollBar::right-arrow:horizontal {
+      border: 2px solid #1a5975;
+      width: 3px;
+      height: 3px;
+      background: #1a5975;
+  }
+
+  QScrollBar::add-line:horizontal:hover,
+  QScrollBar::sub-line:horizontal:hover,
+     QScrollBar:left-arrow:horizontal:hover, 
+	 QScrollBar::right-arrow:horizontal:hover, 
+	 QScrollBar::handle:horizontal:hover {
+      background: #00a0e0;
+	  border-color: #00a0e0;
+  }
+
+  
+  
+  QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {
+      background: none;
+  }
+
+QPushButton,QToolButton {
+      border: 2px solid #1a5975;
+      border-radius: 4px;
+      background-color: #1a5975;
+  }
+  
+QPushButton:disabled,QToolButton:disabled {
+      border: 2px solid gray;
+      border-radius: 4px;
+      background-color: #2c3d4f;
+	  color:gray;
+  }
+  
+QPushButton:pressed, QToolButton:pressed {
+      border-color: #c5e6f6;
+  }
+
+  QPushButton:hover, QToolButton:hover {
+      background-color: #00a3d9;
+  }  
+  
+QPushButton {
+	min-height:24px;
+	  min-width:50px;
+}
+  
+QToolButton { /* all types of tool button */
+	  min-height:24px;
+	  min-width:24px;
+  }
+
+QComboBox {
+      border: 1px solid #1a5975;
+      border-radius: 3px;
+      padding: 1px 18px 1px 3px;
+      min-width: 6em;
+	  color: black;
+	  background: white;
+	  min-height: 24px;
+
+  }
+
+  QComboBox QAbstractItemView {
+      border: 2px solid #2c3d4f;
+      selection-background-color: #00a3d9;
+	  background:#2c3d4f;
+  }
+  
+  QComboBox::drop-down:hover
+  {
+	background-color:#00a3d9;
+  }
+  
+  QComboBox:editable {
+      background: white;
+  }
+
+  QComboBox:!editable {
+       background: #1a5975;
+	   color:white;
+  }
+
+  QComboBox:on { /* shift the text when the popup opens */
+      padding-top: 3px;
+      padding-left: 4px;
+  }
+
+  QComboBox::drop-down {
+      subcontrol-origin: padding;
+      subcontrol-position: top right;
+      width: 15px;
+
+      border-left-width: 1px;
+      border-left-color: #1a5975;
+      border-left-style: solid; 
+
+	  border-radius: 3px;
+	  background:#1a5975;
+
+  }
+
+QComboBox::down-arrow {
+  image: url(:/res/image/slice/down_arrow.png);
+}
+
+QComboBox::down-arrow:on { /* shift the arrow when popup is open */
+  top: 1px;
+  left: 1px;
+}
+
+  
+  QSpinBox,  QDoubleSpinBox, QLineEdit {
+      padding-right: 15px; /* make room for the arrows */
+      border-width: 3;
+	  border-radius: 3px;
+	  color: black;
+	  background-color : white;
+	  min-height: 24px;
+	  
+	  selection-background-color:#00a3d9;
+  }
+  
+
+QProgressBar {
+      border: 1px solid #1f2a3b;
+      border-radius: 4px;
+	  text-align: center;
+  }
+
+  QProgressBar::chunk {
+      background-color: #00a3d9;
+      width: 20px;
+  }
+
+QMenuBar {
+      background-color: #263646;
+  }
+
+QMenuBar::item {
+      spacing: 20px; /* spacing between menu bar items */
+      padding: 5px 10px;
+      background: transparent;
+      border-radius: 4px;
+  }
+QMenuBar::item:selected {
+      background: #00a3d9;
+  }
+  
+  
+  
+QMenu {
+      background-color: #2c3d4f; /* sets background of the menu */
+      border: 1px solid #1f2a3b;
+	  border-radius: 4px;
+  }
+
+QMenu::item{
+      padding: 5px 25px;
+  }  
+  
+ QMenu::item:selected { /* when user selects item using mouse or keyboard */
+      background-color: #00a3d9;
+	  border-radius: 4px;
+  }
+  
+  
+  /*#00a3d9 #2c3d4f*/
+ QMenu::icon { /* appearance of a 'checked' icon */
+      background: #1a5975;
+	  border:none;
+
+      position: absolute;
+
+      top: 1px;
+      right: 1px;
+      bottom: 1px;
+      left: 1px;
+  }
+
+  QMenu::icon:checked { /* appearance of a 'checked' icon */
+      background: #1a5975;
+	  border: 1px inset #00a3d9;
+	  border-radius:2px;
+      position: absolute;
+      top: 1px;
+      right: 1px;
+      bottom: 1px;
+      left: 1px;
+  }
+  
+  
+QStatusBar::item {
+      border: none;
+      
+  }
+
+  QSlider::groove:horizontal {
+      border: 1px solid #1f2a3b;
+      height: 8px; /* the groove expands to the size of the slider by default. by giving it a height, it has a fixed size */
+      /*background: #1a5975;*/
+	  background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:1 #000000, stop:0 #004080);
+      margin: 2px 0;
+	  border-radius: 2px;
+  }
+
+  QSlider::handle:horizontal {
+      
+      border: 2px solid #1a5975;
+	  background: #1a5975;
+      width: 24px;
+      margin: -5px 0; /* handle is placed by default on the contents rect of the groove. Expand outside the groove */
+      border-radius: 3px;
+  }
+  
+  QSlider::handle:horizontal:hover {
+	background: #00a0e0;
+  }
+  QSlider::handle:horizontal:pressed {
+	border-color: #c5e6f6;
+  }
+
+  
+  QSlider::groove:horizontal:disabled {
+      border: 1px solid #999999;
+      height: 2px; /* the groove expands to the size of the slider by default. by giving it a height, it has a fixed size */
+      background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #B1B1B1, stop:1 #c4c4c4);
+      margin: 2px 0;
+  }
+
+  QSlider::handle:horizontal:disabled {
+      background: qlineargradient(x1:0, y1:0, x2:1, y2:1, stop:0 #b4b4b4, stop:1 #8f8f8f);
+      border: 1px solid #5c5c5c;
+      width: 2px;
+      margin: -10px 0; /* handle is placed by default on the contents rect of the groove. Expand outside the groove */
+      /* border-radius: 3px; */
+  }
+
+  
+  QToolTip {
+      border: 2px solid #1f2a3b;
+      padding: 0px;
+      border-radius: 3px;
+      opacity: 200;
+	  background: #1a5975;
+	  color:white;
+  }
+
+  QTreeView
+{
+	border: none;
+}
+
+
+  QTreeView::item:hover, QListWidget::item:hover{
+      background: #00a0e0;
+      /* border: 2px solid #00a0e0; */
+	  color:white;
+	  /*border:none;*/
+  }
+
+

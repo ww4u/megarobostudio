@@ -102,7 +102,8 @@ void deviceMgr::desetupUi()
 
 void deviceMgr::buildConnection()
 {
-
+    connect( ui->btnPanel, SIGNAL(clicked(bool)),
+             this, SIGNAL(signal_btnState_clicked()));
 }
 
 //! fill info from the db
@@ -261,38 +262,39 @@ int deviceMgr::postLoadOn( appMsg msg, void *pPara )
     int ret = m_pMRQ->uploadSetting();
 
     return ret;
+//    return 0;
 }
 void deviceMgr::beginLoadOn( void *pPara )
 {
     emit signalReport( 0, tr("start upload") );
 
-    if ( m_pProgress == NULL )
-    {
-        m_pProgress = new QProgressDialog(this);
-        Q_ASSERT( NULL != m_pProgress );
-        m_pProgress->setWindowTitle( tr("Progress") );
-    }
+//    if ( m_pProgress == NULL )
+//    {
+//        m_pProgress = new QProgressDialog(this);
+//        Q_ASSERT( NULL != m_pProgress );
+//        m_pProgress->setWindowTitle( tr("Progress") );
+//    }
 
-    m_pProgress->show();
+//    m_pProgress->show();
 }
 void deviceMgr::endLoadOn( int ret, void *pPara )
 {
-    if ( m_pProgress )
-    {
-        m_pProgress->hide();
-        delete m_pProgress;
-        m_pProgress = NULL;
-    }
+//    if ( m_pProgress )
+//    {
+//        m_pProgress->hide();
+//        delete m_pProgress;
+//        m_pProgress = NULL;
+//    }
 
     if ( ret != 0 )
     {
         emit signalReport( ret, tr("upload fail") );
-        sysError( "upload fail" );
+        sysError( tr("upload fail") );
     }
     else
     {
         emit signalReport( ret, tr("success") );
-        sysLog( "upload success" );
+        sysLog( tr("upload success") );
     }
 }
 
@@ -341,7 +343,7 @@ void deviceMgr::context_import()
     Q_ASSERT( m_pMRQ != NULL );
     m_pMRQ->getModel()->load( fDlg.selectedFiles().first() );
 
-    sysLog( fDlg.selectedFiles().first(), "load success" );
+    sysLog( fDlg.selectedFiles().first(), tr("load success") );
 }
 void deviceMgr::context_export()
 {
@@ -356,7 +358,7 @@ void deviceMgr::context_export()
     Q_ASSERT( m_pMRQ != NULL );
     m_pMRQ->getModel()->save( fDlg.selectedFiles().first() );
 
-    sysLog( fDlg.selectedFiles().first(), "save success" );
+    sysLog( fDlg.selectedFiles().first(), tr("save success") );
 }
 
 void deviceMgr::context_upload()

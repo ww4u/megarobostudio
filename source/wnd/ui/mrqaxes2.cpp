@@ -57,70 +57,79 @@ int mrqAxes2::apply()
 
     //! tune
     checked_call( pDevice->setMOTIONPLAN_MOTIONMODE( mAxesId,
-                                           (MRQ_MOTIONPLAN_MOTIONMODE)ui->cmbTuneMode->currentIndex()
+                                                     mPage,
+                                           (MRQ_MOTIONPLAN_MOTIONMODE_1)ui->cmbTuneMode->currentIndex()
                                            ) );
     checked_call( pDevice->setMOTIONPLAN_MODIFYDUTY( mAxesId,
-                                           (MRQ_MOTIONPLAN_MODIFYDUTY)ui->cmbTimeWidth->currentIndex()
+                                                     mPage,
+                                           (MRQ_MOTIONPLAN_MODIFYDUTY_1)ui->cmbTimeWidth->currentIndex()
                                            ) );
     checked_call( pDevice->setMOTIONPLAN_PLANMODE( mAxesId,
-                                           (MRQ_MOTIONPLAN_PLANMODE)ui->cmbPlanMode->value()
+                                                   mPage,
+                                           (MRQ_MOTIONPLAN_PLANMODE_1)ui->cmbPlanMode->value()
                                            ) );
 
-    checked_call( pDevice->setMOTIONPLAN_FEEDBACKRATIO( mAxesId,
-                                           (MRQ_MOTIONPLAN_MODIFYDUTY)ui->spinFeedback->value()
+    checked_call( pDevice->setENCODER_FEEDBACKRATIO( mAxesId,
+                                                     ui->spinFeedback->value()
                                            ) );
     //! stop
-    checked_call( pDevice->setSTOPDECEL_MODE( mAxesId,
-                                    (MRQ_STOPDECEL_MODE)ui->cmbStopMode->currentIndex()
+    checked_call( pDevice->setMOTIONPLAN_STOPMODE( mAxesId,
+                                                   mPage,
+                                    (MRQ_MOTIONPLAN_STOPMODE_1)ui->cmbStopMode->currentIndex()
                                     ) );
-    checked_call( pDevice->setSTOPDECEL_DISTANCE( mAxesId,
+    checked_call( pDevice->setMOTIONPLAN_STOPDISTANCE( mAxesId,
+                                                       mPage,
                                     ui->spinStopDistance->value()
                                     ) );
-    checked_call( pDevice->setSTOPDECEL_TIME( mAxesId,
+    checked_call( pDevice->setMOTIONPLAN_STOPTIME( mAxesId,
+                                                   mPage,
                                     ui->spinStopTime->value()
                                     ) );
     //! init pos
-    checked_call( pDevice->setMOTION_INITPOSITIONUNIT( mAxesId,
-                                         (MRQ_MOTION_INITPOSITIONUNIT)ui->cmbInitUnit->currentIndex() ) );
+//    checked_call( pDevice->setMOTION_INITPOSITIONUNIT( mAxesId,
+//                                         (MRQ_MOTION_INITPOSITIONUNIT)ui->cmbInitUnit->currentIndex() ) );
 
-    checked_call( pDevice->setMOTION_INITIOSIGNAL( mAxesId,
-                                     (MRQ_MOTION_INITIOSIGNAL)ui->cmbInitIO->currentIndex() ) );
+//    checked_call( pDevice->setMOTION_INITIOSIGNAL( mAxesId,
+//                                     (MRQ_MOTION_INITIOSIGNAL)ui->cmbInitIO->currentIndex() ) );
 
-    checked_call( pDevice->setMOTION_INITPOSITION( mAxesId,
-                                     ui->spinInitPosition->value() ) );
+//    checked_call( pDevice->setMOTION_INITPOSITION( mAxesId,
+//                                     ui->spinInitPosition->value() ) );
 
     //! out of line
-    checked_call( pDevice->setOUTOFSTEP_LINESTATE( mAxesId,
-                                      (MRQ_SYSTEM_REPORTSWITCH)ui->chkOutOfLineState->isEnabled() ) );
-    checked_call( pDevice->setOUTOFSTEP_LINEOUTNUM( mAxesId,
+    checked_call( pDevice->setMOTIONPLAN_OOSLINESTATE( mAxesId,
+                                                       mPage,
+                                      (MRQ_SYSTEM_DIOREFREAD)ui->chkOutOfLineState->isEnabled() ) );
+    checked_call( pDevice->setMOTIONPLAN_OOSLINEOUTNUM( mAxesId,
+                                                        mPage,
                                       ui->spinOutOfLine->value() ) );
-    checked_call( pDevice->setOUTOFSTEP_LINERESPONSE( mAxesId,
-                                        (MRQ_OUTOFSTEP_LINERESPONSE)ui->cmbLineResponse->currentIndex() ) );
+    checked_call( pDevice->setMOTIONPLAN_OOSLINERESPONSE( mAxesId,
+                                                          mPage,
+                                        (MRQ_MOTIONPLAN_OOSLINERESPONSE_1)ui->cmbLineResponse->currentIndex() ) );
 
     return ret;
 }
 int mrqAxes2::updateUi()
 {
     //! tune
-    ui->cmbTuneMode->setCurrentIndex( m_pMrqModel->mMOTIONPLAN_MOTIONMODE[mAxesId] );
-    ui->cmbTimeWidth->setCurrentIndex( ( m_pMrqModel->mMOTIONPLAN_MODIFYDUTY[mAxesId]));
-    ui->cmbPlanMode->setValue( m_pMrqModel->mMOTIONPLAN_PLANMODE[mAxesId] );
-    ui->spinFeedback->setValue( ( m_pMrqModel->mMOTIONPLAN_FEEDBACKRATIO[mAxesId]) );
+    ui->cmbTuneMode->setCurrentIndex( m_pMrqModel->mMOTIONPLAN_MOTIONMODE[mAxesId][0] );
+    ui->cmbTimeWidth->setCurrentIndex( ( m_pMrqModel->mMOTIONPLAN_MODIFYDUTY[mAxesId][0]));
+    ui->cmbPlanMode->setValue( m_pMrqModel->mMOTIONPLAN_PLANMODE[mAxesId][0] );
+    ui->spinFeedback->setValue( ( m_pMrqModel->mMOTOR_PEAKACCELERATION[mAxesId]) );
 
     //! stop
-    ui->cmbStopMode->setCurrentIndex( m_pMrqModel->mSTOPDECEL_MODE[mAxesId] );
-    ui->spinStopDistance->setValue( ( m_pMrqModel->mSTOPDECEL_DISTANCE[mAxesId]) );
-    ui->spinStopTime->setValue( ( m_pMrqModel->mSTOPDECEL_TIME[mAxesId]) );
+    ui->cmbStopMode->setCurrentIndex( m_pMrqModel->mMOTIONPLAN_STOPMODE[mAxesId][0] );
+    ui->spinStopDistance->setValue( ( m_pMrqModel->mMOTIONPLAN_STOPDISTANCE[mAxesId][0]) );
+    ui->spinStopTime->setValue( ( m_pMrqModel->mMOTIONPLAN_STOPTIME[mAxesId][0]) );
 
-    //! position
-    ui->cmbInitUnit->setCurrentIndex( m_pMrqModel->mMOTION_INITPOSITIONUNIT[mAxesId] );
-    ui->cmbInitIO->setCurrentIndex( m_pMrqModel->mMOTION_INITIOSIGNAL[mAxesId] );
-    ui->spinInitPosition->setValue( ( m_pMrqModel->mMOTION_INITPOSITION[mAxesId]) );
+//    //! position
+//    ui->cmbInitUnit->setCurrentIndex( m_pMrqModel->mMOTION_INITPOSITIONUNIT[mAxesId] );
+//    ui->cmbInitIO->setCurrentIndex( m_pMrqModel->mMOTION_INITIOSIGNAL[mAxesId] );
+//    ui->spinInitPosition->setValue( ( m_pMrqModel->mMOTION_INITPOSITION[mAxesId]) );
 
     //! out of line
-    ui->chkOutOfLineState->setChecked( m_pMrqModel->mOUTOFSTEP_LINESTATE[mAxesId] );
-    ui->spinOutOfLine->setValue( m_pMrqModel->mOUTOFSTEP_LINEOUTNUM[mAxesId] );
-    ui->cmbLineResponse->setCurrentIndex( m_pMrqModel->mOUTOFSTEP_LINERESPONSE[mAxesId] );
+    ui->chkOutOfLineState->setChecked( m_pMrqModel->mMOTIONPLAN_OOSLINESTATE[mAxesId][0] );
+    ui->spinOutOfLine->setValue( m_pMrqModel->mMOTIONPLAN_OOSLINEOUTNUM[mAxesId][0] );
+    ui->cmbLineResponse->setCurrentIndex( m_pMrqModel->mMOTIONPLAN_OOSLINERESPONSE[mAxesId][0] );
 
     return 0;
 }

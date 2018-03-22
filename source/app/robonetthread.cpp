@@ -35,7 +35,7 @@ void RoboNetThread::onMsg( RoboMsg &msg )
             QString name;
             name = m_pModel->m_pInstMgr->sendIdToName( msg.at(1).toInt() );
             if ( name.isEmpty() )
-            { logDbg(); return; }
+            { logDbg()<<msg.at(1).toInt(); return; }
 
             //! signal
             QByteArray ary = msg.at(2).toByteArray();
@@ -71,6 +71,44 @@ void RoboNetThread::onMsg( RoboMsg &msg )
             emit signal_net( msg.at(0).toString(),
                              msg.at(1).toInt(),
                              msg );
+        }
+
+        //! info
+        else if ( msg.mMsg == e_progress_para )
+        {
+            if ( !msg.checkType( QMetaType::Int,
+                                QMetaType::Int,
+                                QMetaType::Int,
+                                QMetaType::QString) )
+            { return; }
+
+            emit signal_progress( msg.at(0).toInt(),
+                                  msg.at(1).toInt(),
+                                  msg.at(2).toInt(),
+                                  msg.at(3).toString() );
+        }
+        else if ( msg.mMsg == e_progress_visible )
+        {
+            if ( !msg.checkType( QMetaType::Bool ) )
+            { return; }
+
+            emit signal_progress( msg.at(0).toBool() );
+        }
+
+        else if ( msg.mMsg == e_status )
+        {
+            if ( !msg.checkType( QMetaType::QString ) )
+            { return; }
+
+            emit signal_status( msg.at(0).toString() );
+        }
+
+        else if ( msg.mMsg == e_logout )
+        {
+            if ( !msg.checkType( QMetaType::QString ) )
+            { return; }
+
+            emit signal_logout( msg.at(0).toString() );
         }
 
         //! name, status

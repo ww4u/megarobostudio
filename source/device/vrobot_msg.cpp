@@ -32,14 +32,15 @@ void VRobot::offLine()
 
 void VRobot::event_motionStatus( frameData &data )
 {
-    if ( data.size() < 4 )
+    if ( data.size() < 5 )
     { return; }
 
     //! deload data
     char ch = data.at( 2 );
-    char stat = data.at( 3 );
+    char page = data.at(3);
+    char stat = data.at(4);
 
-    setStatus( stat, ch );
+    setStatus( stat, ch, page );
 }
 
 void VRobot::event_motionStatus( frameData &data, VRobot *pRobot )

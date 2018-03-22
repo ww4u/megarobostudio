@@ -6,6 +6,9 @@ stateBar::stateBar(QWidget *parent) :
     ui(new Ui::stateBar)
 {
     ui->setupUi(this);
+
+    ui->progressBar->hide();
+    ui->labeIInfo->hide();
 }
 
 stateBar::~stateBar()
@@ -24,5 +27,12 @@ void stateBar::showProgress( int from, int to, int now,
 }
 void stateBar::showState( const QString &str )
 { ui->labelState->setText( str ); }
+
+QProgressBar *stateBar::progressBar()
+{ return ui->progressBar; }
+QLabel *stateBar::progressInfo()
+{ return ui->labeIInfo; }
+QLabel *stateBar::statusLabel()
+{ return ui->labelState; }
 
 

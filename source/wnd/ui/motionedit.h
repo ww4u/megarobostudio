@@ -49,7 +49,7 @@ protected:
                             int axes,
                             RoboMsg &msg);
 
-    void onMotionStatus( int axes, MRQ_MOTION_STATE stat );
+    void onMotionStatus( int axes, MRQ_MOTION_STATE_2 stat );
 
 protected:
     //! dpc proc
@@ -128,6 +128,8 @@ private slots:
     void on_btnPref_clicked();
 
     void on_btnExport_clicked();
+
+    void on_spinLoop_valueChanged(int arg1);
 
 private:
     Ui::motionEdit *ui;

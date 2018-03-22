@@ -15,6 +15,10 @@ sceneWidget::sceneWidget( QWidget *parent ) : QLabel( parent )
 
     connect( mpLabel, SIGNAL(editingFinished()),
              this, SLOT(slot_editingFinished()) );
+
+    setScaledContents( true );
+
+    setMaximumSize( 200,200 );
 }
 
 sceneWidget::~sceneWidget()

@@ -13,6 +13,14 @@ VRobot::VRobot()
     mClass = "Unk robot";
     mId = robot_unk;
     mAxes = 0;
+    mPages = 10;
+
+    mDOs = 0;
+    mDIs = 0;
+    mISOs = 0;
+    mISIs = 0;
+    mAINs = 0;
+    mUARTs = 0;
 
     m_pInstMgr = NULL;
 
@@ -65,7 +73,7 @@ void VRobot::gcWorker()
 QAbstractTableModel *VRobot::handActions()
 { return NULL; }
 
-void VRobot::setStatus( int stat,int ch )
+void VRobot::setStatus( int stat,int ch, int page )
 {
     mRobotStatus[ ch ] = stat;
     Q_ASSERT( mRobotStatus.contains(ch) );
@@ -82,90 +90,10 @@ int VRobot::getStatus( int ch )
     if ( mRobotStatus.contains( ch ) )
     { return mRobotStatus[ ch ]; }
     else
-    { return MRQ_MOTION_STATE_POWERON; }
+    { return MRQ_MOTION_STATE_2_POWERON; }
 }
 int VRobot::status( int ch )
 { return getStatus( ch ); }
-
-//int VRobot::combineStatus( int stat1,
-//                   int stat2,
-//                   int stat3,
-//                   int stat4,
-//                   int stat5 )
-//{
-//    int stats[5];
-
-//    //! deload para
-//    int i = 0;
-//    stats[ i ] = stat1;i++;
-//    stats[ i ] = stat2;i++;
-//    stats[ i ] = stat3;i++;
-//    stats[ i ] = stat4;i++;
-//    stats[ i ] = stat5;i++;
-
-//    int statSum  = 0;
-//    for ( i = 0; i < sizeof_array( stats ); i++ )
-//    {
-//        if ( stats[i] != -1 )
-//        { statSum++;}
-//    }
-
-//    int stat;
-//    stat = combineStatus( stats, statSum );
-
-//    return stat;
-//}
-
-//int VRobot::combineStatus( int stats[],
-//                   int cnt )
-//{
-//    Q_ASSERT( cnt > 0 );
-
-//    //! union the stat
-//    int stat = stats[0];
-//    for( int i = 1;i < cnt; i++ )
-//    {
-//        stat = statNext( stat, stats[i] );
-//    }
-
-//    return stat;
-//}
-
-//struct statMatrix
-//{
-//    int now;
-//    int nexts[ MRQ_MOTION_STATE_ERROR + 1 ];
-//};
-
-////! \todo the matrix
-//statMatrix _stat_matrix[]=
-//{
-//    //! MRQ_MOTION_STATE_POWERON
-//    {
-//        MRQ_MOTION_STATE_POWERON,
-//        //!
-//        { MRQ_MOTION_STATE_POWERON, }
-//    }
-//};
-
-//int VRobot::statNext( int now, int in )
-//{
-//    //! check stat
-//    Q_ASSERT( in >= MRQ_MOTION_STATE_POWERON && in <= MRQ_MOTION_STATE_ERROR );
-//    Q_ASSERT( now >= MRQ_MOTION_STATE_POWERON && now <= MRQ_MOTION_STATE_ERROR );
-
-//    //! find the maxtirx
-//    for ( int i = 0; i < sizeof_array(_stat_matrix); i++ )
-//    {
-//        if ( _stat_matrix[i].now == now )
-//        {
-//            return _stat_matrix[i].nexts[ in ];
-//        }
-//    }
-
-//    Q_ASSERT( false );
-//    return -1;
-//}
 
 void VRobot::setInstMgr( MegaDevice::InstMgr *pMgr )
 {

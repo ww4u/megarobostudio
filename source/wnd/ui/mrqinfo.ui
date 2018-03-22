@@ -37,7 +37,7 @@
    <item>
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
-      <string>Info</string>
+      <string/>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_3">
       <property name="spacing">
@@ -77,6 +77,9 @@
         </property>
         <property name="frameShadow">
          <enum>QFrame::Sunken</enum>
+        </property>
+        <property name="alternatingRowColors">
+         <bool>true</bool>
         </property>
         <property name="cornerButtonEnabled">
          <bool>true</bool>

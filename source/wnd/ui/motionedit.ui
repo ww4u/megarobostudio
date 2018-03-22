@@ -469,6 +469,9 @@
      <property name="autoScroll">
       <bool>false</bool>
      </property>
+     <property name="alternatingRowColors">
+      <bool>true</bool>
+     </property>
      <attribute name="horizontalHeaderStretchLastSection">
       <bool>true</bool>
      </attribute>

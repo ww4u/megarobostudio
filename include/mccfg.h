@@ -28,6 +28,8 @@
 #define sub_group_id_from               130
 #define sub_group_id_to                 255
 
+#define x_channel                       128
+
 //! file ext
 #define setup_ext                       "stp"
 #define motion_ext                      "mc"

@@ -90,8 +90,8 @@ public:
     virtual int transform( int axes = 0 );
 
     //! for robot -- axes is joint
-    virtual int download( tpvGroup *pGroup, int axes = 0 );
-    virtual int download( motionGroup *pGroup, int axes = 0 );
+    virtual int download( tpvGroup *pGroup, int page = 0, int axes = 0 );
+    virtual int download( motionGroup *pGroup, int page = 0, int axes = 0 );
 
     virtual int download( QList<tpvGroup*> &groups,
                           QList<int> &joints );
@@ -140,6 +140,9 @@ public:
     int getAxes();
     int axes();
 
+    void setPages( int page );
+    int pages();
+
     QImage & getImage();
 
     RoboWorker *lpc( int ax );      //! local post call
@@ -148,7 +151,7 @@ public:
     virtual QAbstractTableModel *handActions();
 
     //! MOTION_STAUS
-    virtual void setStatus( int stat, int ch = 0 );
+    virtual void setStatus( int stat, int ch = 0, int page = 0 );
     int getStatus( int ch = 0 );
     int status( int ch = 0 );
 
@@ -186,8 +189,11 @@ protected:
     //! assist
     VRobot * subRobot( int index, int *pAxes );
 
-private:
-    int mAxes;
+protected:
+    int mAxes, mPages;                  //! configs
+
+    int mDOs, mDIs, mISOs, mISIs, mAINs, mUARTs;
+
 public:
     QString mClass;                     //! robot class
     robotEnum mId;

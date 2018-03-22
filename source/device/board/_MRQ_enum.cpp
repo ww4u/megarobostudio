@@ -3,19 +3,11 @@ static value_desc _value_desc_MRQ_LINK_INTFC[] = {
 	{1,"CAN",},
 	{2,"RS232",},
 };
-static value_desc _value_desc_MRQ_SYSTEM_WORKMODE[] = {
-	{0,"NORMAL",},
-	{1,"NONE",},
-};
-static value_desc _value_desc_MRQ_SYSTEM_POWERON[] = {
-	{0,"DEFAULT",},
-	{1,"LAST",},
-};
-static value_desc _value_desc_MRQ_SYSTEM_TYPE[] = {
+static value_desc _value_desc_MRQ_LINK_DEVICEINFO[] = {
 	{0,"MRQ",},
 	{1,"MRV",},
 };
-static value_desc _value_desc_MRQ_SYSTEM_TYPE_1[] = {
+static value_desc _value_desc_MRQ_LINK_DEVICEINFO_1[] = {
 	{0,"C17D",},
 	{1,"C23D",},
 	{2,"M1703",},
@@ -32,7 +24,15 @@ static value_desc _value_desc_MRQ_SYSTEM_TYPE_1[] = {
 	{13,"C17S",},
 	{14,"C23S",},
 };
-static value_desc _value_desc_MRQ_SYSTEM_REPORTSWITCH[] = {
+static value_desc _value_desc_MRQ_SYSTEM_WORKMODE[] = {
+	{0,"NORMAL",},
+	{1,"NONE",},
+};
+static value_desc _value_desc_MRQ_SYSTEM_POWERON[] = {
+	{0,"DEFAULT",},
+	{1,"LAST",},
+};
+static value_desc _value_desc_MRQ_SYSTEM_DIOREFREAD[] = {
 	{0,"OFF",},
 	{1,"ON",},
 };
@@ -109,7 +109,19 @@ static value_desc _value_desc_MRQ_MOTION_SWITCH[] = {
 	{3,"PREPARE",},
 	{4,"EMERGSTOP",},
 };
-static value_desc _value_desc_MRQ_MOTION_STATE[] = {
+static value_desc _value_desc_MRQ_MOTION_SWITCH_1[] = {
+	{0,"MAIN",},
+	{1,"SMALL",},
+	{2,"P1",},
+	{3,"P2",},
+	{4,"P3",},
+	{5,"P4",},
+	{6,"P5",},
+	{7,"P6",},
+	{8,"P7",},
+	{9,"P8",},
+};
+static value_desc _value_desc_MRQ_MOTION_STATE_2[] = {
 	{0,"POWERON",},
 	{1,"IDLE",},
 	{2,"CALCING",},
@@ -128,37 +140,20 @@ static value_desc _value_desc_MRQ_MOTION_STARTSOURCE[] = {
 	{2,"CAN",},
 	{3,"ALL",},
 };
-static value_desc _value_desc_MRQ_MOTION_INITPOSITIONUNIT[] = {
-	{0,"ANGLE",},
-	{1,"RADIAN",},
-	{2,"MILLIMETER",},
-	{3,"IOSIGNAL",},
-};
-static value_desc _value_desc_MRQ_MOTION_INITIOSIGNAL[] = {
-	{0,"TRIG1",},
-	{1,"TRIG2",},
-	{2,"TRIG3",},
-	{3,"TRIG4",},
-	{4,"TRIG5",},
-};
-static value_desc _value_desc_MRQ_MOTION_INCHINGMODE[] = {
-	{0,"RELTANGLE",},
-	{1,"RELTRADIAN",},
-	{2,"RELTMILLIMETER",},
-};
 static value_desc _value_desc_MRQ_IDENTITY_GROUP[] = {
 	{0,"GROUP1",},
 	{1,"GROUP2",},
 };
-static value_desc _value_desc_MRQ_STOPDECEL_MODE[] = {
-	{0,"IMMEDIATE",},
-	{1,"DISTANCE",},
+static value_desc _value_desc_MRQ_IDENTITY_LABEL[] = {
+	{0,"SINANJU",},
+	{1,"MEGATRON",},
+	{2,"GOUF",},
 };
-static value_desc _value_desc_MRQ_OUTOFSTEP_LINERESPONSE[] = {
-	{0,"NONE",},
-	{1,"ALARM",},
-	{2,"STOP",},
-	{3,"ALARM&STOP",},
+static value_desc _value_desc_MRQ_IDENTITY_LABEL_1[] = {
+	{0,"S1",},
+	{1,"S2",},
+	{2,"S3",},
+	{3,"S4",},
 };
 static value_desc _value_desc_MRQ_MOTOR_STEPANGLE[] = {
 	{0,"1.8",},
@@ -201,36 +196,61 @@ static value_desc _value_desc_MRQ_ENCODER_STATE[] = {
 	{1,"OFF",},
 	{2,"ON",},
 };
-static value_desc _value_desc_MRQ_MOTIONPLAN_PVTCONFIG[] = {
+static value_desc _value_desc_MRQ_MOTIONPLAN_PVTCONFIG_1[] = {
 	{0,"END",},
-	{1,"START",},
-	{2,"STOP",},
-	{3,"CLEAR",},
+	{1,"CLEAR",},
 };
-static value_desc _value_desc_MRQ_MOTIONPLAN_EXECUTEMODE[] = {
+static value_desc _value_desc_MRQ_MOTIONPLAN_PRESETSTATE[] = {
+	{0,"RESERVE",},
+	{1,"RESERVE1",},
+	{2,"P1",},
+	{3,"P2",},
+	{4,"P3",},
+	{5,"P4",},
+	{6,"P5",},
+	{7,"P6",},
+	{8,"P7",},
+	{9,"P8",},
+};
+static value_desc _value_desc_MRQ_MOTIONPLAN_PRESETSTATE_1[] = {
+	{0,"OFF",},
+	{1,"ON",},
+	{2,"CALC",},
+};
+static value_desc _value_desc_MRQ_MOTIONPLAN_EXECUTEMODE_1[] = {
 	{0,"CYCLE",},
-	{1,"INFINITY",},
-	{2,"FIFO",},
+	{1,"FIFO",},
 };
-static value_desc _value_desc_MRQ_MOTIONPLAN_PLANMODE[] = {
+static value_desc _value_desc_MRQ_MOTIONPLAN_PLANMODE_1[] = {
 	{0,"CUBICPOLY",},
 	{1,"LINEAR",},
 	{2,"UNIFORM",},
+	{3,"TRAPEZOID",},
 };
-static value_desc _value_desc_MRQ_MOTIONPLAN_MOTIONMODE[] = {
+static value_desc _value_desc_MRQ_MOTIONPLAN_MOTIONMODE_1[] = {
 	{0,"PVT",},
 	{1,"LVT_CORRECT",},
 	{2,"LVT_NOCORRECT",},
 };
-static value_desc _value_desc_MRQ_MOTIONPLAN_MODIFYDUTY[] = {
+static value_desc _value_desc_MRQ_MOTIONPLAN_MODIFYDUTY_1[] = {
 	{0,"1/4",},
 	{1,"1/8",},
 	{2,"1/16",},
 	{3,"1/32",},
 };
-static value_desc _value_desc_MRQ_MOTIONPLAN_ENDSTATE[] = {
+static value_desc _value_desc_MRQ_MOTIONPLAN_ENDSTATE_1[] = {
 	{0,"STOP",},
 	{1,"HOLD",},
+};
+static value_desc _value_desc_MRQ_MOTIONPLAN_STOPMODE_1[] = {
+	{0,"IMMEDIATE",},
+	{1,"DISTANCE",},
+};
+static value_desc _value_desc_MRQ_MOTIONPLAN_OOSLINERESPONSE_1[] = {
+	{0,"NONE",},
+	{1,"ALARM",},
+	{2,"STOP",},
+	{3,"ALARM&STOP",},
 };
 static value_desc _value_desc_MRQ_REPORT_STATE[] = {
 	{0,"TORQUE",},
@@ -295,13 +315,6 @@ static value_desc _value_desc_MRQ_DRIVER_MICROSTEPS[] = {
 	{7,"2",},
 	{8,"1",},
 };
-static value_desc _value_desc_MRQ_DRIVER_REGCONFIG[] = {
-	{0,"DRVCTRL",},
-	{1,"CHOPCONF",},
-	{2,"SMARTEN",},
-	{3,"SGCSCONF",},
-	{4,"DRVCONF",},
-};
 static value_desc _value_desc_MRQ_DRIVER_SGLIMIT[] = {
 	{0,"UPLIMIT",},
 	{1,"DOWNLIMIT",},
@@ -312,25 +325,36 @@ static value_desc _value_desc_MRQ_DRIVER_SGPARASET[] = {
 	{2,"SEMAX",},
 	{3,"SEMIN",},
 };
-static value_desc _value_desc_MRQ_DIGITALOUT_STATE[] = {
+static value_desc _value_desc_MRQ_DRIVER_MINICURRRATIO[] = {
+	{0,"1/2",},
+	{1,"1/4",},
+};
+static value_desc _value_desc_MRQ_DRIVER_REGCONFIG[] = {
+	{0,"DRVCTRL",},
+	{1,"CHOPCONF",},
+	{2,"SMARTEN",},
+	{3,"SGCSCONF",},
+	{4,"DRVCONF",},
+};
+static value_desc _value_desc_MRQ_DIGITALOUTPUT_STATE[] = {
 	{0,"DO1",},
 	{1,"DO2",},
 	{2,"DO3",},
 	{3,"DO4",},
 };
-static value_desc _value_desc_MRQ_DIGITALOUT_STATE_1[] = {
+static value_desc _value_desc_MRQ_DIGITALOUTPUT_STATE_1[] = {
 	{0,"DISABLE",},
 	{1,"ENABLE",},
 };
-static value_desc _value_desc_MRQ_DIGITALOUT_SIGNAL_1[] = {
+static value_desc _value_desc_MRQ_DIGITALOUTPUT_SIGNAL_1[] = {
 	{0,"LEVEL",},
 	{1,"NONE",},
 };
-static value_desc _value_desc_MRQ_DIGITALOUT_POLARITY_1[] = {
+static value_desc _value_desc_MRQ_DIGITALOUTPUT_POLARITY_1[] = {
 	{0,"POSITIVE",},
 	{1,"NEGATIVE",},
 };
-static value_desc _value_desc_MRQ_DIGITALOUT_CONDITION_1[] = {
+static value_desc _value_desc_MRQ_DIGITALOUTPUT_CONDITION_1[] = {
 	{0,"AUTO",},
 	{1,"NONE",},
 };
@@ -346,26 +370,17 @@ static value_desc _value_desc_MRQ_SENSORUART_BAUD[] = {
 	{0,"UART1",},
 	{1,"UART2",},
 };
-static value_desc _value_desc_MRQ_SENSORUART_STATE_1[] = {
-	{0,"S1",},
-	{1,"S2",},
-	{2,"S3",},
-	{3,"S4",},
-};
-static value_desc _value_desc_MRQ_PRESET_PVTCONFIG[] = {
-	{0,"PRESET1",},
-	{1,"2",},
-};
-static value_desc _value_desc_MRQ_PRESET_EXECUTE_1[] = {
-	{0,"CLEAR",},
-	{1,"RUN",},
-	{2,"PREPARE",},
-	{3,"CALC",},
-	{4,"SAVE",},
-};
 const char* MRQ_LINK_INTFC_toString( MRQ_LINK_INTFC eType )
 {
 	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_LINK_INTFC ) ); 
+}
+const char* MRQ_LINK_DEVICEINFO_toString( MRQ_LINK_DEVICEINFO eType )
+{
+	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_LINK_DEVICEINFO ) ); 
+}
+const char* MRQ_LINK_DEVICEINFO_1_toString( MRQ_LINK_DEVICEINFO_1 eType )
+{
+	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_LINK_DEVICEINFO_1 ) ); 
 }
 const char* MRQ_SYSTEM_WORKMODE_toString( MRQ_SYSTEM_WORKMODE eType )
 {
@@ -375,17 +390,9 @@ const char* MRQ_SYSTEM_POWERON_toString( MRQ_SYSTEM_POWERON eType )
 {
 	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_SYSTEM_POWERON ) ); 
 }
-const char* MRQ_SYSTEM_TYPE_toString( MRQ_SYSTEM_TYPE eType )
+const char* MRQ_SYSTEM_DIOREFREAD_toString( MRQ_SYSTEM_DIOREFREAD eType )
 {
-	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_SYSTEM_TYPE ) ); 
-}
-const char* MRQ_SYSTEM_TYPE_1_toString( MRQ_SYSTEM_TYPE_1 eType )
-{
-	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_SYSTEM_TYPE_1 ) ); 
-}
-const char* MRQ_SYSTEM_REPORTSWITCH_toString( MRQ_SYSTEM_REPORTSWITCH eType )
-{
-	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_SYSTEM_REPORTSWITCH ) ); 
+	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_SYSTEM_DIOREFREAD ) ); 
 }
 const char* MRQ_RS232_BAUD_toString( MRQ_RS232_BAUD eType )
 {
@@ -435,9 +442,13 @@ const char* MRQ_MOTION_SWITCH_toString( MRQ_MOTION_SWITCH eType )
 {
 	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_MOTION_SWITCH ) ); 
 }
-const char* MRQ_MOTION_STATE_toString( MRQ_MOTION_STATE eType )
+const char* MRQ_MOTION_SWITCH_1_toString( MRQ_MOTION_SWITCH_1 eType )
 {
-	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_MOTION_STATE ) ); 
+	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_MOTION_SWITCH_1 ) ); 
+}
+const char* MRQ_MOTION_STATE_2_toString( MRQ_MOTION_STATE_2 eType )
+{
+	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_MOTION_STATE_2 ) ); 
 }
 const char* MRQ_MOTION_STATEREPORT_toString( MRQ_MOTION_STATEREPORT eType )
 {
@@ -447,29 +458,17 @@ const char* MRQ_MOTION_STARTSOURCE_toString( MRQ_MOTION_STARTSOURCE eType )
 {
 	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_MOTION_STARTSOURCE ) ); 
 }
-const char* MRQ_MOTION_INITPOSITIONUNIT_toString( MRQ_MOTION_INITPOSITIONUNIT eType )
-{
-	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_MOTION_INITPOSITIONUNIT ) ); 
-}
-const char* MRQ_MOTION_INITIOSIGNAL_toString( MRQ_MOTION_INITIOSIGNAL eType )
-{
-	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_MOTION_INITIOSIGNAL ) ); 
-}
-const char* MRQ_MOTION_INCHINGMODE_toString( MRQ_MOTION_INCHINGMODE eType )
-{
-	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_MOTION_INCHINGMODE ) ); 
-}
 const char* MRQ_IDENTITY_GROUP_toString( MRQ_IDENTITY_GROUP eType )
 {
 	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_IDENTITY_GROUP ) ); 
 }
-const char* MRQ_STOPDECEL_MODE_toString( MRQ_STOPDECEL_MODE eType )
+const char* MRQ_IDENTITY_LABEL_toString( MRQ_IDENTITY_LABEL eType )
 {
-	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_STOPDECEL_MODE ) ); 
+	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_IDENTITY_LABEL ) ); 
 }
-const char* MRQ_OUTOFSTEP_LINERESPONSE_toString( MRQ_OUTOFSTEP_LINERESPONSE eType )
+const char* MRQ_IDENTITY_LABEL_1_toString( MRQ_IDENTITY_LABEL_1 eType )
 {
-	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_OUTOFSTEP_LINERESPONSE ) ); 
+	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_IDENTITY_LABEL_1 ) ); 
 }
 const char* MRQ_MOTOR_STEPANGLE_toString( MRQ_MOTOR_STEPANGLE eType )
 {
@@ -503,29 +502,45 @@ const char* MRQ_ENCODER_STATE_toString( MRQ_ENCODER_STATE eType )
 {
 	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_ENCODER_STATE ) ); 
 }
-const char* MRQ_MOTIONPLAN_PVTCONFIG_toString( MRQ_MOTIONPLAN_PVTCONFIG eType )
+const char* MRQ_MOTIONPLAN_PVTCONFIG_1_toString( MRQ_MOTIONPLAN_PVTCONFIG_1 eType )
 {
-	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_MOTIONPLAN_PVTCONFIG ) ); 
+	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_MOTIONPLAN_PVTCONFIG_1 ) ); 
 }
-const char* MRQ_MOTIONPLAN_EXECUTEMODE_toString( MRQ_MOTIONPLAN_EXECUTEMODE eType )
+const char* MRQ_MOTIONPLAN_PRESETSTATE_toString( MRQ_MOTIONPLAN_PRESETSTATE eType )
 {
-	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_MOTIONPLAN_EXECUTEMODE ) ); 
+	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_MOTIONPLAN_PRESETSTATE ) ); 
 }
-const char* MRQ_MOTIONPLAN_PLANMODE_toString( MRQ_MOTIONPLAN_PLANMODE eType )
+const char* MRQ_MOTIONPLAN_PRESETSTATE_1_toString( MRQ_MOTIONPLAN_PRESETSTATE_1 eType )
 {
-	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_MOTIONPLAN_PLANMODE ) ); 
+	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_MOTIONPLAN_PRESETSTATE_1 ) ); 
 }
-const char* MRQ_MOTIONPLAN_MOTIONMODE_toString( MRQ_MOTIONPLAN_MOTIONMODE eType )
+const char* MRQ_MOTIONPLAN_EXECUTEMODE_1_toString( MRQ_MOTIONPLAN_EXECUTEMODE_1 eType )
 {
-	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_MOTIONPLAN_MOTIONMODE ) ); 
+	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_MOTIONPLAN_EXECUTEMODE_1 ) ); 
 }
-const char* MRQ_MOTIONPLAN_MODIFYDUTY_toString( MRQ_MOTIONPLAN_MODIFYDUTY eType )
+const char* MRQ_MOTIONPLAN_PLANMODE_1_toString( MRQ_MOTIONPLAN_PLANMODE_1 eType )
 {
-	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_MOTIONPLAN_MODIFYDUTY ) ); 
+	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_MOTIONPLAN_PLANMODE_1 ) ); 
 }
-const char* MRQ_MOTIONPLAN_ENDSTATE_toString( MRQ_MOTIONPLAN_ENDSTATE eType )
+const char* MRQ_MOTIONPLAN_MOTIONMODE_1_toString( MRQ_MOTIONPLAN_MOTIONMODE_1 eType )
 {
-	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_MOTIONPLAN_ENDSTATE ) ); 
+	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_MOTIONPLAN_MOTIONMODE_1 ) ); 
+}
+const char* MRQ_MOTIONPLAN_MODIFYDUTY_1_toString( MRQ_MOTIONPLAN_MODIFYDUTY_1 eType )
+{
+	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_MOTIONPLAN_MODIFYDUTY_1 ) ); 
+}
+const char* MRQ_MOTIONPLAN_ENDSTATE_1_toString( MRQ_MOTIONPLAN_ENDSTATE_1 eType )
+{
+	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_MOTIONPLAN_ENDSTATE_1 ) ); 
+}
+const char* MRQ_MOTIONPLAN_STOPMODE_1_toString( MRQ_MOTIONPLAN_STOPMODE_1 eType )
+{
+	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_MOTIONPLAN_STOPMODE_1 ) ); 
+}
+const char* MRQ_MOTIONPLAN_OOSLINERESPONSE_1_toString( MRQ_MOTIONPLAN_OOSLINERESPONSE_1 eType )
+{
+	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_MOTIONPLAN_OOSLINERESPONSE_1 ) ); 
 }
 const char* MRQ_REPORT_STATE_toString( MRQ_REPORT_STATE eType )
 {
@@ -563,10 +578,6 @@ const char* MRQ_DRIVER_MICROSTEPS_toString( MRQ_DRIVER_MICROSTEPS eType )
 {
 	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_DRIVER_MICROSTEPS ) ); 
 }
-const char* MRQ_DRIVER_REGCONFIG_toString( MRQ_DRIVER_REGCONFIG eType )
-{
-	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_DRIVER_REGCONFIG ) ); 
-}
 const char* MRQ_DRIVER_SGLIMIT_toString( MRQ_DRIVER_SGLIMIT eType )
 {
 	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_DRIVER_SGLIMIT ) ); 
@@ -575,25 +586,33 @@ const char* MRQ_DRIVER_SGPARASET_toString( MRQ_DRIVER_SGPARASET eType )
 {
 	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_DRIVER_SGPARASET ) ); 
 }
-const char* MRQ_DIGITALOUT_STATE_toString( MRQ_DIGITALOUT_STATE eType )
+const char* MRQ_DRIVER_MINICURRRATIO_toString( MRQ_DRIVER_MINICURRRATIO eType )
 {
-	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_DIGITALOUT_STATE ) ); 
+	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_DRIVER_MINICURRRATIO ) ); 
 }
-const char* MRQ_DIGITALOUT_STATE_1_toString( MRQ_DIGITALOUT_STATE_1 eType )
+const char* MRQ_DRIVER_REGCONFIG_toString( MRQ_DRIVER_REGCONFIG eType )
 {
-	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_DIGITALOUT_STATE_1 ) ); 
+	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_DRIVER_REGCONFIG ) ); 
 }
-const char* MRQ_DIGITALOUT_SIGNAL_1_toString( MRQ_DIGITALOUT_SIGNAL_1 eType )
+const char* MRQ_DIGITALOUTPUT_STATE_toString( MRQ_DIGITALOUTPUT_STATE eType )
 {
-	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_DIGITALOUT_SIGNAL_1 ) ); 
+	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_DIGITALOUTPUT_STATE ) ); 
 }
-const char* MRQ_DIGITALOUT_POLARITY_1_toString( MRQ_DIGITALOUT_POLARITY_1 eType )
+const char* MRQ_DIGITALOUTPUT_STATE_1_toString( MRQ_DIGITALOUTPUT_STATE_1 eType )
 {
-	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_DIGITALOUT_POLARITY_1 ) ); 
+	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_DIGITALOUTPUT_STATE_1 ) ); 
 }
-const char* MRQ_DIGITALOUT_CONDITION_1_toString( MRQ_DIGITALOUT_CONDITION_1 eType )
+const char* MRQ_DIGITALOUTPUT_SIGNAL_1_toString( MRQ_DIGITALOUTPUT_SIGNAL_1 eType )
 {
-	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_DIGITALOUT_CONDITION_1 ) ); 
+	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_DIGITALOUTPUT_SIGNAL_1 ) ); 
+}
+const char* MRQ_DIGITALOUTPUT_POLARITY_1_toString( MRQ_DIGITALOUTPUT_POLARITY_1 eType )
+{
+	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_DIGITALOUTPUT_POLARITY_1 ) ); 
+}
+const char* MRQ_DIGITALOUTPUT_CONDITION_1_toString( MRQ_DIGITALOUTPUT_CONDITION_1 eType )
+{
+	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_DIGITALOUTPUT_CONDITION_1 ) ); 
 }
 const char* MRQ_ISOLATOROUTPUT_STATE_toString( MRQ_ISOLATOROUTPUT_STATE eType )
 {
@@ -607,24 +626,28 @@ const char* MRQ_SENSORUART_BAUD_toString( MRQ_SENSORUART_BAUD eType )
 {
 	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_SENSORUART_BAUD ) ); 
 }
-const char* MRQ_SENSORUART_STATE_1_toString( MRQ_SENSORUART_STATE_1 eType )
-{
-	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_SENSORUART_STATE_1 ) ); 
-}
-const char* MRQ_PRESET_PVTCONFIG_toString( MRQ_PRESET_PVTCONFIG eType )
-{
-	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_PRESET_PVTCONFIG ) ); 
-}
-const char* MRQ_PRESET_EXECUTE_1_toString( MRQ_PRESET_EXECUTE_1 eType )
-{
-	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_PRESET_EXECUTE_1 ) ); 
-}
 int MRQ_LINK_INTFC_toValue( const char *pStr, MRQ_LINK_INTFC *pEVal )
 {
 	int ret, lval;
 	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_LINK_INTFC ), &lval );
 	if ( ret != 0 ) return ret; 
 	*pEVal=(MRQ_LINK_INTFC)lval;
+	return 0;
+}
+int MRQ_LINK_DEVICEINFO_toValue( const char *pStr, MRQ_LINK_DEVICEINFO *pEVal )
+{
+	int ret, lval;
+	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_LINK_DEVICEINFO ), &lval );
+	if ( ret != 0 ) return ret; 
+	*pEVal=(MRQ_LINK_DEVICEINFO)lval;
+	return 0;
+}
+int MRQ_LINK_DEVICEINFO_1_toValue( const char *pStr, MRQ_LINK_DEVICEINFO_1 *pEVal )
+{
+	int ret, lval;
+	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_LINK_DEVICEINFO_1 ), &lval );
+	if ( ret != 0 ) return ret; 
+	*pEVal=(MRQ_LINK_DEVICEINFO_1)lval;
 	return 0;
 }
 int MRQ_SYSTEM_WORKMODE_toValue( const char *pStr, MRQ_SYSTEM_WORKMODE *pEVal )
@@ -643,28 +666,12 @@ int MRQ_SYSTEM_POWERON_toValue( const char *pStr, MRQ_SYSTEM_POWERON *pEVal )
 	*pEVal=(MRQ_SYSTEM_POWERON)lval;
 	return 0;
 }
-int MRQ_SYSTEM_TYPE_toValue( const char *pStr, MRQ_SYSTEM_TYPE *pEVal )
+int MRQ_SYSTEM_DIOREFREAD_toValue( const char *pStr, MRQ_SYSTEM_DIOREFREAD *pEVal )
 {
 	int ret, lval;
-	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_SYSTEM_TYPE ), &lval );
+	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_SYSTEM_DIOREFREAD ), &lval );
 	if ( ret != 0 ) return ret; 
-	*pEVal=(MRQ_SYSTEM_TYPE)lval;
-	return 0;
-}
-int MRQ_SYSTEM_TYPE_1_toValue( const char *pStr, MRQ_SYSTEM_TYPE_1 *pEVal )
-{
-	int ret, lval;
-	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_SYSTEM_TYPE_1 ), &lval );
-	if ( ret != 0 ) return ret; 
-	*pEVal=(MRQ_SYSTEM_TYPE_1)lval;
-	return 0;
-}
-int MRQ_SYSTEM_REPORTSWITCH_toValue( const char *pStr, MRQ_SYSTEM_REPORTSWITCH *pEVal )
-{
-	int ret, lval;
-	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_SYSTEM_REPORTSWITCH ), &lval );
-	if ( ret != 0 ) return ret; 
-	*pEVal=(MRQ_SYSTEM_REPORTSWITCH)lval;
+	*pEVal=(MRQ_SYSTEM_DIOREFREAD)lval;
 	return 0;
 }
 int MRQ_RS232_BAUD_toValue( const char *pStr, MRQ_RS232_BAUD *pEVal )
@@ -763,12 +770,20 @@ int MRQ_MOTION_SWITCH_toValue( const char *pStr, MRQ_MOTION_SWITCH *pEVal )
 	*pEVal=(MRQ_MOTION_SWITCH)lval;
 	return 0;
 }
-int MRQ_MOTION_STATE_toValue( const char *pStr, MRQ_MOTION_STATE *pEVal )
+int MRQ_MOTION_SWITCH_1_toValue( const char *pStr, MRQ_MOTION_SWITCH_1 *pEVal )
 {
 	int ret, lval;
-	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_MOTION_STATE ), &lval );
+	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_MOTION_SWITCH_1 ), &lval );
 	if ( ret != 0 ) return ret; 
-	*pEVal=(MRQ_MOTION_STATE)lval;
+	*pEVal=(MRQ_MOTION_SWITCH_1)lval;
+	return 0;
+}
+int MRQ_MOTION_STATE_2_toValue( const char *pStr, MRQ_MOTION_STATE_2 *pEVal )
+{
+	int ret, lval;
+	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_MOTION_STATE_2 ), &lval );
+	if ( ret != 0 ) return ret; 
+	*pEVal=(MRQ_MOTION_STATE_2)lval;
 	return 0;
 }
 int MRQ_MOTION_STATEREPORT_toValue( const char *pStr, MRQ_MOTION_STATEREPORT *pEVal )
@@ -787,30 +802,6 @@ int MRQ_MOTION_STARTSOURCE_toValue( const char *pStr, MRQ_MOTION_STARTSOURCE *pE
 	*pEVal=(MRQ_MOTION_STARTSOURCE)lval;
 	return 0;
 }
-int MRQ_MOTION_INITPOSITIONUNIT_toValue( const char *pStr, MRQ_MOTION_INITPOSITIONUNIT *pEVal )
-{
-	int ret, lval;
-	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_MOTION_INITPOSITIONUNIT ), &lval );
-	if ( ret != 0 ) return ret; 
-	*pEVal=(MRQ_MOTION_INITPOSITIONUNIT)lval;
-	return 0;
-}
-int MRQ_MOTION_INITIOSIGNAL_toValue( const char *pStr, MRQ_MOTION_INITIOSIGNAL *pEVal )
-{
-	int ret, lval;
-	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_MOTION_INITIOSIGNAL ), &lval );
-	if ( ret != 0 ) return ret; 
-	*pEVal=(MRQ_MOTION_INITIOSIGNAL)lval;
-	return 0;
-}
-int MRQ_MOTION_INCHINGMODE_toValue( const char *pStr, MRQ_MOTION_INCHINGMODE *pEVal )
-{
-	int ret, lval;
-	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_MOTION_INCHINGMODE ), &lval );
-	if ( ret != 0 ) return ret; 
-	*pEVal=(MRQ_MOTION_INCHINGMODE)lval;
-	return 0;
-}
 int MRQ_IDENTITY_GROUP_toValue( const char *pStr, MRQ_IDENTITY_GROUP *pEVal )
 {
 	int ret, lval;
@@ -819,20 +810,20 @@ int MRQ_IDENTITY_GROUP_toValue( const char *pStr, MRQ_IDENTITY_GROUP *pEVal )
 	*pEVal=(MRQ_IDENTITY_GROUP)lval;
 	return 0;
 }
-int MRQ_STOPDECEL_MODE_toValue( const char *pStr, MRQ_STOPDECEL_MODE *pEVal )
+int MRQ_IDENTITY_LABEL_toValue( const char *pStr, MRQ_IDENTITY_LABEL *pEVal )
 {
 	int ret, lval;
-	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_STOPDECEL_MODE ), &lval );
+	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_IDENTITY_LABEL ), &lval );
 	if ( ret != 0 ) return ret; 
-	*pEVal=(MRQ_STOPDECEL_MODE)lval;
+	*pEVal=(MRQ_IDENTITY_LABEL)lval;
 	return 0;
 }
-int MRQ_OUTOFSTEP_LINERESPONSE_toValue( const char *pStr, MRQ_OUTOFSTEP_LINERESPONSE *pEVal )
+int MRQ_IDENTITY_LABEL_1_toValue( const char *pStr, MRQ_IDENTITY_LABEL_1 *pEVal )
 {
 	int ret, lval;
-	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_OUTOFSTEP_LINERESPONSE ), &lval );
+	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_IDENTITY_LABEL_1 ), &lval );
 	if ( ret != 0 ) return ret; 
-	*pEVal=(MRQ_OUTOFSTEP_LINERESPONSE)lval;
+	*pEVal=(MRQ_IDENTITY_LABEL_1)lval;
 	return 0;
 }
 int MRQ_MOTOR_STEPANGLE_toValue( const char *pStr, MRQ_MOTOR_STEPANGLE *pEVal )
@@ -899,52 +890,84 @@ int MRQ_ENCODER_STATE_toValue( const char *pStr, MRQ_ENCODER_STATE *pEVal )
 	*pEVal=(MRQ_ENCODER_STATE)lval;
 	return 0;
 }
-int MRQ_MOTIONPLAN_PVTCONFIG_toValue( const char *pStr, MRQ_MOTIONPLAN_PVTCONFIG *pEVal )
+int MRQ_MOTIONPLAN_PVTCONFIG_1_toValue( const char *pStr, MRQ_MOTIONPLAN_PVTCONFIG_1 *pEVal )
 {
 	int ret, lval;
-	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_MOTIONPLAN_PVTCONFIG ), &lval );
+	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_MOTIONPLAN_PVTCONFIG_1 ), &lval );
 	if ( ret != 0 ) return ret; 
-	*pEVal=(MRQ_MOTIONPLAN_PVTCONFIG)lval;
+	*pEVal=(MRQ_MOTIONPLAN_PVTCONFIG_1)lval;
 	return 0;
 }
-int MRQ_MOTIONPLAN_EXECUTEMODE_toValue( const char *pStr, MRQ_MOTIONPLAN_EXECUTEMODE *pEVal )
+int MRQ_MOTIONPLAN_PRESETSTATE_toValue( const char *pStr, MRQ_MOTIONPLAN_PRESETSTATE *pEVal )
 {
 	int ret, lval;
-	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_MOTIONPLAN_EXECUTEMODE ), &lval );
+	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_MOTIONPLAN_PRESETSTATE ), &lval );
 	if ( ret != 0 ) return ret; 
-	*pEVal=(MRQ_MOTIONPLAN_EXECUTEMODE)lval;
+	*pEVal=(MRQ_MOTIONPLAN_PRESETSTATE)lval;
 	return 0;
 }
-int MRQ_MOTIONPLAN_PLANMODE_toValue( const char *pStr, MRQ_MOTIONPLAN_PLANMODE *pEVal )
+int MRQ_MOTIONPLAN_PRESETSTATE_1_toValue( const char *pStr, MRQ_MOTIONPLAN_PRESETSTATE_1 *pEVal )
 {
 	int ret, lval;
-	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_MOTIONPLAN_PLANMODE ), &lval );
+	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_MOTIONPLAN_PRESETSTATE_1 ), &lval );
 	if ( ret != 0 ) return ret; 
-	*pEVal=(MRQ_MOTIONPLAN_PLANMODE)lval;
+	*pEVal=(MRQ_MOTIONPLAN_PRESETSTATE_1)lval;
 	return 0;
 }
-int MRQ_MOTIONPLAN_MOTIONMODE_toValue( const char *pStr, MRQ_MOTIONPLAN_MOTIONMODE *pEVal )
+int MRQ_MOTIONPLAN_EXECUTEMODE_1_toValue( const char *pStr, MRQ_MOTIONPLAN_EXECUTEMODE_1 *pEVal )
 {
 	int ret, lval;
-	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_MOTIONPLAN_MOTIONMODE ), &lval );
+	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_MOTIONPLAN_EXECUTEMODE_1 ), &lval );
 	if ( ret != 0 ) return ret; 
-	*pEVal=(MRQ_MOTIONPLAN_MOTIONMODE)lval;
+	*pEVal=(MRQ_MOTIONPLAN_EXECUTEMODE_1)lval;
 	return 0;
 }
-int MRQ_MOTIONPLAN_MODIFYDUTY_toValue( const char *pStr, MRQ_MOTIONPLAN_MODIFYDUTY *pEVal )
+int MRQ_MOTIONPLAN_PLANMODE_1_toValue( const char *pStr, MRQ_MOTIONPLAN_PLANMODE_1 *pEVal )
 {
 	int ret, lval;
-	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_MOTIONPLAN_MODIFYDUTY ), &lval );
+	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_MOTIONPLAN_PLANMODE_1 ), &lval );
 	if ( ret != 0 ) return ret; 
-	*pEVal=(MRQ_MOTIONPLAN_MODIFYDUTY)lval;
+	*pEVal=(MRQ_MOTIONPLAN_PLANMODE_1)lval;
 	return 0;
 }
-int MRQ_MOTIONPLAN_ENDSTATE_toValue( const char *pStr, MRQ_MOTIONPLAN_ENDSTATE *pEVal )
+int MRQ_MOTIONPLAN_MOTIONMODE_1_toValue( const char *pStr, MRQ_MOTIONPLAN_MOTIONMODE_1 *pEVal )
 {
 	int ret, lval;
-	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_MOTIONPLAN_ENDSTATE ), &lval );
+	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_MOTIONPLAN_MOTIONMODE_1 ), &lval );
 	if ( ret != 0 ) return ret; 
-	*pEVal=(MRQ_MOTIONPLAN_ENDSTATE)lval;
+	*pEVal=(MRQ_MOTIONPLAN_MOTIONMODE_1)lval;
+	return 0;
+}
+int MRQ_MOTIONPLAN_MODIFYDUTY_1_toValue( const char *pStr, MRQ_MOTIONPLAN_MODIFYDUTY_1 *pEVal )
+{
+	int ret, lval;
+	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_MOTIONPLAN_MODIFYDUTY_1 ), &lval );
+	if ( ret != 0 ) return ret; 
+	*pEVal=(MRQ_MOTIONPLAN_MODIFYDUTY_1)lval;
+	return 0;
+}
+int MRQ_MOTIONPLAN_ENDSTATE_1_toValue( const char *pStr, MRQ_MOTIONPLAN_ENDSTATE_1 *pEVal )
+{
+	int ret, lval;
+	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_MOTIONPLAN_ENDSTATE_1 ), &lval );
+	if ( ret != 0 ) return ret; 
+	*pEVal=(MRQ_MOTIONPLAN_ENDSTATE_1)lval;
+	return 0;
+}
+int MRQ_MOTIONPLAN_STOPMODE_1_toValue( const char *pStr, MRQ_MOTIONPLAN_STOPMODE_1 *pEVal )
+{
+	int ret, lval;
+	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_MOTIONPLAN_STOPMODE_1 ), &lval );
+	if ( ret != 0 ) return ret; 
+	*pEVal=(MRQ_MOTIONPLAN_STOPMODE_1)lval;
+	return 0;
+}
+int MRQ_MOTIONPLAN_OOSLINERESPONSE_1_toValue( const char *pStr, MRQ_MOTIONPLAN_OOSLINERESPONSE_1 *pEVal )
+{
+	int ret, lval;
+	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_MOTIONPLAN_OOSLINERESPONSE_1 ), &lval );
+	if ( ret != 0 ) return ret; 
+	*pEVal=(MRQ_MOTIONPLAN_OOSLINERESPONSE_1)lval;
 	return 0;
 }
 int MRQ_REPORT_STATE_toValue( const char *pStr, MRQ_REPORT_STATE *pEVal )
@@ -1019,14 +1042,6 @@ int MRQ_DRIVER_MICROSTEPS_toValue( const char *pStr, MRQ_DRIVER_MICROSTEPS *pEVa
 	*pEVal=(MRQ_DRIVER_MICROSTEPS)lval;
 	return 0;
 }
-int MRQ_DRIVER_REGCONFIG_toValue( const char *pStr, MRQ_DRIVER_REGCONFIG *pEVal )
-{
-	int ret, lval;
-	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_DRIVER_REGCONFIG ), &lval );
-	if ( ret != 0 ) return ret; 
-	*pEVal=(MRQ_DRIVER_REGCONFIG)lval;
-	return 0;
-}
 int MRQ_DRIVER_SGLIMIT_toValue( const char *pStr, MRQ_DRIVER_SGLIMIT *pEVal )
 {
 	int ret, lval;
@@ -1043,44 +1058,60 @@ int MRQ_DRIVER_SGPARASET_toValue( const char *pStr, MRQ_DRIVER_SGPARASET *pEVal 
 	*pEVal=(MRQ_DRIVER_SGPARASET)lval;
 	return 0;
 }
-int MRQ_DIGITALOUT_STATE_toValue( const char *pStr, MRQ_DIGITALOUT_STATE *pEVal )
+int MRQ_DRIVER_MINICURRRATIO_toValue( const char *pStr, MRQ_DRIVER_MINICURRRATIO *pEVal )
 {
 	int ret, lval;
-	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_DIGITALOUT_STATE ), &lval );
+	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_DRIVER_MINICURRRATIO ), &lval );
 	if ( ret != 0 ) return ret; 
-	*pEVal=(MRQ_DIGITALOUT_STATE)lval;
+	*pEVal=(MRQ_DRIVER_MINICURRRATIO)lval;
 	return 0;
 }
-int MRQ_DIGITALOUT_STATE_1_toValue( const char *pStr, MRQ_DIGITALOUT_STATE_1 *pEVal )
+int MRQ_DRIVER_REGCONFIG_toValue( const char *pStr, MRQ_DRIVER_REGCONFIG *pEVal )
 {
 	int ret, lval;
-	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_DIGITALOUT_STATE_1 ), &lval );
+	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_DRIVER_REGCONFIG ), &lval );
 	if ( ret != 0 ) return ret; 
-	*pEVal=(MRQ_DIGITALOUT_STATE_1)lval;
+	*pEVal=(MRQ_DRIVER_REGCONFIG)lval;
 	return 0;
 }
-int MRQ_DIGITALOUT_SIGNAL_1_toValue( const char *pStr, MRQ_DIGITALOUT_SIGNAL_1 *pEVal )
+int MRQ_DIGITALOUTPUT_STATE_toValue( const char *pStr, MRQ_DIGITALOUTPUT_STATE *pEVal )
 {
 	int ret, lval;
-	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_DIGITALOUT_SIGNAL_1 ), &lval );
+	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_DIGITALOUTPUT_STATE ), &lval );
 	if ( ret != 0 ) return ret; 
-	*pEVal=(MRQ_DIGITALOUT_SIGNAL_1)lval;
+	*pEVal=(MRQ_DIGITALOUTPUT_STATE)lval;
 	return 0;
 }
-int MRQ_DIGITALOUT_POLARITY_1_toValue( const char *pStr, MRQ_DIGITALOUT_POLARITY_1 *pEVal )
+int MRQ_DIGITALOUTPUT_STATE_1_toValue( const char *pStr, MRQ_DIGITALOUTPUT_STATE_1 *pEVal )
 {
 	int ret, lval;
-	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_DIGITALOUT_POLARITY_1 ), &lval );
+	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_DIGITALOUTPUT_STATE_1 ), &lval );
 	if ( ret != 0 ) return ret; 
-	*pEVal=(MRQ_DIGITALOUT_POLARITY_1)lval;
+	*pEVal=(MRQ_DIGITALOUTPUT_STATE_1)lval;
 	return 0;
 }
-int MRQ_DIGITALOUT_CONDITION_1_toValue( const char *pStr, MRQ_DIGITALOUT_CONDITION_1 *pEVal )
+int MRQ_DIGITALOUTPUT_SIGNAL_1_toValue( const char *pStr, MRQ_DIGITALOUTPUT_SIGNAL_1 *pEVal )
 {
 	int ret, lval;
-	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_DIGITALOUT_CONDITION_1 ), &lval );
+	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_DIGITALOUTPUT_SIGNAL_1 ), &lval );
 	if ( ret != 0 ) return ret; 
-	*pEVal=(MRQ_DIGITALOUT_CONDITION_1)lval;
+	*pEVal=(MRQ_DIGITALOUTPUT_SIGNAL_1)lval;
+	return 0;
+}
+int MRQ_DIGITALOUTPUT_POLARITY_1_toValue( const char *pStr, MRQ_DIGITALOUTPUT_POLARITY_1 *pEVal )
+{
+	int ret, lval;
+	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_DIGITALOUTPUT_POLARITY_1 ), &lval );
+	if ( ret != 0 ) return ret; 
+	*pEVal=(MRQ_DIGITALOUTPUT_POLARITY_1)lval;
+	return 0;
+}
+int MRQ_DIGITALOUTPUT_CONDITION_1_toValue( const char *pStr, MRQ_DIGITALOUTPUT_CONDITION_1 *pEVal )
+{
+	int ret, lval;
+	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_DIGITALOUTPUT_CONDITION_1 ), &lval );
+	if ( ret != 0 ) return ret; 
+	*pEVal=(MRQ_DIGITALOUTPUT_CONDITION_1)lval;
 	return 0;
 }
 int MRQ_ISOLATOROUTPUT_STATE_toValue( const char *pStr, MRQ_ISOLATOROUTPUT_STATE *pEVal )
@@ -1105,29 +1136,5 @@ int MRQ_SENSORUART_BAUD_toValue( const char *pStr, MRQ_SENSORUART_BAUD *pEVal )
 	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_SENSORUART_BAUD ), &lval );
 	if ( ret != 0 ) return ret; 
 	*pEVal=(MRQ_SENSORUART_BAUD)lval;
-	return 0;
-}
-int MRQ_SENSORUART_STATE_1_toValue( const char *pStr, MRQ_SENSORUART_STATE_1 *pEVal )
-{
-	int ret, lval;
-	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_SENSORUART_STATE_1 ), &lval );
-	if ( ret != 0 ) return ret; 
-	*pEVal=(MRQ_SENSORUART_STATE_1)lval;
-	return 0;
-}
-int MRQ_PRESET_PVTCONFIG_toValue( const char *pStr, MRQ_PRESET_PVTCONFIG *pEVal )
-{
-	int ret, lval;
-	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_PRESET_PVTCONFIG ), &lval );
-	if ( ret != 0 ) return ret; 
-	*pEVal=(MRQ_PRESET_PVTCONFIG)lval;
-	return 0;
-}
-int MRQ_PRESET_EXECUTE_1_toValue( const char *pStr, MRQ_PRESET_EXECUTE_1 *pEVal )
-{
-	int ret, lval;
-	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_PRESET_EXECUTE_1 ), &lval );
-	if ( ret != 0 ) return ret; 
-	*pEVal=(MRQ_PRESET_EXECUTE_1)lval;
 	return 0;
 }

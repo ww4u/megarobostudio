@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>708</width>
-    <height>533</height>
+    <height>613</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -58,7 +58,7 @@
      <property name="maximumSize">
       <size>
        <width>700</width>
-       <height>500</height>
+       <height>600</height>
       </size>
      </property>
      <property name="tabPosition">
@@ -839,7 +839,7 @@ p, li { white-space: pre-wrap; }
        <item>
         <widget class="QGroupBox" name="groupBox_8">
          <property name="title">
-          <string>GroupBox</string>
+          <string/>
          </property>
          <layout class="QFormLayout" name="formLayout_4">
           <item row="0" column="0">

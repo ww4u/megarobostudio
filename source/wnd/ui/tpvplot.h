@@ -38,6 +38,9 @@ public:
 #define curve_type  double
 #define animation_time  500
 #define animation_option    QChart::AllAnimations
+#define chart_theme         QChart::ChartThemeBlueCerulean
+//! QChart::ChartThemeQt
+//!
 class tpvPlot : public QDialog
 {
     Q_OBJECT

@@ -213,9 +213,9 @@ int InstMgr::probeCanBus()
             if ( m_pMainModel->mSysPref.mbAutoLoadSetup )
             {
                 if ( 0!= pRobo->uploadSetting() )
-                { sysError("load fail"); }
+                { sysError( tr("load fail") ) ; }
                 else
-                { sysLog( "load success", pRobo->name() );}
+                { sysLog( tr("load success"), pRobo->name() );}
             }
 
             pRoboList->append( pRobo );
@@ -241,7 +241,7 @@ logDbg()<<QString::number( (quint32)pRoboList, 16 );
 //! broadcast
 int InstMgr::emergencyStop()
 {
-    byte buf[] = { mc_MOTION, sc_MOTION_SWITCH, CAN_BROAD_CHAN, MRQ_MOTION_SWITCH_EMERGSTOP };
+    byte buf[] = { mc_MOTION, sc_MOTION_SWITCH, CAN_BROAD_CHAN, MRQ_MOTION_SWITCH_EMERGSTOP, 0 };
     int ret;
 
     //! 1. broadcast
@@ -253,7 +253,7 @@ int InstMgr::emergencyStop()
 
 int InstMgr::hardReset()
 {
-    byte buf[] = { mc_MOTION, sc_MOTION_SWITCH, CAN_BROAD_CHAN, MRQ_MOTION_SWITCH_RESET };
+    byte buf[] = { mc_MOTION, sc_MOTION_SWITCH, CAN_BROAD_CHAN, MRQ_MOTION_SWITCH_RESET, 0 };
     int ret;
 
     //! 1. broadcast
@@ -518,22 +518,22 @@ deviceMRQ *InstMgr::findDevice( const QString &name, int *pAxes )
     QStringList strList = name.split("@", QString::SkipEmptyParts );
 
     if ( strList.length() < 2 )
-    { return NULL; }
+    { logDbg()<<name; return NULL; }
 
     //! try convert the ch id
     if ( strList[0].startsWith( "CH" ) )
     {}
     else
-    { return NULL; }
+    { logDbg()<<name; return NULL; }
 
     QString numStr = strList[0].right( strList[0].length() - 2 );/*logDbg()<<numStr;*/
     bool bOk;
     int axesId = numStr.toInt( &bOk );
     if( !bOk )
-    { return NULL; }
+    { logDbg()<<name; return NULL; }
 
     if ( axesId < 1 )
-    { return NULL; }
+    { logDbg()<<name; return NULL; }
 
     *pAxes = axesId - 1;
     return findDevice( strList[1], axesId - 1 );
@@ -558,7 +558,7 @@ QString InstMgr::sendIdToName( int sendId )
             //! convert
             pMrq = (deviceMRQ*)pDev;
             if ( NULL == pMrq )
-            { return QString(); }
+            { logDbg();return QString(); }
 
             //! check axes
             if ( pMrq->getModel()->mCAN_SENDID == (quint32)sendId )

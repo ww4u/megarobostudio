@@ -6,13 +6,13 @@
 int VRobot::transform( int axes )
 { return 0; }
 
-int VRobot::download( tpvGroup *pGroup, int axes )
+int VRobot::download( tpvGroup *pGroup, int page, int axes )
 {
     Q_ASSERT( NULL != pGroup );
 
     return 0;
 }
-int VRobot::download( motionGroup *pGroup, int axes )
+int VRobot::download( motionGroup *pGroup, int page, int axes )
 {
     Q_ASSERT( NULL != pGroup );
 

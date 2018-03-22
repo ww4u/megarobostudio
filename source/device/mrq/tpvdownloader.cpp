@@ -9,6 +9,7 @@ tpvDownloader::tpvDownloader( QObject *pObj ) : QThread( pObj )
 
     m_pMRQ = NULL;
     mAxesId = 0;
+    mPageId = 0;
 }
 
 void tpvDownloader::run()
@@ -68,7 +69,7 @@ int tpvDownloader::batchDownload( int batchSize,
         pItem = mTpvs.head();
 
         //! download the item
-        ret = m_pMRQ->tpvDownload( mAxesId, pItem );
+        ret = m_pMRQ->tpvDownload( mAxesId, mPageId, pItem );
 
         //! gc the item
         if ( pItem->gc() )
@@ -109,9 +110,9 @@ int tpvDownloader::transmissionProc()
     int total, now;
 
     //! in transmisstion
-    ret = m_pMRQ->beginTpvDownload( mAxesId );
+    ret = m_pMRQ->beginTpvDownload( mAxesId, mPageId );
     if ( ret != 0 )
-    { return ret; }
+    { logDbg();return ret; }
 
     //! acc the progress
     total = mTpvs.size();
@@ -120,7 +121,7 @@ int tpvDownloader::transmissionProc()
     {
         //! check remain
         quint16 batchSize;
-        ret = m_pMRQ->getMOTIONPLAN_REMAINPOINT( mAxesId, &batchSize );
+        ret = m_pMRQ->getMOTIONPLAN_REMAINPOINT( mAxesId, (MRQ_MOTION_SWITCH_1)mPageId, &batchSize );
         if ( ret != 0 )
         { logDbg(); return ret; }
         else
@@ -140,7 +141,7 @@ int tpvDownloader::transmissionProc()
         QThread::usleep( mTryInterval );
     }
 
-    ret = m_pMRQ->endTpvDownload( mAxesId );
+    ret = m_pMRQ->endTpvDownload( mAxesId, mPageId );
     return ret;
 }
 

@@ -68,7 +68,12 @@ void MainWindow::init()
 
     m_pDlgWndList = NULL;
     m_pWarnPrompt = NULL;
+
     m_pAngleMonitor = NULL;
+    m_pDistMonitor = NULL;
+    m_pMotorMonitor = NULL;
+
+    m_pProgress = NULL;
 
     m_pInterruptThread = NULL;
 }
@@ -174,6 +179,10 @@ void MainWindow::setupUi_docks()
     m_pEventViewer = new eventViewer( mMcModel.m_pInstMgr->getInterruptSource(),
                                       &mMcModel.mEventActionModel,
                                       this );
+    Q_ASSERT( NULL != m_pEventViewer );
+
+    m_pMotorMonitor = new MotorMonitor(this);
+    Q_ASSERT( NULL != m_pMotorMonitor );
 }
 
 void MainWindow::setupToolbar()
@@ -183,6 +192,8 @@ void MainWindow::setupToolbar()
     ui->mainToolBar->addSeparator();
     ui->mainToolBar->addAction( ui->actionOpen );
     ui->mainToolBar->addAction( ui->actionSave );
+    ui->mainToolBar->addSeparator();
+    ui->mainToolBar->addAction( ui->actionpref );
 
     //! device conn
     m_pToolbarAxesConn = new QToolBar();
@@ -265,6 +276,11 @@ void MainWindow::buildConnection()
              this,
              SLOT(slot_instmgr_changed(bool, MegaDevice::InstMgr*)) );
 
+    connect( m_pDeviceMgr,
+             SIGNAL(signal_btnState_clicked()),
+             this,
+             SLOT(on_actionMotor_Panel_triggered()) );
+
     //! event viewer
     connect( mMcModel.m_pInstMgr->getInterruptSource(),
              SIGNAL(sig_event(eventId,frameData)),
@@ -282,7 +298,15 @@ void MainWindow::buildConnection()
     //! robonet
     connect( m_pRoboNetThread, SIGNAL(signal_net( const QString&,int,RoboMsg)),
              this, SLOT(slot_net_event( const QString &,int,RoboMsg)) );
+    connect( m_pRoboNetThread, SIGNAL(signal_progress(bool)),
+             this, SLOT(slot_progress_visible(bool)));
+    connect( m_pRoboNetThread, SIGNAL(signal_progress(int,int,int,const QString&)),
+             this, SLOT(slot_progress_para(int,int,int,const QString&)));
 
+    connect( m_pRoboNetThread, SIGNAL(signal_status( const QString &)),
+             this, SLOT(slot_status( const QString &)) );
+    connect( m_pRoboNetThread, SIGNAL(signal_logout( const QString &)),
+             this, SLOT(slot_logout( const QString &)) );
 
     //! robo conn
     connect( m_pRoboConnTool->getCombName(),
@@ -303,6 +327,12 @@ void MainWindow::buildConnection()
              this,
              SLOT(slot_device_ch_index_changed(int))
              );
+
+    //! motor panel
+    Q_ASSERT( NULL != m_pRoboNetThread );
+    Q_ASSERT( NULL != m_pMotorMonitor );
+    connect( m_pRoboNetThread, SIGNAL(signal_net( const QString&,int,RoboMsg)),
+             m_pMotorMonitor, SLOT(slot_net_event( const QString &,int,RoboMsg)));
 }
 
 void MainWindow::loadSetup()
@@ -324,8 +354,10 @@ void MainWindow::setupData()
     m_pDeviceMgr->setSysPref( &mMcModel.mSysPref );
 
     m_pDeviceMgr->setMcModel( &mMcModel );
-
+    Q_ASSERT( NULL != m_pRoboMgr );
     m_pRoboMgr->setModel( mRoboModelMgr );
+
+    m_pMotorMonitor->setModel( &mMcModel );
 
 }
 
@@ -401,7 +433,6 @@ void MainWindow::stopService()
 
 void MainWindow::regSysVar()
 {
-    attachSysLog( m_pLogout );
     attachSysQueue( m_pRoboNetThread );
 }
 
@@ -552,7 +583,7 @@ void MainWindow::slot_instmgr_changed( bool bEnd, MegaDevice::InstMgr *pMgr )
     if ( !bEnd )
     {
         m_pSampleThread->clear();
-        sysLog("samples cleared!");
+        sysLog( tr("samples cleared!") );
     }
     //! add again
     else
@@ -573,6 +604,9 @@ void MainWindow::slot_instmgr_changed( bool bEnd, MegaDevice::InstMgr *pMgr )
         QStringList strList;
         strList = mMcModel.m_pInstMgr->roboResources();
         m_pRoboConnTool->setRoboNames( strList );
+
+        //! reset monitors
+        m_pMotorMonitor->setMonitors( mMcModel.m_pInstMgr->getChans() );
     }
 }
 
@@ -593,6 +627,37 @@ void MainWindow::slot_net_event( const QString &name,
             exceptionProc( name, eId, msg );
         }
     }
+
+    //! progress
+    if ( progressProc(name,axes,msg) )
+    { return; }
+}
+
+void MainWindow::slot_progress_para( int mi, int ma, int n, const QString &str )
+{
+    Q_ASSERT( NULL != m_pStateBar );
+    m_pStateBar->progressBar()->setRange( mi, ma );
+    m_pStateBar->progressBar()->setValue( n );
+
+    m_pStateBar->progressInfo()->setText( str );
+}
+void MainWindow::slot_progress_visible( bool b )
+{
+    Q_ASSERT( NULL != m_pStateBar );
+    m_pStateBar->progressBar()->setVisible( b );
+    m_pStateBar->progressInfo()->setVisible( b );
+}
+
+void MainWindow::slot_status( const QString &str )
+{
+    Q_ASSERT( NULL != m_pStateBar );
+    m_pStateBar->statusLabel()->setText( str );
+}
+
+void MainWindow::slot_logout( const QString &str )
+{
+    Q_ASSERT( NULL != m_pLogout );
+    m_pLogout->logIn(str);
 }
 
 void MainWindow::slot_robo_name_changed( const QString &name )
@@ -961,18 +1026,61 @@ void MainWindow::on_actionAngle_A_triggered()
     if ( NULL == m_pAngleMonitor )
     {
         m_pAngleMonitor = new AngleMonitor(this);
+
+        //! fail to open window
+        if ( NULL == m_pAngleMonitor )
+        { return; }
+
+        m_pAngleMonitor->setWindowTitle( tr("Angle") );
+        m_pAngleMonitor->setDataId( MRQ_REPORT_STATE_XANGLE );
+        m_pAngleMonitor->setRange( 0, 360 );
     }
 
-    //! fail to open window
-    if ( NULL == m_pAngleMonitor )
-    { return; }
-
     m_pAngleMonitor->show();
-    //! set connection
 
+    //! set connection
     QStringList strList = mMcModel.m_pInstMgr->getChans();
 
     m_pAngleMonitor->setModel( &mMcModel );
     m_pAngleMonitor->setConnections( strList );
+}
 
+void MainWindow::on_actionDistance_D_triggered()
+{
+    if ( NULL == m_pDistMonitor )
+    {
+        m_pDistMonitor = new AngleMonitor(this);
+
+        //! fail to open window
+        if ( NULL == m_pDistMonitor )
+        { return; }
+
+        m_pDistMonitor->setWindowTitle( tr("Distance") );
+        m_pDistMonitor->setDataId( MRQ_REPORT_STATE_DIST );
+        m_pDistMonitor->setRange( 0, 65535 );
+    }
+
+    m_pDistMonitor->show();
+    //! set connection
+
+    QStringList strList = mMcModel.m_pInstMgr->getChans();
+
+    m_pDistMonitor->setModel( &mMcModel );
+    m_pDistMonitor->setConnections( strList );
+}
+
+void MainWindow::on_actionMotor_Panel_triggered()
+{
+    if ( NULL == m_pMotorMonitor )
+    { return; }
+
+    m_pMotorMonitor->show();
+}
+
+void MainWindow::on_actiontest_triggered()
+{
+    QFile qss( "G:/work/mc/develope/source/wnd/res/qss/mega.qss" );
+    qss.open(QFile::ReadOnly);
+    qApp->setStyleSheet(qss.readAll());
+    qss.close();
 }

@@ -54,34 +54,25 @@ public:
     virtual QAbstractTableModel *handActions();
 
 public:
-    int move( WorldPoint &pt1,
-              WorldPoint &pt2,
-              float dt );
+    int move( QList<TraceKeyPoint> &curve );
+
     int moveTest1();
     int moveTest2();
 
-    int moveTest( WorldPoint &pt1, WorldPoint &pt2, float dt );
-
-    int nowPose( WorldPoint &pos );
+    int nowPose( TraceKeyPoint &pos );
+    int nowDist( QList<float> &dists );
 
 protected:
-    int buildTrace( WorldPoint &pt1,
-                    WorldPoint &pt2,
-                    float dt,
+    int buildTrace( QList<TraceKeyPoint> &curve,
                     xxxGroup<jointsTrace> &jointsPlan );
 
-    int planTrace(  WorldPoint &pt1,
-                    WorldPoint &pt2,
-                    float dt,
-                    xxxGroup<tracePoint> &tracePoints
-                    );
+    int planTrace( QList<TraceKeyPoint> &curve,
+                   xxxGroup<tracePoint> &tracePoints );
 
     int splitTrace( xxxGroup<tracePoint> &tracePoints,
                     xxxGroup<jointsTrace> &traceJoints );
 
-    int convertTrace(   WorldPoint &pt1,
-                        WorldPoint &pt2,
-                        float dt,
+    int convertTrace(   QList<TraceKeyPoint> &curve,
                         xxxGroup<jointsTrace> &jointsPlan );
 
     int downloadTrace( );

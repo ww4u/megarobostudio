@@ -13,6 +13,23 @@ public:
     static QString fileSuffix( const QString &name );
     static bool    fileSuffixMatch( const QString &src,
                                     const QString &suffix );
+
+    static int     align( double val, double unit );
+
+    static int     loadDataset( const char *pFileName,
+                                int nameLen,
+                                int col,
+                                QList<float> &dataset,
+                                const char &colSep=',',
+                                const char &lineSep='\n' );
+    static int     loadDataset( const QString &fileName,
+                                int col,
+                                QList<float> &dataset,
+                                const char &colSep=',',
+                                const char &lineSep='\n' );
+    static bool    convertDataset( const QStringList &line,
+                                   float *pData,
+                                   int cols );
 public:
     comAssist();
 

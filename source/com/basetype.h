@@ -5,10 +5,19 @@
 #define time_eq( a, b )     ( fabs( (a)-(b) ) <= 1e-6f )
 class tpvRow{
 public:
-        tpvType mT,mP,mV;
+        union
+        {
+            struct
+            {
+                tpvType mT;
+                tpvType mP;
+                tpvType mV;
+            };
+            tpvType datas[3];
+        };
         bool mbGc;              //! gc on used
 public:
-        tpvRow()
+        tpvRow( )
         {
             mbGc = false;
             mT = 0;

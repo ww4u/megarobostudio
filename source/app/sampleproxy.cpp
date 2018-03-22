@@ -137,6 +137,7 @@ void sampleProxy::setChName( const QString &chName )
 QString sampleProxy::chName()
 { return mChName; }
 
+#define assign_value( v )   pVal = (char*)&v; size = sizeof(v);
 bool sampleProxy::sample( int tickus,
                           spyItem *pItem,
                           MegaDevice::deviceMRQ *pMrq,
@@ -153,9 +154,28 @@ bool sampleProxy::sample( int tickus,
     Q_ASSERT( NULL != pItem );
     Q_ASSERT( NULL != pMrq );
 
-    quint32 val;
+    quint32 val32, val16, val8;
+    char *pVal;
+    int size;
     int ret;
-    ret = pMrq->getREPORT_DATA( ax, mItem, &val );
+
+    QMetaType::Type metaType = pMrq->getREPORT_TYPE( mItem );
+    if ( metaType == QMetaType::UChar )
+    {
+        ret = pMrq->getREPORT_DATA( ax, mItem, &val8 );
+        assign_value( val8 );
+    }
+    else if ( metaType == QMetaType::UShort )
+    {
+        ret = pMrq->getREPORT_DATA( ax, mItem, &val16 );
+        assign_value( val16 );
+    }
+    else //if ( metaType == QMetaType::UInt )
+    {
+        ret = pMrq->getREPORT_DATA( ax, mItem, &val32 );
+        assign_value( val32 );
+    }
+
     if ( ret == 0 )
     {}
     else
@@ -177,9 +197,9 @@ bool sampleProxy::sample( int tickus,
 //    val = qrand()*10.0/RAND_MAX;
 
     //! \note to big endian
-    for ( int i = 0; i < (qint32)sizeof(val); i++ )
+    for ( int i = 0; i < size; i++ )
     {
-        pItem->mVal.prepend( ((const char*)&val) + i, 1 );
+        pItem->mVal.prepend( (pVal) + i, 1 );
     }
 
     return true;

@@ -35,7 +35,7 @@ protected:
                             int axes,
                             RoboMsg &msg);
 
-    void onMotionStatus( int axes, MRQ_MOTION_STATE stat );
+    void onMotionStatus( int axes, MRQ_MOTION_STATE_2 stat );
 
 protected:
     void setupUi();

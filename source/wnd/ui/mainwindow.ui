@@ -175,6 +175,9 @@
      <string>Tool(&amp;T)</string>
     </property>
     <addaction name="actionAngle_A"/>
+    <addaction name="actionDistance_D"/>
+    <addaction name="actionMotor_Panel"/>
+    <addaction name="actiontest"/>
    </widget>
    <addaction name="menu_F"/>
    <addaction name="menu_D"/>
@@ -436,8 +439,35 @@
    </property>
   </action>
   <action name="actionAngle_A">
+   <property name="icon">
+    <iconset resource="../res/res.qrc">
+     <normaloff>:/res/image/icon/331.png</normaloff>:/res/image/icon/331.png</iconset>
+   </property>
    <property name="text">
     <string>Angle(&amp;A)...</string>
+   </property>
+  </action>
+  <action name="actionDistance_D">
+   <property name="icon">
+    <iconset resource="../res/res.qrc">
+     <normaloff>:/res/image/icon/54.png</normaloff>:/res/image/icon/54.png</iconset>
+   </property>
+   <property name="text">
+    <string>Distance(D)...</string>
+   </property>
+  </action>
+  <action name="actionMotor_Panel">
+   <property name="icon">
+    <iconset resource="../res/res.qrc">
+     <normaloff>:/res/image/icon/manage.png</normaloff>:/res/image/icon/manage.png</iconset>
+   </property>
+   <property name="text">
+    <string>Motor Panel(&amp;M)...</string>
+   </property>
+  </action>
+  <action name="actiontest">
+   <property name="text">
+    <string>test</string>
    </property>
   </action>
  </widget>

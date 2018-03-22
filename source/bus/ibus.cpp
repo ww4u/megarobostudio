@@ -8,7 +8,7 @@
 #define lw_lb( d )  (byte)(((d)>>0)&0xff)
 
 #define expand_dw( dw ) lw_lb( dw ), lw_hb( dw ), hw_lb( dw ), hw_hb( dw )
-#define expand_w( w )   lw_lb( w ), lw_hb( w )
+#define expand_w( w )   lw_lb( w ),  lw_hb( w )
 
 #define FAIL_TRY        failTry()
 
@@ -288,6 +288,24 @@ int IBus::write( DeviceId &nodeId, byte mainCode,
            byte subCode,
            byte v0,
            byte v1,
+           UInt16 v2)
+{
+    UInt16 byts;
+
+    memcpy( &byts, &v2, 2 );
+
+    byte buf[] = { mainCode, subCode,
+                   v0, v1,
+                   expand_w(byts),
+                 };
+
+    return doWrite( nodeId, buf, sizeof( buf ) );
+}
+
+int IBus::write( DeviceId &nodeId, byte mainCode,
+           byte subCode,
+           byte v0,
+           byte v1,
            UInt32 v2)
 {
 
@@ -392,6 +410,23 @@ int IBus::read( DeviceId &nodeId, byte mainCode,
             byte * v0,
             byte * v1,
             byte * v2,
+            bool bQuery)
+{
+    int ret;
+    for ( int i = 0; i < FAIL_TRY; i++ )
+    {
+        ret = _read( nodeId, mainCode, subCode, v0, v1, v2, bQuery );
+        if ( 0 == ret )
+        { break; }
+    }
+    return ret;
+}
+
+int IBus::read( DeviceId &nodeId, byte mainCode,
+            byte subCode,
+            byte * v0,
+            byte * v1,
+            quint32 * v2,
             bool bQuery)
 {
     int ret;
@@ -731,6 +766,23 @@ int IBus::read( DeviceId &nodeId, byte mainCode,
            byte subCode,
            byte v0,
            byte v1,
+           UInt16 * v2,
+           bool bQuery )
+{
+    int ret;
+    for ( int i = 0; i < FAIL_TRY; i++ )
+    {
+        ret = _read( nodeId, mainCode, subCode, v0, v1, v2, bQuery );
+        if ( 0 == ret )
+        { break; }
+    }
+    return ret;
+}
+
+int IBus::read( DeviceId &nodeId, byte mainCode,
+           byte subCode,
+           byte v0,
+           byte v1,
            UInt32 * v2,
            bool bQuery )
 {
@@ -840,6 +892,37 @@ int IBus::_read( DeviceId &nodeId, byte mainCode,
     *v0 = readBuf[2];
     *v1 = readBuf[3];
     *v2 = readBuf[4];
+    return 0;
+}
+
+int IBus::_read( DeviceId &nodeId, byte mainCode,
+            byte subCode,
+            byte * v0,
+            byte * v1,
+            quint32 * v2,
+            bool bQuery )
+{
+    int ret;
+
+    if( bQuery )
+    {
+        flush( nodeId );
+        ret = write( nodeId, mainCode, subCode );
+        if ( ret != 0 )
+        { return ret; }
+    }
+
+    int retLen;
+    byte readBuf[6];
+    ret = doRead( nodeId, readBuf, sizeof(readBuf), &retLen );
+    if ( ret != 0 )
+    { return ret; }
+
+    *v0 = readBuf[2];
+    *v1 = readBuf[3];
+
+    memcpy( v2, readBuf + 2, 4 );
+
     return 0;
 }
 
@@ -1383,6 +1466,35 @@ int IBus::_read( DeviceId &nodeId, byte mainCode,
            byte v0,
            byte v1,
            Int16 * v2,
+           bool bQuery )
+{
+    int ret;
+
+    if( bQuery )
+    {
+        flush( nodeId );
+
+        ret = write( nodeId, mainCode, subCode, v0, v1 );
+        if ( ret != 0 )
+        { return ret; }
+    }
+
+    int retLen;
+    byte readBuf[2+2+2];
+    ret = doRead( nodeId, readBuf, sizeof(readBuf), &retLen );
+    if ( ret != 0 )
+    { return ret; }
+
+    memcpy( v2, readBuf + 4, 2 );
+
+    return 0;
+}
+
+int IBus::_read( DeviceId &nodeId, byte mainCode,
+           byte subCode,
+           byte v0,
+           byte v1,
+           UInt16 * v2,
            bool bQuery )
 {
     int ret;

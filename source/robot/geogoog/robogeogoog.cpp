@@ -14,6 +14,13 @@ roboGeogoog::roboGeogoog()
     setAxesDefName( 4 );
     setJointName( 4 );
 
+    mDOs = 4;
+    mDIs = 0;
+    mISOs = 2;
+    mISIs = 1;
+    mAINs = 0;
+    mUARTs = 2;
+
     mImage = QImage::fromData( _megaimage, sizeof(_megaimage) );
 
 //    m_pDevice = new MegaDevice::deviceMRQ();

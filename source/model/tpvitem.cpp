@@ -17,7 +17,19 @@ QString tpvItem::header( int col )
 {
     Q_ASSERT( col >= 0 && col <= sizeof_array(_headers) );
 
-    return _headers[ col ];
+    if ( col == 0 )
+    { return QObject::tr("Enable"); }
+    else if ( col == 1 )
+    { return QObject::tr("t(s)"); }
+    else if ( col == 2 )
+    { return QObject::tr("t(s)"); }
+    else if ( col == 3 )
+    { return QObject::tr("p(%1)").arg( QChar(0x00B0) ); }
+    else if ( col == 4 )
+    { return QObject::tr("v"); }
+    else
+    { return QObject::tr("Comment"); }
+
 }
 
 tpvItem::tpvItem( tpvType t, tpvType p, tpvType v )

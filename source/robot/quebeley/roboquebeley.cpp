@@ -14,6 +14,12 @@ roboQuebeley::roboQuebeley()
     setAxesDefName( 1 );
     setJointName( 1 );
 
+    mDOs = 0;
+    mDIs = 0;
+    mISOs = 0;
+    mAINs = 0;
+    mUARTs = 0;
+
     mImage = QImage::fromData( _megaimage, sizeof(_megaimage) );
 }
 

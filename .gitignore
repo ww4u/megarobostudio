@@ -3,6 +3,7 @@ installer/
 unittest/
 prj/
 *.o
+*.qm
 debug/
 *.lib
 *.a
@@ -30,3 +31,4 @@ Release/
 source/arith/pvt/GelgoogProject/RTOS/
 source/arith/pvt/GelgoogProject/BSP/
 source/arith/pvt/GelgoogProject/APP/
+doc/

@@ -12,12 +12,23 @@ enum eRoboPlanMode
     plan_5rd,
 };
 
-struct WorldPoint
+struct TraceKeyPoint
 {
-    float x, y, z;
-    float hand;
-    WorldPoint( float px=0, float py=0, float pz=0, float phand=0 );
+    union
+    {
+        struct
+        {
+            float t;
+            float x, y, z;
+            float hand;
+        };
+        float datas[5];
+    };
+
+    TraceKeyPoint( float pt = 0, float px=0, float py=0, float pz=0, float phand=0 );
 };
+
+typedef QList<TraceKeyPoint>    TraceKeyPointList;
 
 class RawRoboStateCondition : public MegaDevice::RoboStateCondition
 {
@@ -43,6 +54,10 @@ public:
 
     virtual void toState( int stat );
     int state();
+
+    virtual void startTimer( int id=0, int tmous=1000 );
+    virtual void killTimer( int id=0 );
+    virtual void onTimer( int id );
 
 public:
     void attachRobot( RawRobo *pRobot );
@@ -75,8 +90,12 @@ public:
     virtual void switchPrepare();
     virtual void switchEmergStop();
 
+    virtual void queryState();
+
     virtual void toState( int stat );
     int state();
+
+    virtual void onTimer( void *pContext, int id );
 
 public:
     virtual void attachCondition(
@@ -114,6 +133,7 @@ public:
     virtual void onEnter();
     virtual void onExit();
 
+    virtual void onTimer( int id );
 public:
     RawRoboFsm *selfFsm();
 
@@ -228,7 +248,7 @@ public:
 public:
     virtual void proc( int msg, int subAx, int para );
 
-//    virtual void onEnter();
+    virtual void onEnter();
 //    virtual void onExit();
 //    virtual void onRst();
 };
@@ -242,7 +262,7 @@ public:
 public:
     virtual void proc( int msg, int subAx, int para );
 
-//    virtual void onEnter();
+    virtual void onEnter();
 //    virtual void onExit();
 //    virtual void onRst();
 };
@@ -256,7 +276,7 @@ public:
 public:
     virtual void proc( int msg, int subAx, int para );
 
-//    virtual void onEnter();
+    virtual void onEnter();
 //    virtual void onExit();
 //    virtual void onRst();
 };

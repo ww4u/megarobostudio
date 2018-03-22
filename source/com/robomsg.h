@@ -13,6 +13,11 @@ enum eRoboMsg
 
     e_download_terminated,  //! name, axes
 
+    e_progress_para,        //! mi,ma,n,info
+    e_progress_visible,     //! b
+    e_status,               //! string
+    e_logout,               //! string
+
     e_interrupt_occuring,       //! event id, frame id, byte array
     e_axes_status,              //! name, axesid, recvid, status
 

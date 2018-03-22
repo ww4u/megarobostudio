@@ -23,7 +23,9 @@ struct interpContext
     QList< QPointF > *mp_tVs;       //! [t,V]
     QList< QPointF > *mp_tPs;       //! [t,P]
 
+    void *m_pCalcContext;
     qreal mvNow;
+    qreal mpNow;
 };
 
 struct interpConfig

@@ -20,6 +20,7 @@ public:
 
     int pvtWrite(
                   QList<tpvRow *> &list,
+                  int pag = 0,
                   int from = 0,
                   int len = -1 );
     int run();

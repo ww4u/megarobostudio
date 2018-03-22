@@ -202,6 +202,42 @@ void RoboMsgQueue::postMsg( eRoboMsg msg,
     postMsg( lMsg );
 }
 
+void RoboMsgQueue::postMsg( eRoboMsg msg,
+              int mi, int ma, int n,
+              const QString &str )
+{
+    RoboMsg lMsg;
+
+    lMsg.setMsg( msg );
+    lMsg.append( QVariant(mi) );
+    lMsg.append( QVariant(ma) );
+    lMsg.append( QVariant(n) );
+    lMsg.append( QVariant(str) );
+
+    postMsg( lMsg );
+}
+void RoboMsgQueue::postMsg( eRoboMsg msg,
+              bool b )
+{
+    RoboMsg lMsg;
+
+    lMsg.setMsg( msg );
+    lMsg.append( QVariant(b) );
+
+    postMsg( lMsg );
+}
+
+void RoboMsgQueue::postMsg( eRoboMsg msg,
+              const QString &str )
+{
+    RoboMsg lMsg;
+
+    lMsg.setMsg( msg );
+    lMsg.append( QVariant(str) );
+
+    postMsg( lMsg );
+}
+
 void RoboMsgQueue::process( int intervalus,
                        RoboMsgThread *pThread )
 {

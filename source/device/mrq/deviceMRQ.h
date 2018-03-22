@@ -15,6 +15,29 @@
 
 #include "devicemrq_msg.h"
 
+#define pvt_page    int ax, int page
+#define pvt_page_p  ax, (MRQ_MOTION_SWITCH_1)page
+
+#define foreach_page( )     for ( byte _i = 0; _i < axes(); _i++ )\
+                            { \
+                                MRQ_MOTION_SWITCH_1 _axPage=MRQ_MOTION_SWITCH_1_MAIN; \
+                                for ( int _j = 0; \
+                                      ( _axPage = (MRQ_MOTION_SWITCH_1)_j, _j < pages() ); \
+                                      _j++ )
+
+
+#define end_foreach_page()  }
+
+#define MRQ_AX_PAGE     MRQ_MOTION_SWITCH_1
+
+#define MRQ_MOTION_STATE    MRQ_MOTION_STATE_2
+#define MRQ_MOTION_STATE_POWERON MRQ_MOTION_STATE_2_POWERON
+#define MRQ_MOTION_STATE_IDLE MRQ_MOTION_STATE_2_IDLE
+#define MRQ_MOTION_STATE_CALCING MRQ_MOTION_STATE_2_CALCING
+#define MRQ_MOTION_STATE_CALCEND MRQ_MOTION_STATE_2_CALCEND
+#define MRQ_MOTION_STATE_STANDBY MRQ_MOTION_STATE_2_STANDBY
+#define MRQ_MOTION_STATE_RUNNING MRQ_MOTION_STATE_2_RUNNING
+#define MRQ_MOTION_STATE_ERROR MRQ_MOTION_STATE_2_ERROR
 namespace MegaDevice
 {
 
@@ -32,24 +55,6 @@ public:
 
     //! override
 public:
-    int setMOTIONPLAN_POSITION( uint16 val0
-    ,f32 val1 );
-
-    int setMOTIONPLAN_VELOCITY( uint16 val0
-    ,f32 val1 );
-
-    int setMOTIONPLAN_TIME( uint16 val0
-    ,f32 val1 );
-
-    int setMOTIONPLAN_POSITION( int axesid, uint16 val0
-    ,f32 val1 );
-
-    int setMOTIONPLAN_VELOCITY( int axesid, uint16 val0
-    ,f32 val1 );
-
-    int setMOTIONPLAN_TIME( int axesid, uint16 val0
-    ,f32 val1 );
-
     //! overwrite
     void setName( const QString &strName );
 
@@ -81,58 +86,67 @@ public:
 
     QString loadName();
 
+    //! override
+public:
+    int getREPORT_DATA_( byte val0
+    ,MRQ_REPORT_STATE val1, quint8 * val2, bool bQuery=true );
+
+    int getREPORT_DATA_( byte val0
+    ,MRQ_REPORT_STATE val1, quint16 * val2, bool bQuery=true );
+
+    int getREPORT_DATA_( byte val0
+    ,MRQ_REPORT_STATE val1, quint32 * val2, bool bQuery=true );
+
+    QMetaType::Type getREPORT_TYPE( MRQ_REPORT_STATE stat );
+
 public:
     float getAngle( int ax );
+    float getDist( int ax );
+
+    float getSensor( int ax, int dataId );
 
 public:
     //! pvt
-    int     loadTpvCap();
+    int loadTpvCap();
+    int getTpvCap( int ax, int page = 0 );
 
-    int goInit(  int axesId,
-                 MRQ_MOTION_INITPOSITIONUNIT unit,
-                 MRQ_MOTION_INITIOSIGNAL iosig,
-                 float pos
-                 );
-
-    int beginTpvDownload( int axesId );
+    int beginTpvDownload( pvt_page );
     int tpvDownload(
-                     int axesId,
+                     pvt_page,
                      int index,
                      f32 t,
                      f32 p,
                      f32 v );
-    int tpvDownload( int axesId,
+    int tpvDownload( pvt_page,
                      QList<tpvRow *> &list,
                      int from,
                      int len );
 
-    int tpvDownload( int axesId,
+    int tpvDownload( pvt_page,
                      tpvRow *pItem );
 
-    int endTpvDownload( int axesId );
+    int endTpvDownload( pvt_page );
 
-    int tpvDownloadMission( int axesId,
+    int tpvDownloadMission( pvt_page,
                             QList<tpvRow *> &list,
                             int from,
                             int len );
-    int pvtWrite( int axesId,
+    int pvtWrite( pvt_page,
                   QList<tpvRow *> &list,
                   int from = 0,
                   int len = -1 );
 
-    int pvtWrite( int axesId,
+    int pvtWrite( pvt_page,
                   float t1, float p1,
                   float t2, float p2 );
 
-    int pvtWrite( int axesId,
+    int pvtWrite( pvt_page,
                   float dT,
                   float dAngle );
 
-    void setTpvIndex( int axesId, int index );
-    int  getTpvIndex( int axesId );
-    void accTpvIndex( int axesId );
-
-    int  getTpvCap();
+    void setTpvIndex( pvt_page, int index );
+    int  getTpvIndex( pvt_page );
+    void accTpvIndex( pvt_page );
 
     void terminate( int axesId );
 
@@ -142,13 +156,21 @@ public:
     void releaseDownloader();
 
 public:
+    int prepare( int ax, int page = 0 );
     int rotate( int as, float t, float ang );
+    int tpvWrite( int ax,
+                  int page,
+                  tpvRow *pRows,
+                  int n
+                  );
+
     int fsmState( int ax );
+
 public:
     virtual int run(int axes);
     virtual int stop(int axes);
 
-    virtual void setStatus( int stat, int ch = 0 );
+    virtual void setStatus( int stat, int ch = 0, int page = 0 );
 public:
     virtual void onMsg( int subAxes, RoboMsg &msg );
     virtual void onTimer( void *pContext, int id );
@@ -164,8 +186,12 @@ public:
     deviceMotor *Motor( int ax );
 
 protected:
-    int mTpvIndex[4];   //! 4 axes
-    int mTpvCap;
+    int mTpvIndex[4][10];           //! 4 axes
+    uint16 mTpvCaps[4][10];
+
+
+                            //! by ax && by pages
+//    QList< QList<int>* > mTpvCaps;
 
     tpvDownloader mDownloader[4];
     QSemaphore mDownloaderSema;

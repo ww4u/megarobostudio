@@ -13,6 +13,10 @@ AngleMonitor::AngleMonitor(QWidget *parent) :
              this, SLOT(slot_anglewidget_changed()) );
 
     m_pModel = NULL;
+    mDataId = 0;
+
+    mMin = 0;
+    mMax = 360;
 
     slot_anglewidget_changed();
 }
@@ -41,9 +45,24 @@ void AngleMonitor::setConnections( const QStringList &conn )
     }
 }
 
+void AngleMonitor::setDataId( int id )
+{
+    mDataId = id;
+}
+
+void AngleMonitor::setRange( int mi, int ma )
+{
+    mMin = mi;
+    mMax = ma;
+}
+
 void  AngleMonitor::addAnAngle()
 {
     AngleWidget *pWidget = new AngleWidget();
+    if ( NULL == pWidget )
+    { return; }
+
+    pWidget->setRange( mMin, mMax );
 
     mAngleWidgets.append( pWidget );
     emit sig_anglewidget_changed();
@@ -77,7 +96,7 @@ void AngleMonitor::sampleProc()
 
         if ( err != 0 )
         {
-            sysError("sample fail");
+            sysError( tr("sample fail") );
         }
         else
         {
@@ -102,7 +121,8 @@ float AngleMonitor::sampleUnit( const QString &conn,
     }
 
     err = 0;
-    return pMrq->getAngle( subAx );
+
+    return pMrq->getSensor( subAx, mDataId );
 }
 
 void AngleMonitor::on_btnAdd_clicked()
@@ -173,5 +193,5 @@ void AngleMonitor::slot_anglewidget_changed()
     ui->toolButton->setEnabled( mAngleWidgets.size() > 0 );
 
 //    adjustSize();
-    ui->verticalLayout->update();
+//    ui->verticalLayout->update();
 }

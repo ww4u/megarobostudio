@@ -22,6 +22,9 @@ public:
     void setModel( mcModel *pModle );
     void setConnections( const QStringList &conn );
 
+    void setDataId( int id );
+    void setRange( int mi, int ma );
+
 protected:
     void addAnAngle();
 
@@ -56,6 +59,9 @@ private:
 
     mcModel *m_pModel;
     QStringList mConns;
+
+    int mDataId;
+    int mMin, mMax;
 };
 
 #endif // ANGLEMONITOR_H

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>450</width>
-    <height>52</height>
+    <width>481</width>
+    <height>64</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -32,28 +32,77 @@
    <property name="spacing">
     <number>0</number>
    </property>
-   <item row="1" column="2">
-    <widget class="QToolButton" name="btnClose">
-     <property name="text">
-      <string>X</string>
+   <item row="3" column="4">
+    <widget class="QLCDNumber" name="angleValue">
+     <property name="smallDecimalPoint">
+      <bool>false</bool>
      </property>
-     <property name="icon">
-      <iconset>
-       <normalon>:/res/image/icon/delete.png</normalon>
-      </iconset>
+     <property name="value" stdset="0">
+      <double>0.000000000000000</double>
      </property>
-     <property name="iconSize">
+    </widget>
+   </item>
+   <item row="1" column="4">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <property name="spacing">
+      <number>0</number>
+     </property>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeType">
+        <enum>QSizePolicy::Expanding</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QToolButton" name="btnClose">
+       <property name="text">
+        <string>X</string>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normalon>:/res/image/icon/delete.png</normalon>
+        </iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>24</width>
+         <height>24</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="1" column="0" colspan="4">
+    <widget class="QComboBox" name="cmbConn">
+     <property name="minimumSize">
       <size>
-       <width>24</width>
+       <width>0</width>
        <height>24</height>
       </size>
      </property>
     </widget>
    </item>
-   <item row="2" column="0" colspan="2">
+   <item row="3" column="0" colspan="4">
     <widget class="QSlider" name="sldAngle">
      <property name="enabled">
       <bool>false</bool>
+     </property>
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>1</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
      </property>
      <property name="layoutDirection">
       <enum>Qt::LeftToRight</enum>
@@ -69,23 +118,6 @@
      </property>
      <property name="tickInterval">
       <number>45</number>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0" colspan="2">
-    <widget class="QComboBox" name="cmbConn">
-     <property name="minimumSize">
-      <size>
-       <width>0</width>
-       <height>24</height>
-      </size>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="2">
-    <widget class="QLCDNumber" name="angleValue">
-     <property name="value" stdset="0">
-      <double>3.500000000000000</double>
      </property>
     </widget>
    </item>

@@ -13,8 +13,6 @@ namespace MegaDevice
 
 deviceMRQ::deviceMRQ()
 {
-    mTpvCap = 0x200;
-
     //! attach device
     for ( int i = 0; i < sizeof_array(mDownloader); i++ )
     {
@@ -41,7 +39,7 @@ deviceMRQ::deviceMRQ()
 
 deviceMRQ::~deviceMRQ()
 {
-    for( int i = 0; i < 4; i++ )
+    for( int i = 0; i < axes(); i++ )
     {
         if ( mDownloader[i].isRunning() )
         {
@@ -77,7 +75,6 @@ int deviceMRQ::setDeviceId(DeviceId &id, int siblingCnt )
     //! verify
 //    setCanRecvId( mDeviceId.mRecvId );
 
-//    ret = verifyIds( siblingCnt );
     ret = verifyIds( 0 );
     if ( ret != 0 )
     { return ret; }
@@ -85,64 +82,6 @@ int deviceMRQ::setDeviceId(DeviceId &id, int siblingCnt )
     setSignature( mDeviceId.mSignature );
 
     return 0;
-}
-
-//! over write
-int deviceMRQ::setMOTIONPLAN_POSITION( uint16 val0
-,f32 val1 )
-{ return m_pBus->write( DEVICE_RECEIVE_ID, mc_MOTIONPLAN, sc_MOTIONPLAN_POSITION , val0, val1 ); }
-
-int deviceMRQ::setMOTIONPLAN_VELOCITY( uint16 val0
-,f32 val1 )
-{ return m_pBus->write( DEVICE_RECEIVE_ID, mc_MOTIONPLAN, sc_MOTIONPLAN_VELOCITY , val0, val1 ); }
-
-int deviceMRQ::setMOTIONPLAN_TIME( uint16 val0
-,f32 val1 )
-{ return m_pBus->write( DEVICE_RECEIVE_ID, mc_MOTIONPLAN, sc_MOTIONPLAN_TIME , val0, val1 ); }
-
-//! cache to 0~4
-int deviceMRQ::setMOTIONPLAN_POSITION( int axesid, uint16 val0
-,f32 val1 )
-{
-    //! 55 2
-    int ret;
-    ret = setMOTIONPLAN_POSITION(val0,val1);
-
-    if ( ret == 0)
-    {
-        MRQ_model::setMOTIONPLAN_POSITION( axesid, val1 );
-    }
-    if ( ret != 0){ log_device(); }
-    return ret;
-}
-int deviceMRQ::setMOTIONPLAN_VELOCITY( int axesid, uint16 val0
-,f32 val1 )
-{
-    //! 55 4
-    int ret;
-    ret = setMOTIONPLAN_VELOCITY(val0,val1);
-
-    if ( ret == 0)
-    {
-        MRQ_model::setMOTIONPLAN_VELOCITY( axesid, val1 );
-    }
-    if ( ret != 0){ log_device(); }
-    return ret;
-}
-
-int deviceMRQ::setMOTIONPLAN_TIME( int axesid, uint16 val0
-,f32 val1 )
-{
-    //! 55 6
-    int ret;
-    ret = setMOTIONPLAN_TIME( val0, val1 );
-
-    if ( ret == 0)
-    {
-        MRQ_model::setMOTIONPLAN_TIME( axesid, val1 );
-    }
-    if ( ret != 0){ log_device(); }
-    return ret;
 }
 
 void deviceMRQ::setName( const QString &strName )
@@ -161,16 +100,20 @@ MRQ_model *deviceMRQ::getModel()
     return this;
 }
 
+#define progress( prog, info )      sysProgress( prog, info ); \
+                                    sysProgress( true );
+#define progress_hide()             \
+                                    sysProgress( false );
 //! upload all data
 int deviceMRQ::uploadSetting()
 {
     int ret;
 
+progress( 0, ("LINK") );
+
     checked_call( getLINK_INTFC(&mLINK_INTFC) );
     checked_call( getSYSTEM_WORKMODE(&mSYSTEM_WORKMODE) );
     checked_call( getSYSTEM_POWERON(&mSYSTEM_POWERON));
-
-    checked_call( getSYSTEM_REPORTSWITCH(&mSYSTEM_REPORTSWITCH) );
 
     checked_call( getRS232_BAUD(&mRS232_BAUD) );
     checked_call( getRS232_WORDLEN(&mRS232_WORDLEN) );
@@ -182,17 +125,16 @@ int deviceMRQ::uploadSetting()
     checked_call( getCAN_BAUD(&mCAN_BAUD) );
     checked_call( getCAN_GROUP(&mCAN_GROUP) );
 
-    checked_call( getCAN_SENDID(&mCAN_BROADCASTID) );
-    checked_call( getCAN_NETMANAGESTATE(&mCAN_NETMANAGESTATE) );
-    checked_call( getCAN_GROUPID1(&mCAN_GROUPID1) );
-    checked_call( getCAN_GROUPID2(&mCAN_GROUPID2) );
-
-    checked_call( getCAN_BROADCASTID(&mCAN_SENDID) );
+    checked_call( getCAN_SENDID(&mCAN_SENDID) );
     checked_call( getCAN_RECEIVEID(&mCAN_RECEIVEID) );
 
+    checked_call( getCAN_GROUPID1(&mCAN_GROUPID1) );
+    checked_call( getCAN_GROUPID2(&mCAN_GROUPID2) );
+    checked_call( getCAN_BROADCASTID(&mCAN_BROADCASTID) );
+
+    checked_call( getCAN_NETMANAGESTATE(&mCAN_NETMANAGESTATE) );
     checked_call( getCAN_NETMANAGEHASH(&mCAN_NETMANAGEHASH) );
 
-//    checked_call( getCAN_NETMANAGESIGNATURESIZE(&mCAN_NETMANAGESIGNATURESIZE) );
     checked_call( getCLOCK_FREQUENCY(&mCLOCK_FREQUENCY) );
     checked_call( getCLOCK_SYNCREGISTER(&mCLOCK_SYNCREGISTER) );
     checked_call( getCLOCK_STARTTYPE(&mCLOCK_STARTTYPE) );
@@ -200,10 +142,18 @@ int deviceMRQ::uploadSetting()
     checked_call( getCLOCK_SYNCSTATE(&mCLOCK_SYNCSTATE) );
     checked_call( getCLOCK_COUNT(&mCLOCK_COUNT) );
 
+progress( 10, ("MOTION") );
+
+    //! state
+    foreach_page()
+    {
+        checked_call( getMOTION_STATE( _i, _axPage, mMOTION_STATE[_i] + _j) );
+    }
+    end_foreach_page()
+
     //! motion 1--4
     for ( int i = 0; i < axes(); i++ )
     {
-        checked_call( getMOTION_STATE( i, mMOTION_STATE+i) );
         checked_call( getMOTION_STATEREPORT( i, mMOTION_STATEREPORT+i) );
 
         checked_call( getMOTION_STARTSOURCE( i, mMOTION_STARTSOURCE+i) );
@@ -224,36 +174,30 @@ int deviceMRQ::uploadSetting()
         checked_call( getMOTION_MAXACCELERATION( i, mMOTION_MAXACCELERATION+i) );
         checked_call( getMOTION_MINACCELERATION( i, mMOTION_MINACCELERATION+i) );
         checked_call( getMOTION_ORIGIN( i, mMOTION_ORIGIN+i) );
-        checked_call( getMOTION_INITPOSITIONUNIT( i, mMOTION_INITPOSITIONUNIT+i) );
-
-        checked_call( getMOTION_INITPOSITION( i, mMOTION_INITPOSITION+i) );
-        checked_call( getMOTION_INITIOSIGNAL( i, mMOTION_INITIOSIGNAL+i) );
-        checked_call( getMOTION_INCHINGMODE( i, mMOTION_INCHINGMODE+i) );
-        checked_call( getMOTION_INCHINGTIME( i, mMOTION_INCHINGTIME+i) );
 
         checked_call( getMOTION_OFFSETSTATE( i, mMOTION_OFFSETSTATE+i) );
-        checked_call( getMOTION_PVTSTEPS( i, mMOTION_PVTSTEPS+i) );
-        checked_call( getMOTION_COUNTSTEPS( i, mMOTION_COUNTSTEPS+i) );
-        checked_call( getMOTION_PVTCIRCLE( i, mMOTION_PVTCIRCLE+i) );
+//        checked_call( getMOTION_PVTSTEPS( i, mMOTION_PVTSTEPS+i) );
+//        checked_call( getMOTION_COUNTSTEPS( i, mMOTION_COUNTSTEPS+i) );
+//        checked_call( getMOTION_PVTCIRCLE( i, mMOTION_PVTCIRCLE+i) );
 
-        checked_call( getMOTION_COUNTCIRCLE( i, mMOTION_COUNTCIRCLE+i) );
-        checked_call( getMOTION_ABCOUNT( i, mMOTION_ABCOUNT+i) );
-        checked_call( getMOTION_REVMOTION( i, mMOTION_REVMOTION+i) );
+//        checked_call( getMOTION_COUNTCIRCLE( i, mMOTION_COUNTCIRCLE+i) );
+//        checked_call( getMOTION_ABCOUNT( i, mMOTION_ABCOUNT+i) );
+//        checked_call( getMOTION_REVMOTION( i, mMOTION_REVMOTION+i) );
+    }
+
+progress( 20, ("MOTOR") );
+
+    checked_call( getIDENTITY_DISTDEVICE( &mIDENTITY_DISTDEVICE ) );
+    for ( int i = 0; i < axes(); i++ )
+    {
         checked_call( getIDENTITY_GROUP( i, MRQ_IDENTITY_GROUP_GROUP1, mIDENTITY_GROUP[i] ) );
         checked_call( getIDENTITY_GROUP( i, MRQ_IDENTITY_GROUP_GROUP2, mIDENTITY_GROUP[i] + 1 ) );
 
+        checked_call( getIDENTITY_LABEL( i,
+                                         mIDENTITY_LABEL + i,
+                                         mIDENTITY_LABEL1+ i ) );
 
-        checked_call( getSTOPDECEL_MODE( i, mSTOPDECEL_MODE+i) );
-        checked_call( getSTOPDECEL_DISTANCE( i, mSTOPDECEL_DISTANCE+i) );
-        checked_call( getSTOPDECEL_TIME( i, mSTOPDECEL_TIME+i) );
-
-        checked_call( getOUTOFSTEP_LINESTATE( i, mOUTOFSTEP_LINESTATE+i) );
-//        checked_call( getOUTOFSTEP_LINEOUTNUM( i, mOUTOFSTEP_LINEOUTNUM+i) );U16?
-        checked_call( getOUTOFSTEP_LINERESPONSE( i, mOUTOFSTEP_LINERESPONSE+i) );
-        checked_call( getOUTOFSTEP_TOTALSTATE( i, mOUTOFSTEP_TOTALSTATE+i) );
-
-        checked_call( getOUTOFSTEP_TOTALOUTNUM( i, mOUTOFSTEP_TOTALOUTNUM+i) );
-        checked_call( getOUTOFSTEP_TOTALRESPONSE( i, mOUTOFSTEP_TOTALRESPONSE+i) );
+        //! motor
         checked_call( getMOTOR_STEPANGLE( i, mMOTOR_STEPANGLE+i) );
         checked_call( getMOTOR_TYPE( i, mMOTOR_TYPE+i) );
 
@@ -269,36 +213,66 @@ int deviceMRQ::uploadSetting()
 
         checked_call( getMOTOR_CURRENT( i, mMOTOR_CURRENT+i) );
         checked_call( getMOTOR_BACKLASH( i, mMOTOR_BACKLASH+i) );
+
+        //! encoder
         checked_call( getENCODER_LINENUM( i, mENCODER_LINENUM+i) );
         checked_call( getENCODER_CHANNELNUM( i, mENCODER_CHANNELNUM+i) );
 
         checked_call( getENCODER_TYPE( i, mENCODER_TYPE+i) );
         checked_call( getENCODER_MULTIPLE( i, mENCODER_MULTIPLE+i) );
         checked_call( getENCODER_STATE( i, mENCODER_STATE+i) );
-        checked_call( getMOTIONPLAN_PVTCONFIG( i, mMOTIONPLAN_PVTCONFIG+i) );
+//        checked_call( getENCODER_FEEDBACKRATIO( i, mENCODER_FEEDBACKRATIO+i) );
+    }
 
-        checked_call( getMOTIONPLAN_EXECUTEMODE( i, mMOTIONPLAN_EXECUTEMODE+i) );
+progress( 30, ("MOTORPLAN") );
 
-        checked_call( getMOTIONPLAN_PLANMODE( i, mMOTIONPLAN_PLANMODE+i) );
-        checked_call( getMOTIONPLAN_MOTIONMODE( i, mMOTIONPLAN_MOTIONMODE+i) );
-        checked_call( getMOTIONPLAN_MODIFYDUTY( i, mMOTIONPLAN_MODIFYDUTY+i) );
-        checked_call( getMOTIONPLAN_REMAINPOINT( i, mMOTIONPLAN_REMAINPOINT+i) );
+    foreach_page()
+    {
+        checked_call( getMOTIONPLAN_PVTCONFIG( _i, _axPage, mMOTIONPLAN_PVTCONFIG[_i]+_j ) );
+//        checked_call( getMOTIONPLAN_PRESETSTATE( _i,
+//                                                 (MRQ_MOTIONPLAN_PRESETSTATE)_axPage,
+//                                                 mMOTIONPLAN_PRESETSTATE[_i]+_j ) );
 
-//        checked_call( getMOTIONPLAN_OUTPUTPOINT( i, mMOTIONPLAN_OUTPUTPOINT+i) );
-        checked_call( getMOTIONPLAN_STARTPOINT( i, mMOTIONPLAN_STARTPOINT+i) );
-        checked_call( getMOTIONPLAN_ENDPOINT( i, mMOTIONPLAN_ENDPOINT+i) );
-        checked_call( getMOTIONPLAN_CYCLENUM( i, mMOTIONPLAN_CYCLENUM+i) );
+        checked_call( getMOTIONPLAN_EXECUTEMODE( _i, _axPage, mMOTIONPLAN_EXECUTEMODE[_i]+_j ) );
 
-        checked_call( getMOTIONPLAN_WARNPOINT( i, mMOTIONPLAN_WARNPOINT+i) );
-        checked_call( getMOTIONPLAN_ENDSTATE( i, mMOTIONPLAN_ENDSTATE+i) );
-        checked_call( getMOTIONPLAN_FEEDBACKRATIO( i, mMOTIONPLAN_FEEDBACKRATIO+i) );
+        checked_call( getMOTIONPLAN_PLANMODE( _i, _axPage, mMOTIONPLAN_PLANMODE[_i]+_j ) );
+        checked_call( getMOTIONPLAN_MOTIONMODE( _i, _axPage, mMOTIONPLAN_MOTIONMODE[_i]+_j) );
+        checked_call( getMOTIONPLAN_MODIFYDUTY( _i, _axPage, mMOTIONPLAN_MODIFYDUTY[_i]+_j) );
+        checked_call( getMOTIONPLAN_REMAINPOINT( _i, _axPage, mMOTIONPLAN_REMAINPOINT[_i]+_j) );
+
+        checked_call( getMOTIONPLAN_CYCLENUM( _i, _axPage, mMOTIONPLAN_CYCLENUM[_i]+_j) );
+
+        checked_call( getMOTIONPLAN_WARNPOINT( _i, _axPage, mMOTIONPLAN_WARNPOINT[_i]+_j) );
+        checked_call( getMOTIONPLAN_ENDSTATE( _i, _axPage, mMOTIONPLAN_ENDSTATE[_i]+_j) );
+
+        checked_call( getMOTIONPLAN_BUFFERSIZE( _i, _axPage, mMOTIONPLAN_BUFFERSIZE[_i]+_j) );
+        checked_call( getMOTIONPLAN_ACCSCALE( _i, _axPage, mMOTIONPLAN_ACCSCALE[_i]+_j) );
+        checked_call( getMOTIONPLAN_DECSCALE( _i, _axPage, mMOTIONPLAN_DECSCALE[_i]+_j) );
+
+        checked_call( getMOTIONPLAN_STOPMODE( _i, _axPage, mMOTIONPLAN_STOPMODE[_i]+_j) );
+        checked_call( getMOTIONPLAN_STOPDISTANCE( _i, _axPage, mMOTIONPLAN_STOPDISTANCE[_i]+_j) );
+        checked_call( getMOTIONPLAN_STOPTIME( _i, _axPage, mMOTIONPLAN_STOPTIME[_i]+_j) );
+
+        checked_call( getMOTIONPLAN_OOSLINESTATE( _i, _axPage, mMOTIONPLAN_OOSLINESTATE[_i]+_j) );
+        checked_call( getMOTIONPLAN_OOSLINEOUTNUM( _i, _axPage, mMOTIONPLAN_OOSLINEOUTNUM[_i]+_j) );
+        checked_call( getMOTIONPLAN_OOSLINERESPONSE( _i, _axPage, mMOTIONPLAN_OOSLINERESPONSE[_i]+_j) );
+
+        checked_call( getMOTIONPLAN_OOSTOTALSTATE( _i, _axPage, mMOTIONPLAN_OOSTOTALSTATE[_i]+_j) );
+        checked_call( getMOTIONPLAN_OOSTOTALOUTNUM( _i, _axPage, mMOTIONPLAN_OOSTOTALOUTNUM[_i]+_j) );
+        checked_call( getMOTIONPLAN_OOSTOTALRESPONSE( _i, _axPage, mMOTIONPLAN_OOSTOTALRESPONSE[_i]+_j) );
+    }
+    end_foreach_page()
+
+progress( 40, ("TRIGGER") );
+
+    for ( int i = 0; i < axes(); i++ )
+    {
         for ( int j = 0; j < 14; j++ )
         {
-            checked_call( getREPORT_STATE( i, (MRQ_REPORT_STATE)i, mREPORT_STATE[i]+j) );
-            checked_call( getREPORT_PERIOD( i, (MRQ_REPORT_STATE)i, mREPORT_PERIOD[i]+j) );
-            checked_call( getREPORT_DATA( i, (MRQ_REPORT_STATE)i, mREPORT_DATA[i]+j) );
+            checked_call( getREPORT_STATE( i, (MRQ_REPORT_STATE)j, mREPORT_STATE[i]+j) );
+            checked_call( getREPORT_PERIOD( i, (MRQ_REPORT_STATE)j, mREPORT_PERIOD[i]+j) );
         }
-
+        Q_ASSERT( i < sizeof_array(mTRIGGER_MODE) );
         checked_call( getTRIGGER_MODE( i, mTRIGGER_MODE+i) );
         checked_call( getTRIGGER_PATTSTATE( i, mTRIGGER_PATTSTATE+i) );
 
@@ -314,99 +288,97 @@ int deviceMRQ::uploadSetting()
         checked_call( getTRIGGER_PATTSMODE( i, mTRIGGER_PATTSMODE+i) );
         checked_call( getTRIGGER_PATTSPERIOD( i, mTRIGGER_PATTSPERIOD+i) );
 
-        for( int j = 0; j < 5; j++ )
+        for( int j = 0; j < 2; j++ )
         {
-//            checked_call( getTRIGGER_LEVELSTATE( i, (MOTION_INITIOSIGNAL)j, mTRIGGER_LEVELSTATE[i]+j) ); 4Byte?
-//            checked_call( getTRIGGER_LEVELTYPE( i, (MOTION_INITIOSIGNAL)j, mTRIGGER_LEVELTYPE[i]+j) );
-//            checked_call( getTRIGGER_LEVELRESP( i, (MOTION_INITIOSIGNAL)j, mTRIGGER_LEVELRESP[i]+j) );
-//            checked_call( getTRIGGER_LEVELSMODE( i, (MOTION_INITIOSIGNAL)j, mTRIGGER_LEVELSMODE[i]+j) );
-//            checked_call( getTRIGGER_LEVELSPERIOD( i, (MOTION_INITIOSIGNAL)j, mTRIGGER_LEVELSPERIOD[i]+j) );
+//            checked_call( getTRIGGER_LEVELSTATE( i, (MRQ_TRIGGER_LEVELSTATE)j, mTRIGGER_LEVELSTATE[i]+j) );
+//            checked_call( getTRIGGER_LEVELTYPE( i, (MRQ_TRIGGER_LEVELSTATE)j, mTRIGGER_LEVELTYPE[i]+j) );
+//            checked_call( getTRIGGER_LEVELRESP( i, (MRQ_TRIGGER_LEVELSTATE)j, mTRIGGER_LEVELRESP[i]+j) );
+//            checked_call( getTRIGGER_LEVELSMODE( i, (MRQ_TRIGGER_LEVELSTATE)j, mTRIGGER_LEVELSMODE[i]+j) );
+//            checked_call( getTRIGGER_LEVELSPERIOD( i, (MRQ_TRIGGER_LEVELSTATE)j, mTRIGGER_LEVELSPERIOD[i]+j) );
         }
 
         checked_call( getDRIVER_TYPE( i, mDRIVER_TYPE+i) );
         for( int j = 0; j < 3; j++ )
         {
+            Q_ASSERT( j < sizeof_array(mDRIVER_STATEREG[0]) );
             checked_call( getDRIVER_STATEREG( i, (MRQ_DRIVER_STATEREG)j, mDRIVER_STATEREG[i]+j) );
         }
         checked_call( getDRIVER_CURRENT( i, mDRIVER_CURRENT+i) );
 
         checked_call( getDRIVER_MICROSTEPS( i, mDRIVER_MICROSTEPS+i) );
-        checked_call( getDRIVER_SWITCH( i, mDRIVER_SWITCH+i) );
-        for ( int j = 0; j < 5; j++ )
-        {
-            checked_call( getDRIVER_REGCONFIG( i, (MRQ_DRIVER_REGCONFIG)j, mDRIVER_REGCONFIG[i]+j) );
-        }
-        for ( int j = 0; j < 2; j++ )
-        {
-//            checked_call( getDRIVER_SGLIMIT( i, (DRIVER_SGLIMIT)j, mDRIVER_SGLIMIT[i]+j) );
-        }
+        checked_call( getDRIVER_STATE( i, mDRIVER_STATE+i) );
 
-        for ( int j = 0; j < 4; j++ )
-        {
-//            checked_call( getDRIVER_SGPARASET( i, (DRIVER_SGPARASET)j, mDRIVER_SGPARASET[i]+j) );
-        }
+
+        checked_call( getDRIVER_IDLECURRENT( i, mDRIVER_IDLECURRENT+i) );
+        checked_call( getDRIVER_SWITCHTIME( i, mDRIVER_SWITCHTIME+i) );
+        checked_call( getDRIVER_MINICURRRATIO( i, mDRIVER_MINICURRRATIO+i) );
     }
 
-    checked_call( getIDENTITY_DISTDEVICE(&mIDENTITY_DISTDEVICE) );
+progress( 40, ("DO") );
 
-    for ( int i = 0; i < 2; i++ )
+    for ( int i = 0; i < mDOs; i++ )
     {
-        checked_call( getDIGITALOUT_STATE( (MRQ_DIGITALOUT_STATE)i, mDIGITALOUT_STATE + i) );
-        checked_call( getDIGITALOUT_SIGNAL( (MRQ_DIGITALOUT_STATE)i, mDIGITALOUT_SIGNAL + i) );
-        checked_call( getDIGITALOUT_POLARITY( (MRQ_DIGITALOUT_STATE)i, mDIGITALOUT_POLARITY + i) );
+        Q_ASSERT( i < sizeof_array(mDIGITALOUTPUT_STATE) );
+        checked_call( getDIGITALOUTPUT_STATE( (MRQ_DIGITALOUTPUT_STATE)i, mDIGITALOUTPUT_STATE + i) );
+        checked_call( getDIGITALOUTPUT_SIGNAL( (MRQ_DIGITALOUTPUT_STATE)i, mDIGITALOUTPUT_SIGNAL + i) );
+        checked_call( getDIGITALOUTPUT_POLARITY( (MRQ_DIGITALOUTPUT_STATE)i, mDIGITALOUTPUT_POLARITY + i) );
 
-        checked_call( getDIGITALOUT_SOURCE( (MRQ_DIGITALOUT_STATE)i, mDIGITALOUT_SOURCE + i) );
-        checked_call( getDIGITALOUT_CONDITION( (MRQ_DIGITALOUT_STATE)i, mDIGITALOUT_CONDITION + i) );
-        checked_call( getDIGITALOUT_PERIOD( (MRQ_DIGITALOUT_STATE)i, mDIGITALOUT_PERIOD + i) );
-        checked_call( getDIGITALOUT_DUTY( (MRQ_DIGITALOUT_STATE)i, mDIGITALOUT_DUTY + i) );
+        checked_call( getDIGITALOUTPUT_SOURCE( (MRQ_DIGITALOUTPUT_STATE)i, mDIGITALOUTPUT_SOURCE + i) );
+        checked_call( getDIGITALOUTPUT_CONDITION( (MRQ_DIGITALOUTPUT_STATE)i, mDIGITALOUTPUT_CONDITION + i) );
+        checked_call( getDIGITALOUTPUT_PERIOD( (MRQ_DIGITALOUTPUT_STATE)i, mDIGITALOUTPUT_PERIOD + i) );
+        checked_call( getDIGITALOUTPUT_DUTY( (MRQ_DIGITALOUTPUT_STATE)i, mDIGITALOUTPUT_DUTY + i) );
     }
 
-    for( int i = 0; i < 2; i++ )
+progress( 50, ("ISO") );
+
+    for( int i = 0; i < mISOs; i++ )
     {
+        Q_ASSERT( i < sizeof_array(mISOLATOROUTPUT_STATE) );
         checked_call( getISOLATOROUTPUT_STATE( (MRQ_ISOLATOROUTPUT_STATE)i, mISOLATOROUTPUT_STATE + i) );
         checked_call( getISOLATOROUTPUT_SOURCE( (MRQ_ISOLATOROUTPUT_STATE)i, mISOLATOROUTPUT_SOURCE + i) );
         checked_call( getISOLATOROUTPUT_CONDITION( (MRQ_ISOLATOROUTPUT_STATE)i, mISOLATOROUTPUT_CONDITION + i) );
         checked_call( getISOLATOROUTPUT_RESPONSE( (MRQ_ISOLATOROUTPUT_STATE)i, mISOLATOROUTPUT_RESPONSE + i) );
     }
+progress( 60, ("SENSOR") );
 
     //! sensor uart
-    for ( int i = 0; i < 2; i++ )
+    for ( int i = 0; i < mUARTs; i++ )
     {
+        Q_ASSERT( i < sizeof_array(mSENSORUART_BAUD) );
         checked_call( getSENSORUART_BAUD( (MRQ_SENSORUART_BAUD)i, mSENSORUART_BAUD + i) );
         checked_call( getSENSORUART_WORDLEN( (MRQ_SENSORUART_BAUD)i, mSENSORUART_WORDLEN + i) );
         checked_call( getSENSORUART_FLOWCTL( (MRQ_SENSORUART_BAUD)i, mSENSORUART_FLOWCTL + i) );
         checked_call( getSENSORUART_PARITY( (MRQ_SENSORUART_BAUD)i, mSENSORUART_PARITY + i) );
 
         checked_call( getSENSORUART_STOPBIT( (MRQ_SENSORUART_BAUD)i, mSENSORUART_STOPBIT + i) );
-    }
 
-    //! uart, s[4]
-    for( int i = 0; i < 2; i++ )
-    {
         for ( int j = 0; j < axes(); j++ )
         {
-            checked_call( getSENSORUART_STATE( (MRQ_SENSORUART_BAUD)i, (MRQ_SENSORUART_STATE_1)j, mSENSORUART_STATE[i] + j) );
-            checked_call( getSENSORUART_SOF( (MRQ_SENSORUART_BAUD)i, (MRQ_SENSORUART_STATE_1)j, mSENSORUART_SOF[i] + j) );
-            checked_call( getSENSORUART_FRAMELEN( (MRQ_SENSORUART_BAUD)i, (MRQ_SENSORUART_STATE_1)j, mSENSORUART_FRAMELEN[i] + j) );
+            Q_ASSERT( j < sizeof_array(mSENSORUART_STATE[0]) );
+            checked_call( getSENSORUART_STATE( (MRQ_SENSORUART_BAUD)i, (MRQ_IDENTITY_LABEL_1)j, mSENSORUART_STATE[i] + j) );
+            checked_call( getSENSORUART_SOF( (MRQ_SENSORUART_BAUD)i, (MRQ_IDENTITY_LABEL_1)j, mSENSORUART_SOF[i] + j) );
+            checked_call( getSENSORUART_FRAMELEN( (MRQ_SENSORUART_BAUD)i, (MRQ_IDENTITY_LABEL_1)j, mSENSORUART_FRAMELEN[i] + j) );
 
-            checked_call( getSENSORUART_RECEIVENUM( (MRQ_SENSORUART_BAUD)i, (MRQ_SENSORUART_STATE_1)j, mSENSORUART_RECEIVENUM[i] + j) );
-            checked_call( getSENSORUART_SWITCHTIME( (MRQ_SENSORUART_BAUD)i, (MRQ_SENSORUART_STATE_1)j, mSENSORUART_SWITCHTIME[i] + j) );
+            checked_call( getSENSORUART_RECEIVENUM( (MRQ_SENSORUART_BAUD)i, (MRQ_IDENTITY_LABEL_1)j, mSENSORUART_RECEIVENUM[i] + j) );
+            checked_call( getSENSORUART_SWITCHTIME( (MRQ_SENSORUART_BAUD)i, (MRQ_IDENTITY_LABEL_1)j, mSENSORUART_SWITCHTIME[i] + j) );
         }
     }
 
-//    checked_call( getOTP_STATE(&mOTP_STATE) );
+progress( 70, ("ISI") );
 
-//    checked_call( getOTP_THRESHOLD(&mOTP_THRESHOLD) );
-//    checked_call( getOTP_RESPONSE(&mOTP_RESPONSE) );
-//    checked_call( getOTP_PERIOD(&mOTP_PERIOD) );
-//    checked_call( getOTP_DATA(&mOTP_DATA) );
+    for ( int i = 0; i < mISIs; i++ )
+    {
+        Q_ASSERT( i < 1 );
+        checked_call( getISOLATORIN_STATE( &mISOLATORIN_STATE ) );
+        checked_call( getISOLATORIN_TYPE( &mISOLATORIN_TYPE ) );
+        checked_call( getISOLATORIN_RESPONSE( &mISOLATORIN_RESPONSE ) );
+        checked_call( getISOLATORIN_RESPCHAN( &mISOLATORIN_RESPCHAN ) );
 
-//    checked_call( getANALOGIN_STATE(&mANALOGIN_STATE) );
-//    checked_call( getANALOGIN_THRESHOLDH(&mANALOGIN_THRESHOLDH) );
-//    checked_call( getANALOGIN_THRESHOLDL(&mANALOGIN_THRESHOLDL) );
-//    checked_call( getANALOGIN_RESPONSEH(&mANALOGIN_RESPONSEH) );
+        checked_call( getISOLATORIN_SMODE( &mISOLATORIN_SMODE ) );
+        checked_call( getISOLATORIN_SPERIOD( &mISOLATORIN_SPERIOD ) );
+    }
 
-//    checked_call( getANALOGIN_RESPONSEL(&mANALOGIN_RESPONSEL) );
+progress_hide();
 
     return ret;
 }
@@ -543,10 +515,14 @@ int deviceMRQ::verifyIds( int siblingCnt )
 void deviceMRQ::rst()
 {
     //! foreach clear
-    for ( int i = 0; i < getAxes(); i++ )
+    foreach_page()
     {
-        setMOTIONPLAN_PVTCONFIG( i, MRQ_MOTIONPLAN_PVTCONFIG_CLEAR );
+        setMOTIONPLAN_PVTCONFIG( _i,
+                                 _axPage,
+                                 MRQ_MOTIONPLAN_PVTCONFIG_1_CLEAR );
+
     }
+    end_foreach_page()
 }
 
 int deviceMRQ::upload()
@@ -570,8 +546,8 @@ int deviceMRQ::testAdd( int a, int b )
 QString deviceMRQ::loadDesc()
 {
     int ret;
-    MRQ_SYSTEM_TYPE type;
-    MRQ_SYSTEM_TYPE_1 type2;
+    MRQ_LINK_DEVICEINFO type;
+    MRQ_LINK_DEVICEINFO_1 type2;
     ret = getSYSTEM_TYPE( &type, &type2 );
     if ( ret != 0 )
     { return mDesc; }
@@ -660,13 +636,79 @@ QString deviceMRQ::loadBtVer()
     return mBtVer;
 }
 
+int deviceMRQ::getREPORT_DATA_( byte val0
+,MRQ_REPORT_STATE val1, quint8 * val2, bool bQuery )
+{
+    //! 60 4
+    int ret = 0;
+
+    uint8 lval0 = 0;
+    ret = m_pBus->read( DEVICE_RECEIVE_ID, mc_REPORT, sc_REPORT_DATA_Q , val0, (byte)val1, &lval0, bQuery);
+    if ( ret != 0){ log_device(); }
+    if ( ret != 0) return ret;
+    *val2 = lval0;
+    return 0;
+}
+
+int deviceMRQ::getREPORT_DATA_( byte val0
+,MRQ_REPORT_STATE val1, quint16 * val2, bool bQuery )
+{
+    //! 60 4
+    int ret = 0;
+
+    uint16 lval0 = 0;
+    ret = m_pBus->read( DEVICE_RECEIVE_ID, mc_REPORT, sc_REPORT_DATA_Q , val0, (byte)val1, &lval0, bQuery);
+    if ( ret != 0){ log_device(); }
+    if ( ret != 0) return ret;
+    *val2 = lval0;
+    return 0;
+}
+
+int deviceMRQ::getREPORT_DATA_( byte val0
+,MRQ_REPORT_STATE val1, quint32 * val2, bool bQuery )
+{
+    //! 60 4
+    int ret = 0;
+
+    uint32 lval0 = 0;
+    ret = m_pBus->read( DEVICE_RECEIVE_ID, mc_REPORT, sc_REPORT_DATA_Q , val0, (byte)val1, &lval0, bQuery);
+    if ( ret != 0){ log_device(); }
+    if ( ret != 0) return ret;
+    *val2 = lval0;
+    return 0;
+}
+
+struct reportType
+{
+    MRQ_REPORT_STATE mStat;
+    QMetaType::Type mType;
+};
+
+//! const special type
+static reportType _report_types[]=
+{
+    { MRQ_REPORT_STATE_DIST, QMetaType::UShort },
+
+};
+
+QMetaType::Type deviceMRQ::getREPORT_TYPE( MRQ_REPORT_STATE stat )
+{
+    for( int i = 0; i < sizeof_array(_report_types); i++ )
+    {
+        if ( stat == _report_types[i].mStat )
+        { return _report_types[i].mType; }
+    }
+
+    return QMetaType::UInt;
+}
+
 //! [0~360)
 float deviceMRQ::getAngle( int ax )
 {
     int ret;
     quint32 xangle;
 
-    ret = getREPORT_DATA( ax, MRQ_REPORT_STATE_XANGLE, &xangle );
+    ret = MRQ::getREPORT_DATA( ax, MRQ_REPORT_STATE_XANGLE, &xangle );
     if ( ret != 0 )
     { return -1; }
     else
@@ -675,55 +717,84 @@ float deviceMRQ::getAngle( int ax )
     }
 }
 
-int deviceMRQ::loadTpvCap()
+//! mm
+float deviceMRQ::getDist( int ax )
 {
-    int ret = 0;
-    quint16 tpvCap;
-    ret = getMOTIONPLAN_REMAINPOINT( 0, &tpvCap );
-    if ( ret == 0 )
-    { mTpvCap = tpvCap; }
+    int ret;
+    quint16 dist;
 
-    return mTpvCap;
+    ret = getREPORT_DATA_( ax, MRQ_REPORT_STATE_DIST, &dist );
+    if ( ret != 0 )
+    { return -1; }
+    else
+    {
+        return dist;
+    }
 }
 
-int deviceMRQ::goInit( int axesId,
-             MRQ_MOTION_INITPOSITIONUNIT unit,
-             MRQ_MOTION_INITIOSIGNAL iosig,
-             float pos
-             )
+float deviceMRQ::getSensor( int ax, int dataId )
 {
-    setMOTION_INITPOSITIONUNIT( axesId, unit );
-    setMOTION_INITIOSIGNAL( axesId, iosig );
-    setMOTION_INITPOSITION( axesId, pos );
+    if ( dataId == MRQ_REPORT_STATE_DIST )
+    { return getDist( ax); }
+    else if ( dataId == MRQ_REPORT_STATE_XANGLE )
+    { return getAngle( ax ); }
+    else
+    { return 0; }
+}
 
-    setMOTION_GOINITPOSITION( axesId );
+int deviceMRQ::loadTpvCap( )
+{
+    //! init
+    foreach_page()
+    {
+        mTpvCaps[_i][_j] = 256;
+    }
+    end_foreach_page()
 
-    //! \todo wait completed
+    //! read again
+    foreach_page()
+    {
+        getMOTIONPLAN_REMAINPOINT( _i, _axPage, mTpvCaps[_i]+_j );
+    }
+    end_foreach_page()
+
+    foreach_page()
+    {
+        logDbg()<<mTpvCaps[_i][_j];
+    }
+    end_foreach_page()
 
     return 0;
 }
 
-int deviceMRQ::beginTpvDownload( int axesId )
+int deviceMRQ::getTpvCap( int ax,
+                          int page )
+{
+    Q_ASSERT( ax >= 0 && ax < axes() );
+    Q_ASSERT( page >= 0 && page < pages() );
+
+    return mTpvCaps[ax][page];
+}
+
+int deviceMRQ::beginTpvDownload( pvt_page )
 {
     int ret;
 
     //! \errant exec mode to cycle
-    checked_call( setMOTIONPLAN_EXECUTEMODE( axesId,
-                                             mMOTIONPLAN_EXECUTEMODE[axesId]
-                                             ) );
+    checked_call( setMOTIONPLAN_EXECUTEMODE( pvt_page_p,
+                                             MRQ_MOTIONPLAN_EXECUTEMODE_1_CYCLE) );
 
-    checked_call( setMOTIONPLAN_PVTCONFIG( axesId, MRQ_MOTIONPLAN_PVTCONFIG_CLEAR ) );
-    checked_call( getMOTIONPLAN_REMAINPOINT( axesId, mMOTIONPLAN_REMAINPOINT + axesId ) );
-    checked_call( setMOTIONPLAN_PVTCONFIG( axesId, MRQ_MOTIONPLAN_PVTCONFIG_START ) );
+    checked_call( setMOTIONPLAN_PVTCONFIG( pvt_page_p, MRQ_MOTIONPLAN_PVTCONFIG_1_CLEAR ) );
+    checked_call( getMOTIONPLAN_REMAINPOINT( pvt_page_p, mMOTIONPLAN_REMAINPOINT[ax]+page ) );
 
-    checked_call( setSYSTEM_REPORTSWITCH( MRQ_SYSTEM_REPORTSWITCH_OFF ) );
+    checked_call( setMOTION_STATEREPORT( ax, MRQ_MOTION_STATEREPORT_QUERY ) );
 
-    setTpvIndex( axesId, 0 );
+    setTpvIndex( ax, page, 0 );
 
     return ret;
 }
 int deviceMRQ::tpvDownload(
-                 int axesId,
+                 pvt_page,
                  int index,
                  f32 t,
                  f32 p,
@@ -731,13 +802,14 @@ int deviceMRQ::tpvDownload(
 {
     int ret;
 
-    checked_call( setMOTIONPLAN_POSITION( axesId, index, p * mPBase ) );
-    checked_call( setMOTIONPLAN_VELOCITY( axesId, index, v * mVBase ) );
-    checked_call( setMOTIONPLAN_TIME( axesId, index, t * mTBase ) );
+    checked_call( setPOSITION_( pvt_page_p, index, p * mPBase ) );
+    checked_call( setVELOCITY_( pvt_page_p, index, v * mVBase ) );
+    checked_call( setTIME_( pvt_page_p, index, t * mTBase ) );
+
 //logWarning()<<axesId<<index<<p<<v<<t;
     return ret;
 }
-int deviceMRQ::tpvDownload( int axesId,
+int deviceMRQ::tpvDownload( pvt_page,
                  QList<tpvRow *> &list,
                  int from,
                  int len )
@@ -745,10 +817,10 @@ int deviceMRQ::tpvDownload( int axesId,
     int ret = 0;
 
     int id = 0;
-    for( int i = 0; i < mMOTIONPLAN_REMAINPOINT[axesId] && i < len && id < list.size(); i++ )
+    for( int i = 0; i < mMOTIONPLAN_REMAINPOINT[ax][page] && i < len && id < list.size(); i++ )
     {
         id = i + from;
-        checked_call( tpvDownload( axesId,
+        checked_call( tpvDownload( pvt_page_p,
                                    i,
                                    list[id]->mT,
                                    list[id]->mP,
@@ -765,71 +837,71 @@ int deviceMRQ::tpvDownload( int axesId,
     return ret;
 }
 
-int deviceMRQ::tpvDownload( int axesId,
+int deviceMRQ::tpvDownload( pvt_page,
                             tpvRow *pItem )
 {
     Q_ASSERT( NULL != pItem );
     int ret;
 
-    checked_call( tpvDownload( axesId,
-                               getTpvIndex(axesId),
+    checked_call( tpvDownload( pvt_page_p,
+                               getTpvIndex(ax,page),
                                pItem->mT,
                                pItem->mP,
                                pItem->mV
                                )
                   );
 
-    accTpvIndex( axesId );
+    accTpvIndex( ax, page );
 
     return ret;
 }
 
-int deviceMRQ::endTpvDownload( int axesId )
+int deviceMRQ::endTpvDownload( pvt_page )
 {
     int ret;
 
-    checked_call( setMOTIONPLAN_PVTCONFIG( axesId, MRQ_MOTIONPLAN_PVTCONFIG_END ) );
+    checked_call( setMOTIONPLAN_PVTCONFIG( pvt_page_p, MRQ_MOTIONPLAN_PVTCONFIG_1_END ) );
 
     return ret;
 }
 
 //! \todo not send end
-int deviceMRQ::tpvDownloadMission( int axesId,
+int deviceMRQ::tpvDownloadMission( pvt_page,
                                    QList<tpvRow *> &list,
                                    int from,
                                    int len )
 {
     int ret;
 
-    checked_call( beginTpvDownload( axesId ) );
+    checked_call( beginTpvDownload( pvt_page_p ) );
 
-    ret = tpvDownload( axesId, list, from, len );
+    ret = tpvDownload( pvt_page_p, list, from, len );
 
-    checked_call( endTpvDownload(axesId) );
+    checked_call( endTpvDownload( pvt_page_p ) );
 
     return ret;
 }
 
-int deviceMRQ::pvtWrite( int axesId,
+int deviceMRQ::pvtWrite( pvt_page,
               QList<tpvRow *> &list,
               int from,
               int len )
 {logDbg();
-    mDownloader[axesId].append( list, from, len );
+    mDownloader[ax].append( list, from, len );
 
-    if ( mDownloader[axesId].isRunning() )
-    {
+    if ( mDownloader[ax].isRunning() )
+    {logDbg();
     }
     else
-    { mDownloader[axesId].start(); }
+    { logDbg();mDownloader[ax].start(); }
 
     return 0;
 }
 
-int deviceMRQ::pvtWrite( int axesId,
+int deviceMRQ::pvtWrite( pvt_page,
               float t1, float p1,
               float t2, float p2 )
-{
+{logDbg()<<t1<<p1<<t2<<p2;
     //! point 1
     tpvRow *pRow1 = new tpvRow();
     if ( NULL == pRow1 )
@@ -857,45 +929,43 @@ int deviceMRQ::pvtWrite( int axesId,
     rotList.append( pRow1 );
     rotList.append( pRow2 );
 
-    return pvtWrite( axesId, rotList );
+    return pvtWrite( pvt_page_p, rotList );
 }
 
-int deviceMRQ::pvtWrite( int axesId,
+int deviceMRQ::pvtWrite( pvt_page,
                          float dT,
                          float dAngle )
 {
-    return pvtWrite( axesId, 0, 0, dT, dAngle );
+    return pvtWrite( pvt_page_p, 0, 0, dT, dAngle );
 }
 
-void deviceMRQ::setTpvIndex( int axesId, int index )
+void deviceMRQ::setTpvIndex( pvt_page, int index )
 {
-    Q_ASSERT( axesId >= 0 && axesId <= sizeof_array(mTpvIndex) );
+    Q_ASSERT( ax >= 0 && ax < axes() );
+    Q_ASSERT( page >= 0 && page < pages() );
 
-    mTpvIndex[ axesId ] = index;
+    mTpvIndex[ ax ][ page ] = index;
 }
-int  deviceMRQ::getTpvIndex( int axesId )
+int  deviceMRQ::getTpvIndex( pvt_page )
 {
-    Q_ASSERT( axesId >= 0 && axesId <= sizeof_array(mTpvIndex) );
+    Q_ASSERT( ax >= 0 && ax < axes() );
+    Q_ASSERT( page >= 0 && page < pages() );
 
-    return mTpvIndex[ axesId ];
+    return mTpvIndex[ ax ][ page ];
 }
-void deviceMRQ::accTpvIndex( int axesId )
+void deviceMRQ::accTpvIndex( pvt_page )
 {
-    Q_ASSERT( axesId >= 0 && axesId <= sizeof_array(mTpvIndex) );
+    Q_ASSERT( ax >= 0 && ax < axes() );
+    Q_ASSERT( page >= 0 && page < pages() );
 
     //! turn around
-    mTpvIndex[axesId]++;
-    if ( mTpvIndex[axesId] >= mTpvCap )
+    mTpvIndex[ax][page]++;
+    if ( mTpvIndex[ax][page] >= mTpvCaps[ax][page] )
     {
-        mTpvIndex[axesId] = 0;
+        mTpvIndex[ax][page] = 0;
     }
     else
     {}
-}
-
-int  deviceMRQ::getTpvCap()
-{
-    return mTpvCap;
 }
 
 void deviceMRQ::terminate( int axesId )
@@ -906,8 +976,8 @@ void deviceMRQ::terminate( int axesId )
     mDownloader[ axesId ].wait();
 
     sysQueue()->postMsg( e_download_terminated,
-                      mDownloader[ axesId ].name(),
-                      mDownloader[ axesId ].axes() );
+                        mDownloader[ axesId ].name(),
+                        mDownloader[ axesId ].axes() );
 }
 
 //! only write no read
@@ -915,7 +985,11 @@ int deviceMRQ::requestMotionState( int axesId )
 {
     int ret;
 
-    ret = m_pBus->write( DEVICE_RECEIVE_ID, mc_MOTION, sc_MOTION_STATE_Q, (byte)axesId );
+    ret = m_pBus->write( DEVICE_RECEIVE_ID,
+                         mc_MOTION,
+                         sc_MOTION_STATE_Q,
+                         (byte)axesId,
+                         (byte)MRQ_MOTION_SWITCH_1_MAIN );
 
     return ret;
 }
@@ -930,12 +1004,53 @@ void deviceMRQ::releaseDownloader()
 }
 
 //! assist api
+int deviceMRQ::prepare( int ax, int page )
+{
+    run( ax );
+
+    lpc( ax )->postMsg(
+                            (eRoboMsg)mrq_msg_prepare,
+                            ax
+                        );
+    return 0;
+}
+
 int deviceMRQ::rotate( int ax, float t, float ang )
 {
     run( ax );
 
-    return pvtWrite( ax, t, ang );
+    return pvtWrite( ax, 0, t, ang );
 }
+
+int deviceMRQ::tpvWrite( int ax,
+              int page,
+              tpvRow *pRows,
+              int n
+              )
+{
+    Q_ASSERT( NULL != pRows );
+
+    QList< tpvRow *> transRows;
+    tpvRow *pRow;
+    for ( int i = 0; i < n; i++ )
+    {
+        pRow = new tpvRow();
+        if ( NULL == pRow )      //! new fail
+        {
+            delete_all(transRows);
+            return -1;
+        }
+
+        //! copy
+        *pRow = pRows[i];
+        pRow->setGc( true );
+
+        transRows.append( pRow );
+    }
+
+    return pvtWrite( ax, page, transRows );
+}
+
 
 int deviceMRQ::fsmState( int ax )
 {

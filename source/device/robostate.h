@@ -63,6 +63,7 @@ public:
 
     virtual void startTimer( int id=0, int tmous=1000 );
     virtual void killTimer( int id=0 );
+    virtual void onTimer( int id );
 
 public:
     void attachCondition( RoboCondition *pCond );

@@ -86,70 +86,34 @@ void pvtEdit::onNetEvent(const QString &name,
         {
             QByteArray ary;
             ary = msg.at(2).toByteArray();
-            onMotionStatus( axes, (MRQ_MOTION_STATE)ary.at(3) );
+            onMotionStatus( axes, (MRQ_MOTION_STATE_2)ary.at(4) );
         }
-    }
-    else if ( msg.getMsg() == e_download_started )
-    {
-        progress()->setRange( 0, 100 );
-        progress()->setWindowTitle( QString("%1-%2").arg(name).arg(axes) );
-        progress()->show();
-
-        ui->btnDown->setEnabled( false );
-    }
-    else if ( msg.getMsg() == e_download_processing )
-    {
-        int now, total;
-
-        now = msg.at(2).toInt();
-        total = msg.at(3).toInt();
-
-        progress()->setRange( 0, total );
-        progress()->setValue( now );
-
-        logDbg()<<now<<total;
-    }
-    else if ( msg.getMsg() == e_download_completed )
-    {
-        progress()->hide();
-        delete progress();
-        m_pProgress = NULL;
-
-        ui->btnDown->setEnabled( true );
-    }
-    else if ( msg.getMsg() == e_download_terminated )
-    {
-        sysLog( msg.at(0).toString(),
-                QString("%1").arg( msg.at(1).toInt()),
-                tr("Terminated") );
-
-        ui->btnDown->setEnabled( true );
     }
     else
     {}
 }
 
-void pvtEdit::onMotionStatus( int axes, MRQ_MOTION_STATE stat )
-{
-    if ( stat == MRQ_MOTION_STATE_IDLE )
+void pvtEdit::onMotionStatus( int axes, MRQ_MOTION_STATE_2 stat )
+{logDbg()<<stat;
+    if ( stat == MRQ_MOTION_STATE_2_IDLE )
     {
         ui->btnDown->setEnabled( true );
         ui->btnStart->setEnabled( false );
         ui->btnStop->setEnabled( false );
     }
-    else if ( stat == MRQ_MOTION_STATE_CALCEND )
+    else if ( stat == MRQ_MOTION_STATE_2_CALCEND )
     {
         ui->btnDown->setEnabled( true );
         ui->btnStart->setEnabled( false );
         ui->btnStop->setEnabled( false );
     }
-    else if ( stat == MRQ_MOTION_STATE_STANDBY )
+    else if ( stat == MRQ_MOTION_STATE_2_STANDBY )
     {
         ui->btnDown->setEnabled( true );
         ui->btnStart->setEnabled( true );
         ui->btnStop->setEnabled( false );
     }
-    else if ( stat == MRQ_MOTION_STATE_RUNNING )
+    else if ( stat == MRQ_MOTION_STATE_2_RUNNING )
     {
         ui->btnDown->setEnabled( false );
         ui->btnStart->setEnabled( false );
@@ -166,9 +130,9 @@ void pvtEdit::onMotionStatus( int axes, MRQ_MOTION_STATE stat )
 void pvtEdit::setupUi()
 {
     //! varialbes
+    ui->cmbPlanMode->addItem( tr("Trapezoid"), ( (int)3 ) );
     ui->cmbPlanMode->addItem( tr("Linear"), ( (int)1 ) );
     ui->cmbPlanMode->addItem( tr("Cubic"), ( (int)0 ) );
-    ui->cmbPlanMode->addItem( tr("Trapezoid"), ( (int)3 ) );
 }
 
 void pvtEdit::buildConnection()
@@ -207,7 +171,7 @@ bool pvtEdit::checkChan()
     //! fail
     else
     {
-        sysError( QString("Invalid Device:%1 %2")
+        sysError( QString( tr("Invalid Device:%1 %2") )
                   .arg(str)
                   .arg(id) );
 
@@ -261,7 +225,7 @@ int pvtEdit::postDownload( appMsg msg, void *pPara )
 
     //! set loop count
     int ret;
-    ret = pMrq->setMOTIONPLAN_CYCLENUM( axesId, ui->spinLoop->value() );
+    ret = pMrq->setMOTIONPLAN_CYCLENUM( axesId, MRQ_MOTION_SWITCH_1_MAIN, ui->spinLoop->value() );
     if ( ret != 0 )
     { return ret; }
 
@@ -269,7 +233,7 @@ int pvtEdit::postDownload( appMsg msg, void *pPara )
     mTpvGroup->getRows( tpvRows );
 
     //! download
-    ret = pMrq->pvtWrite( axesId, tpvRows );
+    ret = pMrq->pvtWrite( axesId, 0, tpvRows );
     if ( ret != 0 )
     { return ret; }
 
@@ -298,12 +262,12 @@ int pvtEdit::postStart( appMsg msg, void *pPara )
                                                                       axesId );
     Q_ASSERT( NULL != pMrq );
 
-    MRQ_MOTION_STATE stat;
+    MRQ_MOTION_STATE_2 stat;
 
-    int ret = pMrq->getMOTION_STATE( axesId, &stat );
+    int ret = pMrq->getMOTION_STATE( axesId, MRQ_MOTION_SWITCH_1_MAIN, &stat );
     if ( ret != 0 )
     { return ret; }
-    if ( stat != MRQ_MOTION_STATE_STANDBY )
+    if ( stat != MRQ_MOTION_STATE_2_STANDBY )
     { return ERR_CAN_NOT_RUN; }
 
     ret = pMrq->run( axesId );
@@ -386,13 +350,13 @@ int pvtEdit::checkLine()
     pRows = mTpvGroup->getRows();
     if ( NULL == pRows )
     {
-        sysError( "Invalid dot" );
+        sysError( tr("Invalid dot") );
         return ERR_INVALID_DATA;
     }
 
     if ( pRows->size() < 2 )
     {
-        sysError( "Invalid dot" );
+        sysError( tr("Invalid dot") );
         return ERR_INVALID_DATA;
     }
 
@@ -406,7 +370,7 @@ int pvtEdit::checkLine()
         //! check input
         if ( pItem->getT() < fT )
         {
-            sysError( "Invalid time at line ", QString::number(i) );
+            sysError( tr("Invalid time at line "), QString::number(i) );
             return ERR_INVALID_DATA;
         }
         else
@@ -453,7 +417,7 @@ int pvtEdit::compileLine()
                      mTVs );
     if ( ret != 0 )
     {
-        sysError("compile fail");
+        sysError( tr("build fail") );
         return ret;
     }
     else
@@ -470,6 +434,48 @@ void pvtEdit::updatePlot()
     m_pPlot->setCurve( tr("t-p"), mTPs );
     m_pPlot->setCurve( tr("t-v"), mTVs );
 
+    //! dump t-pv
+    Q_ASSERT( mTPs.size() == mTVs.size() );
+    Q_ASSERT( mTPs.size() > 0 );
+
+    int size = mTPs.size();
+    double *pT, *pP, *pV;
+    pT = NULL;
+    pP = NULL;
+    pV = NULL;
+
+    do
+    {
+        pT = new double[ size ];
+        pP = new double[ size ];
+        pV = new double[ size ];
+
+        if ( NULL == pT || NULL == pP || NULL == pV )
+        { break; }
+
+        //! export
+        for ( int i = 0; i < size; i++ )
+        {
+            pT[i] = mTPs.at(i).x();
+            pP[i] = mTPs.at(i).y();
+            pV[i] = mTVs.at(i).y();
+        }
+
+        //! plot
+        double *pv[]={ pP, pV };
+        int skipYs[ ] = { 1,1 } ;
+
+        QStringList names;
+        names<<"p"<<"v";
+        m_pPlot->setCurves( "t-pv",
+                            names,
+                           pT, 1,
+                           pv, skipYs,
+                           sizeof_array(skipYs),
+                           size );
+    }while( 0 );
+
+    gc_array3( pT, pP, pV );
 }
 
 void pvtEdit::on_btnBuild_clicked()
@@ -477,7 +483,7 @@ void pvtEdit::on_btnBuild_clicked()
     int ret = buildLine();
     if ( ret == 0 )
     {
-        sysLog( "Line build completed", QString::number( mTPs.size()), QString::number( mTVs.size() ) );
+        sysLog( tr("Line build completed"), QString::number( mTPs.size()), QString::number( mTVs.size() ) );
         emit sigLineChanged();
     }
 }
@@ -608,7 +614,7 @@ void pvtEdit::on_spinLoop_valueChanged(int arg1)
                                                                       axesId );
     Q_ASSERT( NULL != pMrq );
 
-    pMrq->setMOTIONPLAN_CYCLENUM( axesId, arg1 );
+    pMrq->setMOTIONPLAN_CYCLENUM( axesId, MRQ_MOTION_SWITCH_1_MAIN, arg1 );
 }
 
 void pvtEdit::on_btnPref_clicked()

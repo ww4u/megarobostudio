@@ -4,13 +4,6 @@
 
 static sysRunTime _sysRunTime;
 
-void attachSysLog( QWidget *pLogWig )
-{
-    Q_ASSERT( NULL != pLogWig );
-
-    _sysRunTime.m_pSysLog = pLogWig;
-}
-
 void _sysLog( const QString &preStr,
               const QString &str,
               const QString &str1,
@@ -19,26 +12,23 @@ void _sysLog( const QString &preStr,
               const QString &str4
               )
 {
-    if ( NULL != _sysRunTime.m_pSysLog )
+    //! pre
+    QString catedString = preStr;
+
+    if ( str.length() > 0 )
+    { catedString += " " + str; }
+    if ( str1.length() > 0 )
+    { catedString += " " + str1; }
+    if ( str2.length() > 0 )
+    { catedString += " " + str2; }
+    if ( str3.length() > 0 )
+    { catedString += " " + str3; }
+    if ( str4.length() > 0 )
+    { catedString += " " + str4; }
+
+    if ( catedString.length() > 0 && sysQueue()!= NULL )
     {
-        //! pre
-        QString catedString = preStr;
-
-        if ( str.length() > 0 )
-        { catedString += " " + str; }
-        if ( str1.length() > 0 )
-        { catedString += " " + str1; }
-        if ( str2.length() > 0 )
-        { catedString += " " + str2; }
-        if ( str3.length() > 0 )
-        { catedString += " " + str3; }
-        if ( str4.length() > 0 )
-        { catedString += " " + str4; }
-
-        if ( catedString.length() > 0 )
-        {
-            (( logOut*)_sysRunTime.m_pSysLog)->logIn( catedString );
-        }
+        sysQueue()->postMsg( e_logout, catedString );
     }
 }
 
@@ -72,6 +62,24 @@ void sysError( const QString &str,
     _sysLog( "!!!Error", str, str1, str2, str3, str4 );
 }
 
+void sysProgress( int n,
+                  const QString &info,
+                  int ma, int mi
+                   )
+{
+    sysQueue()->postMsg( e_progress_para, mi, ma, n, info );
+
+}
+void sysProgress( bool b )
+{
+    sysQueue()->postMsg( e_progress_visible, b);
+}
+
+void sysStatus( const QString &str )
+{
+    sysQueue()->postMsg( e_status, str );
+}
+
 void attachSysQueue( RoboMsgThread* pQueue )
 {
     Q_ASSERT( NULL != pQueue );
@@ -79,6 +87,4 @@ void attachSysQueue( RoboMsgThread* pQueue )
 }
 
 RoboMsgThread* sysQueue()
-{
-    return _sysRunTime.m_pSysQueue;
-}
+{ return _sysRunTime.m_pSysQueue; }

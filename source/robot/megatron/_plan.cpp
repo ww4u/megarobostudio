@@ -1,14 +1,13 @@
 #include "megatron.h"
 
 
-
-int robotMegatron::buildTrace( WorldPoint &pt1, WorldPoint &pt2, float dt,
-                               xxxGroup<jointsTrace> &jointsPlan )
+int robotMegatron::buildTrace( QList<TraceKeyPoint> &curve,
+                xxxGroup<jointsTrace> &jointsPlan )
 {
     int ret;
 
     xxxGroup<tracePoint> tracePlan;
-    ret = planTrace( pt1, pt2, dt, tracePlan );
+    ret = planTrace( curve, tracePlan );
     if ( ret != 0 )
     { return ret; }
 
@@ -19,38 +18,33 @@ int robotMegatron::buildTrace( WorldPoint &pt1, WorldPoint &pt2, float dt,
     return 0;
 }
 
-int robotMegatron::planTrace( WorldPoint &pt1,
-          WorldPoint &pt2,
-          float dt,
-          xxxGroup<tracePoint> &tracePlan
-          )
+int robotMegatron::planTrace( QList<TraceKeyPoint> &curve,
+                              xxxGroup<tracePoint> &tracePlan )
 {
     xxxGroup<endPoint> endPoints;
 
-    if ( 0 != endPoints.alloc( 2 ) )
+    //! alloc
+    if ( 0 != endPoints.alloc( curve.size() ) )
     { return ERR_ALLOC_FAIL; }
 
     //! fill 0
-    memset( endPoints.data(), 0, sizeof(endPoints)*2 );
+    memset( endPoints.data(), 0, sizeof(endPoints)*curve.size() );
 
     //! interp fill
-    for ( int i = 0; i < 2; i++ )
+    for ( int i = 0; i < curve.size(); i++ )
     { endPoints.data()[i].flagInterp = 1; }
 
-    //! fill data
-    endPoints.data()[0].x = pt1.x;
-    endPoints.data()[0].y = pt1.y;
-    endPoints.data()[0].z = pt1.z;
-    endPoints.data()[0].t = 0;
-
-    endPoints.data()[1].x = pt2.x;
-    endPoints.data()[1].y = pt2.y;
-    endPoints.data()[1].z = pt2.z;
-    endPoints.data()[1].t = dt;
+    for( int i = 0; i < curve.size(); i++ )
+    {
+        endPoints.data()[i].x = curve.at( i ).x;
+        endPoints.data()[i].y = curve.at( i ).y;
+        endPoints.data()[i].z = curve.at( i ).z;
+        endPoints.data()[i].t = curve.at( i ).t;
+    }
 
     int xyzResLen;
     int ret = ns_pathplan::GetPvtLen( &endPoints.data()->datas,
-                                      2,
+                                      curve.size(),
                                       mPlanStep,
                                       mPlanMode,
                                       &xyzResLen );
@@ -75,6 +69,7 @@ int robotMegatron::planTrace( WorldPoint &pt1,
     return 0;
 }
 
+
 #define ref_angle(id)   mRefAngles.at(id)
 #define rot_angle(id)   mRotateAngles.at(id)
 #define arm_len(id)     mArmLengths.at(id)
@@ -95,7 +90,7 @@ int robotMegatron::planTrace( WorldPoint &pt1,
                                                 arm_len( id6 ),
 
 int robotMegatron::splitTrace( xxxGroup<tracePoint> &tracePoints,
-           xxxGroup<jointsTrace> &traceJoints )
+                                xxxGroup<jointsTrace> &traceJoints )
 {
     jointsAngle refAngle={ ref_angles(0,1,2,3) };       //! \todo ref angle by now
     jointsAngle convertAngle={ rot_angles(0,1,2,3) };

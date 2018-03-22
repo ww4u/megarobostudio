@@ -55,7 +55,7 @@ int CANBus::open( int devType, int devId, int canId )
     if ( !mApi.load( fullPath) )
     {
         sysLog( fullPath );
-        sysError( dllName, "load fail" );
+        sysError( dllName, QObject::tr("load fail") );
         sysError( mApi.mDll.errorString() );
         return -1;
     }
@@ -63,7 +63,7 @@ int CANBus::open( int devType, int devId, int canId )
     mHandle = mApi.open( mDevType, mDevId, mCanId );
     if ( mHandle != 1 )
     {
-        sysError( "can open fail" );
+        sysError( QObject::tr("can open fail") );
         return -2;
     }
 
@@ -135,7 +135,7 @@ int CANBus::initBus()
     int speedId = matchSpeed( mSpeed );
     if ( speedId < 0 )
     {
-        sysError( "Invalid speed", QString::number(mSpeed) );
+        sysError( QObject::tr("Invalid speed"), QString::number(mSpeed) );
         return -1;
     }
 
@@ -146,7 +146,7 @@ int CANBus::initBus()
     int ret = mApi.init( mDevType, mDevId, mCanId, &canConfig );
     if ( ret != 1 )
     {
-        sysError( "Can init fail" );
+        sysError( QObject::tr("Can init fail") );
         return -1;
     }
 

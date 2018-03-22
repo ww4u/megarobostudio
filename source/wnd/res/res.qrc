@@ -102,13 +102,16 @@
 <file>image/logo/full.png</file>
 <file>image/logo/m.png</file>
 
+<file>image/joint/kinematic_hand.png</file>
 <file>image/joint/kinematic_b_a.png</file>
 <file>image/joint/kinematic_s_a.png</file>
 <file>image/joint/kinematic_base.png</file>
 <file>image/joint/kinematic_wrist.png</file>
 
-        <file>qss/black.qss</file>
-        <file>qss/white.qss</file>
+<file>image/slice/down_arrow.png</file>
+<file>image/slice/down_arrow_disabled.png</file>
+
+<!--        <file>qss/mega.qss</file>-->
 
     </qresource>
 </RCC>

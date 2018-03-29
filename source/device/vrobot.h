@@ -4,17 +4,17 @@
 #include <QtCore>
 #include <QImage>
 
-#include "../../../include/mccfg.h"
-#include "../../sys/sysapi.h"
+#include "../../include/mccfg.h"
+#include "../sys/sysapi.h"
 
 #include "vdevice.h"
 #include "roboworker.h"
 #include "robostate.h"
 
-#include "../../bus/receivecache.h"
+#include "../bus/receivecache.h"
 
-#include "../../model/tpvgroup.h"
-#include "../../model/motiongroup.h"
+#include "../model/tpvgroup.h"
+#include "../model/motiongroup.h"
 
 
 //! \todo setup
@@ -41,6 +41,9 @@ public:
         robot_raw = 256,
         robot_qubeley = 256,
         robot_geogoog,
+        robot_geogoog_8,
+        robot_geogoog_10,
+        robot_geogoog_5_1,
 
         robot_complex = 1024,
         robot_motor = 1024,
@@ -48,6 +51,7 @@ public:
         robot_slide2,
         robot_delta,
         robot_megatron,
+        robot_sinanju,
 
         robot_user = 65536,
     };
@@ -55,6 +59,9 @@ public:
 public:
     VRobot();
     virtual ~VRobot();
+
+    virtual void postCtor();    //! post ctor after the sub ctor completed
+
 protected:
     void gcWorker();
 
@@ -90,25 +97,19 @@ public:
     virtual int transform( int axes = 0 );
 
     //! for robot -- axes is joint
-    virtual int download( tpvGroup *pGroup, int page = 0, int axes = 0 );
-    virtual int download( motionGroup *pGroup, int page = 0, int axes = 0 );
+    virtual int download( tpvGroup *pGroup, const tpvRegion &region );
+    virtual int download( motionGroup *pGroup, const tpvRegion &region );
 
     virtual int download( QList<tpvGroup*> &groups,
-                          QList<int> &joints );
-//    virtual int download(  QList< double *> &tList, QList<int> &skipTList,
-//                           QList< double *> &pList, QList<int> &skipPList,
-//                           QList< double *> &vList, QList<int> &skipVList,
-//                           int count );
+                          QList<int> &joints,
+                          const tpvRegion &region );
 
     virtual int download( VRobot *pSetup );
 
-    virtual int run( int axes  );
-    virtual int stop( int axes  );
+    virtual int run( const tpvRegion &region=0  );
+    virtual int stop( const tpvRegion &region=0  );
 
-    virtual int run( );
-    virtual int stop( );
-
-    virtual int setLoop( int n );
+    virtual int setLoop( int n, const tpvRegion &region=0 );
     virtual int loopNow();
 
     virtual void startTimer( void *pContext, int id=0, int tmous=1000 );
@@ -116,32 +117,67 @@ public:
     virtual void onTimer( void *pContext, int id );
 
     //! condition
-    //! sub ax
-    virtual void attachCondition( int subAxes,
+    virtual void attachCondition( const tpvRegion &region,
                                   MegaDevice::RoboCondition *pCond );
-    virtual bool waitCondition( int subAxes,
+    virtual bool waitCondition( const tpvRegion &region,
                                 MegaDevice::RoboCondition *pCond,
                                 int tmoms=-1 );
 
     //! entity
-    virtual void attachCondition(
-                                  MegaDevice::RoboCondition *pCond );
-    virtual bool waitCondition(
-                                MegaDevice::RoboCondition *pCond,
-                                int tmoms=-1 );
+//    virtual void attachCondition(
+//                                  MegaDevice::RoboCondition *pCond );
+//    virtual bool waitCondition(
+//                                MegaDevice::RoboCondition *pCond,
+//                                int tmoms=-1 );
 
 public:
     //! prop
     QString& getClass();
+    QString& getDetail();
+
     robotEnum getId();
     robotEnum robotId();
 
+
+    //! configs
     int setAxes(int n);
-    int getAxes();
     int axes();
 
-    void setPages( int page );
-    int pages();
+    void setRegions( int page );
+    int regions();
+
+    void setDcAxes( int n );
+    int dcAxes();
+
+    void setDOs( int n );
+    int dos();
+
+    void setDIs( int n );
+    int dis();
+
+    void setIsos( int n );
+    int isos();
+
+    void setIsis( int n );
+    int isis();
+
+    void setAins( int n );
+    int ains();
+
+    void setMosos( int n );
+    int mosos();
+
+    void setEncoders( int n );
+    int encoders();
+
+    void setTemperatures( int n);
+    int temperatures();
+
+    void setUarts( int n );
+    int uarts();
+
+    void setUartSensors( int n );
+    int uartSensors();
 
     QImage & getImage();
 
@@ -151,9 +187,8 @@ public:
     virtual QAbstractTableModel *handActions();
 
     //! MOTION_STAUS
-    virtual void setStatus( int stat, int ch = 0, int page = 0 );
-    int getStatus( int ch = 0 );
-    int status( int ch = 0 );
+    virtual void setStatus( int stat, const tpvRegion &region );
+    int status( const tpvRegion &region );
 
     void setInstMgr( MegaDevice::InstMgr *pMgr );
     MegaDevice::InstMgr *getInstMgr();
@@ -190,12 +225,15 @@ protected:
     VRobot * subRobot( int index, int *pAxes );
 
 protected:
-    int mAxes, mPages;                  //! configs
+    int mAxes, mRegions;                //! configs
+    int mDCAxes;
 
-    int mDOs, mDIs, mISOs, mISIs, mAINs, mUARTs;
+    int mDOs, mDIs, mISOs, mISIs, mAINs, mMosos;
+    int mEncoders, mTemperatures, mUARTs, mUART_Sensors;
 
 public:
     QString mClass;                     //! robot class
+    QString mDetail;
     robotEnum mId;
     QImage mImage;                      //! device image
 
@@ -203,7 +241,7 @@ public:
 
     double mTBase, mPBase, mVBase;      //! tune info
 
-    QMap<int, int> mRobotStatus;        //! status
+    QMap<tpvRegion, int> mRobotStatus;  //! status
 
                                         //! groupId
     int mSubGroup;
@@ -211,6 +249,7 @@ public:
 
     QStringList mAxesConnectionName;    //! connected to device
     QStringList mJointName;             //! by config
+    QList<bool> mJointAngleMask;        //! angles for each joint
 
     QList <double> mRefAngles;          //! ref angles for each joint by joint id
     QList <double> mRotateAngles;       //! rotate angle for the coordinate

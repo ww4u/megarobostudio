@@ -14,6 +14,8 @@ RoboHand::RoboHand(QWidget *parent) :
 //    handActionModel *pModel;
 //    pModel = new handActionModel();
 //    ui->tableView->setModel( pModel );
+
+    SET_INFO_ATTR();
 }
 
 RoboHand::~RoboHand()

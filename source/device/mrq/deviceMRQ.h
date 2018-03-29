@@ -15,14 +15,19 @@
 
 #include "devicemrq_msg.h"
 
-#define pvt_page    int ax, int page
+#define pvt_region        const tpvRegion &region
+#define pvt_region_p      region
+
+#define DELOAD_REGION()   int ax = region.axes();\
+                        int page = region.page();
+
 #define pvt_page_p  ax, (MRQ_MOTION_SWITCH_1)page
 
 #define foreach_page( )     for ( byte _i = 0; _i < axes(); _i++ )\
                             { \
                                 MRQ_MOTION_SWITCH_1 _axPage=MRQ_MOTION_SWITCH_1_MAIN; \
                                 for ( int _j = 0; \
-                                      ( _axPage = (MRQ_MOTION_SWITCH_1)_j, _j < pages() ); \
+                                      ( _axPage = (MRQ_MOTION_SWITCH_1)_j, _j < regions() ); \
                                       _j++ )
 
 
@@ -30,14 +35,15 @@
 
 #define MRQ_AX_PAGE     MRQ_MOTION_SWITCH_1
 
-#define MRQ_MOTION_STATE    MRQ_MOTION_STATE_2
-#define MRQ_MOTION_STATE_POWERON MRQ_MOTION_STATE_2_POWERON
-#define MRQ_MOTION_STATE_IDLE MRQ_MOTION_STATE_2_IDLE
-#define MRQ_MOTION_STATE_CALCING MRQ_MOTION_STATE_2_CALCING
-#define MRQ_MOTION_STATE_CALCEND MRQ_MOTION_STATE_2_CALCEND
-#define MRQ_MOTION_STATE_STANDBY MRQ_MOTION_STATE_2_STANDBY
-#define MRQ_MOTION_STATE_RUNNING MRQ_MOTION_STATE_2_RUNNING
-#define MRQ_MOTION_STATE_ERROR MRQ_MOTION_STATE_2_ERROR
+#define MRQ_MOTION_STATE            MRQ_MOTION_STATE_2
+#define MRQ_MOTION_STATE_POWERON    MRQ_MOTION_STATE_2_POWERON
+#define MRQ_MOTION_STATE_IDLE       MRQ_MOTION_STATE_2_IDLE
+#define MRQ_MOTION_STATE_CALCING    MRQ_MOTION_STATE_2_CALCING
+#define MRQ_MOTION_STATE_CALCEND    MRQ_MOTION_STATE_2_CALCEND
+#define MRQ_MOTION_STATE_STANDBY    MRQ_MOTION_STATE_2_STANDBY
+#define MRQ_MOTION_STATE_RUNNING    MRQ_MOTION_STATE_2_RUNNING
+#define MRQ_MOTION_STATE_ERROR      MRQ_MOTION_STATE_2_ERROR
+
 namespace MegaDevice
 {
 
@@ -48,12 +54,13 @@ public:
     deviceMRQ();
     ~deviceMRQ();
 
+    virtual void postCtor();
+    //! override
 public:
     virtual const void* loadScpiCmd();
 
     virtual int setDeviceId(DeviceId &id, int siblingCnt );
 
-    //! override
 public:
     //! overwrite
     void setName( const QString &strName );
@@ -70,6 +77,7 @@ protected:
 
 public:
     virtual void rst();
+    virtual int uploadBaseInfo();
     virtual int upload();
 
 public:
@@ -86,7 +94,7 @@ public:
 
     QString loadName();
 
-    //! override
+    //! overwrite
 public:
     int getREPORT_DATA_( byte val0
     ,MRQ_REPORT_STATE val1, quint8 * val2, bool bQuery=true );
@@ -100,105 +108,113 @@ public:
     QMetaType::Type getREPORT_TYPE( MRQ_REPORT_STATE stat );
 
 public:
-    float getAngle( int ax );
+    float getIncAngle( int ax );
+    float getAbsAngle( int ax );
     float getDist( int ax );
 
     float getSensor( int ax, int dataId );
 
 public:
-    //! pvt
+    //! pvt ops
     int loadTpvCap();
-    int getTpvCap( int ax, int page = 0 );
+    int getTpvCap( pvt_region );
 
-    int beginTpvDownload( pvt_page );
+    int beginTpvDownload( pvt_region );
     int tpvDownload(
-                     pvt_page,
+                     pvt_region,
                      int index,
                      f32 t,
                      f32 p,
                      f32 v );
-    int tpvDownload( pvt_page,
+    int tpvDownload( pvt_region,
                      QList<tpvRow *> &list,
                      int from,
                      int len );
 
-    int tpvDownload( pvt_page,
+    int tpvDownload( pvt_region,
                      tpvRow *pItem );
 
-    int endTpvDownload( pvt_page );
+    int endTpvDownload( pvt_region );
 
-    int tpvDownloadMission( pvt_page,
+    int tpvDownloadMission( pvt_region,
                             QList<tpvRow *> &list,
                             int from,
                             int len );
-    int pvtWrite( pvt_page,
+    int pvtWrite( pvt_region,
                   QList<tpvRow *> &list,
                   int from = 0,
                   int len = -1 );
 
-    int pvtWrite( pvt_page,
+    int pvtWrite( pvt_region,
                   float t1, float p1,
                   float t2, float p2 );
 
-    int pvtWrite( pvt_page,
+    int pvtWrite( pvt_region,
                   float dT,
                   float dAngle );
+    int pvtWrite( pvt_region,
+                  tpvRow *pRows,
+                  int n
+                  );
 
-    void setTpvIndex( pvt_page, int index );
-    int  getTpvIndex( pvt_page );
-    void accTpvIndex( pvt_page );
+    void setTpvIndex( pvt_region, int index );
+    int  getTpvIndex( pvt_region );
+    void accTpvIndex( pvt_region );
 
-    void terminate( int axesId );
+    void terminate( pvt_region );
 
-    int requestMotionState( int axesId );
+    int requestMotionState( pvt_region );
 
     void acquireDownloader();
     void releaseDownloader();
 
 public:
-    int prepare( int ax, int page = 0 );
-    int rotate( int as, float t, float ang );
-    int tpvWrite( int ax,
-                  int page,
-                  tpvRow *pRows,
-                  int n
-                  );
+    int call( pvt_region );
+    int rotate( pvt_region, float t, float ang );
 
-    int fsmState( int ax );
+
+    int fsmState( pvt_region );
 
 public:
-    virtual int run(int axes);
-    virtual int stop(int axes);
+    virtual int run( const tpvRegion &reg=tpvRegion() );
+    virtual int stop( const tpvRegion &reg=tpvRegion() );
 
-    virtual void setStatus( int stat, int ch = 0, int page = 0 );
+    virtual void setStatus( int stat, const tpvRegion &reg );
 public:
     virtual void onMsg( int subAxes, RoboMsg &msg );
     virtual void onTimer( void *pContext, int id );
 
-    virtual void attachCondition( int subAxes,
+    virtual void attachCondition( const tpvRegion &region,
                                   RoboCondition *pCond );
-    virtual bool waitCondition( int subAxes,
+    virtual bool waitCondition( const tpvRegion &region,
                                 RoboCondition *pCond,
                                 int tmoms=-1 );
 
-    RoboFsm *Fsm( int ax );
+    RoboFsm *Fsm( const tpvRegion &region );
 
-    deviceMotor *Motor( int ax );
+    deviceProxyMotor *Motor( const tpvRegion &region );
+    tpvDownloader *downloader( const tpvRegion &region );
 
 protected:
-    int mTpvIndex[4][10];           //! 4 axes
-    uint16 mTpvCaps[4][10];
+//    int mTpvIndex[4][10];           //! 4 axes
+//    uint16 mTpvCaps[4][10];
 
+    QMap< tpvRegion, int > mTpvIndexes;
+    QMap< tpvRegion, int > mTpvCaps;
 
-                            //! by ax && by pages
-//    QList< QList<int>* > mTpvCaps;
+//    tpvDownloader mDownloader[4];
 
-    tpvDownloader mDownloader[4];
+    QMap< int, tpvDownloader * > mDownloaders;
+
     QSemaphore mDownloaderSema;
 
-    MrqFsm mMrqFsms[4];
+//    MrqFsm mMrqFsms[4];
 
-    deviceMotor mMotors[4];
+    QMap< tpvRegion, MrqFsm* > mMrqFsms;
+//    mMrqFsms.
+
+//    deviceProxyMotor mMotors[4];
+    QMap< tpvRegion, deviceProxyMotor * > mProxyMotors;
 };
 
 }

@@ -1,0 +1,35 @@
+#ifndef ROBOCOMPREF_H
+#define ROBOCOMPREF_H
+
+#include <QtWidgets>
+#include "modelview.h"
+namespace Ui {
+class RoboComPref;
+}
+
+class RoboComPref : public modelView
+{
+    Q_OBJECT
+
+public:
+    explicit RoboComPref(QWidget *parent = 0);
+    ~RoboComPref();
+
+public:
+    virtual void setModelObj( mcModelObj *pObj );
+    virtual int setApply();
+
+protected:
+    void updateUi();
+    void updateData();
+
+    int applyGroupId();
+
+private:
+    Ui::RoboComPref *ui;
+
+    QIntValidator *m_pGroupIdValidaor;
+    QIntValidator *m_pGroupSubIdValidator;
+};
+
+#endif // ROBOCOMPREF_H

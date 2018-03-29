@@ -26,6 +26,7 @@ void instServer::dataOut( void *pPara, const char *data, int len )
 
     QTcpSocket *pSocket = (QTcpSocket*)pPara;
     pSocket->write( data, len );
+    pSocket->flush();
 }
 
 void instServer::setObjPara( const QString &name, void *pPara )
@@ -62,7 +63,7 @@ void instServer::slot_readyRead( QObject *pObj )
     Q_ASSERT( NULL != pObj );
 
     QTcpSocket *pSocket = (QTcpSocket *)pObj;
-qDebug()<<__FUNCTION__<<__LINE__;
+//qDebug()<<__FUNCTION__<<__LINE__;
     //! set obj name
     //! do not set name
     if ( pSocket->objectName().length() < 1 )
@@ -80,8 +81,11 @@ qDebug()<<__FUNCTION__<<__LINE__;
     {
         //! according the name
         QByteArray ary = pSocket->readAll();
-        dataIn( pSocket, pObj->objectName(), ary );
-        qDebug()<<__FUNCTION__<<__LINE__<<ary;
+        if ( ary.length() >  0 )
+        {
+            qDebug()<<__FUNCTION__<<__LINE__<<ary;
+            dataIn( pSocket, pObj->objectName(), ary );
+        }
     }
 }
 

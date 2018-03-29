@@ -23,8 +23,14 @@ mrqSensor::~mrqSensor()
 
 int mrqSensor::setApply()
 {
-//    return apply();
-    return 0;
+    int ret = apply();
+
+    if ( ret != 0 )
+    { sysError( tr("Sensor apply fail" )); }
+    else
+    { sysLog( tr("Sensor apply success") ); }
+
+    return ret;
 }
 
 void mrqSensor::modelChanged()
@@ -44,91 +50,90 @@ int mrqSensor::apply()
     MRQ_SENSORUART_BAUD sensPort;
     MRQ_IDENTITY_LABEL_1 subSens;
 
-    sensPort = (MRQ_SENSORUART_BAUD)ui->cmbPort->currentIndex();
-    subSens = (MRQ_IDENTITY_LABEL_1)ui->cmbSensor->currentIndex();
-
     int ret;
-    //! port
-    checked_call( pDevice->setSENSORUART_BAUD( sensPort,
-                                 (MRQ_RS232_BAUD)ui->cmbBaud->currentIndex() ) );
+    uartConfig uCfg;
+    subUartConfig suCfg;
+    for ( int i = 0; i < 2; i++ )
+    {
+        ((MrqSensorPage*)ui->tabWidget->widget( i ))->getUartConfig( uCfg );
 
-    checked_call( pDevice->setSENSORUART_WORDLEN( sensPort,
-                                    (MRQ_RS232_WORDLEN)ui->cmbDataLen->currentIndex() ) );
+        sensPort = (MRQ_SENSORUART_BAUD)i;
 
-    checked_call( pDevice->setSENSORUART_PARITY( sensPort,
-                                   (MRQ_RS232_PARITY)ui->cmbParity->currentIndex() ) );
-    checked_call( pDevice->setSENSORUART_STOPBIT( sensPort,
-                                    (MRQ_RS232_STOPBIT)ui->cmbStop->currentIndex() ) );
-    checked_call( pDevice->setSENSORUART_FLOWCTL( sensPort,
-                                    (MRQ_RS232_FLOWCTL)ui->cmbFlow->currentIndex() ) );
+        //! port
+        checked_call( pDevice->setSENSORUART_BAUD( sensPort,
+                                     (MRQ_SENSORUART_BAUD_1)uCfg.mBaudInd ) );
 
-    //! sens
-    checked_call( pDevice->setSENSORUART_SOF( sensPort, subSens, ui->spinSof->value() ) );
-    checked_call( pDevice->setSENSORUART_FRAMELEN( sensPort, subSens, ui->spinFrameLen->value() ) );
-    checked_call( pDevice->setSENSORUART_RECEIVENUM( sensPort, subSens, ui->spinReceiveLen->value() ) );
-    checked_call( pDevice->setSENSORUART_SWITCHTIME( sensPort, subSens,
-                                                     comAssist::align( ui->spinInvterval->value(), interval_unit_time) ) );
+        checked_call( pDevice->setSENSORUART_WORDLEN( sensPort,
+                                        (MRQ_RS232_WORDLEN)uCfg.mDataInd ) );
 
-    checked_call( pDevice->setSENSORUART_STATE( sensPort,
-                                                subSens,
-                                                (MRQ_SYSTEM_DIOREFREAD)ui->chkSensor->isChecked() ) );
+        checked_call( pDevice->setSENSORUART_PARITY( sensPort,
+                                       (MRQ_RS232_PARITY)uCfg.mParityInd ) );
+        checked_call( pDevice->setSENSORUART_STOPBIT( sensPort,
+                                        (MRQ_RS232_STOPBIT)uCfg.mStopInd ) );
+        checked_call( pDevice->setSENSORUART_FLOWCTL( sensPort,
+                                        (MRQ_RS232_FLOWCTL)uCfg.mFlowInd ) );
 
-    checked_call( pDevice->setSENSORUART_APPLYPARA( sensPort ) );
+        for ( int j = 0; j < 4; j++ )
+        {
+            ((MrqSensorPage*)ui->tabWidget->widget( i ))->getSubUartConfig( j, suCfg );
+
+            subSens = (MRQ_IDENTITY_LABEL_1)j;
+
+            //! sens
+            checked_call( pDevice->setSENSORUART_SOF( sensPort, subSens, suCfg.mSof ) );
+            checked_call( pDevice->setSENSORUART_FRAMELEN( sensPort, subSens, suCfg.mLength ) );
+            checked_call( pDevice->setSENSORUART_RECEIVENUM( sensPort, subSens, suCfg.mReceiveNum ) );
+            checked_call( pDevice->setSENSORUART_SWITCHTIME( sensPort, subSens,
+                                                             comAssist::align( suCfg.mInterval, interval_unit_time) ) );
+
+            checked_call( pDevice->setSENSORUART_STATE( sensPort,
+                                                        subSens,
+                                                        (MRQ_CAN_NETMANAGELED)suCfg.mbOnOff ) );
+
+        }
+
+        checked_call( pDevice->setSENSORUART_APPLYPARA( sensPort ) );
+    }
 
     return ret;
 }
 
 int mrqSensor::updateUi()
 {
-    //! update by uart && s
-    int uartId, sId;
-
-    uartId = ui->cmbPort->currentIndex();
-    sId = ui->cmbSensor->currentIndex();
-
-    //! get device
+    Q_ASSERT( m_pMrqModel != NULL );
     MegaDevice::deviceMRQ *pDevice;
-    pDevice = getDevice();
-    Q_ASSERT( NULL != pDevice );
-
-    Q_ASSERT( uartId < sizeof_array(pDevice->mSENSORUART_BAUD) );
-    Q_ASSERT( sId < sizeof_array(pDevice->mSENSORUART_STATE[0]) );
+    pDevice = m_pMrqModel;
 
     MegaDevice::MRQ_model *pModel = pDevice->getModel();
 
-    ui->cmbBaud->setCurrentIndex(  pModel->mSENSORUART_BAUD[uartId]  );
-    ui->cmbDataLen->setCurrentIndex( pModel->mSENSORUART_WORDLEN[uartId] );
-    ui->cmbParity->setCurrentIndex( pModel->mSENSORUART_PARITY[uartId] );
-    ui->cmbStop->setCurrentIndex( pModel->mSENSORUART_STOPBIT[uartId] );
-    ui->cmbFlow->setCurrentIndex( pModel->mSENSORUART_FLOWCTL[uartId] );
+    uartConfig uCfg;
+    subUartConfig suCfg;
+    for ( int i = 0; i < 2; i++ )
+    {
+        //! uart
+        uCfg.mBaudInd = pModel->mSENSORUART_BAUD[i];
+        uCfg.mDataInd = pModel->mSENSORUART_WORDLEN[i];
+        uCfg.mParityInd = pModel->mSENSORUART_PARITY[i];
+        uCfg.mStopInd = pModel->mSENSORUART_STOPBIT[i];
 
-    ui->chkSensor->setChecked( pModel->mSENSORUART_STATE[uartId][sId] );
-    ui->spinSof->setValue( pModel->mSENSORUART_SOF[uartId][sId] );
-    ui->spinFrameLen->setValue( pModel->mSENSORUART_FRAMELEN[uartId][sId] );
-    ui->spinReceiveLen->setValue( pModel->mSENSORUART_RECEIVENUM[uartId][sId] );
-    ui->spinInvterval->setValue( pModel->mSENSORUART_SWITCHTIME[uartId][sId]*interval_unit_time );
+        uCfg.mFlowInd = pModel->mSENSORUART_FLOWCTL[i];
+
+        ((MrqSensorPage*)ui->tabWidget->widget( i ))->setUartConfig( uCfg );
+
+        //! sub uart
+        for ( int j = 0; j < 4; j++ )
+        {
+            suCfg.mbOnOff = pModel->mSENSORUART_STATE[i][j];
+            suCfg.mSof = pModel->mSENSORUART_SOF[i][j];
+            suCfg.mLength = pModel->mSENSORUART_FRAMELEN[i][j];
+            suCfg.mReceiveNum = pModel->mSENSORUART_RECEIVENUM[i][j];
+
+            suCfg.mInterval = pModel->mSENSORUART_SWITCHTIME[i][j]*interval_unit_time;
+
+            ((MrqSensorPage*)ui->tabWidget->widget( i ))->setSubUartConfig( j, suCfg );
+        }
+    }
 
     return 0;
 }
 
-void mrqSensor::on_btnApply_clicked()
-{
-    int ret;
-
-    ret = apply();
-
-    if ( ret != 0 )
-    { sysError( tr("Sensor apply fail" )); }
-    else
-    { sysLog( tr("Sensor apply success") ); }
-}
-
-void mrqSensor::on_cmbPort_currentIndexChanged(int index)
-{
-    updateUi();
-}
-
-void mrqSensor::on_cmbSensor_currentIndexChanged(int index)
-{
-    updateUi();
-}

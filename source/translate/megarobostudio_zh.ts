@@ -399,7 +399,27 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>labelStat</source>
+        <source>Region</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>UNKNOWN</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>MAIN</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>SMALL</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>P%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>IDLE</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -513,6 +533,61 @@
     <message>
         <source>v</source>
         <translation type="unfinished">速度</translation>
+    </message>
+</context>
+<context>
+    <name>RoboComPref</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Robot</source>
+        <translation type="unfinished">机器人</translation>
+    </message>
+    <message>
+        <source>Alias</source>
+        <translation type="unfinished">别名</translation>
+    </message>
+    <message>
+        <source>Group1</source>
+        <translation type="unfinished">组1</translation>
+    </message>
+    <message>
+        <source>Group2</source>
+        <translation type="unfinished">组2</translation>
+    </message>
+    <message>
+        <source>Group</source>
+        <translation type="unfinished">组</translation>
+    </message>
+    <message>
+        <source>robotname</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sub ID</source>
+        <translation type="unfinished">子ID</translation>
+    </message>
+    <message>
+        <source>Group ID</source>
+        <translation type="unfinished">组ID</translation>
+    </message>
+    <message>
+        <source>130</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>150</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>200</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>255</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -641,6 +716,37 @@
     </message>
 </context>
 <context>
+    <name>deltapref</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Connection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Left shulder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Right shulder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hand</source>
+        <translation type="unfinished">手</translation>
+    </message>
+    <message>
+        <source>Plate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Length</source>
+        <translation type="unfinished">帧长度</translation>
+    </message>
+</context>
+<context>
     <name>deviceConsole</name>
     <message>
         <source>Console</source>
@@ -668,6 +774,10 @@
     </message>
     <message>
         <source>*IDN?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>STATE?</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -877,6 +987,41 @@
     <message>
         <source>Export the logout</source>
         <translation type="unfinished">导出记录</translation>
+    </message>
+</context>
+<context>
+    <name>megatronpref</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Connection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>FX</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>FZ</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>BX</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>BZ</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>LY</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>LZ</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2902,6 +3047,10 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;宋体&apos;;&quot;&gt; &lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;宋体&apos;;&quot;&gt;版权所有©北京镁伽机器人科技有限公司2018，保留一切权利。&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remote Path</source>
+        <translation type="unfinished">远程文件路径</translation>
     </message>
 </context>
 <context>

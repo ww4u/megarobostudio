@@ -3,8 +3,6 @@
 #include "../../device/mrq/devicemrq_state.h"
 #include "../../device/board/_MRQ_enum.h"
 
-#define status_timer_id     1
-#define status_timer_tmo    1000000    //! us
 
 TraceKeyPoint::TraceKeyPoint( float pt, float px, float py, float pz, float phand )
 {
@@ -14,6 +12,23 @@ TraceKeyPoint::TraceKeyPoint( float pt, float px, float py, float pz, float phan
     z = pz;
 
     hand = phand;
+    iMask = 0;
+    set_bit( iMask, BIT_INTERP );
+}
+
+MegatronKeyPoint::MegatronKeyPoint( float pt,
+                  float px1, float py1, float pz1,
+                  float px2, float py2, float pz2 )
+{
+    t = pt;
+
+    x1 = px1;
+    y1 = py1;
+    z1 = pz1;
+
+    x1 = px2;
+    y2 = py2;
+    z2 = pz2;
 }
 
 RawRobo::RawRobo()
@@ -22,67 +37,109 @@ RawRobo::RawRobo()
     mPlanMode = plan_linear;
 }
 
-void RawRobo::switchReset()
+RawRobo::~RawRobo()
+{
+    foreach( RawRoboFsm*pFsm, mFsms )
+    {
+        Q_ASSERT( NULL != pFsm );
+        delete pFsm;
+    }
+
+    mFsms.clear();
+}
+
+void RawRobo::postCtor()
+{
+    //! base call
+    VRobot::postCtor();
+
+    //! sub call
+    Q_ASSERT( regions() > 0 );
+
+    //! create the fsms
+    tpvRegion region;
+    RawRoboFsm *pFsm;
+//    for ( int i = 0; i < axes(); i++ )
+    for ( int i = 0; i < regions(); i++ )
+    {
+        region.setRegion( 0, i );
+        pFsm = new RawRoboFsm();
+        Q_ASSERT( NULL != pFsm );
+
+        pFsm->setRegion( 0, i );    //! only one unit
+
+        pFsm->attachRobot( this );
+        pFsm->build();
+
+        mFsms.insert( region, pFsm );
+        Q_ASSERT( mFsms[region]!=NULL );
+    }
+}
+
+void RawRobo::switchReset( const tpvRegion &region )
 {
     Q_ASSERT( NULL != m_pBus );
     MegaDevice::DeviceId id( mCanGroupId );
     m_pBus->write( id, mc_MOTION, sc_MOTION_SWITCH,
                    x_channel,
                    (byte)MRQ_MOTION_SWITCH_RESET,
-                   (byte)MRQ_MOTION_SWITCH_1_MAIN );
+                   (byte)region.page() );
 }
-void RawRobo::switchStop()
+void RawRobo::switchStop( const tpvRegion &region )
 {
     Q_ASSERT( NULL != m_pBus );
     MegaDevice::DeviceId id( mCanGroupId );
     m_pBus->write( id, mc_MOTION, sc_MOTION_SWITCH,
                    x_channel,
                    (byte)MRQ_MOTION_SWITCH_STOP,
-                   (byte)MRQ_MOTION_SWITCH_1_MAIN );
+                   (byte)region.page() );
 }
-void RawRobo::switchRun()
+void RawRobo::switchRun( const tpvRegion &region )
 {
     Q_ASSERT( NULL != m_pBus );
     MegaDevice::DeviceId id( mCanGroupId );
     m_pBus->write( id, mc_MOTION, sc_MOTION_SWITCH,
                    x_channel,
                    (byte)MRQ_MOTION_SWITCH_RUN,
-                   (byte)MRQ_MOTION_SWITCH_1_MAIN );
+                   (byte)region.page() );
     logDbg();
 }
-void RawRobo::switchPrepare()
+void RawRobo::switchPrepare( const tpvRegion &region )
 {
     Q_ASSERT( NULL != m_pBus );
     MegaDevice::DeviceId id( mCanGroupId );
     m_pBus->write( id, mc_MOTION, sc_MOTION_SWITCH,
                    x_channel,
                    (byte)MRQ_MOTION_SWITCH_PREPARE,
-                   (byte)MRQ_MOTION_SWITCH_1_MAIN );
+                   (byte)region.page() );
 }
-void RawRobo::switchEmergStop()
+void RawRobo::switchEmergStop( const tpvRegion &region )
 {
     Q_ASSERT( NULL != m_pBus );
     MegaDevice::DeviceId id( mCanGroupId );
     m_pBus->write( id, mc_MOTION, sc_MOTION_SWITCH,
                    x_channel,
                    (byte)MRQ_MOTION_SWITCH_EMERGSTOP,
-                   (byte)MRQ_MOTION_SWITCH_1_MAIN );
+                   (byte)region.page() );
 }
 
-void RawRobo::queryState()
+void RawRobo::queryState( const tpvRegion &region )
 {
     Q_ASSERT( NULL != m_pBus );
     MegaDevice::DeviceId id( mCanGroupId );
     m_pBus->write( id, mc_MOTION, sc_MOTION_STATE_Q,
                    (byte)x_channel,
-                   (byte)MRQ_MOTION_SWITCH_1_MAIN
+//                   (byte)MRQ_MOTION_SWITCH_1_MAIN
+                   (byte)region.page()
                     );
 }
 
-void RawRobo::toState( int stat )
+void RawRobo::toState( const tpvRegion &region, int stat )
 {}
-int RawRobo::state()
-{ return mFsm.state(); }
+int RawRobo::state( const tpvRegion &region )
+{
+    return fsm( region )->state();
+}
 
 void RawRobo::onTimer( void *pContext, int id )
 {
@@ -90,22 +147,28 @@ void RawRobo::onTimer( void *pContext, int id )
 
     //! context is fsm
     RawRoboFsm *pFsm = (RawRoboFsm*)pContext;
-    if ( pFsm == &mFsm )
-    { mFsm.onTimer( id ); }
+    Q_ASSERT( NULL != pFsm );
+
+    pFsm->onTimer( id );
+//    if ( pFsm == &mFsm )
+//    { mFsm.onTimer( id ); }
 
     logDbg()<<id;
 }
 
 void RawRobo::attachCondition(
+                              const tpvRegion &region,
                               MegaDevice::RoboCondition *pCond )
 {
-    mFsm.attachCondition( pCond );
+    fsm( region )->attachCondition( pCond );
 }
+
 bool RawRobo::waitCondition(
+                            const tpvRegion &region,
                             MegaDevice::RoboCondition *pCond,
                             int tmoms )
 {
-    return mFsm.waitCondition( pCond, tmoms );
+    return fsm( region )->waitCondition( pCond, tmoms );
 }
 
 void RawRobo::setPlanStep( float step )
@@ -118,420 +181,14 @@ void RawRobo::setPlanMode( eRoboPlanMode mode )
 eRoboPlanMode RawRobo::getPlanMode()
 { return mPlanMode; }
 
-//! state condition
-RawRoboStateCondition::RawRoboStateCondition( int stat )
-                      : RoboStateCondition( -1, stat )
-{}
+RawRoboFsm * RawRobo::fsm( const tpvRegion &region )
+{logDbg()<<region.axes()<<region.page()<<mFsms.size();
+    Q_ASSERT( mFsms.contains( region) );
+    Q_ASSERT( NULL != mFsms[region] );
 
-RawRoboFsm::RawRoboFsm()
-{
-    m_pRobot = NULL;
-
-    mbRunReqed = false;
-    mState = 0;
-}
-RawRoboFsm::~RawRoboFsm()
-{
-    foreach (RawRoboUnit * value, mStateMap )
-    {
-        Q_ASSERT( NULL != value );
-        delete value;
-    }
-
-    mStateMap.clear();
-}
-#define create_unit( stat, mold )   \
-                                    pUnit = new mold(this, m_pRobot->axes() );\
-                                    Q_ASSERT( NULL != pUnit );\
-                                    mStateMap.insert( stat, pUnit ); \
-                                    pUnit->attachFsm( this );
-void RawRoboFsm::build()
-{
-    Q_ASSERT( NULL != m_pRobot );
-
-    //! create each state
-    RawRoboUnit *pUnit;
-    create_unit( MegaDevice::mrq_state_idle, IdleRawRoboUnit );
-    create_unit( MegaDevice::mrq_state_run_reqed, RunReqedRawRoboUnit );
-    create_unit( MegaDevice::mrq_state_program, ProgramRawRoboUnit );
-    create_unit( MegaDevice::mrq_state_calcing, CalcingRawRoboUnit );
-
-    create_unit( MegaDevice::mrq_state_calcend, CalcendRawRoboUnit );
-    create_unit( MegaDevice::mrq_state_standby, StandbyRawRoboUnit );
-    create_unit( MegaDevice::mrq_state_prerun, PreRunRawRoboUnit );
-    create_unit( MegaDevice::mrq_state_running, RunningRawRoboUnit );
-
-    create_unit( MegaDevice::mrq_state_prestop, PreStopRawRoboUnit );
-
-    //! init state
-    init( mStateMap[MegaDevice::mrq_state_idle] );
+    return mFsms[region];
 }
 
-void RawRoboFsm::subscribe( MegaDevice::RoboFsm *pMember,
-                        int msg,
-                        int para )
-{
-    Q_ASSERT( NULL != pMember );
-//    RoboFsm::proc( msg, (qint32)pMember->leaderPara(), para );
 
-    Q_ASSERT( Robot() != NULL );
-    Q_ASSERT( Robot()->lpc() != NULL );
-logDbg()<<(qint32)pMember->leaderPara()<<QString::number( (quint32)pMember, 16 );
-    Robot()->lpc()->postMsg( (eRoboMsg)msg,
-                             (qint32)pMember->leaderPara(), //! ax
-                             para );                        //! stat
-}
 
-void RawRoboFsm::toState( int stat )
-{
-    if ( mStateMap.contains( stat ) )
-    {
-        Q_ASSERT( mStateMap[stat] != NULL );
 
-        RoboFsm::toState( mStateMap[stat] );
-        mState = stat;
-
-        //! subscribe to leader
-        if ( m_pLeader != NULL )
-        { m_pLeader->subscribe( this, e_robot_member_state, stat ); }
-
-        //! trigger condition
-        if ( m_pCond != NULL )
-        { m_pCond->trigger( (void*)stat ); logDbg()<<stat<<m_pNowState->name(); }
-
-        Q_ASSERT( NULL != m_pRobot );
-        m_pRobot->toState( stat );
-    }
-    else
-    { Q_ASSERT(false); }
-}
-
-int RawRoboFsm::state()
-{ return mState; }
-
-void RawRoboFsm::startTimer( int id, int tmous )
-{
-    Q_ASSERT( NULL != m_pRobot );
-    m_pRobot->startTimer( this, id, tmous );
-}
-void RawRoboFsm::killTimer( int id )
-{
-    Q_ASSERT( NULL != m_pRobot );
-    m_pRobot->killTimer( this, id );
-}
-void RawRoboFsm::onTimer( int id )
-{
-    if ( mStateMap.contains( mState ) )
-    {
-        mStateMap.value( mState )->onTimer( id );
-    }
-}
-
-void RawRoboFsm::attachRobot( RawRobo *pRobot )
-{
-    Q_ASSERT( NULL != pRobot );
-    m_pRobot = pRobot;
-}
-RawRobo *RawRoboFsm::Robot()
-{ return m_pRobot; }
-
-void RawRoboFsm::reqRun( bool b )
-{ mbRunReqed = b; }
-bool RawRoboFsm::runReqed()
-{ return mbRunReqed; }
-
-//! state unit
-RawRoboUnit::RawRoboUnit( MegaDevice::RoboFsm *pFsm,
-                          int members )
-{
-    mMemberCount = members;
-
-    rstState();
-}
-RawRoboUnit::~RawRoboUnit()
-{}
-void RawRoboUnit::toState( int stat )
-{
-    selfFsm()->toState( stat );
-
-    //! to robot
-    sysQueue()->postMsg( e_robot_status,
-                         selfFsm()->Robot()->name(),
-                         stat );
-
-    logDbg()<<selfFsm()->Robot()->name();
-
-}
-
-void RawRoboUnit::proc( int msg, int subAx, int para )
-{
-    //! member state
-    if ( msg == e_robot_member_state )
-    {
-        setMemberState( subAx, para );
-    }
-
-    //! ops
-    else if ( msg == MegaDevice::mrq_msg_run )
-    {
-        selfFsm()->reqRun( true );
-
-//        toState( MegaDevice::mrq_state_run_reqed );
-    }
-
-    else if ( msg == MegaDevice::mrq_msg_stop )
-    {
-        //! \todo stop downloading
-        selfFsm()->Robot()->switchStop();
-
-//        toState( MegaDevice::PreStopMrqUnit );
-    }
-    else if ( msg == MegaDevice::mrq_msg_force_stop )
-    {
-        //! \todo stop downloading
-        selfFsm()->Robot()->switchEmergStop();
-
-//        toState( MegaDevice::PreStopMrqUnit );
-    }
-
-    else if ( msg == MegaDevice::mrq_msg_rst )
-    { toState( MegaDevice::mrq_state_idle); }
-
-    else if ( msg == MegaDevice::mrq_msg_program )
-    { toState( MegaDevice::mrq_state_program); }
-
-    //! device status
-    else if ( msg == MegaDevice::mrq_msg_idle )
-    { toState( MegaDevice::mrq_state_idle ); }
-
-    else if ( msg == MegaDevice::mrq_msg_calcing )
-    { toState( MegaDevice::mrq_state_calcing); }
-
-    else if ( msg == MegaDevice::mrq_msg_calcend )
-    { toState( MegaDevice::mrq_state_calcend); }
-
-    else if ( msg == MegaDevice::mrq_msg_standby )
-    { toState( MegaDevice::mrq_state_standby); }
-
-    else if ( msg == MegaDevice::mrq_msg_running )
-    { toState( MegaDevice::mrq_state_running); }
-
-    else if ( msg == MegaDevice::mrq_msg_error )
-    { toState( MegaDevice::mrq_state_idle); }
-
-    else    //! keep
-    { }
-}
-
-void RawRoboUnit::onEnter()
-{
-}
-void RawRoboUnit::onExit()
-{}
-
-void RawRoboUnit::onTimer( int id )
-{
-    //! query status
-    if ( status_timer_id == id )
-    {
-        selfFsm()->Robot()->queryState();
-        logDbg();
-    }
-}
-
-RawRoboFsm *RawRoboUnit::selfFsm()
-{
-    return (RawRoboFsm*)Fsm();
-}
-
-void RawRoboUnit::setMemberState( int subAx, int stat )
-{logDbg()<<stat;
-    mMemberStates[ subAx ] = stat;
-
-    int preVal = mMemberStates[0];
-    foreach (int val, mMemberStates)
-    {
-        //! value match
-        if ( val == preVal )
-        {}
-        else
-        { logDbg()<<mMemberStates; return; }
-    }
-logDbg()<<preVal;
-    //! full match
-    mState = preVal;
-    toState( mState );
-}
-int RawRoboUnit::memberState( int subAx )
-{
-    Q_ASSERT( mMemberStates.contains(subAx) );
-
-    return mMemberStates[ subAx ];
-}
-
-int RawRoboUnit::state()
-{ return mState; }
-
-void RawRoboUnit::rstState()
-{
-    mState = 0;
-    for ( int i = 0; i < mMemberCount; i++ )
-    { mMemberStates.insert( i, mState ); }
-}
-
-//! real states
-//! idle
-IdleRawRoboUnit::IdleRawRoboUnit( MegaDevice::RoboFsm *pFsm,
-                     int members ) : RawRoboUnit( pFsm, members )
-{
-    mName = "IdleRawRoboUnit";
-}
-
-void IdleRawRoboUnit::proc( int msg, int subAx, int para )
-{
-    RawRoboUnit::proc( msg, subAx, para );
-}
-
-void IdleRawRoboUnit::onEnter()
-{
-    selfFsm()->reqRun( false );
-
-    killTimer( status_timer_id );
-}
-
-//! run reqed
-RunReqedRawRoboUnit::RunReqedRawRoboUnit( MegaDevice::RoboFsm *pFsm,
-                     int members ) : RawRoboUnit( pFsm, members )
-{
-    mName = "RunReqedRawRoboUnit";
-}
-
-void RunReqedRawRoboUnit::proc( int msg, int subAx, int para )
-{
-    RawRoboUnit::proc( msg, subAx, para );
-}
-
-//! program
-ProgramRawRoboUnit::ProgramRawRoboUnit( MegaDevice::RoboFsm *pFsm,
-                     int members ) : RawRoboUnit( pFsm, members )
-{
-    mName = "ProgramRawRoboUnit";
-}
-
-void ProgramRawRoboUnit::proc( int msg, int subAx, int para )
-{
-    RawRoboUnit::proc( msg, subAx, para );
-}
-
-//! calcing
-CalcingRawRoboUnit::CalcingRawRoboUnit( MegaDevice::RoboFsm *pFsm,
-                     int members ) : RawRoboUnit( pFsm, members )
-{
-    mName = "CalcingRawRoboUnit";
-}
-
-void CalcingRawRoboUnit::proc( int msg, int subAx, int para )
-{
-    RawRoboUnit::proc( msg, subAx, para );
-}
-
-//! calcend
-CalcendRawRoboUnit::CalcendRawRoboUnit( MegaDevice::RoboFsm *pFsm,
-                     int members ) : RawRoboUnit( pFsm, members )
-{
-    mName = "CalcendRawRoboUnit";
-}
-void CalcendRawRoboUnit::proc( int msg, int subAx, int para )
-{
-    RawRoboUnit::proc( msg, subAx, para );
-}
-void CalcendRawRoboUnit::onEnter()
-{
-    selfFsm()->Robot()->switchPrepare();
-
-    killTimer( status_timer_id );
-}
-
-//! standby
-StandbyRawRoboUnit::StandbyRawRoboUnit( MegaDevice::RoboFsm *pFsm,
-                     int members ) : RawRoboUnit( pFsm, members )
-{
-     mName = "StandbyRawRoboUnit";
-}
-void StandbyRawRoboUnit::proc( int msg, int subAx, int para )
-{logDbg();
-    //! ops
-    if ( msg == MegaDevice::mrq_msg_run )
-    {
-//        selfFsm()->reqRun( true );
-
-//        toState( MegaDevice::mrq_state_run_reqed );
-
-        selfFsm()->Robot()->switchRun();
-        toState( MegaDevice::mrq_state_prerun );
-    }
-
-    else
-    {
-        RawRoboUnit::proc( msg, subAx, para );
-    }
-}
-void StandbyRawRoboUnit::onEnter()
-{
-    if ( selfFsm()->runReqed() )
-    {
-        selfFsm()->Robot()->switchRun();
-        toState( MegaDevice::mrq_state_prerun );
-    }
-}
-void StandbyRawRoboUnit::onExit()
-{
-    selfFsm()->reqRun( false );
-}
-//! pre run
-PreRunRawRoboUnit::PreRunRawRoboUnit( MegaDevice::RoboFsm *pFsm,
-                     int members ) : RawRoboUnit( pFsm, members )
-{
-    mName = "PreRunRawRoboUnit";
-}
-
-void PreRunRawRoboUnit::proc( int msg, int subAx, int para )
-{
-    RawRoboUnit::proc( msg, subAx, para );
-}
-
-void PreRunRawRoboUnit::onEnter()
-{
-    startTimer( status_timer_id, status_timer_tmo );
-}
-
-//! running
-RunningRawRoboUnit::RunningRawRoboUnit( MegaDevice::RoboFsm *pFsm,
-                     int members ) : RawRoboUnit( pFsm, members )
-{
-    mName = "RunningRawRoboUnit";
-}
-void RunningRawRoboUnit::proc( int msg, int subAx, int para )
-{
-    RawRoboUnit::proc( msg, subAx, para );
-}
-
-void RunningRawRoboUnit::onEnter()
-{
-    startTimer( status_timer_id, status_timer_tmo );
-}
-
-//! pre stop
-PreStopRawRoboUnit::PreStopRawRoboUnit( MegaDevice::RoboFsm *pFsm,
-                     int members ) : RawRoboUnit( pFsm, members )
-{
-    mName = "PreStopRawRoboUnit";
-}
-void PreStopRawRoboUnit::proc( int msg, int subAx, int para )
-{
-    RawRoboUnit::proc( msg, subAx, para );
-}
-void PreStopRawRoboUnit::onEnter()
-{
-    startTimer( status_timer_id, status_timer_tmo );
-}

@@ -1,7 +1,7 @@
 #ifndef MOTORSTATE_H
 #define MOTORSTATE_H
 
-#include <QWidget>
+#include <QtWidgets>
 
 namespace Ui {
 class MotorState;
@@ -18,14 +18,20 @@ public:
     void setName( const QString &name );
     QString name();
 
-    void setState( const QString &stat );
-    QString state();
+    void setState( const QString &stat,
+                   int page = 0 );
+    QString state( int page = 0 );
 
     void setProgress( int mi, int ma, int n );
     void setProgress( bool b );
 
+private slots:
+    void on_cmbRegion_activated(int index);
+
 private:
     Ui::MotorState *ui;
+
+    QMap<int,QString> mStates;
 };
 
 #endif // MOTORSTATE_H

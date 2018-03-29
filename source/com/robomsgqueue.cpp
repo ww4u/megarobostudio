@@ -1,6 +1,6 @@
 #include "robomsgqueue.h"
 #include "robomsgthread.h"
-
+#include "../../include/mcdef.h"
 //! vars
 
 #define tick_ms( ms )   (ms),
@@ -11,6 +11,23 @@ static RoboMsgTick _robo_msg_ticks[]=
 {
     { e_download_processing, tick_ms(500) },
 };
+
+QSemaphore RoboMsgQueue::_msgSema;
+
+int RoboMsgQueue::waitIdle( int tickms, int tmo )
+{
+    while( _msgSema.available() > 0 && tmo > 0 )
+    {
+        tmo -= tickms;
+        QThread::msleep( tickms );
+    }
+
+    //! tmo
+    if ( tmo < 0 )
+    { return -1; }
+    else
+    { return 0; }
+}
 
 RoboMsgQueue::RoboMsgQueue()
 {
@@ -49,7 +66,7 @@ bool RoboMsgQueue::filter( const RoboMsg & msg )
 
     //! find tick
     tick = 0;
-    for( int i = 0; i < sizeof(_robo_msg_ticks)/sizeof(_robo_msg_ticks[0]); i++ )
+    for( int i = 0; i < sizeof_array(_robo_msg_ticks); i++ )
     {
         if ( msg.mMsg == _robo_msg_ticks[i].msg )
         {
@@ -80,12 +97,12 @@ bool RoboMsgQueue::filter( const RoboMsg & msg )
 
 void RoboMsgQueue::postMsg( const RoboMsg &msg )
 {
-    mQueueMutex.lock();
-
+    lock();
     if ( filter(msg) )
     {}
     else
     {
+        _msgSema.release();
         mQueue.enqueue( msg );
 
         //! thread not running
@@ -95,7 +112,7 @@ void RoboMsgQueue::postMsg( const RoboMsg &msg )
         }
     }
 
-    mQueueMutex.unlock();
+    unlock();
 }
 
 void RoboMsgQueue::postMsg( eRoboMsg msg )
@@ -106,6 +123,53 @@ void RoboMsgQueue::postMsg( eRoboMsg msg )
 
     postMsg( lMsg );
 }
+
+void RoboMsgQueue::postMsg( eRoboMsg msg, const tpvRegion &region )
+{
+    RoboMsg lMsg;
+
+    lMsg.setMsg( msg );
+    lMsg.append( QVariant::fromValue(region) );
+
+    postMsg( lMsg );
+}
+
+void RoboMsgQueue::postMsg( eRoboMsg msg, const tpvRegion &region, int p1 )
+{
+    RoboMsg lMsg;
+
+    lMsg.setMsg( msg );
+    lMsg.append( QVariant::fromValue(region) );
+    lMsg.append( p1 );
+
+    postMsg( lMsg );
+}
+
+void RoboMsgQueue::postMsg( eRoboMsg msg,
+                            int subax,
+                            const tpvRegion &region,
+                            int p1 )
+{
+    RoboMsg lMsg;
+
+    lMsg.setMsg( msg );
+    lMsg.append( subax );
+    lMsg.append( QVariant::fromValue(region) );
+    lMsg.append( p1 );
+
+    postMsg( lMsg );
+}
+
+void RoboMsgQueue::postMsg( eRoboMsg msg, const RoboMsg &leafMsg )
+{
+    RoboMsg lMsg;
+
+    lMsg.setMsg( msg );
+    lMsg.append( QVariant::fromValue(leafMsg) );
+
+    postMsg( lMsg );
+}
+
 
 void RoboMsgQueue::postMsg( eRoboMsg msg, int p1 )
 {
@@ -134,6 +198,54 @@ void RoboMsgQueue::postMsg( eRoboMsg msg, int p1, int p2, int p3 )
     lMsg.append( QVariant(p1) );
     lMsg.append( QVariant(p2) );
     lMsg.append( QVariant(p3) );
+
+    postMsg( lMsg );
+}
+
+void RoboMsgQueue::postMsg( eRoboMsg msg,
+                     const QString &name,
+                     const tpvRegion &region
+                     )
+{
+    RoboMsg lMsg;
+
+    lMsg.setMsg( msg );
+    lMsg.append( QVariant(name) );
+    lMsg.append( QVariant::fromValue(region) );
+
+    postMsg( lMsg );
+}
+
+void RoboMsgQueue::postMsg( eRoboMsg msg,
+                     const QString &name,
+                     const tpvRegion &region,
+                     int p1
+                     )
+{
+    RoboMsg lMsg;
+
+    lMsg.setMsg( msg );
+    lMsg.append( QVariant(name) );
+    lMsg.append( QVariant::fromValue(region) );
+    lMsg.append( QVariant(p1) );
+
+    postMsg( lMsg );
+}
+
+void RoboMsgQueue::postMsg( eRoboMsg msg,
+                     const QString &name,
+                     const tpvRegion &region,
+                     int p1,
+                     int p2
+                     )
+{
+    RoboMsg lMsg;
+
+    lMsg.setMsg( msg );
+    lMsg.append( QVariant(name) );
+    lMsg.append( QVariant::fromValue(region) );
+    lMsg.append( QVariant(p1) );
+    lMsg.append( QVariant(p2) );
 
     postMsg( lMsg );
 }
@@ -257,9 +369,9 @@ void RoboMsgQueue::process( int intervalus,
         QThread::usleep( intervalus );
 
         if ( NULL != pThread )
-        {
-            pThread->onMsg( lMsg );
-        }
+        { pThread->onMsg( lMsg ); }
+
+        _msgSema.acquire();
 
 //        QVariant var;
 //        qDebug()<<lMsg.mMsg<<lMsg.size();

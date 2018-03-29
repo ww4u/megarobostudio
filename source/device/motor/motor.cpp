@@ -3,72 +3,73 @@
 namespace MegaDevice
 {
 
-deviceMotor::deviceMotor( deviceMRQ *pMrq, int ax )
+deviceProxyMotor::deviceProxyMotor( deviceMRQ *pMrq, const tpvRegion &region )
 {
     m_pMRQ = pMrq;
-    mAxes = ax;
+    mRegion = region;
 }
+deviceProxyMotor::~deviceProxyMotor()
+{}
+//void deviceMotor::attachCondition( RoboCondition *pCond )
+//{
+//    Q_ASSERT( NULL != m_pMRQ );
 
-void deviceMotor::attachCondition( RoboCondition *pCond )
+//    m_pMRQ->attachCondition( mRegion.axes(), pCond );
+//}
+bool deviceProxyMotor::waitCondition(
+                                 RoboCondition *pCond,
+                                 int tmous )
 {
     Q_ASSERT( NULL != m_pMRQ );
 
-    m_pMRQ->attachCondition( mAxes, pCond );
-}
-bool deviceMotor::waitCondition( RoboCondition *pCond,
-                            int tmous )
-{
-    Q_ASSERT( NULL != m_pMRQ );
-
-    return m_pMRQ->waitCondition( mAxes, pCond, tmous );
+    return m_pMRQ->waitCondition( mRegion, pCond, tmous );
 }
 
-int deviceMotor::deviceMotor::pvtWrite(
+int deviceProxyMotor::pvtWrite(
               QList<tpvRow *> &list,
-              int page,
               int from,
               int len )
 {
     Q_ASSERT( NULL != m_pMRQ );
 
-    return m_pMRQ->pvtWrite( mAxes, page, list, from, len );
+    return m_pMRQ->pvtWrite( mRegion, list, from, len );
 }
 
-int deviceMotor::run()
+int deviceProxyMotor::run()
 {
     Q_ASSERT( NULL != m_pMRQ );
 
-    return m_pMRQ->run( mAxes );
+    return m_pMRQ->run( mRegion );
 }
 
-int deviceMotor::stop()
+int deviceProxyMotor::stop()
 {
     Q_ASSERT( NULL != m_pMRQ );
 
-    return m_pMRQ->stop( mAxes );
+    return m_pMRQ->stop( mRegion );
 }
 
-int deviceMotor::status()
+int deviceProxyMotor::status()
 {
     Q_ASSERT( NULL != m_pMRQ );
 
-    return m_pMRQ->status( mAxes );
+    return m_pMRQ->status( mRegion );
 }
 
-void deviceMotor::set( deviceMRQ *pMrq, int ax )
+void deviceProxyMotor::set( deviceMRQ *pMrq,
+                       const tpvRegion &region )
 {
     Q_ASSERT( NULL != pMrq );
 
     m_pMRQ = pMrq;
-    mAxes = ax;
+
+    mRegion = region;
 }
 
-deviceMRQ *deviceMotor::Mrq()
-{
-    return m_pMRQ;
-}
-int deviceMotor::Axes()
-{ return mAxes; }
+deviceMRQ *deviceProxyMotor::Mrq()
+{ return m_pMRQ; }
+tpvRegion & deviceProxyMotor::region()
+{ return mRegion; }
 
 }
 

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>457</width>
-    <height>86</height>
+    <height>88</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -52,6 +52,9 @@
         <property name="rightMargin">
          <number>0</number>
         </property>
+        <property name="bottomMargin">
+         <number>3</number>
+        </property>
         <item>
          <widget class="QLabel" name="label">
           <property name="maximumSize">
@@ -79,6 +82,16 @@
          </widget>
         </item>
         <item>
+         <widget class="QLabel" name="labelRegion">
+          <property name="text">
+           <string>Region</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="ValueComboBox" name="cmbRegion"/>
+        </item>
+        <item>
          <spacer name="horizontalSpacer">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
@@ -96,7 +109,7 @@
       <item row="2" column="0">
        <widget class="QLabel" name="labelStat">
         <property name="text">
-         <string>labelStat</string>
+         <string>UNKNOWN</string>
         </property>
        </widget>
       </item>
@@ -118,6 +131,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ValueComboBox</class>
+   <extends>QComboBox</extends>
+   <header>valuecombobox.h</header>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="../res/res.qrc"/>
  </resources>

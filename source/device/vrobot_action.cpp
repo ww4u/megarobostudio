@@ -6,20 +6,23 @@
 int VRobot::transform( int axes )
 { return 0; }
 
-int VRobot::download( tpvGroup *pGroup, int page, int axes )
+int VRobot::download( tpvGroup *pGroup,
+                      const tpvRegion &region )
 {
     Q_ASSERT( NULL != pGroup );
 
     return 0;
 }
-int VRobot::download( motionGroup *pGroup, int page, int axes )
+int VRobot::download( motionGroup *pGroup,
+                      const tpvRegion &region )
 {
     Q_ASSERT( NULL != pGroup );
 
     return 0;
 }
 int VRobot::download( QList<tpvGroup*> &groups,
-                      QList<int> &joints )
+                      QList<int> &joints,
+                      const tpvRegion &region )
 {
     return 0;
 }
@@ -30,25 +33,16 @@ int VRobot::download( VRobot *pSetup )
     return 0;
 }
 
-int VRobot::run( int axes )
+int VRobot::run( const tpvRegion &region )
 {
     return 0;
 }
-int VRobot::stop( int axes  )
-{
-    return 0;
-}
-
-int VRobot::run()
-{
-    return 0;
-}
-int VRobot::stop()
+int VRobot::stop( const tpvRegion &region  )
 {
     return 0;
 }
 
-int VRobot::setLoop( int n )
+int VRobot::setLoop( int n, const tpvRegion &region )
 { return 0;  }
 int VRobot::loopNow()
 { return 0; }
@@ -67,28 +61,28 @@ void VRobot::onTimer( void *pContext, int id )
 
 }
 
-void VRobot::attachCondition( int subAxes,
+void VRobot::attachCondition( const tpvRegion &region,
                               MegaDevice::RoboCondition *pCond )
 {
 
 }
 
-bool VRobot::waitCondition( int subAxes,
+bool VRobot::waitCondition( const tpvRegion &region,
                             MegaDevice::RoboCondition *pCond,
                             int tmoms )
 {
    return false;
 }
 
-void VRobot::attachCondition(
-                              MegaDevice::RoboCondition *pCond )
-{
+//void VRobot::attachCondition(
+//                              MegaDevice::RoboCondition *pCond )
+//{
 
-}
+//}
 
-bool VRobot::waitCondition(
-                            MegaDevice::RoboCondition *pCond,
-                            int tmoms )
-{
-   return false;
-}
+//bool VRobot::waitCondition(
+//                            MegaDevice::RoboCondition *pCond,
+//                            int tmoms )
+//{
+//   return false;
+//}

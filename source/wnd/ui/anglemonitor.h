@@ -25,6 +25,8 @@ public:
     void setDataId( int id );
     void setRange( int mi, int ma );
 
+    void setDataIds( QMap<int, QString> &subItem );
+
 protected:
     void addAnAngle();
 
@@ -50,6 +52,8 @@ private slots:
     void on_toolButton_clicked();
 
     void slot_anglewidget_changed();
+
+    void on_comboBox_activated(int index);
 
 private:
     Ui::AngleMonitor *ui;

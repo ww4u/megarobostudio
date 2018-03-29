@@ -359,6 +359,11 @@ void MainWindow::setupData()
 
     m_pMotorMonitor->setModel( &mMcModel );
 
+    //! remote path
+    comAssist::setRemotePath( mMcModel.mSysPref.mRemoteDirPath.split(',', QString::SkipEmptyParts) );
+
+    if ( mMcModel.mSysPref.mbMaximizeStartup )
+    { showMaximized(); }
 }
 
 void MainWindow::setupService()
@@ -617,7 +622,7 @@ void MainWindow::slot_net_event( const QString &name,
     //! event id, frame id, byte array
     if ( msg.getMsg() == e_interrupt_occuring )
     {
-        logDbg()<<name;
+//        logDbg()<<name;
 
         int eId;
         eId = msg.at(0).toInt();
@@ -788,7 +793,7 @@ modelView *MainWindow::createRoboProp( mcModelObj *pObj )
     if ( robot_is_mrq( pBase->getId() ) )
     {
         mrqProperty *pProp;
-        pProp = new mrqProperty( pBase->getAxes() );logDbg();
+        pProp = new mrqProperty( pBase );logDbg();
         Q_ASSERT( NULL != pProp );
         createModelView( pProp, pBase );        //! device is a model
 
@@ -798,7 +803,7 @@ modelView *MainWindow::createRoboProp( mcModelObj *pObj )
     else if ( robot_is_robot( pBase->getId() ) )
     {
         roboProp *pProp;
-        pProp = new roboProp();
+        pProp = new roboProp( pBase->getId() );
         Q_ASSERT( NULL != pProp );
 
         //! set instmgr
@@ -1032,7 +1037,13 @@ void MainWindow::on_actionAngle_A_triggered()
         { return; }
 
         m_pAngleMonitor->setWindowTitle( tr("Angle") );
-        m_pAngleMonitor->setDataId( MRQ_REPORT_STATE_XANGLE );
+
+        QMap<int, QString> subMap;
+        subMap[ MRQ_REPORT_STATE_XANGLE ] = tr("Increase Angle");
+        subMap[ MRQ_REPORT_STATE_ABSENC ] = tr("Absolute Angle");
+        m_pAngleMonitor->setDataIds( subMap );
+        m_pAngleMonitor->setDataId( MRQ_REPORT_STATE_ABSENC );
+
         m_pAngleMonitor->setRange( 0, 360 );
     }
 

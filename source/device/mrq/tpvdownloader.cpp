@@ -8,10 +8,9 @@ tpvDownloader::tpvDownloader( QObject *pObj ) : QThread( pObj )
     mTryInterval = time_ms( 500 );
 
     m_pMRQ = NULL;
-    mAxesId = 0;
-    mPageId = 0;
 }
-
+tpvDownloader::~tpvDownloader()
+{}
 void tpvDownloader::run()
 {
     Q_ASSERT( NULL != m_pMRQ );
@@ -29,10 +28,10 @@ void tpvDownloader::downloadProc()
 
     sysQueue()->postMsg( e_download_started,
                          m_pMRQ->name(),
-                         mAxesId );
+                         mRegion );
 
-    m_pMRQ->lpc( mAxesId )->postMsg( (eRoboMsg)MegaDevice::mrq_msg_program,
-                                     mAxesId );
+    m_pMRQ->lpc( mRegion.axes() )->postMsg( (eRoboMsg)MegaDevice::mrq_msg_program,
+                                            mRegion );
 
     //! download
     int ret;
@@ -44,15 +43,15 @@ void tpvDownloader::downloadProc()
     }
     if ( ret != 0 )
     {
-        m_pMRQ->lpc( mAxesId )->postMsg( (eRoboMsg)MegaDevice::mrq_msg_error,
-                                         mAxesId );
+        m_pMRQ->lpc( mRegion.axes() )->postMsg( (eRoboMsg)MegaDevice::mrq_msg_error,
+                                         mRegion );
 
         logDbg()<<"*********"<<m_pMRQ->name();
     }
 
     sysQueue()->postMsg( e_download_completed,
                          m_pMRQ->name(),
-                         mAxesId );
+                         mRegion );
 }
 
 int tpvDownloader::batchDownload( int batchSize,
@@ -69,7 +68,7 @@ int tpvDownloader::batchDownload( int batchSize,
         pItem = mTpvs.head();
 
         //! download the item
-        ret = m_pMRQ->tpvDownload( mAxesId, mPageId, pItem );
+        ret = m_pMRQ->tpvDownload( mRegion, pItem );
 
         //! gc the item
         if ( pItem->gc() )
@@ -91,7 +90,7 @@ int tpvDownloader::batchDownload( int batchSize,
         //! time tick in net
         sysQueue()->postMsg( e_download_processing,
                           m_pMRQ->name(),
-                          mAxesId,
+                          mRegion,
                           now,
                           total
                           );
@@ -110,7 +109,7 @@ int tpvDownloader::transmissionProc()
     int total, now;
 
     //! in transmisstion
-    ret = m_pMRQ->beginTpvDownload( mAxesId, mPageId );
+    ret = m_pMRQ->beginTpvDownload( mRegion );
     if ( ret != 0 )
     { logDbg();return ret; }
 
@@ -121,7 +120,9 @@ int tpvDownloader::transmissionProc()
     {
         //! check remain
         quint16 batchSize;
-        ret = m_pMRQ->getMOTIONPLAN_REMAINPOINT( mAxesId, (MRQ_MOTION_SWITCH_1)mPageId, &batchSize );
+        ret = m_pMRQ->getMOTIONPLAN_REMAINPOINT( mRegion.axes(),
+                                                 (MRQ_MOTION_SWITCH_1)mRegion.page(),
+                                                 &batchSize );
         if ( ret != 0 )
         { logDbg(); return ret; }
         else
@@ -141,18 +142,21 @@ int tpvDownloader::transmissionProc()
         QThread::usleep( mTryInterval );
     }
 
-    ret = m_pMRQ->endTpvDownload( mAxesId, mPageId );
+    ret = m_pMRQ->endTpvDownload( mRegion );
     return ret;
 }
 
 void tpvDownloader::attachDevice( MegaDevice::deviceMRQ *pDev,
-                   int axesId )
+                   const tpvRegion &region )
 {
     Q_ASSERT( NULL != pDev );
 
     m_pMRQ = pDev;
-    mAxesId = axesId;
+    mRegion = region;
 }
+
+void tpvDownloader::setRegion( const tpvRegion &region )
+{ mRegion = region; }
 
 void tpvDownloader::append( QList<tpvRow*> &rows, int from, int len )
 {
@@ -176,6 +180,4 @@ QString tpvDownloader::name()
     return m_pMRQ->name();
 }
 int  tpvDownloader::axes()
-{
-    return mAxesId;
-}
+{ return mRegion.axes(); }

@@ -113,11 +113,6 @@
         <property name="enabled">
          <bool>true</bool>
         </property>
-        <property name="font">
-         <font>
-          <pointsize>12</pointsize>
-         </font>
-        </property>
         <property name="title">
          <string>Temperature Protection</string>
         </property>

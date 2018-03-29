@@ -31,7 +31,10 @@ SOURCES = vdevice.cpp \
     mrq/devicemrq_action.cpp \
     motor/motor.cpp \
     robostate.cpp \
-    mrq/devicemrq_state.cpp
+    mrq/devicemrq_state.cpp \
+    mrq/devicemrq_addr.cpp \
+    mrq/devicemrq_setting.cpp \
+    mrq/devicemrq_tpv.cpp
 
 HEADERS = vdevice.h \
           devicemodel.h \

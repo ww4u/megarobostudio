@@ -279,6 +279,9 @@ void MainWindow::on_actionpref_triggered( )
         m_pSampleThread->setSampleInterval( mMcModel.mSysPref.mSampleTick );
 
         mMcModel.postload();
+
+        //! path
+        comAssist::setRemotePath( mMcModel.mSysPref.mRemoteDirPath.split(',', QString::SkipEmptyParts) );
     }
 }
 

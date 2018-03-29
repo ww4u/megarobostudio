@@ -1,7 +1,7 @@
 #ifndef MODELSYSPREF_H
 #define MODELSYSPREF_H
 
-#include "../../intf/iserial.h"
+#include "../intf/iserial.h"
 #include "dbmeta.h"
 
 class modelSysPref : public ISerial
@@ -35,7 +35,6 @@ public:
     int mEnumerateTimeout;
     int mSampleTick;
 
-
     int mSendIdFrom, mSendIdTo;
     int mRecvIdFrom, mRecvIdTo;
     int mGroupIdFrom, mGroupIdTo;
@@ -49,15 +48,19 @@ public:
 
     bool mbSearchOnOpen;
     bool mbAutoLoadSetup;
+    bool mbMaximizeStartup;
 
     dbMeta mDbMeta;
                             //! misa
     bool mMisaEn;
     quint32 mMisaSocket;
+    QString mRemoteDirPath;
 
                             //! motion
     int mSpaceResolution;   //! 5mm
 
+                            //! user
+    int mStyleIndex, mLangIndex;
 };
 
 #endif // MODELSYSPREF_H

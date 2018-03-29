@@ -5,21 +5,56 @@
 
 #include "../../device/mrq/deviceMRQ.h"
 
-roboAxes::roboAxes(QWidget *parent) :
-    QDialog(parent),
+roboAxes::roboAxes(mcModel *pModel,
+                   QWidget *parent) :
+    DlgView( pModel, parent ),
     ui(new Ui::roboAxes)
 {
     ui->setupUi(this);
 
-    mJointLabels[0] = ui->label_11;
-    mJointLabels[1] = ui->label_12;
-    mJointLabels[2] = ui->label_13;
-    mJointLabels[3] = ui->label_14;
-    mJointLabels[4] = ui->label_15;
+    connect( &mTimer, SIGNAL(timeout()),
+             this, SLOT(slot_timeout()) );
+
+
+    mJoints.append( ui->jointTab0 );
+    mJoints.append( ui->jointTab1 );
+    mJoints.append( ui->jointTab2 );
+    mJoints.append( ui->jointTab3 );
+    mJoints.append( ui->jointTab4 );
+    mJoints.append( ui->jointTab5 );
+
+//    //! title
+//    mJoints[0]->setTitle( tr("Basement") );
+//    mJoints[1]->setTitle( tr("Big Arm") );
+//    mJoints[2]->setTitle( tr("Little Arm") );
+//    mJoints[3]->setTitle( tr("Wrist") );
+//    mJoints[4]->setTitle( tr("Hand") );
+//    mJoints[5]->setTitle( tr("Hand") );
+
+//    //! angle
+//    mJoints[4]->setAngleVisible( false );
+
+    //! joint id
+    for ( int i = 0; i < mJoints.size(); i++ )
+    {
+        mJoints.at(i)->setId( i );
+    }
+
+    //! connection
+    foreach( RoboJoint *p, mJoints )
+    {
+        connect( p, SIGNAL(signal_actionChanged(int,float,float)),
+                 this, SLOT(slot_joint_action(int,float,float)) );
+        connect( p, SIGNAL(signal_zeroClicked(int)),
+                 this, SLOT(slot_joint_zero(int)));
+    }
 
     setModal( false );
 
-    m_pRobo = NULL;
+    mTimer.setInterval( ui->sampleTimer->value() );
+
+    //! by model data
+    slot_robo_changed("");
 }
 
 roboAxes::~roboAxes()
@@ -27,114 +62,122 @@ roboAxes::~roboAxes()
     delete ui;
 }
 
-void roboAxes::on_close()
+void roboAxes::on_chkAngle_toggled(bool checked)
 {
+    if ( checked )
+    {
+        mTimer.stop();
+        mTimer.start( ui->sampleTimer->value() );
+    }
+    else
+    {
+        mTimer.stop();
+    }
 }
 
-void roboAxes::on_sldBase_valueChanged(int v )
-{ ui->sBoxBase->setValue( v );}
-void roboAxes::on_sldBigArm_valueChanged(int v )
-{ ui->sBoxBigArm->setValue( v); }
-void roboAxes::on_sldLitArm_valueChanged(int v )
-{ ui->sBoxLitArm->setValue( v);}
-void roboAxes::on_sldWrist_valueChanged(int v)
-{ ui->sBoxWrist->setValue( v);}
-void roboAxes::on_sldHand_valueChanged(int v)
-{ ui->sBoxHand->setValue(v);}
-
-void roboAxes::on_sBoxBase_valueChanged( double v )
-{ ui->sldBase->setValue( v );}
-void roboAxes::on_sBoxBigArm_valueChanged( double v )
-{ ui->sldBigArm->setValue(v);}
-void roboAxes::on_sBoxLitArm_valueChanged( double v )
-{ ui->sldLitArm->setValue(v);}
-void roboAxes::on_sBoxWrist_valueChanged( double v )
-{ ui->sldWrist->setValue(v);}
-void roboAxes::on_sBoxHand_valueChanged( double v )
-{ ui->sldHand->setValue(v);}
-
-
-#define ROTATE( jointid )   \
-                                float dT = mFromTime.msecsTo( mEndTime );\
-                            \
-                                rotate( jointid, 0, mAngleFrom, dT, mAngleTo );
-
-void roboAxes::on_sldBase_sliderPressed()
+void roboAxes::on_sampleTimer_valueChanged( int val )
 {
-    mFromTime = QDateTime::currentDateTime();
-    mAngleFrom = ui->sBoxBase->value();
-}
-void roboAxes::on_sldBase_sliderReleased()
-{
-    mEndTime = QDateTime::currentDateTime();
-    mAngleTo = ui->sBoxBase->value();
-
-    ROTATE( 0 );
+    on_chkAngle_toggled( ui->chkAngle->isChecked() );
 }
 
-void roboAxes::on_sldBigArm_sliderPressed()
+//! sample angle
+void roboAxes::slot_timeout()
 {
-    mFromTime = QDateTime::currentDateTime();
-    mAngleFrom = ui->sBoxBigArm->value();
-}
-void roboAxes::on_sldBigArm_sliderReleased()
-{
-    mEndTime = QDateTime::currentDateTime();
-    mAngleTo = ui->sBoxBigArm->value();
+    if ( isVisible() )
+    {}
+    else
+    { return; }
 
-    ROTATE( 1 );
-}
+    VRobot *pRobo = Robot();
+    if ( pRobo == NULL )
+    { return; }
 
-void roboAxes::on_sldHand_sliderPressed()
-{
-    mFromTime = QDateTime::currentDateTime();
-    mAngleFrom = ui->sBoxHand->value();
-}
-void roboAxes::on_sldHand_sliderReleased()
-{
-    mEndTime = QDateTime::currentDateTime();
-    mAngleTo = ui->sBoxHand->value();
+    //! sample the angle for joint 0~3
+    int subAx;
+    MegaDevice::deviceMRQ *pMrq;
+    for ( int jointId = 0; jointId < 4; jointId++ )
+    {
+        pMrq = pRobo->jointDevice( jointId, &subAx );
+        if ( NULL == pMrq )
+        {
+            sysError( tr("Invalid device") );
+            return;
+        }
 
-    ROTATE( 4 );
-}
+        //! now for angle
+        float angle;
+        angle = pMrq->getAbsAngle( subAx );
 
-void roboAxes::on_sldLitArm_sliderPressed()
-{
-    mFromTime = QDateTime::currentDateTime();
-    mAngleFrom = ui->sBoxLitArm->value();
-}
-void roboAxes::on_sldLitArm_sliderReleased()
-{
-    mEndTime = QDateTime::currentDateTime();
-    mAngleTo = ui->sBoxLitArm->value();
-
-    ROTATE( 2 );
+        Q_ASSERT( jointId < mJoints.size() );
+        mJoints.at( jointId )->setAngle( angle );
+    }
 }
 
-void roboAxes::on_sldWrist_sliderPressed()
+void roboAxes::slot_joint_action( int id, float dt, float angle )
 {
-    mFromTime = QDateTime::currentDateTime();
-    mAngleFrom = ui->sBoxWrist->value();
-
+    rotate( id,
+            0, 0,
+            dt, angle );
 }
-void roboAxes::on_sldWrist_sliderReleased()
+void roboAxes::slot_joint_zero( int id )
 {
-    mEndTime = QDateTime::currentDateTime();
-    mAngleTo = ui->sBoxWrist->value();
-
-    ROTATE( 3 );
+    logDbg()<<id;
 }
 
-void roboAxes::attachRobot( VRobot *pRobo )
+void roboAxes::slot_robo_changed( const QString &roboName )
+{
+    //! find robo
+    VRobot *pRobo = Robot();
+    if ( pRobo == NULL )
+    {
+        setEnabled(false);
+        return;
+    }
+
+    //! enalbed
+    setEnabled(true);
+
+    //! update the ui by robo
+    adapteUiToRobot( pRobo );
+}
+
+VRobot *roboAxes::Robot()
+{
+    Q_ASSERT( NULL != m_pMcModel );
+    return m_pMcModel->m_pInstMgr->findRobot( m_pMcModel->mConn.getRoboName() );
+}
+
+void roboAxes::adapteUiToRobot( VRobot *pRobo )
 {
     Q_ASSERT( NULL != pRobo );
 
-    m_pRobo = pRobo;
+    //! enable/visible
+    int jointId;
+    for ( jointId = 0; jointId < pRobo->axes(); jointId++ )
+    {
+        Q_ASSERT( jointId < mJoints.size() );
+        mJoints[jointId]->setVisible( true );
+    }
+    for ( ; jointId < mJoints.size(); jointId++ )
+    {
+        mJoints[jointId]->setVisible( false );
+    }
 
-}
-VRobot *roboAxes::Robot()
-{
-    return m_pRobo;
+    //! joint name
+    for ( jointId = 0; jointId < pRobo->axes(); jointId++ )
+    {
+        Q_ASSERT( jointId < mJoints.size() );
+        Q_ASSERT( jointId < pRobo->mJointName.size() );
+
+        mJoints[jointId]->setTitle( pRobo->mJointName[jointId] );
+    }
+
+    //! joint angle
+    for ( jointId = 0; jointId < pRobo->axes(); jointId++ )
+    {
+        Q_ASSERT( jointId < pRobo->mJointAngleMask.size() );
+        mJoints[jointId]->setAngleVisible( pRobo->mJointAngleMask[jointId] );
+    }
 }
 
 void roboAxes::buildConnection()
@@ -149,27 +192,31 @@ void roboAxes::rotate( int jointId,
 {
     logDbg()<<jointId<<t1<<a1<<t2<<a2;
 
-    Q_ASSERT( NULL != m_pRobo );
+    VRobot *pRobo = Robot();
+    if ( NULL == pRobo )
+    {
+        sysError( tr("Invalid robot") );
+        return;
+    }
+
+    Q_ASSERT( NULL != pRobo );
 
     int subAx;
-    MegaDevice::deviceMRQ *pMrq = m_pRobo->jointDevice( jointId, &subAx );
+    MegaDevice::deviceMRQ *pMrq = pRobo->jointDevice( jointId, &subAx );
     if ( NULL == pMrq )
-    { return; }
+    {
+        sysError( tr("Invalid device") );
+        return;
+    }
 
     logDbg()<<subAx<<pMrq->name();
 
     //! only one time
     pMrq->setMOTIONPLAN_CYCLENUM( subAx, MRQ_MOTION_SWITCH_1_MAIN, 1 );
 
-    pMrq->pvtWrite( subAx,0,
+    pMrq->pvtWrite( tpvRegion(subAx,0),
                     time_to_s(t1), a1,
                     time_to_s(t2), a2
                     );
-    pMrq->run( subAx );
-
-    //! info
-    Q_ASSERT( jointId < sizeof_array( mJointLabels) );
-    QString strInfo;
-    strInfo = QString( "%1ms %2%3" ).arg( (t2-t1) ).arg( a2-a1 ).arg(QChar(0x00B0));
-    mJointLabels[ jointId ]->setText( strInfo );
+    pMrq->run( tpvRegion(subAx,0) );
 }

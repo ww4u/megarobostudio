@@ -5,8 +5,8 @@ CONFIG += static
 INCLUDEPATH += ../../scpi-parser/libscpi/inc
 TARGET = ../../../../lib/megatron
 
-OBJECTS_DIR = ../obj
-MOC_DIR = ../obj
+OBJECTS_DIR = ./obj
+MOC_DIR = ./obj
 
 SOURCES = \
     megatron.cpp \

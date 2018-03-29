@@ -39,37 +39,41 @@ void RoboNetThread::onMsg( RoboMsg &msg )
 
             //! signal
             QByteArray ary = msg.at(2).toByteArray();
-            logDbg()<<ary;
+//            logDbg()<<ary;
             emit signal_net( name, ary.at(2), msg );
         }
 
-        //! name, axesid
+        //! name, region
         else if ( msg.mMsg == e_download_started
                   || msg.mMsg == e_download_started
                   || msg.mMsg == e_download_completed )
         {
             //! check
             if ( !msg.checkType( QMetaType::QString,
-                           QMetaType::Int) )
+                                 TPV_REGEION_TYPE_ID ) )
             { return; }
 
+            tpvRegion region = msg.at(1).value<tpvRegion>();
+
             emit signal_net( msg.at(0).toString(),
-                             msg.at(1).toInt(),
+                             region.axes(),
                              msg );
         }
 
-        //! name, axesid, now, total
+        //! name, region, now, total
         else if ( msg.mMsg == e_download_processing )
         {
             //! check
             if ( !msg.checkType( QMetaType::QString,
-                                QMetaType::Int,
+                                TPV_REGEION_TYPE_ID,
                                 QMetaType::Int,
                                 QMetaType::Int) )
             { return; }
 
+            tpvRegion region = msg.at(1).value<tpvRegion>();
+
             emit signal_net( msg.at(0).toString(),
-                             msg.at(1).toInt(),
+                             region.axes(),
                              msg );
         }
 
@@ -77,9 +81,9 @@ void RoboNetThread::onMsg( RoboMsg &msg )
         else if ( msg.mMsg == e_progress_para )
         {
             if ( !msg.checkType( QMetaType::Int,
-                                QMetaType::Int,
-                                QMetaType::Int,
-                                QMetaType::QString) )
+                                 QMetaType::Int,
+                                 QMetaType::Int,
+                                 QMetaType::QString) )
             { return; }
 
             emit signal_progress( msg.at(0).toInt(),

@@ -19,7 +19,9 @@ void deviceMgr::beginMotorTest( void *pPara )
 }
 void deviceMgr::endMotorTest( int ret, void *pPara )
 {}
-
+void deviceMgr::execMotorTest()
+{}
+#if 0
 void deviceMgr::execMotorTest()
 {
     MegaDevice::deviceMRQ *pMrq;
@@ -145,6 +147,7 @@ sysLog( QString::number(__LINE__), QString::number(i) );
 
     }
 }
+#endif
 
 //! robo test
 #include "../../robot/megatron/megatron.h"
@@ -190,17 +193,17 @@ void deviceMgr::execRoboTest()
     RawRoboStateCondition cond;
 begin_time()
     cond.setState( MegaDevice::mrq_state_standby );
-    pMegatron->attachCondition( &cond );
-    pMegatron->download( groups, joints );
-    pMegatron->waitCondition( &cond );
+    pMegatron->attachCondition( tpvRegion(0,0), &cond );
+    pMegatron->download( groups, joints, tpvRegion(0,0) );
+    pMegatron->waitCondition( tpvRegion(0,0), &cond );
 end_time()
 //    QThread::sleep( 30 );
 
 begin_time()
     cond.setState( MegaDevice::mrq_state_idle );
-    pMegatron->attachCondition( &cond );
-    pMegatron->run();
-    pMegatron->waitCondition( &cond );
+    pMegatron->attachCondition( tpvRegion(0,0), &cond );
+    pMegatron->run( tpvRegion(0,0) );
+    pMegatron->waitCondition( tpvRegion(0,0), &cond );
 end_time()
 //    QThread::sleep( 30 );
 

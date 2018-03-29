@@ -38,6 +38,7 @@ RoboFsm::RoboFsm()
 
     mId1 = 0;
     mId2 = 0;
+    mId3 = 0;
 }
 
 void RoboFsm::build()
@@ -49,47 +50,54 @@ void RoboFsm::init( RoboStateUnit *pState )
 
     m_pNowState = pState;
 
-    m_pNowState->onEnter();
+    //! \init
+    RoboMsg msg;
+    msg.setMsg( e_robot_init );
+//    m_pNowState->onEnter( msg );
 }
 
-void RoboFsm::proc( int msg, int para )
+void RoboFsm::proc( int msg, RoboMsg &detail )
 {
     Q_ASSERT( NULL != m_pNowState );
-
+QString strName = m_pNowState->name();
+logDbg()<<"enter"<<strName;
     //! sys proc
+    //! \todo only for mrq timeout
     if ( msg == e_robot_timeout )
-    { m_pNowState->onTimer( para ); }
+    { m_pNowState->onTimer( detail.at(1).toInt() ); }
     else
-    { m_pNowState->proc( msg, para ); }
+    { m_pNowState->proc( msg, detail ); }
+logDbg()<<"exit"<<strName;
 }
 
-void RoboFsm::proc( int msg, int para, int p2 )
-{
-    Q_ASSERT( NULL != m_pNowState );
-
-    m_pNowState->proc( msg, para, p2 );
-}
-
-void RoboFsm::subscribe( RoboFsm *pMember, int msg, int para )
+void RoboFsm::subscribe( RoboFsm *pMember,
+                         int msg,
+                         int stat,
+                         RoboMsg &detail )
 {
     if ( NULL != m_pLeader )
-    { m_pLeader->subscribe( pMember, msg, para ); }
+    {
+        m_pLeader->subscribe(   pMember,
+                                msg,
+                                stat,
+                                detail );
+    }
     else
     { logWarning(); }
 }
 
-void RoboFsm::toState( RoboStateUnit *pState )
+void RoboFsm::toState( RoboStateUnit *pState, RoboMsg &detail )
 {
     Q_ASSERT( NULL != pState );
 
     //! in state now
     if ( m_pNowState != pState )
     {
-        m_pNowState->onExit();logDbg()<<m_pNowState->name()<<Id1()<<Id2()<<"exit";
+        m_pNowState->onExit( detail );logDbg()<<m_pNowState->name()<<Id1()<<Id2()<<"exit";
 
         m_pNowState = pState;
 
-        m_pNowState->onEnter();logDbg()<<m_pNowState->name()<<Id1()<<Id2()<<"enter";
+        m_pNowState->onEnter( detail );logDbg()<<m_pNowState->name()<<Id1()<<Id2()<<"enter";
     }
     else
     {
@@ -116,11 +124,11 @@ void RoboFsm::detachCondition()
     m_pCond = NULL;
 }
 
-//! \note split the attach and wait as the event can be triggered
+//! \note split the attach and wait, as the event can be triggered
 //! during the working process
 bool RoboFsm::waitCondition( RoboCondition *pCond, int tmoms )
 {
-//    attachCondition( pCond );
+    attachCondition( pCond );
 
     bool bRet;
     if ( NULL != pCond )
@@ -133,6 +141,9 @@ bool RoboFsm::waitCondition( RoboCondition *pCond, int tmoms )
     return bRet;
 }
 
+tpvRegion &RoboFsm::region()
+{ return *this;  }
+
 void RoboFsm::setLeader( RoboFsm *pLeader, void *pPara )
 {
     //! can be null
@@ -144,15 +155,18 @@ RoboFsm *RoboFsm::leader()
 void *RoboFsm::leaderPara()
 { return m_pLeaderPara; }
 
-void RoboFsm::setId( int id1, int id2  )
+void RoboFsm::setId( int id1, int id2, int id3  )
 {
     mId1 = id1;
     mId2 = id2;
+    mId3 = id3;
 }
 int RoboFsm::Id1()
 { return mId1; }
 int RoboFsm::Id2()
 { return mId2; }
+int RoboFsm::Id3()
+{ return mId3; }
 
 //! state unit
 RoboStateUnit::RoboStateUnit( RoboFsm *pFsm )
@@ -162,23 +176,23 @@ RoboStateUnit::RoboStateUnit( RoboFsm *pFsm )
 RoboStateUnit::~RoboStateUnit()
 {}
 
-void RoboStateUnit::proc( int msg, int para )
+void RoboStateUnit::proc( int msg, RoboMsg &detail )
 {}
-void RoboStateUnit::proc( int msg, int para1, int p2 )
-{}
-void RoboStateUnit::toState( RoboStateUnit *pState )
+//void RoboStateUnit::proc( int msg, int para1, int p2 )
+//{}
+void RoboStateUnit::toState( RoboStateUnit *pState, RoboMsg &detail )
 {
     Q_ASSERT( NULL != pState );
     Q_ASSERT( NULL != Fsm() );
 
-    Fsm()->toState( pState );
+    Fsm()->toState( pState, detail );
 }
 
-void RoboStateUnit::onEnter()
+void RoboStateUnit::onEnter( RoboMsg &detail )
 {}
-void RoboStateUnit::onExit()
+void RoboStateUnit::onExit( RoboMsg &detail )
 {}
-void RoboStateUnit::onRst()
+void RoboStateUnit::onRst( RoboMsg &detail )
 {}
 
 void RoboStateUnit::onTimer( int id )

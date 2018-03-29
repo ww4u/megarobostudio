@@ -47,35 +47,41 @@ static scpi_result_t _scpi_idn( scpi_t * context )
     return SCPI_RES_OK;
 }
 
-//! ax
+//! ax,page
 static scpi_result_t _scpi_run( scpi_t * context )
 {
     // read
     DEF_LOCAL_VAR();
 
-    int ax;
+    int ax, page;
 
     if ( SCPI_RES_OK != SCPI_ParamInt32( context, &ax, true ) )
     { return SCPI_RES_ERR; }
 
+    if ( SCPI_RES_OK != SCPI_ParamInt32( context, &page, true ) )
+    { return SCPI_RES_ERR; }
+
     DEF_MRQ();
 
-    LOCALMRQ()->run(ax);
+    LOCALMRQ()->run( tpvRegion(ax,page) );
 
     return SCPI_RES_OK;
 }
 
 //! int, float, float
-//! ax, t, angle
+//! ax, page, t, angle
 static scpi_result_t _scpi_rotate( scpi_t * context )
 {
     // read
     DEF_LOCAL_VAR();
 
-    int val1;
+    int ax, page;
     float val2, val3;
 
-    if ( SCPI_RES_OK != SCPI_ParamInt32( context, &val1, true ) )
+    if ( SCPI_RES_OK != SCPI_ParamInt32( context, &ax, true ) )
+    { return SCPI_RES_ERR; }
+
+    if ( SCPI_RES_OK != SCPI_ParamInt32( context, &page, true ) )
     { return SCPI_RES_ERR; }
 
     if ( SCPI_RES_OK != SCPI_ParamFloat( context, &val2, true ) )
@@ -84,7 +90,7 @@ static scpi_result_t _scpi_rotate( scpi_t * context )
     if ( SCPI_RES_OK != SCPI_ParamFloat( context, &val3, true ) )
     { return SCPI_RES_ERR; }
 
-    ((MegaDevice::deviceMRQ*)context->user_context)->rotate( val1, val2, val3 );
+    ((MegaDevice::deviceMRQ*)context->user_context)->rotate( tpvRegion(ax,page), val2, val3 );
 
     return SCPI_RES_OK;
 }
@@ -105,14 +111,14 @@ static scpi_result_t _scpi_call( _scpi_t * context )
 
     DEF_MRQ();
 
-    LOCALMRQ()->prepare( ax, page );
+    LOCALMRQ()->call( tpvRegion(ax, page) );
 
     return SCPI_RES_OK;
 }
 
 
 //! TPV ax,page,e:/ddd.csv
-static scpi_result_t _scpi_tpv( scpi_t * context )
+static scpi_result_t _scpi_program( scpi_t * context )
 {logDbg();
     // read
     DEF_LOCAL_VAR();
@@ -158,7 +164,7 @@ static scpi_result_t _scpi_tpv( scpi_t * context )
 
     //! send
     int ret = -1;
-    ret = ((MegaDevice::deviceMRQ*)context->user_context)->tpvWrite( ax, page, pDots, dotSize );
+    ret = ((MegaDevice::deviceMRQ*)context->user_context)->pvtWrite( tpvRegion(ax, page), pDots, dotSize );
 
     gc_array( pDots );
 
@@ -168,18 +174,21 @@ static scpi_result_t _scpi_tpv( scpi_t * context )
     { return SCPI_RES_OK; }
 }
 
-//! xxx ax
+//! xxx ax,page
 static scpi_result_t _scpi_fsmState( scpi_t * context )
 {
     // read
     DEF_LOCAL_VAR();
 
-    int val1, ret;
+    int val1, val2, ret;
 
     if ( SCPI_RES_OK != SCPI_ParamInt32( context, &val1, true ) )
     { return SCPI_RES_ERR; }
 
-    ret = ((MegaDevice::deviceMRQ*)context->user_context)->fsmState(  val1 );
+    if ( SCPI_RES_OK != SCPI_ParamInt32( context, &val2, true ) )
+    { return SCPI_RES_ERR; }
+
+    ret = ((MegaDevice::deviceMRQ*)context->user_context)->fsmState(  tpvRegion(val1,val2) );
 
     SCPI_ResultInt32( context, ret );
 
@@ -187,7 +196,7 @@ static scpi_result_t _scpi_fsmState( scpi_t * context )
 }
 
 //! XXX ax
-static scpi_result_t _scpi_angle( scpi_t * context )
+static scpi_result_t _scpi_incangle( scpi_t * context )
 {
     // read
     DEF_LOCAL_VAR();
@@ -198,7 +207,25 @@ static scpi_result_t _scpi_angle( scpi_t * context )
     { return SCPI_RES_ERR; }
 
     float val = 0;
-    val = ((MegaDevice::deviceMRQ*)context->user_context)->getAngle( val1 );
+    val = ((MegaDevice::deviceMRQ*)context->user_context)->getIncAngle( val1 );
+
+    SCPI_ResultFloat( context, val );
+
+    return SCPI_RES_OK;
+}
+
+static scpi_result_t _scpi_absangle( scpi_t * context )
+{
+    // read
+    DEF_LOCAL_VAR();
+
+    int val1;
+
+    if ( SCPI_RES_OK != SCPI_ParamInt32( context, &val1, true ) )
+    { return SCPI_RES_ERR; }
+
+    float val = 0;
+    val = ((MegaDevice::deviceMRQ*)context->user_context)->getAbsAngle( val1 );
 
     SCPI_ResultFloat( context, val );
 
@@ -219,9 +246,10 @@ static scpi_command_t _mrq_scpi_cmds[]=
 
     CMD_ITEM( "STATE?", _scpi_fsmState ),
 
-    CMD_ITEM( "ANGLE?", _scpi_angle ),
+    CMD_ITEM( "ANGLE:INCREASE?", _scpi_incangle ),
+    CMD_ITEM( "ANGLE:ABSOLUTE?", _scpi_absangle ),
 
-    CMD_ITEM( "PROGRAM", _scpi_tpv ),
+    CMD_ITEM( "PROGRAM", _scpi_program ),
 
     CMD_ITEM( "CALL", _scpi_call ),
 

@@ -7,11 +7,10 @@
 #include "../../device/mrq/deviceMRQ.h"
 #include "../../device/_scpi_xxx_device.h"
 
-#include "../../model/handactionmodel.h"
+//#include "../../model/handactionmodel.h"
 
 //! arith
-#include "../../arith/pathplan/pathplan.h"
-#include "../../arith/kinematic/kinematic.h"
+#include "../../arith/megatron_split/megatron_split.h"
 
 class robotMegatron : public RawRobo
 {
@@ -28,21 +27,24 @@ public:
 public:
     virtual void onMsg( int subAxes, RoboMsg &msg );
 
-    virtual int download( tpvGroup *pGroup, int axes = 0 );
-    virtual int download( motionGroup *pGroup, int axes = 0 );
+//    virtual int download( tpvGroup *pGroup, int axes = 0 );
+//    virtual int download( motionGroup *pGroup, int axes = 0 );
 
     virtual int download( QList<tpvGroup*> &groups,
-                          QList<int> &joints );      //! joint tab id
+                          QList<int> &joints,       //! joint tab id
+                          const tpvRegion &region );
 
     virtual int download( VRobot *pSetup );
 
-    virtual int run( int axes );
-    virtual int stop( int axes );
+    virtual int run( const tpvRegion &region=0  );
+    virtual int stop( const tpvRegion &region=0  );
+//    virtual int run( int axes );
+//    virtual int stop( int axes );
 
-    virtual int run( );
-    virtual int stop( );
+//    virtual int run( );
+//    virtual int stop( );
 
-    virtual int setLoop( int n );
+    virtual int setLoop( int n, const tpvRegion &region=0 );
     virtual int loopNow();
 
     virtual void onLine();
@@ -50,37 +52,28 @@ public:
 
     virtual void toState(int stat);
 
-public:
-    virtual QAbstractTableModel *handActions();
+public:    
 
 public:
-    int move( QList<TraceKeyPoint> &curve );
+    int call( const tpvRegion &region=0 );  //! load + run
+    int program( QList<MegatronKeyPoint> &curve,
+                 const tpvRegion &region );
+
+    int move( QList<MegatronKeyPoint> &curve,
+              const tpvRegion &region );
 
     int moveTest1();
     int moveTest2();
 
-    int nowPose( TraceKeyPoint &pos );
-    int nowDist( QList<float> &dists );
 
 protected:
-    int buildTrace( QList<TraceKeyPoint> &curve,
-                    xxxGroup<jointsTrace> &jointsPlan );
+    int buildTrace( QList<MegatronKeyPoint> &curve );
 
-    int planTrace( QList<TraceKeyPoint> &curve,
-                   xxxGroup<tracePoint> &tracePoints );
+    int downloadTrace( const tpvRegion &region );
 
-    int splitTrace( xxxGroup<tracePoint> &tracePoints,
-                    xxxGroup<jointsTrace> &traceJoints );
-
-    int convertTrace(   QList<TraceKeyPoint> &curve,
-                        xxxGroup<jointsTrace> &jointsPlan );
-
-    int downloadTrace( );
-    int buildTpvGroup( xxxGroup<jointsTrace> &jointsPlan,
-                       QList< tpvGroup *> &gp );
 
 protected:
-    handActionModel mHandActionModel;
+
     QList< tpvGroup *> mJointsGroup;
 };
 

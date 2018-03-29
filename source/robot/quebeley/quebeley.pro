@@ -11,8 +11,8 @@ CONFIG += staticlib
 
 TARGET = ../../../../lib/quebeley
 
-OBJECTS_DIR = ../obj
-MOC_DIR = ../obj
+OBJECTS_DIR = ./obj
+MOC_DIR = ./obj
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which has been marked as deprecated (the exact warnings

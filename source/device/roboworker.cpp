@@ -17,7 +17,8 @@ void RoboWorker::onMsg( RoboMsg &msg )
     }
 }
 
-void RoboWorker::attachRobot( VRobot *pRobot, int subAxes )
+void RoboWorker::attachRobot( VRobot *pRobot,
+                              int subAxes )
 {
     Q_ASSERT( NULL != pRobot );
 

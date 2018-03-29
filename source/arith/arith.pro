@@ -2,4 +2,5 @@ TEMPLATE = subdirs
 
 SUBDIRS = ./pathplan \
           ./kinematic \
-          ./pvt
+          ./pvt \
+          ./megatron_split

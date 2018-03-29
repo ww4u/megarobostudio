@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MrqSensorPage</class>
+ <widget class="QWidget" name="MrqSensorPage">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="MrqUart" name="widget" native="true"/>
+   </item>
+   <item>
+    <widget class="QTabWidget" name="tabWidget">
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <widget class="MrqSubUart" name="tab">
+      <attribute name="title">
+       <string>S1</string>
+      </attribute>
+     </widget>
+     <widget class="MrqSubUart" name="tab_2">
+      <attribute name="title">
+       <string>S2</string>
+      </attribute>
+     </widget>
+     <widget class="MrqSubUart" name="tab_3">
+      <attribute name="title">
+       <string>S3</string>
+      </attribute>
+     </widget>
+     <widget class="MrqSubUart" name="tab_4">
+      <attribute name="title">
+       <string>S4</string>
+      </attribute>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>MrqUart</class>
+   <extends>QWidget</extends>
+   <header>mrquart.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>MrqSubUart</class>
+   <extends>QWidget</extends>
+   <header>mrqsubuart.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

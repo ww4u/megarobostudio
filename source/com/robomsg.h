@@ -7,9 +7,9 @@ enum eRoboMsg
 {
     e_robo_none = 0,
 
-    e_download_started,     //! name, axesid
-    e_download_processing,  //! name, axesid, now, total
-    e_download_completed,   //! name, axesid
+    e_download_started,     //! name, region
+    e_download_processing,  //! name, region, now, total
+    e_download_completed,   //! name, region
 
     e_download_terminated,  //! name, axes
 
@@ -19,10 +19,11 @@ enum eRoboMsg
     e_logout,               //! string
 
     e_interrupt_occuring,       //! event id, frame id, byte array
-    e_axes_status,              //! name, axesid, recvid, status
+//    e_axes_status,              //! name, region, status
 
+    e_robot_init,               //! no para
     e_robot_timeout,            //! timer id,
-    e_robot_member_state,       //! state
+    e_robot_member_state,       //! ax, region, state
 
     e_robot_status,             //! real robo status,
                                 //! name, status

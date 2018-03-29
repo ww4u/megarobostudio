@@ -19,7 +19,7 @@ void interruptHandler::setInstMgr( MegaDevice::InstMgr *pInstMgr )
 void interruptHandler::slot_event( eventId id,
                                    frameData data )
 {
-    logDbg()<<id<<data.getFrameId()<<data.size()<<data;
+//    logDbg()<<id<<data.getFrameId()<<data.size()<<data;
 
     //! find device by event id
     Q_ASSERT( NULL != m_pInstMgr );
@@ -48,12 +48,12 @@ void interruptHandler::slot_event( eventId id,
 
     //! default proc
     sysQueue()->postMsg(
-                      e_interrupt_occuring,
-                      (int)id,
-                      data.getFrameId(),
-                      (QByteArray)data
-                      );
-    logDbg();
+                          e_interrupt_occuring,
+                          (int)id,
+                          data.getFrameId(),
+                          (QByteArray)data
+                          );
+//    logDbg();
 }
 
 interruptThread::interruptThread( QObject *parent ) : QThread( parent )

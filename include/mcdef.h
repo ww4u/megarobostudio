@@ -11,6 +11,12 @@
 #define sizeof_double( item )           (int)( sizeof(item)/sizeof(double) )
 #define offsetof_double( a, b )         (int)( offsetof( a, b )/sizeof(double) )
 
+//! bit ops
+#define set_bit( val, bitN )     val |= (1<<(bitN));
+#define unset_bit( val, bitN )     val &= (~(1<<(bitN)));
+#define is_bit1( val, bitN )     ( (val & (1<<(bitN)) ) == (1<<(bitN)) )
+#define is_bit0( val, bitN )     ( (val & (1<<(bitN)) ) != (1<<(bitN)) )
+
 #define checked_call( call )            ret = call;\
                                         if ( ret != 0 ){ return ret; }
 

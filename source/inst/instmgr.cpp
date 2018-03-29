@@ -50,12 +50,16 @@ void InstMgr::dataIn(  QTcpSocket *socket,
                        const QString &name,
                        QByteArray &ary )
 {
-    logDbg()<<ary.length()<<name;
+//    logDbg()<<ary.length()<<name;
     //! find the name
     scpiShell *pShell = findShell( name );
     if ( NULL == pShell )
     { return; }
-    logDbg()<<ary.length();
+//    logDbg()<<ary.length();
+
+    //! wait lpc idle
+    RoboMsgQueue::waitIdle();
+
     pShell->setObjPara( name, socket );
 
     pShell->write( ary.data(), ary.length() );
@@ -69,11 +73,11 @@ void InstMgr::dataIn(  QTcpSocket *socket,
         rdSize = pShell->read( retData, retSize );
 
         dataOut( socket, retData, rdSize );
-//        logDbg()<<rdSize<<retData;
+        logDbg()<<rdSize<<retData;
 //        for ( int i = 0; i < rdSize; i++ )
 //        { logDbg()<<QString::number( retData[i],16); }
     }
-    logDbg()<<retSize;
+//    logDbg()<<retSize;
 }
 
 void InstMgr::setMainModel( mcModel *pModel )
@@ -92,6 +96,7 @@ int InstMgr::probeBus()
     preProbeBus();
 
     ret = probeCanBus();
+//    ret = -1;
 
     postProbeBus();
 
@@ -170,7 +175,7 @@ int InstMgr::probeCanBus()
 
             //! get info
             pMRQ->rst();
-            pMRQ->upload();
+            pMRQ->uploadBaseInfo();
 
             logDbg()<<QString::number( (uint32)pMRQ, 16 );
             logDbg()<<seq<<pMRQ->getModel()->mCAN_SENDID;
@@ -187,6 +192,8 @@ int InstMgr::probeCanBus()
             delete pMRQ;
 
             pRobo = robotFact::createRobot( roboClass );
+            if ( NULL == pRobo )
+            { return ERR_ALLOC_FAIL; }
 
             //! delete the robo
             //! bus config

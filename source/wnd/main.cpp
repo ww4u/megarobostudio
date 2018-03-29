@@ -73,11 +73,88 @@ int _main( int argc, char *argv[] )
     return 0;
 }
 
+//class A
+//{
+//public:
+//    int val;
+//    virtual int value()=0;
+////    { return 0; }
+//    A() : val(0)
+//    {
+//        logDbg()<<val<<value();
+//    }
+//};
+
+//class B : public A
+//{
+//public:
+//    B()
+//    {
+////        val = 1;
+//    }
+//    virtual int value()
+//    { return 1; }
+//};
+
 
 //#include "../ui/progressgroup.h"
-//int main(int argc, char *argv[])
-//{
-//    QApplication a(argc, argv);
+int __main(int argc, char *argv[])
+{
+    QApplication a(argc, argv);
+
+//    B b;
+
+    QMap< tpvRegion, int > maps;
+    tpvRegion region;
+    for ( int i = 0; i < 4; i++ )
+    {
+        for ( int j = 0; j < 10; j++ )
+        {
+            region.setRegion( i,j );
+//            Q_ASSERT( !maps.contains( tpvRegion(i,j) ) );
+            maps.insert( region, i*10+j );
+
+            Q_ASSERT ( maps[ region] == (i * 10 + j) );
+            Q_ASSERT( maps.contains( region ) );
+        }
+    }
+
+    foreach (int value, maps )
+    {
+        logDbg()<<value;
+    }
+
+    foreach( tpvRegion region, maps.keys() )
+    { logDbg()<<region.axes()<<region.page(); }
+
+    foreach( tpvRegion region, maps.keys() )
+    { logDbg()<<region.axes()<<region.page(); }
+
+
+
+    for ( int i = 3; i >=0; i-- )
+    {
+        for ( int j = 9; j >=0; j-- )
+        {
+            logDbg()<<i<<j;
+            region.setRegion( i,j );
+            Q_ASSERT( maps.contains( region ));
+//            Q_ASSERT( tpvRegion(i,j) == tpvRegion(i,j) );
+        }
+    }
+
+//    for ( int i = 0; i < 4; i++ )
+//    {
+//        for ( int j = 0; j < 10; j++ )
+//        {
+////            maps.insert( tpvRegion(i,j), 0 );
+//            logDbg()<<i<<j;
+//            Q_ASSERT( maps.contains(tpvRegion(i,j)));
+//            logDbg()<<maps.value( tpvRegion(i,j) );
+////            logDbg()<<maps[ tpvRegion(i,j) ];
+////            Q_ASSERT( maps.find( tpvRegion(i,j) ) != maps.end() );
+//        }
+//    }
 
 //    ProgressGroup gp;
 
@@ -86,40 +163,80 @@ int _main( int argc, char *argv[] )
 
 //    gp.show();
 
+    int id = qRegisterMetaType<tpvRegion>();
+
+    logDbg()<<id;
+
+//    tpvRegion reg(1);
+
+//    QVariant var = QVariant::fromValue( reg );
+
+////    logDbg()<<var.type()<<var.typeName();
+//    logDbg()<<var.type();
+//    logDbg()<<var.typeName();
+
+//    tpvRegion reg2 = var.value<tpvRegion>();
+//    logDbg()<<reg2.mAx<<reg2.mPage;
+
 //    a.exec();
 
-//    return 0;
-//}
+    return 0;
+}
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+//    a.setApplicationVersion(  );
+//    a.setOrganizationName( tr("MEGAROBO") );
+//    a.setApplicationName( tr("MegaRobo Studio") );
 
     //! --meta type
-    qRegisterMetaType<appWidget::servContext>("appWidget::servContext");
-    qRegisterMetaType<eventId>("eventId");
-    qRegisterMetaType<frameData>("frameData");
-    qRegisterMetaType<RoboMsg>("RoboMsg");
+    //! \note register at first
+    //! \see TPV_REGEION_TYPE_ID
+//    qRegisterMetaType<tpvRegion>();
+//    qRegisterMetaType<RoboMsg>();
+
+    logDbg()<<qMetaTypeId<tpvRegion>();
+    logDbg()<<qMetaTypeId<RoboMsg>();
+
+    qRegisterMetaType<appWidget::servContext>();
+    qRegisterMetaType<eventId>();
+    qRegisterMetaType<frameData>();
+
+
+//    qRegisterMetaType<appWidget::servContext>("appWidget::servContext");
+//    qRegisterMetaType<eventId>("eventId");
+//    qRegisterMetaType<frameData>("frameData");
+//    qRegisterMetaType<RoboMsg>("RoboMsg");
 
     //! --splash
     QPixmap pixmap(":/res/image/logo/full.png");
     QSplashScreen splash(pixmap);
     splash.show();
+    splash.showMessage( a.applicationVersion() );
     a.processEvents();
 
+    //! load pref
     //! translator
     QTranslator translator;
-
-    if ( translator.load( QLocale(),
-                          QLatin1String("megarobostudio"),
-                          QLatin1String("_"),
-                          a.applicationDirPath() + "/translate"
-                          ) )
-    {  a.installTranslator(&translator); }
-
-
-    //! style
-    CommonHelper::setStyle( a.applicationDirPath() + "/style" + "/mega.qss" );
+    {
+        modelSysPref pref;
+        pref.load( pref_file_name );
+        if ( pref.mLangIndex != 0 )
+        {
+            if ( translator.load( QLocale(),
+                                  QLatin1String("megarobostudio"),
+                                  QLatin1String("_"),
+                                  a.applicationDirPath() + "/translate"
+                                  ) )
+            {  a.installTranslator(&translator); }
+        }
+        if ( pref.mStyleIndex != 0 )
+        {
+            //! style
+            CommonHelper::setStyle( a.applicationDirPath() + "/style" + "/mega.qss" );
+        }
+    }
 
     //! dpc set thread
     QThread thread;

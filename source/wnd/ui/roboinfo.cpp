@@ -10,6 +10,8 @@ roboInfo::roboInfo(QWidget *parent) :
     ui->setupUi(this);
 
     initModel();
+
+    SET_INFO_ATTR();
 }
 
 roboInfo::~roboInfo()
@@ -66,7 +68,7 @@ void roboInfo::updateUi()
     Q_ASSERT( NULL != pRobot );
 
     mItems[1]->setText( pRobot->getClass() );
-    mItems[3]->setData( Qt::DisplayRole, QVariant( pRobot->getAxes() ) );
+    mItems[3]->setData( Qt::DisplayRole, QVariant( pRobot->axes() ) );
     mItems[5]->setData( Qt::DisplayRole, QVariant( pRobot->getId() ) );
 
     ui->label->setPixmap( QPixmap::fromImage( pRobot->getImage() ) );

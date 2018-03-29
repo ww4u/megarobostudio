@@ -98,7 +98,7 @@ int mrqAxes2::apply()
     //! out of line
     checked_call( pDevice->setMOTIONPLAN_OOSLINESTATE( mAxesId,
                                                        mPage,
-                                      (MRQ_SYSTEM_DIOREFREAD)ui->chkOutOfLineState->isEnabled() ) );
+                                      (MRQ_CAN_NETMANAGELED)ui->chkOutOfLineState->isEnabled() ) );
     checked_call( pDevice->setMOTIONPLAN_OOSLINEOUTNUM( mAxesId,
                                                         mPage,
                                       ui->spinOutOfLine->value() ) );

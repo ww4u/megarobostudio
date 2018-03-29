@@ -68,5 +68,5 @@ void mrqSys::on_chkLed_clicked(bool checked)
 {
     Q_ASSERT( getDevice() != NULL );
 
-    getDevice()->setCAN_NETMANAGELED( (MRQ_SYSTEM_DIOREFREAD)checked );
+    getDevice()->setCAN_NETMANAGELED( (MRQ_CAN_NETMANAGELED)checked );
 }

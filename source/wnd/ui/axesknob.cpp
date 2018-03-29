@@ -3,14 +3,12 @@
 #include <QMessageBox>
 #include "../../device/mrq/deviceMRQ.h"
 
-axesKnob::axesKnob(QWidget *parent) :
-    QDialog(parent),
+axesKnob::axesKnob( mcModel *pModel,
+                    QWidget *parent) :
+    DlgView( pModel, parent),
     ui(new Ui::axesKnob)
 {
     ui->setupUi(this);
-
-    m_pDevice = NULL;
-    mAxesId = 0;
 }
 
 axesKnob::~axesKnob()
@@ -18,18 +16,20 @@ axesKnob::~axesKnob()
     delete ui;
 }
 
-void axesKnob::setDevice( MegaDevice::VDevice *pDevice,
-                          int axesId )
+MegaDevice::deviceMRQ * axesKnob::currentDevice( int &ax )
 {
-    Q_ASSERT( NULL != pDevice );
-    m_pDevice = pDevice;
-    mAxesId = axesId;
-}
+    Q_ASSERT( NULL != m_pMcModel );
 
-void axesKnob::setConnection( const QString &conn )
-{
-    ui->labConnection->setText( conn );
+    //! set model && axesid
+    QString str;
+    int id;
+    str = m_pMcModel->getConnection().getDeviceName();
+    id = m_pMcModel->getConnection().getDeviceCH();
 
+    MegaDevice::deviceMRQ *pMrq = m_pMcModel->m_pInstMgr->findDevice( str,
+                                                                      id );
+    ax = id;
+    return pMrq;
 }
 
 void axesKnob::on_sliderValue_valueChanged(int val )
@@ -54,12 +54,15 @@ void axesKnob::on_sliderValue_sliderReleased()
     mStopTime = QDateTime::currentDateTime();
     mStopAngle = ui->spinNow->value();
 
-    MegaDevice::deviceMRQ *pMrq = static_cast<MegaDevice::deviceMRQ*>(m_pDevice);
-    Q_ASSERT( NULL != pMrq );
+    int ax;
+    MegaDevice::deviceMRQ *pMrq = currentDevice( ax );
+    if ( NULL == pMrq )
+    {
+        sysError( tr("Invalid device") );
+        return;
+    }
 
-
-//    if ( pMrq->status( mAxesId ) !=  )
-    if ( pMrq->fsmState(mAxesId) != MegaDevice::mrq_state_idle )
+    if ( pMrq->fsmState( tpvRegion(ax,0) ) != MegaDevice::mrq_state_idle )
     {
         QMessageBox::warning( this, tr("Warning"), tr("Device is busy now, try later!") );
         return;
@@ -67,26 +70,28 @@ void axesKnob::on_sliderValue_sliderReleased()
 
     int ret;
     //! write only one time
-    ret = pMrq->setMOTIONPLAN_CYCLENUM( mAxesId,
+    ret = pMrq->setMOTIONPLAN_CYCLENUM( ax,
                                         MRQ_MOTION_SWITCH_1_MAIN,
                                         1 );
     if ( ret != 0 )
     { return; }
 
     //! run the device
-    ret = pMrq->pvtWrite( mAxesId,
-                          MRQ_MOTION_SWITCH_1_MAIN,
-                    0,0,
-                    time_to_s( mStartTime.msecsTo( mStopTime ) ),
-                    mStopAngle - mStartAngle
-                    );
+    ret = pMrq->pvtWrite( tpvRegion( ax,
+                                     (int)MRQ_MOTION_SWITCH_1_MAIN ),
+                        0,0,
+                        time_to_s( mStartTime.msecsTo( mStopTime ) ),
+                        mStopAngle - mStartAngle
+                        );
     if ( ret != 0 )
     { return; }
 
-    ret = pMrq->run( mAxesId );
+    ret = pMrq->run( tpvRegion(ax,0) );
     if ( ret != 0 )
     { return; }
 
+    //! view connection
+    ui->labConnection->setText( QString("CH%1@%2").arg( ax + 1 ).arg( m_pMcModel->getConnection().getDeviceName() ) );
     ui->label->setText( QString("%1ms %2%3").arg( mStartTime.msecsTo( mStopTime ) )
                                           .arg( mStopAngle - mStartAngle ).arg(QChar(0x00B0)) );
 }

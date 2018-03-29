@@ -2,7 +2,7 @@
 #define SCPISHELL_H
 
 #include <QtCore>
-#include "../../model/mcmodelobj.h"
+#include "../model/mcmodelobj.h"
 
 #define DEF_IN_SIZE     1024
 #define DEF_OUT_SIZE    1024

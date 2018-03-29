@@ -6,7 +6,7 @@ TARGET = ../../../../lib/kinematic
 
 DEFINES += EXPORT_LIBRARY
 
-OBJECTS_DIR = ./obj
+OBJECTS_DIR = ../obj
 MOC_DIR = ../obj
 
 SOURCES = \

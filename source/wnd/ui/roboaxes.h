@@ -4,56 +4,40 @@
 #include <QDateTime>
 #include <QDialog>
 #include <QLabel>
+#include <QLCDNumber>
 #include "../../device/vrobot.h"
-
+#include "dlgview.h"
+#include "robojoint.h"
 namespace Ui {
 class roboAxes;
 }
 
-class roboAxes : public QDialog
+
+class roboAxes : public DlgView
 {
     Q_OBJECT
 
 public:
-    explicit roboAxes(QWidget *parent = 0);
+    explicit roboAxes( mcModel *pModel,
+                       QWidget *parent = 0);
     ~roboAxes();
 
 Q_SIGNALS:
     void sig_close();
 
 protected Q_SLOTS:
-    void on_close();
+    void on_chkAngle_toggled(bool checked);
+    void on_sampleTimer_valueChanged( int val );
 
-    void on_sldBase_valueChanged(int v );
-    void on_sldBigArm_valueChanged(int v );
-    void on_sldLitArm_valueChanged(int v );
-    void on_sldWrist_valueChanged(int v);
-    void on_sldHand_valueChanged(int v);
+    void slot_timeout();
+    void slot_joint_action( int id, float dt, float angle );
+    void slot_joint_zero( int id );
 
-    void on_sBoxBase_valueChanged( double v );
-    void on_sBoxBigArm_valueChanged( double v );
-    void on_sBoxLitArm_valueChanged( double v );
-    void on_sBoxWrist_valueChanged( double v );
-    void on_sBoxHand_valueChanged( double v );
+    void slot_robo_changed( const QString &roboName );
 
-    void on_sldBase_sliderPressed();
-    void on_sldBase_sliderReleased();
-
-    void on_sldBigArm_sliderPressed();
-    void on_sldBigArm_sliderReleased();
-
-    void on_sldHand_sliderPressed();
-    void on_sldHand_sliderReleased();
-
-    void on_sldLitArm_sliderPressed();
-    void on_sldLitArm_sliderReleased();
-
-    void on_sldWrist_sliderPressed();
-    void on_sldWrist_sliderReleased();
-
-public:
-    void attachRobot( VRobot *pRobo );
+protected:
     VRobot *Robot();
+    void adapteUiToRobot( VRobot *pRobo );
 
 protected:
     void buildConnection();
@@ -64,13 +48,15 @@ protected:
 
 private:
     Ui::roboAxes *ui;
+    QTimer mTimer;
 
-    VRobot *m_pRobo;
+//    QDateTime mFromTime, mEndTime;
+//    float mAngleFrom, mAngleTo;
 
-    QDateTime mFromTime, mEndTime;
-    float mAngleFrom, mAngleTo;
+//    QLabel *mJointLabels[ 5 ];
+//    QList< QLCDNumber *> mAngleNumbers;
 
-    QLabel *mJointLabels[ 5 ];
+    QList< RoboJoint* > mJoints;
 };
 
 #endif // ROBOAXES_H

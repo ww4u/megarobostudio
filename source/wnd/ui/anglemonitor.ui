@@ -152,6 +152,23 @@
       </widget>
      </item>
      <item>
+      <widget class="QLabel" name="labelSubItem">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="text">
+        <string>Item</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="ValueComboBox" name="comboBox">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
       <spacer name="horizontalSpacer">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
@@ -184,6 +201,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ValueComboBox</class>
+   <extends>QComboBox</extends>
+   <header>valuecombobox.h</header>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="../res/res.qrc"/>
  </resources>

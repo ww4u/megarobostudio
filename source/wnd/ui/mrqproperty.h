@@ -10,6 +10,9 @@
 #include "mrqsensor.h"
 #include "mrqsys.h"
 
+#include "mrqdcaxes.h"
+#include "mrqalarm.h"
+
 #include "../../model/mcmodelobj.h"
 
 namespace Ui {
@@ -21,10 +24,12 @@ class mrqProperty : public mrqView
     Q_OBJECT
 
 public:
-    explicit mrqProperty( int axesCnt=4, QWidget *parent = 0);
+    explicit mrqProperty( VRobot *pMrqRobo,
+                          QWidget *parent = 0);
     ~mrqProperty();
 
 protected Q_SLOTS:
+    void on_page_changed( int index );
     void on_btnApply_clicked();
     void on_btnOK_clicked();
     void on_btnCancel_clicked();
@@ -48,16 +53,20 @@ private:
     Ui::mrqProperty *ui;
 
 public:
-    int mAxes;
+//    int mAxes;
+    VRobot *m_pRefModel;
 
     mrqInfo *m_pInfoPage;
 
     QList< mrqAxes * > mAxesPages;
     QList< mrqAxes2 * > mAxesPage2s;
 
+    QList< MrqDcAxes *> mDcAxesPages;
+
     mrqIo *m_pIoPage;
     mrqSensor *m_pSensorPage;
     mrqSys *m_pSysPage;
+    MrqAlarm *m_pAlarmPage;
 };
 
 #endif // MRQPROPERTY_H

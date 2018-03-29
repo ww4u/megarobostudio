@@ -5,6 +5,9 @@
 #define state_timer_id      1
 #define state_timer_tmo     time_s(1)    //! us
 
+#define prepare_timer_id    2
+#define prepare_timer_tmo   time_s(5)
+
 namespace MegaDevice {
 
 MrqStateCondition::MrqStateCondition( int axes, int stat ) : RoboStateCondition( axes, stat )
@@ -15,30 +18,27 @@ MrqStateCondition::MrqStateCondition( int axes, int stat ) : RoboStateCondition(
 MrqFsmContext::MrqFsmContext()
 {
     m_pMrq = NULL;
-    mAxes = 0;
 
     mbRunReqed = false;
 }
 
-void MrqFsmContext::set( deviceMRQ *pMrq, int axes )
+void MrqFsmContext::setContext( deviceMRQ *pMrq )
 {
     m_pMrq = pMrq;
-    mAxes = axes;
+
 }
 deviceMRQ *MrqFsmContext::Mrq()
 {
     Q_ASSERT( NULL != m_pMrq );
     return m_pMrq;
 }
-int MrqFsmContext::axes()
-{ return mAxes; }
 
 void MrqFsmContext::reqRun( bool b )
 {
     mbRunReqed = b;logWarning()<<b<<QString::number( (quint32)(&mbRunReqed), 16 );
 }
 bool MrqFsmContext::runReqed()
-{logDbg()<<QString::number( (quint32)(&mbRunReqed), 16 );
+{//logDbg()<<QString::number( (quint32)(&mbRunReqed), 16 );
     return mbRunReqed;
 }
 
@@ -57,16 +57,6 @@ MrqFsm::~MrqFsm()
     }
 
     mStateMap.clear();
-}
-
-void MrqFsm::proc( int msg, int para )
-{
-    //! sys proc
-    if ( msg == e_robot_timeout )
-    { m_pNowState->onTimer( para ); }
-logDbg()<<m_pNowState->name()<<msg<<para;
-    //! base proc
-    RoboFsm::proc( msg, para );
 }
 
 #define create_unit( stat, mold )   \
@@ -93,18 +83,23 @@ void MrqFsm::build()
     init( mStateMap[mrq_state_idle] );
 }
 
-void MrqFsm::toState( mrqState stat )
+void MrqFsm::toState( mrqState stat, RoboMsg &detail )
 {
     if ( mStateMap.contains( stat ) )
     {
         Q_ASSERT( mStateMap[stat] != NULL );
 
-        RoboFsm::toState( mStateMap[stat] );
+        RoboFsm::toState( mStateMap[stat], detail );
         mState = stat;
 
         //! subscribe to leader
         if ( m_pLeader != NULL )
-        { m_pLeader->subscribe( this, e_robot_member_state, stat ); }
+        {logDbg()<<stat;
+            m_pLeader->subscribe( this,
+                                  e_robot_member_state,
+                                  stat,
+                                  detail );
+        }
 
         //! trigger condition
         if ( m_pCond != NULL )
@@ -135,16 +130,16 @@ MrqUnit::MrqUnit( RoboFsm *pFsm ) : RoboStateUnit( pFsm )
 {
 }
 
-void MrqUnit::toState( mrqState stat )
+void MrqUnit::toState( mrqState stat, RoboMsg &detail )
 {
-    selfFsm()->toState( stat );
+    selfFsm()->toState( stat, detail );
 }
 
-void MrqUnit::onEnter()
+void MrqUnit::onEnter( RoboMsg &detail )
 {
     killTimer( state_timer_id );
 }
-void MrqUnit::onExit()
+void MrqUnit::onExit( RoboMsg &detail )
 {
     killTimer( state_timer_id );
 }
@@ -153,10 +148,10 @@ void MrqUnit::onTimer( int id )
 {
     if ( id == state_timer_id )
     {
-        selfFsm()->Mrq()->requestMotionState( selfFsm()->axes() );
+        selfFsm()->Mrq()->requestMotionState( *selfFsm() );
 //        logDbg()<<id;
 //        sysLog( __FUNCTION__ );
-        logWarning()<<id;
+//        logWarning()<<id;
     }
     else
     { logDbg()<<id; }
@@ -170,11 +165,11 @@ MrqFsm *MrqUnit::selfFsm()
 //! idle unit
 IdleMrqUnit::IdleMrqUnit( RoboFsm *pFsm ) : MrqUnit( pFsm )
 { setName("idlemrq"); }
-void IdleMrqUnit::proc( int msg, int para )
+void IdleMrqUnit::proc( int msg, RoboMsg &detail )
 {
     //! ops
     if ( msg == mrq_msg_run )
-    { toState( mrq_state_run_reqed); }
+    { toState( mrq_state_run_reqed, detail ); }
 
     else if ( msg == mrq_msg_stop )
     { }
@@ -182,27 +177,30 @@ void IdleMrqUnit::proc( int msg, int para )
     else if ( msg == mrq_msg_rst )
     { }
 
-    else if ( msg == mrq_msg_prepare )
-    { toState( mrq_state_calcend); }
+    else if ( msg == mrq_msg_call )
+    {logDbg();
+        selfFsm()->reqRun(true);
+        toState( mrq_state_calcend, detail );
+    }
 
     else if ( msg == mrq_msg_program )
-    { toState( mrq_state_program); }
+    { toState( mrq_state_program, detail ); }
 
     //! device status
     else if ( msg == mrq_msg_idle )
     { }
 
     else if ( msg == mrq_msg_calcing )
-    { toState( mrq_state_calcing); }
+    { toState( mrq_state_calcing, detail ); }
 
     else if ( msg == mrq_msg_calcend )
-    { /*toState( mrq_state_calcend);*/ }
+    { /*toState( mrq_state_calcend, detail );*/ logDbg(); }
 
     else if ( msg == mrq_msg_standby )
-    { /*toState( mrq_state_standby);*/ }
+    { toState( mrq_state_standby, detail ); logDbg(); }
 
     else if ( msg == mrq_msg_running )
-    { toState( mrq_state_running); }
+    { toState( mrq_state_running, detail ); }
 
     else if ( msg == mrq_msg_error )
     { }
@@ -211,73 +209,67 @@ void IdleMrqUnit::proc( int msg, int para )
     { }
 }
 
-void IdleMrqUnit::onEnter()
+void IdleMrqUnit::onEnter(RoboMsg &detail)
 {
     selfFsm()->reqRun( false );
 }
-//void IdleMrqUnit::onExit()
-//{}
-//void IdleMrqUnit::onRst()
-//{
-//}
 
 //! RunReqedMrqUnit
 RunReqedMrqUnit::RunReqedMrqUnit( RoboFsm *pFsm ) : MrqUnit( pFsm )
 { setName("runreqed"); }
-void RunReqedMrqUnit::proc( int msg, int para )
+void RunReqedMrqUnit::proc( int msg, RoboMsg &detail )
 {
     //! ops
     if ( msg == mrq_msg_run )
     { }
 
     else if ( msg == mrq_msg_stop )
-    { toState(mrq_state_idle); }
+    { toState(mrq_state_idle, detail ); }
 
     else if ( msg == mrq_msg_rst )
-    { toState(mrq_state_idle); }
+    { toState(mrq_state_idle, detail ); }
 
     else if ( msg == mrq_msg_program )
-    { toState( mrq_state_program); }
+    { toState( mrq_state_program, detail ); }
 
-    else if ( msg == mrq_msg_prepare )
-    { toState( mrq_state_calcend); }
+    else if ( msg == mrq_msg_call )
+    {
+        selfFsm()->reqRun(true);
+        toState( mrq_state_calcend, detail );
+    }
 
     //! device status
     else if ( msg == mrq_msg_idle )
-    { toState(mrq_state_idle); }
+    { toState(mrq_state_idle, detail ); }
 
     else if ( msg == mrq_msg_calcing )
-    { toState( mrq_state_calcing); }
+    { toState( mrq_state_calcing, detail ); }
 
     else if ( msg == mrq_msg_calcend )
-    { toState( mrq_state_calcend); }
+    { toState( mrq_state_calcend, detail ); }
 
     else if ( msg == mrq_msg_standby )
-    { toState( mrq_state_standby); }
+    { toState( mrq_state_standby, detail ); }
 
     else if ( msg == mrq_msg_running )
-    { toState( mrq_state_running); }
+    { toState( mrq_state_running, detail ); }
 
     else if ( msg == mrq_msg_error )
-    { toState(mrq_state_idle); }
+    { toState(mrq_state_idle, detail ); }
 
     else    //! keep
     { }
 }
 
-void RunReqedMrqUnit::onEnter()
+void RunReqedMrqUnit::onEnter(RoboMsg &detail)
 {    
     selfFsm()->reqRun( true );
 }
-//void RunReqedMrqUnit::onExit()
-//{}
-//void RunReqedMrqUnit::onRst()
-//{}
 
 //! ProgramMrqUnit
 ProgramMrqUnit::ProgramMrqUnit( RoboFsm *pFsm ) : MrqUnit( pFsm )
 { setName("programmrq"); }
-void ProgramMrqUnit::proc( int msg, int para )
+void ProgramMrqUnit::proc( int msg, RoboMsg &detail )
 {
     //! ops
     if ( msg == mrq_msg_run )
@@ -285,57 +277,51 @@ void ProgramMrqUnit::proc( int msg, int para )
 
     else if ( msg == mrq_msg_stop )
     {
-        toState(mrq_state_idle);
+        toState(mrq_state_idle, detail );
 
         //! \todo stop downloading
     }
 
     else if ( msg == mrq_msg_rst )
-    { toState(mrq_state_idle); }
+    { toState(mrq_state_idle, detail ); }
 
     else if ( msg == mrq_msg_program )
-    { toState( mrq_state_program); }
+    { toState( mrq_state_program, detail ); }
 
     //! device status
     else if ( msg == mrq_msg_idle )
-    { toState(mrq_state_idle);  }
+    { toState(mrq_state_idle, detail );  }
 
     else if ( msg == mrq_msg_calcing )
-    { toState( mrq_state_calcing); }
+    { toState( mrq_state_calcing, detail ); }
 
     else if ( msg == mrq_msg_calcend )
-    { toState( mrq_state_calcend); }
+    { toState( mrq_state_calcend, detail ); }
 
     else if ( msg == mrq_msg_standby )
-    { toState( mrq_state_standby); }
+    { toState( mrq_state_standby, detail ); }
 
     else if ( msg == mrq_msg_running )
-    { toState( mrq_state_running); }
+    { toState( mrq_state_running, detail ); }
 
     else if ( msg == mrq_msg_error )
-    { toState(mrq_state_idle); }
+    { toState(mrq_state_idle, detail ); }
 
     else    //! keep
     { }
 }
 
-void ProgramMrqUnit::onEnter()
+void ProgramMrqUnit::onEnter( RoboMsg &detail )
 {
-    MrqUnit::onEnter();
+    MrqUnit::onEnter( detail );
 
     startTimer( state_timer_id, state_timer_tmo );
 }
-//void ProgramMrqUnit::onExit()
-//{
-//    MrqUnit::onExit();
-//}
-//void ProgramMrqUnit::onRst()
-//{}
 
 //! CalcingMrqUnit
 CalcingMrqUnit::CalcingMrqUnit( RoboFsm *pFsm ) : MrqUnit( pFsm )
 { setName("calcing"); }
-void CalcingMrqUnit::proc( int msg, int para )
+void CalcingMrqUnit::proc( int msg, RoboMsg &detail )
 {
     //! ops
     if ( msg == mrq_msg_run )
@@ -343,135 +329,182 @@ void CalcingMrqUnit::proc( int msg, int para )
 
     else if ( msg == mrq_msg_stop )
     {
-        toState(mrq_state_idle);
+        toState(mrq_state_idle, detail );
 
         //! \todo stop downloading
     }
 
     else if ( msg == mrq_msg_rst )
-    { toState(mrq_state_idle);  }
+    { toState(mrq_state_idle, detail );  }
 
     else if ( msg == mrq_msg_program )
-    { toState( mrq_state_program); }
+    { toState( mrq_state_program, detail ); }
 
     //! device status
     else if ( msg == mrq_msg_idle )
-    { toState(mrq_state_idle);  }
+    { toState(mrq_state_idle, detail );  }
 
     else if ( msg == mrq_msg_calcing )
-    { toState( mrq_state_calcing); }
+    { toState( mrq_state_calcing, detail ); }
 
     else if ( msg == mrq_msg_calcend )
-    { toState( mrq_state_calcend); }
+    { toState( mrq_state_calcend, detail ); }
 
     else if ( msg == mrq_msg_standby )
-    { toState( mrq_state_standby); }
+    { toState( mrq_state_standby, detail ); }
 
     else if ( msg == mrq_msg_running )
-    { toState( mrq_state_running); }
+    { toState( mrq_state_running, detail ); }
 
     else if ( msg == mrq_msg_error )
-    { toState(mrq_state_idle); }
+    { toState(mrq_state_idle, detail ); }
 
     else    //! keep
     { }
 }
 
-void CalcingMrqUnit::onEnter()
+void CalcingMrqUnit::onEnter( RoboMsg &detail )
 {
-    MrqUnit::onEnter();
+    MrqUnit::onEnter( detail );
+
     startTimer( state_timer_id, state_timer_tmo );
 }
-//void CalcingMrqUnit::onExit()
-//{
-//    MrqUnit::onExit();
-//}
-//void CalcingMrqUnit::onRst()
-//{}
 
 //! CalcendMrqUnit
 CalcendMrqUnit::CalcendMrqUnit( RoboFsm *pFsm ) : MrqUnit( pFsm )
 { setName("calcend"); }
-void CalcendMrqUnit::proc( int msg, int para )
+void CalcendMrqUnit::proc( int msg, RoboMsg &detail )
 {
     //! ops
-    if ( msg == mrq_msg_run )
-    { selfFsm()->reqRun( true ); }
+    if ( msg == mrq_msg_run
+         || msg == mrq_msg_call )
+    {
+        selfFsm()->reqRun( true );
+
+        startTimer( state_timer_id, state_timer_tmo );
+        startTimer( prepare_timer_id, prepare_timer_tmo );
+logDbg()<<QThread::currentThreadId()<<msg;
+        int ret;
+        ret = selfFsm()->Mrq()->setMOTION_SWITCH(
+                                            selfFsm()->axes(),
+
+                                            MRQ_MOTION_SWITCH_PREPARE,
+                                            (MRQ_MOTION_SWITCH_1)selfFsm()->page()
+                                        );
+
+    }
 
     else if ( msg == mrq_msg_stop )
     {
-        toState(mrq_state_idle);
+        toState(mrq_state_idle, detail );
 
         //! \todo stop downloading
     }
 
     else if ( msg == mrq_msg_rst )
-    { toState(mrq_state_idle);  }
+    { toState(mrq_state_idle, detail );  }
 
     else if ( msg == mrq_msg_program )
-    { toState( mrq_state_program); }
+    { toState( mrq_state_program, detail ); }
 
     //! device status
     else if ( msg == mrq_msg_idle )
-    { toState(mrq_state_idle); }
+    { toState(mrq_state_idle, detail ); }
 
     else if ( msg == mrq_msg_calcing )
-    { toState( mrq_state_calcing); }
+    { toState( mrq_state_calcing, detail ); }
 
     else if ( msg == mrq_msg_calcend )
     {
 //        toState( mrq_state_calcend); logDbg();
 
-        selfFsm()->Mrq()->setMOTION_SWITCH(
-                                                selfFsm()->axes(),
+//        selfFsm()->Mrq()->setMOTION_SWITCH(
+//                                                selfFsm()->axes(),
 
-                                                MRQ_MOTION_SWITCH_PREPARE,
-                                                MRQ_MOTION_SWITCH_1_MAIN
-                                            );
+//                                                MRQ_MOTION_SWITCH_PREPARE,
+//                                                (MRQ_MOTION_SWITCH_1)selfFsm()->page()
+//                                            );
 
+//        //! prepare run
+//        if ( selfFsm()->runReqed() )
+//        {
+//            int ret;
+//            ret = selfFsm()->Mrq()->setMOTION_SWITCH(
+//                                                selfFsm()->axes(),
+
+//                                                MRQ_MOTION_SWITCH_PREPARE,
+//                                                (MRQ_MOTION_SWITCH_1)selfFsm()->page()
+//                                            );
+//            if ( ret != 0 )
+//            {
+//                toState( mrq_state_idle, detail );
+//            }
+//        }
     }
 
     else if ( msg == mrq_msg_standby )
-    { toState( mrq_state_standby); logDbg(); }
+    { toState( mrq_state_standby, detail ); logDbg(); }
 
     else if ( msg == mrq_msg_running )
-    { toState( mrq_state_running); }
+    { toState( mrq_state_running, detail ); }
 
     else if ( msg == mrq_msg_error )
-    { toState(mrq_state_idle); }
+    { toState(mrq_state_idle, detail ); }
 
     else    //! keep
     { }
 }
 
-void CalcendMrqUnit::onEnter()
+void CalcendMrqUnit::onEnter( RoboMsg &detail )
 {
-    MrqUnit::onEnter();
-    startTimer( state_timer_id, state_timer_tmo );
+    MrqUnit::onEnter( detail );
 
-    int ret;
-    ret = selfFsm()->Mrq()->setMOTION_SWITCH(
-                                        selfFsm()->axes(),
-
-                                        MRQ_MOTION_SWITCH_PREPARE,
-                                        MRQ_MOTION_SWITCH_1_MAIN
-                                    );
-    if ( ret != 0 )
+    if ( selfFsm()->runReqed() )
     {
-        toState( mrq_state_idle );
+        int ret;
+        ret = selfFsm()->Mrq()->setMOTION_SWITCH(
+                                            selfFsm()->axes(),
+
+                                            MRQ_MOTION_SWITCH_PREPARE,
+                                            (MRQ_MOTION_SWITCH_1)selfFsm()->page()
+                                        );
+        if ( ret != 0 )
+        {
+            toState( mrq_state_idle, detail );
+        }
+        else
+        {
+             startTimer( state_timer_id, state_timer_tmo );
+             startTimer( prepare_timer_id, prepare_timer_tmo );
+        }
     }
 }
-//void CalcendMrqUnit::onExit()
-//{
-//    MrqUnit::onExit();
-//}
-//void CalcendMrqUnit::onRst()
-//{}
+void CalcendMrqUnit::onExit( RoboMsg &detail )
+{
+    killTimer( prepare_timer_id );
+}
+void CalcendMrqUnit::onTimer( int id )
+{
+    //! base
+    MrqUnit::onTimer( id );
+
+    //! timeout
+    if ( id == prepare_timer_id )
+    {
+        selfFsm()->Mrq()->setMOTION_SWITCH(
+                                                    selfFsm()->axes(),
+
+                                                    MRQ_MOTION_SWITCH_PREPARE,
+                                                    (MRQ_MOTION_SWITCH_1)selfFsm()->page()
+                                                );
+        sysError("parepare fail");
+    }
+}
 
 //! StandbyMrqUnit
 StandbyMrqUnit::StandbyMrqUnit( RoboFsm *pFsm ) : MrqUnit( pFsm )
 { setName("standby"); }
-void StandbyMrqUnit::proc( int msg, int para )
+void StandbyMrqUnit::proc( int msg, RoboMsg &detail )
 {
     //! ops
     if ( msg == mrq_msg_run )
@@ -482,46 +515,48 @@ void StandbyMrqUnit::proc( int msg, int para )
         int ret;
         ret = selfFsm()->Mrq()->setMOTION_SWITCH( selfFsm()->axes(),
                                                   MRQ_MOTION_SWITCH_RUN,
-                                                  MRQ_MOTION_SWITCH_1_MAIN );
+                                                  (MRQ_MOTION_SWITCH_1)selfFsm()->page() );
         logDbg();
 
         if ( ret != 0  )
-        { toState(mrq_state_idle);  }
+        { toState(mrq_state_idle, detail );  }
         else
-        { toState(mrq_state_prerun); }
+        { toState(mrq_state_prerun, detail ); }
     }
 
     else if ( msg == mrq_msg_stop )
     {
-        toState(mrq_state_idle);
+        toState(mrq_state_idle, detail );
 
         //! \todo stop downloading
     }
 
     else if ( msg == mrq_msg_rst )
-    { toState(mrq_state_idle); }
+    { toState(mrq_state_idle, detail ); }
 
     else if ( msg == mrq_msg_program )
-    { toState( mrq_state_program); }
+    { toState( mrq_state_program, detail ); }
 
     //! device status
     else if ( msg == mrq_msg_idle )
-    { toState(mrq_state_idle); }
+    { toState(mrq_state_idle, detail ); }
 
     else if ( msg == mrq_msg_calcing )
-    { toState( mrq_state_calcing); }
+    { toState( mrq_state_calcing, detail ); }
 
     //! end
     else if ( msg == mrq_msg_calcend )
-    { /*toState( mrq_state_calcend);*/ logDbg(); }
+    { toState( mrq_state_idle, detail ); logDbg(); }
 
     else if ( msg == mrq_msg_standby )
     {
         if ( selfFsm()->runReqed() )
         {
+            selfFsm()->reqRun( false );
+
             selfFsm()->Mrq()->setMOTION_SWITCH( selfFsm()->axes(),
                                                 MRQ_MOTION_SWITCH_RUN,
-                                                MRQ_MOTION_SWITCH_1_MAIN );
+                                                (MRQ_MOTION_SWITCH_1)selfFsm()->page() );
 //            sysLog( __FUNCTION__, QString::number(__LINE__) );
             logDbg();
         }
@@ -530,48 +565,50 @@ void StandbyMrqUnit::proc( int msg, int para )
     }
 
     else if ( msg == mrq_msg_running )
-    { toState( mrq_state_running); }
+    { toState( mrq_state_running, detail ); }
 
     else if ( msg == mrq_msg_error )
-    { toState(mrq_state_idle); }
+    { toState(mrq_state_idle, detail ); }
 
     else    //! keep
     { }
 }
 
-void StandbyMrqUnit::onEnter()
+void StandbyMrqUnit::onEnter( RoboMsg &detail )
 {
-    MrqUnit::onEnter();
+    MrqUnit::onEnter( detail );
 
     if ( selfFsm()->runReqed() )
     {
+        selfFsm()->reqRun( false );
+
         //! atuo run
-        proc( mrq_msg_run, selfFsm()->axes() );
+//        proc( mrq_msg_run, detail );
+
+//        selfFsm()->reqRun( true );
+
+        //! force run
+        int ret;
+        ret = selfFsm()->Mrq()->setMOTION_SWITCH( selfFsm()->axes(),
+                                                  MRQ_MOTION_SWITCH_RUN,
+                                                  (MRQ_MOTION_SWITCH_1)selfFsm()->page() );
+        logDbg();
+
+        if ( ret != 0  )
+        { toState(mrq_state_idle, detail );  }
+        else
+        { toState(mrq_state_prerun, detail ); }
+
+        startTimer( state_timer_id, state_timer_tmo );
     }
     else
     {}
 }
-//void StandbyMrqUnit::onExit()
-//{
-//    MrqUnit::onExit();
-//}
-//void StandbyMrqUnit::onRst()
-//{}
-
-//void StandbyMrqUnit::onTimer( int id )
-//{
-//    MrqUnit::onTimer( id );
-
-//    if ( id == state_timer_id )
-//    {
-
-//    }
-//}
 
 //! PreRunMrqUnit
 PreRunMrqUnit::PreRunMrqUnit( RoboFsm *pFsm ) : MrqUnit( pFsm )
 { setName("prerun"); }
-void PreRunMrqUnit::proc( int msg, int para )
+void PreRunMrqUnit::proc( int msg, RoboMsg &detail )
 {
     //! ops
     if ( msg == mrq_msg_run )
@@ -583,102 +620,89 @@ void PreRunMrqUnit::proc( int msg, int para )
     {
         selfFsm()->Mrq()->setMOTION_SWITCH( selfFsm()->axes(),
                                             MRQ_MOTION_SWITCH_STOP,
-                                            MRQ_MOTION_SWITCH_1_MAIN );
+                                            (MRQ_MOTION_SWITCH_1)selfFsm()->page() );
 
-        toState(mrq_state_idle);
+        toState(mrq_state_idle, detail);
 
         //! \todo stop downloading
     }
 
     else if ( msg == mrq_msg_rst )
-    { toState(mrq_state_idle); }
+    { toState(mrq_state_idle, detail ); }
 
     else if ( msg == mrq_msg_program )
-    { toState( mrq_state_program); }
+    { toState( mrq_state_program, detail ); }
 
     //! device status
     else if ( msg == mrq_msg_idle )
-    { toState(mrq_state_idle); }
+    { toState(mrq_state_idle, detail ); }
 
     else if ( msg == mrq_msg_calcing )
-    { toState( mrq_state_calcing); }
+    { toState( mrq_state_calcing, detail ); }
 
     else if ( msg == mrq_msg_calcend )
-    { toState( mrq_state_idle); }
+    { toState( mrq_state_idle, detail ); }
 
     else if ( msg == mrq_msg_standby )
     {
         /*toState( mrq_state_standby);*/
 
         selfFsm()->Mrq()->setMOTION_SWITCH( selfFsm()->axes(),
-                                                  MRQ_MOTION_SWITCH_RUN,
-                                            MRQ_MOTION_SWITCH_1_MAIN );
+                                            MRQ_MOTION_SWITCH_RUN,
+                                            (MRQ_MOTION_SWITCH_1)selfFsm()->page() );
     }
 
     else if ( msg == mrq_msg_running )
-    { toState( mrq_state_running); }
+    { toState( mrq_state_running, detail ); }
 
     else if ( msg == mrq_msg_error )
-    { toState(mrq_state_idle); }
+    { toState(mrq_state_idle, detail ); }
 
     else    //! keep
     { }
 }
 
-void PreRunMrqUnit::onEnter()
+void PreRunMrqUnit::onEnter( RoboMsg &detail )
 {
-    MrqUnit::onEnter();
+    MrqUnit::onEnter( detail );
 
     startTimer( state_timer_id, state_timer_tmo );
 }
-//void PreRunMrqUnit::onExit()
-//{
-//    MrqUnit::onExit();
-//}
-//void PreRunMrqUnit::onRst()
-//{}
 
 //! RunningMrqUnit
 RunningMrqUnit::RunningMrqUnit( RoboFsm *pFsm ) : MrqUnit( pFsm )
 { setName("running"); }
-void RunningMrqUnit::proc( int msg, int para )
+void RunningMrqUnit::proc( int msg, RoboMsg &detail )
 {
     if ( msg == mrq_msg_stop )
     {
         selfFsm()->Mrq()->setMOTION_SWITCH( selfFsm()->axes(),
-                                             MRQ_MOTION_SWITCH_STOP,
-                                            MRQ_MOTION_SWITCH_1_MAIN );
+                                            MRQ_MOTION_SWITCH_STOP,
+                                            (MRQ_MOTION_SWITCH_1)selfFsm()->page() );
 
-        toState( mrq_state_prestop );
+        toState( mrq_state_prestop, detail );
     }
     else if ( msg == mrq_msg_running )
     {
         //! keep
     }
     else
-    {   logDbg()<<msg<<para;
-        toState( mrq_state_idle );
+    {
+        toState( mrq_state_idle, detail );
     }
 }
 
-void RunningMrqUnit::onEnter()
+void RunningMrqUnit::onEnter( RoboMsg &detail )
 {
-//    MrqUnit::onEnter();
-    MrqUnit::onEnter();
+    MrqUnit::onEnter( detail );
 
     startTimer( state_timer_id, state_timer_tmo );
 }
-//void RunningMrqUnit::onExit()
-//{
-//    MrqUnit::onExit();
-//}
-//void RunningMrqUnit::onRst()
-//{}
 
 //! PreStopMrqUnit
 PreStopMrqUnit::PreStopMrqUnit( RoboFsm *pFsm ) : MrqUnit( pFsm )
 { setName("prestop"); }
-void PreStopMrqUnit::proc( int msg, int para )
+void PreStopMrqUnit::proc( int msg, RoboMsg &detail )
 {
     //! ops
     if ( msg == mrq_msg_run )
@@ -688,49 +712,45 @@ void PreStopMrqUnit::proc( int msg, int para )
 
     else if ( msg == mrq_msg_stop )
     {
-        toState(mrq_state_idle);
+        toState(mrq_state_idle, detail );
 
         //! \todo stop downloading
     }
 
     else if ( msg == mrq_msg_rst )
-    { toState(mrq_state_idle); }
+    { toState(mrq_state_idle, detail ); }
 
     else if ( msg == mrq_msg_program )
-    { toState( mrq_state_program); }
+    { toState( mrq_state_program, detail ); }
 
     //! device status
     else if ( msg == mrq_msg_idle )
-    { toState(mrq_state_idle); }
+    { toState(mrq_state_idle, detail ); }
 
     else if ( msg == mrq_msg_calcing )
-    { toState( mrq_state_calcing); }
+    { toState( mrq_state_calcing, detail ); }
 
     else if ( msg == mrq_msg_calcend )
-    { toState( mrq_state_calcend); }
+    { toState( mrq_state_calcend, detail ); }
 
     else if ( msg == mrq_msg_standby )
-    { toState( mrq_state_standby); }
+    { toState( mrq_state_standby, detail ); }
 
     else if ( msg == mrq_msg_running )
-    { toState( mrq_state_running); }
+    { toState( mrq_state_running, detail ); }
 
     else if ( msg == mrq_msg_error )
-    { toState(mrq_state_idle); }
+    { toState(mrq_state_idle, detail ); }
 
     else    //! keep
     { }
 }
 
-void PreStopMrqUnit::onEnter()
+void PreStopMrqUnit::onEnter( RoboMsg &detail )
 {
-    MrqUnit::onEnter();
+    MrqUnit::onEnter( detail );
 
     startTimer( state_timer_id, state_timer_tmo );
 }
-//void PreStopMrqUnit::onExit()
-//{ MrqUnit::onExit(); }
-//void PreStopMrqUnit::onRst()
-//{}
 
 }

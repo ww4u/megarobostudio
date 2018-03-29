@@ -8,23 +8,27 @@
 //#include "../../model/mcmodelobj.h"
 #include "../../model/tpvgroup.h"
 #include "../../device/vdevice.h"
+#include "dlgview.h"
 
 namespace Ui {
 class axesKnob;
 }
 
-class axesKnob : public QDialog
+class axesKnob : public DlgView
 {
     Q_OBJECT
 
 public:
-    explicit axesKnob(QWidget *parent = 0);
+    explicit axesKnob( mcModel *pModel, QWidget *parent = 0);
     ~axesKnob();
 
-public:
-    void setDevice( MegaDevice::VDevice *pDevice,
-                    int axesId );
-    void setConnection( const QString &conn );
+protected:
+    MegaDevice::deviceMRQ * currentDevice( int &ax );
+
+//public:
+//    void setDevice( MegaDevice::VDevice *pDevice,
+//                    int axesId );
+//    void setConnection( const QString &conn );
 
 private slots:
     void on_sliderValue_valueChanged(int value);
@@ -39,9 +43,6 @@ private:
     Ui::axesKnob *ui;
     QDateTime mStartTime, mStopTime;
     float mStartAngle, mStopAngle;
-
-    MegaDevice::VDevice *m_pDevice;
-    int mAxesId;
 };
 
 #endif // AXESKNOB_H

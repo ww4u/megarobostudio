@@ -4,7 +4,14 @@
 #include <QWidget>
 
 #include "roboinfo.h"
-#include "robopref.h"
+#include "robodesc.h"
+#include "robocompref.h"
+
+#include "megatronpref.h"
+#include "deltapref.h"
+
+#include "sinanjupref.h"
+
 #include "robohand.h"
 
 //! use mrq property
@@ -17,7 +24,7 @@ class roboProp : public modelView
     Q_OBJECT
 
 public:
-    explicit roboProp(QWidget *parent = 0);
+    explicit roboProp( int roboId, QWidget *parent = 0);
     ~roboProp();
 
     virtual void setModelObj( mcModelObj *pObj );
@@ -28,12 +35,14 @@ public:
     virtual int  saveAs( QString &outFileName );
 
 protected:
-    void setupUi();
+    void setupUi( int roboId );
     void desetupUi();
 
     void buildConnection();
 
 private slots:
+    void on_page_changed( int index );
+
     void on_btnOK_clicked();
 
     void on_btnCancel_clicked();
@@ -44,9 +53,18 @@ private:
     Ui::mrqProperty *ui;
 
     roboInfo *m_pInfoPage;
-    roboPref *m_pPrefPage;
+    RoboDesc *m_pDetailPage;
+
+    RoboComPref *m_pComPref;
+
+    MegatronPref *m_pMegatronPref;
+    DeltaPref *m_pDeltaPref;
+    SinanjuPref *m_pSinanjuPref;
+
     RoboHand *m_pHandPage;
 
+    int mPrefId;                //! id by robot
+    QList<modelView*> mPrefPages;
 };
 
 #endif // ROBOPROP_H

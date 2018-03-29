@@ -13,7 +13,6 @@
   <property name="font">
    <font>
     <family>Arial</family>
-    <pointsize>12</pointsize>
    </font>
   </property>
   <property name="windowTitle">

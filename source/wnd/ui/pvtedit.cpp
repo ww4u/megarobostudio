@@ -104,7 +104,7 @@ void pvtEdit::onMotionStatus( int axes, MRQ_MOTION_STATE_2 stat )
     else if ( stat == MRQ_MOTION_STATE_2_CALCEND )
     {
         ui->btnDown->setEnabled( true );
-        ui->btnStart->setEnabled( false );
+        ui->btnStart->setEnabled( true );
         ui->btnStop->setEnabled( false );
     }
     else if ( stat == MRQ_MOTION_STATE_2_STANDBY )
@@ -233,7 +233,7 @@ int pvtEdit::postDownload( appMsg msg, void *pPara )
     mTpvGroup->getRows( tpvRows );
 
     //! download
-    ret = pMrq->pvtWrite( axesId, 0, tpvRows );
+    ret = pMrq->pvtWrite( tpvRegion(axesId, MRQ_MOTION_SWITCH_1_MAIN), tpvRows );
     if ( ret != 0 )
     { return ret; }
 
@@ -267,10 +267,10 @@ int pvtEdit::postStart( appMsg msg, void *pPara )
     int ret = pMrq->getMOTION_STATE( axesId, MRQ_MOTION_SWITCH_1_MAIN, &stat );
     if ( ret != 0 )
     { return ret; }
-    if ( stat != MRQ_MOTION_STATE_2_STANDBY )
+    if ( stat != MRQ_MOTION_STATE_2_CALCEND )
     { return ERR_CAN_NOT_RUN; }
 
-    ret = pMrq->run( axesId );
+    ret = pMrq->run( tpvRegion(axesId,0) );
 
     return ret;
 }
@@ -292,7 +292,7 @@ int pvtEdit::postStop( appMsg msg, void *pPara )
     Q_ASSERT( NULL != pMrq );
 
     int ret;
-    ret = pMrq->stop( axesId );
+    ret = pMrq->stop( tpvRegion(axesId,0) );
 
     return ret;
 }
@@ -570,20 +570,20 @@ void pvtEdit::on_btnKnob_clicked()
 
     if ( m_pWndKnob == NULL )
     {
-        m_pWndKnob = new axesKnob(this);
+        m_pWndKnob = new axesKnob( m_pmcModel, this);
         Q_ASSERT( NULL != m_pWndKnob );
     }
 
-    //! set model && axesid
-    QString str;
-    int id;
-    str = m_pmcModel->getConnection().getDeviceName();
-    id = m_pmcModel->getConnection().getDeviceCH();
+//    //! set model && axesid
+//    QString str;
+//    int id;
+//    str = m_pmcModel->getConnection().getDeviceName();
+//    id = m_pmcModel->getConnection().getDeviceCH();
 
-    MegaDevice::deviceMRQ *pMrq = m_pmcModel->m_pInstMgr->findDevice( str,
-                                                                      id );
-    m_pWndKnob->setDevice( pMrq, id );
-    m_pWndKnob->setConnection( QString("CH%1@%2").arg(id + 1 ).arg( str ) );
+////    MegaDevice::deviceMRQ *pMrq = m_pmcModel->m_pInstMgr->findDevice( str,
+////                                                                      id );
+//////    m_pWndKnob->setDevice( pMrq, id );
+//////    m_pWndKnob->setConnection( QString("CH%1@%2").arg(id + 1 ).arg( str ) );
 
     m_pWndKnob->show();
 }
@@ -597,7 +597,7 @@ void pvtEdit::slot_download_cancel()
     id = m_pmcModel->getConnection().getDeviceCH();
 
     MegaDevice::deviceMRQ *pMrq = m_pmcModel->m_pInstMgr->findDevice( str, id );
-    pMrq->terminate( mAgentAxes );
+    pMrq->terminate( tpvRegion(mAgentAxes,0) );
 }
 
 void pvtEdit::on_spinLoop_valueChanged(int arg1)

@@ -3,10 +3,14 @@
 
 #include <QtCore>
 #include "robomsg.h"
+#include "basetype.h"
 
 class RoboMsgThread;
 class RoboMsgQueue
 {
+public:
+    static QSemaphore _msgSema;
+    static int waitIdle( int tickms = 10, int tmo = 10000 );
 public:
     RoboMsgQueue();
 
@@ -23,9 +27,34 @@ public:
     void postMsg( const RoboMsg & msg );
 
     void postMsg( eRoboMsg msg );
+    void postMsg( eRoboMsg msg, const tpvRegion &region );
+    void postMsg( eRoboMsg msg, const tpvRegion &region, int p1 );
+    void postMsg( eRoboMsg msg, int subax, const tpvRegion &region, int p1 );
+
+    void postMsg( eRoboMsg msg, const RoboMsg &leafMsg );
+
     void postMsg( eRoboMsg msg, int p1 );
     void postMsg( eRoboMsg msg, int p1, int p2 );
     void postMsg( eRoboMsg msg, int p1, int p2, int p3 );
+
+
+    void postMsg( eRoboMsg msg,
+                         const QString &name,
+                         const tpvRegion &region
+                         );
+
+    void postMsg( eRoboMsg msg,
+                         const QString &name,
+                         const tpvRegion &region,
+                         int p1
+                         );
+
+    void postMsg( eRoboMsg msg,
+                         const QString &name,
+                         const tpvRegion &region,
+                         int p1,
+                         int p2
+                         );
 
     void postMsg( eRoboMsg msg,
                          const QString &name,

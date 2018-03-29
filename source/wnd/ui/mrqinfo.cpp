@@ -10,6 +10,8 @@ mrqInfo::mrqInfo(QWidget *parent) :
     initModel();
 
     buildConnection();
+
+    SET_INFO_ATTR();
 }
 
 mrqInfo::~mrqInfo()

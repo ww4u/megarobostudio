@@ -62,7 +62,7 @@ int MRQ_model::serialOut( QXmlStreamWriter &writer )
     writer.writeTextElement( "mCLOCK_COUNT", DeviceModel::toString(mCLOCK_COUNT) );
 
     //! motors
-    for ( int i = 0; i < getAxes(); i++ )
+    for ( int i = 0; i < axes(); i++ )
     {
         save_motor( i, writer );
     }
@@ -217,9 +217,9 @@ int MRQ_model::save_motor( int id, QXmlStreamWriter &writer )
 //    writer.writeTextElement( "mMOTION_INCHINGTIME", DeviceModel::toString( mMOTION_INCHINGTIME[id]) );
 
     writer.writeTextElement( "mMOTION_OFFSETSTATE", toString( mMOTION_OFFSETSTATE[id]) );
-    writer.writeTextElement( "mMOTION_PVTSTEPS", DeviceModel::toString( mMOTION_PVTSTEPS[id]) );
-    writer.writeTextElement( "mMOTION_COUNTSTEPS", DeviceModel::toString( mMOTION_COUNTSTEPS[id]) );
-    writer.writeTextElement( "mMOTION_PVTCIRCLE", DeviceModel::toString( mMOTION_PVTCIRCLE[id]) );
+//    writer.writeTextElement( "mMOTION_PVTSTEPS", DeviceModel::toString( mMOTION_PVTSTEPS[id]) );
+//    writer.writeTextElement( "mMOTION_COUNTSTEPS", DeviceModel::toString( mMOTION_COUNTSTEPS[id]) );
+//    writer.writeTextElement( "mMOTION_PVTCIRCLE", DeviceModel::toString( mMOTION_PVTCIRCLE[id]) );
 
     writer.writeTextElement( "mMOTION_COUNTCIRCLE", DeviceModel::toString( mMOTION_COUNTCIRCLE[id]) );
     writer.writeTextElement( "mMOTION_ABCOUNT", DeviceModel::toString( mMOTION_ABCOUNT[id]) );
@@ -358,12 +358,12 @@ int MRQ_model::load_motor( int id, QXmlStreamReader &reader )
 
         if ( reader.name() == "mMOTION_OFFSETSTATE" )
         { toValue( reader.readElementText(), &mMOTION_OFFSETSTATE[id] ); }
-        if ( reader.name() == "mMOTION_PVTSTEPS" )
-        { DeviceModel::toValue( reader.readElementText(), &mMOTION_PVTSTEPS[id] ); }
-        if ( reader.name() == "mMOTION_COUNTSTEPS" )
-        { DeviceModel::toValue( reader.readElementText(), &mMOTION_COUNTSTEPS[id] ); }
-        if ( reader.name() == "mMOTION_PVTCIRCLE" )
-        { DeviceModel::toValue( reader.readElementText(), &mMOTION_PVTCIRCLE[id] ); }
+//        if ( reader.name() == "mMOTION_PVTSTEPS" )
+//        { DeviceModel::toValue( reader.readElementText(), &mMOTION_PVTSTEPS[id] ); }
+//        if ( reader.name() == "mMOTION_COUNTSTEPS" )
+//        { DeviceModel::toValue( reader.readElementText(), &mMOTION_COUNTSTEPS[id] ); }
+//        if ( reader.name() == "mMOTION_PVTCIRCLE" )
+//        { DeviceModel::toValue( reader.readElementText(), &mMOTION_PVTCIRCLE[id] ); }
 
         if ( reader.name() == "mMOTION_COUNTCIRCLE" )
         { DeviceModel::toValue( reader.readElementText(), &mMOTION_COUNTCIRCLE[id] ); }

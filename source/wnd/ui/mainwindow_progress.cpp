@@ -38,12 +38,7 @@ bool MainWindow::progressProc(  const QString &name,
         now = msg.at(2).toInt();
         total = msg.at(3).toInt();
 
-//        progress()->setRange( 0, total );
-//        progress()->setValue( now );
-
-//        logDbg()<<now<<total;
-
-        logDbg()<<name<<axes;
+//        logDbg()<<name<<axes;
 
         progress()->progressInfo( name, axes, QString("%1:CH%2 %3").arg(name).arg(axes).arg( tr("downloading") ) );
         progress()->progressRange( name, axes, 0, total );
@@ -51,13 +46,7 @@ bool MainWindow::progressProc(  const QString &name,
     }
     else if ( msg.getMsg() == e_download_completed )
     {
-//        progress()->hide();
-//        delete progress();
-//        m_pProgress = NULL;
-
-//        ui->btnDown->setEnabled( true );
-
-        logDbg()<<name<<axes;
+//        logDbg()<<name<<axes;
 
         progress()->progressShow( name, axes, false );
     }
@@ -69,7 +58,7 @@ bool MainWindow::progressProc(  const QString &name,
 
 //        ui->btnDown->setEnabled( true );
 
-        logDbg()<<name<<axes;
+//        logDbg()<<name<<axes;
 
         progress()->progressShow( name, axes, false );
     }

@@ -3,7 +3,7 @@
 
 #include <QtCore>
 
-#include "../../com/robomsgthread.h"
+#include "../com/robomsgthread.h"
 
 class VRobot;
 

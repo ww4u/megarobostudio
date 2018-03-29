@@ -4,7 +4,7 @@
 #include <QtCore>
 #include "../robostate.h"
 #include "devicemrq_msg.h"
-
+#include "../../com/basetype.h"
 namespace MegaDevice
 {
 
@@ -37,16 +37,15 @@ class MrqFsmContext
 public:
     MrqFsmContext( );
 
-    void set( deviceMRQ *pMrq, int axes = 0 );
+    void setContext( deviceMRQ *pMrq );
     deviceMRQ *Mrq();
-    int axes();
+//    int axes();
 
     void reqRun( bool b );
     bool runReqed();
 
 public:
     deviceMRQ *m_pMrq;
-    int mAxes;
 
     bool mbRunReqed;
 };
@@ -56,14 +55,14 @@ class MrqFsm : public RoboFsm , public MrqFsmContext
 {
 public:
     MrqFsm();
-    ~MrqFsm();
+    virtual ~MrqFsm();
 
 public:
     virtual void build();
 
-    virtual void proc( int msg, int para );
+//    virtual void proc( int msg, RoboMsg &detail );
 
-    virtual void toState( mrqState stat );
+    virtual void toState( mrqState stat, RoboMsg &detail );
 
     virtual void startTimer( int id=0, int tmous=1000 );
     virtual void killTimer( int id=0 );
@@ -84,10 +83,10 @@ public:
     MrqUnit( RoboFsm *pFsm );
 
 public:
-    virtual void toState( mrqState stat );
+    virtual void toState( mrqState stat, RoboMsg &detail );
 
-    virtual void onEnter();
-    virtual void onExit();
+    virtual void onEnter( RoboMsg &detail );
+    virtual void onExit( RoboMsg &detail );
 
     virtual void onTimer( int id );
 public:
@@ -101,9 +100,9 @@ public:
     IdleMrqUnit( RoboFsm *pFsm );
 
 public:
-    virtual void proc( int msg, int para );
+    virtual void proc( int msg, RoboMsg &detail );
 
-    virtual void onEnter();
+    virtual void onEnter(RoboMsg &detail);
 //    virtual void onExit();
 //    virtual void onRst();
 
@@ -117,9 +116,9 @@ public:
     RunReqedMrqUnit( RoboFsm *pFsm );
 
 public:
-    virtual void proc( int msg, int para );
+    virtual void proc( int msg, RoboMsg &detail );
 
-    virtual void onEnter();
+    virtual void onEnter(RoboMsg &detail);
 //    virtual void onExit();
 //    virtual void onRst();
 };
@@ -130,9 +129,9 @@ public:
     ProgramMrqUnit( RoboFsm *pFsm );
 
 public:
-    virtual void proc( int msg, int para );
+    virtual void proc( int msg, RoboMsg &detail );
 
-    virtual void onEnter();
+    virtual void onEnter(RoboMsg &detail);
 //    virtual void onExit();
 //    virtual void onRst();
 };
@@ -143,9 +142,9 @@ public:
     CalcingMrqUnit( RoboFsm *pFsm );
 
 public:
-    virtual void proc( int msg, int para );
+    virtual void proc( int msg, RoboMsg &detail );
 
-    virtual void onEnter();
+    virtual void onEnter(RoboMsg &detail);
 //    virtual void onExit();
 //    virtual void onRst();
 };
@@ -156,11 +155,13 @@ public:
     CalcendMrqUnit( RoboFsm *pFsm );
 
 public:
-    virtual void proc( int msg, int para );
+    virtual void proc( int msg, RoboMsg &detail );
 
-    virtual void onEnter();
-//    virtual void onExit();
+    virtual void onEnter(RoboMsg &detail);
+    virtual void onExit( RoboMsg &detail );
 //    virtual void onRst();
+
+    virtual void onTimer( int id );
 };
 
 class StandbyMrqUnit : public MrqUnit
@@ -169,9 +170,9 @@ public:
     StandbyMrqUnit( RoboFsm *pFsm );
 
 public:
-    virtual void proc( int msg, int para );
+    virtual void proc( int msg, RoboMsg &detail );
 
-    virtual void onEnter();
+    virtual void onEnter(RoboMsg &detail);
 //    virtual void onExit();
 //    virtual void onRst();
 
@@ -184,9 +185,9 @@ public:
     PreRunMrqUnit( RoboFsm *pFsm );
 
 public:
-    virtual void proc( int msg, int para );
+    virtual void proc( int msg, RoboMsg &detail );
 
-    virtual void onEnter();
+    virtual void onEnter(RoboMsg &detail);
 //    virtual void onExit();
 //    virtual void onRst();
 };
@@ -197,9 +198,9 @@ public:
     RunningMrqUnit( RoboFsm *pFsm );
 
 public:
-    virtual void proc( int msg, int para );
+    virtual void proc( int msg, RoboMsg &detail );
 
-    virtual void onEnter();
+    virtual void onEnter(RoboMsg &detail);
 //    virtual void onExit();
 //    virtual void onRst();
 };
@@ -210,9 +211,9 @@ public:
     PreStopMrqUnit( RoboFsm *pFsm );
 
 public:
-    virtual void proc( int msg, int para );
+    virtual void proc( int msg, RoboMsg &detail );
 
-    virtual void onEnter();
+    virtual void onEnter(RoboMsg &detail);
 //    virtual void onExit();
 //    virtual void onRst();
 };

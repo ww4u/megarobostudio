@@ -8,19 +8,19 @@ namespace MegaDevice
 {
 
 class deviceMRQ;
-class deviceMotor
+class deviceProxyMotor
 {
 public:
-    deviceMotor( deviceMRQ *pMrq=NULL, int ax=0 );
-
+    deviceProxyMotor( deviceMRQ *pMrq, const tpvRegion &region );
+    virtual ~deviceProxyMotor();
 public:
-    void attachCondition( MegaDevice::RoboCondition *pCond );
-    bool waitCondition( MegaDevice::RoboCondition *pCond,
-                                int tmoms=-1 );
+//    void attachCondition( MegaDevice::RoboCondition *pCond );
+    bool waitCondition(
+                        MegaDevice::RoboCondition *pCond,
+                        int tmoms=-1 );
 
     int pvtWrite(
                   QList<tpvRow *> &list,
-                  int pag = 0,
                   int from = 0,
                   int len = -1 );
     int run();
@@ -29,14 +29,17 @@ public:
     int status();
 
 public:
-    void set( deviceMRQ *pMrq, int ax );
+    void set( deviceMRQ *pMrq,
+              const tpvRegion &region );
 
     deviceMRQ *Mrq();
-    int Axes();
+    tpvRegion &region();
 
 protected:
     deviceMRQ *m_pMRQ;
-    int mAxes;
+//    int mAxes;
+
+    tpvRegion mRegion;
 };
 
 }

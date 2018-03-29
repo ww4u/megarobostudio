@@ -53,7 +53,9 @@ int motionEdit::doDownload( QList<tpvGroup *> &groups,
     setChildAgents( pRobo->axesDeviceName() );
 
     pRobo->onLine();
-    pRobo->download( groups, jointTabId );
+    pRobo->download( groups,
+                     jointTabId,
+                     tpvRegion(0,0) );  //! \todo page
 
     return 0;
 }

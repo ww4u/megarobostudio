@@ -2,14 +2,17 @@
 #include "ui_mrqproperty.h"
 
 #include "../../robot/robotfact.h"
+#include "../../device/vrobot.h"
 
-roboProp::roboProp(QWidget *parent) :
+roboProp::roboProp( int id , QWidget *parent) :
     modelView(parent),
     ui(new Ui::mrqProperty)
 {
+    mPrefId = id;
+
     mFilePattern<<setup_desc<<setup_ext;
 
-    setupUi();
+    setupUi( id );
 
     buildConnection();
 }
@@ -28,10 +31,13 @@ void roboProp::setModelObj( mcModelObj *pObj )
 
     //! \todo memory leak
 
-    pObj->setGc( false );logDbg();
-    m_pInfoPage->setModelObj( pObj );logDbg();
-    m_pPrefPage->setModelObj( pObj );logDbg();
-    m_pHandPage->setModelObj( pObj );logDbg();
+    pObj->setGc( false );
+
+    foreach( modelView *pView, mPrefPages )
+    {
+        Q_ASSERT( NULL != pView );
+        pView->setModelObj( pObj );
+    }
 }
 
 void roboProp::setMcModel( mcModel *pMcModel )
@@ -40,15 +46,27 @@ void roboProp::setMcModel( mcModel *pMcModel )
 
     modelView::setMcModel( pMcModel );
 
-    m_pInfoPage->setMcModel( pMcModel );
-    m_pPrefPage->setMcModel( pMcModel );
-    m_pHandPage->setMcModel( pMcModel );
+    foreach( modelView *pView, mPrefPages )
+    {
+        Q_ASSERT( NULL != pView );
+        pView->setMcModel( pMcModel );
+    }
 
 }
 
 int roboProp::setApply()
 {
-    return m_pPrefPage->setApply();
+    int ret;
+    foreach( modelView *pView, mPrefPages )
+    {
+        Q_ASSERT( NULL != pView );
+
+        ret = pView->setApply();
+        if ( ret != 0 )
+        { return ret; }
+    }
+
+    return ret;
 }
 
 int roboProp::save( QString &outFileName )
@@ -73,37 +91,59 @@ int  roboProp::saveAs( QString &outFileName )
     return ((VRobot*)getModelObj())->save( outFileName );
 }
 
-void roboProp::setupUi()
+
+#define new_widget( widget, icon, name )  ( names.append(name), \
+                                            icons.append(icon), \
+                                            mPrefPages.append( new widget()),\
+                                            (widget*)mPrefPages.last() )
+void roboProp::setupUi( int id )
 {
+    QStringList icons,names;
+
     //! new
-    m_pInfoPage = new roboInfo();
-    m_pPrefPage = new roboPref();
-    m_pHandPage = new RoboHand();
+//    m_pInfoPage = new roboInfo();
+//    m_pComPref = new RoboComPref();
+    m_pInfoPage = new_widget( roboInfo, ":/res/image/icon2/info.png", tr("Info") );
+    m_pDetailPage = new_widget( RoboDesc, ":/res/image/icon2/info.png", tr("Detail") );
+    m_pComPref  = new_widget( RoboComPref, ":/res/image/icon2/settings_light.png", tr("Pref") );
+
+    if ( VRobot::robot_delta == id )
+    {
+        m_pDeltaPref  = new_widget( DeltaPref, ":/res/image/icon2/settings_light.png", tr("Pref") );
+    }
+    else if ( VRobot::robot_megatron == id )
+    {
+        m_pMegatronPref  = new_widget( MegatronPref, ":/res/image/icon2/settings_light.png", tr("Pref") );
+    }
+    else if ( VRobot::robot_sinanju == id )
+    {
+        m_pSinanjuPref  = new_widget( SinanjuPref, ":/res/image/icon2/settings_light.png", tr("Pref") );
+        m_pHandPage  = new_widget( RoboHand, ":/res/image/icon2/activity.png", tr("Action") );
+    }
+    else
+    {}
 
     //! setup
     ui->setupUi(this);
 
     //! add to page
-    ui->stackedWidget->addWidget( m_pInfoPage );
-    ui->stackedWidget->addWidget( m_pPrefPage );
-    ui->stackedWidget->addWidget( m_pHandPage );
-
-    //! list
     QListWidgetItem *pItem;
-    pItem = new QListWidgetItem();
-    pItem->setText( tr("Info") );
-    pItem->setIcon( QIcon(":/res/image/icon2/info.png") );
-    ui->listWidget->addItem( pItem );
+    for ( int i = 0; i < mPrefPages.size(); i++ )
+    {
+        Q_ASSERT( NULL != mPrefPages.at(i) );
 
-    pItem = new QListWidgetItem();
-    pItem->setText( tr("Pref") );
-    pItem->setIcon( QIcon(":/res/image/icon2/settings_light.png") );
-    ui->listWidget->addItem( pItem );
+        ui->stackedWidget->addWidget( mPrefPages.at(i) );
 
-    pItem = new QListWidgetItem();
-    pItem->setText( tr("Action") );
-    pItem->setIcon( QIcon(":/res/image/icon2/activity.png") );
-    ui->listWidget->addItem( pItem );
+        pItem = new QListWidgetItem();
+        Q_ASSERT( NULL != pItem );
+
+        pItem->setText( names.at(i) );
+        pItem->setIcon( QIcon( icons.at(i) ) );
+        ui->listWidget->addItem( pItem );
+    }
+
+    //! post
+    on_page_changed( ui->stackedWidget->currentIndex() );
 }
 
 void roboProp::desetupUi()
@@ -114,7 +154,23 @@ void roboProp::desetupUi()
 void roboProp::buildConnection()
 {
     connect( ui->listWidget, SIGNAL(currentRowChanged(int)),
-                  ui->stackedWidget, SLOT(setCurrentIndex(int)));
+             ui->stackedWidget, SLOT(setCurrentIndex(int)));
+
+    connect( ui->stackedWidget, SIGNAL(currentChanged(int)),
+             this, SLOT(on_page_changed(int)));
+}
+
+void roboProp::on_page_changed( int index )
+{
+    Q_ASSERT( index < ui->stackedWidget->count() );
+
+    Q_ASSERT( NULL != ui->stackedWidget->widget(index) );
+
+    modelView *pView = ((modelView*)ui->stackedWidget->widget(index));
+    Q_ASSERT( NULL != pView );
+    ui->btnCancel->setEnabled( pView->isCanceAble() );
+    ui->btnOK->setEnabled( pView->isOkAble() );
+    ui->btnApply->setEnabled( pView->isApplyAble() );
 }
 
 void roboProp::on_btnOK_clicked()

@@ -19,6 +19,9 @@ ADDMOD obj\devicemrq_action.o
 ADDMOD obj\motor.o
 ADDMOD obj\robostate.o
 ADDMOD obj\devicemrq_state.o
+ADDMOD obj\devicemrq_addr.o
+ADDMOD obj\devicemrq_setting.o
+ADDMOD obj\devicemrq_tpv.o
 ADDMOD obj\moc_tpvdownloader.o
 ADDMOD obj\moc_roboworker.o
 SAVE

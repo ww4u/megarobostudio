@@ -80,6 +80,9 @@ void sysPref::updateUi()
     ui->chkAutoExpand->setChecked( mPref.mAutoExpand );
     ui->chkAutoLoadSet->setChecked( mPref.mbAutoLoadSetup );
     ui->chkSearch->setChecked( mPref.mbSearchOnOpen );
+    ui->chkMaximize->setChecked( mPref.mbMaximizeStartup );
+    ui->cmbStyle->setCurrentIndex( mPref.mStyleIndex );
+    ui->cmbLang->setCurrentIndex( mPref.mLangIndex );
 
     //! db
     ui->chkUpload->setChecked( mPref.mDbMeta.mbUpload );
@@ -94,6 +97,7 @@ void sysPref::updateUi()
     //! misa
     ui->chkMisaEn->setChecked( mPref.mMisaEn );
     ui->spinMisaSocket->setValue( mPref.mMisaSocket );
+    ui->edtRemotePath->setText( mPref.mRemoteDirPath );
 logDbg()<<mPref.mMisaEn<<mPref.mMisaSocket;
     ui->tempPath->setText( mPref.mDumpPath );
 }
@@ -125,6 +129,10 @@ void sysPref::updateData()
     mPref.mAutoExpand = ui->chkAutoExpand->isChecked();
     mPref.mbAutoLoadSetup = ui->chkAutoLoadSet->isChecked();
     mPref.mbSearchOnOpen = ui->chkSearch->isChecked();
+    mPref.mbMaximizeStartup = ui->chkMaximize->isChecked();
+
+    mPref.mStyleIndex = ui->cmbStyle->currentIndex();
+    mPref.mLangIndex = ui->cmbLang->currentIndex();
 
     //! db meta
     mPref.mDbMeta.mbUpload = ui->chkUpload->isChecked();
@@ -137,6 +145,7 @@ void sysPref::updateData()
     //! misa
     mPref.mMisaEn = ui->chkMisaEn->isChecked();
     mPref.mMisaSocket = ui->spinMisaSocket->value();
+    mPref.mRemoteDirPath = ui->edtRemotePath->text();
 }
 
 bool sysPref::validateDb()

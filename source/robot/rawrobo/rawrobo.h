@@ -12,6 +12,9 @@ enum eRoboPlanMode
     plan_5rd,
 };
 
+#define BIT_INTERP  0
+
+
 struct TraceKeyPoint
 {
     union
@@ -21,14 +24,35 @@ struct TraceKeyPoint
             float t;
             float x, y, z;
             float hand;
+            quint32 iMask;
         };
-        float datas[5];
+        float datas[6];
     };
 
     TraceKeyPoint( float pt = 0, float px=0, float py=0, float pz=0, float phand=0 );
 };
 
 typedef QList<TraceKeyPoint>    TraceKeyPointList;
+
+struct MegatronKeyPoint
+{
+    union
+    {
+        struct
+        {
+            float t;
+            float x1, y1, z1;
+            float x2, y2, z2;
+        };
+        float datas[7];
+    };
+
+    MegatronKeyPoint( float pt = 0,
+                      float px1=0, float py1=0, float pz1=0,
+                      float px2=0, float py2=0, float pz2=0 );
+};
+
+typedef QList<MegatronKeyPoint>    MegatronKeyPointList;
 
 class RawRoboStateCondition : public MegaDevice::RoboStateCondition
 {
@@ -37,22 +61,23 @@ public:
 };
 
 class RawRobo;
-//! fsm
 class RawRoboUnit;
+//! fsm
 class RawRoboFsm : public MegaDevice::RoboFsm
 {
 public:
     RawRoboFsm();
-    ~RawRoboFsm();
+    virtual ~RawRoboFsm();
 
 public:
     virtual void build();
 
     virtual void subscribe( MegaDevice::RoboFsm *pMember,
                             int msg,
-                            int para );
+                            int stat,
+                            RoboMsg &detail );
 
-    virtual void toState( int stat );
+    virtual void toState( int stat, RoboMsg &detail );
     int state();
 
     virtual void startTimer( int id=0, int tmous=1000 );
@@ -81,26 +106,30 @@ class RawRobo : public VRobot
 {
 public:
     RawRobo();
+    virtual ~RawRobo();
+
+    virtual void postCtor();
 
 public:
     //! switch operation
-    virtual void switchReset();
-    virtual void switchStop();
-    virtual void switchRun();
-    virtual void switchPrepare();
-    virtual void switchEmergStop();
+    virtual void switchReset( const tpvRegion &region=0 );
+    virtual void switchStop( const tpvRegion &region=0 );
+    virtual void switchRun(const tpvRegion &region=0 );
+    virtual void switchPrepare( const tpvRegion &region=0 );
+    virtual void switchEmergStop( const tpvRegion &region=0 );
 
-    virtual void queryState();
+    virtual void queryState( const tpvRegion &region=0 );
 
-    virtual void toState( int stat );
-    int state();
+    virtual void toState( const tpvRegion &region, int stat );
+    int state( const tpvRegion &region=0 );
 
     virtual void onTimer( void *pContext, int id );
 
 public:
     virtual void attachCondition(
+                                  const tpvRegion &region,
                                   MegaDevice::RoboCondition *pCond );
-    virtual bool waitCondition(
+    virtual bool waitCondition( const tpvRegion &region,
                                 MegaDevice::RoboCondition *pCond,
                                 int tmoms=-1 );
 
@@ -111,8 +140,13 @@ public:
     void setPlanMode( eRoboPlanMode mode );
     eRoboPlanMode getPlanMode();
 
+    RawRoboFsm * fsm( const tpvRegion &region );
+
 protected:
-    RawRoboFsm mFsm;
+//    RawRoboFsm mFsm;
+                                //! fsms for each region
+    QMap< tpvRegion, RawRoboFsm*> mFsms;
+
                                 //! pref
     float mPlanStep;
     eRoboPlanMode mPlanMode;
@@ -126,19 +160,20 @@ public:
                  int members );
     virtual ~RawRoboUnit();
 public:
-    virtual void toState( int stat );
+    virtual void toState( int stat, RoboMsg &detail );
 
-    virtual void proc( int msg, int subAx, int para );
-
-    virtual void onEnter();
-    virtual void onExit();
+    virtual void proc( int msg, RoboMsg &detail );
 
     virtual void onTimer( int id );
 public:
     RawRoboFsm *selfFsm();
 
-    void setMemberState( int subAx, int stat );
-    int memberState( int subAx );
+    void setMemberState( int subAx,
+                         const tpvRegion &region,
+                         int stat,
+                         RoboMsg &detail );
+    int memberState( int subAx,
+                     const tpvRegion &region );
 
     int state();
 
@@ -159,9 +194,9 @@ public:
                      int members );
 
 public:
-    virtual void proc( int msg, int subAx, int para );
+    virtual void proc( int msg, RoboMsg &detail );
 
-    virtual void onEnter();
+    virtual void onEnter( RoboMsg &detail );
 //    virtual void onExit();
 //    virtual void onRst();
 
@@ -176,7 +211,7 @@ public:
                          int members );
 
 public:
-    virtual void proc( int msg, int subAx, int para );
+//    virtual void proc( int msg, RoboMsg &detail );
 
 //    virtual void onEnter();
 //    virtual void onExit();
@@ -190,7 +225,7 @@ public:
                         int members );
 
 public:
-    virtual void proc( int msg, int subAx, int para );
+//    virtual void proc( int msg, RoboMsg &detail );
 
 //    virtual void onEnter();
 //    virtual void onExit();
@@ -204,7 +239,7 @@ public:
                         int members );
 
 public:
-    virtual void proc( int msg, int subAx, int para );
+//    virtual void proc( int msg, RoboMsg &detail );
 
 //    virtual void onEnter();
 //    virtual void onExit();
@@ -218,9 +253,9 @@ public:
                         int members );
 
 public:
-    virtual void proc( int msg, int subAx, int para );
+    virtual void proc( int msg, RoboMsg &detail );
 
-    virtual void onEnter();
+    virtual void onEnter( RoboMsg &detail );
 //    virtual void onExit();
 //    virtual void onRst();
 };
@@ -232,10 +267,10 @@ public:
                         int members );
 
 public:
-    virtual void proc( int msg, int subAx, int para );
+    virtual void proc( int msg, RoboMsg &detail );
 
-    virtual void onEnter();
-    virtual void onExit();
+    virtual void onEnter( RoboMsg &detail );
+    virtual void onExit( RoboMsg &detail );
 //    virtual void onRst();
 };
 
@@ -246,9 +281,9 @@ public:
                        int members );
 
 public:
-    virtual void proc( int msg, int subAx, int para );
+//    virtual void proc( int msg, RoboMsg &detail );
 
-    virtual void onEnter();
+    virtual void onEnter( RoboMsg &detail );
 //    virtual void onExit();
 //    virtual void onRst();
 };
@@ -260,9 +295,9 @@ public:
                         int members );
 
 public:
-    virtual void proc( int msg, int subAx, int para );
+//    virtual void proc( int msg, RoboMsg &detail );
 
-    virtual void onEnter();
+    virtual void onEnter( RoboMsg &detail );
 //    virtual void onExit();
 //    virtual void onRst();
 };
@@ -274,9 +309,9 @@ public:
                         int members );
 
 public:
-    virtual void proc( int msg, int subAx, int para );
+//    virtual void proc( int msg, RoboMsg &detail );
 
-    virtual void onEnter();
+    virtual void onEnter( RoboMsg &detail );
 //    virtual void onExit();
 //    virtual void onRst();
 };

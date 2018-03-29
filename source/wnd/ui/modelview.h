@@ -10,6 +10,13 @@
 #include "../../app/appwidget.h"
 #include "../../app/dpcobj.h"
 
+#define OK_ABLE_BIT     0
+#define CANCEL_ABLE_BIT 1
+#define APPLY_ABLE_BIT  2
+
+#define SET_INFO_ATTR()     \
+                        unset_bit( mAttributes, OK_ABLE_BIT );\
+                        unset_bit( mAttributes, APPLY_ABLE_BIT );
 class modelView : public appWidget
 {
     Q_OBJECT
@@ -29,6 +36,12 @@ protected:
 
 Q_SIGNALS:
     void sigClose( QWidget * );
+
+    //! ui attr
+public:
+    bool isCanceAble();
+    bool isOkAble();
+    bool isApplyAble();
 
 public:
     virtual void setModelObj( mcModelObj *pObj );
@@ -57,6 +70,8 @@ protected:
     QStringList mFilePattern;   //!desc-ext
 
     bool mbModified;
+    quint32 mAttributes;
+
 };
 
 #endif // MODELVIEW_H

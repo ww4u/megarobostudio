@@ -3,7 +3,7 @@
 
 #include <QtCore>
 
-#include "../../com/robomsgthread.h"
+#include "../com/robomsgthread.h"
 
 //! sys log
 void _sysLog( const QString &preStr = "",

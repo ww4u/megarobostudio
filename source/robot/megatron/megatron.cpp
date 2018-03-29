@@ -8,59 +8,42 @@ static quint8 _megaimage[]=
     #include "./robot1.cpp"
 };
 
+static quint8 _detail[]=
+{
+    #include "./detail.cpp"
+};
+
 robotMegatron::robotMegatron()
 {
-    mClass = "Megatron";
+    mClass = QObject::tr("Megatron");
     mId = robot_megatron;
-    setAxes( 5 );
-    setAxesDefName( 5 );
-    setJointName( 5 );
+
+    setAxes( 6 );
+    setAxesDefName( 6 );
+    setJointName( 6 );
+
+    mDetail = QString::fromLocal8Bit( (char*)_detail, sizeof_array(_detail) );
 
     //! joint name
     mJointName.clear();
-    mJointName<<QObject::tr("Basement")
-              <<QObject::tr("Big Arm")
-              <<QObject::tr("Little Arm")
-              <<QObject::tr("Wrist")
-              <<QObject::tr("Hand");
+    mJointName<<QObject::tr("FX")
+              <<QObject::tr("FZ")
+              <<QObject::tr("BX")
+              <<QObject::tr("BZ")
+              <<QObject::tr("LY")
+              <<QObject::tr("LZ");
 
     mImage = QImage::fromData( _megaimage, sizeof(_megaimage) );
 
-    //! fsm
-    mFsm.attachRobot( this );logDbg();
-    mFsm.build();logDbg();
-
     //! debug used
     //! alter the axes name
-    mAxesConnectionName[0] = "CH1@device2"; //! base
-    mAxesConnectionName[1] = "CH1@device1"; //! b Arm
-    mAxesConnectionName[2] = "CH2@device1"; //! s Arm
-    mAxesConnectionName[3] = "CH3@device1"; //! wrist
-    mAxesConnectionName[4] = "CH4@device1"; //! hand
-
-    //! rotate angle
-    //! 0,90,180,180
-    mRotateAngles.append( 0 );
-    mRotateAngles.append( 90 );
-    mRotateAngles.append( 180 );
-    mRotateAngles.append( 180 );
-
-    //! arm length
-    //! 247.75, 255, 250, 0, 0, 0
-    mArmLengths.append( 247.75 );
-    mArmLengths.append( 255 );
-    mArmLengths.append( 250 );
-    mArmLengths.append( 0 );
-
-    mArmLengths.append( 0 );
-    mArmLengths.append( 0 );
-
-    //! ref point
-    mRefAngles.append( 0 );
-    mRefAngles.append( 90 );
-    mRefAngles.append( -90 );
-    mRefAngles.append( -90 );
-    mRefAngles.append( 0 );
+    Q_ASSERT( mAxesConnectionName.size() == 6 );
+    mAxesConnectionName[0] = "CH1@device1"; //! fx
+    mAxesConnectionName[1] = "CH2@device1"; //! fz
+    mAxesConnectionName[2] = "CH3@device1"; //! bx
+    mAxesConnectionName[3] = "CH4@device1"; //! bz
+    mAxesConnectionName[4] = "CH1@device2"; //! ly
+    mAxesConnectionName[5] = "CH2@device2"; //! lz
 }
 
 robotMegatron::~robotMegatron()
@@ -72,31 +55,37 @@ static msg_type _msg_patterns[]={
 
     //! member_state
     { e_robot_member_state,
-      { QMetaType::Int, QMetaType::Int },   //! subax, stat
+      { QMetaType::Int, TPV_REGEION_TYPE_ID, QMetaType::Int },   //! subax, region, ax
     },
 
     //! msg
     { MegaDevice::mrq_msg_run,
-      { QMetaType::Int, QMetaType::Int, },  //! subax, stat
+      { TPV_REGEION_TYPE_ID },  //! region
     },
 
     { MegaDevice::mrq_msg_stop,
-      { QMetaType::Int, QMetaType::Int, },  //! subax, stat
+      { TPV_REGEION_TYPE_ID },  //! region
     },
 
+    { MegaDevice::mrq_msg_call,
+      { TPV_REGEION_TYPE_ID },  //! region
+    },
 };
 
 int robotMegatron::serialIn( QXmlStreamReader &reader )
 {
-    int ret;
-    ret = mHandActionModel.serialIn( reader );
-    return ret;
+//    int ret;
+//    ret = mHandActionModel.serialIn( reader );
+//    return ret;
+    return 0;
 }
 int robotMegatron::serialOut( QXmlStreamWriter &writer )
 {
-    return mHandActionModel.serialOut( writer );
+//    return mHandActionModel.serialOut( writer );
+    return 0;
 }
 
+//! \note subax invalid
 void robotMegatron::onMsg( int subAxes, RoboMsg &msg )
 {
     if ( !RoboMsg::checkMsg( msg, _msg_patterns, sizeof_array(_msg_patterns)) )
@@ -105,26 +94,15 @@ void robotMegatron::onMsg( int subAxes, RoboMsg &msg )
         return;
     }
 
-    mFsm.proc( msg.Msg(), msg.at(0).toInt(), msg.at(1).toInt() );
-}
+    //! for some region
+    tpvRegion region = msg.at(0).value<tpvRegion>();
 
-//! for some axes
-int robotMegatron::download( tpvGroup *pGroup, int axes )
-{
-    Q_ASSERT( NULL != pGroup );
-
-    return 0;
-}
-
-int robotMegatron::download( motionGroup *pGroup, int axes )
-{
-    Q_ASSERT( NULL != pGroup );
-
-    return 0;
+    fsm( region )->proc( msg.Msg(), msg );
 }
 
 int robotMegatron::download( QList<tpvGroup*> &groups,
-                             QList<int> &joints )
+                             QList<int> &joints,
+                             const tpvRegion &region )
 {logDbg();
     Q_ASSERT( groups.size() == joints.size() );
 
@@ -132,6 +110,7 @@ int robotMegatron::download( QList<tpvGroup*> &groups,
     int axes;
 logDbg();
     int ret;
+    tpvRegion localRegion = region;
     for ( int i = 0; i < groups.size(); i++ )
     {
         pMrq = jointDevice( joints[i], &axes );
@@ -142,7 +121,9 @@ logDbg();
         QList<tpvRow*> rows;
         groups[i]->getRows( rows );
 logDbg();
-        ret = pMrq->pvtWrite( axes, 0, rows );  //! \todo sub page
+        localRegion.setAx( axes );
+
+        ret = pMrq->pvtWrite( localRegion, rows );
         if ( ret != 0 )
         { return ret; }
     }
@@ -157,35 +138,18 @@ int robotMegatron::download( VRobot *pSetup )
     return 0;
 }
 
-int robotMegatron::run( int axes )
+int robotMegatron::run( const tpvRegion &region  )
 {
-    lpc()->postMsg( (eRoboMsg)(MegaDevice::mrq_msg_run), -1, 0 );
-
+    lpc()->postMsg( (eRoboMsg)(MegaDevice::mrq_msg_run), region );
+    return 0;
+}
+int robotMegatron::stop( const tpvRegion &region  )
+{
+    lpc()->postMsg( (eRoboMsg)(MegaDevice::mrq_msg_stop), region );
     return 0;
 }
 
-int robotMegatron::stop( int axes )
-{
-    lpc()->postMsg( (eRoboMsg)(MegaDevice::mrq_msg_stop), -1, 0 );
-
-    return 0;
-}
-
-int robotMegatron::run( )
-{
-    lpc()->postMsg( (eRoboMsg)(MegaDevice::mrq_msg_run), -1, 0 );
-
-    return 0;
-}
-
-int robotMegatron::stop( )
-{
-    lpc()->postMsg( (eRoboMsg)(MegaDevice::mrq_msg_stop), -1, 0 );
-
-    return 0;
-}
-
-int robotMegatron::setLoop( int n )
+int robotMegatron::setLoop( int n, const tpvRegion &region )
 {
     MegaDevice::deviceMRQ *pMrq;
     int ax;
@@ -195,7 +159,9 @@ int robotMegatron::setLoop( int n )
 
         Q_ASSERT( NULL != pMrq );
 
-        pMrq->setMOTIONPLAN_CYCLENUM( ax, MRQ_MOTION_SWITCH_1_MAIN, n );   //! \todo sub page
+        pMrq->setMOTIONPLAN_CYCLENUM( ax,
+                                      (MRQ_MOTION_SWITCH_1)region.page(),
+                                      n );
     }
 
     return 0;
@@ -208,13 +174,22 @@ void robotMegatron::onLine()
     MegaDevice::deviceMRQ *pMrq;
     int ax;
 
+    //! each ax
     for ( int i = 0; i < axes(); i++ )
     {
         pMrq = jointDevice( i, &ax );
 
         Q_ASSERT( NULL != pMrq );
 
-        pMrq->Fsm( ax )->setLeader( &mFsm, (void*)i );
+        Q_ASSERT( regions() == pMrq->regions() );
+
+        //! each region
+        for ( int j = 0; j < regions(); j++ )
+        {
+            Q_ASSERT( pMrq->Fsm( tpvRegion(ax,j) ) != NULL );
+            pMrq->Fsm( tpvRegion(ax,j) )->setLeader( mFsms[ tpvRegion(0,j) ],
+                                                    (void*)i );
+        }
 
         //! use phy bus
         attachBus( pMrq->Bus() );
@@ -225,20 +200,22 @@ void robotMegatron::offLine()
     MegaDevice::deviceMRQ *pMrq;
     int ax;
 
+    //! each ax
     for ( int i = 0; i < axes(); i++ )
     {
         pMrq = jointDevice( i, &ax );
 
-        Q_ASSERT( NULL != pMrq );
-
-        pMrq->Fsm( ax )->setLeader( NULL, NULL );
+        //! each region
+        for ( int j = 0; j < regions(); j++ )
+        {
+            Q_ASSERT( pMrq->Fsm( tpvRegion(ax,j) ) != NULL );
+            pMrq->Fsm( tpvRegion(ax,j) )->setLeader( NULL, NULL );
+        }
     }
 
     detachBus();
 }
 
-QAbstractTableModel *robotMegatron::handActions()
-{ return &mHandActionModel; }
 
 
 

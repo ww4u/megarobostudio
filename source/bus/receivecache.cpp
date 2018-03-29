@@ -432,6 +432,7 @@ bool receiveCache::detectEvent( frameData &ary )
 {
     foreach( frameEvent *pEvt, mEvents )
     {
+        Q_ASSERT( NULL != pEvt );
         //! find event
         if ( ary.startsWith( *pEvt) && pEvt->getEnable() )
         {

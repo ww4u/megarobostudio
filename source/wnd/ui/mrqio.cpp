@@ -48,6 +48,10 @@ int mrqIo::isoApply()
     pDevice = getDevice();
     Q_ASSERT( NULL != pDevice );
 
+//    Q_ASSERT( m_pMrqModel != NULL );
+//    MegaDevice::deviceMRQ *pDevice;
+//    pDevice = m_pMrqModel;
+
     int ret;
 
     //! iso

@@ -33,6 +33,7 @@ protected:
 
 Q_SIGNALS:
     void sig_joints_trace_changed();
+    void sig_robo_changed( const QString &roboName );
 
 public Q_SLOTS:
     void slot_robo_changed( const QString &roboName );

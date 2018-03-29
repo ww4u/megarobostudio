@@ -19,7 +19,8 @@ roboGeogoog::roboGeogoog()
     mISOs = 2;
     mISIs = 1;
     mAINs = 0;
-    mUARTs = 2;
+    setUarts( 2 );
+    setUartSensors( 4 );
 
     mImage = QImage::fromData( _megaimage, sizeof(_megaimage) );
 

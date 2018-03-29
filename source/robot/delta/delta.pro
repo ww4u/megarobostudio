@@ -4,8 +4,8 @@ CONFIG += static
 
 TARGET = ../../../../lib/delta
 
-OBJECTS_DIR = ../obj
-MOC_DIR = ../obj
+OBJECTS_DIR = ./obj
+MOC_DIR = ./obj
 
 SOURCES = \
     delta.cpp

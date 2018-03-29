@@ -7,14 +7,24 @@
 
 class comAssist
 {
-
+private:
+    static QStringList _mRemotePath;
 public:
+    static void setRemotePath( const QStringList &path );
+    static QStringList &remotePath();
+
     static QString pureFileName( const QString &fullName, bool containPost = true );
     static QString fileSuffix( const QString &name );
     static bool    fileSuffixMatch( const QString &src,
                                     const QString &suffix );
 
     static int     align( double val, double unit );
+
+    static bool    ammendFileName( QString &fileName );
+
+    static bool    convertDataset( const QStringList &line,
+                                   float *pData,
+                                   int cols );
 
     static int     loadDataset( const char *pFileName,
                                 int nameLen,
@@ -27,9 +37,6 @@ public:
                                 QList<float> &dataset,
                                 const char &colSep=',',
                                 const char &lineSep='\n' );
-    static bool    convertDataset( const QStringList &line,
-                                   float *pData,
-                                   int cols );
 public:
     comAssist();
 

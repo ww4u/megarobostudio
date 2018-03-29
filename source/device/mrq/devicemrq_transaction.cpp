@@ -3,103 +3,123 @@
 namespace MegaDevice
 {
 
+
 //! msg patterns
-static msg_type _msg_patterns[]
+static msg_type _msg_patterns[] =
 {
     //! sys msg
-    { e_robot_timeout, {QMetaType::Int,} },
+//    { e_robot_init, },
+    { e_robot_timeout, {TPV_REGEION_TYPE_ID, QMetaType::Int} },
 
     //! mrq msg
-    { mrq_msg_run, { QMetaType::Int, },
+    //! msg, region
+    { mrq_msg_run, { TPV_REGEION_TYPE_ID },
     },
-    { mrq_msg_stop, { QMetaType::Int, },
+    { mrq_msg_stop, { TPV_REGEION_TYPE_ID },
     },
-    { mrq_msg_rst, { QMetaType::Int, },
+    { mrq_msg_rst, { TPV_REGEION_TYPE_ID },
     },
-    { mrq_msg_program, { QMetaType::Int, },
+    { mrq_msg_program, { TPV_REGEION_TYPE_ID },
     },
-    { mrq_msg_prepare, { QMetaType::Int, },
-    },
-
-    { mrq_msg_idle, { QMetaType::Int, },
-    },
-    { mrq_msg_calcing, { QMetaType::Int, },
-    },
-    { mrq_msg_calcend, { QMetaType::Int, },
-    },
-    { mrq_msg_standby, { QMetaType::Int, },
+    { mrq_msg_call, { TPV_REGEION_TYPE_ID },
     },
 
-    { mrq_msg_running, { QMetaType::Int, },
+    { mrq_msg_idle, { TPV_REGEION_TYPE_ID },
     },
-    { mrq_msg_error, { QMetaType::Int, },
+    { mrq_msg_calcing, { TPV_REGEION_TYPE_ID },
+    },
+    { mrq_msg_calcend, { TPV_REGEION_TYPE_ID },
+    },
+    { mrq_msg_standby, { TPV_REGEION_TYPE_ID },
+    },
+
+    { mrq_msg_running, { TPV_REGEION_TYPE_ID },
+    },
+    { mrq_msg_error, { TPV_REGEION_TYPE_ID },
     },
 };
 
-void deviceMRQ::onMsg( int subAxes, RoboMsg &msg )
+//! called from the worker thread
+void deviceMRQ::onMsg( int subAxes, RoboMsg &detail )
 {
+    Q_ASSERT( subAxes >= 0 && subAxes < axes() );
+
     //! type match
-    if ( !RoboMsg::checkMsg(msg, _msg_patterns, sizeof_array(_msg_patterns)) )
+    if ( !RoboMsg::checkMsg( detail, _msg_patterns, sizeof_array(_msg_patterns)) )
     {
-        logDbg()<<msg.getMsg()<<msg.size();
+        logDbg()<<(int)detail.at(0).type()<<detail.getMsg()<<detail.size();
         return;
     }
 
     //! proc msg
-    int varMsg = msg.getMsg();
-    int varPara = msg.at(0).toInt();
+    int varMsg = detail.getMsg();
 
     //! fsm proc
     if ( subAxes >= 0 && subAxes < axes() )
     {
-        mMrqFsms[subAxes].proc( varMsg, varPara );
+        //! get region
+        tpvRegion region;
+        region = detail.at(0).value<tpvRegion>();
+
+        Q_ASSERT( mMrqFsms.contains(region) );
+logDbg()<<varMsg;
+        mMrqFsms[ region ]->proc( varMsg, detail );
+logDbg()<<varMsg;
     }
     else
-    { logWarning()<<subAxes; }
+    { Q_ASSERT(false); }
 }
 
+//! called from the SysTimerThread
 void deviceMRQ::onTimer( void *pContext, int id )
 {
     Q_ASSERT( NULL != pContext );
 
     //! context is fsm
     MrqFsm *pFsm = (MrqFsm*)pContext;
-    lpc( pFsm->axes() )->postMsg( e_robot_timeout, id );
+    lpc( pFsm->axes() )->postMsg( e_robot_timeout,
+//                                  tpvRegion( pFsm->axes(), pFsm->page() ),
+                                  *pFsm,
+                                  id );
 }
 
-void deviceMRQ::attachCondition( int subAxes,
+void deviceMRQ::attachCondition( const tpvRegion &region,
                                  RoboCondition *pCond )
 {
-    if ( subAxes >= 0 && subAxes < axes() )
-    {
-        mMrqFsms[subAxes].attachCondition( pCond );
-    }
+    Fsm( region )->attachCondition( pCond );
 }
 
-bool deviceMRQ::waitCondition( int subAxes,
+bool deviceMRQ::waitCondition( const tpvRegion &region,
                                RoboCondition *pCond,
                                int tmoms )
 {
-    if ( subAxes >= 0 && subAxes < axes() )
-    {
-        return mMrqFsms[subAxes].waitCondition( pCond, tmoms );
-    }
+    Q_ASSERT( mMrqFsms.contains( region ) );
 
-    return false;
+    return Fsm( region )->waitCondition( pCond, tmoms );
 }
 
-RoboFsm *deviceMRQ::Fsm( int ax )
+RoboFsm *deviceMRQ::Fsm( const tpvRegion &region )
 {
-    Q_ASSERT( ax >= 0 && ax < axes() );
+    Q_ASSERT( mMrqFsms.contains( region ) );
 
-    return mMrqFsms+ax;
+    return mMrqFsms[ region ];
 }
 
-deviceMotor *deviceMRQ::Motor( int ax )
+deviceProxyMotor *deviceMRQ::Motor( const tpvRegion &region )
 {
-    Q_ASSERT( ax >= 0 && ax < axes() );
+    Q_ASSERT( mProxyMotors.contains(region) );
 
-    return mMotors + ax;
+    return mProxyMotors[ region ];
+}
+
+//! \note only n downloder by axes
+tpvDownloader *deviceMRQ::downloader( const tpvRegion &region )
+{
+    Q_ASSERT( mDownloaders.contains( region.axes()) );
+
+    Q_ASSERT( mDownloaders[region.axes()] != NULL );
+
+    return mDownloaders[region.axes()];
 }
 
 }

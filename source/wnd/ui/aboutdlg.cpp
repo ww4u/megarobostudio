@@ -6,6 +6,7 @@ aboutDlg::aboutDlg(QWidget *parent) :
     ui(new Ui::aboutDlg)
 {
     ui->setupUi(this);
+    ui->label_3->setText( qApp->applicationVersion() );
 }
 
 aboutDlg::~aboutDlg()

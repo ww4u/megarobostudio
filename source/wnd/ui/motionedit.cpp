@@ -52,6 +52,8 @@ motionEdit::~motionEdit()
 //! get the hand action options
 void motionEdit::slot_robo_changed( const QString &roboName )
 {
+    emit sig_robo_changed( roboName );
+
     Q_ASSERT( m_pActionDelegate != NULL );
 logDbg();
     do
@@ -199,7 +201,7 @@ void motionEdit::onMotionStatus( int axes,
     }
     else if ( MegaDevice::mrq_state_calcend == stat )
     {
-        down_start_stop( true, false, false );
+        down_start_stop( true, true, false );
     }
     else if ( MegaDevice::mrq_state_standby == stat )
     {
@@ -345,9 +347,11 @@ void motionEdit::on_btnKnob_clicked()
 
     if ( m_pRoboAxes == NULL )
     {
-        m_pRoboAxes = new roboAxes(this);
+        Q_ASSERT( NULL != m_pmcModel );
+        m_pRoboAxes = new roboAxes( m_pmcModel, this);
 
-        m_pRoboAxes->attachRobot( pRobot );
+        connect( this, SIGNAL(sig_robo_changed(const QString &)),
+                 m_pRoboAxes, SLOT(slot_robo_changed(const QString &)) );
     }
 
     m_pRoboAxes->show();
@@ -366,7 +370,7 @@ void motionEdit::on_btnStart_clicked()
     { return ; }
 
     //! download motion
-    pRobot->run();
+    pRobot->run( );
 }
 
 void motionEdit::on_btnStop_clicked()
@@ -377,7 +381,7 @@ void motionEdit::on_btnStop_clicked()
     { return; }
 
     //! download motion
-     pRobot->stop();
+     pRobot->stop( );
 }
 
 //! compile

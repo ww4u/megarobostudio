@@ -12,15 +12,23 @@ VRobot::VRobot()
 {
     mClass = "Unk robot";
     mId = robot_unk;
-    mAxes = 0;
-    mPages = 10;
+                                        //! configs
+    mAxes = 0;                          //! axes count
+    mRegions = 10;                      //! region count for each axes
+
+    mDCAxes = 0;
 
     mDOs = 0;
     mDIs = 0;
     mISOs = 0;
     mISIs = 0;
     mAINs = 0;
+    mMosos = 0;
+
+    mEncoders = 0;
+    mTemperatures = 0;
     mUARTs = 0;
+    mUART_Sensors = 0;
 
     m_pInstMgr = NULL;
 
@@ -48,6 +56,9 @@ VRobot::~VRobot()
     delete m_pRoboWoker;
 }
 
+void VRobot::postCtor()
+{}
+
 void VRobot::gcWorker()
 {
     //! gc
@@ -73,27 +84,26 @@ void VRobot::gcWorker()
 QAbstractTableModel *VRobot::handActions()
 { return NULL; }
 
-void VRobot::setStatus( int stat,int ch, int page )
+void VRobot::setStatus( int stat, const tpvRegion &region )
 {
-    mRobotStatus[ ch ] = stat;
-    Q_ASSERT( mRobotStatus.contains(ch) );
-logDbg()<<ch<<stat;
-    sysQueue()->postMsg(
-                      e_axes_status,
-                      name(),
-                      ch,
-                      stat
-                      );
+    mRobotStatus[ region ] = stat;
+    Q_ASSERT( mRobotStatus.contains( region ) );
+
+//logDbg()<<region.axes()<<region.page()<<stat;
+//    sysQueue()->postMsg(  e_axes_status,
+//                          name(),
+//                          region,
+//                          stat
+//                        );
 }
-int VRobot::getStatus( int ch )
+
+int VRobot::status( const tpvRegion &region )
 {
-    if ( mRobotStatus.contains( ch ) )
-    { return mRobotStatus[ ch ]; }
+    if ( mRobotStatus.contains( region ) )
+    { return mRobotStatus[ region ]; }
     else
     { return MRQ_MOTION_STATE_2_POWERON; }
 }
-int VRobot::status( int ch )
-{ return getStatus( ch ); }
 
 void VRobot::setInstMgr( MegaDevice::InstMgr *pMgr )
 {
@@ -135,29 +145,6 @@ void VRobot::setTPVUnit( float t, float p, float v )
 MegaDevice::deviceMRQ *VRobot::findDevice( const QString &name,
                                    int *pAxes )
 {
-//    *pAxes = -1;
-////logDbg()<<name;
-//    QStringList strList = name.split("@", QString::SkipEmptyParts );
-
-//    if ( strList.length() < 2 )
-//    { return NULL; }
-
-//    //! try convert the ch id
-//    if ( strList[0].startsWith( "CH" ) )
-//    {}
-//    else
-//    { return NULL; }
-
-//    QString numStr = strList[0].right( strList[0].length() - 2 );/*logDbg()<<numStr;*/
-//    bool bOk;
-//    int axesId = numStr.toInt( &bOk );
-//    if( !bOk )
-//    { return NULL; }
-
-//    if ( axesId < 1 )
-//    { return NULL; }
-
-//    *pAxes = axesId - 1;
     Q_ASSERT( NULL != m_pInstMgr );
     return m_pInstMgr->findDevice( name, pAxes );
 }

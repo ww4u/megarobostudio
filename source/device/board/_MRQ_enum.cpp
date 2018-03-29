@@ -8,21 +8,10 @@ static value_desc _value_desc_MRQ_LINK_DEVICEINFO[] = {
 	{1,"MRV",},
 };
 static value_desc _value_desc_MRQ_LINK_DEVICEINFO_1[] = {
-	{0,"C17D",},
-	{1,"C23D",},
-	{2,"M1703",},
-	{3,"",},
-	{4,"M2303",},
-	{5,"M1704",},
-	{6,"M2304",},
-	{7,"M1706",},
-	{8,"M2306",},
-	{9,"M1707",},
-	{10,"M2307",},
-	{11,"M1708",},
-	{12,"M2308",},
-	{13,"C17S",},
-	{14,"C23S",},
+	{0,"C23D",},
+	{1,"C23S",},
+	{2,"M2304",},
+	{3,"M2305",},
 };
 static value_desc _value_desc_MRQ_SYSTEM_WORKMODE[] = {
 	{0,"NORMAL",},
@@ -31,10 +20,6 @@ static value_desc _value_desc_MRQ_SYSTEM_WORKMODE[] = {
 static value_desc _value_desc_MRQ_SYSTEM_POWERON[] = {
 	{0,"DEFAULT",},
 	{1,"LAST",},
-};
-static value_desc _value_desc_MRQ_SYSTEM_DIOREFREAD[] = {
-	{0,"OFF",},
-	{1,"ON",},
 };
 static value_desc _value_desc_MRQ_RS232_BAUD[] = {
 	{0,"4800",},
@@ -81,6 +66,10 @@ static value_desc _value_desc_MRQ_CAN_BAUD[] = {
 	{5,"50",},
 	{6,"20",},
 	{7,"10",},
+};
+static value_desc _value_desc_MRQ_CAN_NETMANAGELED[] = {
+	{0,"OFF",},
+	{1,"ON",},
 };
 static value_desc _value_desc_MRQ_CAN_NETMANAGESTATE[] = {
 	{0,"IDLE",},
@@ -200,18 +189,6 @@ static value_desc _value_desc_MRQ_MOTIONPLAN_PVTCONFIG_1[] = {
 	{0,"END",},
 	{1,"CLEAR",},
 };
-static value_desc _value_desc_MRQ_MOTIONPLAN_PRESETSTATE[] = {
-	{0,"RESERVE",},
-	{1,"RESERVE1",},
-	{2,"P1",},
-	{3,"P2",},
-	{4,"P3",},
-	{5,"P4",},
-	{6,"P5",},
-	{7,"P6",},
-	{8,"P7",},
-	{9,"P8",},
-};
 static value_desc _value_desc_MRQ_MOTIONPLAN_PRESETSTATE_1[] = {
 	{0,"OFF",},
 	{1,"ON",},
@@ -267,6 +244,7 @@ static value_desc _value_desc_MRQ_REPORT_STATE[] = {
 	{11,"SGALL",},
 	{12,"SGSE",},
 	{13,"DIST",},
+	{14,"ABSENC",},
 };
 static value_desc _value_desc_MRQ_TRIGGER_MODE[] = {
 	{0,"PATTERN",},
@@ -370,6 +348,23 @@ static value_desc _value_desc_MRQ_SENSORUART_BAUD[] = {
 	{0,"UART1",},
 	{1,"UART2",},
 };
+static value_desc _value_desc_MRQ_SENSORUART_BAUD_1[] = {
+	{0,"4800",},
+	{1,"7200",},
+	{2,"9600",},
+	{3,"14400",},
+	{4,"19200",},
+	{5,"38400",},
+	{6,"57600",},
+	{7,"115200",},
+	{8,"128000",},
+	{9,"2000000",},
+	{10,"2500000",},
+};
+static value_desc _value_desc_MRQ_ABSENCALARM_ZEROPOSITION_1[] = {
+	{0,"NONE",},
+	{1,"EXIS",},
+};
 const char* MRQ_LINK_INTFC_toString( MRQ_LINK_INTFC eType )
 {
 	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_LINK_INTFC ) ); 
@@ -389,10 +384,6 @@ const char* MRQ_SYSTEM_WORKMODE_toString( MRQ_SYSTEM_WORKMODE eType )
 const char* MRQ_SYSTEM_POWERON_toString( MRQ_SYSTEM_POWERON eType )
 {
 	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_SYSTEM_POWERON ) ); 
-}
-const char* MRQ_SYSTEM_DIOREFREAD_toString( MRQ_SYSTEM_DIOREFREAD eType )
-{
-	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_SYSTEM_DIOREFREAD ) ); 
 }
 const char* MRQ_RS232_BAUD_toString( MRQ_RS232_BAUD eType )
 {
@@ -421,6 +412,10 @@ const char* MRQ_CAN_TYPE_toString( MRQ_CAN_TYPE eType )
 const char* MRQ_CAN_BAUD_toString( MRQ_CAN_BAUD eType )
 {
 	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_CAN_BAUD ) ); 
+}
+const char* MRQ_CAN_NETMANAGELED_toString( MRQ_CAN_NETMANAGELED eType )
+{
+	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_CAN_NETMANAGELED ) ); 
 }
 const char* MRQ_CAN_NETMANAGESTATE_toString( MRQ_CAN_NETMANAGESTATE eType )
 {
@@ -505,10 +500,6 @@ const char* MRQ_ENCODER_STATE_toString( MRQ_ENCODER_STATE eType )
 const char* MRQ_MOTIONPLAN_PVTCONFIG_1_toString( MRQ_MOTIONPLAN_PVTCONFIG_1 eType )
 {
 	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_MOTIONPLAN_PVTCONFIG_1 ) ); 
-}
-const char* MRQ_MOTIONPLAN_PRESETSTATE_toString( MRQ_MOTIONPLAN_PRESETSTATE eType )
-{
-	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_MOTIONPLAN_PRESETSTATE ) ); 
 }
 const char* MRQ_MOTIONPLAN_PRESETSTATE_1_toString( MRQ_MOTIONPLAN_PRESETSTATE_1 eType )
 {
@@ -626,6 +617,14 @@ const char* MRQ_SENSORUART_BAUD_toString( MRQ_SENSORUART_BAUD eType )
 {
 	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_SENSORUART_BAUD ) ); 
 }
+const char* MRQ_SENSORUART_BAUD_1_toString( MRQ_SENSORUART_BAUD_1 eType )
+{
+	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_SENSORUART_BAUD_1 ) ); 
+}
+const char* MRQ_ABSENCALARM_ZEROPOSITION_1_toString( MRQ_ABSENCALARM_ZEROPOSITION_1 eType )
+{
+	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_ABSENCALARM_ZEROPOSITION_1 ) ); 
+}
 int MRQ_LINK_INTFC_toValue( const char *pStr, MRQ_LINK_INTFC *pEVal )
 {
 	int ret, lval;
@@ -664,14 +663,6 @@ int MRQ_SYSTEM_POWERON_toValue( const char *pStr, MRQ_SYSTEM_POWERON *pEVal )
 	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_SYSTEM_POWERON ), &lval );
 	if ( ret != 0 ) return ret; 
 	*pEVal=(MRQ_SYSTEM_POWERON)lval;
-	return 0;
-}
-int MRQ_SYSTEM_DIOREFREAD_toValue( const char *pStr, MRQ_SYSTEM_DIOREFREAD *pEVal )
-{
-	int ret, lval;
-	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_SYSTEM_DIOREFREAD ), &lval );
-	if ( ret != 0 ) return ret; 
-	*pEVal=(MRQ_SYSTEM_DIOREFREAD)lval;
 	return 0;
 }
 int MRQ_RS232_BAUD_toValue( const char *pStr, MRQ_RS232_BAUD *pEVal )
@@ -728,6 +719,14 @@ int MRQ_CAN_BAUD_toValue( const char *pStr, MRQ_CAN_BAUD *pEVal )
 	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_CAN_BAUD ), &lval );
 	if ( ret != 0 ) return ret; 
 	*pEVal=(MRQ_CAN_BAUD)lval;
+	return 0;
+}
+int MRQ_CAN_NETMANAGELED_toValue( const char *pStr, MRQ_CAN_NETMANAGELED *pEVal )
+{
+	int ret, lval;
+	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_CAN_NETMANAGELED ), &lval );
+	if ( ret != 0 ) return ret; 
+	*pEVal=(MRQ_CAN_NETMANAGELED)lval;
 	return 0;
 }
 int MRQ_CAN_NETMANAGESTATE_toValue( const char *pStr, MRQ_CAN_NETMANAGESTATE *pEVal )
@@ -896,14 +895,6 @@ int MRQ_MOTIONPLAN_PVTCONFIG_1_toValue( const char *pStr, MRQ_MOTIONPLAN_PVTCONF
 	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_MOTIONPLAN_PVTCONFIG_1 ), &lval );
 	if ( ret != 0 ) return ret; 
 	*pEVal=(MRQ_MOTIONPLAN_PVTCONFIG_1)lval;
-	return 0;
-}
-int MRQ_MOTIONPLAN_PRESETSTATE_toValue( const char *pStr, MRQ_MOTIONPLAN_PRESETSTATE *pEVal )
-{
-	int ret, lval;
-	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_MOTIONPLAN_PRESETSTATE ), &lval );
-	if ( ret != 0 ) return ret; 
-	*pEVal=(MRQ_MOTIONPLAN_PRESETSTATE)lval;
 	return 0;
 }
 int MRQ_MOTIONPLAN_PRESETSTATE_1_toValue( const char *pStr, MRQ_MOTIONPLAN_PRESETSTATE_1 *pEVal )
@@ -1136,5 +1127,21 @@ int MRQ_SENSORUART_BAUD_toValue( const char *pStr, MRQ_SENSORUART_BAUD *pEVal )
 	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_SENSORUART_BAUD ), &lval );
 	if ( ret != 0 ) return ret; 
 	*pEVal=(MRQ_SENSORUART_BAUD)lval;
+	return 0;
+}
+int MRQ_SENSORUART_BAUD_1_toValue( const char *pStr, MRQ_SENSORUART_BAUD_1 *pEVal )
+{
+	int ret, lval;
+	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_SENSORUART_BAUD_1 ), &lval );
+	if ( ret != 0 ) return ret; 
+	*pEVal=(MRQ_SENSORUART_BAUD_1)lval;
+	return 0;
+}
+int MRQ_ABSENCALARM_ZEROPOSITION_1_toValue( const char *pStr, MRQ_ABSENCALARM_ZEROPOSITION_1 *pEVal )
+{
+	int ret, lval;
+	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_ABSENCALARM_ZEROPOSITION_1 ), &lval );
+	if ( ret != 0 ) return ret; 
+	*pEVal=(MRQ_ABSENCALARM_ZEROPOSITION_1)lval;
 	return 0;
 }

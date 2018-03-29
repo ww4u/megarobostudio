@@ -31,6 +31,7 @@ void mcModel::postload()
         m_pInstMgr->start( mSysPref.mMisaSocket );
         sysLog( QObject::tr("port"), QString::number( mSysPref.mMisaSocket ), QObject::tr("opened") );
     }
+
 }
 
 mcConnection& mcModel::getConnection()

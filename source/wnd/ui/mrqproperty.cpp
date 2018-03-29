@@ -3,10 +3,14 @@
 
 #include "../../robot/robotfact.h"
 
-mrqProperty::mrqProperty( int axesCnt, QWidget *parent) :
+mrqProperty::mrqProperty( VRobot *pMrqRobo,
+                          QWidget *parent) :
     mrqView(parent),
-    ui(new Ui::mrqProperty), mAxes(axesCnt)
+    ui(new Ui::mrqProperty)
 {
+    Q_ASSERT( NULL != pMrqRobo );
+    m_pRefModel = pMrqRobo;
+
     mFilePattern<<setup_desc<<setup_ext;
 
     setupUi( );
@@ -19,6 +23,19 @@ mrqProperty::~mrqProperty()
     desetupUi();
 
     logDbg();
+}
+
+void mrqProperty::on_page_changed( int index )
+{
+    Q_ASSERT( index < ui->stackedWidget->count() );
+
+    Q_ASSERT( NULL != ui->stackedWidget->widget(index) );
+
+    modelView *pView = ((modelView*)ui->stackedWidget->widget(index));
+    Q_ASSERT( NULL != pView );
+    ui->btnCancel->setEnabled( pView->isCanceAble() );
+    ui->btnOK->setEnabled( pView->isOkAble() );
+    ui->btnApply->setEnabled( pView->isApplyAble() );
 }
 
 void mrqProperty::on_btnApply_clicked()
@@ -46,10 +63,15 @@ void mrqProperty::setModelObj( mcModelObj *pObj )
     //! foreach apply
     m_pInfoPage->setModelObj( pObj );
 
-    for ( int i = 0; i < mAxes; i++ )
+    for ( int i = 0; i < m_pRefModel->axes(); i++ )
     {
         mAxesPages[i]->setModelObj(pObj);
         mAxesPage2s[i]->setModelObj(pObj);
+    }
+
+    for ( int i = 0; i < m_pRefModel->dcAxes(); i++ )
+    {
+        mDcAxesPages[i]->setModelObj(pObj);
     }
 
     m_pIoPage->setModelObj(pObj);
@@ -86,10 +108,15 @@ void mrqProperty::setMcModel( mcModel *pMcModel )
     //! foreach apply
     m_pInfoPage->setMcModel( pMcModel );
 
-    for ( int i = 0; i < mAxes; i++)
+    for ( int i = 0; i < m_pRefModel->axes(); i++)
     {
         mAxesPages[i]->setMcModel(pMcModel);
         mAxesPage2s[i]->setMcModel(pMcModel);
+    }
+
+    for ( int i = 0; i < m_pRefModel->dcAxes(); i++)
+    {
+        mDcAxesPages[i]->setMcModel(pMcModel);
     }
 
     m_pIoPage->setMcModel(pMcModel);
@@ -108,10 +135,15 @@ int mrqProperty::setApply()
     }
 
     //! foreach apply
-    for ( int i = 0; i < mAxes; i++)
+    for ( int i = 0; i < m_pRefModel->axes(); i++)
     {
         mAxesPages[i]->setApply();
         mAxesPage2s[i]->setApply();
+    }
+
+    for ( int i = 0; i < m_pRefModel->dcAxes(); i++)
+    {
+        mDcAxesPages[i]->setApply();
     }
 
     m_pIoPage->setApply();
@@ -128,7 +160,7 @@ void mrqProperty::setupUi()
     //! new
     m_pInfoPage = new mrqInfo();
 
-    for ( int i = 0; i < mAxes; i++ )
+    for ( int i = 0; i < m_pRefModel->axes(); i++ )
     {
         mAxesPages.append( new mrqAxes() );
         mAxesPages[i]->setAxesId( i );
@@ -136,9 +168,17 @@ void mrqProperty::setupUi()
         mAxesPage2s.append( new mrqAxes2() );
         mAxesPage2s[i]->setAxesId( i );
     }
+
+    for ( int i = 0; i < m_pRefModel->dcAxes(); i++ )
+    {
+        mDcAxesPages.append( new MrqDcAxes() );
+        mDcAxesPages[i]->setAxesId( i );
+    }
+
     m_pIoPage = new mrqIo();
     m_pSensorPage = new mrqSensor();
 
+    m_pAlarmPage = new MrqAlarm();
     m_pSysPage = new mrqSys();
 
     //! setup
@@ -147,15 +187,21 @@ void mrqProperty::setupUi()
     //! add to page
     ui->stackedWidget->addWidget( m_pInfoPage );
 
-    for ( int i = 0; i < mAxes; i++ )
+    for ( int i = 0; i < m_pRefModel->axes(); i++ )
     {
         ui->stackedWidget->addWidget( mAxesPages[i] );
         ui->stackedWidget->addWidget( mAxesPage2s[i] );
     }
 
+    for ( int i = 0; i < m_pRefModel->dcAxes(); i++ )
+    {
+        ui->stackedWidget->addWidget( mDcAxesPages[i] );
+    }
+
     ui->stackedWidget->addWidget( m_pIoPage );
     ui->stackedWidget->addWidget( m_pSensorPage );
 
+    ui->stackedWidget->addWidget( m_pAlarmPage );
     ui->stackedWidget->addWidget( m_pSysPage );
 
     //! list
@@ -166,7 +212,7 @@ void mrqProperty::setupUi()
     ui->listWidget->addItem( pItem );
 
     QString str;
-    for ( int i = 0; i < mAxes; i++ )
+    for ( int i = 0; i < m_pRefModel->axes(); i++ )
     {
         //! axes 0
         str = QString("Axes%1 1/2").arg(i+1);
@@ -177,6 +223,16 @@ void mrqProperty::setupUi()
 
         //! axes 1
         str = QString("Axes%1 2/2").arg(i+1);
+        pItem = new QListWidgetItem();
+        pItem->setText( str );
+        pItem->setIcon( QIcon(":/res/image/icon2/focus.png") );
+        ui->listWidget->addItem( pItem );
+    }
+
+    for ( int i = 0; i < m_pRefModel->dcAxes(); i++ )
+    {
+        //! dc axes
+        str = QString("DC Axes%1 ").arg(i+1);
         pItem = new QListWidgetItem();
         pItem->setText( str );
         pItem->setIcon( QIcon(":/res/image/icon2/focus.png") );
@@ -194,9 +250,17 @@ void mrqProperty::setupUi()
     ui->listWidget->addItem( pItem );
 
     pItem = new QListWidgetItem();
+    pItem->setText( tr("Alarm") );
+    pItem->setIcon( QIcon(":/res/image/icon2/settings_light.png") );
+    ui->listWidget->addItem( pItem );
+
+    pItem = new QListWidgetItem();
     pItem->setText( tr("System") );
     pItem->setIcon( QIcon(":/res/image/icon2/settings_light.png") );
     ui->listWidget->addItem( pItem );
+
+    //! post
+    on_page_changed( ui->stackedWidget->currentIndex() );
 }
 
 void mrqProperty::desetupUi()
@@ -208,4 +272,7 @@ void mrqProperty::buildConnection()
 {
     connect( ui->listWidget, SIGNAL(currentRowChanged(int)),
                   ui->stackedWidget, SLOT(setCurrentIndex(int)));
+
+    connect( ui->stackedWidget, SIGNAL(currentChanged(int)),
+             this, SLOT(on_page_changed(int)));
 }

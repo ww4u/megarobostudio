@@ -30,11 +30,7 @@ protected:
 
 
 private slots:
-    void on_btnApply_clicked();
 
-    void on_cmbPort_currentIndexChanged(int index);
-
-    void on_cmbSensor_currentIndexChanged(int index);
 
 private:
     Ui::mrqSensor *ui;

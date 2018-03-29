@@ -81,8 +81,8 @@ MotorState *MotorMonitor::getMotor( const QString &name, int ax )
 }
 
 void MotorMonitor::motorStateChanged( const QString &name,
-                        int axes,
-                        RoboMsg msg )
+                                      int axes,
+                                      RoboMsg msg )
 {
     Q_ASSERT( NULL != m_pModel );
 
@@ -97,9 +97,10 @@ void MotorMonitor::motorStateChanged( const QString &name,
 
     //! get status
     int stat = ary.at(4);
+    int page = ary.at(3);
     QString statStr = MRQ_MOTION_STATE_2_toString( (MRQ_MOTION_STATE_2)stat );
 
-    pWig->setState( statStr );
+    pWig->setState( statStr, page );
 
     //! get progress
     if ( stat == MRQ_MOTION_STATE_2_CALCING )
@@ -114,13 +115,13 @@ void MotorMonitor::motorStateChanged( const QString &name,
         quint16 prog;
         int ret;
         ret = pDev->getMOTIONPLAN_REMAINPOINT( (byte)axes,
-                                         MRQ_MOTION_SWITCH_1_MAIN,
-                                         &prog );
+                                               (MRQ_MOTION_SWITCH_1)page,
+                                                &prog );
         if ( ret != 0 )
         { return; }
 
         int capMax;
-        capMax = pDev->getTpvCap( axes, MRQ_MOTION_SWITCH_1_MAIN );
+        capMax = pDev->getTpvCap( tpvRegion( axes, page) );
 
         pWig->setProgress( 0, capMax, prog );
         pWig->setProgress( true );
@@ -136,11 +137,11 @@ void MotorMonitor::slot_net_event(
                      const QString &name,       //! device name
                      int axes,                  //! device ax
                      RoboMsg msg )
-{logDbg();
+{
     //! interrupt
     if ( msg.getMsg() != e_interrupt_occuring )
     { return; }
-//sysLog( __FUNCTION__, QString::number(__LINE__) );
+
     //! status
     int eId;
     eId = msg.at(0).toInt();
@@ -148,7 +149,7 @@ void MotorMonitor::slot_net_event(
     { }
     else
     { return; }
-//sysLog( __FUNCTION__, QString::number(__LINE__) );
+
     motorStateChanged( name, axes, msg );
 }
 

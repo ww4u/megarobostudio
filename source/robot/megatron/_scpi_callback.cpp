@@ -37,12 +37,14 @@ static scpi_result_t _scpi_run( scpi_t * context )
     return SCPI_RES_OK;
 }
 
-//! move x1,y1,z1,h1, x2,y2,z2,h2, t
+//! move x1,y1,z1, x2,y2,z2,
+//! x1,y1,z1, x2,y2,z2,
+//! t
 static scpi_result_t _scpi_move( scpi_t * context )
 {
     DEF_LOCAL_VAR();
 
-    float vals[9];
+    float vals[6+6+1];
 
     for ( int i = 0; i < sizeof_array(vals); i++ )
     {
@@ -56,54 +58,90 @@ static scpi_result_t _scpi_move( scpi_t * context )
     //! robo op
     DEF_ROBO();
 
-    TraceKeyPoint pt1( 0, vals[0], vals[1], vals[2], vals[3] );
-    TraceKeyPoint pt2( vals[8], vals[4], vals[5], vals[6], vals[7] );
+    MegatronKeyPoint pt1( 0,
+                          vals[0], vals[1], vals[2], vals[3], vals[4], vals[5]
+                            );
+    MegatronKeyPoint pt2( vals[12],
+                          vals[6], vals[7], vals[8], vals[9], vals[10], vals[11]
+                        );
 
-    TraceKeyPointList curve;
+    MegatronKeyPointList curve;
     curve.append( pt1 );
     curve.append( pt2 );
 
-    pRobo->move( curve );
+    pRobo->move( curve, tpvRegion(0,0) );
 
     return SCPI_RES_OK;
 }
 
-//! file
+//! page, file
 static scpi_result_t _scpi_program( scpi_t * context )
 {
     // read
     DEF_LOCAL_VAR();
+
+    int ax, page;
+
+    if ( SCPI_ParamInt32(context, &ax, true) != true )
+    { return SCPI_RES_ERR; }
+
+    if ( SCPI_ParamInt32(context, &page, true) != true )
+    { return SCPI_RES_ERR; }
 
     if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
     { return SCPI_RES_ERR; }logDbg()<<strLen<<pLocalStr;
     if (strLen < 1)
     { return SCPI_RES_ERR; }
 
-    //! t,x,y,z,h
+    //! x1,y1,z1,x2,y2,z2,t
     QList<float> dataset;
-    int col = 5;
-    if ( 0 != comAssist::loadDataset( pLocalStr, strLen, 5, dataset ) )
+    int col = 7;
+    if ( 0 != comAssist::loadDataset( pLocalStr, strLen, col, dataset ) )
     { return SCPI_RES_ERR; }
 
     //! point
     if ( dataset.size() / col < 2 )
     { return SCPI_RES_ERR; }
 
-    TraceKeyPointList curve;
-    TraceKeyPoint tp;
+    MegatronKeyPointList curve;
+    MegatronKeyPoint tp;
     for ( int i = 0; i < dataset.size()/col; i++ )
     {
-        for ( int j = 0; j < col; j++ )
+        //! xyz,xyz
+        for ( int j = 1; j < col; j++ )
         {
-            tp.datas[j] = dataset.at( i * col + j);
+            tp.datas[j] = dataset.at( i * col + j-1);
         }
+        //! t
+        tp.datas[0] = dataset.at( i * col + col - 1 );
 
         curve.append( tp );
     }
 
     //! robo op
     DEF_ROBO();
-    pRobo->move( curve );
+    pRobo->program( curve, tpvRegion(ax,page) );
+
+    return SCPI_RES_OK;
+}
+
+//! page
+static scpi_result_t _scpi_call( scpi_t * context )
+{
+    // read
+    DEF_LOCAL_VAR();
+
+    int ax, page;
+
+    if ( SCPI_ParamInt32(context, &ax, true) != true )
+    { return SCPI_RES_ERR; }
+
+    if ( SCPI_ParamInt32(context, &page, true) != true )
+    { return SCPI_RES_ERR; }
+
+    //! robo op
+    DEF_ROBO();
+    pRobo->call( tpvRegion( ax, page) );
 
     return SCPI_RES_OK;
 }
@@ -114,51 +152,13 @@ static scpi_result_t _scpi_fsmState( scpi_t * context )
     DEF_LOCAL_VAR();
     DEF_ROBO();
 
-    int ret = pRobo->state();
+    int page;
+    if ( SCPI_ParamInt32(context, &page, true) != true )
+    { return SCPI_RES_ERR; }
+
+    int ret = pRobo->state( tpvRegion(0,page) );
 
     SCPI_ResultInt32( context, ret );
-
-    return SCPI_RES_OK;
-}
-
-static scpi_result_t _scpi_pose( scpi_t * context )
-{
-    DEF_LOCAL_VAR();
-    DEF_ROBO();
-
-    TraceKeyPoint pose;
-
-    int ret = pRobo->nowPose( pose );
-    if ( ret != 0 )
-    { return SCPI_RES_ERR; }
-
-    //! x,y,z,h
-    SCPI_ResultInt32( context, pose.x );
-    SCPI_ResultInt32( context, pose.y );
-    SCPI_ResultInt32( context, pose.z );
-    SCPI_ResultInt32( context, pose.hand );
-
-    return SCPI_RES_OK;
-}
-
-//! a,b,c,d
-static scpi_result_t _scpi_dist( scpi_t * context )
-{
-    DEF_LOCAL_VAR();
-    DEF_ROBO();
-
-    //! 4 dists
-    QList<float> dists;
-
-    int ret = pRobo->nowDist( dists );
-    if ( ret != 0 )
-    { return SCPI_RES_ERR; }
-
-    //! return the dist
-    for ( int i = 0; i <dists.size(); i++ )
-    {
-        SCPI_ResultFloat( context, dists.at(i) );
-    }
 
     return SCPI_RES_OK;
 }
@@ -191,10 +191,9 @@ static scpi_command_t _scpi_cmds[]=
     CMD_ITEM( "MOVE", _scpi_move ),
 
     CMD_ITEM( "STATE?", _scpi_fsmState ),
-    CMD_ITEM( "POSE?", _scpi_pose ),
-    CMD_ITEM( "DISTANCE?", _scpi_dist ),
 
     CMD_ITEM( "PROGRAM", _scpi_program ),
+    CMD_ITEM( "CALL", _scpi_call ),
 
     CMD_ITEM( "TEST1", _scpi_test1 ),
     CMD_ITEM( "TEST2", _scpi_test2 ),

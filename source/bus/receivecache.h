@@ -3,7 +3,7 @@
 
 #include <QtCore>
 
-#include "../../bus/ibus.h"
+#include "../bus/ibus.h"
 
 enum eventId
 {

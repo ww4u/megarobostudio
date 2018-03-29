@@ -14,6 +14,11 @@ modelView::modelView( QWidget *parent ) : appWidget( parent )
     m_pmcModel = NULL;
     mbModified = false;
 
+    mAttributes = 0;
+    set_bit( mAttributes, OK_ABLE_BIT );
+    set_bit( mAttributes, CANCEL_ABLE_BIT );
+    set_bit( mAttributes, APPLY_ABLE_BIT );
+
     setAttribute( Qt::WA_DeleteOnClose );
 
     Q_ASSERT( NULL != modelView::m_pDpcObj );
@@ -48,6 +53,13 @@ void modelView::buildConnection()
              this,
              SLOT(slot_prog_do(appWidget::servContext,int,int,int)));
 }
+
+bool modelView::isCanceAble()
+{ return is_bit1(mAttributes,CANCEL_ABLE_BIT); }
+bool modelView::isOkAble()
+{ return is_bit1(mAttributes,OK_ABLE_BIT); }
+bool modelView::isApplyAble()
+{ return is_bit1(mAttributes,APPLY_ABLE_BIT); }
 
 void modelView::setModelObj( mcModelObj *pObj )
 {

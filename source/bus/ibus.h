@@ -7,7 +7,7 @@
 
 #include "deviceid.h"
 
-#include "../../model/modelsyspref.h"
+#include "../model/modelsyspref.h"
 
 class receiveCache;
 
@@ -172,6 +172,11 @@ public :
                     byte subCode,
                     byte v0,
                     UInt32 v1);
+
+        int write( DeviceId &id, byte mainCode,
+                    byte subCode,
+                    byte v0,
+                    Int32 v1);
 
         int write( DeviceId &id, byte mainCode,
                     byte subCode,

@@ -167,7 +167,7 @@ int scpiShell::write( const char *p, int len )
     mOutReadPos = 0;
     mOutWritePos = 0;
 
-    qDebug()<<len<<__FUNCTION__<<__LINE__;
+//    qDebug()<<len<<__FUNCTION__<<__LINE__;
     Q_ASSERT( NULL != p_scpi_context );
 
     //! data in

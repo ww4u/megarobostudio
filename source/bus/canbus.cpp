@@ -63,7 +63,7 @@ int CANBus::open( int devType, int devId, int canId )
     mHandle = mApi.open( mDevType, mDevId, mCanId );
     if ( mHandle != 1 )
     {
-        sysError( QObject::tr("can open fail") );
+        sysError( QObject::tr("CAN open fail") );
         return -2;
     }
 
@@ -219,7 +219,7 @@ int CANBus::doWrite(DeviceId &nodeId, byte *pBuf, int len)
     {
         canObj.Data[i] = pBuf[i];
     }
-//logDbg()<<canObj.ID<<pBuf[0]<<pBuf[1]<<mWtInterval;
+logDbg()<<canObj.ID<<canObj.Data[0]<<canObj.Data[1]<<canObj.Data[2]<<canObj.Data[3]<<canObj.Data[4];
     int ret;
     IBus::lock();
     ret = mApi.transmit( can_device_desc, &canObj, 1);

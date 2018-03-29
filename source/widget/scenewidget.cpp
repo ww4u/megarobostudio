@@ -18,7 +18,9 @@ sceneWidget::sceneWidget( QWidget *parent ) : QLabel( parent )
 
     setScaledContents( true );
 
+    //! max width
     setMaximumSize( 200,200 );
+    mpLabel->setMaximumWidth( 200 );
 }
 
 sceneWidget::~sceneWidget()

@@ -18,6 +18,10 @@ AngleMonitor::AngleMonitor(QWidget *parent) :
     mMin = 0;
     mMax = 360;
 
+    ui->comboBox->setEnabled( false );
+    ui->comboBox->setVisible( false );
+    ui->labelSubItem->setVisible( false );
+
     slot_anglewidget_changed();
 }
 
@@ -48,12 +52,28 @@ void AngleMonitor::setConnections( const QStringList &conn )
 void AngleMonitor::setDataId( int id )
 {
     mDataId = id;
+    if ( ui->comboBox->isEnabled() )
+    { ui->comboBox->setValue( id ); }
 }
 
 void AngleMonitor::setRange( int mi, int ma )
 {
     mMin = mi;
     mMax = ma;
+}
+
+void AngleMonitor::setDataIds( QMap<int, QString> &subItem )
+{
+    QMap<int, QString>::const_iterator i = subItem.constBegin();
+    while (i != subItem.constEnd())
+    {
+        ui->comboBox->addItem( i.value(), i.key() );
+        i++;
+    }
+
+    ui->comboBox->setEnabled( true );
+    ui->comboBox->setVisible( true );
+    ui->labelSubItem->setVisible( true );
 }
 
 void  AngleMonitor::addAnAngle()
@@ -88,7 +108,7 @@ void AngleMonitor::sampleProc()
         if ( pAngleWig->connection().length() > 0 )
         {}
         else
-        { continue; }
+        { logDbg();continue; }
 
         //! sample
 
@@ -194,4 +214,10 @@ void AngleMonitor::slot_anglewidget_changed()
 
 //    adjustSize();
 //    ui->verticalLayout->update();
+}
+
+void AngleMonitor::on_comboBox_activated(int index )
+{
+//    logDbg();
+    mDataId = ui->comboBox->value();
 }

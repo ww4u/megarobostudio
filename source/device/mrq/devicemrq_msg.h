@@ -9,20 +9,21 @@ enum mrqMsg
 {
     mrq_msg_unk = e_robo_operation,
 
-    mrq_msg_run,        //! int axes
-    mrq_msg_stop,       //! int axes
-    mrq_msg_force_stop, //! int axes
-    mrq_msg_rst,        //! int axes
-    mrq_msg_prepare,    //! int axes
+    mrq_msg_run,        //! region
+    mrq_msg_stop,       //! region
+    mrq_msg_force_stop, //! region
+    mrq_msg_rst,        //! region
+//    mrq_msg_prepare,    //! region
+    mrq_msg_call,       //! region ( load + run )
 
-    mrq_msg_program,    //! int axes
+    mrq_msg_program,    //! region
 
-    mrq_msg_idle,       //! int axes
-    mrq_msg_calcing,    //! int axes
-    mrq_msg_calcend,    //! int axes
-    mrq_msg_standby,    //! int axes
-    mrq_msg_running,    //! int axes
-    mrq_msg_error,      //! int axes
+    mrq_msg_idle,       //! region
+    mrq_msg_calcing,    //! region
+    mrq_msg_calcend,    //! region
+    mrq_msg_standby,    //! region
+    mrq_msg_running,    //! region
+    mrq_msg_error,      //! region
 
     mrq_msg_change_state,   //! int axes, int stat
 };

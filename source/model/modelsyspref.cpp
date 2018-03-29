@@ -31,6 +31,7 @@ void modelSysPref::rst()
 
     mAutoExpand = true;
     mbSearchOnOpen = true;
+    mbMaximizeStartup = true;
     mDumpPath = QCoreApplication::applicationDirPath() + "/temp";
 
     //! database
@@ -47,6 +48,9 @@ void modelSysPref::rst()
 
     //! motion
     mSpaceResolution = 5;
+
+    mLangIndex = 0;
+    mStyleIndex = 0;
 }
 
 //! save to xml
@@ -112,6 +116,10 @@ int modelSysPref::save( const QString &str )
     writer.writeTextElement( "search_onopen", QString::number( mbSearchOnOpen) );
     writer.writeTextElement( "sample_tick", QString::number( mSampleTick) );
     writer.writeTextElement( "auto_load", QString::number( mbAutoLoadSetup) );
+    writer.writeTextElement( "max_startup", QString::number( mbMaximizeStartup) );
+
+    writer.writeTextElement( "language_id", QString::number(mLangIndex) );
+    writer.writeTextElement( "style_id", QString::number(mStyleIndex) );
 
     writer.writeEndElement();
 
@@ -133,6 +141,7 @@ int modelSysPref::save( const QString &str )
 
     writer.writeTextElement( "enable", QString::number( mMisaEn ) );
     writer.writeTextElement( "socket", QString::number( mMisaSocket ) );
+    writer.writeTextElement( "path", mRemoteDirPath );
 
     writer.writeEndElement();
 
@@ -235,8 +244,14 @@ int modelSysPref::load( const QString &str )
                         { mSampleTick = reader.readElementText().toInt(); }
                         else if ( reader.name() == "auto_load" )
                         { mbAutoLoadSetup = reader.readElementText().toInt() > 0 ; }
+                        else if ( reader.name() == "max_startup" )
+                        { mbMaximizeStartup = reader.readElementText().toInt() > 0 ; }
+                        else if ( reader.name() == "language_id" )
+                        { mLangIndex = reader.readElementText().toInt() > 0 ; }
+                        else if ( reader.name() == "style_id" )
+                        { mStyleIndex = reader.readElementText().toInt() > 0 ; }
                         else
-                        {}
+                        {}                        
                     }
                 }
 
@@ -253,6 +268,8 @@ int modelSysPref::load( const QString &str )
                         { mMisaEn = reader.readElementText().toInt() > 0; }
                         else if ( reader.name() == "socket" )
                         { mMisaSocket = reader.readElementText().toInt(); }
+                        else if ( reader.name() == "path" )
+                        { mRemoteDirPath = reader.readElementText(); }
                         else
                         {}
                     }

@@ -35,12 +35,12 @@ void VRobot::event_motionStatus( frameData &data )
     if ( data.size() < 5 )
     { return; }
 
-    //! deload data
-    char ch = data.at( 2 );
+    //! deload data mc,sc,ch,page,state
+    char ch   = data.at(2);
     char page = data.at(3);
     char stat = data.at(4);
 
-    setStatus( stat, ch, page );
+    setStatus( stat, tpvRegion(ch, page) );
 }
 
 void VRobot::event_motionStatus( frameData &data, VRobot *pRobot )

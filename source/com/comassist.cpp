@@ -1,5 +1,12 @@
 #include "comassist.h"
 
+QStringList comAssist::_mRemotePath;
+
+void comAssist::setRemotePath( const QStringList &path )
+{ _mRemotePath = path; }
+QStringList &comAssist::remotePath()
+{ return _mRemotePath; }
+
 QString comAssist::pureFileName( const QString &fileName,
                                  bool bContainPost )
 {
@@ -81,6 +88,31 @@ bool comAssist::convertDataset( const QStringList &line,
     return true;
 }
 
+bool    comAssist::ammendFileName( QString &fileName )
+{
+    //! file file in each dir
+    do
+    {
+        if (  QFile::exists( fileName ) )
+        { return true; }
+
+        //! for each path
+        QString fullName;
+        foreach( QString str, comAssist::_mRemotePath )
+        {
+            fullName = str + QDir::separator() + fileName;
+            if ( QFile::exists(fullName) )
+            {
+                fileName = fullName;
+                return true;
+            }
+        }
+
+    }while(0);
+
+    return false;
+}
+
 int comAssist::loadDataset( const char *pFileName,
                             int nameLen,
                             int col,
@@ -100,10 +132,19 @@ int comAssist::loadDataset( const QString &fileName,
                             const char &colSep,
                             const char &lineSep )
 {
-    QFile file(fileName);
-    if ( !file.open(QIODevice::ReadOnly) )
+    bool bExist;
+
+    QString realFileName = fileName;
+    bExist = ammendFileName( realFileName );
+    if ( bExist )
+    {}
+    else
     { return ERR_FILE_OPEN_FAIL; }
 
+    QFile file(realFileName);
+    if ( !file.open(QIODevice::ReadOnly) )
+    { return ERR_FILE_OPEN_FAIL; }
+logDbg()<<realFileName;
     //! read all
     QByteArray ary = file.readAll();
     QList<QByteArray> lines = ary.split( lineSep );

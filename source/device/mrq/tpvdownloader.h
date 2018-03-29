@@ -19,6 +19,7 @@ class tpvDownloader : public QThread
 
 public:
     tpvDownloader( QObject *pObj=0 );
+    virtual ~tpvDownloader();
 
 Q_SIGNALS:
     void sig_progress( int cur, int from, int to );
@@ -37,7 +38,8 @@ protected:
 
 public:
     void attachDevice( MegaDevice::deviceMRQ *pDev,
-                       int axesId );
+                       const tpvRegion &region );
+    void setRegion( const tpvRegion &region );
 
     void append( QList<tpvRow*> &rows, int from=0, int len=-1 );
 
@@ -48,7 +50,7 @@ protected:
     int mTryInterval;   //! us
 
     MegaDevice::deviceMRQ *m_pMRQ;
-    int mAxesId, mPageId;
+    tpvRegion mRegion;
 
     QQueue< tpvRow *> mTpvs;
     QMutex mQueueMutex;

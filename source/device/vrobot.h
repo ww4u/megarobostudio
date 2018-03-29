@@ -52,6 +52,7 @@ public:
         robot_delta,
         robot_megatron,
         robot_sinanju,
+        robot_h2,
 
         robot_user = 65536,
     };

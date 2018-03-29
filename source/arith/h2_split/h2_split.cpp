@@ -1,11 +1,10 @@
-#include "megatron_split.h"
+#include "h2_split.h"
 
-#define SPACE_RESOLUTION    5
 
-namespace megatron_split {
+namespace h2_split {
 
 //! no memory check
-int _megatronSplit(
+int _h2Split(
                     QList< endPoint *> & points,
                     QList< tpvList*> &splitDataset )
 {
@@ -14,9 +13,9 @@ int _megatronSplit(
 
 //    int ret = 0;
 
-    //! create 6 list
+    //! create 3 list
     tpvList *pList;
-    for ( int i = 0; i < 6; i++ )
+    for ( int i = 0; i < 3; i++ )
     {
         pList = new tpvList();
         if ( NULL == pList )
@@ -31,7 +30,7 @@ int _megatronSplit(
         Q_ASSERT( NULL != pPoint );
 
         //! foreach row
-        for ( int i = 1; i <= 6; i++ )
+        for ( int i = 1; i <= 3; i++ )
         {
             pRow = new tpvRow( );
             if ( NULL == pRow )
@@ -48,8 +47,8 @@ int _megatronSplit(
     return 0;
 }
 
-//! split into 6 axes
-int megatronSplit(
+//! split into 3 axes
+int h2Split(
                     QList< endPoint *> &points,
                     QList< tpvList*> &splitDataset )
 {
@@ -57,18 +56,18 @@ int megatronSplit(
     { return -1; }
 
     //! split
-    int ret = _megatronSplit( points, splitDataset );
+    int ret = _h2Split( points, splitDataset );
     //! fail to gc
     if ( ret != 0 )
     {
-        megatronGc( splitDataset );
+        h2Gc( splitDataset );
         return ret;
     }
 
     return 0;
 }
 
-int megatronSplit(
+int h2Split(
                     endPoint * pPoints,
                     int n,
                     QList< tpvList*> &splitDataset )
@@ -80,10 +79,10 @@ int megatronSplit(
         points.append( pPoints + i );
     }
 
-    return megatronSplit( points, splitDataset );
+    return h2Split( points, splitDataset );
 }
 
-int megatronGc( QList< tpvList*> &splitDataset )
+int h2Gc( QList< tpvList*> &splitDataset )
 {
     //! delete the list
     foreach( tpvList *pList, splitDataset )

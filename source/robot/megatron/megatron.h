@@ -55,7 +55,7 @@ public:
 public:    
 
 public:
-    int call( const tpvRegion &region=0 );  //! load + run
+    virtual int call( const tpvRegion &region=0 );  //! load + run
     int program( QList<MegatronKeyPoint> &curve,
                  const tpvRegion &region );
 

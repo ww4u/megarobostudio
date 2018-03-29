@@ -56,7 +56,7 @@ public:
 protected:
     void beginEnumerate();
 
-    int collectHash();
+    int collectHash( );
     int assignIds( const modelSysPref &pref );
 
     void endEnumerate();

@@ -55,11 +55,12 @@ QString deviceMRQ::loadDesc()
     MRQ_LINK_DEVICEINFO_1 type2;
     ret = getSYSTEM_TYPE( &type, &type2 );
     if ( ret != 0 )
-    { return mDesc; }
+    { logDbg();return mDesc; }
 
     //! format the type
     mDesc = QString("%1-%2").arg( MRQ_model::toString( type ),
                                   MRQ_model::toString( type2 ) );
+    logDbg()<<mDesc;
 
     return mDesc;
 }

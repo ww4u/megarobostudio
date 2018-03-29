@@ -21,74 +21,32 @@ public:
 public:
     DECLARE_SCPI()
 
-public:
-    virtual void onMsg( int subAxes, RoboMsg &msg );
 
 public:
     virtual int serialIn( QXmlStreamReader &reader );
     virtual int serialOut( QXmlStreamWriter &writer );
 
-//    virtual int download( tpvGroup *pGroup, int axes = 0 );
-//    virtual int download( motionGroup *pGroup, int axes = 0 );
-
-    virtual int download( QList<tpvGroup*> &groups,
-                          QList<int> &joints,       //! joint tab id
-                          const tpvRegion &region );
 
     virtual int download( VRobot *pSetup );
 
-    virtual int run( const tpvRegion &region=0  );  //! just run
-    virtual int stop( const tpvRegion &region=0 );  //! stop
-
-//    virtual int run( int axes );
-//    virtual int stop( int axes );
-
-//    virtual int run( );
-//    virtual int stop( );
-
-    virtual int setLoop( int n, const tpvRegion &region=0 );
-    virtual int loopNow();
-
-    virtual void onLine();
-    virtual void offLine();
-
-    virtual void toState(int stat);
+public:
 
 public:
-    virtual QAbstractTableModel *handActions();
-
-public:
-    int call( const tpvRegion &region=0 );  //! load + run
-    int program( QList<TraceKeyPoint> &curve,
+    int program( QList<H2KeyPoint> &curve,
                  const tpvRegion &region );
-    int move( QList<TraceKeyPoint> &curve,
+    int move( QList<H2KeyPoint> &curve,
               const tpvRegion &region );
 
     int moveTest1( const tpvRegion &region=0 );
     int moveTest2( const tpvRegion &region=0 );
 
-    int nowPose( TraceKeyPoint &pos );
-    int nowDist( QList<float> &dists );
 
 protected:
-    int buildTrace( QList<TraceKeyPoint> &curve,
-                    xxxGroup<jointsTrace> &jointsPlan );
-
-    int planTrace( QList<TraceKeyPoint> &curve,
-                   xxxGroup<tracePoint> &tracePoints );
-
-    int splitTrace( xxxGroup<tracePoint> &tracePoints,
-                    xxxGroup<jointsTrace> &traceJoints );
-
-    int convertTrace(   QList<TraceKeyPoint> &curve,
-                        xxxGroup<jointsTrace> &jointsPlan );
-
+    int buildTrace( QList<H2KeyPoint> &curve );
     int downloadTrace( const tpvRegion &region );
-    int buildTpvGroup( xxxGroup<jointsTrace> &jointsPlan,
-                       QList< tpvGroup *> &gp );
+
 
 protected:
-    handActionModel mHandActionModel;
     QList< tpvGroup *> mJointsGroup;
 };
 

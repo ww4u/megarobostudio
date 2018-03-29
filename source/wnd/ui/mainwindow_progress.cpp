@@ -25,7 +25,7 @@ bool MainWindow::progressProc(  const QString &name,
 {
     if ( msg.getMsg() == e_download_started )
     {
-        progress()->progressInfo( name, axes, QString("%1:CH%2 %3").arg(name).arg(axes).arg( tr("started") ) );
+        progress()->progressInfo( name, axes, QString("%1:CH%2 %3").arg(name).arg(axes+1).arg( tr("started") ) );
         progress()->progressProg( name, axes, 0 );
         progress()->progressShow( name, axes, true );
 
@@ -40,7 +40,7 @@ bool MainWindow::progressProc(  const QString &name,
 
 //        logDbg()<<name<<axes;
 
-        progress()->progressInfo( name, axes, QString("%1:CH%2 %3").arg(name).arg(axes).arg( tr("downloading") ) );
+        progress()->progressInfo( name, axes, QString("%1:CH%2 %3").arg(name).arg(axes+1).arg( tr("downloading") ) );
         progress()->progressRange( name, axes, 0, total );
         progress()->progressProg( name, axes, now );
     }

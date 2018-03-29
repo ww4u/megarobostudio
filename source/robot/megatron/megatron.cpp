@@ -31,7 +31,7 @@ robotMegatron::robotMegatron()
               <<QObject::tr("BX")
               <<QObject::tr("BZ")
               <<QObject::tr("LY")
-              <<QObject::tr("LZ");
+              <<QObject::tr("RY");
 
     mImage = QImage::fromData( _megaimage, sizeof(_megaimage) );
 
@@ -40,10 +40,10 @@ robotMegatron::robotMegatron()
     Q_ASSERT( mAxesConnectionName.size() == 6 );
     mAxesConnectionName[0] = "CH1@device1"; //! fx
     mAxesConnectionName[1] = "CH2@device1"; //! fz
-    mAxesConnectionName[2] = "CH3@device1"; //! bx
-    mAxesConnectionName[3] = "CH4@device1"; //! bz
-    mAxesConnectionName[4] = "CH1@device2"; //! ly
-    mAxesConnectionName[5] = "CH2@device2"; //! lz
+    mAxesConnectionName[2] = "CH1@device2"; //! bx
+    mAxesConnectionName[3] = "CH4@device2"; //! bz
+    mAxesConnectionName[4] = "CH3@device1"; //! ly
+    mAxesConnectionName[5] = "CH4@device1"; //! ry
 }
 
 robotMegatron::~robotMegatron()

@@ -11,7 +11,11 @@ SOURCES = \
     rawrobo.cpp \
     rawrobo_fsm.cpp \
     rawrobo_state.cpp \
-    rawrobo_cond.cpp
+    rawrobo_cond.cpp \
+    rawrobo_msg.cpp \
+    rawrobo_op.cpp \
+    rawrobo_line.cpp \
+    rawrobo_intf.cpp
 
 HEADERS = \
     rawrobo.h

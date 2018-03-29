@@ -38,223 +38,174 @@ static scpi_result_t _scpi_run( scpi_t * context )
     return SCPI_RES_OK;
 }
 
-////! move ch,page, x1,y1,z1,h1, x2,y2,z2,h2, t
-//static scpi_result_t _scpi_move( scpi_t * context )
-//{
-//    DEF_LOCAL_VAR();
+//! move ch, page
+//! x1,y1,z1, x2,y2,z2,
+//! t
+static scpi_result_t _scpi_move( scpi_t * context )
+{
+    DEF_LOCAL_VAR();
 
-//    int ax, page;
+    int ax, page;
+    float vals[6+1];
 
-//    float vals[9];
+    if ( SCPI_ParamInt32(context, &ax, true) != true )
+    { return SCPI_RES_ERR; }
+    if ( SCPI_ParamInt32(context, &page, true) != true )
+    { return SCPI_RES_ERR; }
 
-//    if ( SCPI_ParamInt32(context, &ax, true) != true )
-//    { return SCPI_RES_ERR; }
-//    if ( SCPI_ParamInt32(context, &page, true) != true )
-//    { return SCPI_RES_ERR; }
+    for ( int i = 0; i < sizeof_array(vals); i++ )
+    {
+        if ( SCPI_RES_OK != SCPI_ParamFloat( context, vals+i, true ) )
+        { return SCPI_RES_ERR; }
+    }
 
-//    for ( int i = 0; i < sizeof_array(vals); i++ )
-//    {
-//        if ( SCPI_RES_OK != SCPI_ParamFloat( context, vals+i, true ) )
-//        { return SCPI_RES_ERR; }
-//    }
+    for ( int i = 0; i < sizeof_array(vals); i++ )
+    { logDbg()<<vals[i]; }
 
-//    for ( int i = 0; i < sizeof_array(vals); i++ )
-//    { logDbg()<<vals[i]; }
+    //! robo op
+    DEF_ROBO();
 
-//    //! robo op
-//    DEF_ROBO();
+    H2KeyPoint pt1( 0,
+                          vals[0], vals[1], vals[2]
+                            );
+    H2KeyPoint pt2( vals[6],
+                          vals[3], vals[4], vals[5]
+                        );
 
-//    TraceKeyPoint pt1( 0, vals[0], vals[1], vals[2], vals[3] );
-//    TraceKeyPoint pt2( vals[8], vals[4], vals[5], vals[6], vals[7] );
+    H2KeyPointList curve;
+    curve.append( pt1 );
+    curve.append( pt2 );
 
-//    TraceKeyPointList curve;
-//    curve.append( pt1 );
-//    curve.append( pt2 );
+    pRobo->move( curve, tpvRegion(ax,page) );
 
-//    pRobo->move( curve, tpvRegion(ax,page) );
+    return SCPI_RES_OK;
+}
 
-//    return SCPI_RES_OK;
-//}
+//! page, file
+static scpi_result_t _scpi_program( scpi_t * context )
+{
+    // read
+    DEF_LOCAL_VAR();
 
-////! ax, page, file
-//static scpi_result_t _scpi_program( scpi_t * context )
-//{
-//    // read
-//    DEF_LOCAL_VAR();
+    int ax, page;
 
-//    int ax, page;
+    if ( SCPI_ParamInt32(context, &ax, true) != true )
+    { return SCPI_RES_ERR; }
 
-//    if ( SCPI_ParamInt32(context, &ax, true) != true )
-//    { return SCPI_RES_ERR; }
+    if ( SCPI_ParamInt32(context, &page, true) != true )
+    { return SCPI_RES_ERR; }
 
-//    if ( SCPI_ParamInt32(context, &page, true) != true )
-//    { return SCPI_RES_ERR; }
+    if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
+    { return SCPI_RES_ERR; }logDbg()<<strLen<<pLocalStr;
+    if (strLen < 1)
+    { return SCPI_RES_ERR; }
 
-//    if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
-//    { return SCPI_RES_ERR; }logDbg()<<strLen<<pLocalStr;
-//    if (strLen < 1)
-//    { return SCPI_RES_ERR; }
+    //! t, x1,y1,z1
+    QList<float> dataset;
+    int col = 4;
+    if ( 0 != comAssist::loadDataset( pLocalStr, strLen, col, dataset ) )
+    { logDbg(); return SCPI_RES_ERR; }
 
-//    //! t,x,y,z,h
-//    QList<float> dataset;
-//    int col = 5;
-//    if ( 0 != comAssist::loadDataset( pLocalStr, strLen, 5, dataset ) )
-//    { return SCPI_RES_ERR; }
+    //! point
+    if ( dataset.size() / col < 2 )
+    { logDbg(); return SCPI_RES_ERR; }
 
-//    //! point
-//    if ( dataset.size() / col < 2 )
-//    { return SCPI_RES_ERR; }
+    H2KeyPointList curve;
+    H2KeyPoint tp;
+    for ( int i = 0; i < dataset.size()/col; i++ )
+    {
+        //! t
+        tp.datas[0] = dataset.at( i * col );
 
-//    TraceKeyPointList curve;
-//    TraceKeyPoint tp;
-//    for ( int i = 0; i < dataset.size()/col; i++ )
-//    {
-//        for ( int j = 0; j < col; j++ )
-//        {
-//            tp.datas[j] = dataset.at( i * col + j);
-//        }
+        //! xyz
+        for ( int j = 1; j < col; j++ )
+        {
+            tp.datas[j] = dataset.at( i * col + j );
+        }
 
-//        curve.append( tp );
-//    }
+        curve.append( tp );
+    }
 
-//    DEF_ROBO();
-//    pRobo->program( curve, tpvRegion( ax, page) );
+    //! robo op
+    DEF_ROBO();
+    int ret = pRobo->program( curve, tpvRegion(ax,page) );
+    logDbg()<<ret;
 
-//    return SCPI_RES_OK;
-//}
+    return SCPI_RES_OK;
+}
 
-////! ax, page
-//static scpi_result_t _scpi_call( scpi_t * context )
-//{
-//    // read
-//    DEF_LOCAL_VAR();
+//! page
+static scpi_result_t _scpi_call( scpi_t * context )
+{
+    // read
+    DEF_LOCAL_VAR();
 
-//    int ax, page;
+    int ax, page;
 
-//    if ( SCPI_ParamInt32(context, &ax, true) != true )
-//    { return SCPI_RES_ERR; }
+    if ( SCPI_ParamInt32(context, &ax, true) != true )
+    { return SCPI_RES_ERR; }
 
-//    if ( SCPI_ParamInt32(context, &page, true) != true )
-//    { return SCPI_RES_ERR; }
+    if ( SCPI_ParamInt32(context, &page, true) != true )
+    { return SCPI_RES_ERR; }
 
-//    //! robo op
-//    DEF_ROBO();
-//    pRobo->call( tpvRegion( ax, page) );
+    //! robo op
+    DEF_ROBO();
+    pRobo->call( tpvRegion( ax, page) );
 
-//    return SCPI_RES_OK;
-//}
+    return SCPI_RES_OK;
+}
 
-////! ax,page
-//static scpi_result_t _scpi_fsmState( scpi_t * context )
-//{
-//    DEF_LOCAL_VAR();
-//    DEF_ROBO();
+//! int
+static scpi_result_t _scpi_fsmState( scpi_t * context )
+{
+    DEF_LOCAL_VAR();
+    DEF_ROBO();
 
-//    int ax, page;
+    int page;
+    if ( SCPI_ParamInt32(context, &page, true) != true )
+    { return SCPI_RES_ERR; }
 
-//    if ( SCPI_ParamInt32(context, &ax, true) != true )
-//    { return SCPI_RES_ERR; }
+    int ret = pRobo->state( tpvRegion(0,page) );
 
-//    if ( SCPI_ParamInt32(context, &page, true) != true )
-//    { return SCPI_RES_ERR; }
+    SCPI_ResultInt32( context, ret );
 
-//    int ret = pRobo->state( tpvRegion(ax,page) );
+    return SCPI_RES_OK;
+}
 
-//    SCPI_ResultInt32( context, ret );
+static scpi_result_t _scpi_test1( scpi_t * context )
+{
+    DEF_LOCAL_VAR();
+    DEF_ROBO();
 
-//    return SCPI_RES_OK;
-//}
+    pRobo->moveTest1();
 
-//static scpi_result_t _scpi_pose( scpi_t * context )
-//{
-//    DEF_LOCAL_VAR();
-//    DEF_ROBO();
+    return SCPI_RES_OK;
+}
 
-//    TraceKeyPoint pose;
+static scpi_result_t _scpi_test2( scpi_t * context )
+{
+    DEF_LOCAL_VAR();
+    DEF_ROBO();
 
-//    int ret = pRobo->nowPose( pose );
-//    if ( ret != 0 )
-//    { return SCPI_RES_ERR; }
+    pRobo->moveTest2();
 
-//    //! x,y,z,h
-//    SCPI_ResultInt32( context, pose.x );
-//    SCPI_ResultInt32( context, pose.y );
-//    SCPI_ResultInt32( context, pose.z );
-//    SCPI_ResultInt32( context, pose.hand );
-
-//    return SCPI_RES_OK;
-//}
-
-////! a,b,c,d
-//static scpi_result_t _scpi_dist( scpi_t * context )
-//{
-//    DEF_LOCAL_VAR();
-//    DEF_ROBO();
-
-//    //! 4 dists
-//    QList<float> dists;
-
-//    int ret = pRobo->nowDist( dists );
-//    if ( ret != 0 )
-//    { return SCPI_RES_ERR; }
-
-//    //! return the dist
-//    for ( int i = 0; i <dists.size(); i++ )
-//    {
-//        SCPI_ResultFloat( context, dists.at(i) );
-//    }
-
-//    return SCPI_RES_OK;
-//}
-
-////! int page
-//static scpi_result_t _scpi_test1( scpi_t * context )
-//{
-//    DEF_LOCAL_VAR();
-//    DEF_ROBO();
-
-//    int page;
-
-//    if ( SCPI_ParamInt32(context, &page, true) != true )
-//    { return SCPI_RES_ERR; }
-
-//    pRobo->moveTest1( tpvRegion(0,page) );
-
-//    return SCPI_RES_OK;
-//}
-
-////! int page
-//static scpi_result_t _scpi_test2( scpi_t * context )
-//{
-//    DEF_LOCAL_VAR();
-//    DEF_ROBO();
-
-//    int page;
-
-//    if ( SCPI_ParamInt32(context, &page, true) != true )
-//    { return SCPI_RES_ERR; }
-
-//    pRobo->moveTest2( tpvRegion(0,page) );
-
-//    return SCPI_RES_OK;
-//}
+    return SCPI_RES_OK;
+}
 
 static scpi_command_t _scpi_cmds[]=
 {
 
     CMD_ITEM( "*IDN?", _scpi_idn ),
     CMD_ITEM( "RUN",  _scpi_run ),
-//    CMD_ITEM( "MOVE", _scpi_move ),
+    CMD_ITEM( "MOVE", _scpi_move ),
 
-//    CMD_ITEM( "STATE?", _scpi_fsmState ),
-//    CMD_ITEM( "POSE?", _scpi_pose ),
-//    CMD_ITEM( "DISTANCE?", _scpi_dist ),
+    CMD_ITEM( "STATE?", _scpi_fsmState ),
 
-//    CMD_ITEM( "PROGRAM", _scpi_program ),
-//    CMD_ITEM( "CALL", _scpi_call ),
+    CMD_ITEM( "PROGRAM", _scpi_program ),
+    CMD_ITEM( "CALL", _scpi_call ),
 
-//    CMD_ITEM( "TEST1", _scpi_test1 ),
-//    CMD_ITEM( "TEST2", _scpi_test2 ),
+    CMD_ITEM( "TEST1", _scpi_test1 ),
+    CMD_ITEM( "TEST2", _scpi_test2 ),
 
     SCPI_CMD_LIST_END
 };

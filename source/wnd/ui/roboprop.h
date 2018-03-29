@@ -11,6 +11,7 @@
 #include "deltapref.h"
 
 #include "sinanjupref.h"
+#include "h2pref.h"
 
 #include "robohand.h"
 
@@ -60,6 +61,7 @@ private:
     MegatronPref *m_pMegatronPref;
     DeltaPref *m_pDeltaPref;
     SinanjuPref *m_pSinanjuPref;
+    H2Pref *m_pH2Pref;
 
     RoboHand *m_pHandPage;
 

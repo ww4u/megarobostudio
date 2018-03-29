@@ -31,6 +31,16 @@ MegatronKeyPoint::MegatronKeyPoint( float pt,
     z2 = pz2;
 }
 
+H2KeyPoint::H2KeyPoint( float pt,
+                  float px, float py, float pz )
+{
+    t = pt;
+
+    x = px;
+    y = py;
+    z = pz;
+}
+
 RawRobo::RawRobo()
 {
     mPlanStep = 5.0;  //! mm
@@ -76,52 +86,9 @@ void RawRobo::postCtor()
     }
 }
 
-void RawRobo::switchReset( const tpvRegion &region )
-{
-    Q_ASSERT( NULL != m_pBus );
-    MegaDevice::DeviceId id( mCanGroupId );
-    m_pBus->write( id, mc_MOTION, sc_MOTION_SWITCH,
-                   x_channel,
-                   (byte)MRQ_MOTION_SWITCH_RESET,
-                   (byte)region.page() );
-}
-void RawRobo::switchStop( const tpvRegion &region )
-{
-    Q_ASSERT( NULL != m_pBus );
-    MegaDevice::DeviceId id( mCanGroupId );
-    m_pBus->write( id, mc_MOTION, sc_MOTION_SWITCH,
-                   x_channel,
-                   (byte)MRQ_MOTION_SWITCH_STOP,
-                   (byte)region.page() );
-}
-void RawRobo::switchRun( const tpvRegion &region )
-{
-    Q_ASSERT( NULL != m_pBus );
-    MegaDevice::DeviceId id( mCanGroupId );
-    m_pBus->write( id, mc_MOTION, sc_MOTION_SWITCH,
-                   x_channel,
-                   (byte)MRQ_MOTION_SWITCH_RUN,
-                   (byte)region.page() );
-    logDbg();
-}
-void RawRobo::switchPrepare( const tpvRegion &region )
-{
-    Q_ASSERT( NULL != m_pBus );
-    MegaDevice::DeviceId id( mCanGroupId );
-    m_pBus->write( id, mc_MOTION, sc_MOTION_SWITCH,
-                   x_channel,
-                   (byte)MRQ_MOTION_SWITCH_PREPARE,
-                   (byte)region.page() );
-}
-void RawRobo::switchEmergStop( const tpvRegion &region )
-{
-    Q_ASSERT( NULL != m_pBus );
-    MegaDevice::DeviceId id( mCanGroupId );
-    m_pBus->write( id, mc_MOTION, sc_MOTION_SWITCH,
-                   x_channel,
-                   (byte)MRQ_MOTION_SWITCH_EMERGSTOP,
-                   (byte)region.page() );
-}
+
+
+
 
 void RawRobo::queryState( const tpvRegion &region )
 {

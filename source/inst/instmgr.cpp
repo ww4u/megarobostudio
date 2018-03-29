@@ -132,12 +132,14 @@ int InstMgr::probeCanBus()
     {
         m_pReceiveCache->start( QThread::TimeCriticalPriority );
     }
+    sysProgress( 5, tr("enumerate") );
 
     //! enumerate
     ret = mCanBus.enumerate( m_pMainModel->mSysPref );
     logDbg()<<ret;
     if ( ret != 0 )
     { logDbg(); return ret; }
+    sysProgress( 30, tr("enumerate") );
 
     //! create the device
     int seq = 1;
@@ -149,6 +151,12 @@ int InstMgr::probeCanBus()
     Q_ASSERT( NULL != pRoboList );
     pRoboList->attachBus( &mCanBus );
 //    logDbg()<<QString::number( (quint32)pRoboList, 16 );
+
+    int uiProgBase = 30;
+    float uiProgStep = 0;
+    if ( mCanBus.mDevices.size() > 0 )
+    { uiProgStep = 60/(mCanBus.mDevices.size()*2); }
+    int uiStep = 1;
 
     foreach( DeviceId * pId, mCanBus.mDevices )
     {
@@ -181,6 +189,7 @@ int InstMgr::probeCanBus()
             logDbg()<<seq<<pMRQ->getModel()->mCAN_SENDID;
             logDbg()<<seq<<pMRQ->getModel()->mCAN_RECEIVEID;
         }
+        sysProgress( uiProgBase + (uiStep++)*uiProgStep, tr("mrq") );
 
         //! gen robo
         {
@@ -235,6 +244,7 @@ int InstMgr::probeCanBus()
             //! open scpi
             pRobo->open();
         }
+        sysProgress( uiProgBase + (uiStep++)*uiProgStep, tr("robo") );
     }
 logDbg()<<QString::number( (quint32)pRoboList, 16 );
     mDeviceTree.append( pRoboList );

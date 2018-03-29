@@ -22,10 +22,8 @@ QString tpvItem::header( int col )
     else if ( col == 1 )
     { return QObject::tr("t(s)"); }
     else if ( col == 2 )
-    { return QObject::tr("t(s)"); }
-    else if ( col == 3 )
     { return QObject::tr("p(%1)").arg( QChar(0x00B0) ); }
-    else if ( col == 4 )
+    else if ( col == 3 )
     { return QObject::tr("v"); }
     else
     { return QObject::tr("Comment"); }

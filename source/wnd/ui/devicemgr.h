@@ -118,6 +118,8 @@ public:
 
     QProgressDialog *m_pProgress;
 
+    int mAxesCount;
+
 };
 
 #endif // DEVICEMGR_H

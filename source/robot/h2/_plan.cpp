@@ -1,143 +1,69 @@
 #include "h2.h"
-
-
-int robotH2::buildTrace( QList<TraceKeyPoint> &curve,
-                xxxGroup<jointsTrace> &jointsPlan )
+#include "../../arith/h2_split/h2_split.h"
+int robotH2::buildTrace( QList<H2KeyPoint> &curve
+                )
 {
-    int ret;
+    h2_split::endPoint *pPoints = new h2_split::endPoint[ curve.size() ];
+    if ( NULL == pPoints )
+    { logDbg()<<curve.size(); return -1; }
 
-    xxxGroup<tracePoint> tracePlan;
-    ret = planTrace( curve, tracePlan );
-    if ( ret != 0 )
-    { return ret; }
-
-    ret = splitTrace( tracePlan, jointsPlan );
-    if ( ret != 0 )
-    { return ret; }
-
-    return 0;
-}
-
-int robotH2::planTrace( QList<TraceKeyPoint> &curve,
-                              xxxGroup<tracePoint> &tracePlan )
-{
-    xxxGroup<endPoint> endPoints;
-
-    //! alloc
-    if ( 0 != endPoints.alloc( curve.size() ) )
-    { return ERR_ALLOC_FAIL; }
-
-    //! fill 0
-    memset( endPoints.data(), 0, sizeof(endPoints)*curve.size() );
-
-    //! interp fill
+    //! move data
     for ( int i = 0; i < curve.size(); i++ )
-    { endPoints.data()[i].flagInterp = 1; }
-
-    for( int i = 0; i < curve.size(); i++ )
     {
-        endPoints.data()[i].x = curve.at( i ).x;
-        endPoints.data()[i].y = curve.at( i ).y;
-        endPoints.data()[i].z = curve.at( i ).z;
-        endPoints.data()[i].t = curve.at( i ).t;
+        memcpy( pPoints[i].datas,
+                curve.at(i).datas,
+                4 * sizeof(float)
+                );
     }
 
-    int xyzResLen;
-    int ret = ns_pathplan::GetPvtLen( &endPoints.data()->datas,
-                                      curve.size(),
-                                      mPlanStep,
-                                      mPlanMode,
-                                      &xyzResLen );
+    //! split
+    QList< tpvList*> splitDataSet;
+    int ret;
+    ret = h2_split::h2Split( pPoints, curve.size(), splitDataSet );
+    delete []pPoints;
+
     if ( ret != 0 )
-    { return ERR_PLAN_FAIL; }
+    {
+        h2_split::h2Gc( splitDataSet );
+        return ret;
+    }
 
-    int traceSize;
-    traceSize = xyzResLen * sizeof(double) / sizeof(tracePoint);
-    if ( traceSize > 1 )
-    { }
-    else
-    { return ERR_PLAN_FAIL; }
+    //! to tpv group
+    delete_all( mJointsGroup );
+    ret = 0;
+    tpvGroup *pGroup;
+    for ( int i = 0; i < splitDataSet.size(); i++ )
+    {
+        pGroup = new tpvGroup();
+        if ( NULL == pGroup )
+        {logDbg();
+            ret = -1;
+            break;
+        }
 
-    tracePlan.clear();
-    if ( 0 != tracePlan.alloc( traceSize ) )
-    { return ERR_ALLOC_FAIL; }
+        mJointsGroup.append( pGroup );
 
-    ret = ns_pathplan::GetPvtInfo( &tracePlan.data()->datas, xyzResLen );
+        //! for each item
+        for ( int j = 0; j < splitDataSet.at(i)->size(); j++ )
+        {
+            ret = pGroup->addItem(
+                                splitDataSet.at(i)->at(j)->mT,
+                                splitDataSet.at(i)->at(j)->mP,
+                                splitDataSet.at(i)->at(j)->mV
+                        );
+            if ( ret != 0 )
+            { break; }
+        }
+    }
+
+    //! clean
+    h2_split::h2Gc( splitDataSet );
+
     if ( ret != 0 )
-    { return ERR_PLAN_FAIL; }
-
-    return 0;
-}
-
-
-#define ref_angle(id)   mRefAngles.at(id)
-#define rot_angle(id)   mRotateAngles.at(id)
-#define arm_len(id)     mArmLengths.at(id)
-
-#define ref_angles( id1,id2,id3,id4 )   ref_angle( id1 ),\
-                                        ref_angle( id2 ),\
-                                        ref_angle( id3 ),\
-                                        ref_angle( id4 ),
-#define rot_angles( id1,id2,id3,id4 )   rot_angle( id1 ),\
-                                        rot_angle( id2 ),\
-                                        rot_angle( id3 ),\
-                                        rot_angle( id4 ),
-#define arm_lens( id1,id2,id3,id4,id5,id6 )     arm_len( id1 ),\
-                                                arm_len( id2 ),\
-                                                arm_len( id3 ),\
-                                                arm_len( id4 ),\
-                                                arm_len( id5 ),\
-                                                arm_len( id6 ),
-
-int robotH2::splitTrace( xxxGroup<tracePoint> &tracePoints,
-                                xxxGroup<jointsTrace> &traceJoints )
-{
-    jointsAngle refAngle={ ref_angles(0,1,2,3) };       //! \todo ref angle by now
-    jointsAngle convertAngle={ rot_angles(0,1,2,3) };
-    double armLength[]={ arm_lens(0,1,2,3,4,5) };
-
-    //! size
-    int ret, nRes;
-    ret = ns_kinematic::getArmPosition_Size(
-
-                    armLength,sizeof_array(armLength),
-                    convertAngle.angles, sizeof_array(convertAngle.angles),
-                    refAngle.angles,
-
-                    &tracePoints.data()->datas + offsetof_double( tracePoint, x ), sizeof_double(tracePoint),
-                    &tracePoints.data()->datas + offsetof_double( tracePoint, vx ),sizeof_double(tracePoint),
-                    &tracePoints.data()->datas + offsetof_double( tracePoint, t ), sizeof_double(tracePoint),
-
-                    tracePoints.size(),
-
-                    &nRes
-                    );
-    if ( ret == 0 && nRes > 0 )
-    {}
-    else
-    { return ERR_PLAN_SLOVE_FAIL; }
-
-    //! data
-    if ( 0 != traceJoints.alloc( nRes ) )
-    { return ERR_ALLOC_FAIL; }
-
-    ret = ns_kinematic::getArmPosition_Data(
-
-                armLength,sizeof_array(armLength),
-                convertAngle.angles, sizeof_array(convertAngle.angles),
-                refAngle.angles,
-
-                &tracePoints.data()->datas + offsetof_double( tracePoint, x ), sizeof_double(tracePoint),
-                &tracePoints.data()->datas + offsetof_double( tracePoint, vx ),sizeof_double(tracePoint),
-                &tracePoints.data()->datas + offsetof_double( tracePoint, t ), sizeof_double(tracePoint),
-
-                tracePoints.size(),
-
-                &traceJoints.data()->datas,
-                traceJoints.size()
-                );
-    if ( ret != 0 )
-    { return ERR_PLAN_SLOVE_FAIL; }
+    {
+        delete_all( mJointsGroup );
+        return ret;
+    }
 
     return 0;
 }

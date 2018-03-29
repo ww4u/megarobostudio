@@ -4,6 +4,7 @@
 
 #include "../../device/vrobot.h"
 #include "../../device/robostate.h"
+#include "../../device/mrq/deviceMRQ.h"
 
 enum eRoboPlanMode
 {
@@ -31,7 +32,6 @@ struct TraceKeyPoint
 
     TraceKeyPoint( float pt = 0, float px=0, float py=0, float pz=0, float phand=0 );
 };
-
 typedef QList<TraceKeyPoint>    TraceKeyPointList;
 
 struct MegatronKeyPoint
@@ -51,8 +51,24 @@ struct MegatronKeyPoint
                       float px1=0, float py1=0, float pz1=0,
                       float px2=0, float py2=0, float pz2=0 );
 };
-
 typedef QList<MegatronKeyPoint>    MegatronKeyPointList;
+
+struct H2KeyPoint
+{
+    union
+    {
+        struct
+        {
+            float t;
+            float x, y, z;
+        };
+        float datas[4];
+    };
+
+    H2KeyPoint( float pt = 0,
+                      float px=0, float py=0, float pz=0 );
+};
+typedef QList<H2KeyPoint>    H2KeyPointList;
 
 class RawRoboStateCondition : public MegaDevice::RoboStateCondition
 {
@@ -111,6 +127,14 @@ public:
     virtual void postCtor();
 
 public:
+    virtual void onMsg( int subAxes, RoboMsg &msg );
+
+public:
+    virtual int run( const tpvRegion &region=0  );
+    virtual int stop( const tpvRegion &region=0  );
+
+    virtual int setLoop( int n, const tpvRegion &region=0 );
+
     //! switch operation
     virtual void switchReset( const tpvRegion &region=0 );
     virtual void switchStop( const tpvRegion &region=0 );
@@ -124,6 +148,17 @@ public:
     int state( const tpvRegion &region=0 );
 
     virtual void onTimer( void *pContext, int id );
+
+    virtual void onLine();
+    virtual void offLine();
+
+    //! interface
+    virtual int call( const tpvRegion &region=0 );  //! load + run
+
+    virtual int download( QList<tpvGroup*> &groups,
+                          QList<int> &joints,       //! joint tab id
+                          const tpvRegion &region );
+
 
 public:
     virtual void attachCondition(
@@ -143,7 +178,6 @@ public:
     RawRoboFsm * fsm( const tpvRegion &region );
 
 protected:
-//    RawRoboFsm mFsm;
                                 //! fsms for each region
     QMap< tpvRegion, RawRoboFsm*> mFsms;
 

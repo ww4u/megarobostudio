@@ -364,7 +364,7 @@ int CANBus::enumerate( const modelSysPref &pref )
 
     beginEnumerate();
 
-    ret = collectHash();
+    ret = collectHash( );
     if ( ret != 0 ) return ret;
 
     ret = assignIds( pref );
@@ -388,7 +388,7 @@ void CANBus::beginEnumerate()
     delete_all( mEnumDevices );
 }
 
-int CANBus::collectHash()
+int CANBus::collectHash( )
 {
     byte buf[] = { mc_CAN, sc_CAN_NETMANAGEHASH_Q };
     int ret;

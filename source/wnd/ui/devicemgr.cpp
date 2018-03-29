@@ -50,6 +50,8 @@ void deviceMgr::init()
     m_pMRQ = NULL;
 
     m_pProgress = NULL;
+
+    mAxesCount = 0;
 }
 void deviceMgr::deinit()
 {
@@ -190,6 +192,8 @@ logDbg()<<QString::number( (quint32)pMrqModel, 16 );
             pItemAxes->setToolTip( 0, strName );
 
             pItemAxes->setIcon( 0, QIcon(":/res/image/icon2/focus.png") );
+
+            mAxesCount++;
         }
     }
 
@@ -241,18 +245,32 @@ int deviceMgr::postSearchDevice( appMsg msg, void *pPara )
 
 void deviceMgr::beginSearchDevice( void *pPara )
 {
+    ui->pushButton->setEnabled( false );
+    mAxesCount = 0;
+
     emit signal_instmgr_changed( false, m_pMgr );
 
     sysLog( tr("begin search") );
+    sysProgress( 0, tr("begin search") );
+    sysProgress( true );
 }
 void deviceMgr::endSearchDevice( int ret, void *pPara )
 {
+    ui->pushButton->setEnabled( true );
+
+    sysLog( tr("end search") );
+    sysProgress( false );
     if ( ret != 0 )
     { return; }
 
     updateUi();
 
-    sysLog( tr("end search") );
+    //! debug
+//    if ( mAxesCount == 0 || mAxesCount == 15 )
+//    {}
+//    else
+//    { logDbg()<<mAxesCount; Q_ASSERT(false); }
+//    ui->pushButton->animateClick();
 }
 
 int deviceMgr::postLoadOn( appMsg msg, void *pPara )

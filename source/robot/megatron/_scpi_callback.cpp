@@ -44,7 +44,13 @@ static scpi_result_t _scpi_move( scpi_t * context )
 {
     DEF_LOCAL_VAR();
 
+    int ax,page;
     float vals[6+6+1];
+
+    if ( SCPI_ParamInt32(context, &ax, true) != true )
+    { return SCPI_RES_ERR; }
+    if ( SCPI_ParamInt32(context, &page, true) != true )
+    { return SCPI_RES_ERR; }
 
     for ( int i = 0; i < sizeof_array(vals); i++ )
     {
@@ -69,7 +75,7 @@ static scpi_result_t _scpi_move( scpi_t * context )
     curve.append( pt1 );
     curve.append( pt2 );
 
-    pRobo->move( curve, tpvRegion(0,0) );
+    pRobo->move( curve, tpvRegion(ax,page) );
 
     return SCPI_RES_OK;
 }

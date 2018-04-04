@@ -54,6 +54,8 @@ int robotMegatron::buildTrace( QList<MegatronKeyPoint> &curve
                         );
             if ( ret != 0 )
             { break; }
+
+//            logDbg()<<splitDataSet.at(i)->at(j)->mT<<splitDataSet.at(i)->at(j)->mP;
         }
     }
 

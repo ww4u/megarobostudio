@@ -161,7 +161,7 @@ int deviceMRQ::pvtWrite( pvt_region,
               QList<tpvRow *> &list,
               int from,
               int len )
-{logDbg()<<region.axes()<<region.page()<<list.size();
+{logDbg()<<region.axes()<<region.page()<<list.size()<<name();
 
     tpvDownloader *pLoader = downloader( region );
     Q_ASSERT( NULL != pLoader );

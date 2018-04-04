@@ -40,6 +40,8 @@ inline bool operator<( const DeviceId &id1,
     return id1.mSignature < id2.mSignature;
 }
 
+bool deviceIdLessThan( const DeviceId *id1,
+                       const DeviceId *id2 );
 }
 
 #endif // DEVICEID_H

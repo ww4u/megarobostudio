@@ -437,7 +437,9 @@ int CANBus::collectHash( )
     }
 
     //! 5. sort the device by id
-    qSort( mEnumDevices );
+    qSort( mEnumDevices.begin(),
+           mEnumDevices.end(),
+           deviceIdLessThan );
 
     return 0;
 

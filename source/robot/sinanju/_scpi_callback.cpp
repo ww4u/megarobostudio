@@ -110,12 +110,16 @@ static scpi_result_t _scpi_program( scpi_t * context )
     TraceKeyPoint tp;
     for ( int i = 0; i < dataset.size()/col; i++ )
     {
-        for ( int j = 0; j < col-1; j++ )
-        {
-            tp.datas[j+1] = dataset.at( i * col + j);
-        }
+        //! 0 1 2 3 4 5
+        //! x,y,z,h,t,interp
+        tp.t = dataset.at( i * col + 4 );
 
-        tp.t = dataset.at( i * col + col - 1);
+        tp.x = dataset.at( i * col + 0 );
+        tp.y = dataset.at( i * col + 1 );
+        tp.z = dataset.at( i * col + 2 );
+        tp.hand = dataset.at( i * col + 3 );
+
+        tp.iMask = dataset.at( i * col + 5 );
 
         curve.append( tp );
     }

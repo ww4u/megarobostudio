@@ -113,13 +113,17 @@ static scpi_result_t _scpi_program( scpi_t * context )
     MegatronKeyPoint tp;
     for ( int i = 0; i < dataset.size()/col; i++ )
     {
-        //! xyz,xyz
-        for ( int j = 1; j < col; j++ )
-        {
-            tp.datas[j] = dataset.at( i * col + j-1);
-        }
-        //! t
-        tp.datas[0] = dataset.at( i * col + col - 1 );
+        //! 0  1  2  3  4  5  6
+        //! x1 y1 z1 x2 y2 z2 t
+        tp.x1 = dataset.at( i * col + 0 );
+        tp.y1 = dataset.at( i * col + 1 );
+        tp.z1 = dataset.at( i * col + 2 );
+
+        tp.x2 = dataset.at( i * col + 3 );
+        tp.y2 = dataset.at( i * col + 4 );
+        tp.z2 = dataset.at( i * col + 5 );
+
+        tp.t = dataset.at( i * col + 6 );
 
         curve.append( tp );
     }

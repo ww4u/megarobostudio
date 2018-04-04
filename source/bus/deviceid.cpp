@@ -60,4 +60,11 @@ uint32 DeviceId::getSignature( )
     return mSignature;
 }
 
+bool deviceIdLessThan( const DeviceId *id1,
+                       const DeviceId *id2 )
+{
+    Q_ASSERT( NULL != id1 && NULL != id2 );
+    return *id1 < *id2;
+}
+
 }

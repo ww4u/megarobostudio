@@ -98,9 +98,6 @@ void robotMegatron::onMsg( int subAxes, RoboMsg &msg )
         region = msg.at(0).value<tpvRegion>();
     }
 
-//    ! for some region
-//    tpvRegion region = msg.at(0).value<tpvRegion>();
-
     fsm( region )->proc( msg.Msg(), msg );
 }
 

@@ -436,6 +436,9 @@ int CANBus::collectHash( )
         logDbg()<<i;
     }
 
+    //! 5. sort the device by id
+    qSort( mEnumDevices );
+
     return 0;
 
 }

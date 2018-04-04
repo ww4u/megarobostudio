@@ -4,4 +4,5 @@ SUBDIRS = ./pathplan \
           ./kinematic \
           ./pvt \
           ./megatron_split \
-          ./h2_split
+          ./h2_split \
+          ./delta

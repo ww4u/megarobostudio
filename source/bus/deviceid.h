@@ -33,6 +33,13 @@ public:
 
     uint32 mSignature;
 };
+
+inline bool operator<( const DeviceId &id1,
+                const DeviceId &id2 )
+{
+    return id1.mSignature < id2.mSignature;
+}
+
 }
 
 #endif // DEVICEID_H

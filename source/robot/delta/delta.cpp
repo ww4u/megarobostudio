@@ -25,10 +25,13 @@ robotDelta::robotDelta()
     mImage = QImage::fromData( _megaimage, sizeof(_megaimage) );
 
     //! length
+    mArmLengths.append( 132 );
+    mArmLengths.append( 262.5 );
     mArmLengths.append( 100 );
-    mArmLengths.append( 100 );
-    mArmLengths.append( 100 );
-    mArmLengths.append( 100 );
+    mArmLengths.append( 10 );
+
+    mAngleLimit.clear();
+    mAngleLimit<<0<<1.9*MATH_PI<< 0<< 1.9*MATH_PI;
 
     //! connection name
     //! debug used
@@ -37,6 +40,10 @@ robotDelta::robotDelta()
     mAxesConnectionName[1] = "CH1@device1"; //! RS
     mAxesConnectionName[2] = "CH2@device1"; //! Hand
     mAxesConnectionName[3] = "CH3@device1"; //! Plate
+
+    mZeroTime = 5;
+    mZeroSpeed = 5;
+    mZeroAngle = 100;
 }
 
 

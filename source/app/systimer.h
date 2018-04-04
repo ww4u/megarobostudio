@@ -68,6 +68,9 @@ protected Q_SLOTS:
     void slotTimeout();
     void slotExit();
 
+public:
+    void stopAll();
+
 private:
     QTimer *m_pTickTimer;
 

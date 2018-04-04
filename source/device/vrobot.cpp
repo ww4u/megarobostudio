@@ -8,6 +8,19 @@
 #include "../../device/mrq/deviceMRQ.h"
 #include "../../com/robomsg.h"
 
+double VRobot::_mTBase = 1.0;
+double VRobot::_mPBase = 1.0;
+double VRobot::_mVBase = 1.0;
+
+void VRobot::setTpvBase( double tBase,
+                double pBase,
+                double vBase )
+{
+    VRobot::_mTBase = tBase;
+    VRobot::_mPBase = pBase;
+    VRobot::_mVBase = vBase;
+}
+
 VRobot::VRobot()
 {
     mClass = "Unk robot";
@@ -36,10 +49,7 @@ VRobot::VRobot()
 
     mSubGroup = 0;
     mSubGroupId = sub_group_id_from;
-
-    mTBase = 1.0f;
-    mPBase = 1.0f;
-    mVBase = 1.0f;
+    mZeroSpeed = 5;
 
     mBaseCompensation = 0;
     mLengthUnit = 1;
@@ -134,12 +144,6 @@ int VRobot::getSubGroupId()
 int VRobot::subGroupId()
 { return mSubGroupId; }
 
-void VRobot::setTPVUnit( float t, float p, float v )
-{
-    mTBase = t;
-    mPBase = p;
-    mVBase = v;
-}
 
 //! CH1@name
 MegaDevice::deviceMRQ *VRobot::findDevice( const QString &name,
@@ -182,6 +186,7 @@ QStringList VRobot::axesDeviceName()
 
 void VRobot::setAxesDefName( int axesCnt )
 {
+    mAxesConnectionName.clear();
     for ( int i = 0; i < axesCnt; i++ )
     {
         mAxesConnectionName<<QString("CH%1@device1").arg( i+1 );
@@ -190,6 +195,7 @@ void VRobot::setAxesDefName( int axesCnt )
 
 void VRobot::setJointName( int axesCnt )
 {
+    mJointName.clear();
     for ( int i = 0; i < axesCnt; i++ )
     {
         mJointName<<QString("Joint:%1").arg( i+1 );

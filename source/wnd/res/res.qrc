@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/res">
-        <file>image/logo.png</file>
+<!--        <file>image/logo.png</file>
         <file>image/bus.png</file>
         <file>image/mrq.png</file>
         <file>image/mrh.png</file>
@@ -31,7 +31,7 @@
         <file>image/toolopen.png</file>
         <file>image/zoomin.png</file>
         <file>image/forcestop.png</file>
-        <file>image/warn.png</file>
+        <file>image/warn.png</file>-->
 
         <file>image/can2.png</file>
         <file>image/megacan.png</file>

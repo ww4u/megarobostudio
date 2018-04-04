@@ -26,7 +26,7 @@ protected:
 
 Q_SIGNALS:
     void signal_actionChanged( int id, float time, float val );
-    void signal_zeroClicked( int id );
+    void signal_zeroClicked( int id, bool bCcw );
 
 private slots:
     void on_doubleSpinBox_valueChanged(double arg1);

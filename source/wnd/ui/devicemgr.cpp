@@ -85,6 +85,11 @@ void deviceMgr::setupUi()
                               tr("Console..."),
                               this,
                               SLOT( context_mrq_console() ) );
+    m_pDeviceMenu->addSeparator();
+    m_pDeviceMenu->addAction( QIcon( ":/res/image/icon2/mobile.png" ),
+                              tr("Panel..."),
+                              this,
+                              SLOT( context_mrq_panel() ) );
 
     //! robo menu
     m_pRoboMenu = new QMenu( this );
@@ -97,6 +102,11 @@ void deviceMgr::setupUi()
                               tr("Console..."),
                               this,
                               SLOT( context_robo_console() ) );
+    m_pRoboMenu->addSeparator();
+    m_pRoboMenu->addAction( QIcon( ":/res/image/icon2/mobile.png" ),
+                              tr("Panel..."),
+                              this,
+                              SLOT( context_robo_panel() ) );
 }
 
 void deviceMgr::desetupUi()
@@ -441,6 +451,11 @@ void deviceMgr::context_mrq_console()
     pConsole->show();
 }
 
+void deviceMgr::context_mrq_panel()
+{
+
+}
+
 void deviceMgr::context_robo_console()
 {
     deviceConsole *pConsole;
@@ -459,6 +474,9 @@ void deviceMgr::context_robo_console()
 
     pConsole->show();
 }
+
+void deviceMgr::context_robo_panel()
+{}
 
 void deviceMgr::contextMenuEvent(QContextMenuEvent *event)
 {

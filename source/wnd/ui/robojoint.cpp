@@ -75,5 +75,13 @@ void RoboJoint::on_horizontalSlider_sliderMoved(int position)
 
 void RoboJoint::on_pushButton_clicked()
 {
-    emit signal_zeroClicked( mId );
+    QMessageBox msgBox;
+    msgBox.setText( tr("Sure to zero?") );
+    msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel );
+    msgBox.setDefaultButton(QMessageBox::Ok);
+    int ret = msgBox.exec();
+    if ( ret == QMessageBox::Ok )
+    {
+        emit signal_zeroClicked( mId, ui->chkInvert->isChecked() );
+    }
 }

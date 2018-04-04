@@ -44,11 +44,15 @@ robotMegatron::robotMegatron()
     mAxesConnectionName[3] = "CH4@device2"; //! bz
     mAxesConnectionName[4] = "CH3@device1"; //! ly
     mAxesConnectionName[5] = "CH4@device1"; //! ry
+
+    mZeroTime = 5;
+    mZeroSpeed = 5;
+    mZeroAngle = 100;
 }
 
 robotMegatron::~robotMegatron()
 {
-    delete_all( mJointsGroup );
+
 }
 
 static msg_type _msg_patterns[]={
@@ -72,19 +76,6 @@ static msg_type _msg_patterns[]={
     },
 };
 
-int robotMegatron::serialIn( QXmlStreamReader &reader )
-{
-//    int ret;
-//    ret = mHandActionModel.serialIn( reader );
-//    return ret;
-    return 0;
-}
-int robotMegatron::serialOut( QXmlStreamWriter &writer )
-{
-//    return mHandActionModel.serialOut( writer );
-    return 0;
-}
-
 //! \note subax invalid
 void robotMegatron::onMsg( int subAxes, RoboMsg &msg )
 {
@@ -94,8 +85,21 @@ void robotMegatron::onMsg( int subAxes, RoboMsg &msg )
         return;
     }
 
-    //! for some region
-    tpvRegion region = msg.at(0).value<tpvRegion>();
+    tpvRegion region;
+    if ( msg.getMsg() == e_robot_member_state )     //! subax, region, ax
+    {
+        int tabAx = msg.at(0).toInt();
+        region = msg.at(1).value<tpvRegion>();
+        Q_ASSERT( tabAx >= 0 && tabAx < axes() );
+        region.setAx( 0 );
+    }
+    else
+    {
+        region = msg.at(0).value<tpvRegion>();
+    }
+
+//    ! for some region
+//    tpvRegion region = msg.at(0).value<tpvRegion>();
 
     fsm( region )->proc( msg.Msg(), msg );
 }

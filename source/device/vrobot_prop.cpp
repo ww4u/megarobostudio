@@ -93,6 +93,15 @@ void VRobot::setUartSensors( int n )
 int VRobot::uartSensors()
 { return mUART_Sensors; }
 
+void VRobot::setZeroSpeed( double spd )
+{
+    mZeroSpeed = spd;
+}
+double VRobot::zeroSpeed()
+{
+    return mZeroSpeed;
+}
+
 RoboWorker *VRobot::lpc( int ax )
 {
     Q_ASSERT( NULL != m_pAxesWorkers );

@@ -630,16 +630,7 @@ QStringList InstMgr::getChans()     //! chx@devicename
 
 void InstMgr::setTPVBase( float t, float p, float v )
 {
-    foreach( VRoboList *pRoboList, mDeviceTree )
-    {
-        Q_ASSERT( NULL != pRoboList );
-        foreach( VRobot * pDev, *pRoboList )
-        {
-            Q_ASSERT( NULL != pDev );
-
-            pDev->setTPVUnit( t, p, v );
-        }
-    }
+    VRobot::setTpvBase( t, p, v );
 }
 
 void InstMgr::preProbeBus()

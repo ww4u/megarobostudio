@@ -107,7 +107,7 @@ int tpvDownloader::transmissionProc()
 {
     int ret;
     int total, now;
-
+logDbg()<<mRegion.axes()<<mRegion.page();
     //! in transmisstion
     ret = m_pMRQ->beginTpvDownload( mRegion );
     if ( ret != 0 )

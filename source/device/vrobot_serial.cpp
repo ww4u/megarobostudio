@@ -41,6 +41,20 @@ int VRobot::load( const QString &name )
                                 {}
                             }
                         }
+                        else if ( reader.name() == "zero_about" )
+                        {
+                            while(reader.readNextStartElement())
+                            {
+                                if ( reader.name() == "speed" )
+                                {
+                                    mZeroSpeed = reader.readElementText().toDouble();
+                                }
+                                else
+                                {}
+                            }
+
+                        }
+
                         else if ( reader.name() == "group" )
                         {
                             while(reader.readNextStartElement())
@@ -109,6 +123,20 @@ int VRobot::save( const QString &name )
             }
 
             writer.writeEndElement();
+
+            writer.writeStartElement("zero_about");
+            writer.writeTextElement("speed", QString::number(mZeroSpeed) );
+            writer.writeEndElement();
+
+//            writer.writeStartElement("init_angle");
+
+//            Q_ASSERT( mAxes  >= mInitAngles.size() );
+//            for ( int i = 0; i < mAxes && i < mInitAngles.size(); i++ )
+//            {
+//                writer.writeTextElement("angle", QString::number( mInitAngles.at(i) ) );
+//            }
+
+//            writer.writeEndElement();
 
             writer.writeStartElement("group");
 

@@ -177,6 +177,7 @@ private slots:
 
     void on_actionAbout_triggered();
     void on_actionDocs_triggered();
+    void on_actionPackage_triggered();
     void on_actionpref_triggered();
 
     void on_actionSpy_triggered();

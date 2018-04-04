@@ -116,6 +116,37 @@ static scpi_result_t _scpi_call( _scpi_t * context )
     return SCPI_RES_OK;
 }
 
+//! ax, page, t, angle, end speed
+static scpi_result_t _scpi_lightZero( _scpi_t * context )
+{
+    // read
+    DEF_LOCAL_VAR();
+
+    int ax, page;
+    float t, angle, speed;
+
+    if ( SCPI_RES_OK != SCPI_ParamInt32( context, &ax, true ) )
+    { return SCPI_RES_ERR; }
+
+    if ( SCPI_RES_OK != SCPI_ParamInt32( context, &page, true ) )
+    { return SCPI_RES_ERR; }
+
+    if ( SCPI_RES_OK != SCPI_ParamFloat( context, &t, true ) )
+    { return SCPI_RES_ERR; }
+
+    if ( SCPI_RES_OK != SCPI_ParamFloat( context, &angle, true ) )
+    { return SCPI_RES_ERR; }
+
+    if ( SCPI_RES_OK != SCPI_ParamFloat( context, &speed, true ) )
+    { return SCPI_RES_ERR; }
+
+    DEF_MRQ();
+
+    LOCALMRQ()->lightCouplingZero( tpvRegion(ax,page),
+                                   t, angle, speed );
+
+    return SCPI_RES_OK;
+}
 
 //! TPV ax,page,e:/ddd.csv
 static scpi_result_t _scpi_program( scpi_t * context )
@@ -252,6 +283,8 @@ static scpi_command_t _mrq_scpi_cmds[]=
     CMD_ITEM( "PROGRAM", _scpi_program ),
 
     CMD_ITEM( "CALL", _scpi_call ),
+
+    CMD_ITEM( "LZERO", _scpi_lightZero ),             //! light zero
 
     SCPI_CMD_LIST_END
 };

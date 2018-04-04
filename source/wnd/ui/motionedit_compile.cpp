@@ -296,8 +296,9 @@ logDbg()<<pRobot->mRefAngles.at(0)<<pRobot->mRefAngles.at(1)<<pRobot->mRefAngles
     ret = ns_kinematic::getArmPosition_Size(
 
                     armLength,sizeof_array(armLength),
-                    convertAngle.angles, 4,
+                    convertAngle.angles,
                     refAngle.angles,
+                    4,
 
                     &mTracePlan.data()->datas + offsetof_double( tracePoint, x ), sizeof_double(tracePoint),
                     &mTracePlan.data()->datas + offsetof_double( tracePoint, vx ),sizeof_double(tracePoint),
@@ -319,8 +320,9 @@ logDbg()<<pRobot->mRefAngles.at(0)<<pRobot->mRefAngles.at(1)<<pRobot->mRefAngles
     ret = ns_kinematic::getArmPosition_Data(
 
                 armLength,sizeof_array(armLength),
-                convertAngle.angles, 4,
+                convertAngle.angles,
                 refAngle.angles,
+                 4,
 
                 &mTracePlan.data()->datas + offsetof_double( tracePoint, x ), sizeof_double(tracePoint),
                 &mTracePlan.data()->datas + offsetof_double( tracePoint, vx ),sizeof_double(tracePoint),

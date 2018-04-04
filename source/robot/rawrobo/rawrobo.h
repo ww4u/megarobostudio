@@ -15,6 +15,21 @@ enum eRoboPlanMode
 
 #define BIT_INTERP  0
 
+struct D1Point
+{
+    union
+    {
+        struct
+        {
+            float t;
+            float p;
+        };
+        float datas[2];
+    };
+
+    D1Point( float pt = 0, float pp = 0 );
+};
+typedef QList<D1Point>    D1PointList;
 
 struct TraceKeyPoint
 {
@@ -184,6 +199,8 @@ protected:
                                 //! pref
     float mPlanStep;
     eRoboPlanMode mPlanMode;
+
+    QList< tpvGroup *> mJointsGroup;
 };
 
 //! base state
@@ -197,6 +214,7 @@ public:
     virtual void toState( int stat, RoboMsg &detail );
 
     virtual void proc( int msg, RoboMsg &detail );
+    virtual void onEnter( RoboMsg &detail );
 
     virtual void onTimer( int id );
 public:
@@ -212,7 +230,7 @@ public:
     int state();
 
 protected:
-    void rstState();
+    void initState();
 
 protected:
     QMap<int, int> mMemberStates;   //! mState = union( mMemberStates )

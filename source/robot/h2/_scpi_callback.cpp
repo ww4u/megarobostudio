@@ -104,11 +104,11 @@ static scpi_result_t _scpi_program( scpi_t * context )
     QList<float> dataset;
     int col = 4;
     if ( 0 != comAssist::loadDataset( pLocalStr, strLen, col, dataset ) )
-    { logDbg(); return SCPI_RES_ERR; }
+    {  return SCPI_RES_ERR; }
 
     //! point
     if ( dataset.size() / col < 2 )
-    { logDbg(); return SCPI_RES_ERR; }
+    { return SCPI_RES_ERR; }
 
     H2KeyPointList curve;
     H2KeyPoint tp;
@@ -129,7 +129,6 @@ static scpi_result_t _scpi_program( scpi_t * context )
     //! robo op
     DEF_ROBO();
     int ret = pRobo->program( curve, tpvRegion(ax,page) );
-    logDbg()<<ret;
 
     return SCPI_RES_OK;
 }

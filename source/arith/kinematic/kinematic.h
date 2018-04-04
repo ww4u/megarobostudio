@@ -45,8 +45,10 @@ int MEGA_EXPORT GetEndPosition(
                                 double* armLengthArray, //! foreach arm
                                 int armCount,			//! arm count: 6
 
-                                double* deltAngles,		//! delta angle: degree
-                                double* angles,			//! current angle 0~360
+                                double *rotAngles,
+                                double *archAngles,
+                                double *deltaAngles,    //! arch + delta - rot
+
                                 int angleCount,
 
                                 double* res )			//! out: x, y, z
@@ -57,8 +59,13 @@ int MEGA_EXPORT GetEndPosition(
 int  MEGA_EXPORT getArmPosition_Size(
     double* armLength, int armCount,
 
-    double* deltAngles, int angleCount,    //! angles: [0~3]
-    double* posRef,                        //!
+//    double* deltAngles, int angleCount,    //! angles: [0~3]
+//    double* posRef,                        //!
+
+    double *rotAngles,
+    double *archAngles,
+
+    int angleCount,
 
     double* posIn, int skipP,
     double* vIn, int skipV,
@@ -71,8 +78,13 @@ int  MEGA_EXPORT getArmPosition_Size(
 int  MEGA_EXPORT getArmPosition_Data(
     double* armLength, int armCount,
 
-    double* deltAngles, int angleCount,    //! angles: [0~3]
-    double* posRef,                        //!
+    double *rotAngles,
+    double *archAngles,
+
+    int angleCount,
+
+//    double* deltAngles, int angleCount,    //! angles: [0~3]
+//    double* posRef,                        //!
 
     double* posIn, int skipP,
     double* vIn, int skipV,

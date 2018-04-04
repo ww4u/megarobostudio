@@ -251,7 +251,6 @@ int handActionModel::serialOut( QXmlStreamWriter & writer )
     }
 
     return 0;
-
 }
 int handActionModel::serialIn( QXmlStreamReader & reader )
 {

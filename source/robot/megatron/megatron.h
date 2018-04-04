@@ -38,6 +38,9 @@ public:
 
     virtual int run( const tpvRegion &region=0  );
     virtual int stop( const tpvRegion &region=0  );
+    virtual int goZero( int jTabId, bool bCcw );
+    virtual int goZero( const QList<int> &jointList,
+                        const QList<bool> &ccwList );
 //    virtual int run( int axes );
 //    virtual int stop( int axes );
 
@@ -65,16 +68,20 @@ public:
     int moveTest1();
     int moveTest2();
 
+public:
+    void setZeroAttr( double zeroTime, double zeroAngle, double zeroSpeed );
+    void zeroAttr( double &zeroTime, double &zeroAngle, double &zeroSpeed );
+
+    int serialOutZero( QXmlStreamWriter &writer);
+    int serialInZero( QXmlStreamReader &reader );
 
 protected:
     int buildTrace( QList<MegatronKeyPoint> &curve );
 
     int downloadTrace( const tpvRegion &region );
 
-
 protected:
-
-    QList< tpvGroup *> mJointsGroup;
+    double mZeroTime, mZeroAngle, mZeroSpeed;
 };
 
 #endif

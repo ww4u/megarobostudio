@@ -147,11 +147,13 @@ public:
 
     int pvtWrite( pvt_region,
                   float t1, float p1,
-                  float t2, float p2 );
+                  float t2, float p2,
+                  float endV = 0);
 
     int pvtWrite( pvt_region,
                   float dT,
-                  float dAngle );
+                  float dAngle,
+                  float endV = 0);
     int pvtWrite( pvt_region,
                   tpvRow *pRows,
                   int n
@@ -170,8 +172,10 @@ public:
 
 public:
     int call( pvt_region );
-    int rotate( pvt_region, float t, float ang );
+    int rotate( pvt_region, float t, float ang, float endV = 0 );
 
+    int lightCouplingZero( pvt_region,
+                           float t, float angle, float endV = 1 );
 
     int fsmState( pvt_region );
 
@@ -204,7 +208,7 @@ protected:
 
 //    tpvDownloader mDownloader[4];
 
-    QMap< int, tpvDownloader * > mDownloaders;
+    QMap< tpvRegion, tpvDownloader * > mDownloaders;
 
     QSemaphore mDownloaderSema;
 

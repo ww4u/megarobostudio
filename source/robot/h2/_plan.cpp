@@ -5,7 +5,7 @@ int robotH2::buildTrace( QList<H2KeyPoint> &curve
 {
     h2_split::endPoint *pPoints = new h2_split::endPoint[ curve.size() ];
     if ( NULL == pPoints )
-    { logDbg()<<curve.size(); return -1; }
+    { return -1; }
 
     //! move data
     for ( int i = 0; i < curve.size(); i++ )

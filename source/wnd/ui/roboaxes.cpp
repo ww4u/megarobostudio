@@ -45,8 +45,8 @@ roboAxes::roboAxes(mcModel *pModel,
     {
         connect( p, SIGNAL(signal_actionChanged(int,float,float)),
                  this, SLOT(slot_joint_action(int,float,float)) );
-        connect( p, SIGNAL(signal_zeroClicked(int)),
-                 this, SLOT(slot_joint_zero(int)));
+        connect( p, SIGNAL(signal_zeroClicked(int,bool)),
+                 this, SLOT(slot_joint_zero(int,bool)));
     }
 
     setModal( false );
@@ -119,9 +119,10 @@ void roboAxes::slot_joint_action( int id, float dt, float angle )
             0, 0,
             dt, angle );
 }
-void roboAxes::slot_joint_zero( int id )
+void roboAxes::slot_joint_zero( int id, bool bCcw )
 {
-    logDbg()<<id;
+//    logDbg()<<id<<bCcw;
+    zero( id, bCcw );
 }
 
 void roboAxes::slot_robo_changed( const QString &roboName )
@@ -219,4 +220,39 @@ void roboAxes::rotate( int jointId,
                     time_to_s(t2), a2
                     );
     pMrq->run( tpvRegion(subAx,0) );
+}
+
+void roboAxes::zero( int jointId,
+                     bool bCcw )
+{
+    VRobot *pRobo = Robot();
+    if ( NULL == pRobo )
+    {
+        sysError( tr("Invalid robot") );
+        return;
+    }
+
+    Q_ASSERT( NULL != pRobo );
+
+    pRobo->goZero( jointId, bCcw );
+}
+
+void roboAxes::on_btnZero_clicked()
+{
+    VRobot *pRobo = Robot();
+    if ( NULL == pRobo )
+    {
+        sysError( tr("Invalid robot") );
+        return;
+    }
+
+    QMessageBox msgBox;
+    msgBox.setText( tr("Sure to zero?") );
+    msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel );
+    msgBox.setDefaultButton(QMessageBox::Ok);
+    int ret = msgBox.exec();
+    if ( ret == QMessageBox::Ok )
+    {
+        pRobo->goZero();
+    }
 }

@@ -32,6 +32,10 @@ private:
     Ui::MotorState *ui;
 
     QMap<int,QString> mStates;
+
+    QTime mRunningTime;
+    bool mbTimerRunning;
+    int mLastProg;
 };
 
 #endif // MOTORSTATE_H

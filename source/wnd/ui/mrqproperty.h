@@ -6,6 +6,10 @@
 #include "mrqinfo.h"
 #include "mrqaxes.h"
 #include "mrqaxes2.h"
+#include "mrqaxesplan.h"
+#include "mrqtrigpage.h"
+
+
 #include "mrqio.h"
 #include "mrqsensor.h"
 #include "mrqsys.h"
@@ -29,7 +33,7 @@ public:
     ~mrqProperty();
 
 protected Q_SLOTS:
-    void on_page_changed( int index );
+    void slot_page_changed( int index );
     void on_btnApply_clicked();
     void on_btnOK_clicked();
     void on_btnCancel_clicked();
@@ -60,6 +64,8 @@ public:
 
     QList< mrqAxes * > mAxesPages;
     QList< mrqAxes2 * > mAxesPage2s;
+    QList< MrqTrigPage * > mAxesPage3s;
+    QList< MrqAxesPlan *> mAxesPlans;
 
     QList< MrqDcAxes *> mDcAxesPages;
 

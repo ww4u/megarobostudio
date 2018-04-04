@@ -34,8 +34,10 @@ void roboMgr::setupData()
     QListWidgetItem *pItem;
     foreach( VRobot *pRobo, mRobots )
     {
+        Q_ASSERT( NULL != pRobo );
         pItem = new QListWidgetItem( QIcon( QPixmap::fromImage( pRobo->getImage() ) ),
                                      pRobo->getClass());
+        Q_ASSERT( NULL != pItem );
 
         pRobo->set( mcModelObj::model_robot, pRobo );
 

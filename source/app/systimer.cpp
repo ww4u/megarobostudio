@@ -149,8 +149,6 @@ SysTimerThread::SysTimerThread( QObject *obj ) : QThread( obj )
 
     Q_ASSERT( NULL == SysTimerThread::_sys_timer_ );
     SysTimerThread::_sys_timer_ = this;
-
-
 }
 
 SysTimerThread::~SysTimerThread()
@@ -203,5 +201,18 @@ void SysTimerThread::slotExit()
     QThread::exit();
 
 //    logDbg();
+}
+
+void SysTimerThread::stopAll()
+{
+    SysTimerThread::mTimerMutex.lock();
+
+    foreach( roboTimer *pTimer, mTimers )
+    {
+        Q_ASSERT( NULL != pTimer );
+        pTimer->stop();
+    }
+
+    SysTimerThread::mTimerMutex.unlock();
 }
 

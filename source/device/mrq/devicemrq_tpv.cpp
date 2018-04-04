@@ -73,9 +73,9 @@ int deviceMRQ::tpvDownload(
 
     DELOAD_REGION();
 
-    checked_call( setPOSITION( pvt_page_p, index, p * mPBase ) );
-    checked_call( setVELOCITY( pvt_page_p, index, v * mVBase ) );
-    checked_call( setTIME( pvt_page_p, index, t * mTBase ) );
+    checked_call( setPOSITION( pvt_page_p, index, p * _mPBase ) );
+    checked_call( setVELOCITY( pvt_page_p, index, v * _mVBase ) );
+    checked_call( setTIME( pvt_page_p, index, t * _mTBase ) );
 
 //logWarning()<<axesId<<index<<p<<v<<t;
     return ret;
@@ -161,7 +161,7 @@ int deviceMRQ::pvtWrite( pvt_region,
               QList<tpvRow *> &list,
               int from,
               int len )
-{logDbg()<<region.axes()<<region.page();
+{logDbg()<<region.axes()<<region.page()<<list.size();
 
     tpvDownloader *pLoader = downloader( region );
     Q_ASSERT( NULL != pLoader );
@@ -169,6 +169,7 @@ int deviceMRQ::pvtWrite( pvt_region,
     if ( pLoader->isRunning() )
     {
         sysError( QObject::tr("Busy now, can not downloading") );
+        sysError( QString::number(region.axes()), QString::number(region.page()) );
         return ERR_CAN_NOT_RUN;
     }
     else
@@ -183,7 +184,9 @@ int deviceMRQ::pvtWrite( pvt_region,
 
 int deviceMRQ::pvtWrite( pvt_region,
               float t1, float p1,
-              float t2, float p2 )
+              float t2, float p2,
+              float endV
+              )
 {
     DELOAD_REGION();
 
@@ -209,7 +212,7 @@ int deviceMRQ::pvtWrite( pvt_region,
     pRow2->setGc( true );
     pRow2->mT = t2;
     pRow2->mP = p2;
-    pRow2->mV = 0;
+    pRow2->mV = endV;
 
     QList< tpvRow *> rotList;
     rotList.append( pRow1 );
@@ -220,9 +223,10 @@ int deviceMRQ::pvtWrite( pvt_region,
 
 int deviceMRQ::pvtWrite( pvt_region,
                          float dT,
-                         float dAngle )
+                         float dAngle,
+                         float endV )
 {
-    return pvtWrite( pvt_region_p, 0, 0, dT, dAngle );
+    return pvtWrite( pvt_region_p, 0, 0, dT, dAngle, endV );
 }
 
 int deviceMRQ::pvtWrite( pvt_region,

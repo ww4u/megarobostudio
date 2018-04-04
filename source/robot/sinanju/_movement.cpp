@@ -1,5 +1,5 @@
 #include "sinanju.h"
-
+#include "../../com/comassist.h"
 int robotSinanju::call( const tpvRegion &region )
 {
     onLine();
@@ -122,7 +122,7 @@ int robotSinanju::moveTest2( const tpvRegion &region )
 int robotSinanju::nowPose( TraceKeyPoint &pos )
 {
     //! get
-    double angles[4];
+    float angles[4];
     MegaDevice::deviceMRQ *pDev;
     int ax;
     for ( int i = 0;  i < 4; i++ )
@@ -132,22 +132,78 @@ int robotSinanju::nowPose( TraceKeyPoint &pos )
         { return -1; }
 
         angles[i] = pDev->getAbsAngle( ax );
+        if ( angles[i] < 0 )
+        { return -1; }
     }
 
     //! convert
-//    jointsAngle refAngle={ ref_angles(0,1,2,3) };       //! \todo ref angle by now
-    jointsAngle convertAngle={ rot_angles(0,1,2,3) };
-    double armLength[]={ arm_lens(0,1,2,3,4,5) };
+    return angleToPos( angles, pos );
+}
 
+int robotSinanju::nowAngle( QList<double> &angles )
+{
+    MegaDevice::deviceMRQ *pDev;
+    float angle;
+    int ax;
+    angles.clear();
+    for ( int i = 0;  i < 4; i++ )
+    {
+        pDev = jointDevice( i, &ax );
+        if ( NULL == pDev )
+        { return -1; }
+
+        angle = pDev->getAbsAngle( ax );
+        if ( angle < 0 )
+        { return -1; }
+    }
+
+    return 0;
+}
+
+#define ref_angle(id)   mRefAngles.at(id)
+#define rot_angle(id)   mRotateAngles.at(id)
+#define arm_len(id)     mArmLengths.at(id)
+
+#define ref_angles( id1,id2,id3,id4 )   ref_angle( id1 ),\
+                                        ref_angle( id2 ),\
+                                        ref_angle( id3 ),\
+                                        ref_angle( id4 ),
+#define rot_angles( id1,id2,id3,id4 )   rot_angle( id1 ),\
+                                        rot_angle( id2 ),\
+                                        rot_angle( id3 ),\
+                                        rot_angle( id4 ),
+#define arm_lens( id1,id2,id3,id4,id5,id6 )     arm_len( id1 ),\
+                                                arm_len( id2 ),\
+                                                arm_len( id3 ),\
+                                                arm_len( id4 ),\
+                                                arm_len( id5 ),\
+                                                arm_len( id6 ),
+int robotSinanju::angleToPos( float angles[4],
+                               TraceKeyPoint &pos )
+{
+    //! convert
+    jointsAngle rotAngles={ rot_angles(0,1,2,3) };
+    jointsAngle archAngles={ mArchAngles.at(0),
+                             mArchAngles.at(1),
+                             mArchAngles.at(2),
+                             mArchAngles.at(3),
+                            };
+    double armLength[]={ arm_lens(0,1,2,3,4,5) };
+    double dAngles[4];
     double xyz[3];
     int ret;
+
+    diffAngle( angles, dAngles );
+logDbg()<<dAngles[0]<<dAngles[1]<<dAngles[2]<<dAngles[3];
+logDbg()<<angles[0]<<angles[1]<<angles[2]<<angles[3];
+logDbg()<<mInitAngles[0]<<mInitAngles[1]<<mInitAngles[2]<<mInitAngles[3];
     ret = ns_kinematic::GetEndPosition( armLength,sizeof_array(armLength),
-                                  convertAngle.angles,
-//                                  refAngle.angles,
-                                  angles,
-                                  sizeof_array(convertAngle.angles),
-                                  xyz
-                                  );
+                                        rotAngles.angles,
+                                        archAngles.angles,
+                                        dAngles,
+                                        4,
+                                        xyz
+                                        );
     if ( ret != 0 )
     { return -1; }
 
@@ -159,6 +215,51 @@ int robotSinanju::nowPose( TraceKeyPoint &pos )
     pos.t = 0;
 
     return 0;
+}
+
+//! - init angle
+void robotSinanju::diffAngle( float angles[4],
+                              float anglesOut[4]  )
+{
+    Q_ASSERT( mAngleDir.size() == 4 );
+
+    for ( int i = 0; i < 4; i++ )
+    {
+        anglesOut[i] = (angles[i] - mInitAngles.at(i));
+    }
+
+    //! direction
+    for ( int i = 0; i < 4; i++ )
+    {
+        if ( mAngleDir.at(i) )
+        {}
+        else
+        { anglesOut[i] = -anglesOut[i]; }
+
+        anglesOut[i] = comAssist::normalizeDegree360( anglesOut[i] );
+    }
+}
+//! - init angle
+void robotSinanju::diffAngle( float angles[4],
+                              double anglesOut[4]  )
+{
+    Q_ASSERT( mAngleDir.size() == 4 );
+
+    for ( int i = 0; i < 4; i++ )
+    {
+        anglesOut[i] = (angles[i] - mInitAngles.at(i));
+    }
+
+    //! direction
+    for ( int i = 0; i < 4; i++ )
+    {
+        if ( mAngleDir.at(i) )
+        {}
+        else
+        { anglesOut[i] = -anglesOut[i]; }
+
+        anglesOut[i] = comAssist::normalizeDegree360( anglesOut[i] );
+    }
 }
 
 int robotSinanju::nowDist( QList<float> &dists )
@@ -179,3 +280,5 @@ int robotSinanju::nowDist( QList<float> &dists )
 
     return 0;
 }
+
+

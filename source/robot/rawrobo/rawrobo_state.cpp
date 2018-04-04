@@ -4,14 +4,14 @@
 
 #define status_timer_id     2
 #define status_timer_tmo    time_s( 1 )    //! us
-#define status_timer_prepare    time_s( 1 )
+#define status_timer_prepare    time_s( 2 )
 //! state unit
 RawRoboUnit::RawRoboUnit( MegaDevice::RoboFsm *pFsm,
                           int members )
 {
     mMemberCount = members;
 
-    rstState();
+    initState();
 }
 RawRoboUnit::~RawRoboUnit()
 {}
@@ -26,6 +26,11 @@ void RawRoboUnit::toState( int stat, RoboMsg &detail )
                          stat );
 
     logDbg()<<selfFsm()->Robot()->name();
+}
+
+void RawRoboUnit::onEnter( RoboMsg &detail )
+{
+    initState();
 }
 
 void RawRoboUnit::proc( int msg, RoboMsg &detail )
@@ -130,7 +135,7 @@ void RawRoboUnit::setMemberState( int subAx,
                                   const tpvRegion &region,
                                   int stat,
                                   RoboMsg &detail )
-{logDbg()<<stat;
+{logDbg()<<stat<<subAx;
     mMemberStates[ subAx ] = stat;
 
     int preVal = mMemberStates[0];
@@ -143,6 +148,7 @@ void RawRoboUnit::setMemberState( int subAx,
         { logDbg()<<mMemberStates; return; }
     }
 logDbg()<<preVal;
+logDbg()<<mMemberStates;
 
     //! full match
     mState = preVal;
@@ -160,9 +166,9 @@ int RawRoboUnit::memberState( int subAx,
 int RawRoboUnit::state()
 { return mState; }
 
-void RawRoboUnit::rstState()
+void RawRoboUnit::initState()
 {
-    mState = 0;
+    mState = -1;
     for ( int i = 0; i < mMemberCount; i++ )
     { mMemberStates.insert( i, mState ); }
 }
@@ -182,6 +188,8 @@ void IdleRawRoboUnit::proc( int msg, RoboMsg &detail )
 
 void IdleRawRoboUnit::onEnter( RoboMsg &detail )
 {
+    RawRoboUnit::initState();
+
     selfFsm()->reqRun( false );
 
     killTimer( status_timer_id );
@@ -238,8 +246,6 @@ void CalcendRawRoboUnit:: proc( int msg, RoboMsg &detail )
     if ( msg == MegaDevice::mrq_msg_run
          || msg == MegaDevice::mrq_msg_call )
     {
-//        selfFsm()->Robot()->switchRun( selfFsm()->region() );
-//        toState( MegaDevice::mrq_state_prerun, detail );
         selfFsm()->reqRun( true );
         selfFsm()->Robot()->switchPrepare( selfFsm()->region() );
         startTimer( status_timer_id, status_timer_prepare );
@@ -253,6 +259,8 @@ void CalcendRawRoboUnit:: proc( int msg, RoboMsg &detail )
 
 void CalcendRawRoboUnit::onEnter( RoboMsg &detail )
 {
+    RawRoboUnit::initState();
+
     if ( selfFsm()->runReqed() )
     {
         selfFsm()->Robot()->switchPrepare( selfFsm()->region() );
@@ -267,7 +275,7 @@ StandbyRawRoboUnit::StandbyRawRoboUnit( MegaDevice::RoboFsm *pFsm,
      mName = "StandbyRawRoboUnit";
 }
 void StandbyRawRoboUnit::proc( int msg, RoboMsg &detail )
-{logDbg();
+{logDbg()<<msg;
     //! ops
     if ( msg == MegaDevice::mrq_msg_run
          || msg == MegaDevice::mrq_msg_call )
@@ -282,8 +290,11 @@ void StandbyRawRoboUnit::proc( int msg, RoboMsg &detail )
 }
 void StandbyRawRoboUnit::onEnter( RoboMsg &detail )
 {
+    RawRoboUnit::initState();
+
+    logDbg()<<selfFsm()->region().page();
     if ( selfFsm()->runReqed() )
-    {
+    {logDbg();
         selfFsm()->Robot()->switchRun( selfFsm()->region() );
         toState( MegaDevice::mrq_state_prerun, detail );
 
@@ -312,6 +323,8 @@ PreRunRawRoboUnit::PreRunRawRoboUnit( MegaDevice::RoboFsm *pFsm,
 
 void PreRunRawRoboUnit::onEnter( RoboMsg &detail )
 {
+    RawRoboUnit::initState();
+
     startTimer( status_timer_id, status_timer_tmo );
 }
 
@@ -328,13 +341,15 @@ RunningRawRoboUnit::RunningRawRoboUnit( MegaDevice::RoboFsm *pFsm,
 
 void RunningRawRoboUnit::onEnter( RoboMsg &detail )
 {
+    RawRoboUnit::initState();
+
     startTimer( status_timer_id, status_timer_tmo );
 }
 
 //! pre stop
 PreStopRawRoboUnit::PreStopRawRoboUnit( MegaDevice::RoboFsm *pFsm,
                      int members ) : RawRoboUnit( pFsm, members )
-{
+{    
     mName = "PreStopRawRoboUnit";
 }
 //void PreStopRawRoboUnit::proc( int msg, int subAx, int para )
@@ -343,5 +358,7 @@ PreStopRawRoboUnit::PreStopRawRoboUnit( MegaDevice::RoboFsm *pFsm,
 //}
 void PreStopRawRoboUnit::onEnter( RoboMsg &detail )
 {
+    RawRoboUnit::initState();
+
     startTimer( status_timer_id, status_timer_tmo );
 }

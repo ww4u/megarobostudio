@@ -1,6 +1,6 @@
 #include "motorstate.h"
 #include "ui_motorstate.h"
-
+#include "../../sys/sysapi.h"
 MotorState::MotorState(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::MotorState)
@@ -19,6 +19,8 @@ MotorState::MotorState(QWidget *parent) :
     {
         mStates.insert( 0, tr("IDLE") );
     }
+
+    mbTimerRunning = false;
 
     //! delete on close
     setAttribute( Qt::WA_DeleteOnClose );
@@ -43,10 +45,37 @@ void MotorState::setState( const QString &stat, int page )
 {
     ui->labelStat->setText( stat );
 
+    QString strRunning = "RUNNING";
+
     if ( mStates.contains( page ) )
-    { mStates[page] = stat;  }
+    {
+        if ( stat == strRunning )
+        {
+            //! enter running
+            if ( mStates[page] != strRunning )
+            { mRunningTime.start(); }
+            //! is running
+            else
+            {
+                ui->labelRunning->setText(  QString("%1 ms").arg( mRunningTime.elapsed() ) );
+                ui->labelRunning->setVisible( true );
+            }
+        }
+        else
+        { ui->labelRunning->setVisible( false );}
+
+        mStates[page] = stat;
+    }
     else
-    { mStates.insert( page, stat ); }
+    {
+        //! enter running
+        if ( stat == strRunning  )
+        { mRunningTime.start(); }
+
+        ui->labelRunning->setVisible( false );
+
+        mStates.insert( page, stat );
+    }
 
     ui->cmbRegion->setValue( page );
 }
@@ -62,9 +91,42 @@ void MotorState::setProgress( int mi, int ma, int n )
 {
     ui->progressBar->setRange( mi, ma );
     ui->progressBar->setValue( n );
+
+    //! guess the end time
+    ui->labelRunning->setVisible( true );
+    if ( mbTimerRunning )
+    {
+        if ( n > mLastProg )
+        {
+            float gTime = ( ma - n ) * mRunningTime.elapsed() / ( n - mLastProg );
+
+            if ( gTime > 0 )
+            {
+                ui->labelRunning->setText( QString("%1 ms").arg(gTime) );
+            }
+        }
+
+        mLastProg = n;
+        mRunningTime.restart();
+    }
+    else
+    {
+        mLastProg = n;
+        mRunningTime.restart();
+        mbTimerRunning = true;
+        ui->labelRunning->clear();
+    }
+
 }
 void MotorState::setProgress( bool b )
-{ ui->progressBar->setVisible( b ); }
+{
+    ui->progressBar->setVisible( b );
+
+    if ( b )
+    {}
+    else
+    { mbTimerRunning = false; }
+}
 
 void MotorState::on_cmbRegion_activated(int index)
 {

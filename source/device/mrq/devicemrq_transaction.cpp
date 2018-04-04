@@ -112,7 +112,6 @@ deviceProxyMotor *deviceMRQ::Motor( const tpvRegion &region )
     return mProxyMotors[ region ];
 }
 
-//! \note only n downloder by axes
 tpvDownloader *deviceMRQ::downloader( const tpvRegion &region )
 {
     Q_ASSERT( mDownloaders.contains( region.axes()) );

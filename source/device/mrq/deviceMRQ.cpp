@@ -92,13 +92,13 @@ void deviceMRQ::postCtor()
             //! tpv caps
             mTpvCaps.insert( region, DEF_TPV_CAP );logDbg()<<region.axes()<<region.page();
             mTpvIndexes.insert( region, 0 );
-        }
 
-        //! \note only axes() downloaders
-        pLoader = new tpvDownloader();
-        Q_ASSERT( NULL != pLoader );
-        pLoader->attachDevice( this, tpvRegion(i,0) );
-        mDownloaders.insert( i, pLoader );
+            //! loader for each region
+            pLoader = new tpvDownloader();
+            Q_ASSERT( NULL != pLoader );
+            pLoader->attachDevice( this, tpvRegion(i,j) );
+            mDownloaders.insert( tpvRegion(i,j), pLoader );
+        }
     }
 }
 
@@ -282,11 +282,16 @@ int deviceMRQ::call( const tpvRegion &region )
     return 0;
 }
 
-int deviceMRQ::rotate( pvt_region, float t, float ang )
+int deviceMRQ::rotate( pvt_region, float t, float ang, float endV )
 {
     run( pvt_region_p );
 
-    return pvtWrite( pvt_region_p, t, ang );
+    return pvtWrite( pvt_region_p, t, ang, endV );
+}
+
+int deviceMRQ::lightCouplingZero( pvt_region, float t, float angle, float endV )
+{
+    return rotate( pvt_region_p, t, angle, endV );
 }
 
 int deviceMRQ::fsmState( pvt_region )

@@ -68,6 +68,32 @@ int comAssist::align( double val, double unit )
     return aligned;
 }
 
+float comAssist::normalizeDegree360( float degree )
+{
+    while( degree >= 360 )
+    { degree -= 360; }
+    while( degree < 0 )
+    { degree += 360; }
+
+    return degree;
+}
+
+float comAssist::normalizeDegreeN360( float degree )
+{
+    while( degree > 0 )
+    { degree -= 360; }
+    while( degree <= -360 )
+    { degree += 360; }
+
+    return degree;
+}
+
+float comAssist::eulcidenDistance( float x1, float y1, float z1,
+                                 float x2, float y2, float z2 )
+{
+    return qSqrt( pow(x1-x2,2 ) + pow( y1-y2, 2 ) + pow(z1-z2, 2 ) );
+}
+
 bool comAssist::convertDataset( const QStringList &line,
                                float *pData,
                                int cols )

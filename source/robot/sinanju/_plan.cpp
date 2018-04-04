@@ -108,8 +108,12 @@ int robotSinanju::splitTrace( xxxGroup<tracePoint> &tracePoints,
     ret = ns_kinematic::getArmPosition_Size(
 
                     armLength,sizeof_array(armLength),
-                    convertAngle.angles, sizeof_array(convertAngle.angles),
+//                    convertAngle.angles, sizeof_array(convertAngle.angles),
+//                    refAngle.angles,
+
+                    convertAngle.angles,
                     refAngle.angles,
+                    sizeof_array(convertAngle.angles),
 
                     &tracePoints.data()->datas + offsetof_double( tracePoint, x ), sizeof_double(tracePoint),
                     &tracePoints.data()->datas + offsetof_double( tracePoint, vx ),sizeof_double(tracePoint),
@@ -131,8 +135,12 @@ int robotSinanju::splitTrace( xxxGroup<tracePoint> &tracePoints,
     ret = ns_kinematic::getArmPosition_Data(
 
                 armLength,sizeof_array(armLength),
-                convertAngle.angles, sizeof_array(convertAngle.angles),
+//                convertAngle.angles, sizeof_array(convertAngle.angles),
+//                refAngle.angles,
+
+                convertAngle.angles,
                 refAngle.angles,
+                sizeof_array(convertAngle.angles),
 
                 &tracePoints.data()->datas + offsetof_double( tracePoint, x ), sizeof_double(tracePoint),
                 &tracePoints.data()->datas + offsetof_double( tracePoint, vx ),sizeof_double(tracePoint),

@@ -364,6 +364,12 @@ void MainWindow::setupData()
 
     if ( mMcModel.mSysPref.mbMaximizeStartup )
     { showMaximized(); }
+
+    //! inst mgr
+    Q_ASSERT( NULL != mMcModel.m_pInstMgr );
+    mMcModel.m_pInstMgr->setTPVBase( mMcModel.mSysPref.mTimeUnit,
+                                     mMcModel.mSysPref.mPosUnit,
+                                     mMcModel.mSysPref.mVelUnit );
 }
 
 void MainWindow::setupService()
@@ -1018,12 +1024,16 @@ void MainWindow::on_actionForceStop_triggered()
 {
     if ( NULL != m_pDeviceMgr->m_pMgr )
     { m_pDeviceMgr->m_pMgr->emergencyStop(); }
+
+    m_pSysTimerThread->stopAll();
 }
 
 void MainWindow::on_actionReset_triggered()
 {
     if ( NULL != m_pDeviceMgr->m_pMgr )
     { m_pDeviceMgr->m_pMgr->hardReset(); }
+
+    m_pSysTimerThread->stopAll();
 }
 
 void MainWindow::on_actionAngle_A_triggered()
@@ -1095,3 +1105,5 @@ void MainWindow::on_actiontest_triggered()
     qApp->setStyleSheet(qss.readAll());
     qss.close();
 }
+
+

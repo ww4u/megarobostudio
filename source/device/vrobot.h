@@ -47,8 +47,7 @@ public:
 
         robot_complex = 1024,
         robot_motor = 1024,
-        robot_slide1,
-        robot_slide2,
+        robot_slide,
         robot_delta,
         robot_megatron,
         robot_sinanju,
@@ -56,6 +55,13 @@ public:
 
         robot_user = 65536,
     };
+
+protected:
+    static double _mTBase, _mPBase, _mVBase;      //! tune info
+public:
+    static void setTpvBase( double tBase,
+                    double pBase,
+                    double vBase );
 
 public:
     VRobot();
@@ -109,6 +115,11 @@ public:
 
     virtual int run( const tpvRegion &region=0  );
     virtual int stop( const tpvRegion &region=0  );
+    virtual int goZero( );
+    virtual int goZero( int jointTabId );
+    virtual int goZero( int jointTabId, bool bCcw );
+    virtual int goZero( const QList<int> &jointList,
+                        const QList<bool> &ccwList );
 
     virtual int setLoop( int n, const tpvRegion &region=0 );
     virtual int loopNow();
@@ -180,6 +191,9 @@ public:
     void setUartSensors( int n );
     int uartSensors();
 
+    void setZeroSpeed( double spd );
+    double zeroSpeed();
+
     QImage & getImage();
 
     RoboWorker *lpc( int ax );      //! local post call
@@ -202,8 +216,6 @@ public:
     virtual void setSubGroupId( int id );
     int getSubGroupId();
     int subGroupId();
-
-    void setTPVUnit( float t=1.0f, float p=1.0f, float v=1.0f );
 
     //! name@CH1
     MegaDevice::deviceMRQ *findDevice( const QString &name,
@@ -240,22 +252,29 @@ public:
 
     MegaDevice::InstMgr *m_pInstMgr;
 
-    double mTBase, mPBase, mVBase;      //! tune info
-
     QMap<tpvRegion, int> mRobotStatus;  //! status
 
                                         //! groupId
     int mSubGroup;
     int mSubGroupId;
+    double mZeroSpeed;
 
     QStringList mAxesConnectionName;    //! connected to device
     QStringList mJointName;             //! by config
+
     QList<bool> mJointAngleMask;        //! angles for each joint
 
-    QList <double> mRefAngles;          //! ref angles for each joint by joint id
-    QList <double> mRotateAngles;       //! rotate angle for the coordinate
-    QList <double> mArmLengths;         //! arm lengths from base:[0]
+    QList<bool> mAngleDir;              //! true: +
 
+    QList <double> mRefAngles;          //! 'ref' angles for each joint by joint id
+    QList <double> mRotateAngles;       //! rotate angle for the coordinate
+    QList <double> mArchAngles;         //! arch angles
+
+    QList <double> mInitAngles;         //! init angle
+    QList <double> mInitPos;            //! sinanju:x,y,z
+
+
+    QList <double> mArmLengths;         //! arm lengths from base:[0]
     double mBaseCompensation;
     double mLengthUnit;                 //! mm
 

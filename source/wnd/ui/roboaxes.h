@@ -7,12 +7,12 @@
 #include <QLCDNumber>
 #include "../../device/vrobot.h"
 #include "dlgview.h"
-#include "robojoint.h"
+//#include "robojoint.h"
 namespace Ui {
 class roboAxes;
 }
 
-
+class RoboJoint;
 class roboAxes : public DlgView
 {
     Q_OBJECT
@@ -31,7 +31,7 @@ protected Q_SLOTS:
 
     void slot_timeout();
     void slot_joint_action( int id, float dt, float angle );
-    void slot_joint_zero( int id );
+    void slot_joint_zero( int id, bool bCcw );
 
     void slot_robo_changed( const QString &roboName );
 
@@ -45,6 +45,14 @@ protected:
     void rotate( int jointId,
                  float t1, float a1,
                  float t2, float a2 );
+
+    void zero( int jointId,
+               bool bCcw );
+
+private slots:
+
+
+    void on_btnZero_clicked();
 
 private:
     Ui::roboAxes *ui;

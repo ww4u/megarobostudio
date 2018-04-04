@@ -65,8 +65,23 @@ void RawRobo::switchPrepare( const tpvRegion &region )
     MegaDevice::DeviceId id( mCanGroupId );
     m_pBus->write( id, mc_MOTION, sc_MOTION_SWITCH,
                    x_channel,
-                   (byte)MRQ_MOTION_SWITCH_PREPARE,
-                   (byte)region.page() );
+                  (byte)MRQ_MOTION_SWITCH_PREPARE,
+                  (byte)region.page() );
+
+    //! for each call
+//    MegaDevice::deviceMRQ *pMrq;
+//    int ax;
+//    tpvRegion mrqRegion;
+//    for ( int i = 0; i < axes(); i++ )
+//    {
+//        pMrq = jointDevice( i, &ax );
+
+//        Q_ASSERT( NULL != pMrq );
+
+//        mrqRegion.setAx( ax );
+//        mrqRegion.setPage( region.page() );
+//        pMrq->call( mrqRegion );
+//    }
 }
 void RawRobo::switchEmergStop( const tpvRegion &region )
 {

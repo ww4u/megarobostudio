@@ -96,7 +96,7 @@ static scpi_result_t _scpi_program( scpi_t * context )
     if (strLen < 1)
     { return SCPI_RES_ERR; }
 
-    //! t,x,y,z,h,interp
+    //! x,y,z,h,interp,t
     QList<float> dataset;
     int col = 6;
     if ( 0 != comAssist::loadDataset( pLocalStr, strLen, col, dataset ) )
@@ -110,10 +110,12 @@ static scpi_result_t _scpi_program( scpi_t * context )
     TraceKeyPoint tp;
     for ( int i = 0; i < dataset.size()/col; i++ )
     {
-        for ( int j = 0; j < col; j++ )
+        for ( int j = 0; j < col-1; j++ )
         {
-            tp.datas[j] = dataset.at( i * col + j);
+            tp.datas[j+1] = dataset.at( i * col + j);
         }
+
+        tp.t = dataset.at( i * col + col - 1);
 
         curve.append( tp );
     }
@@ -240,6 +242,29 @@ static scpi_result_t _scpi_test2( scpi_t * context )
     return SCPI_RES_OK;
 }
 
+//! int jointid
+static scpi_result_t _scpi_gozero( scpi_t * context )
+{
+    DEF_LOCAL_VAR();
+    DEF_ROBO();
+
+    int joint;
+
+    //! robo
+    if ( SCPI_ParamInt32(context, &joint, true) != true )
+    {
+        pRobo->goZero();
+    }
+    //! some joint
+    //! \todo by change
+    else
+    {
+        pRobo->goZero( joint, true );
+    }
+
+    return SCPI_RES_OK;
+}
+
 static scpi_command_t _scpi_cmds[]=
 {
 
@@ -253,6 +278,7 @@ static scpi_command_t _scpi_cmds[]=
 
     CMD_ITEM( "PROGRAM", _scpi_program ),
     CMD_ITEM( "CALL", _scpi_call ),
+    CMD_ITEM( "ZERO", _scpi_gozero ),
 
     CMD_ITEM( "TEST1", _scpi_test1 ),
     CMD_ITEM( "TEST2", _scpi_test2 ),

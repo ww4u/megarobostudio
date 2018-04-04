@@ -14,7 +14,9 @@ SOURCES = \
     _plan.cpp \
     _movement.cpp \
     _download.cpp \
-    _state.cpp
+    _state.cpp \
+    _calibration.cpp \
+    _setup.cpp
 
 HEADERS = \
     megatron.h

@@ -162,8 +162,8 @@ void AngleMonitor::slot_anglewidget_close( QWidget * pWig )
 
 void  AngleMonitor::slot_timeout()
 {
-    qDebug()<<__FUNCTION__<<__LINE__;
-    sampleProc();
+    if ( isVisible() )  //! only visible to proc
+    { sampleProc(); }
 }
 
 void AngleMonitor::on_spinInterval_valueChanged(int arg1)

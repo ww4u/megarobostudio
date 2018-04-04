@@ -40,6 +40,18 @@ robotSinanju::robotSinanju()
     mJointAngleMask[2]=true;
     mJointAngleMask[3]=true;
 
+    //! angle dir
+    mAngleDir.clear();
+    mAngleDir<<true<<false<<true<<false;     //! big arm invert
+
+    //! zero angle
+    //! must be caled
+    mInitAngles.clear();
+    mInitAngles<<1.553<<5.504<<318<<182.9;
+
+    mInitPos.clear();
+    mInitPos<<250<<0<<(247.75+255);
+
     //! debug used
     //! alter the axes name
     mAxesConnectionName[0] = "CH1@device1"; //! base
@@ -49,11 +61,29 @@ robotSinanju::robotSinanju()
     mAxesConnectionName[4] = "CH5@device1"; //! hand
 
     //! rotate angle
-    //! 0,90,180,180
+    //! by the arch
+    //! ---------
+    //! |
     mRotateAngles.append( 0 );
     mRotateAngles.append( 90 );
-    mRotateAngles.append( 180 );
-    mRotateAngles.append( 180 );
+    mRotateAngles.append( 0 );
+    mRotateAngles.append( -90 );
+
+    //! ref
+    mRefAngles.append( 0 );
+    mRefAngles.append( 180 );
+    mRefAngles.append( -90 );
+    mRefAngles.append( -90 );
+
+    //! arch angles
+    //! angle ref to the pre
+    //!  ----
+    //!  |  |
+    //!  |
+    mArchAngles.append( 0 );
+    mArchAngles.append( 180 );
+    mArchAngles.append( -90 );
+    mArchAngles.append( -90 );
 
     //! arm length
     //! 247.75, 255, 250, 0, 0, 0
@@ -65,17 +95,15 @@ robotSinanju::robotSinanju()
     mArmLengths.append( 0 );
     mArmLengths.append( 0 );
 
-    //! ref point
-    mRefAngles.append( 0 );
-    mRefAngles.append( 90 );
-    mRefAngles.append( -90 );
-    mRefAngles.append( -90 );
-    mRefAngles.append( 0 );
+    //! zero
+    mHandZeroSpeed = 5;
+    mHandZeroTime = 5;
+    mHandZeroAngle = 60;
 }
 
 robotSinanju::~robotSinanju()
 {
-    delete_all( mJointsGroup );
+
 }
 
 static msg_type _msg_patterns[]={
@@ -134,12 +162,37 @@ void robotSinanju::onMsg( int subAxes, RoboMsg &msg )
 int robotSinanju::serialIn( QXmlStreamReader &reader )
 {
     int ret;
-    ret = mHandActionModel.serialIn( reader );
+
+    while(reader.readNextStartElement())
+    {logDbg()<<reader.name();
+        if ( reader.name() == "angle" )
+        { logDbg();ret = serialInAngle( reader ); }
+        else if ( reader.name() == "hand_zero" )
+        { logDbg();ret = serialInHandZero( reader ); }
+        else if ( reader.name() == "hand" )
+        { logDbg();ret = mHandActionModel.serialIn( reader ); }
+        else
+        {}
+    }
     return ret;
 }
 int robotSinanju::serialOut( QXmlStreamWriter &writer )
 {
-    return mHandActionModel.serialOut( writer );
+    int ret;
+
+    writer.writeStartElement("angle");
+    ret = serialOutAngle( writer );
+    writer.writeEndElement();
+
+    writer.writeStartElement("hand_zero");
+    ret = serialOutHandZero( writer );
+    writer.writeEndElement();
+
+    writer.writeStartElement("hand");
+    ret = mHandActionModel.serialOut( writer );
+    writer.writeEndElement();
+
+    return ret;
 }
 
 int robotSinanju::download( QList<tpvGroup*> &groups,
@@ -267,4 +320,15 @@ QAbstractTableModel *robotSinanju::handActions()
 { return &mHandActionModel; }
 
 
-
+void robotSinanju::setHandZeroAttr( double zeroTime, double zeroAngle, double zeroSpeed )
+{
+    mHandZeroTime = zeroTime;
+    mHandZeroAngle = zeroAngle;
+    mHandZeroSpeed = zeroSpeed;
+}
+void robotSinanju::handZeroAttr( double &zeroTime, double &zeroAngle, double &zeroSpeed )
+{
+    zeroTime = mHandZeroTime;
+    zeroAngle = mHandZeroAngle;
+    zeroSpeed = mHandZeroSpeed;
+}

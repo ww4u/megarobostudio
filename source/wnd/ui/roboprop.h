@@ -11,7 +11,7 @@
 #include "deltapref.h"
 
 #include "sinanjupref.h"
-#include "h2pref.h"
+#include "axnpref.h"
 
 #include "robohand.h"
 
@@ -42,7 +42,7 @@ protected:
     void buildConnection();
 
 private slots:
-    void on_page_changed( int index );
+    void slot_page_changed( int index );
 
     void on_btnOK_clicked();
 
@@ -61,7 +61,7 @@ private:
     MegatronPref *m_pMegatronPref;
     DeltaPref *m_pDeltaPref;
     SinanjuPref *m_pSinanjuPref;
-    H2Pref *m_pH2Pref;
+    AxnPref *m_pAxnPref;
 
     RoboHand *m_pHandPage;
 

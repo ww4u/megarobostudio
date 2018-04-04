@@ -19,6 +19,10 @@ public:
                                     const QString &suffix );
 
     static int     align( double val, double unit );
+    static float   normalizeDegree360( float degree );
+    static float   normalizeDegreeN360( float degree );
+    static float   eulcidenDistance( float x1, float y1, float z1,
+                                     float x2, float y2, float z2 );
 
     static bool    ammendFileName( QString &fileName );
 

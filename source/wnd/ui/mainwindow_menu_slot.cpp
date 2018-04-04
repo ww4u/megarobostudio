@@ -259,6 +259,18 @@ void MainWindow::on_actionDocs_triggered()
     QProcess::execute( "explorer.exe", args );
 }
 
+void MainWindow::on_actionPackage_triggered()
+{
+    QStringList args;
+    QString str;
+    str = QCoreApplication::applicationDirPath() + QStringLiteral("/package");
+    str.replace("/","\\");
+    args<<str;
+    //! \todo linux
+    logDbg()<<args;
+    QProcess::execute( "explorer.exe", args );
+}
+
 //! pref
 void MainWindow::on_actionpref_triggered( )
 {

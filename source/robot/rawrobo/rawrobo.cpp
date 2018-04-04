@@ -3,6 +3,11 @@
 #include "../../device/mrq/devicemrq_state.h"
 #include "../../device/board/_MRQ_enum.h"
 
+D1Point::D1Point( float pt, float pp )
+{
+    t = pt;
+    p = pp;
+}
 
 TraceKeyPoint::TraceKeyPoint( float pt, float px, float py, float pz, float phand )
 {
@@ -56,6 +61,8 @@ RawRobo::~RawRobo()
     }
 
     mFsms.clear();
+
+    delete_all( mJointsGroup );
 }
 
 void RawRobo::postCtor()
@@ -69,7 +76,6 @@ void RawRobo::postCtor()
     //! create the fsms
     tpvRegion region;
     RawRoboFsm *pFsm;
-//    for ( int i = 0; i < axes(); i++ )
     for ( int i = 0; i < regions(); i++ )
     {
         region.setRegion( 0, i );

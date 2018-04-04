@@ -28,9 +28,6 @@ public:
     virtual int serialIn( QXmlStreamReader &reader );
     virtual int serialOut( QXmlStreamWriter &writer );
 
-//    virtual int download( tpvGroup *pGroup, int axes = 0 );
-//    virtual int download( motionGroup *pGroup, int axes = 0 );
-
     virtual int download( QList<tpvGroup*> &groups,
                           QList<int> &joints,       //! joint tab id
                           const tpvRegion &region );
@@ -39,12 +36,8 @@ public:
 
     virtual int run( const tpvRegion &region=0  );  //! just run
     virtual int stop( const tpvRegion &region=0 );  //! stop
-
-//    virtual int run( int axes );
-//    virtual int stop( int axes );
-
-//    virtual int run( );
-//    virtual int stop( );
+    virtual int goZero();
+    virtual int goZero( int jointId, bool bCcw );
 
     virtual int setLoop( int n, const tpvRegion &region=0 );
     virtual int loopNow();
@@ -68,6 +61,14 @@ public:
     int moveTest2( const tpvRegion &region=0 );
 
     int nowPose( TraceKeyPoint &pos );
+    int nowAngle( QList<double> &angles );
+    int angleToPos( float angles[4],
+                     TraceKeyPoint &pos );
+    void diffAngle( float angles[4],
+                    float anglesOut[4] );
+    void diffAngle( float angles[4],
+                    double anglesOut[4] );
+
     int nowDist( QList<float> &dists );
 
 protected:
@@ -88,8 +89,22 @@ protected:
                        QList< tpvGroup *> &gp );
 
 protected:
+    int serialInAngle( QXmlStreamReader &reader );
+    int serialOutAngle( QXmlStreamWriter &writer );
+
+    int serialInHandZero( QXmlStreamReader &reader );
+    int serialOutHandZero( QXmlStreamWriter &writer );
+
+
+public:
+    void setHandZeroAttr( double zeroTime, double zeroAngle, double zeroSpeed );
+    void handZeroAttr( double &zeroTime, double &zeroAngle, double &zeroSpeed );
+
+protected:
     handActionModel mHandActionModel;
-    QList< tpvGroup *> mJointsGroup;
+
+    double mHandZeroTime, mHandZeroAngle, mHandZeroSpeed;
+
 };
 
 #endif

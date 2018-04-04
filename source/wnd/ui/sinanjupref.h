@@ -29,14 +29,19 @@ protected:
 
     int applyGroupId();
 
+private slots:
+    void on_btnGoZero_clicked();
+
+    void on_btnZeroHand_clicked();
+
 private:
     Ui::SinanjuPref *ui;
     QList<QTreeWidgetItem*> mItems;
+    QList<QDoubleSpinBox *> mInitAngles;
+    QList<QCheckBox *> mInvertAngles;
 
     QLabel *mLabels[8];
     QLineEdit *mEdits[8];
-
-
 };
 
 #endif // ROBOPREF_H

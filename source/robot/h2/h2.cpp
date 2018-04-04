@@ -41,7 +41,7 @@ robotH2::robotH2()
 
 robotH2::~robotH2()
 {
-    delete_all( mJointsGroup );
+
 }
 
 int robotH2::serialIn( QXmlStreamReader &reader )

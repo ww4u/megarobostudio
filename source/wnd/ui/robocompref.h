@@ -28,8 +28,9 @@ protected:
 private:
     Ui::RoboComPref *ui;
 
-    QIntValidator *m_pGroupIdValidaor;
-    QIntValidator *m_pGroupSubIdValidator;
+    QList<QLabel*> mAxesLabels;
+    QList<QLineEdit*> mAxesEdits;
+
 };
 
 #endif // ROBOCOMPREF_H

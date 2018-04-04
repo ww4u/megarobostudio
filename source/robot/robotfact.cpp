@@ -28,15 +28,17 @@ VRobot *robotFact::createRobot( const QString &str )
             break;
         }
 
-    //    if ( QString::compare(str,"motor",Qt::CaseInsensitive) == 0 )
-    //    {
-    //        return new robotMotor();
-    //    }
+        if ( QString::compare(str,"motor",Qt::CaseInsensitive) == 0 )
+        {
+            pRobo = new robotMotor();
+            break;
+        }
 
-    //    if ( QString::compare(str,"slide1",Qt::CaseInsensitive) == 0 )
-    //    {
-    //        return new robotSlide1();
-    //    }
+        if ( QString::compare(str,"slide",Qt::CaseInsensitive) == 0 )
+        {
+            pRobo = new robotSlide();
+            break;
+        }
     //    if ( QString::compare(str,"slide2",Qt::CaseInsensitive) == 0 )
     //    {
     //        return new robotSlide2();
@@ -69,7 +71,10 @@ VRobot *robotFact::createRobot( const QString &str )
         }
 
         else
-        { return NULL; }
+        {
+            Q_ASSERT(false);
+            return NULL;
+        }
 
     }while(0);
 

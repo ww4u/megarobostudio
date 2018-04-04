@@ -203,7 +203,7 @@ void IdleMrqUnit::proc( int msg, RoboMsg &detail )
     { toState( mrq_state_running, detail ); }
 
     else if ( msg == mrq_msg_error )
-    { }
+    { sysLog( __FUNCTION__, QString::number(__LINE__) ); }
 
     else    //! keep
     { }
@@ -224,10 +224,10 @@ void RunReqedMrqUnit::proc( int msg, RoboMsg &detail )
     { }
 
     else if ( msg == mrq_msg_stop )
-    { toState(mrq_state_idle, detail ); }
+    { toState(mrq_state_idle, detail ); sysLog( __FUNCTION__, QString::number(__LINE__) ); }
 
     else if ( msg == mrq_msg_rst )
-    { toState(mrq_state_idle, detail ); }
+    { toState(mrq_state_idle, detail ); sysLog( __FUNCTION__, QString::number(__LINE__) ); }
 
     else if ( msg == mrq_msg_program )
     { toState( mrq_state_program, detail ); }
@@ -240,7 +240,7 @@ void RunReqedMrqUnit::proc( int msg, RoboMsg &detail )
 
     //! device status
     else if ( msg == mrq_msg_idle )
-    { toState(mrq_state_idle, detail ); }
+    { toState(mrq_state_idle, detail ); sysLog( __FUNCTION__, QString::number(__LINE__) ); }
 
     else if ( msg == mrq_msg_calcing )
     { toState( mrq_state_calcing, detail ); }
@@ -255,7 +255,7 @@ void RunReqedMrqUnit::proc( int msg, RoboMsg &detail )
     { toState( mrq_state_running, detail ); }
 
     else if ( msg == mrq_msg_error )
-    { toState(mrq_state_idle, detail ); }
+    { toState(mrq_state_idle, detail ); sysLog( __FUNCTION__, QString::number(__LINE__) ); }
 
     else    //! keep
     { }
@@ -277,20 +277,22 @@ void ProgramMrqUnit::proc( int msg, RoboMsg &detail )
 
     else if ( msg == mrq_msg_stop )
     {
-        toState(mrq_state_idle, detail );
+        toState(mrq_state_idle, detail ); sysLog( __FUNCTION__, QString::number(__LINE__) );
 
         //! \todo stop downloading
     }
 
     else if ( msg == mrq_msg_rst )
-    { toState(mrq_state_idle, detail ); }
+    { toState(mrq_state_idle, detail ); sysLog( __FUNCTION__, QString::number(__LINE__) ); }
 
     else if ( msg == mrq_msg_program )
     { toState( mrq_state_program, detail ); }
 
     //! device status
     else if ( msg == mrq_msg_idle )
-    { toState(mrq_state_idle, detail );  }
+    { //! keep
+    }
+    //{ toState(mrq_state_idle, detail ); sysLog( __FUNCTION__, QString::number(__LINE__) ); Q_ASSERT(false); }
 
     else if ( msg == mrq_msg_calcing )
     { toState( mrq_state_calcing, detail ); }
@@ -305,7 +307,7 @@ void ProgramMrqUnit::proc( int msg, RoboMsg &detail )
     { toState( mrq_state_running, detail ); }
 
     else if ( msg == mrq_msg_error )
-    { toState(mrq_state_idle, detail ); }
+    { toState(mrq_state_idle, detail ); sysLog( __FUNCTION__, QString::number(__LINE__) ); }
 
     else    //! keep
     { }
@@ -329,20 +331,20 @@ void CalcingMrqUnit::proc( int msg, RoboMsg &detail )
 
     else if ( msg == mrq_msg_stop )
     {
-        toState(mrq_state_idle, detail );
+        toState(mrq_state_idle, detail ); sysLog( __FUNCTION__, QString::number(__LINE__) );
 
         //! \todo stop downloading
     }
 
     else if ( msg == mrq_msg_rst )
-    { toState(mrq_state_idle, detail );  }
+    { toState(mrq_state_idle, detail ); sysLog( __FUNCTION__, QString::number(__LINE__) ); }
 
     else if ( msg == mrq_msg_program )
     { toState( mrq_state_program, detail ); }
 
     //! device status
     else if ( msg == mrq_msg_idle )
-    { toState(mrq_state_idle, detail );  }
+    { sysLog( __FUNCTION__, QString::number(__LINE__) ); toState(mrq_state_idle, detail );  }
 
     else if ( msg == mrq_msg_calcing )
     { toState( mrq_state_calcing, detail ); }
@@ -357,7 +359,7 @@ void CalcingMrqUnit::proc( int msg, RoboMsg &detail )
     { toState( mrq_state_running, detail ); }
 
     else if ( msg == mrq_msg_error )
-    { toState(mrq_state_idle, detail ); }
+    { sysLog( __FUNCTION__, QString::number(__LINE__) ); toState(mrq_state_idle, detail ); }
 
     else    //! keep
     { }
@@ -396,20 +398,20 @@ logDbg()<<QThread::currentThreadId()<<msg;
 
     else if ( msg == mrq_msg_stop )
     {
-        toState(mrq_state_idle, detail );
+        toState(mrq_state_idle, detail );sysLog( __FUNCTION__, QString::number(__LINE__) );
 
         //! \todo stop downloading
     }
 
     else if ( msg == mrq_msg_rst )
-    { toState(mrq_state_idle, detail );  }
+    { toState(mrq_state_idle, detail );  sysLog( __FUNCTION__, QString::number(__LINE__) );}
 
     else if ( msg == mrq_msg_program )
     { toState( mrq_state_program, detail ); }
 
     //! device status
     else if ( msg == mrq_msg_idle )
-    { toState(mrq_state_idle, detail ); }
+    { sysLog( __FUNCTION__, QString::number(__LINE__) ); toState(mrq_state_idle, detail ); }
 
     else if ( msg == mrq_msg_calcing )
     { toState( mrq_state_calcing, detail ); }
@@ -449,7 +451,7 @@ logDbg()<<QThread::currentThreadId()<<msg;
     { toState( mrq_state_running, detail ); }
 
     else if ( msg == mrq_msg_error )
-    { toState(mrq_state_idle, detail ); }
+    { sysLog( __FUNCTION__, QString::number(__LINE__) ); toState(mrq_state_idle, detail ); }
 
     else    //! keep
     { }
@@ -470,7 +472,7 @@ void CalcendMrqUnit::onEnter( RoboMsg &detail )
                                         );
         if ( ret != 0 )
         {
-            toState( mrq_state_idle, detail );
+            toState( mrq_state_idle, detail );sysLog( __FUNCTION__, QString::number(__LINE__) );
         }
         else
         {
@@ -519,34 +521,33 @@ void StandbyMrqUnit::proc( int msg, RoboMsg &detail )
         logDbg();
 
         if ( ret != 0  )
-        { toState(mrq_state_idle, detail );  }
+        { toState(mrq_state_idle, detail );  sysLog( __FUNCTION__, QString::number(__LINE__) ); }
         else
         { toState(mrq_state_prerun, detail ); }
     }
 
     else if ( msg == mrq_msg_stop )
     {
-        toState(mrq_state_idle, detail );
-
+        toState(mrq_state_idle, detail ); sysLog( __FUNCTION__, QString::number(__LINE__) );
         //! \todo stop downloading
     }
 
     else if ( msg == mrq_msg_rst )
-    { toState(mrq_state_idle, detail ); }
+    { toState(mrq_state_idle, detail ); sysLog( __FUNCTION__, QString::number(__LINE__) );}
 
     else if ( msg == mrq_msg_program )
     { toState( mrq_state_program, detail ); }
 
     //! device status
     else if ( msg == mrq_msg_idle )
-    { toState(mrq_state_idle, detail ); }
+    { toState(mrq_state_idle, detail ); sysLog( __FUNCTION__, QString::number(__LINE__) );}
 
     else if ( msg == mrq_msg_calcing )
     { toState( mrq_state_calcing, detail ); }
 
     //! end
     else if ( msg == mrq_msg_calcend )
-    { toState( mrq_state_idle, detail ); logDbg(); }
+    { toState( mrq_state_idle, detail ); sysLog( __FUNCTION__, QString::number(__LINE__) ); }
 
     else if ( msg == mrq_msg_standby )
     {
@@ -568,7 +569,7 @@ void StandbyMrqUnit::proc( int msg, RoboMsg &detail )
     { toState( mrq_state_running, detail ); }
 
     else if ( msg == mrq_msg_error )
-    { toState(mrq_state_idle, detail ); }
+    { toState(mrq_state_idle, detail ); sysLog( __FUNCTION__, QString::number(__LINE__) ); }
 
     else    //! keep
     { }
@@ -595,7 +596,7 @@ void StandbyMrqUnit::onEnter( RoboMsg &detail )
         logDbg();
 
         if ( ret != 0  )
-        { toState(mrq_state_idle, detail );  }
+        { toState(mrq_state_idle, detail );  sysLog( __FUNCTION__, QString::number(__LINE__) ); }
         else
         { toState(mrq_state_prerun, detail ); }
 
@@ -622,26 +623,26 @@ void PreRunMrqUnit::proc( int msg, RoboMsg &detail )
                                             MRQ_MOTION_SWITCH_STOP,
                                             (MRQ_MOTION_SWITCH_1)selfFsm()->page() );
 
-        toState(mrq_state_idle, detail);
+        toState(mrq_state_idle, detail);sysLog( __FUNCTION__, QString::number(__LINE__) );
 
         //! \todo stop downloading
     }
 
     else if ( msg == mrq_msg_rst )
-    { toState(mrq_state_idle, detail ); }
+    { toState(mrq_state_idle, detail ); sysLog( __FUNCTION__, QString::number(__LINE__) ); }
 
     else if ( msg == mrq_msg_program )
     { toState( mrq_state_program, detail ); }
 
     //! device status
     else if ( msg == mrq_msg_idle )
-    { toState(mrq_state_idle, detail ); }
+    { toState(mrq_state_idle, detail ); sysLog( __FUNCTION__, QString::number(__LINE__) ); }
 
     else if ( msg == mrq_msg_calcing )
     { toState( mrq_state_calcing, detail ); }
 
     else if ( msg == mrq_msg_calcend )
-    { toState( mrq_state_idle, detail ); }
+    { toState( mrq_state_idle, detail ); sysLog( __FUNCTION__, QString::number(__LINE__) ); }
 
     else if ( msg == mrq_msg_standby )
     {
@@ -656,7 +657,7 @@ void PreRunMrqUnit::proc( int msg, RoboMsg &detail )
     { toState( mrq_state_running, detail ); }
 
     else if ( msg == mrq_msg_error )
-    { toState(mrq_state_idle, detail ); }
+    { toState(mrq_state_idle, detail ); sysLog( __FUNCTION__, QString::number(__LINE__) ); }
 
     else    //! keep
     { }
@@ -688,7 +689,7 @@ void RunningMrqUnit::proc( int msg, RoboMsg &detail )
     }
     else
     {
-        toState( mrq_state_idle, detail );
+        toState( mrq_state_idle, detail ); sysLog( __FUNCTION__, QString::number(__LINE__), QString::number(msg) );
     }
 }
 
@@ -712,20 +713,20 @@ void PreStopMrqUnit::proc( int msg, RoboMsg &detail )
 
     else if ( msg == mrq_msg_stop )
     {
-        toState(mrq_state_idle, detail );
+        toState(mrq_state_idle, detail ); sysLog( __FUNCTION__, QString::number(__LINE__) );
 
         //! \todo stop downloading
     }
 
     else if ( msg == mrq_msg_rst )
-    { toState(mrq_state_idle, detail ); }
+    { toState(mrq_state_idle, detail ); sysLog( __FUNCTION__, QString::number(__LINE__) ); }
 
     else if ( msg == mrq_msg_program )
     { toState( mrq_state_program, detail ); }
 
     //! device status
     else if ( msg == mrq_msg_idle )
-    { toState(mrq_state_idle, detail ); }
+    { toState(mrq_state_idle, detail ); sysLog( __FUNCTION__, QString::number(__LINE__) ); }
 
     else if ( msg == mrq_msg_calcing )
     { toState( mrq_state_calcing, detail ); }
@@ -740,7 +741,7 @@ void PreStopMrqUnit::proc( int msg, RoboMsg &detail )
     { toState( mrq_state_running, detail ); }
 
     else if ( msg == mrq_msg_error )
-    { toState(mrq_state_idle, detail ); }
+    { toState(mrq_state_idle, detail ); sysLog( __FUNCTION__, QString::number(__LINE__) ); }
 
     else    //! keep
     { }

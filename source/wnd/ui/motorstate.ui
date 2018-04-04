@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>457</width>
-    <height>88</height>
+    <height>64</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,7 +18,7 @@
     <number>0</number>
    </property>
    <property name="verticalSpacing">
-    <number>6</number>
+    <number>3</number>
    </property>
    <property name="leftMargin">
     <number>0</number>
@@ -38,6 +38,24 @@
       <string/>
      </property>
      <layout class="QFormLayout" name="formLayout_2">
+      <property name="horizontalSpacing">
+       <number>3</number>
+      </property>
+      <property name="verticalSpacing">
+       <number>3</number>
+      </property>
+      <property name="leftMargin">
+       <number>3</number>
+      </property>
+      <property name="topMargin">
+       <number>3</number>
+      </property>
+      <property name="rightMargin">
+       <number>3</number>
+      </property>
+      <property name="bottomMargin">
+       <number>3</number>
+      </property>
       <item row="0" column="0" colspan="2">
        <layout class="QHBoxLayout" name="horizontalLayout">
         <property name="spacing">
@@ -90,6 +108,13 @@
         </item>
         <item>
          <widget class="ValueComboBox" name="cmbRegion"/>
+        </item>
+        <item>
+         <widget class="QLabel" name="labelRunning">
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
         </item>
         <item>
          <spacer name="horizontalSpacer">

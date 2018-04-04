@@ -13,8 +13,9 @@ enum mrqMsg
     mrq_msg_stop,       //! region
     mrq_msg_force_stop, //! region
     mrq_msg_rst,        //! region
-//    mrq_msg_prepare,    //! region
+
     mrq_msg_call,       //! region ( load + run )
+//    mrq_msg_zero,
 
     mrq_msg_program,    //! region
 

@@ -1004,26 +1004,40 @@ int MEGA_EXPORT GetEndPosition(
     double* armLengthArray,     //! foreach arm
     int armCount,		//! arm count: 6
 
-    double* deltAngles,		//! delta angle: degree
-    double* angles,		//! current angle 0~360
+//    double* deltAngles,		//! delta angle: degree
+//    double*
+
+    double *rotAngles,
+    double *archAngles,
+    double *deltaAngles,
+
+//    double* angles,		//! current angle 0~360
     int angleCount,             //! 4
 
     double* res)		//! out: x, y, z
 {
     if (NULL == armLengthArray
-        || NULL == deltAngles
-        || NULL == angles
+        || NULL == rotAngles
+        || NULL == archAngles
+        || NULL == deltaAngles
         || NULL == res)
     {
         return -1;
     }
 
-    double localRads[4];                              //! Ms Builder can not variable array
+    double localRads[4];
+
+    //! delta + arch
+    vectorAdd( deltaAngles, archAngles, angleCount, localRads );
+
+    //! - rot Angle
+    vectorSub( localRads, rotAngles, angleCount, localRads );
+                                                        //! Ms Builder can not variable array
                                                         //! compensation
-    vectorSub(angles, deltAngles, angleCount, localRads);
 
     degToRad(localRads, angleCount, localRads);       //! convert angle to rad
 
+    normalize_pis( localRads, angleCount );
                                                         //! const vars
     double s1, c1, s2, c2, s2a3, c2a3, s2a3a4, c2a3a4;
 
@@ -1075,8 +1089,13 @@ int MEGA_EXPORT GetEndPosition(
 int sloveArmPosition(
     double* armLength, int armCount,
 
-    double* deltAngles, int angleCount,    //! angles: [0~3]
-    double* posRef,                        //!
+//    double* deltAngles, int angleCount,    //! angles: [0~3]
+//    double* posRef,                        //!
+
+    double *rotAngles,
+    double *archAngles,
+
+    int angleCount,
 
     double* posIn, int skipP,
     double* vIn, int skipV,
@@ -1088,7 +1107,7 @@ int sloveArmPosition(
     double posLast[4];
 
     //! rotate the angle
-    vectorSub(posRef, deltAngles, angleCount, posLast);       //! ref - delta = last
+    vectorSub( archAngles, rotAngles, angleCount, posLast );
 
     //! to rad
     degToRad(posLast, angleCount, posLast);                   //! last * 180/pi
@@ -1192,8 +1211,13 @@ int sloveArmPosition(
 int  MEGA_EXPORT getArmPosition_Size(
     double* armLength, int armCount,
 
-    double* deltAngles, int angleCount,    //! angles: [0~3]
-    double* posRef,                        //!
+//    double* deltAngles, int angleCount,    //! angles: [0~3]
+//    double* posRef,                        //!
+
+    double *rotAngles,
+    double *archAngles,
+
+    int angleCount,
 
     double* posIn, int skipP,
     double* vIn, int skipV,
@@ -1206,8 +1230,11 @@ int  MEGA_EXPORT getArmPosition_Size(
 
     int ret;
     ret = sloveArmPosition( armLength, armCount,
-                            deltAngles, angleCount,
-                            posRef,
+//                            deltAngles, angleCount,
+//                            posRef,
+                            rotAngles,
+                            archAngles,
+                            angleCount,
 
                             posIn, skipP,
                             vIn, skipV,
@@ -1225,8 +1252,13 @@ int  MEGA_EXPORT getArmPosition_Size(
 int  MEGA_EXPORT getArmPosition_Data(
     double* armLength, int armCount,
 
-    double* deltAngles, int angleCount,    //! angles: [0~3]
-    double* posRef,                        //!
+//    double* deltAngles, int angleCount,    //! angles: [0~3]
+//    double* posRef,                        //!
+
+    double *rotAngles,
+    double *archAngles,
+
+    int angleCount,
 
     double* posIn, int skipP,
     double* vIn, int skipV,
@@ -1242,8 +1274,12 @@ int  MEGA_EXPORT getArmPosition_Data(
 
     int ret;
     ret = sloveArmPosition( armLength, armCount,
-                            deltAngles, angleCount,
-                            posRef,
+//                            deltAngles, angleCount,
+//                            posRef,
+
+                            rotAngles,
+                            archAngles,
+                            angleCount,
 
                             posIn, skipP,
                             vIn, skipV,
@@ -1269,7 +1305,7 @@ int  MEGA_EXPORT getArmPosition_Data(
         radToDeg(&outRes[m * 9], 4, &outRes[m * 9]);
 
         //! compensation
-        vectorAdd(&outRes[m * 9], deltAngles, 4, &outRes[m * 9]);
+        vectorAdd(&outRes[m * 9], rotAngles, 4, &outRes[m * 9]);
 
         //! v
         memcpy( outRes + m * 9 + 4, resInfo.at(m).V, 4 * sizeof(double) );

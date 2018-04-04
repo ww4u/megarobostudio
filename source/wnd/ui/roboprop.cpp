@@ -120,9 +120,12 @@ void roboProp::setupUi( int id )
         m_pSinanjuPref  = new_widget( SinanjuPref, ":/res/image/icon2/settings_light.png", tr("Pref") );
         m_pHandPage  = new_widget( RoboHand, ":/res/image/icon2/activity.png", tr("Action") );
     }
-    else if ( VRobot::robot_h2 == id )
+    else if ( VRobot::robot_h2 == id
+              || VRobot::robot_slide == id
+              || VRobot::robot_motor == id
+              )
     {
-        m_pH2Pref = new_widget( H2Pref, ":/res/image/icon2/settings_light.png", tr("Pref") );
+        m_pAxnPref = new_widget( AxnPref, ":/res/image/icon2/settings_light.png", tr("Pref") );
     }
     else
     {}
@@ -147,7 +150,7 @@ void roboProp::setupUi( int id )
     }
 
     //! post
-    on_page_changed( ui->stackedWidget->currentIndex() );
+    slot_page_changed( ui->stackedWidget->currentIndex() );
 }
 
 void roboProp::desetupUi()
@@ -161,10 +164,10 @@ void roboProp::buildConnection()
              ui->stackedWidget, SLOT(setCurrentIndex(int)));
 
     connect( ui->stackedWidget, SIGNAL(currentChanged(int)),
-             this, SLOT(on_page_changed(int)));
+             this, SLOT(slot_page_changed(int)));
 }
 
-void roboProp::on_page_changed( int index )
+void roboProp::slot_page_changed( int index )
 {
     Q_ASSERT( index < ui->stackedWidget->count() );
 

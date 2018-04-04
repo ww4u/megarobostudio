@@ -236,6 +236,11 @@ int main(int argc, char *argv[])
             //! style
             CommonHelper::setStyle( a.applicationDirPath() + "/style" + "/mega.qss" );
         }
+        else
+        {
+            //! style
+            CommonHelper::setStyle( a.applicationDirPath() + "/style" + "/classic.qss" );
+        }
     }
 
     //! dpc set thread

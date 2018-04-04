@@ -3,7 +3,7 @@
 #include <QDebug>
 
 #include "../../include/mcstd.h"
-
+#include "../../com/basetype.h"
 //#include "../../../arith/kinematic/kinematic.h"
 //#include "../../../arith/pathplan/pathplan.h"
 
@@ -95,14 +95,31 @@ void kinematicFullTest()
 //    return ;
 
     //! arm
-    jointsAngle refAngle={ 0, 90, -90, -90 };
-    jointsAngle convertAngle={ 0, 90, 180, 180 };
+//    jointsAngle refAngle={ 0, 90, -90, -90 };
+//    jointsAngle convertAngle={ 0, 90, 180, 180 };
+
+//    jointsAngle refAngle={ 0, 90, -90, -90 };
+//    jointsAngle refAngle={ 0, 180, -90, -90 };    //! 250 0 502
+//    jointsAngle refAngle={ 0, 180, 0, -90 };        //! 0,0,752
+//    jointsAngle refAngle={ 0, 180, 90, -90 };        //! -250,0,502
+//    jointsAngle refAngle={ 0, 180, 90, 90 };        //! -250,0,502
+//    jointsAngle refAngle={ 0, -90, 0, 0 };        //! -505,0,247
+//    jointsAngle refAngle={ 0, 90, 0, 0 };        //! 505,0,247
+    jointsAngle refAngle={ 0, 135, -90, 0 };        //! 505,0,247
+//    jointsAngle convertAngle={ 0, 90, -90, -90 };
+
+    jointsAngle convertAngle={ 0, 90, 0, -90 };
+    jointsAngle archAngle={ 0, 180, -90, -90 };
+//    jointsAngle shiftAngle={ 0, 0, 0, 0 };
+    jointsAngle shiftAngle={ 0, 90, 0, 0 };
+
     double armLength[]={ 247.75, 255, 250, 0, 0, 0 };
 
     double xyz[3];
     ns_kinematic::GetEndPosition( armLength,sizeof_array(armLength),
                                   convertAngle.angles,
-                                  refAngle.angles,
+                                  archAngle.angles,
+                                  shiftAngle.angles,
                                   4,
                                   xyz );
     logDbg()<<xyz[0]<<xyz[1]<<xyz[2];

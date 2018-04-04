@@ -57,7 +57,10 @@ protected Q_SLOTS:
     void context_robo_alias();
 
     void context_mrq_console();
+    void context_mrq_panel();
+
     void context_robo_console();
+    void context_robo_panel();
 
 protected:
     virtual void contextMenuEvent(QContextMenuEvent *event);

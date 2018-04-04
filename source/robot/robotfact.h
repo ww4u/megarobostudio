@@ -12,9 +12,8 @@
 #include "./sinanju/sinanju.h"
 #include "./delta/delta.h"
 #include "./h2/h2.h"
-//#include "./motor/motor.h"
-//#include "./slide1/slide1.h"
-//#include "./slide2/slide2.h"
+#include "./motor/motor.h"
+#include "./slide/slide.h"
 
 #include "./quebeley/roboquebeley.h"
 #include "./geogoog/robogeogoog.h"

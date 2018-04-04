@@ -1,6 +1,7 @@
 #include "sinanjupref.h"
 #include "ui_sinanjupref.h"
 #include "../../robot/robotfact.h"
+
 SinanjuPref::SinanjuPref(QWidget *parent) :
     modelView(parent),
     ui(new Ui::SinanjuPref)
@@ -16,11 +17,23 @@ SinanjuPref::SinanjuPref(QWidget *parent) :
     mLabels[i] = ui->label_3;i++;
 
     i = 0;
-    mEdits[i] = ui->lineEdit_6;i++;
-    mEdits[i] = ui->lineEdit_5;i++;
-    mEdits[i] = ui->lineEdit_4;i++;
-    mEdits[i] = ui->lineEdit_3;i++;
-    mEdits[i] = ui->lineEdit_2;i++;
+//    mEdits[i] = ui->lineEdit_6;i++;
+//    mEdits[i] = ui->lineEdit_5;i++;
+//    mEdits[i] = ui->lineEdit_4;i++;
+//    mEdits[i] = ui->lineEdit_3;i++;
+//    mEdits[i] = ui->lineEdit_2;i++;
+
+    //! init angles
+    mInitAngles.append( ui->spinAngleBase );
+    mInitAngles.append( ui->spinAngleBArm );
+    mInitAngles.append( ui->spinAngleSArm );
+    mInitAngles.append( ui->spinAngleWrist );
+
+    //! invert
+    mInvertAngles.append( ui->chkInvBase );
+    mInvertAngles.append( ui->chkInvBA );
+    mInvertAngles.append( ui->chkInvSA );
+    mInvertAngles.append( ui->chkInvWrist );
 }
 
 SinanjuPref::~SinanjuPref()
@@ -50,22 +63,72 @@ void SinanjuPref::updateData()
     Q_ASSERT( m_pModelObj != NULL );
     VRobot *pBase = ( VRobot *)m_pModelObj;
     Q_ASSERT( NULL != pBase );
-logDbg();
-    pBase->mAxesConnectionName.clear();
-    for ( int i = 0; i < pBase->axes(); i++ )
+
+//    //! connection
+//    pBase->mAxesConnectionName.clear();
+//    for ( int i = 0; i < pBase->axes(); i++ )
+//    {
+//        pBase->mAxesConnectionName<<mEdits[i]->text();
+//    }
+
+    //! init angle
+    pBase->mInitAngles.clear();
+    for ( int i = 0; i < 4; i++ )
     {
-        pBase->mAxesConnectionName<<mEdits[i]->text();
+        pBase->mInitAngles.append( mInitAngles.at(i)->value() );
     }
-logDbg();
-//    pBase->setName( ui->edtAlias->text() );
-//    pBase->setCanGroupId( ui->edtGroupCanID->text().toInt() );
-//    pBase->setSubGroup( ui->cmbGroup->currentIndex() );
-//    pBase->setSubGroupId( ui->cmbGpSubId->currentText().toInt() );
+
+    //! invert angles
+    pBase->mAngleDir.clear();
+    for ( int i = 0; i < 4; i++ )
+    {
+        pBase->mAngleDir.append( mInvertAngles.at(i)->isChecked() );
+    }
+
+    robotSinanju *pRobo = (robotSinanju*)pBase;
+    if ( NULL == pRobo )
+    {
+        sysError( tr("Invalid robot") );
+        return;
+    }
+
+    //! hand zero
+    pRobo->setHandZeroAttr( ui->spinZeroTime->value(),
+                            ui->spinZeroAngle->value(),
+                            ui->spinZeroSpeed->value() );
 }
 
 void SinanjuPref::updateUi()
 {
+    Q_ASSERT( m_pModelObj != NULL );
+    VRobot *pBase = ( VRobot *)m_pModelObj;
 
+    Q_ASSERT( pBase->axes() >= pBase->mInitAngles.size() );
+
+    //! init angle
+    for ( int i = 0; i < 4; i++ )
+    {
+        mInitAngles.at(i)->setValue( pBase->mInitAngles.at(i) );
+    }
+
+    for ( int i = 0; i < 4; i++ )
+    {
+        mInvertAngles.at(i)->setChecked( pBase->mAngleDir.at(i) );
+    }
+
+    //! zero hand
+    robotSinanju *pRobo = (robotSinanju*)pBase;
+    if ( NULL == pRobo )
+    {
+        sysError( tr("Invalid robot") );
+        return;
+    }
+
+    double zeroTime, zeroSpeed, zeroAngle;
+    pRobo->handZeroAttr( zeroTime, zeroAngle, zeroSpeed );
+    ui->spinZeroTime->setValue( zeroTime );
+    ui->spinZeroAngle->setValue( zeroAngle );
+    ui->spinZeroSpeed->setValue( zeroSpeed );
 }
 
 void SinanjuPref::initModel()
@@ -77,30 +140,40 @@ void SinanjuPref::initModel()
     int i;
     for( i = 0; i < pBase->axes(); i++ )
     {
-        mLabels[i]->setVisible( true );
-        mEdits[i]->setVisible( true );
-
         mLabels[i]->setText( (pBase->mJointName.at(i)) );
-        mEdits[i]->setText( (pBase->mAxesConnectionName.at(i)) );
     }
-
-    //! other to false
-    for ( ; i < 5; i++ )
-    {
-        mLabels[i]->setVisible( false );
-        mEdits[i]->setVisible( false );
-    }
-//    ui->edtAlias->setText( pBase->getName() );
-
-////    Q_ASSERT( NULL != m_pmcModel );
-////    ui->edtGroupCanID->setText( QString::number( pBase->canGroupId() ) );
-////    ui->cmbGroup->setCurrentIndex( pBase->subGroup() );
-////    ui->cmbGpSubId->setCurrentText( QString::number( pBase->subGroupId() ) );
-
-////    //! config range
-////    m_pGroupIdValidaor->setRange( m_pmcModel->mSysPref.mGroupIdFrom,
-////                                  m_pmcModel->mSysPref.mGroupIdTo );
 }
 
+void SinanjuPref::on_btnGoZero_clicked()
+{
+    Q_ASSERT( m_pModelObj != NULL );
+    VRobot *pBase = ( VRobot *)m_pModelObj;
+    Q_ASSERT( NULL != pBase );
 
+    QMessageBox msgBox;
+    msgBox.setText( tr("Sure to zero?") );
+    msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel );
+    msgBox.setDefaultButton(QMessageBox::Ok);
+    int ret = msgBox.exec();
+    if ( ret == QMessageBox::Ok )
+    {
+        pBase->goZero();
+    }
+}
 
+void SinanjuPref::on_btnZeroHand_clicked()
+{
+    Q_ASSERT( m_pModelObj != NULL );
+    VRobot *pBase = ( VRobot *)m_pModelObj;
+    Q_ASSERT( NULL != pBase );
+
+    QMessageBox msgBox;
+    msgBox.setText( tr("Sure to zero?") );
+    msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel );
+    msgBox.setDefaultButton(QMessageBox::Ok);
+    int ret = msgBox.exec();
+    if ( ret == QMessageBox::Ok )
+    {
+        pBase->goZero( 4, ui->chkHandZeroCcw->isChecked() );
+    }
+}

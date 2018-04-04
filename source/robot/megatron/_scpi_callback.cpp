@@ -80,7 +80,7 @@ static scpi_result_t _scpi_move( scpi_t * context )
     return SCPI_RES_OK;
 }
 
-//! page, file
+//! ax, page, file
 static scpi_result_t _scpi_program( scpi_t * context )
 {
     // read
@@ -158,11 +158,15 @@ static scpi_result_t _scpi_fsmState( scpi_t * context )
     DEF_LOCAL_VAR();
     DEF_ROBO();
 
-    int page;
+    int page, ax;
+
+    if ( SCPI_ParamInt32(context, &ax, true) != true )
+    { return SCPI_RES_ERR; }
+
     if ( SCPI_ParamInt32(context, &page, true) != true )
     { return SCPI_RES_ERR; }
 
-    int ret = pRobo->state( tpvRegion(0,page) );
+    int ret = pRobo->state( tpvRegion(ax,page) );
 
     SCPI_ResultInt32( context, ret );
 

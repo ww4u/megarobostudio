@@ -47,7 +47,7 @@ protected:
 
 
 protected:
-    QList< tpvGroup *> mJointsGroup;
+
 };
 
 #endif

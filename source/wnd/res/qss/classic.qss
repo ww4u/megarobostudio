@@ -1,0 +1,105 @@
+
+QToolBar {
+      /*background: #e1e1e1;*/
+	  border-color:#1f2a3b; 
+	  border: 2px;
+      spacing: 3px; /* spacing between items in the tool bar */
+  }
+
+QToolBar::separator{
+      background: #e1e1e1;
+	  border-color:#1f2a3b; 
+  }
+QToolBar::handle{
+      background: #e1e1e1;
+	  border-color:#1f2a3b; 
+	  width:4px;
+  }
+  
+QPushButton,QToolButton {
+      border: 2px solid #1a5975;
+      border-radius: 4px;
+      background-color: #e1e1e1;
+	  
+	  /*border: 2px solid #00a0e0;
+  }
+  
+QPushButton:disabled,QToolButton:disabled {
+      border: 2px solid gray;
+      border-radius: 4px;
+      background-color: #e1e1e1;
+	  color:gray;
+  }
+  
+QPushButton:pressed, QToolButton:pressed {
+      /*border-color: #c5e6f6;*/
+	  border-color: white;
+  }
+
+  QPushButton:hover, QToolButton:hover {
+      background-color: #00a3d9;
+	  /*background-color: #1a5975;*/
+	  border-color: white;
+  }  
+  
+QPushButton {
+	min-height:24px;
+	  min-width:50px;
+}
+  
+QToolButton { /* all types of tool button */
+	  min-height:24px;
+	  min-width:24px;
+  }
+
+
+QMenuBar::item {
+      spacing: 20px; /* spacing between menu bar items */
+      padding: 5px 10px;
+      background: transparent;
+      border-radius: 4px;
+  }
+QMenuBar::item:selected {
+      background: #00a3d9;
+  }
+  
+  
+  
+
+QMenu::item{
+      padding: 5px 25px;
+  }  
+  
+ QMenu::item:selected { /* when user selects item using mouse or keyboard */
+      background-color: #00a3d9;
+	  border-radius: 4px;
+  }
+  
+  
+  /*#00a3d9 #2c3d4f*/
+ QMenu::icon { /* appearance of a 'checked' icon */
+      background: #e1e1e1;
+	  border:none;
+
+      position: absolute;
+
+      top: 1px;
+      right: 1px;
+      bottom: 1px;
+      left: 1px;
+  }
+
+  QMenu::icon:checked { /* appearance of a 'checked' icon */
+      background: #1a5975;
+	  border: 1px inset #00a3d9;
+	  border-radius:2px;
+      position: absolute;
+      top: 1px;
+      right: 1px;
+      bottom: 1px;
+      left: 1px;
+  }
+
+ 
+
+

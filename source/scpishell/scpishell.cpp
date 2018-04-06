@@ -74,7 +74,7 @@ static scpi_result_t SCPI_Reset(scpi_t * context) {
 }
 
 static scpi_result_t SCPI_SystemCommTcpipControlQ(scpi_t * context) {
-    (void) context;
+
 
     return SCPI_RES_ERR;
 }

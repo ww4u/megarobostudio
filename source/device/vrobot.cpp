@@ -12,6 +12,8 @@ double VRobot::_mTBase = 1.0;
 double VRobot::_mPBase = 1.0;
 double VRobot::_mVBase = 1.0;
 
+QString VRobot::_tempPath;
+
 void VRobot::setTpvBase( double tBase,
                 double pBase,
                 double vBase )
@@ -21,6 +23,10 @@ void VRobot::setTpvBase( double tBase,
     VRobot::_mVBase = vBase;
 }
 
+void VRobot::setTempPath( const QString &tempPath )
+{ _tempPath = tempPath; }
+QString VRobot::tempPath()
+{ return _tempPath; }
 VRobot::VRobot()
 {
     mClass = "Unk robot";

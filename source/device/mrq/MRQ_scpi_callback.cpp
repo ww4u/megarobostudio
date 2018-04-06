@@ -19,10 +19,10 @@ static scpi_result_t _scpi_testAdd( scpi_t * context )
     int val1, val2, ret;
 
     if ( SCPI_RES_OK != SCPI_ParamInt32( context, &val1, true ) )
-    { return SCPI_RES_ERR; }
+    { scpi_ret( SCPI_RES_ERR ); }
 
     if ( SCPI_RES_OK != SCPI_ParamInt32( context, &val2, true ) )
-    { return SCPI_RES_ERR; }
+    { scpi_ret( SCPI_RES_ERR ); }
 
     ret = ((MegaDevice::deviceMRQ*)context->user_context)->testAdd( val1, val2 );
     SCPI_ResultInt32( context, ret );
@@ -56,10 +56,10 @@ static scpi_result_t _scpi_run( scpi_t * context )
     int ax, page;
 
     if ( SCPI_RES_OK != SCPI_ParamInt32( context, &ax, true ) )
-    { return SCPI_RES_ERR; }
+    { scpi_ret( SCPI_RES_ERR ); }
 
     if ( SCPI_RES_OK != SCPI_ParamInt32( context, &page, true ) )
-    { return SCPI_RES_ERR; }
+    { scpi_ret( SCPI_RES_ERR ); }
 
     DEF_MRQ();
 
@@ -79,16 +79,16 @@ static scpi_result_t _scpi_rotate( scpi_t * context )
     float val2, val3;
 
     if ( SCPI_RES_OK != SCPI_ParamInt32( context, &ax, true ) )
-    { return SCPI_RES_ERR; }
+    { scpi_ret( SCPI_RES_ERR ); }
 
     if ( SCPI_RES_OK != SCPI_ParamInt32( context, &page, true ) )
-    { return SCPI_RES_ERR; }
+    { scpi_ret( SCPI_RES_ERR ); }
 
     if ( SCPI_RES_OK != SCPI_ParamFloat( context, &val2, true ) )
-    { return SCPI_RES_ERR; }
+    { scpi_ret( SCPI_RES_ERR ); }
 
     if ( SCPI_RES_OK != SCPI_ParamFloat( context, &val3, true ) )
-    { return SCPI_RES_ERR; }
+    { scpi_ret( SCPI_RES_ERR ); }
 
     ((MegaDevice::deviceMRQ*)context->user_context)->rotate( tpvRegion(ax,page), val2, val3 );
 
@@ -104,10 +104,10 @@ static scpi_result_t _scpi_call( _scpi_t * context )
     int ax, page;
 
     if ( SCPI_RES_OK != SCPI_ParamInt32( context, &ax, true ) )
-    { return SCPI_RES_ERR; }
+    { scpi_ret( SCPI_RES_ERR ); }
 
     if ( SCPI_RES_OK != SCPI_ParamInt32( context, &page, true ) )
-    { return SCPI_RES_ERR; }
+    { scpi_ret( SCPI_RES_ERR ); }
 
     DEF_MRQ();
 
@@ -126,19 +126,19 @@ static scpi_result_t _scpi_lightZero( _scpi_t * context )
     float t, angle, speed;
 
     if ( SCPI_RES_OK != SCPI_ParamInt32( context, &ax, true ) )
-    { return SCPI_RES_ERR; }
+    { scpi_ret( SCPI_RES_ERR ); }
 
     if ( SCPI_RES_OK != SCPI_ParamInt32( context, &page, true ) )
-    { return SCPI_RES_ERR; }
+    { scpi_ret( SCPI_RES_ERR ); }
 
     if ( SCPI_RES_OK != SCPI_ParamFloat( context, &t, true ) )
-    { return SCPI_RES_ERR; }
+    { scpi_ret( SCPI_RES_ERR ); }
 
     if ( SCPI_RES_OK != SCPI_ParamFloat( context, &angle, true ) )
-    { return SCPI_RES_ERR; }
+    { scpi_ret( SCPI_RES_ERR ); }
 
     if ( SCPI_RES_OK != SCPI_ParamFloat( context, &speed, true ) )
-    { return SCPI_RES_ERR; }
+    { scpi_ret( SCPI_RES_ERR ); }
 
     DEF_MRQ();
 
@@ -157,31 +157,31 @@ static scpi_result_t _scpi_program( scpi_t * context )
     int ax, page;
 
     if ( SCPI_RES_OK != SCPI_ParamInt32( context, &ax, true ) )
-    { return SCPI_RES_ERR; }logDbg()<<ax;
+    { scpi_ret( SCPI_RES_ERR ); }logDbg()<<ax;
 
     if ( SCPI_RES_OK != SCPI_ParamInt32( context, &page, true ) )
-    { return SCPI_RES_ERR; }logDbg()<<page;
+    { scpi_ret( SCPI_RES_ERR ); }logDbg()<<page;
 
     if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
-    { return SCPI_RES_ERR; }logDbg()<<strLen<<pLocalStr;
+    { scpi_ret( SCPI_RES_ERR ); }logDbg()<<strLen<<pLocalStr;
     if (strLen < 1)
-    { return SCPI_RES_ERR; }
+    { scpi_ret( SCPI_RES_ERR ); }
 
     //! load
     QList<float> dataSets;
     int col = 3;
     if ( 0 != comAssist::loadDataset( pLocalStr, strLen, col, dataSets ) )
-    { return SCPI_RES_ERR; }
+    { scpi_ret( SCPI_RES_ERR ); }
 
     int dotSize = dataSets.size()/col;
     if ( (dotSize < 2) )
-    { return SCPI_RES_ERR; }logDbg()<<dotSize;
+    { scpi_ret( SCPI_RES_ERR ); }logDbg()<<dotSize;
 
     //! t,p,v
     tpvRow *pDots = new tpvRow[ dotSize ];
 
     if ( NULL == pDots )
-    { logDbg(); return SCPI_RES_ERR; }
+    { logDbg(); scpi_ret( SCPI_RES_ERR ); }
 
     //! move data
     for( int i = 0; i < dotSize; i++ )
@@ -200,7 +200,7 @@ static scpi_result_t _scpi_program( scpi_t * context )
     gc_array( pDots );
 
     if ( ret != 0 )
-    { return SCPI_RES_ERR; }
+    { scpi_ret( SCPI_RES_ERR ); }
     else
     { return SCPI_RES_OK; }
 }
@@ -214,10 +214,10 @@ static scpi_result_t _scpi_fsmState( scpi_t * context )
     int val1, val2, ret;
 
     if ( SCPI_RES_OK != SCPI_ParamInt32( context, &val1, true ) )
-    { return SCPI_RES_ERR; }
+    { scpi_ret( SCPI_RES_ERR ); }
 
     if ( SCPI_RES_OK != SCPI_ParamInt32( context, &val2, true ) )
-    { return SCPI_RES_ERR; }
+    { scpi_ret( SCPI_RES_ERR ); }
 
     ret = ((MegaDevice::deviceMRQ*)context->user_context)->fsmState(  tpvRegion(val1,val2) );
 
@@ -235,7 +235,7 @@ static scpi_result_t _scpi_incangle( scpi_t * context )
     int val1;
 
     if ( SCPI_RES_OK != SCPI_ParamInt32( context, &val1, true ) )
-    { return SCPI_RES_ERR; }
+    { scpi_ret( SCPI_RES_ERR ); }
 
     float val = 0;
     val = ((MegaDevice::deviceMRQ*)context->user_context)->getIncAngle( val1 );
@@ -253,7 +253,7 @@ static scpi_result_t _scpi_absangle( scpi_t * context )
     int val1;
 
     if ( SCPI_RES_OK != SCPI_ParamInt32( context, &val1, true ) )
-    { return SCPI_RES_ERR; }
+    { scpi_ret( SCPI_RES_ERR ); }
 
     float val = 0;
     val = ((MegaDevice::deviceMRQ*)context->user_context)->getAbsAngle( val1 );

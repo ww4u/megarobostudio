@@ -5,20 +5,24 @@ int robotMegatron::serialIn( QXmlStreamReader &reader )
 {
     while(reader.readNextStartElement())
     {
-        if ( reader.name() == "zero" )
-        {
-            serialInZero(reader);
-        }
+        if ( reader.name() == "raw" )
+        { serialInRaw(reader); }
+        else if ( reader.name() == "zero" )
+        { serialInZero(reader); }
+        else
+        {}
     }
 
     return 0;
 }
 int robotMegatron::serialOut( QXmlStreamWriter &writer )
 {
+    writer.writeStartElement("raw");
+    serialOutRaw(writer);
+    writer.writeEndElement();
+
     writer.writeStartElement("zero");
-
     serialOutZero(writer);
-
     writer.writeEndElement();
 
     return 0;

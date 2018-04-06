@@ -1,6 +1,6 @@
 #include "robojoint.h"
 #include "ui_robojoint.h"
-
+#include "../widget/megamessagebox.h"
 RoboJoint::RoboJoint(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::RoboJoint)
@@ -75,10 +75,7 @@ void RoboJoint::on_horizontalSlider_sliderMoved(int position)
 
 void RoboJoint::on_pushButton_clicked()
 {
-    QMessageBox msgBox;
-    msgBox.setText( tr("Sure to zero?") );
-    msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel );
-    msgBox.setDefaultButton(QMessageBox::Ok);
+    MegaZeroAffirmMessageBox msgBox;
     int ret = msgBox.exec();
     if ( ret == QMessageBox::Ok )
     {

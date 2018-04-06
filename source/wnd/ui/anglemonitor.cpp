@@ -1,6 +1,7 @@
 #include "anglemonitor.h"
 #include "ui_anglemonitor.h"
 #include "anglewidget.h"
+#include "../widget/megamessagebox.h"
 AngleMonitor::AngleMonitor(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::AngleMonitor)
@@ -190,10 +191,7 @@ void AngleMonitor::on_checkBox_clicked(bool checked)
 
 void AngleMonitor::on_toolButton_clicked()
 {
-    QMessageBox msgBox;
-    msgBox.setText( tr("Sure to delete all?") );
-    msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel );
-    msgBox.setDefaultButton(QMessageBox::Ok);
+    MegaDeleteAffirmMessageBox msgBox;
     int ret = msgBox.exec();
     if ( ret == QMessageBox::Ok )
     {

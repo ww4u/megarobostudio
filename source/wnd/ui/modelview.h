@@ -1,7 +1,7 @@
 #ifndef MODELVIEW_H
 #define MODELVIEW_H
 
-#include <QWidget>
+#include <QtWidgets>
 
 #include "../../model/mcmodelobj.h"
 #include "../../model/modelsyspref.h"
@@ -36,6 +36,14 @@ protected:
 
 Q_SIGNALS:
     void sigClose( QWidget * );
+    void sigSaveRequest( QWidget * );
+
+    void sigModified( bool b );
+    void sigModified( modelView *pView, bool b );
+
+protected Q_SLOTS:
+    void slot_modified();
+    void slotModified( bool b );
 
     //! ui attr
 public:
@@ -57,7 +65,6 @@ public:
 
     virtual void setMcModel( mcModel *pMcModel );
 
-    void setModified( bool b );
     bool modified();
 
     virtual void syncData();
@@ -73,5 +80,59 @@ protected:
     quint32 mAttributes;
 
 };
+
+//! dir = true :: to screen
+#define exchange_check( control, val, dir )  \
+                                        if ( dir )\
+                                        { ui->control->setChecked( val ); } \
+                                        else \
+                                        { val = ui->control->isChecked(); }
+
+
+#define exchange_spin( control, val, dir )  \
+                                        if ( dir )\
+                                        { ui->control->setValue( val ); } \
+                                        else \
+                                        { val = ui->control->value(); }
+
+#define exchange_combox( control, val, dir )    \
+                                        if ( dir )\
+                                        { ui->control->setCurrentIndex( val ); } \
+                                        else \
+                                        { val = ui->control->currentIndex(); }
+
+#define exchange_container_check( control, val, dir )  \
+                                        if ( dir )\
+                                        { control->setChecked( val ); } \
+                                        else \
+                                        { val = control->isChecked(); }
+
+
+#define exchange_container_spin( control, val, dir )  \
+                                        if ( dir )\
+                                        { control->setValue( val ); } \
+                                        else \
+                                        { val = control->value(); }
+
+
+//! spy
+#define spy_control_edit( control )   connect( control, SIGNAL(editingFinished()), this, SLOT(slot_modified()));
+#define spy_control_combox( control ) connect( control, SIGNAL(currentIndexChanged(int)), this, SLOT(slot_modified()));
+#define spy_control_checkbox( control ) connect( control, SIGNAL(clicked()), this, SLOT(slot_modified()));
+
+
+
+#define install_spy()       \
+for ( int i = 0; i < sizeof_array(edits); i++ )\
+{ spy_control_edit( edits[i] ); }\
+\
+for ( int i = 0; i < sizeof_array(spinBoxes); i++ )\
+{ spy_control_edit( spinBoxes[i] ); }\
+\
+for ( int i = 0; i < sizeof_array(doubleSpinBoxes); i++ )\
+{ spy_control_edit( doubleSpinBoxes[i] ); }\
+\
+for ( int i = 0; i < sizeof_array(comboxes); i++ )\
+{ spy_control_combox( comboxes[i] ); }
 
 #endif // MODELVIEW_H

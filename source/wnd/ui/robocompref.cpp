@@ -7,14 +7,6 @@ RoboComPref::RoboComPref(QWidget *parent) :
 {
     ui->setupUi(this);
 
-//    //! config validator
-//    m_pGroupIdValidaor = new QIntValidator( this );
-//    ui->edtGroupCanID->setValidator( m_pGroupIdValidaor );
-
-//    m_pGroupSubIdValidator = new QIntValidator( this );
-//    ui->cmbGpSubId->setValidator( m_pGroupSubIdValidator );
-//    m_pGroupSubIdValidator->setRange( sub_group_id_from, sub_group_id_to );
-
     //! connection
     mAxesLabels.append( ui->label_2 );
     mAxesLabels.append( ui->label_3 );
@@ -48,6 +40,8 @@ RoboComPref::RoboComPref(QWidget *parent) :
     {
         pLabel->setVisible( false );
     }
+
+    spyEdited();
 }
 
 RoboComPref::~RoboComPref()
@@ -80,6 +74,37 @@ int RoboComPref::setApply()
     return 0;
 }
 
+
+void RoboComPref::spyEdited()
+{
+    QLineEdit *edits[]={
+        ui->edtAlias,
+    };
+
+    QSpinBox *spinBoxes[]={
+        ui->spinBox,
+        ui->spinBox_2,
+    };
+
+    QDoubleSpinBox *doubleSpinBoxes[]={
+        ui->spinInterpStep,
+        ui->spinZeroSpeed,
+    };
+
+    QComboBox *comboxes[]={
+        ui->cmbGpSubId,
+        ui->cmbGroup,
+        ui->cmbInterpMode,
+    };
+
+    install_spy();
+
+    foreach( QLineEdit *pEdit, mAxesEdits )
+    {
+        spy_control_edit( pEdit );
+    }
+}
+
 void RoboComPref::updateUi()
 {
     Q_ASSERT( m_pModelObj != NULL );
@@ -108,6 +133,11 @@ void RoboComPref::updateUi()
         mAxesLabels[i]->setText( pBase->mJointName.at(i) );
         mAxesLabels[i]->setVisible( true );
     }
+
+    //! interp
+    RawRobo *pRawRobo = (RawRobo*)pBase;
+    ui->spinInterpStep->setValue( pRawRobo->planStep() );
+    ui->cmbInterpMode->setCurrentIndex( pRawRobo->planMode());
 }
 
 void RoboComPref::updateData()
@@ -121,6 +151,10 @@ void RoboComPref::updateData()
 
     pRobo->setCanGroupId( ui->spinBox->value() );
 
+    //! interp
+    RawRobo *pRawRobo = (RawRobo*)pRobo;
+    pRawRobo->setPlanStep( ui->spinInterpStep->value() );
+    pRawRobo->setPlanMode( (eRoboPlanMode)ui->cmbInterpMode->currentIndex() );
 }
 
 int RoboComPref::applyGroupId()

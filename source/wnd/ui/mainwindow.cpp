@@ -32,6 +32,8 @@ MainWindow::MainWindow(dpcObj *pObj, QWidget *parent) :
     regSysVar();
 
     buildConnection();
+
+    postSetup();
 }
 
 MainWindow::~MainWindow()
@@ -229,6 +231,9 @@ void MainWindow::setupMenu()
 
 void MainWindow::buildConnection()
 {
+    connect( this, SIGNAL(sig_post_load_prj()),
+             this, SLOT(slot_post_load_prj()) );
+
     //! prop
     connect( m_pDeviceMgr,
              SIGNAL(itemXActivated( mcModelObj *)),
@@ -362,6 +367,9 @@ void MainWindow::setupData()
     //! remote path
     comAssist::setRemotePath( mMcModel.mSysPref.mRemoteDirPath.split(',', QString::SkipEmptyParts) );
 
+    MegaMessageBox::setZeroAffirm( mMcModel.mSysPref.mbAffirmZero );
+    VRobot::setTempPath( mMcModel.mSysPref.mDumpPath );
+
     if ( mMcModel.mSysPref.mbMaximizeStartup )
     { showMaximized(); }
 
@@ -370,6 +378,14 @@ void MainWindow::setupData()
     mMcModel.m_pInstMgr->setTPVBase( mMcModel.mSysPref.mTimeUnit,
                                      mMcModel.mSysPref.mPosUnit,
                                      mMcModel.mSysPref.mVelUnit );
+
+}
+
+void MainWindow::postSetup()
+{
+    //! load prj
+    if ( mMcModel.mSysPref.mbAutoLoadPrj )
+    { emit sig_post_load_prj(); }
 }
 
 void MainWindow::setupService()
@@ -452,8 +468,43 @@ void MainWindow::statusShow( const QString &str )
     m_pStateBar->showState( str );
 }
 
+void MainWindow::slot_post_load_prj()
+{
+    QString fullName;
+
+    fullName = mMcModel.mSysPref.latestPrjPath() + QDir::separator() + mMcModel.mSysPref.latestPrjName();
+    if ( QFile::exists( fullName ) )
+    {
+        doLoadPrj( mMcModel.mSysPref.latestPrjPath(),
+                   fullName
+                 );
+        sysLog( fullName );
+    }
+    else
+    {
+        sysError( fullName, "not exist" );
+    }
+}
+
 void MainWindow::cfgTab_tabCloseRequested( int index )
 {
+    modelView *pView;
+    pView = (modelView *)ui->widget->widget(index);
+    if ( NULL == pView )
+    { return; }
+
+    if ( pView->modified() )
+    {
+        MegaMessageBox msgBox( tr("Setting may has been changed without apply, confirm to close?") );
+        if ( msgBox.exec() == QMessageBox::Ok )
+        {}
+        else
+        { return; }
+    }
+    else
+    {}
+
+    //! close the tab
     ui->widget->widget(index)->close();
     ui->widget->removeTab( index );
 }
@@ -578,10 +629,34 @@ void MainWindow::modelview_closed( QWidget *pObj )
 {
     int index;
     index = ui->widget->indexOf( pObj );
+
+    cfgTab_tabCloseRequested( index );
+//    if ( index >= 0 )
+//    {
+//        ui->widget->widget( index )->close();
+//        ui->widget->removeTab( index );
+//    }
+}
+
+void MainWindow::slot_modelView_modified( modelView *pView,
+                                          bool b )
+{
+    int index;
+    index = ui->widget->indexOf( pView );
     if ( index >= 0 )
     {
-        ui->widget->widget( index )->close();
-        ui->widget->removeTab( index );
+        QString name = ui->widget->tabText(index);
+        if ( b )
+        {
+            if ( name.contains("*") )
+            {}
+            else
+            { name.append("*"); }
+        }
+        else
+        {  name.remove('*'); }
+
+        ui->widget->setTabText( index, name );
     }
 }
 
@@ -754,11 +829,13 @@ modelView *MainWindow::createModelView( modelView *pView,
     Q_ASSERT( pView != NULL );
     Q_ASSERT( pObj != NULL );
 
-    pView->setMcModel( &mMcModel );logDbg();
-    pView->setModelObj( pObj );logDbg();
+    pView->setMcModel( &mMcModel );
+    pView->setModelObj( pObj );
 
-    ui->widget->addTab( pView, comAssist::pureFileName(pObj->getName()) );logDbg();
-    ui->widget->setCurrentWidget( pView );logDbg();
+    ui->widget->addTab( pView, comAssist::pureFileName(pObj->getName()) );
+    ui->widget->setCurrentWidget( pView );
+
+
     //! wnd manage
     connect( pView,
              SIGNAL(destroyed(QObject*)),
@@ -769,6 +846,17 @@ modelView *MainWindow::createModelView( modelView *pView,
              SIGNAL(sigClose(QWidget *)),
              this,
              SLOT(modelview_closed(QWidget*)) );logDbg();
+
+    connect( pView,
+             SIGNAL(sigSaveRequest(QWidget * )),
+             this,
+             SLOT(on_actionSave_triggered()) );
+
+    //! modify manage
+    connect( pView,
+             SIGNAL(sigModified(modelView*,bool)),
+             this,
+             SLOT(slot_modelView_modified(modelView*,bool)));
 
     //! state manage
     Q_ASSERT( NULL != m_pRoboNetThread );

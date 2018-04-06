@@ -14,12 +14,13 @@ tpvDownloader::~tpvDownloader()
 void tpvDownloader::run()
 {
     Q_ASSERT( NULL != m_pMRQ );
-
+sysLog( QString::number(mRegion.mAx), QString::number(mRegion.mPage), "down start" );
     m_pMRQ->acquireDownloader();
 
     downloadProc();
 
     m_pMRQ->releaseDownloader();
+sysLog( QString::number(mRegion.mAx), QString::number(mRegion.mPage), "down end" );
 }
 
 void tpvDownloader::downloadProc()
@@ -124,11 +125,16 @@ logDbg()<<mRegion.axes()<<mRegion.page();
                                                  (MRQ_MOTION_SWITCH_1)mRegion.page(),
                                                  &batchSize );
         if ( ret != 0 )
-        { logDbg(); return ret; }
+        { sysError( __FUNCTION__, QString::number(__LINE__) ); return ret; }
         else
         {}
 
-        logDbg()<<batchSize;
+
+        sysLog( __FUNCTION__, QString::number(__LINE__),
+                QString::number(batchSize),
+                QString::number(mTpvs.size()),
+                QString::number( m_pMRQ->getTpvIndex(mRegion)  )
+                );
         if ( batchSize > 0 )
         {
             ret = batchDownload( batchSize, total, now );

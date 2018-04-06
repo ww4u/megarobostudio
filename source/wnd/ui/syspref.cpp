@@ -81,6 +81,10 @@ void sysPref::updateUi()
     ui->chkAutoLoadSet->setChecked( mPref.mbAutoLoadSetup );
     ui->chkSearch->setChecked( mPref.mbSearchOnOpen );
     ui->chkMaximize->setChecked( mPref.mbMaximizeStartup );
+
+    ui->chkLoadLast->setChecked( mPref.mbAutoLoadPrj );
+    ui->chkAutoZeroAffirm->setChecked( mPref.mbAffirmZero );
+
     ui->cmbStyle->setCurrentIndex( mPref.mStyleIndex );
     ui->cmbLang->setCurrentIndex( mPref.mLangIndex );
 
@@ -130,6 +134,9 @@ void sysPref::updateData()
     mPref.mbAutoLoadSetup = ui->chkAutoLoadSet->isChecked();
     mPref.mbSearchOnOpen = ui->chkSearch->isChecked();
     mPref.mbMaximizeStartup = ui->chkMaximize->isChecked();
+
+    mPref.mbAutoLoadPrj = ui->chkLoadLast->isChecked();
+    mPref.mbAffirmZero = ui->chkAutoZeroAffirm->isChecked();
 
     mPref.mStyleIndex = ui->cmbStyle->currentIndex();
     mPref.mLangIndex = ui->cmbLang->currentIndex();
@@ -241,8 +248,12 @@ void sysPref::on_btnDetail_clicked()
 {
     QStringList args;
     QString str;
-    str = QCoreApplication::applicationDirPath() + QStringLiteral("/doc/aggrement.txt");
-    str.replace("/","\\");
+    str = QCoreApplication::applicationDirPath()
+            + QDir::separator()
+            + QStringLiteral("doc")
+            + QDir::separator()
+            + QStringLiteral("aggrement.txt");
+//    str.replace("/","\\");
     args<<str;
     //! \todo linux
     logDbg()<<str;

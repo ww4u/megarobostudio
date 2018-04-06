@@ -1,6 +1,6 @@
 #include "mrqtrigchan.h"
 #include "ui_mrqtrigchan.h"
-
+#include "modelview.h"
 MrqTrigChan::MrqTrigChan(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::MrqTrigChan)
@@ -13,24 +13,24 @@ MrqTrigChan::~MrqTrigChan()
     delete ui;
 }
 
-#define exchange_check( control, val, dir )  \
-                                        if ( dir )\
-                                        { ui->control->setChecked( val ); } \
-                                        else \
-                                        { val = ui->control->isChecked(); }
+//#define exchange_check( control, val, dir )  \
+//                                        if ( dir )\
+//                                        { ui->control->setChecked( val ); } \
+//                                        else \
+//                                        { val = ui->control->isChecked(); }
 
 
-#define exchange_spin( control, val, dir )  \
-                                        if ( dir )\
-                                        { ui->control->setValue( val ); } \
-                                        else \
-                                        { val = ui->control->value(); }
+//#define exchange_spin( control, val, dir )  \
+//                                        if ( dir )\
+//                                        { ui->control->setValue( val ); } \
+//                                        else \
+//                                        { val = ui->control->value(); }
 
-#define exchange_combox( control, val, dir )    \
-                                        if ( dir )\
-                                        { ui->control->setCurrentIndex( val ); } \
-                                        else \
-                                        { val = ui->control->currentIndex(); }
+//#define exchange_combox( control, val, dir )    \
+//                                        if ( dir )\
+//                                        { ui->control->setCurrentIndex( val ); } \
+//                                        else \
+//                                        { val = ui->control->currentIndex(); }
 
 void MrqTrigChan::setConfig(
                 trigLevelConfig &levConfig,

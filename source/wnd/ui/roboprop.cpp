@@ -74,12 +74,12 @@ int roboProp::save( QString &outFileName )
     if ( getModelObj()->getPath().isEmpty() )
     {
         outFileName = QDir::currentPath() +
-                      "/" + getModelObj()->getName();
+                      QDir::separator() + getModelObj()->getName();
     }
     else
     {
         outFileName = getModelObj()->getPath() +
-                "/" + getModelObj()->getName();
+                      QDir::separator() + getModelObj()->getName();
         logDbg()<<outFileName;
     }
 
@@ -105,19 +105,22 @@ void roboProp::setupUi( int id )
 //    m_pComPref = new RoboComPref();
     m_pInfoPage = new_widget( roboInfo, ":/res/image/icon2/info.png", tr("Info") );
     m_pDetailPage = new_widget( RoboDesc, ":/res/image/icon2/info.png", tr("Detail") );
-    m_pComPref  = new_widget( RoboComPref, ":/res/image/icon2/settings_light.png", tr("Pref") );
+    m_pComPref  = new_widget( RoboComPref, ":/res/image/icon2/settings_light.png", tr("Option") );
 
     if ( VRobot::robot_delta == id )
     {
-        m_pDeltaPref  = new_widget( DeltaPref, ":/res/image/icon2/settings_light.png", tr("Pref") );
+        m_pDeltaPref  = new_widget( DeltaPref, ":/res/image/icon2/settings_light.png", tr("Zero") );
+        m_pDeltaConfig   = new_widget( DeltaConfig, ":/res/image/icon2/settings_light.png", tr("Pref") );
     }
     else if ( VRobot::robot_megatron == id )
     {
-        m_pMegatronPref  = new_widget( MegatronPref, ":/res/image/icon2/settings_light.png", tr("Pref") );
+        m_pMegatronPref  = new_widget( MegatronPref, ":/res/image/icon2/settings_light.png", tr("Zero") );
     }
     else if ( VRobot::robot_sinanju == id )
     {
-        m_pSinanjuPref  = new_widget( SinanjuPref, ":/res/image/icon2/settings_light.png", tr("Pref") );
+        m_pSinanjuPref  = new_widget( SinanjuPref, ":/res/image/icon2/settings_light.png", tr("Zero") );
+        m_pSinanjuConfig = new_widget( SinanjuConfig, ":/res/image/icon2/settings_light.png", tr("Pref") );
+
         m_pHandPage  = new_widget( RoboHand, ":/res/image/icon2/activity.png", tr("Action") );
     }
     else if ( VRobot::robot_h2 == id
@@ -147,6 +150,13 @@ void roboProp::setupUi( int id )
         pItem->setText( names.at(i) );
         pItem->setIcon( QIcon( icons.at(i) ) );
         ui->listWidget->addItem( pItem );
+    }
+
+    //! modified
+    foreach( modelView* pView, mPrefPages )
+    {
+        connect( pView, SIGNAL(sigModified(bool)),
+                 this,  SLOT(slotModified(bool)) );
     }
 
     //! post
@@ -185,12 +195,9 @@ void roboProp::on_btnOK_clicked()
     //! apply
     setApply();
 
-    //! save
-    QString outFileName;
+    slotModified( false );
 
-    int ret = save( outFileName );
-    if ( ret != 0 )
-    { return; }
+    emit sigSaveRequest( this );
 
     emit sigClose( this );
 }
@@ -205,10 +212,7 @@ void roboProp::on_btnApply_clicked()
     //! apply
     setApply();
 
-    //! save
-    QString outFileName;
+    slotModified( false );
 
-    int ret = save( outFileName );
-    if ( ret != 0 )
-    { return; }
+    emit sigSaveRequest( this );
 }

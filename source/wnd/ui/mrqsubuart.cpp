@@ -1,5 +1,6 @@
 #include "mrqsubuart.h"
 #include "ui_mrqsubuart.h"
+#include "modelview.h"
 
 MrqSubUart::MrqSubUart(QWidget *parent) :
     QWidget(parent),
@@ -12,20 +13,6 @@ MrqSubUart::~MrqSubUart()
 {
     delete ui;
 }
-
-//! dir = true :: to screen
-#define exchange_check( control, val, dir )  \
-                                        if ( dir )\
-                                        { ui->control->setChecked( val ); } \
-                                        else \
-                                        { val = ui->control->isChecked(); }
-
-
-#define exchange_spin( control, val, dir )  \
-                                        if ( dir )\
-                                        { ui->control->setValue( val ); } \
-                                        else \
-                                        { val = ui->control->value(); }
 
 void MrqSubUart::setConfig(
              subUartConfig &cfg )

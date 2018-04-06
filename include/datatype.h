@@ -37,4 +37,10 @@ typedef unsigned long long uint64;
 
 typedef void *  PVOID;
 
+struct D4Point
+{
+    float t;
+    float x, y, z;
+};
+
 #endif

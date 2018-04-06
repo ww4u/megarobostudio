@@ -20,6 +20,7 @@ public:
     virtual int setApply();
 
 protected:
+    void spyEdited();
     void updateUi();
     void updateData();
 

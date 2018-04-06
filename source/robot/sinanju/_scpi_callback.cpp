@@ -48,14 +48,14 @@ static scpi_result_t _scpi_move( scpi_t * context )
     float vals[9];
 
     if ( SCPI_ParamInt32(context, &ax, true) != true )
-    { return SCPI_RES_ERR; }
+    { scpi_ret( SCPI_RES_ERR ); }
     if ( SCPI_ParamInt32(context, &page, true) != true )
-    { return SCPI_RES_ERR; }
+    { scpi_ret( SCPI_RES_ERR ); }
 
     for ( int i = 0; i < sizeof_array(vals); i++ )
     {
         if ( SCPI_RES_OK != SCPI_ParamFloat( context, vals+i, true ) )
-        { return SCPI_RES_ERR; }
+        { scpi_ret( SCPI_RES_ERR ); }
     }
 
     for ( int i = 0; i < sizeof_array(vals); i++ )
@@ -86,25 +86,25 @@ static scpi_result_t _scpi_program( scpi_t * context )
     int ax, page;
 
     if ( SCPI_ParamInt32(context, &ax, true) != true )
-    { return SCPI_RES_ERR; }
+    { scpi_ret( SCPI_RES_ERR ); }
 
     if ( SCPI_ParamInt32(context, &page, true) != true )
-    { return SCPI_RES_ERR; }
+    { scpi_ret( SCPI_RES_ERR ); }
 
     if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
-    { return SCPI_RES_ERR; }logDbg()<<strLen<<pLocalStr;
+    { scpi_ret( SCPI_RES_ERR ); }logDbg()<<strLen<<pLocalStr;
     if (strLen < 1)
-    { return SCPI_RES_ERR; }
+    { scpi_ret( SCPI_RES_ERR ); }
 
     //! x,y,z,h,interp,t
     QList<float> dataset;
     int col = 6;
     if ( 0 != comAssist::loadDataset( pLocalStr, strLen, col, dataset ) )
-    { return SCPI_RES_ERR; }
+    { scpi_ret( SCPI_RES_ERR ); }
 
     //! point
     if ( dataset.size() / col < 2 )
-    { return SCPI_RES_ERR; }
+    { scpi_ret( SCPI_RES_ERR ); }
 
     TraceKeyPointList curve;
     TraceKeyPoint tp;
@@ -139,10 +139,10 @@ static scpi_result_t _scpi_call( scpi_t * context )
     int ax, page;
 
     if ( SCPI_ParamInt32(context, &ax, true) != true )
-    { return SCPI_RES_ERR; }
+    { scpi_ret( SCPI_RES_ERR ); }
 
     if ( SCPI_ParamInt32(context, &page, true) != true )
-    { return SCPI_RES_ERR; }
+    { scpi_ret( SCPI_RES_ERR ); }
 
     //! robo op
     DEF_ROBO();
@@ -160,10 +160,10 @@ static scpi_result_t _scpi_fsmState( scpi_t * context )
     int ax, page;
 
     if ( SCPI_ParamInt32(context, &ax, true) != true )
-    { return SCPI_RES_ERR; }
+    { scpi_ret( SCPI_RES_ERR ); }
 
     if ( SCPI_ParamInt32(context, &page, true) != true )
-    { return SCPI_RES_ERR; }
+    { scpi_ret( SCPI_RES_ERR ); }
 
     int ret = pRobo->state( tpvRegion(ax,page) );
 
@@ -181,7 +181,7 @@ static scpi_result_t _scpi_pose( scpi_t * context )
 
     int ret = pRobo->nowPose( pose );
     if ( ret != 0 )
-    { return SCPI_RES_ERR; }
+    { scpi_ret( SCPI_RES_ERR ); }
 
     //! x,y,z,h
     SCPI_ResultInt32( context, pose.x );
@@ -203,7 +203,7 @@ static scpi_result_t _scpi_dist( scpi_t * context )
 
     int ret = pRobo->nowDist( dists );
     if ( ret != 0 )
-    { return SCPI_RES_ERR; }
+    { scpi_ret( SCPI_RES_ERR ); }
 
     //! return the dist
     for ( int i = 0; i <dists.size(); i++ )
@@ -223,7 +223,7 @@ static scpi_result_t _scpi_test1( scpi_t * context )
     int page;
 
     if ( SCPI_ParamInt32(context, &page, true) != true )
-    { return SCPI_RES_ERR; }
+    { scpi_ret( SCPI_RES_ERR ); }
 
     pRobo->moveTest1( tpvRegion(0,page) );
 
@@ -239,7 +239,7 @@ static scpi_result_t _scpi_test2( scpi_t * context )
     int page;
 
     if ( SCPI_ParamInt32(context, &page, true) != true )
-    { return SCPI_RES_ERR; }
+    { scpi_ret( SCPI_RES_ERR ); }
 
     pRobo->moveTest2( tpvRegion(0,page) );
 

@@ -683,6 +683,10 @@ void RunningMrqUnit::proc( int msg, RoboMsg &detail )
 
         toState( mrq_state_prestop, detail );
     }
+    else if ( msg == mrq_msg_calcend )
+    {
+        toState( mrq_state_idle, detail );
+    }
     else if ( msg == mrq_msg_running )
     {
         //! keep

@@ -159,7 +159,7 @@ int scriptGroup::saveAll( const QString &dir )
         }
         else if ( pNode->getNodeType() == scriptNode::node_file )
         {
-            dynamic_cast<scriptFile*>( pNode )->save( dir + "/" + pNode->getPath() + "/" + pNode->getName() );
+            dynamic_cast<scriptFile*>( pNode )->save( dir + QDir::separator() + pNode->getPath() + QDir::separator() + pNode->getName() );
         }
         else
         {}

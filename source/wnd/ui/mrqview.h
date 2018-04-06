@@ -15,10 +15,10 @@ public:
     mrqView( QWidget *parent = 0 );
 
 public:
-    void setAxesId( int id );
+    virtual void setAxesId( int id );
     int getAxesId();
 
-    void setPage( MRQ_AX_PAGE pg );
+    virtual void setPage( MRQ_AX_PAGE pg );
     MRQ_AX_PAGE page();
 
     virtual void setModelObj( mcModelObj *pObj );
@@ -42,5 +42,7 @@ protected:
     MegaDevice::MRQ_model *m_pProxy;
 
 };
+
+
 
 #endif // MRQVIEW_H

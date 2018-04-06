@@ -22,6 +22,7 @@ public:
     virtual int setApply();
 
 protected:
+    void spyEdited();
     void updateData();
     void updateUi();
 
@@ -29,10 +30,12 @@ protected:
 
 protected Q_SLOTS:
     void slot_joint_zero( int jId, bool bccw );
+    void slot_ccw_changed();
     void slot_body_changed();
 
 Q_SIGNALS:
     void signal_joint_zero( int jointid, bool bccw );
+
 
 private slots:
     void on_btnZeroLS_clicked();
@@ -44,6 +47,12 @@ private slots:
     void on_btnZeroPlate_clicked();
 
     void on_btnZeroBody_clicked();
+
+
+    void on_chkAllCcw_clicked(bool checked);
+
+    void on_chkAllBody_clicked(bool checked);
+
 private:
     Ui::deltapref *ui;
 

@@ -7,23 +7,31 @@ TARGET = ../../../../lib/arith_delta
 
 DEFINES += EXPORT_LIBRARY
 
+INCLUDEPATH += ./header
+
 OBJECTS_DIR = ./obj
 MOC_DIR = ./obj
 
 SOURCES = \
-    angleOperate.c \
-	calAcceleration.c \
-	calPosition.c \
-	calVelocity.c \
-	configure.c \
-        dllMain.c \
-        test.c
+    ./source/angleOperate.c \
+        ./source/calAcceleration.c \
+        ./source/calPosition.c \
+        ./source/calVelocity.c \
+        ./source/configure.c \
+        ./source/dllMain.c \
+        ./source/oneFreedom.c \
+        test.c \
+    arith_delta.cpp \
+    deltadatacache.cpp
 	
 HEADERS = \
-       angleOperate.h \
-	   calAcceleration.h \
-	   calPosition.h \
-	   calVelocity.h \
-	   configure.h \
-	   dllMain.h 
+       ./header/angleOperate.h \
+           ./header/calAcceleration.h \
+           ./header/calPosition.h \
+           ./header/calVelocity.h \
+           ./header/configure.h \
+           ./header/dllMain.h \
+           ./header/oneFreedom.h \
+    arith_delta.h \
+    deltadatacache.h
 

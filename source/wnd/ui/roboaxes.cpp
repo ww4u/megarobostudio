@@ -4,7 +4,7 @@
 #include "../../../include/mcstd.h"
 
 #include "../../device/mrq/deviceMRQ.h"
-
+#include "../../widget/megamessagebox.h"
 roboAxes::roboAxes(mcModel *pModel,
                    QWidget *parent) :
     DlgView( pModel, parent ),
@@ -246,10 +246,7 @@ void roboAxes::on_btnZero_clicked()
         return;
     }
 
-    QMessageBox msgBox;
-    msgBox.setText( tr("Sure to zero?") );
-    msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel );
-    msgBox.setDefaultButton(QMessageBox::Ok);
+    MegaZeroAffirmMessageBox msgBox;
     int ret = msgBox.exec();
     if ( ret == QMessageBox::Ok )
     {

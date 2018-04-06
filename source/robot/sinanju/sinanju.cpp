@@ -18,6 +18,9 @@ robotSinanju::robotSinanju()
     mClass = QObject::tr("Sinanju");
     mId = robot_sinanju;
 
+    //! default gpid
+    mCanGroupId = group_id_from + mId - robot_complex;
+
     setAxes( 5 );
     setAxesDefName( 5 );
     setJointName( 5 );
@@ -50,7 +53,7 @@ robotSinanju::robotSinanju()
     mInitAngles<<1.553<<5.504<<318<<182.9;
 
     mInitPos.clear();
-    mInitPos<<250<<0<<(247.75+255);
+    mInitPos<<250<<0<<(257+255);
 
     //! debug used
     //! alter the axes name
@@ -87,7 +90,7 @@ robotSinanju::robotSinanju()
 
     //! arm length
     //! 247.75, 255, 250, 0, 0, 0
-    mArmLengths.append( 247.75 );
+    mArmLengths.append( 257 );
     mArmLengths.append( 255 );
     mArmLengths.append( 250 );
     mArmLengths.append( 0 );
@@ -159,41 +162,7 @@ void robotSinanju::onMsg( int subAxes, RoboMsg &msg )
     fsm( region )->proc( msg.Msg(), msg );
 }
 
-int robotSinanju::serialIn( QXmlStreamReader &reader )
-{
-    int ret;
 
-    while(reader.readNextStartElement())
-    {logDbg()<<reader.name();
-        if ( reader.name() == "angle" )
-        { logDbg();ret = serialInAngle( reader ); }
-        else if ( reader.name() == "hand_zero" )
-        { logDbg();ret = serialInHandZero( reader ); }
-        else if ( reader.name() == "hand" )
-        { logDbg();ret = mHandActionModel.serialIn( reader ); }
-        else
-        {}
-    }
-    return ret;
-}
-int robotSinanju::serialOut( QXmlStreamWriter &writer )
-{
-    int ret;
-
-    writer.writeStartElement("angle");
-    ret = serialOutAngle( writer );
-    writer.writeEndElement();
-
-    writer.writeStartElement("hand_zero");
-    ret = serialOutHandZero( writer );
-    writer.writeEndElement();
-
-    writer.writeStartElement("hand");
-    ret = mHandActionModel.serialOut( writer );
-    writer.writeEndElement();
-
-    return ret;
-}
 
 int robotSinanju::download( QList<tpvGroup*> &groups,
                              QList<int> &joints,

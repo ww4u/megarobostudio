@@ -26,6 +26,12 @@ protected:
     int loadDatabase( QXmlStreamReader &reader );
 
 public:
+    void setLatestPrj( const QString &path,
+                       const QString &name);
+    QString& latestPrjPath();
+    QString& latestPrjName();
+
+public:
     int mPort;
     int mSpeed;     //! speed index
     int mTimeout;
@@ -49,6 +55,8 @@ public:
     bool mbSearchOnOpen;
     bool mbAutoLoadSetup;
     bool mbMaximizeStartup;
+    bool mbAutoLoadPrj;
+    bool mbAffirmZero;
 
     dbMeta mDbMeta;
                             //! misa
@@ -61,6 +69,7 @@ public:
 
                             //! user
     int mStyleIndex, mLangIndex;
+    QString mLatestPrjPath, mLatestPrjName;
 };
 
 #endif // MODELSYSPREF_H

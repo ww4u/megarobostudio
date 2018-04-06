@@ -9,6 +9,8 @@ DeltaPref::DeltaPref(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    ui->groupBox_4->setVisible( false );
+
     mCcwChecks.append( ui->chkLSCcw );
     mCcwChecks.append( ui->chkRSCcw );
     mCcwChecks.append( ui->chkHandCcw );
@@ -16,13 +18,21 @@ DeltaPref::DeltaPref(QWidget *parent) :
 
     mBodyChecks.append( ui->chkLSBody );
     mBodyChecks.append( ui->chkRSBody );
-    mBodyChecks.append( ui->chkHandBody );
     mBodyChecks.append( ui->chkPlateBody );
+    mBodyChecks.append( ui->chkHandBody );
 
     foreach( QCheckBox *pCheck, mBodyChecks )
     {
         connect( pCheck, SIGNAL(clicked(bool)),
                  this, SLOT(slot_body_changed()) );
+    }
+    connect( ui->chkAllBody, SIGNAL(clicked(bool)),
+             this, SLOT(slot_body_changed()) );
+
+    foreach( QCheckBox *pCheck, mCcwChecks )
+    {
+        connect( pCheck, SIGNAL(clicked(bool)),
+                 this, SLOT(slot_ccw_changed()) );
     }
 
     connect( this, SIGNAL(signal_joint_zero(int,bool)),
@@ -31,6 +41,9 @@ DeltaPref::DeltaPref(QWidget *parent) :
 
     //! post change
     slot_body_changed();
+    slot_ccw_changed();
+
+    spyEdited();
 }
 
 DeltaPref::~DeltaPref()
@@ -52,6 +65,32 @@ int DeltaPref::setApply()
     return 0;
 }
 
+void DeltaPref::spyEdited()
+{
+    QLineEdit *edits[]={
+
+    };
+
+    QSpinBox *spinBoxes[]={
+
+    };
+
+    QDoubleSpinBox *doubleSpinBoxes[]={
+        ui->spinZeroTime,
+        ui->spinZeroAngle,
+        ui->spinZeroSpeed,
+
+        ui->spinAngleRS,
+        ui->spinAngleLS,
+    };
+
+    QComboBox *comboxes[]={
+
+    };
+
+    install_spy();
+}
+
 void DeltaPref::updateData()
 {
     Q_ASSERT( m_pModelObj != NULL );
@@ -65,8 +104,8 @@ void DeltaPref::updateData()
                         ui->spinZeroSpeed->value() );
 
     //! init
-    pRobo->mInitAngles[0] = ui->spinAngleLS->value();
-    pRobo->mInitAngles[1] = ui->spinAngleRS->value();
+//    pRobo->mInitAngles[0] = ui->spinAngleLS->value();
+//    pRobo->mInitAngles[1] = ui->spinAngleRS->value();
 }
 
 void DeltaPref::updateUi()
@@ -85,10 +124,6 @@ void DeltaPref::updateUi()
     ui->spinZeroAngle->setValue( angle );
     ui->spinZeroSpeed->setValue( speed );
 
-    //! init angle
-    Q_ASSERT( pRobo->mInitAngles.size() >= 2 );
-    ui->spinAngleLS->setValue( pRobo->mInitAngles[0] );
-    ui->spinAngleRS->setValue( pRobo->mInitAngles[1] );
 }
 
 void DeltaPref::zeroJoint( int jointId, bool bCcw )
@@ -102,10 +137,27 @@ void DeltaPref::zeroJoint( int jointId, bool bCcw )
 
 void DeltaPref::slot_joint_zero( int jId, bool bccw )
 {
-    MegaMessageBox msgBox( tr("Sure to Zero?") );
+    MegaZeroAffirmMessageBox msgBox;
     int ret = msgBox.exec();
     if ( ret == QMessageBox::Ok )
     { zeroJoint( jId, bccw ); }
+}
+
+void DeltaPref::slot_ccw_changed()
+{
+    //! update the all
+    foreach( QCheckBox *pCheck, mCcwChecks )
+    {
+        if ( pCheck->isChecked() )
+        {}
+        else
+        {
+            ui->chkAllCcw->setChecked( false );
+            return;
+        }
+    }
+
+    ui->chkAllCcw->setChecked( true );
 }
 
 void DeltaPref::slot_body_changed()
@@ -124,6 +176,12 @@ void DeltaPref::slot_body_changed()
     { ui->btnZeroBody->setEnabled(true);}
     else
     { ui->btnZeroBody->setEnabled(false);}
+
+    //! all
+    if ( checkCount == mBodyChecks.size() )
+    { ui->chkAllBody->setChecked(true); }
+    else
+    { ui->chkAllBody->setChecked(false); }
 }
 
 #define sig_joint( id, chk )    emit signal_joint_zero( id, ui->chk->isChecked() );
@@ -140,17 +198,17 @@ void DeltaPref::on_btnZeroRS_clicked()
 
 void DeltaPref::on_btnZeroHand_clicked()
 {
-    sig_joint( 2, chkHandCcw )
+    sig_joint( 3, chkHandCcw )
 }
 
 void DeltaPref::on_btnZeroPlate_clicked()
 {
-    sig_joint( 3, chkPlateCcw )
+    sig_joint( 2, chkPlateCcw )
 }
 
 void DeltaPref::on_btnZeroBody_clicked()
 {
-    MegaMessageBox msgBox( tr("Sure to Zero?") );
+    MegaZeroAffirmMessageBox msgBox;
     int ret = msgBox.exec();
     if ( ret == QMessageBox::Ok )
     {}
@@ -176,4 +234,22 @@ void DeltaPref::on_btnZeroBody_clicked()
     Q_ASSERT( NULL != pBase );
 
     pBase->goZero( jointList, ccwList );
+}
+
+
+
+void DeltaPref::on_chkAllCcw_clicked(bool checked)
+{
+    foreach( QCheckBox *pCheck, mCcwChecks )
+    {
+        pCheck->setChecked( checked );
+    }
+}
+
+void DeltaPref::on_chkAllBody_clicked(bool checked)
+{
+    foreach( QCheckBox *pCheck, mBodyChecks )
+    {
+        pCheck->setChecked( checked );
+    }
 }

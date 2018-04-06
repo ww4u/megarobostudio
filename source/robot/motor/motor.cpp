@@ -10,6 +10,10 @@ robotMotor::robotMotor()
 {
     mClass = "Motor";
     mId = robot_motor;
+
+    //! default gpid
+    mCanGroupId = group_id_from + mId - robot_complex;
+
     setAxes( 1 );
     setAxesDefName( 1 );
     setJointName( 1 );

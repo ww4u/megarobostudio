@@ -35,3 +35,5 @@ doc/
 _icon/
 _icon2/
 _icon3/
+*.Debug
+*.Release

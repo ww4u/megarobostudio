@@ -26,7 +26,7 @@ void scriptEditor::setModelObj( mcModelObj *pObj )
     logDbg()<<pObj->getPath()<<pObj->getName();
 
     //! reload the file
-    reloadFile( pObj->getPath() + "/" + pObj->getName() );
+    reloadFile( pObj->getPath() + QDir::separator() + pObj->getName() );
 }
 
 bool scriptEditor::matchModelObj(mcModelObj *pObj)
@@ -49,7 +49,7 @@ bool scriptEditor::matchModelObj(mcModelObj *pObj)
 
 int scriptEditor::save( QString &outFileName )
 {
-    outFileName = getModelObj()->getPath() + "/" + getModelObj()->getName();
+    outFileName = getModelObj()->getPath() + QDir::separator() + getModelObj()->getName();
 
     QFile file( outFileName );
     if ( !file.open( QIODevice::WriteOnly ) )

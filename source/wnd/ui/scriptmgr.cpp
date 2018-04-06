@@ -86,7 +86,7 @@ QString scriptMgr::getPath()
 
 QString scriptMgr::getFullName()
 {
-    return m_pRootModel->getPath() + "/" + m_pRootModel->getName();
+    return m_pRootModel->getPath() + QDir::separator() + m_pRootModel->getName();
 }
 
 int scriptMgr::save( const QString &path, const QString &name )
@@ -321,7 +321,7 @@ int scriptMgr::saveActiveFile()
     if ( NULL == pGroup )
     { return ERR_INVALID_SCRIPT_FILE_NODE; }
 
-    return saveActiveFile( getPath() + "/" + pGroup->getPath() + "/" + pGroup->getName() );
+    return saveActiveFile( getPath() + QDir::separator() + pGroup->getPath() + QDir::separator() + pGroup->getName() );
 }
 
 void scriptMgr::newFile( const QString &path, const QString &name )
@@ -366,7 +366,7 @@ QStringList scriptMgr::sceneList( QStringList &pathList )
     for( int i = 0; i < nameList.size(); i++ )
     {
         strList << nameList[i];
-        pathList<< getPath() + "/" + refPathList[i];
+        pathList<< getPath() + QDir::separator() + refPathList[i];
     }
 
     return strList;
@@ -491,14 +491,14 @@ void scriptMgr::on_scriptView_activated(const QModelIndex &index)
     {
         logDbg()<<pFile->getName();
 
-        QString path = m_pRootModel->getPath() + "/" + pFile->getPath() + pFile->getName();
+        QString path = m_pRootModel->getPath() + QDir::separator() + pFile->getPath() + pFile->getName();
 
         logDbg()<<path;
     }
 
-    QString path = m_pRootModel->getPath() + "/" + pFile->getPath();
+    QString path = m_pRootModel->getPath() + QDir::separator() + pFile->getPath();
     int ret = openFile( path,
-              path + "/" + pFile->getName() );
+              path + QDir::separator() + pFile->getName() );
     if ( ret != 0 )
     {}
     else
@@ -551,7 +551,8 @@ void scriptMgr::slot_context_import()
     //! base path
     QDir dir( m_pRootModel->getPath() );
     QString refPath = dir.relativeFilePath( fileName ).remove( pureFileName);
-    logDbg()<<refPath;
+    //! remove the last
+    refPath.remove( refPath.size() - 1, 1);
     pFile->setPath( refPath );
 
     m_pRootModel->appendNode( ui->scriptView->currentIndex(), pFile );

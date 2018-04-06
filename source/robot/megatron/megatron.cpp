@@ -18,6 +18,9 @@ robotMegatron::robotMegatron()
     mClass = QObject::tr("Megatron");
     mId = robot_megatron;
 
+    //! default gpid
+    mCanGroupId = group_id_from + mId - robot_complex;
+
     setAxes( 6 );
     setAxesDefName( 6 );
     setJointName( 6 );
@@ -26,12 +29,12 @@ robotMegatron::robotMegatron()
 
     //! joint name
     mJointName.clear();
-    mJointName<<QObject::tr("FX")
-              <<QObject::tr("FZ")
-              <<QObject::tr("BX")
-              <<QObject::tr("BZ")
-              <<QObject::tr("LY")
-              <<QObject::tr("RY");
+    mJointName<<QObject::tr("FX")   //! X1
+              <<QObject::tr("FZ")   //! Z1
+              <<QObject::tr("BX")   //! X2
+              <<QObject::tr("BZ")   //! Z2
+              <<QObject::tr("LY")   //! Y1
+              <<QObject::tr("RY");  //! Y2
 
     mImage = QImage::fromData( _megaimage, sizeof(_megaimage) );
 

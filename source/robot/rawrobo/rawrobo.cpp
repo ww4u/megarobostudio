@@ -151,7 +151,7 @@ float RawRobo::planStep()
 
 void RawRobo::setPlanMode( eRoboPlanMode mode )
 { mPlanMode = mode; }
-eRoboPlanMode RawRobo::getPlanMode()
+eRoboPlanMode RawRobo::planMode()
 { return mPlanMode; }
 
 RawRoboFsm * RawRobo::fsm( const tpvRegion &region )

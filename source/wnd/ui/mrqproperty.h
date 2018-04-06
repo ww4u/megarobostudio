@@ -4,10 +4,11 @@
 #include <QtWidgets>
 
 #include "mrqinfo.h"
-#include "mrqaxes.h"
-#include "mrqaxes2.h"
-#include "mrqaxesplan.h"
-#include "mrqtrigpage.h"
+#include "mrqaxespage.h"
+//#include "mrqaxes.h"
+//#include "mrqaxes2.h"
+//#include "mrqaxesplan.h"
+//#include "mrqtrigpage.h"
 
 
 #include "mrqio.h"
@@ -62,10 +63,11 @@ public:
 
     mrqInfo *m_pInfoPage;
 
-    QList< mrqAxes * > mAxesPages;
-    QList< mrqAxes2 * > mAxesPage2s;
-    QList< MrqTrigPage * > mAxesPage3s;
-    QList< MrqAxesPlan *> mAxesPlans;
+    QList< MrqAxesPage * > mMrqAxesPages;
+//    QList< mrqAxes * > mAxesPages;
+//    QList< mrqAxes2 * > mAxesPage2s;
+//    QList< MrqTrigPage * > mAxesPage3s;
+//    QList< MrqAxesPlan *> mAxesPlans;
 
     QList< MrqDcAxes *> mDcAxesPages;
 

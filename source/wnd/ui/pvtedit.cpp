@@ -8,7 +8,7 @@
 #include "../../../sys/sysapi.h"
 
 #include "../../../arith/pvt/pvt.h"
-
+#include "../../widget/megamessagebox.h"
 pvtEdit::pvtEdit(QWidget *parent) :
     tableEdit(parent),
     ui(new Ui::pvtEdit)
@@ -62,7 +62,7 @@ void pvtEdit::setModelObj( mcModelObj *pObj )
 
 int pvtEdit::save( QString &outFileName )
 {
-    outFileName = mTpvGroup->getPath() + "/" + mTpvGroup->getName();
+    outFileName = mTpvGroup->getPath() + QDir::separator() + mTpvGroup->getName();
 
     return mTpvGroup->save( outFileName );
 }
@@ -534,10 +534,7 @@ void pvtEdit::on_btnDel_clicked()
 
 void pvtEdit::on_btnClr_clicked()
 {
-    QMessageBox msgBox;
-    msgBox.setText( tr("Sure to delete all?") );
-    msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel );
-    msgBox.setDefaultButton(QMessageBox::Ok);
+    MegaDeleteAffirmMessageBox msgBox;
     int ret = msgBox.exec();
     if ( ret == QMessageBox::Ok )
     {

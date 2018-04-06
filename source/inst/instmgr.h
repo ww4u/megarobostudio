@@ -51,6 +51,7 @@ public:
 
     int emergencyStop();
     int hardReset();
+    int requestStates();
 
     //! device tree
     DeviceTree getDeviceTree();

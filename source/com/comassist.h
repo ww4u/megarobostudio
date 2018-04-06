@@ -13,6 +13,8 @@ public:
     static void setRemotePath( const QStringList &path );
     static QStringList &remotePath();
 
+    static QString msToHmsz( qint64 ms );
+
     static QString pureFileName( const QString &fullName, bool containPost = true );
     static QString fileSuffix( const QString &name );
     static bool    fileSuffixMatch( const QString &src,

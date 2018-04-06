@@ -8,9 +8,12 @@
 #include "robocompref.h"
 
 #include "megatronpref.h"
+
 #include "deltapref.h"
+#include "deltaconfig.h"
 
 #include "sinanjupref.h"
+#include "sinanjuconfig.h"
 #include "axnpref.h"
 
 #include "robohand.h"
@@ -59,8 +62,13 @@ private:
     RoboComPref *m_pComPref;
 
     MegatronPref *m_pMegatronPref;
+
     DeltaPref *m_pDeltaPref;
+    DeltaConfig *m_pDeltaConfig;
+
     SinanjuPref *m_pSinanjuPref;
+    SinanjuConfig *m_pSinanjuConfig;
+
     AxnPref *m_pAxnPref;
 
     RoboHand *m_pHandPage;

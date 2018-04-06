@@ -58,11 +58,13 @@ public:
 
 protected:
     static double _mTBase, _mPBase, _mVBase;      //! tune info
+    static QString _tempPath;
 public:
     static void setTpvBase( double tBase,
                     double pBase,
                     double vBase );
-
+    static void setTempPath( const QString &tempPath );
+    static QString tempPath();
 public:
     VRobot();
     virtual ~VRobot();

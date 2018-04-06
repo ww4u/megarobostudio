@@ -15,7 +15,8 @@ SOURCES = \
     rawrobo_msg.cpp \
     rawrobo_op.cpp \
     rawrobo_line.cpp \
-    rawrobo_intf.cpp
+    rawrobo_intf.cpp \
+    rawrobo_setup.cpp
 
 HEADERS = \
     rawrobo.h

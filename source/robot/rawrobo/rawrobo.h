@@ -183,12 +183,16 @@ public:
                                 MegaDevice::RoboCondition *pCond,
                                 int tmoms=-1 );
 
+protected:
+    int serialOutRaw( QXmlStreamWriter &writer );
+    int serialInRaw( QXmlStreamReader &reader );
+
 public:
     void setPlanStep( float step );
     float planStep();
 
     void setPlanMode( eRoboPlanMode mode );
-    eRoboPlanMode getPlanMode();
+    eRoboPlanMode planMode();
 
     RawRoboFsm * fsm( const tpvRegion &region );
 

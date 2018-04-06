@@ -73,11 +73,11 @@ int robotSinanju::goZero( int jointId, bool bCcw )
         { deltaAngle = comAssist::normalizeDegree360(deltaAngle); }
 
         sysLog( QString::number(deltaAngle) );
+        Q_ASSERT( mZeroSpeed > 0 );
         pMrq->rotate( tpvRegion(subAx,0),
                       qAbs(deltaAngle) / mZeroSpeed,
                       deltaAngle
                       );
-
     }
     //! hand
     else

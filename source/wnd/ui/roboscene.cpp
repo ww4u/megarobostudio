@@ -148,7 +148,7 @@ int roboScene::save( QString &outFileName )
 
     toSceneModel( &lSceneModel );
 
-    outFileName = m_pModelObj->getPath() + "/" + m_pModelObj->getName();
+    outFileName = m_pModelObj->getPath() + QDir::separator() + m_pModelObj->getName();
     return lSceneModel.save( outFileName );
 }
 
@@ -282,7 +282,7 @@ void roboScene::fromSceneModel( roboSceneModel *pSceneModel,
         pNewRobot->setName( pModel->mName );
 
         //! try to load the stp from the scene path
-        QFile file( path + "/" + pModel->mName + ".stp" );
+        QFile file( path + QDir::separator() + pModel->mName + ".stp" );
         if ( file.exists() )
         {
             pNewRobot->load( file.fileName() );

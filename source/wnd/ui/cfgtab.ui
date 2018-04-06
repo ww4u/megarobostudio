@@ -13,6 +13,9 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
+  <property name="documentMode">
+   <bool>true</bool>
+  </property>
   <property name="tabsClosable">
    <bool>true</bool>
   </property>

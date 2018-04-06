@@ -10,6 +10,7 @@ int robotDelta::downloadTrace( const tpvRegion &region )
     onLine();
 
     QList<int> jointsTabList;
+    //! left/right/plate/end
     jointsTabList<<0<<1<<2<<3;
     ret = download( mJointsGroup, jointsTabList, region );
     if ( ret != 0 )

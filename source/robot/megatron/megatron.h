@@ -81,7 +81,7 @@ protected:
     int downloadTrace( const tpvRegion &region );
 
 protected:
-    double mZeroTime, mZeroAngle, mZeroSpeed;
+    double mZeroTime, mZeroAngle;
 };
 
 #endif

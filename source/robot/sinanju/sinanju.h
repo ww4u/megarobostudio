@@ -95,7 +95,11 @@ protected:
     int serialInHandZero( QXmlStreamReader &reader );
     int serialOutHandZero( QXmlStreamWriter &writer );
 
+    int serialInArm( QXmlStreamReader &reader );
+    int serialOutArm( QXmlStreamWriter &writer );
 
+    int serialInInitPos( QXmlStreamReader &reader );
+    int serialOutInitPos( QXmlStreamWriter &writer );
 public:
     void setHandZeroAttr( double zeroTime, double zeroAngle, double zeroSpeed );
     void handZeroAttr( double &zeroTime, double &zeroAngle, double &zeroSpeed );

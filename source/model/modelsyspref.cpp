@@ -10,7 +10,7 @@ modelSysPref::modelSysPref()
 void modelSysPref::rst()
 {
     mPort = 0;
-    mSpeed = 0;                     //! 1M index
+    mSpeed = 1000000;                     //! 1M index
 
     mTimeout = time_ms(100);
     mInterval = time_us(100);       //! by port
@@ -32,6 +32,9 @@ void modelSysPref::rst()
     mAutoExpand = true;
     mbSearchOnOpen = true;
     mbMaximizeStartup = true;
+    mbAutoLoadPrj = true;
+    mbAffirmZero = true;
+
     mDumpPath = QCoreApplication::applicationDirPath() + "/temp";
 
     //! database
@@ -117,9 +120,13 @@ int modelSysPref::save( const QString &str )
     writer.writeTextElement( "sample_tick", QString::number( mSampleTick) );
     writer.writeTextElement( "auto_load", QString::number( mbAutoLoadSetup) );
     writer.writeTextElement( "max_startup", QString::number( mbMaximizeStartup) );
+    writer.writeTextElement( "auto_load_prj", QString::number( mbAutoLoadPrj) );
+    writer.writeTextElement( "affirm_zero", QString::number( mbAffirmZero) );
 
     writer.writeTextElement( "language_id", QString::number(mLangIndex) );
     writer.writeTextElement( "style_id", QString::number(mStyleIndex) );
+    writer.writeTextElement( "latest_prj_path", mLatestPrjPath );
+    writer.writeTextElement( "latest_prj_name", mLatestPrjName );
 
     writer.writeEndElement();
 
@@ -236,6 +243,7 @@ int modelSysPref::load( const QString &str )
                 {
                     while( reader.readNextStartElement() )
                     {
+                        logDbg()<<reader.name();
                         if ( reader.name() == "auto_expand" )
                         { mAutoExpand = reader.readElementText().toInt() > 0; }
                         else if ( reader.name() == "search_onopen" )
@@ -246,10 +254,18 @@ int modelSysPref::load( const QString &str )
                         { mbAutoLoadSetup = reader.readElementText().toInt() > 0 ; }
                         else if ( reader.name() == "max_startup" )
                         { mbMaximizeStartup = reader.readElementText().toInt() > 0 ; }
+                        else if ( reader.name() == "auto_load_prj" )
+                        { mbAutoLoadPrj = reader.readElementText().toInt() > 0; }
+                        else if ( reader.name() == "affirm_zero" )
+                        { mbAffirmZero = reader.readElementText().toInt() > 0; }
                         else if ( reader.name() == "language_id" )
                         { mLangIndex = reader.readElementText().toInt() > 0 ; }
                         else if ( reader.name() == "style_id" )
                         { mStyleIndex = reader.readElementText().toInt() > 0 ; }
+                        else if ( reader.name() == "latest_prj_path" )
+                        { mLatestPrjPath = reader.readElementText(); }
+                        else if ( reader.name() == "latest_prj_name" )
+                        { mLatestPrjName = reader.readElementText(); }
                         else
                         {}                        
                     }
@@ -324,3 +340,14 @@ int modelSysPref::loadDatabase( QXmlStreamReader &reader )
 
     return 0;
 }
+
+void modelSysPref::setLatestPrj( const QString &path,
+                                 const QString &name )
+{
+    mLatestPrjPath = path;
+    mLatestPrjName = name;
+}
+QString& modelSysPref::latestPrjPath()
+{ return mLatestPrjPath; }
+QString& modelSysPref::latestPrjName()
+{ return mLatestPrjName; }

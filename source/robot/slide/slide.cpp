@@ -10,6 +10,10 @@ robotSlide::robotSlide()
 {
     mClass = "Slide";
     mId = robot_slide;
+
+    //! default gpid
+    mCanGroupId = group_id_from + mId - robot_complex;
+
     setAxes( 1 );
     setAxesDefName( 1 );
     setJointName( 1 );

@@ -52,6 +52,22 @@ void modelView::buildConnection()
              SIGNAL(sig_prog_do(appWidget::servContext,int,int,int)),
              this,
              SLOT(slot_prog_do(appWidget::servContext,int,int,int)));
+
+//    connect( this, SIGNAL(sigModified(bool )),
+//             this, SLOT(slot_modified()));
+}
+
+void modelView::slot_modified()
+{
+    logDbg();
+    slotModified( true );
+}
+
+void modelView::slotModified( bool b )
+{
+    mbModified = b;
+    emit sigModified( b );
+    emit sigModified( this, b );
 }
 
 bool modelView::isCanceAble()
@@ -122,8 +138,6 @@ void modelView::setMcModel( mcModel *pMcModel )
     m_pmcModel = pMcModel;
 }
 
-void modelView::setModified( bool b )
-{ mbModified = b; }
 bool modelView::modified()
 { return mbModified; }
 

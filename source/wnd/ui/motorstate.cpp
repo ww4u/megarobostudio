@@ -1,6 +1,7 @@
 #include "motorstate.h"
 #include "ui_motorstate.h"
 #include "../../sys/sysapi.h"
+#include "../../com/comassist.h"
 MotorState::MotorState(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::MotorState)
@@ -57,7 +58,7 @@ void MotorState::setState( const QString &stat, int page )
             //! is running
             else
             {
-                ui->labelRunning->setText(  QString("%1 ms").arg( mRunningTime.elapsed() ) );
+                ui->labelRunning->setText( comAssist::msToHmsz( mRunningTime.elapsed() ) );
                 ui->labelRunning->setVisible( true );
             }
         }
@@ -102,7 +103,7 @@ void MotorState::setProgress( int mi, int ma, int n )
 
             if ( gTime > 0 )
             {
-                ui->labelRunning->setText( QString("%1 ms").arg(gTime) );
+                ui->labelRunning->setText( ( comAssist::msToHmsz(gTime) ) );
             }
         }
 

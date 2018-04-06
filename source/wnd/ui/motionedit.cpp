@@ -8,7 +8,7 @@
 #include "../../arith/kinematic/kinematic.h"
 
 #include "../../device/mrq/deviceMRQ.h"
-
+#include "../widget/megamessagebox.h"
 motionEdit::motionEdit(QWidget *parent) : tableEdit(parent),
     ui(new Ui::motionEdit)
 {
@@ -120,7 +120,7 @@ void motionEdit::setModelObj( mcModelObj *pObj )
 
 int motionEdit::save( QString &outFileName )
 {
-    outFileName = mMotionGroup->getPath() +"/" + mMotionGroup->getName();
+    outFileName = mMotionGroup->getPath() +QDir::separator() + mMotionGroup->getName();
 
     return mMotionGroup->save( outFileName );
 }
@@ -296,10 +296,7 @@ void motionEdit::on_btnDel_clicked()
 { mMotionGroup->removeRow( ui->tableView->currentIndex().row() ); }
 void motionEdit::on_btnClr_clicked()
 {
-    QMessageBox msgBox;
-    msgBox.setText( tr("Sure to delete all?") );
-    msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel );
-    msgBox.setDefaultButton(QMessageBox::Ok);
+    MegaDeleteAffirmMessageBox msgBox;
     int ret = msgBox.exec();
     if ( ret == QMessageBox::Ok )
     {

@@ -17,6 +17,9 @@ public:
     explicit RoboHand(QWidget *parent = 0);
     ~RoboHand();
 
+protected:
+    void spyEdited();
+
 public:
     virtual void setModelObj( mcModelObj *pObj );
 
@@ -28,6 +31,8 @@ private slots:
     void on_btnAdd_clicked();
 
     void on_btnDel_clicked();
+
+
 
 private:
     Ui::RoboHand *ui;

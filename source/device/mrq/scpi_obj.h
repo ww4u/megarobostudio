@@ -6,4 +6,5 @@
 //#define GET_OBJ( context )	SET_OBJ(context)->getModel()
 #define GET_OBJ( context )      ((MegaDevice::deviceMRQ*)context->user_context)
 
+
 #endif

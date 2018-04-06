@@ -7,12 +7,26 @@ void comAssist::setRemotePath( const QStringList &path )
 QStringList &comAssist::remotePath()
 { return _mRemotePath; }
 
+#define norm_rem( n, vin, base, remain )   n = (vin) / (base);\
+                                           remain = (vin) - (n) * (base)
+QString comAssist::msToHmsz( qint64 ms )
+{
+    qint64 h, m, s;
+    qint64 r;
+
+    norm_rem( h, ms, 3600*1000, r );
+    norm_rem( m, r, 60*1000, r );
+    norm_rem( s, r, 1000, r );
+
+    return QString( "%1:%2:%3.%4").arg(h).arg(m).arg(s).arg(r);
+}
+
 QString comAssist::pureFileName( const QString &fileName,
                                  bool bContainPost )
 {
     QString fullName;
     fullName = fileName;
-    int sep = fullName.lastIndexOf('/');
+    int sep = fullName.lastIndexOf( QDir::separator() );
 
     QString pureName;
     if ( sep < 0 )
@@ -185,7 +199,7 @@ logDbg()<<realFileName;
         lineStr.clear();
         lineStr.append( lines[i] );
         lineArgs = lineStr.split( colSep, QString::SkipEmptyParts );
-        if ( lineArgs.size() == col )
+        if ( lineArgs.size() >= col )
         {
             if ( convertDataset( lineArgs, lineDatas, col ) )
             {

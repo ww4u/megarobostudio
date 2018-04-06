@@ -18,6 +18,9 @@ robotH2::robotH2()
     mClass = QObject::tr("H2");
     mId = robot_h2;
 
+    //! default gpid
+    mCanGroupId = group_id_from + mId - robot_complex;
+
     setAxes( 3 );
     setAxesDefName( 3 );
     setJointName( 3 );

@@ -23,7 +23,7 @@ public:
 
 protected:
     void initModel();
-
+    void spyEdited();
     void updateData();
     void updateUi();
 

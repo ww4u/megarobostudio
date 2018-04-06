@@ -16,11 +16,18 @@ RoboHand::RoboHand(QWidget *parent) :
 //    ui->tableView->setModel( pModel );
 
     SET_INFO_ATTR();
+
+    spyEdited();
 }
 
 RoboHand::~RoboHand()
 {
     delete ui;
+}
+
+void RoboHand::spyEdited()
+{
+
 }
 
 void RoboHand::setModelObj( mcModelObj *pObj )

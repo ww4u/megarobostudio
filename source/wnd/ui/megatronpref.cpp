@@ -29,6 +29,14 @@ MegatronPref::MegatronPref(QWidget *parent) :
         connect( pCheck, SIGNAL(clicked(bool)),
                  this, SLOT(slot_body_changed()) );
     }
+    connect( ui->chkAllBody, SIGNAL(clicked(bool)),
+             this, SLOT(slot_body_changed()) );
+
+    foreach( QCheckBox *pCheck, mCcwChecks )
+    {
+        connect( pCheck, SIGNAL(clicked(bool)),
+                 this, SLOT(slot_ccw_changed()) );
+    }
 
     connect( this, SIGNAL(signal_joint_zero(int,bool)),
              this, SLOT(slot_joint_zero(int,bool)) );
@@ -36,6 +44,9 @@ MegatronPref::MegatronPref(QWidget *parent) :
 
     //! post change
     slot_body_changed();
+    slot_ccw_changed();
+
+    spyEdited();
 }
 
 MegatronPref::~MegatronPref()
@@ -55,6 +66,29 @@ int MegatronPref::setApply()
     updateData();
 
     return 0;
+}
+
+void MegatronPref::spyEdited()
+{
+    QLineEdit *edits[]={
+
+    };
+
+    QSpinBox *spinBoxes[]={
+
+    };
+
+    QDoubleSpinBox *doubleSpinBoxes[]={
+        ui->spinZeroTime,
+        ui->spinZeroAngle,
+        ui->spinZeroSpeed,
+    };
+
+    QComboBox *comboxes[]={
+
+    };
+
+    install_spy();
 }
 
 void MegatronPref::updateData()
@@ -99,10 +133,27 @@ void MegatronPref::zeroJoint( int jointId, bool bCcw )
 
 void MegatronPref::slot_joint_zero( int jId, bool bccw )
 {
-    MegaMessageBox msgBox( tr("Sure to Zero?") );
+    MegaZeroAffirmMessageBox msgBox;
     int ret = msgBox.exec();
     if ( ret == QMessageBox::Ok )
     { zeroJoint( jId, bccw ); }
+}
+
+void MegatronPref::slot_ccw_changed()
+{
+    //! update the all
+    foreach( QCheckBox *pCheck, mCcwChecks )
+    {
+        if ( pCheck->isChecked() )
+        {}
+        else
+        {
+            ui->chkAllCcw->setChecked( false );
+            return;
+        }
+    }
+
+    ui->chkAllCcw->setChecked( true );
 }
 
 void MegatronPref::slot_body_changed()
@@ -121,6 +172,12 @@ void MegatronPref::slot_body_changed()
     { ui->btnZeroBody->setEnabled(true);}
     else
     { ui->btnZeroBody->setEnabled(false);}
+
+    //! all
+    if ( checkCount == mBodyChecks.size() )
+    { ui->chkAllBody->setChecked(true); }
+    else
+    { ui->chkAllBody->setChecked(false); }
 }
 
 #define sig_joint( id, chk )    emit signal_joint_zero( id, ui->chk->isChecked() );
@@ -144,7 +201,7 @@ void MegatronPref::on_btnZeroRy_clicked()
 
 void MegatronPref::on_btnZeroBody_clicked()
 {
-    MegaMessageBox msgBox( tr("Sure to Zero?") );
+    MegaZeroAffirmMessageBox msgBox;
     int ret = msgBox.exec();
     if ( ret == QMessageBox::Ok )
     {}
@@ -172,3 +229,18 @@ void MegatronPref::on_btnZeroBody_clicked()
     pBase->goZero( jointList, ccwList );
 }
 
+void MegatronPref::on_chkAllCcw_clicked(bool checked)
+{
+    foreach( QCheckBox *pCheck, mCcwChecks )
+    {
+        pCheck->setChecked( checked );
+    }
+}
+
+void MegatronPref::on_chkAllBody_clicked(bool checked)
+{
+    foreach( QCheckBox *pCheck, mBodyChecks )
+    {
+        pCheck->setChecked( checked );
+    }
+}

@@ -3,6 +3,9 @@
 
 #include <QMainWindow>
 
+//! widgets
+#include "../widget/megamessagebox.h"
+
 //! uis
 
 #include "devicemgr.h"
@@ -87,6 +90,7 @@ protected:
     void loadSetup();
 
     void setupData();
+    void postSetup();
 
     void setupService();
     void stopService();
@@ -96,9 +100,12 @@ protected:
     void statusShow( const QString &str );
 
 Q_SIGNALS:
+    void sig_post_load_prj( );
     void sig_robo_name_changed( const QString &name );
 
+
 protected Q_SLOTS:
+    void slot_post_load_prj();
     void cfgTab_tabCloseRequested( int index );
 
     void on_itemXActivated( mcModelObj *pObj );
@@ -107,6 +114,7 @@ protected Q_SLOTS:
 
     void modelview_destroyed( QObject *pObj );
     void modelview_closed( QWidget *pObj );
+    void slot_modelView_modified( modelView *pView, bool b );
 
     void slot_instmgr_changed( bool bEnd, MegaDevice::InstMgr *pMgr );
 
@@ -155,6 +163,9 @@ protected:
     bool progressProc(  const QString &name,
                         int axes,
                         RoboMsg msg );
+
+    void doLoadPrj( const QString &path,
+                    const QString &name );
 
 Q_SIGNALS:
     void itemXActivated( mcModelObj* );

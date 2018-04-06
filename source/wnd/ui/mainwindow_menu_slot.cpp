@@ -16,6 +16,21 @@
 //    m_pScriptMgr->newFile( fDlg.directory().absolutePath(), fDlg.selectedFiles().first() );
 //}
 
+void  MainWindow::doLoadPrj( const QString &path,
+                             const QString &name )
+{
+    m_pScriptMgr->load( path, name );
+
+    //! close all
+    slot_wndcloseAll();
+    if ( mMcModel.mSysPref.mAutoExpand )
+    {
+        m_pScriptMgr->setExpand( true );
+    }
+
+    setWindowTitle( m_pScriptMgr->getFullName() );
+}
+
 //! project
 void MainWindow::on_actionProject_triggered()
 {
@@ -42,17 +57,14 @@ void MainWindow::on_actionOpen_Prj_triggered()
     if ( QDialog::Accepted != fDlg.exec() )
     { return; }
 
-    m_pScriptMgr->load( fDlg.directory().absolutePath(),
-                        fDlg.selectedFiles().first() );
+    //! do load
+    doLoadPrj( fDlg.directory().absolutePath(),
+               fDlg.selectedFiles().first() );
 
-    //! close all
-    slot_wndcloseAll();
-    if ( mMcModel.mSysPref.mAutoExpand )
-    {
-        m_pScriptMgr->setExpand( true );
-    }
-
-    setWindowTitle( m_pScriptMgr->getFullName() );
+    //! save latest prj
+    mMcModel.mSysPref.setLatestPrj( fDlg.directory().absolutePath(),
+                                    comAssist::pureFileName( fDlg.selectedFiles().first() ) );
+    mMcModel.mSysPref.save( pref_file_name );
 }
 
 void MainWindow::on_actionSave_Prj_triggered()
@@ -65,7 +77,7 @@ void MainWindow::on_actionSave_Prj_triggered()
 
     QString strFileName;
 
-    strFileName = m_pScriptMgr->getPath() + "/" + m_pScriptMgr->getName();
+    strFileName = m_pScriptMgr->getPath() + QDir::separator() + m_pScriptMgr->getName();
     if ( strFileName.contains(".prj") )
     {}
     else
@@ -101,8 +113,13 @@ void MainWindow::on_actionSave_triggered()
         Q_ASSERT( NULL != pView );
 
         QString str;
+        m_pStateBar->showState( tr("Saving...") );
         int ret = pView->save(str);
         on_signalReport( ret, str );
+        if ( ret == 0 )
+        { sysLog( str, "save complted"); }
+        else
+        { sysError( str, "save failed"); }
     }
 }
 
@@ -251,8 +268,8 @@ void MainWindow::on_actionDocs_triggered()
 {
     QStringList args;
     QString str;
-    str = QCoreApplication::applicationDirPath() + QStringLiteral("/doc");
-    str.replace("/","\\");
+    str = QCoreApplication::applicationDirPath() + QDir::separator() + QStringLiteral("doc");
+//    str.replace("/","\\");
     args<<str;
     //! \todo linux
     logDbg()<<args;
@@ -263,8 +280,8 @@ void MainWindow::on_actionPackage_triggered()
 {
     QStringList args;
     QString str;
-    str = QCoreApplication::applicationDirPath() + QStringLiteral("/package");
-    str.replace("/","\\");
+    str = QCoreApplication::applicationDirPath() + QDir::separator() + QStringLiteral("package");
+//    str.replace("/","\\");
     args<<str;
     //! \todo linux
     logDbg()<<args;
@@ -294,6 +311,9 @@ void MainWindow::on_actionpref_triggered( )
 
         //! path
         comAssist::setRemotePath( mMcModel.mSysPref.mRemoteDirPath.split(',', QString::SkipEmptyParts) );
+
+        MegaMessageBox::setZeroAffirm( mMcModel.mSysPref.mbAffirmZero );
+        VRobot::setTempPath( mMcModel.mSysPref.mDumpPath );
     }
 }
 

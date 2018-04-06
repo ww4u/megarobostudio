@@ -265,6 +265,9 @@ int InstMgr::emergencyStop()
     DeviceId broadId( CAN_BROAD_ID );
     ret = mCanBus.doWrite( broadId, buf, sizeof(buf) );
 
+    //! 2. request
+    ret = requestStates();
+
     return ret;
 }
 
@@ -276,6 +279,27 @@ int InstMgr::hardReset()
     //! 1. broadcast
     DeviceId broadId( CAN_BROAD_ID );
     ret = mCanBus.doWrite( broadId, buf, sizeof(buf) );
+
+    //! 2. request state
+    ret = requestStates();
+
+    return ret;
+}
+
+int InstMgr::requestStates()
+{
+    int ret = 0;
+    DeviceId broadId( CAN_BROAD_ID );
+    //! request state for each page
+    byte stateBuf[]= { mc_MOTION, sc_MOTION_STATE_Q, CAN_BROAD_CHAN, 0 };
+
+    for ( byte i = 0; i < 10; i++ )
+    {
+        stateBuf[3] = i;
+        ret = mCanBus.doWrite( broadId, stateBuf, sizeof(stateBuf) );
+        if ( ret != 0 )
+        { return ret; }
+    }
 
     return ret;
 }

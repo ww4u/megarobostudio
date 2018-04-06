@@ -26,12 +26,38 @@ int robotDelta::goZero( int jTabId, bool bCcw )
     }
     Q_ASSERT( NULL != pMrq );
 
-    //! to stop mode
-    pMrq->setMOTIONPLAN_ENDSTATE( subAx, MRQ_MOTION_SWITCH_1_MAIN, MRQ_MOTIONPLAN_ENDSTATE_1_STOP );
-    pMrq->lightCouplingZero( tpvRegion(subAx,0),
-                             mZeroTime,
-                             bCcw ? (-mZeroAngle) : ( mZeroAngle ),
-                             mZeroSpeed );
+/*    //! angle
+    if ( jTabId == 0 || jTabId == 1 )
+    {
+        //! angle zero
+        double angleZero = mInitAngles.at( jTabId );
+        float angleNow = pMrq->getAbsAngle( subAx );
+
+        float deltaAngle = angleZero - angleNow;        //! distance
+
+        if ( bCcw )
+        {  }
+        else
+        { deltaAngle = -deltaAngle; }
+
+        Q_ASSERT( mZeroSpeed > 0 );
+        pMrq->rotate( tpvRegion(subAx,0),
+                      qAbs(deltaAngle) / mZeroSpeed,
+                      deltaAngle
+                      );
+    }
+    else */
+    if ( jTabId >= 0 && jTabId < 4 )
+    {
+        //! to stop mode
+        pMrq->setMOTIONPLAN_ENDSTATE( subAx, MRQ_MOTION_SWITCH_1_MAIN, MRQ_MOTIONPLAN_ENDSTATE_1_STOP );
+        pMrq->lightCouplingZero( tpvRegion(subAx,0),
+                                 mZeroTime,
+                                 bCcw ? (-mZeroAngle) : ( mZeroAngle ),
+                                 mZeroSpeed );
+    }
+    else
+    {}
 
     return 0;
 }

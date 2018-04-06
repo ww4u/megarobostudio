@@ -1,31 +1,131 @@
 #include "delta.h"
+#include "../../com/comassist.h"
+//! load the data from the file
+int robotDelta::program( const QString &fileName,
+                         const tpvRegion &region )
+{
+    //! 1.load
+    int ret;
+    ret = loadProgram( fileName );
+    if ( ret != 0 )
+    { return ret; }
+
+    //! 2.config
+    setLoop( 1 );
+
+    //! 3.download
+    ret = downloadTrace( region );
+    if ( ret != 0 )
+    { return ret; }
+
+    return 0;
+}
+
+int robotDelta::loadProgram( const QString &fileName )
+{
+    //!  0  1  2   3  4  5  6   7
+    //! LX LXV RX RXV Y YV END TIME
+    QList<float> dataset;
+    int col = 8;logDbg();
+    if ( 0 != comAssist::loadDataset( fileName, col, dataset ) )
+    { return ERR_INVALID_INPUT; }logDbg()<<dataset.size();
+
+    //! convert to tpvitem
+    if ( dataset.size() < 2 * col )
+    { return ERR_INVALID_INPUT; }logDbg();
+
+    //! file split
+    delete_all( mJointsGroup );logDbg();
+
+    //! for 3 axis
+    for ( int i = 0; i < 3; i++ )
+    {
+        tpvGroup *pGroup = new tpvGroup();
+        if ( NULL == pGroup )
+        { return -1; }logDbg();
+
+        //! for each time
+        int ret;
+        for ( int j = 0; j < dataset.size() / col; j++ )
+        {
+            ret = pGroup->addItem( dataset.at( j * col + 7),            //! time
+                                   dataset.at( j * col + i * 2),        //! p
+                                   dataset.at( j * col + i * 2 + 1)     //! v
+                                   );
+            if ( ret != 0 )
+            {
+                delete pGroup;
+                return ERR_FAIL_ADD_TPV;
+            }
+        }
+
+        mJointsGroup.append( pGroup );
+    }
+
+    //! end
+    {
+        tpvGroup *pGroup = new tpvGroup();
+        if ( NULL == pGroup )
+        { return -1; }
+
+        //! for each time
+        int ret;
+        for ( int j = 0; j < dataset.size() / col; j++ )
+        {
+            ret = pGroup->addItem( dataset.at( j * col + 7),        //! time
+                                   dataset.at( j * col + 6),        //! p
+                                   0
+                                   );
+            if ( ret != 0 )
+            {
+                delete pGroup;
+                return ERR_FAIL_ADD_TPV;
+            }
+        }
+
+        mJointsGroup.append( pGroup );
+    }
+
+        //! log joint group
+        foreach ( tpvGroup *pGp, mJointsGroup )
+        {
+            logDbg()<<"*******";
+            foreach(  tpvItem *pItem, pGp->mItems )
+            {
+                logDbg()<<pItem->mT<<pItem->mP<<pItem->mV;
+            }
+        }
+
+    return 0;
+}
+
 
 int robotDelta::program( QList<TraceKeyPoint> &curve,
              const tpvRegion &region )
 {
-//    int ret;
+    int ret;
 
-//    //! 0. check
-//    //!
+    //! 0. check
+    //!
 
-//    //! 1.build
-//    xxxGroup<jointsTrace> jointsPlan;
-//    ret = buildTrace( curve, jointsPlan );
-//    if ( ret != 0 )
-//    { return ret; }
+    //! 1.build
+    QList<arith_delta::deltaPoint> jointsPlan;
+    ret = buildTrace( curve, jointsPlan );
+    if ( ret != 0 )
+    { return ret; }
 
-//    //! 2.convert
-//    ret = convertTrace( curve, jointsPlan );
-//    if ( ret != 0 )
-//    { return ret; }
+    //! 2.convert
+    ret = convertTrace( curve, jointsPlan );
+    if ( ret != 0 )
+    { return ret; }
 
-//    //! 3.config
-//    setLoop( 1 );
+    //! 3.config
+    setLoop( 1 );
 
-//    //! 4.download
-//    ret = downloadTrace( region );
-//    if ( ret != 0 )
-//    { return ret; }
+    //! 4.download
+    ret = downloadTrace( region );
+    if ( ret != 0 )
+    { return ret; }
 
     return 0;
 }
@@ -48,16 +148,16 @@ int robotDelta::moveTest1( const tpvRegion &region )
 {
     TraceKeyPoint pt1,pt2;
     pt1.t = 0;
-    pt1.x = 280;
-    pt1.y = 21.5;
-    pt1.z = 452.75;
-    pt1.hand = 0;
+    pt1.x = 0;
+    pt1.y = -230.8074;
+    pt1.z = 0;
+    pt1.hand = 10;
 
-    pt2.t = 1;
-    pt2.x = 250;
-    pt2.y = 0;
-    pt2.z = 502;
-    pt2.hand = 270;
+    pt2.t = 2;
+    pt2.x = 113.7092;
+    pt2.y = -187.3488;
+    pt2.z = 10;
+    pt2.hand = 20;
 
     QList<TraceKeyPoint> curve;
     curve.append( pt1 );
@@ -71,17 +171,17 @@ int robotDelta::moveTest1( const tpvRegion &region )
 int robotDelta::moveTest2( const tpvRegion &region )
 {
     TraceKeyPoint pt1,pt2;
-    pt1.t = 1;
-    pt1.x = 280;
-    pt1.y = 21.5;
-    pt1.z = 452.75;
-    pt1.hand = 0;
+    pt1.t = 2;
+    pt1.x = 0;
+    pt1.y = -230.8074;
+    pt1.z = 0;
+    pt1.hand = 10;
 
     pt2.t = 0;
-    pt2.x = 250;
-    pt2.y = 0;
-    pt2.z = 502;
-    pt2.hand = 270;
+    pt2.x = 113.7092;
+    pt2.y = -187.3488;
+    pt2.z = 10;
+    pt2.hand = 20;
 
     //! p2 -> p1
     QList<TraceKeyPoint> curve;

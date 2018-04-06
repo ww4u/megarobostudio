@@ -1,7 +1,7 @@
 #include "sinanjupref.h"
 #include "ui_sinanjupref.h"
 #include "../../robot/robotfact.h"
-
+#include "../widget/megamessagebox.h"
 SinanjuPref::SinanjuPref(QWidget *parent) :
     modelView(parent),
     ui(new Ui::SinanjuPref)
@@ -34,6 +34,8 @@ SinanjuPref::SinanjuPref(QWidget *parent) :
     mInvertAngles.append( ui->chkInvBA );
     mInvertAngles.append( ui->chkInvSA );
     mInvertAngles.append( ui->chkInvWrist );
+
+    spyEdited();
 }
 
 SinanjuPref::~SinanjuPref()
@@ -63,13 +65,6 @@ void SinanjuPref::updateData()
     Q_ASSERT( m_pModelObj != NULL );
     VRobot *pBase = ( VRobot *)m_pModelObj;
     Q_ASSERT( NULL != pBase );
-
-//    //! connection
-//    pBase->mAxesConnectionName.clear();
-//    for ( int i = 0; i < pBase->axes(); i++ )
-//    {
-//        pBase->mAxesConnectionName<<mEdits[i]->text();
-//    }
 
     //! init angle
     pBase->mInitAngles.clear();
@@ -144,16 +139,41 @@ void SinanjuPref::initModel()
     }
 }
 
+void SinanjuPref::spyEdited()
+{
+    QLineEdit *edits[]={
+
+    };
+
+    QSpinBox *spinBoxes[]={
+
+    };
+
+    QDoubleSpinBox *doubleSpinBoxes[]={
+        ui->spinAngleWrist,
+        ui->spinAngleSArm,
+        ui->spinAngleBase,
+        ui->spinAngleBArm,
+
+        ui->spinZeroTime,
+        ui->spinZeroAngle,
+        ui->spinZeroSpeed,
+    };
+
+    QComboBox *comboxes[]={
+
+    };
+
+    install_spy();
+}
+
 void SinanjuPref::on_btnGoZero_clicked()
 {
     Q_ASSERT( m_pModelObj != NULL );
     VRobot *pBase = ( VRobot *)m_pModelObj;
     Q_ASSERT( NULL != pBase );
 
-    QMessageBox msgBox;
-    msgBox.setText( tr("Sure to zero?") );
-    msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel );
-    msgBox.setDefaultButton(QMessageBox::Ok);
+    MegaZeroAffirmMessageBox msgBox;
     int ret = msgBox.exec();
     if ( ret == QMessageBox::Ok )
     {
@@ -167,10 +187,7 @@ void SinanjuPref::on_btnZeroHand_clicked()
     VRobot *pBase = ( VRobot *)m_pModelObj;
     Q_ASSERT( NULL != pBase );
 
-    QMessageBox msgBox;
-    msgBox.setText( tr("Sure to zero?") );
-    msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel );
-    msgBox.setDefaultButton(QMessageBox::Ok);
+    MegaZeroAffirmMessageBox msgBox;
     int ret = msgBox.exec();
     if ( ret == QMessageBox::Ok )
     {

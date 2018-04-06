@@ -103,4 +103,8 @@ protected:
 
 };
 
+#define scpi_ret( ret )         sysError( __FUNCTION__, QString::number(__LINE__)); \
+                                return ret;
+
+
 #endif // SCPISHELL_H

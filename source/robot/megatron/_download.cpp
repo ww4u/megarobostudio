@@ -9,8 +9,14 @@ int robotMegatron::downloadTrace( const tpvRegion &region )
 
     onLine();
 
+    //! data order:
+    //! x1,y1,z1,x2,y2,z2
+    //!
+    //! joint id: x1,z1,x2,z2,y1,y2
+    //!           fx,fz,bx,bz,ly,ry
+    //!            0 1  2  3  4  5
     QList<int> jointsTabList;
-    jointsTabList<<0<<1<<2<<3<<4<<5;
+    jointsTabList<<0<<4<<1<<2<<5<<3;
     ret = download( mJointsGroup, jointsTabList, region );
     if ( ret != 0 )
     { return ret; }

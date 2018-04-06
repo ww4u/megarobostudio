@@ -65,10 +65,7 @@ void mrqProperty::setModelObj( mcModelObj *pObj )
 
     for ( int i = 0; i < m_pRefModel->axes(); i++ )
     {
-        mAxesPages[i]->setModelObj(pObj);
-        mAxesPage2s[i]->setModelObj(pObj);
-        mAxesPage3s[i]->setModelObj(pObj);
-        mAxesPlans[i]->setModelObj(pObj);
+        mMrqAxesPages.at(i)->setModelObj( pObj );
     }
 
     for ( int i = 0; i < m_pRefModel->dcAxes(); i++ )
@@ -86,12 +83,12 @@ int mrqProperty::save( QString &outFileName )
     if ( getModelObj()->getPath().isEmpty() )
     {
         outFileName = QDir::currentPath() +
-                      "/" + getModelObj()->getName();
+                      QDir::separator() + getModelObj()->getName();
     }
     else
     {
         outFileName = getModelObj()->getPath() +
-                "/" + getModelObj()->getName();
+                QDir::separator() + getModelObj()->getName();
         logDbg()<<outFileName;
     }
 
@@ -112,10 +109,7 @@ void mrqProperty::setMcModel( mcModel *pMcModel )
 
     for ( int i = 0; i < m_pRefModel->axes(); i++)
     {
-        mAxesPages[i]->setMcModel(pMcModel);
-        mAxesPage2s[i]->setMcModel(pMcModel);
-        mAxesPage3s[i]->setMcModel(pMcModel);
-        mAxesPlans[i]->setMcModel( pMcModel );
+        mMrqAxesPages.at(i)->setMcModel( pMcModel );
     }
 
     for ( int i = 0; i < m_pRefModel->dcAxes(); i++)
@@ -141,10 +135,7 @@ int mrqProperty::setApply()
     //! foreach apply
     for ( int i = 0; i < m_pRefModel->axes(); i++)
     {
-        mAxesPages[i]->setApply();
-        mAxesPage2s[i]->setApply();
-        mAxesPage3s[i]->setApply();
-        mAxesPlans[i]->setApply();
+        mMrqAxesPages.at(i)->setApply();
     }
 
     for ( int i = 0; i < m_pRefModel->dcAxes(); i++)
@@ -168,17 +159,9 @@ void mrqProperty::setupUi()
 
     for ( int i = 0; i < m_pRefModel->axes(); i++ )
     {
-        mAxesPages.append( new mrqAxes() );
-        mAxesPages[i]->setAxesId( i );
-
-        mAxesPage2s.append( new mrqAxes2() );
-        mAxesPage2s[i]->setAxesId( i );
-
-        mAxesPage3s.append( new MrqTrigPage() );
-        mAxesPage3s[i]->setAxesId( i );
-
-        mAxesPlans.append( new MrqAxesPlan() );
-        mAxesPlans[i]->setAxesId( i );
+        mMrqAxesPages.append( new MrqAxesPage() );
+        Q_ASSERT( mMrqAxesPages.at(i) != NULL );
+        mMrqAxesPages.at(i)->setAxesId( i );
     }
 
     for ( int i = 0; i < m_pRefModel->dcAxes(); i++ )
@@ -201,10 +184,7 @@ void mrqProperty::setupUi()
 
     for ( int i = 0; i < m_pRefModel->axes(); i++ )
     {
-        ui->stackedWidget->addWidget( mAxesPages[i] );
-        ui->stackedWidget->addWidget( mAxesPage2s[i] );
-        ui->stackedWidget->addWidget( mAxesPage3s[i] );
-        ui->stackedWidget->addWidget( mAxesPlans[i] );
+        ui->stackedWidget->addWidget( mMrqAxesPages[i] );
     }
 
     for ( int i = 0; i < m_pRefModel->dcAxes(); i++ )
@@ -230,28 +210,7 @@ void mrqProperty::setupUi()
     for ( int i = 0; i < m_pRefModel->axes(); i++ )
     {
         //! axes 0
-        str = strAxes + QString("%1 1/4").arg(i+1);
-        pItem = new QListWidgetItem();
-        pItem->setText( str );
-        pItem->setIcon( QIcon(":/res/image/icon2/focus.png") );
-        ui->listWidget->addItem( pItem );
-
-        //! axes 1
-        str = strAxes + QString("%1 2/4").arg(i+1);
-        pItem = new QListWidgetItem();
-        pItem->setText( str );
-        pItem->setIcon( QIcon(":/res/image/icon2/focus.png") );
-        ui->listWidget->addItem( pItem );
-
-        //! axes 2
-        str = strAxes + QString("%1 3/4").arg(i+1);
-        pItem = new QListWidgetItem();
-        pItem->setText( str );
-        pItem->setIcon( QIcon(":/res/image/icon2/focus.png") );
-        ui->listWidget->addItem( pItem );
-
-        //! axes 3
-        str = strAxes + QString("%1 4/4").arg(i+1);
+        str = strAxes + QString("%1").arg(i+1);
         pItem = new QListWidgetItem();
         pItem->setText( str );
         pItem->setIcon( QIcon(":/res/image/icon2/focus.png") );

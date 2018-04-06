@@ -49,14 +49,14 @@ static scpi_result_t _scpi_move( scpi_t * context )
     float vals[6+1];
 
     if ( SCPI_ParamInt32(context, &ax, true) != true )
-    { return SCPI_RES_ERR; }
+    { scpi_ret( SCPI_RES_ERR ); }
     if ( SCPI_ParamInt32(context, &page, true) != true )
-    { return SCPI_RES_ERR; }
+    { scpi_ret( SCPI_RES_ERR ); }
 
     for ( int i = 0; i < sizeof_array(vals); i++ )
     {
         if ( SCPI_RES_OK != SCPI_ParamFloat( context, vals+i, true ) )
-        { return SCPI_RES_ERR; }
+        { scpi_ret( SCPI_RES_ERR ); }
     }
 
     for ( int i = 0; i < sizeof_array(vals); i++ )
@@ -90,25 +90,25 @@ static scpi_result_t _scpi_program( scpi_t * context )
     int ax, page;
 
     if ( SCPI_ParamInt32(context, &ax, true) != true )
-    { return SCPI_RES_ERR; }
+    { scpi_ret( SCPI_RES_ERR ); }
 
     if ( SCPI_ParamInt32(context, &page, true) != true )
-    { return SCPI_RES_ERR; }
+    { scpi_ret( SCPI_RES_ERR ); }
 
     if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
-    { return SCPI_RES_ERR; }logDbg()<<strLen<<pLocalStr;
+    { scpi_ret( SCPI_RES_ERR ); }logDbg()<<strLen<<pLocalStr;
     if (strLen < 1)
-    { return SCPI_RES_ERR; }
+    { scpi_ret( SCPI_RES_ERR ); }
 
     //! t, x1,y1,z1
     QList<float> dataset;
     int col = 4;
     if ( 0 != comAssist::loadDataset( pLocalStr, strLen, col, dataset ) )
-    {  return SCPI_RES_ERR; }
+    {  scpi_ret( SCPI_RES_ERR ); }
 
     //! point
     if ( dataset.size() / col < 2 )
-    { return SCPI_RES_ERR; }
+    { scpi_ret( SCPI_RES_ERR ); }
 
     H2KeyPointList curve;
     H2KeyPoint tp;
@@ -142,10 +142,10 @@ static scpi_result_t _scpi_call( scpi_t * context )
     int ax, page;
 
     if ( SCPI_ParamInt32(context, &ax, true) != true )
-    { return SCPI_RES_ERR; }
+    { scpi_ret( SCPI_RES_ERR ); }
 
     if ( SCPI_ParamInt32(context, &page, true) != true )
-    { return SCPI_RES_ERR; }
+    { scpi_ret( SCPI_RES_ERR ); }
 
     //! robo op
     DEF_ROBO();
@@ -162,7 +162,7 @@ static scpi_result_t _scpi_fsmState( scpi_t * context )
 
     int page;
     if ( SCPI_ParamInt32(context, &page, true) != true )
-    { return SCPI_RES_ERR; }
+    { scpi_ret( SCPI_RES_ERR ); }
 
     int ret = pRobo->state( tpvRegion(0,page) );
 

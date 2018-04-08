@@ -699,7 +699,7 @@ scpiShell *InstMgr::findShell( const QString &name )
         foreach( scpiShell * pDev, *pRoboList )
         {
             Q_ASSERT( NULL != pDev );
-            if ( pDev->getName() == name )
+            if ( QString::compare( pDev->getName(), name, Qt::CaseInsensitive)==0 )
             { return pDev; }
         }
     }

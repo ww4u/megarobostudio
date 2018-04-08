@@ -35,7 +35,8 @@ public:
     int mPort;
     int mSpeed;     //! speed index
     int mTimeout;
-    int mInterval;
+    int mInterval;  //! for write interval
+    int mTpvInterval;
     int mFailTryCnt;
 
     int mEnumerateTimeout;

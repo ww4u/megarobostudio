@@ -52,17 +52,19 @@ void mrqInfo::initModel()
     }
 
     //! init data
-    mTableItems[0]->setText( tr("Model") );
-    mTableItems[2]->setText( tr("Serial") );
-    mTableItems[4]->setText( tr("Hardware version") );
-    mTableItems[6]->setText( tr("Software version") );
+    mTableItems.at(0)->setText( tr("Model") );
+    mTableItems.at(2)->setText( tr("Serial") );
+    mTableItems.at(4)->setText( tr("Hardware version") );
+    mTableItems.at(6)->setText( tr("Software version") );
 
-    mTableItems[8]->setText( tr("Firmware version") );
-    mTableItems[10]->setText( tr("Boot version") );
+    mTableItems.at(8)->setText( tr("Firmware version") );
+    mTableItems.at(10)->setText( tr("Boot version") );
 
-    mTableItems[12]->setText( tr("Send ID") );
-    mTableItems[14]->setText( tr("Receive ID") );
-    mTableItems[16]->setText( tr("Boradcast ID") );
+    mTableItems.at(12)->setText( tr("Send ID") );
+    mTableItems.at(14)->setText( tr("Receive ID") );
+    mTableItems.at(16)->setText( tr("Boradcast ID") );
+    mTableItems.at(18)->setText( tr("Capacity") );
+    mTableItems.at(20)->setText( tr("Buffer") );
 }
 
 void mrqInfo::deinitModel()
@@ -84,24 +86,49 @@ void mrqInfo::updateUi()
 
     Q_ASSERT( NULL != pModel );
 
-    mTableItems[1]->setText( pModel->getDesc() );
-    mTableItems[3]->setText( pModel->getSN() );
-    mTableItems[5]->setText( pModel->getHwVer() );
-    mTableItems[7]->setText( pModel->getSwVer() );
+    mTableItems.at(1)->setText( pModel->getDesc() );
+    mTableItems.at(3)->setText( pModel->getSN() );
+    mTableItems.at(5)->setText( pModel->getHwVer() );
+    mTableItems.at(7)->setText( pModel->getSwVer() );
 
-    mTableItems[9]->setText( pModel->getFwVer() );
-    mTableItems[11]->setText( pModel->getBtVer() );
+    mTableItems.at(9)->setText( pModel->getFwVer() );
+    mTableItems.at(11)->setText( pModel->getBtVer() );
 
     uint32 id;
     pModel->getCAN_SENDID( &id );
-    mTableItems[13]->setText( QString::number( id, 16 ) );
+    mTableItems.at(13)->setText( QString::number( id, 16 ) );
 
     pModel->getCAN_RECEIVEID( &id );
-    mTableItems[15]->setText( QString::number( id, 16 ) );
+    mTableItems.at(15)->setText( QString::number( id, 16 ) );
 
     pModel->getCAN_BROADCASTID( &id );
-    mTableItems[17]->setText( QString::number( id, 16 ) );
+    mTableItems.at(17)->setText( QString::number( id, 16 ) );
 
+    //! caps
+    int cap;
+    QString strCaps;
+    QString sep;
+    for ( int i = 0; i < m_pMrqModel->regions(); i++ )
+    {
+        cap = m_pMrqModel->getTpvCap( tpvRegion(0,i) );
+        strCaps += sep + QString::number( cap );
+        sep = "/";
+    }
+    mTableItems.at(19)->setText( strCaps );
+
+    //! buffers
+    int bufSize;
+    QString strBufs;
+    sep = "";
+    for ( int i = 0; i < m_pMrqModel->regions(); i++ )
+    {
+        bufSize = m_pMrqModel->getTpvBuf( tpvRegion(0,i) );
+        strBufs += sep + QString("%1M").arg( bufSize / (1024*1024.0));
+        sep = "/";
+    }
+    mTableItems.at(21)->setText( strBufs );
+
+    //! image
     ui->labImg->setPixmap( QPixmap::fromImage( pModel->getImage() ) );
 }
 

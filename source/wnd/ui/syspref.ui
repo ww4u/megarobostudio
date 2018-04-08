@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>708</width>
-    <height>626</height>
+    <height>641</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -65,7 +65,7 @@
       <enum>QTabWidget::North</enum>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tab_2">
       <attribute name="title">
@@ -349,24 +349,24 @@
             <string>ID Range</string>
            </property>
            <layout class="QGridLayout" name="gridLayout_2">
-            <item row="1" column="1">
-             <widget class="QComboBox" name="cmbRecvFrom">
-              <property name="editable">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="2">
-             <widget class="QComboBox" name="cmbRecvTo">
-              <property name="editable">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
             <item row="0" column="0">
              <widget class="QLabel" name="label_5">
               <property name="text">
                <string>Send ID</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QComboBox" name="cmbSendFrom">
+              <property name="editable">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="2">
+             <widget class="QComboBox" name="cmbSendTo">
+              <property name="editable">
+               <bool>true</bool>
               </property>
              </widget>
             </item>
@@ -383,24 +383,24 @@
               </property>
              </spacer>
             </item>
-            <item row="0" column="1">
-             <widget class="QComboBox" name="cmbSendFrom">
-              <property name="editable">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="2">
-             <widget class="QComboBox" name="cmbSendTo">
-              <property name="editable">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
             <item row="1" column="0">
              <widget class="QLabel" name="label_7">
               <property name="text">
                <string>Receive ID</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QComboBox" name="cmbRecvFrom">
+              <property name="editable">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="2">
+             <widget class="QComboBox" name="cmbRecvTo">
+              <property name="editable">
+               <bool>true</bool>
               </property>
              </widget>
             </item>
@@ -434,6 +434,21 @@
             <string>Communication</string>
            </property>
            <layout class="QGridLayout" name="gridLayout_3">
+            <property name="leftMargin">
+             <number>3</number>
+            </property>
+            <property name="topMargin">
+             <number>3</number>
+            </property>
+            <property name="rightMargin">
+             <number>3</number>
+            </property>
+            <property name="bottomMargin">
+             <number>3</number>
+            </property>
+            <property name="spacing">
+             <number>3</number>
+            </property>
             <item row="1" column="1">
              <widget class="QComboBox" name="cmbSpeed">
               <property name="editable">
@@ -516,6 +531,9 @@
               </item>
              </widget>
             </item>
+            <item row="5" column="1">
+             <widget class="QSpinBox" name="spinFailTry"/>
+            </item>
             <item row="2" column="0">
              <widget class="QLabel" name="label">
               <property name="text">
@@ -523,20 +541,10 @@
               </property>
              </widget>
             </item>
-            <item row="5" column="1">
-             <widget class="QSpinBox" name="spinFailTry"/>
-            </item>
             <item row="6" column="0">
              <widget class="QLabel" name="label_22">
               <property name="text">
                <string>Enumerate Timeout(us)</string>
-              </property>
-             </widget>
-            </item>
-            <item row="3" column="1">
-             <widget class="QComboBox" name="cmbInterval">
-              <property name="editable">
-               <bool>true</bool>
               </property>
              </widget>
             </item>
@@ -547,10 +555,10 @@
               </property>
              </widget>
             </item>
-            <item row="0" column="0">
-             <widget class="QLabel" name="label_3">
-              <property name="text">
-               <string>Interface</string>
+            <item row="3" column="1">
+             <widget class="QComboBox" name="cmbInterval">
+              <property name="editable">
+               <bool>true</bool>
               </property>
              </widget>
             </item>
@@ -561,6 +569,27 @@
               </property>
               <property name="maximum">
                <number>10000000</number>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_3">
+              <property name="text">
+               <string>Interface</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_4">
+              <property name="text">
+               <string>Speed(bps)</string>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="0">
+             <widget class="QLabel" name="label_18">
+              <property name="text">
+               <string>Fail Try Count</string>
               </property>
              </widget>
             </item>
@@ -601,27 +630,6 @@
               </item>
              </widget>
             </item>
-            <item row="1" column="0">
-             <widget class="QLabel" name="label_4">
-              <property name="text">
-               <string>Speed(bps)</string>
-              </property>
-             </widget>
-            </item>
-            <item row="5" column="0">
-             <widget class="QLabel" name="label_18">
-              <property name="text">
-               <string>Fail Try Count</string>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="1">
-             <widget class="QComboBox" name="cmbTimeout">
-              <property name="editable">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
             <item row="0" column="2" rowspan="7">
              <widget class="QLabel" name="labelCanPic">
               <property name="text">
@@ -648,6 +656,30 @@
               </property>
              </spacer>
             </item>
+            <item row="2" column="1">
+             <widget class="QComboBox" name="cmbTimeout">
+              <property name="editable">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="7" column="0">
+             <widget class="QLabel" name="label_27">
+              <property name="text">
+               <string>PVT Interval(us)</string>
+              </property>
+             </widget>
+            </item>
+            <item row="7" column="1">
+             <widget class="QSpinBox" name="spinPvtInterval">
+              <property name="minimum">
+               <number>0</number>
+              </property>
+              <property name="maximum">
+               <number>1000000</number>
+              </property>
+             </widget>
+            </item>
            </layout>
           </widget>
          </item>
@@ -657,6 +689,21 @@
             <string>Unit</string>
            </property>
            <layout class="QGridLayout" name="gridLayout">
+            <property name="leftMargin">
+             <number>3</number>
+            </property>
+            <property name="topMargin">
+             <number>3</number>
+            </property>
+            <property name="rightMargin">
+             <number>3</number>
+            </property>
+            <property name="bottomMargin">
+             <number>3</number>
+            </property>
+            <property name="spacing">
+             <number>3</number>
+            </property>
             <item row="1" column="0">
              <widget class="QLabel" name="label_9">
               <property name="text">

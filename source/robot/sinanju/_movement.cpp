@@ -9,6 +9,81 @@ int robotSinanju::call( const tpvRegion &region )
     return 0;
 }
 
+//! load the data from the file
+int robotSinanju::program( const QString &fileName,
+                         const tpvRegion &region )
+{
+    //! 1.load
+    int ret;
+    ret = loadProgram( fileName );
+    if ( ret != 0 )
+    { return ret; }
+
+    //! 2.config
+    setLoop( 1 );
+
+    //! 3.download
+    ret = downloadTrace( region );
+    if ( ret != 0 )
+    { return ret; }
+
+    return 0;
+}
+
+int robotSinanju::loadProgram( const QString &fileName )
+{
+    //!  0   1   2   3   4    5
+    //!  J1  J2  J3  J4  End Time
+    QList<float> dataset;
+    int col = 6;logDbg();
+    if ( 0 != comAssist::loadDataset( fileName, col, dataset ) )
+    { return ERR_INVALID_INPUT; }logDbg()<<dataset.size();
+
+    //! convert to tpvitem
+    if ( dataset.size() < 2 * col )
+    { return ERR_INVALID_INPUT; }logDbg();
+
+    //! file split
+    delete_all( mJointsGroup );logDbg();
+
+    //! for 5 axis
+    for ( int i = 0; i < 5; i++ )
+    {
+        tpvGroup *pGroup = new tpvGroup();
+        if ( NULL == pGroup )
+        { return -1; }logDbg();
+
+        //! for each time
+        int ret;
+        for ( int j = 0; j < dataset.size() / col; j++ )
+        {
+            ret = pGroup->addItem( dataset.at( j * col + 5),        //! time
+                                   dataset.at( j * col + i),        //! p
+                                   0
+                                   );
+            if ( ret != 0 )
+            {
+                delete pGroup;
+                return ERR_FAIL_ADD_TPV;
+            }
+        }
+
+        mJointsGroup.append( pGroup );
+    }
+
+    //! log joint group
+    foreach ( tpvGroup *pGp, mJointsGroup )
+    {
+        logDbg()<<"*******";
+        foreach(  tpvItem *pItem, pGp->mItems )
+        {
+            logDbg()<<pItem->mT<<pItem->mP<<pItem->mV;
+        }
+    }
+
+    return 0;
+}
+
 int robotSinanju::program( QList<TraceKeyPoint> &curve,
              const tpvRegion &region )
 {

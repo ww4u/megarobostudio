@@ -212,6 +212,8 @@ void IdleMrqUnit::proc( int msg, RoboMsg &detail )
 void IdleMrqUnit::onEnter(RoboMsg &detail)
 {
     selfFsm()->reqRun( false );
+
+    killTimer( state_timer_id );
 }
 
 //! RunReqedMrqUnit

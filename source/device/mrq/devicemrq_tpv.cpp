@@ -24,7 +24,21 @@ int deviceMRQ::loadTpvCap( )
         region.setRegion( _i, _j );
         Q_ASSERT( mTpvCaps.contains(region) );
 
-        mTpvCaps[ tpvRegion(_i,_j) ] = cap;
+        mTpvCaps[ region ] = cap;
+    }
+    end_foreach_page()
+
+    uint32 bufSize;
+    foreach_page()
+    {
+        ret = getMOTIONPLAN_BUFFERSIZE( _i, _axPage, &bufSize );
+        if ( ret != 0 )
+        { return ret; }
+
+        region.setRegion( _i, _j );
+        Q_ASSERT( mTpvBufferSizes.contains(region) );
+
+        mTpvBufferSizes[ region ] = bufSize;
     }
     end_foreach_page()
 
@@ -42,7 +56,11 @@ int deviceMRQ::getTpvCap( const tpvRegion &region )
     Q_ASSERT( mTpvCaps.contains(region) );
     return mTpvCaps[ region ];
 }
-
+int deviceMRQ::getTpvBuf( pvt_region )
+{
+    Q_ASSERT( mTpvBufferSizes.contains(region) );
+    return mTpvBufferSizes[ region ];
+}
 int deviceMRQ::beginTpvDownload( const tpvRegion &region )
 {
     int ret;

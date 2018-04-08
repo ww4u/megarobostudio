@@ -33,6 +33,8 @@ MainWindow::MainWindow(dpcObj *pObj, QWidget *parent) :
 
     buildConnection();
 
+    applyConfigs();
+
     postSetup();
 }
 
@@ -78,6 +80,7 @@ void MainWindow::init()
     m_pProgress = NULL;
 
     m_pInterruptThread = NULL;
+    m_pSampleThread = NULL;
 }
 void MainWindow::deinit()
 {
@@ -354,6 +357,7 @@ void MainWindow::setupData()
 
     mMcModel.m_pInstMgr->setMainModel( &mMcModel );
 
+    Q_ASSERT( NULL != m_pDeviceMgr );
     m_pDeviceMgr->setInstMgr( mMcModel.m_pInstMgr );
     m_pDeviceMgr->setDeviceDb( &mMcModel.mDeviceDbs );
     m_pDeviceMgr->setSysPref( &mMcModel.mSysPref );
@@ -362,22 +366,33 @@ void MainWindow::setupData()
     Q_ASSERT( NULL != m_pRoboMgr );
     m_pRoboMgr->setModel( mRoboModelMgr );
 
+    Q_ASSERT( NULL != m_pMotorMonitor );
     m_pMotorMonitor->setModel( &mMcModel );
 
+    if ( mMcModel.mSysPref.mbMaximizeStartup )
+    { showMaximized(); }
+}
+
+void MainWindow::applyConfigs()
+{
     //! remote path
     comAssist::setRemotePath( mMcModel.mSysPref.mRemoteDirPath.split(',', QString::SkipEmptyParts) );
 
     MegaMessageBox::setZeroAffirm( mMcModel.mSysPref.mbAffirmZero );
     VRobot::setTempPath( mMcModel.mSysPref.mDumpPath );
 
-    if ( mMcModel.mSysPref.mbMaximizeStartup )
-    { showMaximized(); }
+    //! downloader speeed
+    tpvDownloader::setInterval( mMcModel.mSysPref.mTpvInterval );
 
     //! inst mgr
     Q_ASSERT( NULL != mMcModel.m_pInstMgr );
     mMcModel.m_pInstMgr->setTPVBase( mMcModel.mSysPref.mTimeUnit,
                                      mMcModel.mSysPref.mPosUnit,
                                      mMcModel.mSysPref.mVelUnit );
+
+    //! sample interval
+    Q_ASSERT( NULL != m_pSampleThread );
+    m_pSampleThread->setSampleInterval( mMcModel.mSysPref.mSampleTick );
 
 }
 

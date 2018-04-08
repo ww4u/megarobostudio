@@ -114,11 +114,11 @@ deviceProxyMotor *deviceMRQ::Motor( const tpvRegion &region )
 
 tpvDownloader *deviceMRQ::downloader( const tpvRegion &region )
 {
-    Q_ASSERT( mDownloaders.contains( region.axes()) );
+    Q_ASSERT( mDownloaders.contains( region) );
 
-    Q_ASSERT( mDownloaders[region.axes()] != NULL );
+    Q_ASSERT( mDownloaders[region] != NULL );
 
-    return mDownloaders[region.axes()];
+    return mDownloaders[region];
 }
 
 }

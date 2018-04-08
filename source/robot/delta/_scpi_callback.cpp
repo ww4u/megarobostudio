@@ -88,18 +88,20 @@ static int _sloveFile( const QString &fileIn,
     QString serverPath;
 
     //! try path
-    program = server_path1 + QStringLiteral("deltaslove.exe");
+    program = server_path1 + QStringLiteral("sinanjuslove.exe");
     if ( QFile::exists(program) )
     { serverPath = server_path1; }
     else
     { serverPath = server_path2; }
 
-    program = serverPath + QStringLiteral("deltaslove.exe");
-
     QString cfgFile;
-    cfgFile = serverPath + QStringLiteral("deltaslove_config.txt");
+    cfgFile = serverPath + QStringLiteral("sinanjuslove_config.txt");
 
-    args<<fileIn<<fileOut<<cfgFile;
+    QString inFile,outFile,configFile;
+    inFile = fileIn;
+    outFile = fileOut;
+    configFile = cfgFile;
+    args<<inFile<<outFile<<configFile;
 
     logDbg()<<program<<args;
 
@@ -110,7 +112,7 @@ static int _sloveFile( const QString &fileIn,
     if ( process.waitForFinished( 120000 ) )
     { return 0; }
     else
-    { return 1; }
+    { return -1; }
 }
 
 ////! ax, page, file
@@ -195,7 +197,7 @@ static scpi_result_t _scpi_program( scpi_t * context )
     //! slove the file
     QString fileOutName;
     DEF_ROBO();
-    fileOutName = ROBO()->tempPath() + QDir::separator() + "delta_pvt.csv";
+    fileOutName = ROBO()->tempPath() + QDir::separator() + "sinanju_pvt.csv";
 
     if ( 0 != _sloveFile( fileInName, fileOutName ) )
     { scpi_ret( SCPI_RES_ERR ); }

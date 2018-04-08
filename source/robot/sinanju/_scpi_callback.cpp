@@ -130,6 +130,73 @@ static scpi_result_t _scpi_program( scpi_t * context )
     return SCPI_RES_OK;
 }
 
+#define server_path1     QCoreApplication::applicationDirPath() + QString( QDir::separator() )
+#define server_path2     "G:\\work\\mc\\develope\\installer" + QString( QDir::separator() )
+//static int _sloveFile( const QString &fileIn,
+//                        const QString &fileOut )
+//{
+//    QStringList args;
+//    QString program;
+//    QString serverPath;
+
+//    //! try path
+//    program = server_path1 + QStringLiteral("deltaslove.exe");
+//    if ( QFile::exists(program) )
+//    { serverPath = server_path1; }
+//    else
+//    { serverPath = server_path2; }
+
+//    QString cfgFile;
+//    cfgFile = serverPath + QStringLiteral("deltaslove_config.txt");
+
+//    QString inFile,outFile,configFile;
+//    inFile = fileIn;
+//    outFile = fileOut;
+//    configFile = cfgFile;
+//    args<<inFile<<outFile<<configFile;
+
+//    logDbg()<<program<<args;
+
+//    QProcess process;
+
+//    process.start( program, args );
+
+//    if ( process.waitForFinished( 120000 ) )
+//    { return 0; }
+//    else
+//    { return -1; }
+//}
+
+//! ax, page, file
+static scpi_result_t _scpi_download( scpi_t * context )
+{
+    // read
+    DEF_LOCAL_VAR();
+
+    int ax, page;
+
+    if ( SCPI_ParamInt32(context, &ax, true) != true )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    if ( SCPI_ParamInt32(context, &page, true) != true )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
+    { scpi_ret( SCPI_RES_ERR ); }logDbg()<<strLen<<pLocalStr;
+    if (strLen < 1)
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    DEF_ROBO();
+    QByteArray fileName( pLocalStr, strLen );
+    int ret;
+    ret = pRobo->program( fileName, tpvRegion( ax, page) );
+    if ( ret != 0 )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    return SCPI_RES_OK;
+}
+
+
 //! ax, page
 static scpi_result_t _scpi_call( scpi_t * context )
 {
@@ -281,6 +348,7 @@ static scpi_command_t _scpi_cmds[]=
     CMD_ITEM( "DISTANCE?", _scpi_dist ),
 
     CMD_ITEM( "PROGRAM", _scpi_program ),
+    CMD_ITEM( "DOWNLOAD", _scpi_download ),
     CMD_ITEM( "CALL", _scpi_call ),
     CMD_ITEM( "ZERO", _scpi_gozero ),
 

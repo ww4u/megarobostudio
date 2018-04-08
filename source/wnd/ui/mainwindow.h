@@ -90,6 +90,7 @@ protected:
     void loadSetup();
 
     void setupData();
+    void applyConfigs();
     void postSetup();
 
     void setupService();

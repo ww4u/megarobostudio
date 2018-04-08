@@ -1,3 +1,4 @@
+#include <QApplication>
 #include "comassist.h"
 
 QStringList comAssist::_mRemotePath;
@@ -25,8 +26,11 @@ QString comAssist::pureFileName( const QString &fileName,
                                  bool bContainPost )
 {
     QString fullName;
-    fullName = fileName;
-    int sep = fullName.lastIndexOf( QDir::separator() );
+    fullName = QDir::fromNativeSeparators( fileName );
+    int sep;
+
+    //! find "/"
+    sep = fullName.lastIndexOf( "/" );
 
     QString pureName;
     if ( sep < 0 )
@@ -133,10 +137,11 @@ bool    comAssist::ammendFileName( QString &fileName )
     //! file file in each dir
     do
     {
+        //! 1. absolute path
         if (  QFile::exists( fileName ) )
         { return true; }
 
-        //! for each path
+        //! 2. for each path
         QString fullName;
         foreach( QString str, comAssist::_mRemotePath )
         {
@@ -147,6 +152,14 @@ bool    comAssist::ammendFileName( QString &fileName )
                 return true;
             }
         }
+
+        //! 3. check {app}/package/dataset
+        fullName = QCoreApplication::applicationDirPath()
+                   + QDir::separator() + "package"
+                   + QDir::separator() + "dataset"
+                   + QDir::separator() + fileName;
+        if ( QFile::exists( fileName ) )
+        { return true; }
 
     }while(0);
 

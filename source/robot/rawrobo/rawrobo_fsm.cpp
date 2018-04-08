@@ -8,7 +8,7 @@ RawRoboFsm::RawRoboFsm()
     m_pRobot = NULL;
 
     mbRunReqed = false;
-    mState = 0;
+    mState = -1;
 }
 RawRoboFsm::~RawRoboFsm()
 {
@@ -125,7 +125,10 @@ void RawRoboFsm::attachRobot( RawRobo *pRobot )
     m_pRobot = pRobot;
 }
 RawRobo *RawRoboFsm::Robot()
-{ return m_pRobot; }
+{
+    Q_ASSERT( NULL != m_pRobot );
+    return m_pRobot;
+}
 
 void RawRoboFsm::reqRun( bool b )
 { mbRunReqed = b; }

@@ -62,7 +62,7 @@ void MotorMonitor::addMonitor( const QString &str )
 
     pMotorStat->setName( str );
 
-    ui->verticalLayout->addWidget( pMotorStat );
+    ui->verticalLayout_2->addWidget( pMotorStat );
     mMotors.append( pMotorStat );
 }
 

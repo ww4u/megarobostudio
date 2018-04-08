@@ -223,6 +223,9 @@ logDbg()<<canObj.ID<<canObj.Data[0]<<canObj.Data[1]<<canObj.Data[2]<<canObj.Data
     int ret;
     IBus::lock();
     ret = mApi.transmit( can_device_desc, &canObj, 1);
+
+    IBus::wait_us( mWtInterval );
+
     IBus::unlock();
     if ( 1 !=  ret )
     {
@@ -230,7 +233,7 @@ logDbg()<<canObj.ID<<canObj.Data[0]<<canObj.Data[1]<<canObj.Data[2]<<canObj.Data
         return -1;
     }
 
-    IBus::wait_us( mWtInterval );
+//    IBus::wait_us( mWtInterval );
 
     return 0;
 }

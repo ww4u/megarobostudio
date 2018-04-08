@@ -118,6 +118,7 @@ public:
     //! pvt ops
     int loadTpvCap();
     int getTpvCap( pvt_region );
+    int getTpvBuf( pvt_region );
 
     int beginTpvDownload( pvt_region );
     int tpvDownload(
@@ -205,19 +206,16 @@ protected:
 
     QMap< tpvRegion, int > mTpvIndexes;
     QMap< tpvRegion, int > mTpvCaps;
-
-//    tpvDownloader mDownloader[4];
+    QMap< tpvRegion, int > mTpvBufferSizes;
 
     QMap< tpvRegion, tpvDownloader * > mDownloaders;
 
     QSemaphore mDownloaderSema;
 
-//    MrqFsm mMrqFsms[4];
+
 
     QMap< tpvRegion, MrqFsm* > mMrqFsms;
-//    mMrqFsms.
 
-//    deviceProxyMotor mMotors[4];
     QMap< tpvRegion, deviceProxyMotor * > mProxyMotors;
 };
 

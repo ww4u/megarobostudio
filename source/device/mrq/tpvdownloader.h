@@ -17,6 +17,12 @@ class tpvDownloader : public QThread
 {
     Q_OBJECT
 
+private:
+    static int _downloaderInterval;
+public:
+    static void setInterval( int interval );
+    static int interval();
+
 public:
     tpvDownloader( QObject *pObj=0 );
     virtual ~tpvDownloader();

@@ -14,6 +14,7 @@ void modelSysPref::rst()
 
     mTimeout = time_ms(100);
     mInterval = time_us(100);       //! by port
+    mTpvInterval = time_ms( 1 );
     mFailTryCnt = 2;
 
     mRecvIdFrom = receive_id_from;  //! id range
@@ -82,6 +83,7 @@ int modelSysPref::save( const QString &str )
     writer.writeTextElement( "interval", QString::number(mInterval) );
     writer.writeTextElement( "fail_try", QString::number(mFailTryCnt) );
     writer.writeTextElement( "enum_tmo", QString::number(mEnumerateTimeout) );
+    writer.writeTextElement( "tpv_interval", QString::number(mTpvInterval) );
 
     //! ids
     writer.writeStartElement("id");
@@ -202,6 +204,9 @@ int modelSysPref::load( const QString &str )
 
                 if ( reader.name() == "enum_tmo" )
                 { mEnumerateTimeout = reader.readElementText().toInt(); }
+
+                if ( reader.name() == "tpv_interval" )
+                { mTpvInterval = reader.readElementText().toInt(); }
 
                 if ( reader.name() == "id" )
                 {

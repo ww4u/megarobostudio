@@ -3,7 +3,8 @@
 #include "scpi/scpi.h"
 
 
-#define DEF_TPV_CAP     256
+#define DEF_TPV_CAP             256
+#define DEF_WAV_BUF_SIZE        (125*1024)      //! bytes
 #define INC_ANGLE_TO_DEG( angle )   (360.0f*angle)/(1<<18)
 #define ABS_ANGLE_TO_DEG( angle )   (360.0f*angle)/((1<<18)-1)
 
@@ -92,6 +93,9 @@ void deviceMRQ::postCtor()
             //! tpv caps
             mTpvCaps.insert( region, DEF_TPV_CAP );logDbg()<<region.axes()<<region.page();
             mTpvIndexes.insert( region, 0 );
+
+            //! buf caps
+            mTpvBufferSizes.insert( region, DEF_WAV_BUF_SIZE );logDbg()<<region.axes()<<region.page();
 
             //! loader for each region
             pLoader = new tpvDownloader();

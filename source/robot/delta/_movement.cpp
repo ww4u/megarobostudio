@@ -21,6 +21,7 @@ int robotDelta::program( const QString &fileName,
     return 0;
 }
 
+//! \todo for each axis
 int robotDelta::loadProgram( const QString &fileName )
 {
     //!  0  1  2   3  4  5  6   7
@@ -98,7 +99,6 @@ int robotDelta::loadProgram( const QString &fileName )
 
     return 0;
 }
-
 
 int robotDelta::program( QList<TraceKeyPoint> &curve,
              const tpvRegion &region )

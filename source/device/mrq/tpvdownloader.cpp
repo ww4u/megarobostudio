@@ -3,6 +3,18 @@
 
 #include "./devicemrq_msg.h"
 
+
+int tpvDownloader::_downloaderInterval = 0;
+
+void tpvDownloader::setInterval( int interval )
+{
+    _downloaderInterval = interval;
+}
+int tpvDownloader::interval()
+{
+    return _downloaderInterval;
+}
+
 tpvDownloader::tpvDownloader( QObject *pObj ) : QThread( pObj )
 {
     mTryInterval = time_ms( 500 );
@@ -70,6 +82,10 @@ int tpvDownloader::batchDownload( int batchSize,
 
         //! download the item
         ret = m_pMRQ->tpvDownload( mRegion, pItem );
+
+        //! the download speed
+        if ( tpvDownloader::_downloaderInterval > 0 )
+        { QThread::usleep( tpvDownloader::_downloaderInterval ); }
 
         //! gc the item
         if ( pItem->gc() )

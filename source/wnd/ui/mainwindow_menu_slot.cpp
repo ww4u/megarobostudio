@@ -269,7 +269,7 @@ void MainWindow::on_actionDocs_triggered()
     QStringList args;
     QString str;
     str = QCoreApplication::applicationDirPath() + QDir::separator() + QStringLiteral("doc");
-//    str.replace("/","\\");
+    str.replace("/", QDir::separator() );
     args<<str;
     //! \todo linux
     logDbg()<<args;
@@ -281,7 +281,7 @@ void MainWindow::on_actionPackage_triggered()
     QStringList args;
     QString str;
     str = QCoreApplication::applicationDirPath() + QDir::separator() + QStringLiteral("package");
-//    str.replace("/","\\");
+    str.replace("/", QDir::separator() );
     args<<str;
     //! \todo linux
     logDbg()<<args;
@@ -301,19 +301,9 @@ void MainWindow::on_actionpref_triggered( )
 
         mMcModel.mSysPref.save( pref_file_name );
 
-        mMcModel.m_pInstMgr->setTPVBase( mMcModel.mSysPref.mTimeUnit,
-                                         mMcModel.mSysPref.mPosUnit,
-                                         mMcModel.mSysPref.mVelUnit );
-
-        m_pSampleThread->setSampleInterval( mMcModel.mSysPref.mSampleTick );
+        applyConfigs();
 
         mMcModel.postload();
-
-        //! path
-        comAssist::setRemotePath( mMcModel.mSysPref.mRemoteDirPath.split(',', QString::SkipEmptyParts) );
-
-        MegaMessageBox::setZeroAffirm( mMcModel.mSysPref.mbAffirmZero );
-        VRobot::setTempPath( mMcModel.mSysPref.mDumpPath );
     }
 }
 

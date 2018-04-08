@@ -61,6 +61,7 @@ void sysPref::updateUi()
     ui->cmbInterval->setCurrentText( QString::number(mPref.mInterval) );
     ui->spinFailTry->setValue( mPref.mFailTryCnt );
     ui->spinEnumTmo->setValue( mPref.mEnumerateTimeout );
+    ui->spinPvtInterval->setValue( mPref.mTpvInterval );
 
     ui->cmbSendFrom->setCurrentText( QString::number(mPref.mSendIdFrom));
     ui->cmbSendTo->setCurrentText( QString::number(mPref.mSendIdTo));
@@ -114,6 +115,7 @@ void sysPref::updateData()
     mPref.mInterval = ui->cmbInterval->currentText().toInt();
     mPref.mFailTryCnt = ui->spinFailTry->value();
     mPref.mEnumerateTimeout = ui->spinEnumTmo->value();
+    mPref.mTpvInterval = ui->spinPvtInterval->value();
 
     mPref.mSendIdFrom = ui->cmbSendFrom->currentText().toInt();
     mPref.mSendIdTo = ui->cmbSendTo->currentText().toInt();
@@ -253,7 +255,7 @@ void sysPref::on_btnDetail_clicked()
             + QStringLiteral("doc")
             + QDir::separator()
             + QStringLiteral("aggrement.txt");
-//    str.replace("/","\\");
+    str.replace("/","\\");
     args<<str;
     //! \todo linux
     logDbg()<<str;

@@ -52,6 +52,10 @@ public:
 
 public:
     int call( const tpvRegion &region=0 );  //! load + run
+    int program( const QString &fileName,
+                             const tpvRegion &region );
+    int loadProgram( const QString &fileName );
+
     int program( QList<TraceKeyPoint> &curve,
                  const tpvRegion &region );
     int move( QList<TraceKeyPoint> &curve,

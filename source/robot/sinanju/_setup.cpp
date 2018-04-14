@@ -20,7 +20,7 @@ int robotSinanju::serialIn( QXmlStreamReader &reader )
         else if ( reader.name() == "hand" )
         { logDbg();ret = mHandActionModel.serialIn( reader ); }
         else
-        {}
+        { reader.skipCurrentElement(); }
     }
     return ret;
 }
@@ -79,7 +79,7 @@ int robotSinanju::serialInAngle( QXmlStreamReader &reader )
                             mInitAngles.append( fVal );
                         }
                         else
-                        {}
+                        { reader.skipCurrentElement(); }
                     }
                 }
                 else if ( reader.name() == "invert" )
@@ -98,9 +98,11 @@ int robotSinanju::serialInAngle( QXmlStreamReader &reader )
                             mAngleDir.append( iVal > 0 );
                         }
                         else
-                        {}
+                        { reader.skipCurrentElement(); }
                     }
                 }
+                else
+                { reader.skipCurrentElement(); }
             }
         }
     }
@@ -153,7 +155,7 @@ int robotSinanju::serialInHandZero( QXmlStreamReader &reader )
             mHandZeroSpeed = reader.readElementText().toDouble();
         }
         else
-        {}
+        { reader.skipCurrentElement(); }
     }
 
     return 0;
@@ -184,7 +186,7 @@ int robotSinanju::serialInArm( QXmlStreamReader &reader )
             mArmLengths[2] = reader.readElementText().toDouble();
         }
         else
-        {}
+        { reader.skipCurrentElement(); }
     }
 
     return 0;
@@ -215,7 +217,7 @@ int robotSinanju::serialInInitPos( QXmlStreamReader &reader )
             mInitPos[2] = reader.readElementText().toDouble();
         }
         else
-        {}
+        { reader.skipCurrentElement(); }
     }
 
     return 0;

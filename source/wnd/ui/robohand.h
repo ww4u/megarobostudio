@@ -22,7 +22,7 @@ protected:
 
 public:
     virtual void setModelObj( mcModelObj *pObj );
-
+    virtual void updateScreen();
 private slots:
     void on_btnExport_clicked();
 

@@ -34,7 +34,10 @@ SOURCES = vdevice.cpp \
     mrq/devicemrq_state.cpp \
     mrq/devicemrq_addr.cpp \
     mrq/devicemrq_setting.cpp \
-    mrq/devicemrq_tpv.cpp
+    mrq/devicemrq_tpv.cpp \
+    board/mrq_model_serial.cpp \
+    mrq/devicemrq_setting_up.cpp \
+    mrq/devicemrq_setting_down.cpp
 
 HEADERS = vdevice.h \
           devicemodel.h \

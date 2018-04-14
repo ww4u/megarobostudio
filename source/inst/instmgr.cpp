@@ -173,7 +173,7 @@ int InstMgr::probeCanBus()
             pMRQ->setInstMgr( this );
 
             //! iter ref the sibling
-            ret = pMRQ->setDeviceId( *pId, mCanBus.mDevices.size() - 1 );
+            ret = pMRQ->setDeviceId( *pId );
             if ( ret != 0 )
             {
                 logDbg()<<ret;
@@ -183,11 +183,11 @@ int InstMgr::probeCanBus()
 
             //! get info
             pMRQ->rst();
-            pMRQ->uploadBaseInfo();
+            pMRQ->uploadDesc();
 
-            logDbg()<<QString::number( (uint32)pMRQ, 16 );
-            logDbg()<<seq<<pMRQ->getModel()->mCAN_SENDID;
-            logDbg()<<seq<<pMRQ->getModel()->mCAN_RECEIVEID;
+//            logDbg()<<QString::number( (uint32)pMRQ, 16 );
+//            logDbg()<<seq<<pMRQ->getModel()->mCAN_SENDID;
+//            logDbg()<<seq<<pMRQ->getModel()->mCAN_RECEIVEID;
         }
         sysProgress( uiProgBase + (uiStep++)*uiProgStep, tr("mrq") );
 
@@ -213,7 +213,7 @@ int InstMgr::probeCanBus()
             pRobo->setInstMgr( this );
 
             //! iter ref the sibling
-            ret = pRobo->setDeviceId( *pId, mCanBus.mDevices.size() - 1 );
+            ret = pRobo->setDeviceId( *pId );
             if ( ret != 0 )
             {
                 logDbg()<<ret;
@@ -234,6 +234,7 @@ int InstMgr::probeCanBus()
                 { sysLog( tr("load success"), pRobo->name() );}
             }
 
+            //! add robot
             pRoboList->append( pRobo );
 
             //! set def scpi name
@@ -246,7 +247,7 @@ int InstMgr::probeCanBus()
         }
         sysProgress( uiProgBase + (uiStep++)*uiProgStep, tr("robo") );
     }
-logDbg()<<QString::number( (quint32)pRoboList, 16 );
+
     mDeviceTree.append( pRoboList );
 
     //! plant devices

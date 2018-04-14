@@ -2,7 +2,7 @@
 #include "ui_roboscene.h"
 
 #include "../../widget/flowlayout.h"
-
+#include "../widget/megamessagebox.h"
 roboScene::roboScene(QWidget *parent) :
     modelView(parent),
     ui(new Ui::roboScene)
@@ -105,6 +105,9 @@ void roboScene::context_delete()
 
     //! delete resource
     delete_all( delList );
+
+    emit sigSaveRequest( this );
+    emit signalSceneChanged();
 }
 void roboScene::context_option()
 {
@@ -122,10 +125,13 @@ void roboScene::context_option()
 void roboScene::slot_editingFinished( sceneWidget *pWig, const QString &str )
 {
     if( checkName( str, pWig ) )
-    {}
+    {
+        emit sigSaveRequest( this );
+        emit signalSceneChanged();
+    }
     else
     {
-        QMessageBox::warning( this, tr("Warning"), tr("Name Inavlid") );
+        MegaMessageBox::warning( this, tr("Warning"), tr("Name Inavlid") );
         pWig->focusOnName();
     }
 }
@@ -149,6 +155,7 @@ int roboScene::save( QString &outFileName )
     toSceneModel( &lSceneModel );
 
     outFileName = m_pModelObj->getPath() + QDir::separator() + m_pModelObj->getName();
+    outFileName = QDir::toNativeSeparators( outFileName );
     return lSceneModel.save( outFileName );
 }
 
@@ -179,6 +186,9 @@ logDbg();
              this, SLOT(slot_editingFinished(sceneWidget*,const QString &)));
 
     mItemList.append( pItem );
+
+    emit sigSaveRequest( this );
+    emit signalSceneChanged();
 
     return pItem;
 }
@@ -272,6 +282,7 @@ void roboScene::fromSceneModel( roboSceneModel *pSceneModel,
     //! delete current
     delete_all( mItemList );
 
+    QString fullName;
     foreach( sceneModel *pModel, pSceneModel->mSceneItems )
     {
         //! robot
@@ -282,11 +293,14 @@ void roboScene::fromSceneModel( roboSceneModel *pSceneModel,
         pNewRobot->setName( pModel->mName );
 
         //! try to load the stp from the scene path
-        QFile file( path + QDir::separator() + pModel->mName + ".stp" );
+
+        fullName = path + QDir::separator() + pModel->mName +  setup_d_ext;
+        fullName = QDir::toNativeSeparators( fullName );
+        QFile file( fullName );
         if ( file.exists() )
         {
-            pNewRobot->load( file.fileName() );
-            sysLog( file.fileName(), tr("loaded!") );
+            pNewRobot->load( fullName );
+            sysLog( fullName, tr("loaded!") );
         }
 
         pNewRobot->setPath( path );

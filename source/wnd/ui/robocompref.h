@@ -19,6 +19,8 @@ public:
     virtual void setModelObj( mcModelObj *pObj );
     virtual int setApply();
 
+    virtual void updateScreen();
+
 protected:
     void spyEdited();
     void updateUi();

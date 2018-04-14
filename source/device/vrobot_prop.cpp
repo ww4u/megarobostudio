@@ -93,6 +93,21 @@ void VRobot::setUartSensors( int n )
 int VRobot::uartSensors()
 { return mUART_Sensors; }
 
+void VRobot::setAbsEncAlarms( int n )
+{ mAbsEncoderAlarms = n; }
+int VRobot::absEncAlarms()
+{ return mAbsEncoderAlarms; }
+
+void VRobot::setDistanceAlarms( int n)
+{ mDistanceAlarms = n; }
+int VRobot::distanceAlarms()
+{ return mDistanceAlarms; }
+
+void VRobot::setAlarms( int n)
+{ mAlarms = n; }
+int VRobot::alarms()
+{ return mAlarms; }
+
 void VRobot::setZeroSpeed( double spd )
 {
     mZeroSpeed = spd;

@@ -16,6 +16,11 @@
 { "SYSTEM:BOOTVER?", 	_scpi_getSYSTEM_BOOTVER, 	0 },
 { "SYSTEM:EVENTCODE?", 	_scpi_getSYSTEM_EVENTCODE, 	0 },
 { "SYSTEM:DIOSTATE?", 	_scpi_getSYSTEM_DIOSTATE, 	0 },
+{ "SYSTEM:FANPARA", 	_scpi_setSYSTEM_FANPARA, 	0 },
+
+{ "SYSTEM:FANPARA?", 	_scpi_getSYSTEM_FANPARA, 	0 },
+{ "SYSTEM:ARMLEDPARA", 	_scpi_setSYSTEM_ARMLEDPARA, 	0 },
+{ "SYSTEM:ARMLEDPARA?", 	_scpi_getSYSTEM_ARMLEDPARA, 	0 },
 { "RS232:BAUD", 	_scpi_setRS232_BAUD, 	0 },
 
 { "RS232:BAUD?", 	_scpi_getRS232_BAUD, 	0 },

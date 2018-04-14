@@ -49,6 +49,12 @@ namespace MegaDevice
 
 class deviceMRQ : public MRQ
 {
+public:
+    static float absAngleToValue( quint32 angle );
+    static quint32 valueToAbsAngle( float val );
+
+    static float incAngleToValue( quint32 angle );
+    static quint32 valueToIncAngle( float val );
 
 public:
     deviceMRQ();
@@ -59,7 +65,7 @@ public:
 public:
     virtual const void* loadScpiCmd();
 
-    virtual int setDeviceId(DeviceId &id, int siblingCnt );
+    virtual int setDeviceId(DeviceId &id );
 
 public:
     //! overwrite
@@ -70,14 +76,21 @@ public:
 
 public:
     virtual int uploadSetting();
+    virtual int applySetting();
 
 protected:
-    int applyIds( int siblingCnt );
-    int verifyIds( int siblingCnt );
+    int _uploadSetting();
+    int _applySetting();
+
+protected:
+    int applyIds( );
+    int verifyIds( );
 
 public:
     virtual void rst();
+    virtual int uploadDesc();
     virtual int uploadBaseInfo();
+    virtual int uploadIDs();
     virtual int upload();
 
 public:
@@ -91,6 +104,10 @@ public:
     QString loadHwVer();
     QString loadFwVer();
     QString loadBtVer();
+
+    int loadPwms();
+    int loadFanPwm();
+    int loadLedPwm();
 
     QString loadName();
 
@@ -106,6 +123,18 @@ public:
     ,MRQ_REPORT_STATE val1, quint32 * val2, bool bQuery=true );
 
     QMetaType::Type getREPORT_TYPE( MRQ_REPORT_STATE stat );
+
+    //! 1~100
+    int setFanDuty( int duty );
+    int setLedDuty( int ax, int duty );
+
+    int setFanFreq( int freq );
+    int setLedFreq( int ax, int freq );
+
+    int setFan( int duty, int freq );
+    int setLed( int ax, int duty, int freq );
+
+    int hRst();
 
 public:
     float getIncAngle( int ax );
@@ -201,9 +230,6 @@ public:
     tpvDownloader *downloader( const tpvRegion &region );
 
 protected:
-//    int mTpvIndex[4][10];           //! 4 axes
-//    uint16 mTpvCaps[4][10];
-
     QMap< tpvRegion, int > mTpvIndexes;
     QMap< tpvRegion, int > mTpvCaps;
     QMap< tpvRegion, int > mTpvBufferSizes;
@@ -212,12 +238,15 @@ protected:
 
     QSemaphore mDownloaderSema;
 
-
-
     QMap< tpvRegion, MrqFsm* > mMrqFsms;
 
     QMap< tpvRegion, deviceProxyMotor * > mProxyMotors;
 };
+
+#define MRQ_PROGRESS( prog, info )      sysProgress( prog, info ); \
+                                    sysProgress( true );
+#define MRQ_PROGRESS_HIDE()             \
+                                    sysProgress( false );
 
 }
 

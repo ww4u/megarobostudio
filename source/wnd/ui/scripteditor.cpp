@@ -24,9 +24,10 @@ void scriptEditor::setModelObj( mcModelObj *pObj )
     modelView::setModelObj( pObj );
 
     logDbg()<<pObj->getPath()<<pObj->getName();
-
+    QString fullName = pObj->getPath() + QDir::separator() + pObj->getName();
+    fullName = QDir::toNativeSeparators( fullName );
     //! reload the file
-    reloadFile( pObj->getPath() + QDir::separator() + pObj->getName() );
+    reloadFile( fullName );
 }
 
 bool scriptEditor::matchModelObj(mcModelObj *pObj)
@@ -50,6 +51,7 @@ bool scriptEditor::matchModelObj(mcModelObj *pObj)
 int scriptEditor::save( QString &outFileName )
 {
     outFileName = getModelObj()->getPath() + QDir::separator() + getModelObj()->getName();
+    outFileName = QDir::toNativeSeparators( outFileName );
 
     QFile file( outFileName );
     if ( !file.open( QIODevice::WriteOnly ) )

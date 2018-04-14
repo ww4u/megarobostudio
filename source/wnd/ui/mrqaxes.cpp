@@ -16,6 +16,8 @@ mrqAxes::mrqAxes(QWidget *parent) :
     ui->setupUi(this);
 
     setupUi();
+
+    spyEdited();
 }
 
 mrqAxes::~mrqAxes()
@@ -35,15 +37,56 @@ void mrqAxes::modelChanged()
     updateUi();
 }
 
+void mrqAxes::spyEdited()
+{
+    QCheckBox *checkBoxes[]=
+    {
+        ui->chkIdle,
+    };
+
+    QLineEdit *edits[]={
+
+    };
+
+    QSpinBox *spinBoxes[]={
+        ui->spinSlowMotor,
+        ui->spinSlowGear,
+        ui->spinEncLine,
+    };
+    QDoubleSpinBox *doubleSpinBoxes[]={
+        ui->spinMaxVolt,
+        ui->spinMaxCurrent,
+        ui->spinMaxVelocity,
+        ui->spinMaxCurrent,
+
+        ui->spinMaxAcc,
+        ui->spinIdleCurrent,
+        ui->spinIdleTime,
+        ui->dblCurrent,
+
+        ui->spinDistance,
+        ui->spinInvertGap,
+    };
+
+    QComboBox *comboxes[]={
+        ui->cmbSize,
+        ui->cmbStepAngle,
+        ui->cmbMotionType,
+        ui->cmbPosUnit,
+
+        ui->cmbEncState,
+        ui->cmbEncType,
+        ui->cmbEncChs,
+        ui->cmbEncMul,
+
+        ui->cmbDrvVernier,
+    };
+
+    install_spy();
+}
+
 void mrqAxes::setupUi()
 {
-//    ui->spinMaxVolt->setValidator( &dValidator );
-//    ui->spinMaxCurrent->setValidator( &dValidator );
-//    ui->spinMaxVelocity->setValidator( &dValidator );
-//    ui->spinMaxAcc->setValidator( &dValidator );
-
-//    ui->spinIdleCurrent->setValidator( &dValidator );
-//    ui->spinIdleTime->setValidator( &dValidator );
 }
 void mrqAxes::desetupUi()
 {}
@@ -102,13 +145,12 @@ int mrqAxes::apply()
 
 //! model -> view
 int mrqAxes::updateUi()
-{
-    if ( NULL == m_pMrqModel )
-    { return ERR_NULL_POINTER; }
+{logDbg();
+    Q_ASSERT( NULL != m_pMrqModel );
 
     MegaDevice::MRQ_model *pModel;
     pModel = m_pMrqModel->getModel();
-
+logDbg();
     //! motor
     ui->cmbSize->setCurrentIndex( pModel->mMOTOR_SIZE[ mAxesId ] );
     ui->cmbStepAngle->setCurrentIndex( pModel->mMOTOR_STEPANGLE[mAxesId] );

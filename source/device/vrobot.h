@@ -82,6 +82,8 @@ public:
     virtual int serialIn( QXmlStreamReader &reader );
     virtual int serialOut( QXmlStreamWriter &writer );
 
+    virtual int applySetting();
+
 public:
     //! msg
     virtual void onMsg(  int subAxes, RoboMsg &msg );
@@ -193,6 +195,15 @@ public:
     void setUartSensors( int n );
     int uartSensors();
 
+    void setAbsEncAlarms( int n );
+    int absEncAlarms();
+
+    void setDistanceAlarms( int n);
+    int distanceAlarms();
+
+    void setAlarms( int n);
+    int alarms();
+
     void setZeroSpeed( double spd );
     double zeroSpeed();
 
@@ -245,6 +256,10 @@ protected:
 
     int mDOs, mDIs, mISOs, mISIs, mAINs, mMosos;
     int mEncoders, mTemperatures, mUARTs, mUART_Sensors;
+    int mAbsEncoderAlarms, mDistanceAlarms;
+    int mAlarms;
+
+
 
 public:
     QString mClass;                     //! robot class

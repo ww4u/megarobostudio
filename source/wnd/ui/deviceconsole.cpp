@@ -85,6 +85,12 @@ void deviceConsole::on_btnRead_clicked()
         delete []pOut;
     }
 }
+
+void deviceConsole::slot_device_changed()
+{
+    close();    //! as the mgr changed
+}
+
 void deviceConsole::on_btnRst_clicked()
 {
     doWrite( "ROTATE 0,0,0.1,360" );

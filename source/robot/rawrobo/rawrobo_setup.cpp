@@ -20,7 +20,7 @@ int RawRobo::serialInRaw( QXmlStreamReader &reader )
             mPlanMode = (eRoboPlanMode)reader.readElementText().toInt();
         }
         else
-        {}
+        { reader.skipCurrentElement(); }
     }
 
     return 0;

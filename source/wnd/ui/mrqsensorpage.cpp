@@ -1,11 +1,14 @@
 #include "mrqsensorpage.h"
 #include "ui_mrqsensorpage.h"
+#include "modelview.h"
 
 MrqSensorPage::MrqSensorPage(QWidget *parent) :
-    QWidget(parent),
+    modelView(parent),
     ui(new Ui::MrqSensorPage)
 {
     ui->setupUi(this);
+
+    spyEdited();
 }
 
 MrqSensorPage::~MrqSensorPage()
@@ -43,4 +46,13 @@ void MrqSensorPage::getSubUartConfig(
     Q_ASSERT( index < ui->tabWidget->count() && index >= 0 );
 
     ((MrqSubUart*)ui->tabWidget->widget( index ))->getConfig( cfg );
+}
+void MrqSensorPage::spyEdited()
+{
+    LINK_MODIFIED( ui->widget );
+
+    LINK_MODIFIED( ui->tab );
+    LINK_MODIFIED( ui->tab_2 );
+    LINK_MODIFIED( ui->tab_3 );
+    LINK_MODIFIED( ui->tab_4 );
 }

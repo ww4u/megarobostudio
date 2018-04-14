@@ -34,6 +34,7 @@ protected:
 
 Q_SIGNALS:
     void itemXActivated( mcModelObj* );
+    void signalSceneChanged();
 
 protected Q_SLOTS:
     void context_delete();

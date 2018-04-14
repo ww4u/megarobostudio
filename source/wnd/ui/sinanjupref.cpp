@@ -60,6 +60,11 @@ int SinanjuPref::setApply()
     return 0;
 }
 
+void SinanjuPref::updateScreen()
+{
+    updateUi();
+}
+
 void SinanjuPref::updateData()
 {
     Q_ASSERT( m_pModelObj != NULL );
@@ -141,6 +146,10 @@ void SinanjuPref::initModel()
 
 void SinanjuPref::spyEdited()
 {
+    QCheckBox *checkBoxes[]=
+    {
+    };
+
     QLineEdit *edits[]={
 
     };

@@ -15,6 +15,10 @@ public:
     explicit MotorState(QWidget *parent = 0);
     ~MotorState();
 
+    virtual QSize sizeHint() const;
+
+//    virtual QSize minimumSizeHint() const;
+
     void setName( const QString &name );
     QString name();
 

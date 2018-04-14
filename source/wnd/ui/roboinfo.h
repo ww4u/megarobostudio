@@ -19,7 +19,7 @@ public:
 
 public:
     virtual void setModelObj( mcModelObj *pObj );
-
+    virtual void updateScreen();
 protected:
     void initModel();
     void deInitModel();

@@ -13,7 +13,8 @@ class mrqView : public modelView
 
 public:
     mrqView( QWidget *parent = 0 );
-
+    virtual ~mrqView()
+    {}
 public:
     virtual void setAxesId( int id );
     int getAxesId();
@@ -32,7 +33,7 @@ protected:
 public:
 
 
-protected:
+public:
     virtual void modelChanged();
 
 protected:

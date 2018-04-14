@@ -61,26 +61,33 @@ void RawRobo::switchRun( const tpvRegion &region )
 }
 void RawRobo::switchPrepare( const tpvRegion &region )
 {
-//    Q_ASSERT( NULL != m_pBus );
-//    MegaDevice::DeviceId id( mCanGroupId );
-//    m_pBus->write( id, mc_MOTION, sc_MOTION_SWITCH,
-//                   x_channel,
-//                  (byte)MRQ_MOTION_SWITCH_PREPARE,
-//                  (byte)region.page() );
+    Q_ASSERT( NULL != m_pBus );
+    MegaDevice::DeviceId id( mCanGroupId );
+    m_pBus->write( id, mc_MOTION, sc_MOTION_SWITCH,
+                   x_channel,
+                  (byte)MRQ_MOTION_SWITCH_PREPARE,
+                  (byte)region.page() );
 
     //! for each call
     MegaDevice::deviceMRQ *pMrq;
     int ax;
+    tpvRegion mrqRegion;
     for ( int i = 0; i < axes(); i++ )
     {
         pMrq = jointDevice( i, &ax );
         Q_ASSERT( NULL != pMrq );
 
-        pMrq->setMOTION_SWITCH(
-                                ax,
-                                MRQ_MOTION_SWITCH_PREPARE,
-                                (MRQ_MOTION_SWITCH_1)region.page()
-                            );
+//        pMrq->setMOTION_SWITCH(
+//                                ax,
+//                                MRQ_MOTION_SWITCH_PREPARE,
+//                                (MRQ_MOTION_SWITCH_1)region.page()
+//                            );
+
+        //! mrq
+        mrqRegion.setAx( ax );
+        mrqRegion.setPage( region.page() );
+        pMrq->lpc( ax )->postMsg((eRoboMsg)(MegaDevice::mrq_msg_prepare),
+                                  mrqRegion );
 
     }
 }

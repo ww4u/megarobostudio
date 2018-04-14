@@ -25,16 +25,17 @@ public:
 
 public:
     virtual int setApply();
-protected:
-//    virtual void modelChanged();
+public:
+    virtual void modelChanged();
 
 protected:
-    void setupUi();
-    void desetupUi();
+    void spyEdited();
+//    void setupUi();
+//    void desetupUi();
 
-    int apply();
-    int updateUi();
-    int updateData();
+//    int apply();
+//    int updateUi();
+//    int updateData();
 
 private:
     Ui::MrqAxesPage *ui;

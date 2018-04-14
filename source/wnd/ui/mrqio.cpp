@@ -12,6 +12,8 @@ mrqIo::mrqIo(QWidget *parent) :
     ui->setupUi(this);
 
     setupUi();
+
+    spyEdited();
 }
 
 mrqIo::~mrqIo()
@@ -28,6 +30,30 @@ int mrqIo::setApply()
 
 void mrqIo::modelChanged()
 { updateUi(); }
+
+void mrqIo::spyEdited()
+{
+//    QCheckBox *checkBoxes[]=
+//    {
+//        ui->chkLevel,
+//    };
+
+//    QLineEdit *edits[]={
+//    };
+
+//    QSpinBox *spinBoxes[]={
+//    };
+//    QDoubleSpinBox *doubleSpinBoxes[]={
+//        ui->spinLevelPeriod,
+//    };
+
+//    QComboBox *comboxes[]={
+//        ui->cmbLevelMode,
+//        ui->cmbLevelResponse,
+//    };
+
+//    install_spy();
+}
 
 void mrqIo::setupUi()
 {}

@@ -67,9 +67,16 @@ int MegatronPref::setApply()
 
     return 0;
 }
-
+void MegatronPref::updateScreen()
+{
+    updateUi();
+}
 void MegatronPref::spyEdited()
 {
+    QCheckBox *checkBoxes[]=
+    {
+    };
+
     QLineEdit *edits[]={
 
     };

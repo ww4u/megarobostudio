@@ -5,22 +5,13 @@
 
 #include <QtSql>
 
+#include "../widget/megamessagebox.h"
+
 sysPref::sysPref(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::sysPref)
 {
     ui->setupUi(this);
-
-    ui->cmbTimeout->setValidator( new QIntValidator( time_ms(1),time_s(1),this) );
-    ui->cmbInterval->setValidator( new QIntValidator( time_us(100), time_ms(100), this) );
-
-    QIntValidator *pIntValidator = new QIntValidator( 16, 0xfffffff, this );
-    ui->cmbGroupFrom->setValidator( pIntValidator );
-    ui->cmbGroupTo->setValidator( pIntValidator );
-    ui->cmbSendFrom->setValidator( pIntValidator );
-    ui->cmbSendTo->setValidator( pIntValidator );
-    ui->cmbRecvFrom->setValidator( pIntValidator );
-    ui->cmbRecvTo->setValidator( pIntValidator );
 
     //! db changed
     connect( ui->edtHost, SIGNAL(textChanged(const QString &)),
@@ -34,6 +25,12 @@ sysPref::sysPref(QWidget *parent) :
     connect( ui->edtPassword, SIGNAL(textChanged(const QString &)),
              this, SLOT(slot_updateValidateEn()) );
 
+    connect( ui->cmbLang, SIGNAL(activated(int)),
+             this, SLOT(slot_styleLang_changed(int) ));
+    connect( ui->cmbStyle, SIGNAL(activated(int)),
+             this, SLOT(slot_styleLang_changed(int) ));
+
+    slot_updateValidateEn();
 }
 
 sysPref::~sysPref()
@@ -56,21 +53,23 @@ modelSysPref sysPref::getPref()
 void sysPref::updateUi()
 {
     ui->cmbPort->setCurrentIndex( mPref.mPort ); on_cmbPort_currentIndexChanged( mPref.mPort );
-    ui->cmbSpeed->setCurrentText( QString::number(mPref.mSpeed) );
-    ui->cmbTimeout->setCurrentText( QString::number(mPref.mTimeout) );
-    ui->cmbInterval->setCurrentText( QString::number(mPref.mInterval) );
+    ui->cmbSpeed->setCurrentText( QString::number(mPref.mSpeed) );    
+    ui->spinTmo->setValue( mPref.mTimeout );
+    ui->spinInterval->setValue( mPref.mInterval );
+
     ui->spinFailTry->setValue( mPref.mFailTryCnt );
     ui->spinEnumTmo->setValue( mPref.mEnumerateTimeout );
     ui->spinPvtInterval->setValue( mPref.mTpvInterval );
+    ui->chkAutoAssignId->setChecked( mPref.mbAutoAssignId );
 
-    ui->cmbSendFrom->setCurrentText( QString::number(mPref.mSendIdFrom));
-    ui->cmbSendTo->setCurrentText( QString::number(mPref.mSendIdTo));
+    ui->spinSendFrom->setValue((mPref.mSendIdFrom));
+    ui->spinSendTo->setValue((mPref.mSendIdTo));
 
-    ui->cmbRecvFrom->setCurrentText( QString::number(mPref.mRecvIdFrom));
-    ui->cmbRecvTo->setCurrentText( QString::number(mPref.mRecvIdTo));
+    ui->spinRecvFrom->setValue((mPref.mRecvIdFrom));
+    ui->spinRecvTo->setValue((mPref.mRecvIdTo));
 
-    ui->cmbGroupFrom->setCurrentText( QString::number(mPref.mGroupIdFrom));
-    ui->cmbGroupTo->setCurrentText( QString::number(mPref.mGroupIdTo));
+    ui->spinGpFrom->setValue((mPref.mGroupIdFrom));
+    ui->spinGpTo->setValue((mPref.mGroupIdTo));
 
     ui->dblTimeUnit->setValue( mPref.mTimeUnit );
     ui->dblPosUnit->setValue( mPref.mPosUnit );
@@ -111,20 +110,21 @@ void sysPref::updateData()
 {
     mPref.mPort = ui->cmbPort->currentIndex();
     mPref.mSpeed = ui->cmbSpeed->currentText().toInt();
-    mPref.mTimeout = ui->cmbTimeout->currentText().toInt();
-    mPref.mInterval = ui->cmbInterval->currentText().toInt();
+    mPref.mTimeout = ui->spinTmo->value();
+    mPref.mInterval = ui->spinInterval->value();
     mPref.mFailTryCnt = ui->spinFailTry->value();
     mPref.mEnumerateTimeout = ui->spinEnumTmo->value();
     mPref.mTpvInterval = ui->spinPvtInterval->value();
+    mPref.mbAutoAssignId = ui->chkAutoAssignId->isChecked();
 
-    mPref.mSendIdFrom = ui->cmbSendFrom->currentText().toInt();
-    mPref.mSendIdTo = ui->cmbSendTo->currentText().toInt();
+    mPref.mSendIdFrom = ui->spinSendFrom->value();
+    mPref.mSendIdTo = ui->spinSendTo->value();
 
-    mPref.mRecvIdFrom = ui->cmbRecvFrom->currentText().toInt();
-    mPref.mRecvIdTo = ui->cmbRecvTo->currentText().toInt();
+    mPref.mRecvIdFrom = ui->spinRecvFrom->value();
+    mPref.mRecvIdTo = ui->spinRecvTo->value();
 
-    mPref.mGroupIdFrom = ui->cmbGroupFrom->currentText().toInt();
-    mPref.mGroupIdTo = ui->cmbGroupTo->currentText().toInt();
+    mPref.mGroupIdFrom = ui->spinGpFrom->value();
+    mPref.mGroupIdTo = ui->spinGpTo->value();
 
     mPref.mTimeUnit = ui->dblTimeUnit->value();
     mPref.mPosUnit = ui->dblPosUnit->value();
@@ -280,3 +280,10 @@ void sysPref::slot_updateValidateEn()
 
     ui->btnVerify->setEnabled( bRet );
 }
+
+void sysPref::slot_styleLang_changed( int index )
+{
+    MegaMessageBox::information( this, tr("Info"), tr("Setting need be restartd to validate") );
+}
+
+

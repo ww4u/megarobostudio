@@ -25,6 +25,7 @@ public:
 protected Q_SLOTS:
     void on_btnWrite_clicked();
     void on_btnRead_clicked();
+    void slot_device_changed();
 
 private slots:
     void on_comboBox_editTextChanged(const QString &arg1);

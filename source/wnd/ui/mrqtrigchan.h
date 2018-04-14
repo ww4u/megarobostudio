@@ -2,7 +2,7 @@
 #define MRQTRIGCHAN_H
 
 #include <QWidget>
-
+#include "modelview.h"
 namespace Ui {
 class MrqTrigChan;
 }
@@ -20,7 +20,7 @@ class trigPatternConfig
 
 };
 
-class MrqTrigChan : public QWidget
+class MrqTrigChan : public modelView
 {
     Q_OBJECT
 
@@ -36,7 +36,8 @@ public:
     void getConfig(
                     trigLevelConfig &levConfig,
                     trigPatternConfig &pattConifg );
-
+protected:
+    void spyEdited();
 private:
     Ui::MrqTrigChan *ui;
 };

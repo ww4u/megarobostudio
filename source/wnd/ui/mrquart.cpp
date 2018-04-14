@@ -2,10 +2,12 @@
 #include "ui_mrquart.h"
 
 MrqUart::MrqUart(QWidget *parent) :
-    QWidget(parent),
+    modelView(parent),
     ui(new Ui::MrqUart)
 {
     ui->setupUi(this);
+
+    spyEdited();
 }
 
 MrqUart::~MrqUart()
@@ -37,4 +39,31 @@ void MrqUart::getConfig( uartConfig &cfg )
     exchange_index( cmbStop, cfg.mStopInd, false );
 
     exchange_index( cmbFlow, cfg.mFlowInd, false );
+}
+
+void MrqUart::spyEdited()
+{
+    QCheckBox *checkBoxes[]=
+    {
+    };
+
+    QLineEdit *edits[]={
+
+    };
+
+    QSpinBox *spinBoxes[]={
+    };
+    QDoubleSpinBox *doubleSpinBoxes[]={
+    };
+
+    QComboBox *comboxes[]={
+        ui->cmbBaud,
+        ui->cmbDataLen,
+        ui->cmbParity,
+        ui->cmbStop,
+
+        ui->cmbFlow,
+    };
+
+    install_spy();
 }

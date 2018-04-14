@@ -50,13 +50,25 @@
     </widget>
    </item>
    <item row="1" column="1">
-    <widget class="QDoubleSpinBox" name="doubleSpinBox"/>
+    <widget class="QDoubleSpinBox" name="doubleSpinBox">
+     <property name="maximum">
+      <double>360.000000000000000</double>
+     </property>
+    </widget>
    </item>
    <item row="2" column="1">
-    <widget class="QDoubleSpinBox" name="doubleSpinBox_2"/>
+    <widget class="QDoubleSpinBox" name="doubleSpinBox_2">
+     <property name="maximum">
+      <double>360.000000000000000</double>
+     </property>
+    </widget>
    </item>
    <item row="3" column="1">
-    <widget class="QDoubleSpinBox" name="doubleSpinBox_3"/>
+    <widget class="QDoubleSpinBox" name="doubleSpinBox_3">
+     <property name="maximum">
+      <double>360.000000000000000</double>
+     </property>
+    </widget>
    </item>
    <item row="4" column="1">
     <widget class="QComboBox" name="comboBox">

@@ -19,7 +19,6 @@ protected Q_SLOTS:
 protected:
     MegaDevice::InstMgr *m_pInstMgr;
 
-
 };
 
 class interruptThread : public QThread

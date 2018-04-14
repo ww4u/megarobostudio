@@ -73,7 +73,9 @@ public:
     virtual bool waitCondition( RoboCondition *pCond, int tmoms );
 protected:
     void detachCondition();
-
+protected:
+    void lockState();
+    void unlockState();
 public:
     tpvRegion &region();
 
@@ -94,6 +96,7 @@ protected:
     RoboFsm *m_pLeader;
     void *m_pLeaderPara;
 
+    QMutex *m_pMutex;
 
     //! debug
     int mId1, mId2, mId3;

@@ -20,7 +20,7 @@ VDevice::VDevice()
    mTmo = 1;
 }
 
-int VDevice::setDeviceId( DeviceId &id, int /*siblingCnt*/ )
+int VDevice::setDeviceId( DeviceId &id )
 {
     mDeviceId = id;
 

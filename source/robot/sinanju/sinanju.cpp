@@ -19,7 +19,7 @@ robotSinanju::robotSinanju()
     mId = robot_sinanju;
 
     //! default gpid
-    mCanGroupId = group_id_from + mId - robot_complex;
+    mCanGroupId = group_id_from + (mId - robot_complex)*group_segment;
 
     setAxes( 5 );
     setAxesDefName( 5 );

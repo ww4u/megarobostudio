@@ -1,11 +1,11 @@
 #include "deviceMRQ.h"
 namespace MegaDevice
 {
-int deviceMRQ::setDeviceId(DeviceId &id, int siblingCnt )
+int deviceMRQ::setDeviceId(DeviceId &id )
 {
     int ret;
 
-    ret = MRQ::setDeviceId( id, siblingCnt );
+    ret = MRQ::setDeviceId( id );
     if ( ret != 0 )
     { return ret; }
 
@@ -20,14 +20,12 @@ int deviceMRQ::setDeviceId(DeviceId &id, int siblingCnt )
     _MRQ_model::setCAN_BROADCASTID( id.mBroadcastId );
 
     //! write the device
-    ret = applyIds( siblingCnt );
+    ret = applyIds( );
     if ( ret != 0 )
     { return ret; }
 
     //! verify
-//    setCanRecvId( mDeviceId.mRecvId );
-
-    ret = verifyIds( 0 );
+    ret = verifyIds( );
     if ( ret != 0 )
     { return ret; }
 
@@ -47,7 +45,7 @@ void deviceMRQ::setName( const QString &strName )
 
 }
 
-int deviceMRQ::applyIds( int siblingCnt )
+int deviceMRQ::applyIds( )
 {
     int ret;
 
@@ -129,14 +127,12 @@ int deviceMRQ::applyIds( int siblingCnt )
     return 0;
 }
 
-int deviceMRQ::verifyIds( int siblingCnt )
+int deviceMRQ::verifyIds(  )
 {
     int ret;
     uint32 sendId, recvId;
-    int sibling;
 
     //! send id
-    sibling = siblingCnt;
     bool bQuery = true;
     do
     {
@@ -148,13 +144,12 @@ int deviceMRQ::verifyIds( int siblingCnt )
         if ( (int)sendId == mDeviceId.mSendId )
         { break; }
 
-    }while( sibling-- > 0 );
+    }while( 0 );
 
     if ( (int)sendId != mDeviceId.mSendId )
     { return -1; }
 
     //! receive id
-    sibling = siblingCnt;
     bQuery = true;
     do
     {
@@ -165,7 +160,7 @@ int deviceMRQ::verifyIds( int siblingCnt )
 
         if ( (int)recvId == mDeviceId.mRecvId )
         { break; }
-    }while( sibling-- > 0 );
+    }while( 0 );
 
     if ( (int)recvId != mDeviceId.mRecvId )
     {

@@ -23,6 +23,11 @@ int getSYSTEM_HARDVER(  char * val0, char * val1, bool bQuery=true );
 int getSYSTEM_BOOTVER(  char * val0, char * val1, bool bQuery=true );
 int getSYSTEM_EVENTCODE(  char * val0, char * val1, char * val2, char * val3, char * val4, char * val5, bool bQuery=true );
 int getSYSTEM_DIOSTATE(  uint16 * val0, bool bQuery=true );
+int setSYSTEM_FANPARA( byte val0 );
+int getSYSTEM_FANPARA(  byte * val0, bool bQuery=true );
+int setSYSTEM_ARMLEDPARA( MRQ_SYSTEM_ARMLEDPARA val0
+,byte val1 );
+int getSYSTEM_ARMLEDPARA( MRQ_SYSTEM_ARMLEDPARA val0, byte * val1, bool bQuery=true );
 int setRS232_BAUD( MRQ_RS232_BAUD val0 );
 int getRS232_BAUD(  MRQ_RS232_BAUD * val0, bool bQuery=true );
 int setRS232_WORDLEN( MRQ_RS232_WORDLEN val0 );

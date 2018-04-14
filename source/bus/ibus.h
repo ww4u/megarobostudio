@@ -87,8 +87,11 @@ public :
 
     virtual int enumerate( const modelSysPref &pref );
 
-    void lock();
+    void lock();    //! write
     void unlock();
+
+    void lockQuery();
+    void unlockQuery();
 
     void wait_ms( int ms )
     {
@@ -259,6 +262,12 @@ public :
         int read( DeviceId &id, byte mainCode,
                     byte subCode,
                     byte * v0,
+                    quint32 * v1,
+                    bool bQuery = true );
+
+        int read( DeviceId &id, byte mainCode,
+                    byte subCode,
+                    byte * v0,
                     byte * v1,
                     byte * v2,
                     bool bQuery = true );
@@ -321,6 +330,13 @@ public :
                     byte v0,
                     byte * v1,
                     int32 * v2,
+                    bool bQuery = true );
+
+        int read( DeviceId &id, byte mainCode,
+                    byte subCode,
+                    byte v0,
+                    byte * v1,
+                    quint32 * v2,
                     bool bQuery = true );
 
         int read( DeviceId &id, byte mainCode,
@@ -439,6 +455,12 @@ public :
         int _read( DeviceId &id, byte mainCode,
                     byte subCode,
                     byte * v0,
+                    quint32 * v1,
+                    bool bQuery = true );
+
+        int _read( DeviceId &id, byte mainCode,
+                    byte subCode,
+                    byte * v0,
                     byte * v1,
                     byte * v2,
                     bool bQuery = true );
@@ -501,6 +523,13 @@ public :
                     byte v0,
                     byte * v1,
                     int32 * v2,
+                    bool bQuery = true );
+
+        int _read( DeviceId &id, byte mainCode,
+                    byte subCode,
+                    byte v0,
+                    byte * v1,
+                    quint32 * v2,
                     bool bQuery = true );
 
         int _read( DeviceId &id, byte mainCode,

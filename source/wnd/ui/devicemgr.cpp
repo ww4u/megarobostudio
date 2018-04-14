@@ -3,6 +3,7 @@
 
 #include "../../../include/mcstd.h"
 #include "../../sys/sysapi.h"
+#include "../widget/megamessagebox.h"
 
 #include "deviceconsole.h"
 
@@ -66,7 +67,7 @@ void deviceMgr::setupUi()
                               tr("Export setup..."),
                               this,
                               SLOT(context_export()) );
-    m_pDeviceMenu->addAction( QIcon( ":/res/image/icon/218.png" ),
+    m_pDeviceImportAction = m_pDeviceMenu->addAction( QIcon( ":/res/image/icon/218.png" ),
                               tr("Import setup..."),
                               this,
                               SLOT(context_import()) );
@@ -169,6 +170,8 @@ void deviceMgr::updatePhyBusTree( VRoboList *pRoboList )
     QTreeWidgetItem *pItemAxes;
     MegaDevice::MRQ_model *pMrqModel;
 
+    QString toolTips;
+
     //! robot
     foreach( VRobot *pDev, *pRoboList )
     {
@@ -180,9 +183,15 @@ void deviceMgr::updatePhyBusTree( VRoboList *pRoboList )
         //! model
         pMrqModel = ((MegaDevice::deviceMRQ *)pDev)->getModel();
         Q_ASSERT( NULL != pMrqModel );
-logDbg()<<QString::number( (quint32)pMrqModel, 16 );
+
         pItemDev->setText( 0, pMrqModel->getFullDesc() );
-        pItemDev->setToolTip( 0, pDev->name() );
+
+        toolTips= QString("0X%1/0X%2/0X%3")
+                .arg( pMrqModel->mCAN_RECEIVEID, 0, 16 )
+                .arg( pMrqModel->mCAN_SENDID, 0, 16 )
+                .arg( pMrqModel->mCAN_GROUPID1, 0, 16 )
+                .toUpper();
+        pItemDev->setToolTip( 0, toolTips );
 
         //! obj type
         pDev->setType( mcModelObj::model_device );
@@ -226,6 +235,7 @@ void deviceMgr::updateVirBusTree( VRoboList *pRoboList )
     QTreeWidgetItem *pItemDev;
 
     //! robot
+    QString toolTip;
     foreach( VRobot *pDev, *pRoboList )
     {
         Q_ASSERT( NULL != pDev );
@@ -234,10 +244,12 @@ void deviceMgr::updateVirBusTree( VRoboList *pRoboList )
         Q_ASSERT( NULL != pItemDev );
 
         pItemDev->setText( 0, pDev->name() );
-        pItemDev->setToolTip( 0, pDev->name() + "-" + pDev->getClass() );
+        toolTip = QString("0X%1").arg( pDev->canGroupId(), 0, 16 ).toUpper();
+        pItemDev->setToolTip(0, toolTip);
+//        pItemDev->setToolTip( 0, pDev->name() + "-" + pDev->getClass() );
 
         //! obj type
-        pDev->setType( mcModelObj::model_device );
+        pDev->setType( mcModelObj::model_composite_device );
 
         pItemDev->setData( 0, Qt::UserRole, QVariant::fromValue(pDev) );
         pItemDev->setIcon( 0, QIcon( QPixmap::fromImage( pDev->getImage() ) ) );
@@ -290,29 +302,16 @@ int deviceMgr::postLoadOn( appMsg msg, void *pPara )
     int ret = m_pMRQ->uploadSetting();
 
     return ret;
-//    return 0;
 }
 void deviceMgr::beginLoadOn( void *pPara )
 {
+    ui->pushButton->setEnabled( false );
+
     emit signalReport( 0, tr("start upload") );
-
-//    if ( m_pProgress == NULL )
-//    {
-//        m_pProgress = new QProgressDialog(this);
-//        Q_ASSERT( NULL != m_pProgress );
-//        m_pProgress->setWindowTitle( tr("Progress") );
-//    }
-
-//    m_pProgress->show();
 }
 void deviceMgr::endLoadOn( int ret, void *pPara )
 {
-//    if ( m_pProgress )
-//    {
-//        m_pProgress->hide();
-//        delete m_pProgress;
-//        m_pProgress = NULL;
-//    }
+    ui->pushButton->setEnabled( true );
 
     if ( ret != 0 )
     {
@@ -323,7 +322,52 @@ void deviceMgr::endLoadOn( int ret, void *pPara )
     {
         emit signalReport( ret, tr("success") );
         sysLog( tr("upload success") );
+
+        Q_ASSERT( NULL != m_pMRQ );
+        emit signalModelUpdated( m_pMRQ );
     }
+}
+
+int deviceMgr::postImport( appMsg msg, void *pPara )
+{
+    Q_ASSERT( m_pMRQ != NULL );
+    int ret = m_pMRQ->getModel()->load( mImportFileName );
+    if ( ret != 0 )
+    {
+        sysError(tr("load fail"));
+        return -1;
+    }
+    emit signalModelUpdated( m_pMRQ );
+    sysLog( mImportFileName, tr("load success") );
+
+    ret = m_pMRQ->applySetting();
+    if ( ret != 0 )
+    {
+        sysError(tr("apply fail"));
+        return -1;
+    }
+    sysLog( mImportFileName, tr("apply success") );
+    m_pMRQ->setFilled( true );
+
+    return 0;
+}
+
+void deviceMgr::beginImport( void *pPara )
+{
+    ui->pushButton->setEnabled( false );
+
+    Q_ASSERT( NULL != m_pDeviceImportAction );
+    m_pDeviceImportAction->setEnabled( false );
+}
+void deviceMgr::endImport( int ret, void *pPara )
+{
+    ui->pushButton->setEnabled( true );
+
+    if ( ret != 0 )
+    { sysError( tr("Import fail") ); }
+
+    Q_ASSERT( NULL != m_pDeviceImportAction );
+    m_pDeviceImportAction->setEnabled( true );
 }
 
 int deviceMgr::doTest( appMsg msg, void *pPara )
@@ -368,13 +412,20 @@ void deviceMgr::context_import()
     if ( QDialog::Accepted != fDlg.exec() )
     { return; }
 
-    Q_ASSERT( m_pMRQ != NULL );
-    m_pMRQ->getModel()->load( fDlg.selectedFiles().first() );
-
-    sysLog( fDlg.selectedFiles().first(), tr("load success") );
+    mImportFileName = fDlg.selectedFiles().first();
+    post_request( msg_import_device, deviceMgr, Import );
 }
 void deviceMgr::context_export()
 {
+    Q_ASSERT( NULL != m_pMRQ );
+
+    if ( !m_pMRQ->isFilled() &&
+         QMessageBox::Cancel == MegaMessageBox::question(this,
+                                 tr("question"),
+                                 tr("Device setting has not been updated, sure to export?"),
+                                 QMessageBox::Ok, QMessageBox::Cancel) )
+    { return; }
+
     QFileDialog fDlg;
 
     fDlg.setAcceptMode( QFileDialog::AcceptSave );
@@ -410,7 +461,9 @@ void deviceMgr::context_mrq_alias()
     {
         m_pMRQ->setName( text );        //! must be override
         m_pCurrTreeItem->setText( 0, m_pMRQ->getModel()->getFullDesc( ) );
-        m_pCurrTreeItem->setToolTip( 0, m_pMRQ->getModel()->name() );
+
+        Q_ASSERT( NULL != m_pMRQ );
+        emit signalModelUpdated( m_pMRQ );
     }
 }
 
@@ -430,7 +483,9 @@ void deviceMgr::context_robo_alias()
     {
         m_pRobo->setName( text );
         m_pCurrTreeItem->setText( 0, text );
-        m_pCurrTreeItem->setToolTip( 0, text );
+
+        Q_ASSERT( NULL != m_pRobo );
+        emit signalModelUpdated( m_pRobo );
     }
 }
 
@@ -441,6 +496,9 @@ void deviceMgr::context_mrq_console()
     pConsole = new deviceConsole(this);
     if ( NULL == pConsole )
     { return; }
+
+    connect( this, SIGNAL(signal_instmgr_changed(bool,MegaDevice::InstMgr*)),
+             pConsole, SLOT(slot_device_changed()));
 
     pConsole->setMrq( true );
 
@@ -463,6 +521,9 @@ void deviceMgr::context_robo_console()
     pConsole = new deviceConsole(this);
     if ( NULL == pConsole )
     { return; }
+
+    connect( this, SIGNAL(signal_instmgr_changed(bool,MegaDevice::InstMgr*)),
+             pConsole, SLOT(slot_device_changed()));
 
     pConsole->setMrq( false );
 
@@ -500,7 +561,9 @@ void deviceMgr::contextMenuEvent(QContextMenuEvent *event)
     { return; }
 
     //! current device
-    if ( pObj->Type() == mcModelObj::model_device )
+    if ( pObj->Type() == mcModelObj::model_device
+         || pObj->Type() == mcModelObj::model_composite_device
+         )
     {
         m_pRobo = ( pObj );
         m_pCurrTreeItem = pItem;
@@ -558,7 +621,11 @@ void deviceMgr::updateUi()
 
     updateData();
 
-    ui->treeWidget->expandAll();
+    Q_ASSERT( NULL != m_pmcModel );
+    if ( m_pmcModel->mSysPref.mAutoExpand )
+    {
+        ui->treeWidget->expandAll();
+    }
 
     emit signal_instmgr_changed( true, m_pMgr );
 }

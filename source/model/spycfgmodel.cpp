@@ -349,13 +349,17 @@ int spyCfgModel::load( const QString &fileName )
                         else if ( reader.name() == "comment" )
                         { pItem->mComment = reader.readElementText(); }
                         else
-                        {}
+                        { reader.skipCurrentElement(); }
                     }
 
                     localItems.append( pItem );
                 }
+                else
+                { reader.skipCurrentElement(); }
             }
         }
+        else
+        { reader.skipCurrentElement(); }
     }
 
     fileIn.close();

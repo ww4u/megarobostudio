@@ -228,6 +228,8 @@ int handActionModel::load( const QString &fileName )
         {
             ret = serialIn( reader );
         }
+        else
+        { reader.skipCurrentElement(); }
     }
 
     fileIn.close();
@@ -274,11 +276,13 @@ int handActionModel::serialIn( QXmlStreamReader & reader )
                 else if ( reader.name() == "comment" )
                 { pItem->setComment( reader.readElementText() ) ; }
                 else
-                {}
+                { reader.skipCurrentElement(); }
             }
 
             localItems.append( pItem );
         }
+        else
+        { reader.skipCurrentElement(); }
     }
 
     //! assign

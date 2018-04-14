@@ -40,6 +40,9 @@ private slots:
 
     void slot_updateValidateEn();
 
+    void slot_styleLang_changed( int index );
+
+
 private:
     Ui::sysPref *ui;
 

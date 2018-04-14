@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>143</height>
+    <width>614</width>
+    <height>317</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,21 +18,6 @@
     <normaloff>:/res/image/icon2/focus.png</normaloff>:/res/image/icon2/focus.png</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
-   <property name="spacing">
-    <number>0</number>
-   </property>
-   <property name="leftMargin">
-    <number>0</number>
-   </property>
-   <property name="topMargin">
-    <number>0</number>
-   </property>
-   <property name="rightMargin">
-    <number>0</number>
-   </property>
-   <property name="bottomMargin">
-    <number>0</number>
-   </property>
    <item>
     <widget class="QScrollArea" name="scrollArea">
      <property name="widgetResizable">
@@ -43,11 +28,10 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>398</width>
-        <height>141</height>
+        <width>594</width>
+        <height>297</height>
        </rect>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout_2"/>
      </widget>
     </widget>
    </item>

@@ -37,6 +37,11 @@ MotorState::~MotorState()
     delete ui;
 }
 
+QSize MotorState::sizeHint() const
+{ return QSize(400,64); }
+//QSize MotorState::minimumSizeHint() const
+//{ return sizeHint(); }
+
 void MotorState::setName( const QString &name )
 { ui->labelName->setText( name ); }
 QString MotorState::name()

@@ -38,6 +38,7 @@ public:
     int mInterval;  //! for write interval
     int mTpvInterval;
     int mFailTryCnt;
+    bool mbAutoAssignId;
 
     int mEnumerateTimeout;
     int mSampleTick;

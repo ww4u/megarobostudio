@@ -2,7 +2,7 @@
 #define MRQSUBUART_H
 
 #include <QWidget>
-
+#include "modelview.h"
 namespace Ui {
 class MrqSubUart;
 }
@@ -17,7 +17,7 @@ public:
     float mInterval;
 };
 
-class MrqSubUart : public QWidget
+class MrqSubUart : public modelView
 {
     Q_OBJECT
 
@@ -27,6 +27,9 @@ public:
 
     void setConfig( subUartConfig &cfg );
     void getConfig( subUartConfig &cfg );
+
+protected:
+    void spyEdited();
 
 private:
     Ui::MrqSubUart *ui;

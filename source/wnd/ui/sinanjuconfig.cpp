@@ -29,8 +29,17 @@ int SinanjuConfig::setApply()
     return 0;
 }
 
+void SinanjuConfig::updateScreen()
+{
+    updateUi();
+}
+
 void SinanjuConfig::spyEdited()
 {
+    QCheckBox *checkBoxes[]=
+    {
+    };
+
     QLineEdit *edits[]={
 
     };

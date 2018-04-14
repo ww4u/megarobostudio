@@ -20,7 +20,7 @@ int robotDelta::serialIn( QXmlStreamReader &reader )
         else if ( reader.name() == "a0" )
         { ret = serialInA0(reader); }
         else
-        {}
+        { reader.skipCurrentElement(); }
     }
 
     return ret;
@@ -79,7 +79,7 @@ int robotDelta::serialInZero( QXmlStreamReader &reader )
         if ( reader.name() == "speed" )
         { mZeroSpeed = reader.readElementText().toDouble(); }
         else
-        {}
+        { reader.skipCurrentElement(); }
     }
 
     return 0;
@@ -126,7 +126,7 @@ int robotDelta::serialInArm( QXmlStreamReader &reader )
             mArmLengths[id++] = reader.readElementText().toDouble();
         }
         else
-        {}
+        { reader.skipCurrentElement(); }
     }
 
     return 0;
@@ -151,7 +151,7 @@ int robotDelta::serialInRange( QXmlStreamReader &reader )
             mAngleLimit[id++] = reader.readElementText().toDouble();
         }
         else
-        {}
+        { reader.skipCurrentElement(); }
     }
 
     return 0;
@@ -176,7 +176,7 @@ int robotDelta::serialInP0( QXmlStreamReader &reader )
             mP0[id++] = reader.readElementText().toDouble();
         }
         else
-        {}
+        { reader.skipCurrentElement(); }
     }
 
     return 0;
@@ -201,7 +201,7 @@ int robotDelta::serialInA0( QXmlStreamReader &reader )
             mA0[id++] = reader.readElementText().toDouble();
         }
         else
-        {}
+        { reader.skipCurrentElement(); }
     }
 
     return 0;

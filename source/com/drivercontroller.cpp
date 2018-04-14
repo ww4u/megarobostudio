@@ -24,20 +24,23 @@ int driverController::read( QXmlStreamReader &reader )
         if ( reader.name() == "name" )
         { mName = reader.readElementText(); }
 
-        if ( reader.name() == "class" )
+        else if ( reader.name() == "class" )
         { mClass = reader.readElementText(); }
 
-        if ( reader.name() == "ch" )
+        else if ( reader.name() == "ch" )
         { mChs = reader.readElementText().toInt(); }
 
-        if ( reader.name() == "version" )
+        else if ( reader.name() == "version" )
         { mVersion = reader.readElementText(); }
 
-        if ( reader.name() == "current" )
+        else if ( reader.name() == "current" )
         { mCurrent = reader.readElementText().toFloat(); }
 
-        if ( reader.name() == "motor" )
+        else if ( reader.name() == "motor" )
         { mMotor = reader.readElementText().toInt(); }
+
+        else
+        { reader.skipCurrentElement(); }
     }
 
     return 0;
@@ -78,8 +81,12 @@ int deviceDb::load( const QString &fileName )
                     else
                     { delete pController; }
                 }
+                else
+                { reader.skipCurrentElement(); }
             }
         }
+        else
+        { reader.skipCurrentElement(); }
     }
 
     file.close();

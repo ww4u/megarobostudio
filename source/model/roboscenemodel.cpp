@@ -41,26 +41,33 @@ int roboSceneModel::load( const QString &str )
                         if ( reader.name()=="class" )
                         { pModel->mClass = reader.readElementText(); }
 
-                        if ( reader.name()=="name" )
+                        else if ( reader.name()=="name" )
                         { pModel->mName = reader.readElementText(); }
 
-                        if ( reader.name()=="x" )
+                        else if ( reader.name()=="x" )
                         { pModel->mX = reader.readElementText().toInt(); }
 
-                        if ( reader.name()=="y" )
+                        else if ( reader.name()=="y" )
                         { pModel->mY = reader.readElementText().toInt(); }
 
-                        if ( reader.name()=="w" )
+                        else if ( reader.name()=="w" )
                         { pModel->mW = reader.readElementText().toInt(); }
 
-                        if ( reader.name()=="h" )
+                        else if ( reader.name()=="h" )
                         { pModel->mH = reader.readElementText().toInt(); }
+
+                        else
+                        { reader.skipCurrentElement(); }
                     }
 
                     mSceneItems.append( pModel );
                 }
+                else
+                { reader.skipCurrentElement(); }
             }
         }
+        else
+        { reader.skipCurrentElement(); }
     }
 
     return 0;

@@ -9,6 +9,8 @@ int robotMegatron::downloadTrace( const tpvRegion &region )
 
     onLine();
 
+    fsm( region )->setState( MegaDevice::mrq_state_idle );
+
     //! data order:
     //! x1,y1,z1,x2,y2,z2
     //!

@@ -20,10 +20,11 @@
 #define receive_id_to                   0xff
 
 #define send_id_from                    0x100
-#define send_id_to                      0xfff
+#define send_id_to                      0x1ff
 
-#define group_id_from                   0x1001
-#define group_id_to                     0xffff
+#define group_id_from                   0x200
+#define group_id_to                     0x2ff
+#define group_segment                   0x20
 
 #define sub_group_id_from               130
 #define sub_group_id_to                 255

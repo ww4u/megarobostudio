@@ -8,6 +8,8 @@ mrqAxes2::mrqAxes2(QWidget *parent) :
     ui->setupUi(this);
 
     setupUi();
+
+    spyEdited();
 }
 
 mrqAxes2::~mrqAxes2()
@@ -35,6 +37,41 @@ int mrqAxes2::setApply()
 void mrqAxes2::modelChanged()
 { updateUi(); }
 
+void mrqAxes2::spyEdited()
+{
+    QCheckBox *checkBoxes[]=
+    {
+        ui->chkOutOfLineState,
+    };
+
+    QLineEdit *edits[]={
+
+    };
+
+    QSpinBox *spinBoxes[]={
+        ui->spinOutOfLine,
+    };
+    QDoubleSpinBox *doubleSpinBoxes[]={
+        ui->spinFeedback,
+        ui->spinInitPosition,
+        ui->spinStopDistance,
+        ui->spinStopTime,
+    };
+
+    QComboBox *comboxes[]={
+        ui->cmbTuneMode,
+        ui->cmbPlanMode,
+        ui->cmbTimeWidth,
+        ui->cmbInitUnit,
+
+        ui->cmbInitIO,
+        ui->cmbLineResponse,
+        ui->cmbStopMode,
+
+    };
+
+    install_spy();
+}
 
 void mrqAxes2::setupUi()
 {
@@ -110,6 +147,7 @@ int mrqAxes2::apply()
 }
 int mrqAxes2::updateUi()
 {
+    Q_ASSERT( NULL != m_pMrqModel );
     //! tune
     ui->cmbTuneMode->setCurrentIndex( m_pMrqModel->mMOTIONPLAN_MOTIONMODE[mAxesId][0] );
     ui->cmbTimeWidth->setCurrentIndex( ( m_pMrqModel->mMOTIONPLAN_MODIFYDUTY[mAxesId][0]));

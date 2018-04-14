@@ -10,6 +10,7 @@ int VRobot::load( const QString &name )
     QXmlStreamReader reader( &file );
 
     int ret = 0;
+    QString strClass;
     while( reader.readNextStartElement() )
     {
         if ( reader.name()=="robot" )
@@ -22,7 +23,15 @@ int VRobot::load( const QString &name )
                     {
                         if ( reader.name() == "class" )
                         {
-                            mClass = reader.readElementText();
+                            //! check class
+                            strClass = reader.readElementText();
+                            if ( mClass.compare( strClass,Qt::CaseInsensitive) == 0 )
+                            {}
+                            else
+                            {
+                                sysError( strClass, mClass, QObject::tr("do not match") );
+                                return -1;
+                            }
                         }
                         else if ( reader.name() == "axes" )
                         {
@@ -38,7 +47,7 @@ int VRobot::load( const QString &name )
                                     mAxesConnectionName.append( reader.readElementText() );
                                 }
                                 else
-                                {}
+                                { reader.skipCurrentElement(); }
                             }
                         }
                         else if ( reader.name() == "zero_about" )
@@ -50,7 +59,7 @@ int VRobot::load( const QString &name )
                                     mZeroSpeed = reader.readElementText().toDouble();
                                 }
                                 else
-                                {}
+                                { reader.skipCurrentElement(); }
                             }
 
                         }
@@ -74,11 +83,11 @@ int VRobot::load( const QString &name )
                                     logDbg()<<mSubGroupId;
                                 }
                                 else
-                                {}
+                                { reader.skipCurrentElement(); }
                             }
                         }
                         else
-                        {}
+                        { reader.skipCurrentElement(); }
                     }
                 }
                 else if ( reader.name() == "setup" )
@@ -87,7 +96,7 @@ int VRobot::load( const QString &name )
                 }
                 else
                 {
-
+                    reader.skipCurrentElement();
                 }
             }
         }
@@ -171,3 +180,6 @@ int VRobot::serialOut( QXmlStreamWriter &/*writer*/ )
 {
     return 0;
 }
+
+int VRobot::applySetting()
+{ return 0; }

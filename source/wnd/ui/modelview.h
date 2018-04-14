@@ -69,8 +69,12 @@ public:
 
     virtual void syncData();
 
+    virtual void updateScreen();
+    virtual void updateModel();
+
 protected:
     mcModelObj *m_pModelObj;
+    bool mbGc;
 
     mcModel *m_pmcModel;
 
@@ -123,6 +127,8 @@ protected:
 
 
 #define install_spy()       \
+for ( int i = 0; i < sizeof_array(checkBoxes); i++ )\
+{ spy_control_checkbox( checkBoxes[i] ); }\
 for ( int i = 0; i < sizeof_array(edits); i++ )\
 { spy_control_edit( edits[i] ); }\
 \
@@ -134,5 +140,10 @@ for ( int i = 0; i < sizeof_array(doubleSpinBoxes); i++ )\
 \
 for ( int i = 0; i < sizeof_array(comboxes); i++ )\
 { spy_control_combox( comboxes[i] ); }
+
+#define LINK_MODIFIED( subview )    connect( subview, \
+                                    SIGNAL(sigModified(bool)), \
+                                    this, \
+                                    SLOT(slotModified(bool)));
 
 #endif // MODELVIEW_H

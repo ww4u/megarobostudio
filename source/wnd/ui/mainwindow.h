@@ -110,6 +110,7 @@ protected Q_SLOTS:
     void cfgTab_tabCloseRequested( int index );
 
     void on_itemXActivated( mcModelObj *pObj );
+    void slot_itemModelUpdated( mcModelObj *pObj );
 
     void on_signalReport( int err, const QString &str );
 
@@ -200,15 +201,9 @@ private slots:
 
     void on_actionWindows_W_triggered(bool checked);
     void slot_wndcloseAll();
+    void slot_wndcloseRobo();
     void slot_wndActive( QString str );
     void slot_wndHide();
-
-//    void on_actionSave_Scene_triggered();
-
-//    void on_actionSave_Scene_As_triggered();
-
-//    void on_actionOpen_Scene_triggered();
-
 
     void slot_scriptmgr_changed();
 

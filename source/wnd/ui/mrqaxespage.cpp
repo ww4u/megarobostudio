@@ -11,6 +11,8 @@ MrqAxesPage::MrqAxesPage(QWidget *parent) :
     mSubViews.append( ui->pageMotion );
     mSubViews.append( ui->pageTrigger );
     mSubViews.append( ui->pagePlan );
+
+    spyEdited();
 }
 
 MrqAxesPage::~MrqAxesPage()
@@ -25,38 +27,53 @@ MrqAxesPage::~MrqAxesPage()
 
 void MrqAxesPage::setMcModel( mcModel *pMcModel )
 {
-    mrqView::setMcModel( pMcModel );
-
     FOREACH_SUBVIEW( setMcModel, pMcModel );
+
+    mrqView::setMcModel( pMcModel );
 }
 
 void MrqAxesPage::setModelObj( mcModelObj *pObj )
 {
-    mrqView::setModelObj( pObj );
-
     FOREACH_SUBVIEW( setModelObj, pObj );
+
+    mrqView::setModelObj( pObj );
 }
 
 void MrqAxesPage::setAxesId( int id )
 {
-    mrqView::setAxesId(id);
-
     FOREACH_SUBVIEW( setAxesId, id );
+
+    mrqView::setAxesId(id);
 }
 void MrqAxesPage::setPage( MRQ_AX_PAGE pg )
 {
-    mrqView::setPage( pg );
-
     FOREACH_SUBVIEW( setPage, pg );
+
+    mrqView::setPage( pg );
 }
 
 int MrqAxesPage::setApply()
 {
-    mrqView::setApply();
-
     FOREACH_SUBVIEW_CALL( setApply );
+
+    mrqView::setApply();
 
     return 0;
 }
 
+void MrqAxesPage::modelChanged()
+{
+    FOREACH_SUBVIEW_CALL( modelChanged );logDbg();
 
+    mrqView::modelChanged();
+}
+
+
+
+void MrqAxesPage::spyEdited()
+{
+    LINK_MODIFIED( ui->pageMotor );
+    LINK_MODIFIED( ui->pageMotion );
+    LINK_MODIFIED( ui->pageTrigger );
+    LINK_MODIFIED( ui->pagePlan );
+}

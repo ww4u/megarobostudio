@@ -49,6 +49,10 @@ VRobot::VRobot()
     mUARTs = 0;
     mUART_Sensors = 0;
 
+    mAbsEncoderAlarms = 0;
+    mDistanceAlarms = 0;
+    mAlarms = 0;
+
     m_pInstMgr = NULL;
 
     mCanGroupId  = group_id_from;       //! \see modelSysPref

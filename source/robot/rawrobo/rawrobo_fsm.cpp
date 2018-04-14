@@ -9,6 +9,7 @@ RawRoboFsm::RawRoboFsm()
 
     mbRunReqed = false;
     mState = -1;
+
 }
 RawRoboFsm::~RawRoboFsm()
 {
@@ -19,6 +20,8 @@ RawRoboFsm::~RawRoboFsm()
     }
 
     mStateMap.clear();
+
+    delete m_pMutex;
 }
 #define create_unit( stat, mold )   \
                                     pUnit = new mold(this, m_pRobot->axes() );\
@@ -75,8 +78,10 @@ void RawRoboFsm::toState( int stat, RoboMsg &detail )
     {
         Q_ASSERT( mStateMap[stat] != NULL );
 
+        lockState();
         RoboFsm::toState( mStateMap[stat], detail );
         mState = stat;
+        unlockState();
 
         //! subscribe to leader
         if ( m_pLeader != NULL )
@@ -98,6 +103,16 @@ void RawRoboFsm::toState( int stat, RoboMsg &detail )
     { Q_ASSERT(false); }
 }
 
+void RawRoboFsm::setState( int state  )
+{
+    lockState();
+        Q_ASSERT( mStateMap.contains( state ) );
+        Q_ASSERT( mStateMap[state] != NULL );
+
+        m_pNowState = mStateMap[state];
+        mState = state;
+    unlockState();
+}
 int RawRoboFsm::state()
 { return mState; }
 
@@ -134,3 +149,5 @@ void RawRoboFsm::reqRun( bool b )
 { mbRunReqed = b; }
 bool RawRoboFsm::runReqed()
 { return mbRunReqed; }
+
+

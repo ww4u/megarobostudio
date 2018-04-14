@@ -148,12 +148,12 @@ void tpvPlot::on_btnZoomOut_clicked()
     { return; }
 
     bool bRet;
+    fileName = QDir::toNativeSeparators( fileName );
     bRet = dumpData( fileName, (*pCache)[1], 1, pCache->length() );
     if ( !bRet )
     { return; }
 
     //! arguments
-//    fileName.replace( "/", "\\" );
     QStringList arguments;
 
     arguments<<fileName;

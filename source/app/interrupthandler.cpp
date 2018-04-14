@@ -19,8 +19,6 @@ void interruptHandler::setInstMgr( MegaDevice::InstMgr *pInstMgr )
 void interruptHandler::slot_event( eventId id,
                                    frameData data )
 {
-//    logDbg()<<id<<data.getFrameId()<<data.size()<<data;
-
     //! find device by event id
     Q_ASSERT( NULL != m_pInstMgr );
     VRobot *pRobo = m_pInstMgr->findRobotBySendId( data.getFrameId() );
@@ -49,7 +47,7 @@ void interruptHandler::slot_event( eventId id,
     //! default proc
     sysQueue()->postMsg(
                           e_interrupt_occuring,
-                          (int)id,
+                          (int)id,              //! event id
                           data.getFrameId(),
                           (QByteArray)data
                           );

@@ -10,6 +10,9 @@ MotorMonitor::MotorMonitor(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    m_pFlowLayout = new FlowLayout();
+    ui->scrollAreaWidgetContents_2->setLayout( m_pFlowLayout );
+
     m_pModel = NULL;
 }
 
@@ -43,7 +46,8 @@ void MotorMonitor::clearMonitors()
     {
         Q_ASSERT( NULL != pStat );
 
-        ui->verticalLayout->removeWidget( pStat );
+//        ui->verticalLayout_2->removeWidget( pStat );
+        m_pFlowLayout->removeWidget( pStat );
         pStat->close();     //! delete on close
     }
 
@@ -62,7 +66,8 @@ void MotorMonitor::addMonitor( const QString &str )
 
     pMotorStat->setName( str );
 
-    ui->verticalLayout_2->addWidget( pMotorStat );
+//    ui->verticalLayout_2->addWidget( pMotorStat );
+    m_pFlowLayout->addWidget( pMotorStat );
     mMotors.append( pMotorStat );
 }
 

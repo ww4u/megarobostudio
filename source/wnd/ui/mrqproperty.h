@@ -39,6 +39,9 @@ protected Q_SLOTS:
     void on_btnOK_clicked();
     void on_btnCancel_clicked();
 
+protected:
+    virtual void showEvent(QShowEvent *event);
+
 public:
     virtual void setModelObj( mcModelObj *pObj );
     virtual int  save( QString &outFileName );
@@ -48,6 +51,7 @@ public:
 
     virtual int setApply();
 
+    virtual void updateScreen();
 protected:
     void setupUi( );
     void desetupUi();
@@ -64,17 +68,14 @@ public:
     mrqInfo *m_pInfoPage;
 
     QList< MrqAxesPage * > mMrqAxesPages;
-//    QList< mrqAxes * > mAxesPages;
-//    QList< mrqAxes2 * > mAxesPage2s;
-//    QList< MrqTrigPage * > mAxesPage3s;
-//    QList< MrqAxesPlan *> mAxesPlans;
-
     QList< MrqDcAxes *> mDcAxesPages;
 
     mrqIo *m_pIoPage;
     mrqSensor *m_pSensorPage;
     mrqSys *m_pSysPage;
     MrqAlarm *m_pAlarmPage;
+
+    QList<modelView *> mViewPages;
 };
 
 #endif // MRQPROPERTY_H

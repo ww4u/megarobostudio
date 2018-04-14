@@ -63,7 +63,7 @@ void instServer::slot_readyRead( QObject *pObj )
     Q_ASSERT( NULL != pObj );
 
     QTcpSocket *pSocket = (QTcpSocket *)pObj;
-//qDebug()<<__FUNCTION__<<__LINE__;
+qDebug()<<__FUNCTION__<<__LINE__<<pSocket->size();
     //! set obj name
     //! do not set name
     if ( pSocket->objectName().length() < 1 )

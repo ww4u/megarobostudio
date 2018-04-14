@@ -86,7 +86,7 @@ QString scriptMgr::getPath()
 
 QString scriptMgr::getFullName()
 {
-    return m_pRootModel->getPath() + QDir::separator() + m_pRootModel->getName();
+    return QDir::toNativeSeparators( m_pRootModel->getPath() + QDir::separator() + m_pRootModel->getName() );
 }
 
 int scriptMgr::save( const QString &path, const QString &name )
@@ -321,7 +321,9 @@ int scriptMgr::saveActiveFile()
     if ( NULL == pGroup )
     { return ERR_INVALID_SCRIPT_FILE_NODE; }
 
-    return saveActiveFile( getPath() + QDir::separator() + pGroup->getPath() + QDir::separator() + pGroup->getName() );
+    QString fullName = getPath() + QDir::separator() + pGroup->getPath() + QDir::separator() + pGroup->getName();
+    fullName = QDir::toNativeSeparators( fullName );
+    return saveActiveFile( fullName );
 }
 
 void scriptMgr::newFile( const QString &path, const QString &name )
@@ -366,7 +368,7 @@ QStringList scriptMgr::sceneList( QStringList &pathList )
     for( int i = 0; i < nameList.size(); i++ )
     {
         strList << nameList[i];
-        pathList<< getPath() + QDir::separator() + refPathList[i];
+        pathList<< QDir::toNativeSeparators( getPath() + QDir::separator() + refPathList[i] );
     }
 
     return strList;
@@ -497,8 +499,14 @@ void scriptMgr::on_scriptView_activated(const QModelIndex &index)
     }
 
     QString path = m_pRootModel->getPath() + QDir::separator() + pFile->getPath();
-    int ret = openFile( path,
-              path + QDir::separator() + pFile->getName() );
+    QString fullName;
+
+    fullName = path + QDir::separator() + pFile->getName();
+
+    path = QDir::toNativeSeparators( path );
+    fullName = QDir::toNativeSeparators( fullName );
+
+    int ret = openFile( path, fullName );
     if ( ret != 0 )
     {}
     else

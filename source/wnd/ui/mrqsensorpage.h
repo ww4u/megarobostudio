@@ -2,13 +2,13 @@
 #define MRQSENSORPAGE_H
 
 #include <QWidget>
-
+#include "modelview.h"
 namespace Ui {
 class MrqSensorPage;
 }
 #include "mrquart.h"
 #include "mrqsubuart.h"
-class MrqSensorPage : public QWidget
+class MrqSensorPage : public modelView
 {
     Q_OBJECT
 
@@ -31,7 +31,8 @@ public:
                     int index,
                     subUartConfig &cfg
                      );
-
+protected:
+    void spyEdited();
 private:
     Ui::MrqSensorPage *ui;
 

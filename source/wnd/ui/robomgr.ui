@@ -54,8 +54,8 @@
      </property>
      <property name="iconSize">
       <size>
-       <width>24</width>
-       <height>24</height>
+       <width>16</width>
+       <height>16</height>
       </size>
      </property>
      <property name="textElideMode">
@@ -75,15 +75,15 @@
      </property>
      <property name="gridSize">
       <size>
-       <width>48</width>
-       <height>48</height>
+       <width>64</width>
+       <height>40</height>
       </size>
      </property>
      <property name="viewMode">
       <enum>QListView::IconMode</enum>
      </property>
      <property name="uniformItemSizes">
-      <bool>true</bool>
+      <bool>false</bool>
      </property>
     </widget>
    </item>

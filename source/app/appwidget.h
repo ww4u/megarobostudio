@@ -11,6 +11,7 @@ enum appMsg
     msg_exit,
     msg_search_device,
     msg_upload_device,
+    msg_import_device,
 
     msg_download_pvt,
     msg_start_pvt,
@@ -29,6 +30,8 @@ class appWidget : public QWidget
     Q_OBJECT
 public:
     explicit appWidget(QWidget *parent = nullptr);
+    virtual ~appWidget()
+    {}
 
     typedef int (appWidget::*apiPostDo)( appMsg msg, void *pPara );
     typedef void(appWidget::*apiBeginDo)( void *pPara );

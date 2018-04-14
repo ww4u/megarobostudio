@@ -18,10 +18,11 @@ public:
 
 public:
     virtual int setApply();
-protected:
+public:
     virtual void modelChanged();
 
 protected:
+    void spyEdited();
     void setupUi();
     void desetupUi();
 

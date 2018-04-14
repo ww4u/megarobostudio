@@ -21,6 +21,12 @@ static value_desc _value_desc_MRQ_SYSTEM_POWERON[] = {
 	{0,"DEFAULT",},
 	{1,"LAST",},
 };
+static value_desc _value_desc_MRQ_SYSTEM_ARMLEDPARA[] = {
+	{0,"BASE",},
+	{1,"BIGARM",},
+	{2,"SMALLARM",},
+	{3,"WRIST",},
+};
 static value_desc _value_desc_MRQ_RS232_BAUD[] = {
 	{0,"4800",},
 	{1,"7200",},
@@ -385,6 +391,10 @@ const char* MRQ_SYSTEM_POWERON_toString( MRQ_SYSTEM_POWERON eType )
 {
 	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_SYSTEM_POWERON ) ); 
 }
+const char* MRQ_SYSTEM_ARMLEDPARA_toString( MRQ_SYSTEM_ARMLEDPARA eType )
+{
+	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_SYSTEM_ARMLEDPARA ) ); 
+}
 const char* MRQ_RS232_BAUD_toString( MRQ_RS232_BAUD eType )
 {
 	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_RS232_BAUD ) ); 
@@ -663,6 +673,14 @@ int MRQ_SYSTEM_POWERON_toValue( const char *pStr, MRQ_SYSTEM_POWERON *pEVal )
 	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_SYSTEM_POWERON ), &lval );
 	if ( ret != 0 ) return ret; 
 	*pEVal=(MRQ_SYSTEM_POWERON)lval;
+	return 0;
+}
+int MRQ_SYSTEM_ARMLEDPARA_toValue( const char *pStr, MRQ_SYSTEM_ARMLEDPARA *pEVal )
+{
+	int ret, lval;
+	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_SYSTEM_ARMLEDPARA ), &lval );
+	if ( ret != 0 ) return ret; 
+	*pEVal=(MRQ_SYSTEM_ARMLEDPARA)lval;
 	return 0;
 }
 int MRQ_RS232_BAUD_toValue( const char *pStr, MRQ_RS232_BAUD *pEVal )

@@ -15,6 +15,9 @@ public:
     explicit MrqDcAxes(QWidget *parent = 0);
     ~MrqDcAxes();
 
+protected:
+    void spyEdited();
+
 private:
     Ui::MrqDcAxes *ui;
 };

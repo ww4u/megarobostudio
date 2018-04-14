@@ -146,6 +146,7 @@ bool    comAssist::ammendFileName( QString &fileName )
         foreach( QString str, comAssist::_mRemotePath )
         {
             fullName = str + QDir::separator() + fileName;
+            fullName = QDir::toNativeSeparators( fullName );
             if ( QFile::exists(fullName) )
             {
                 fileName = fullName;
@@ -158,7 +159,8 @@ bool    comAssist::ammendFileName( QString &fileName )
                    + QDir::separator() + "package"
                    + QDir::separator() + "dataset"
                    + QDir::separator() + fileName;
-        if ( QFile::exists( fileName ) )
+        fullName = QDir::toNativeSeparators( fullName );
+        if ( QFile::exists( fullName ) )
         { return true; }
 
     }while(0);

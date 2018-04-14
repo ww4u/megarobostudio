@@ -23,26 +23,13 @@ roboGeogoog::roboGeogoog()
     setUartSensors( 4 );
 
     mImage = QImage::fromData( _megaimage, sizeof(_megaimage) );
-
-//    m_pDevice = new MegaDevice::deviceMRQ();
-//    ((MegaDevice::deviceMRQ*)m_pDevice)->setChanCount( mAxes );
-
-
 }
 
 int roboGeogoog::serialIn( QXmlStreamReader &reader )
 {
-//    Q_ASSERT( NULL != m_pDevice );
-
-//    return ((MegaDevice::deviceMRQ*)m_pDevice)->serialIn( reader );
-
     return MegaDevice::deviceMRQ::MRQ_model::serialIn( reader );
 }
 int roboGeogoog::serialOut( QXmlStreamWriter &writer )
 {
-//    Q_ASSERT( NULL != m_pDevice );
-
-//    return ((MegaDevice::deviceMRQ*)m_pDevice)->serialOut( writer );
-
     return MegaDevice::deviceMRQ::MRQ_model::serialOut( writer );
 }

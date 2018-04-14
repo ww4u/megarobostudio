@@ -24,6 +24,10 @@ roboGeo51::roboGeo51()
     setUarts( 2 );
     setUartSensors( 4 );
 
+    setAlarms( 1 );
+    setAbsEncAlarms( 4 );
+    setDistanceAlarms( 4 );
+
     mImage = QImage::fromData( _megaimage, sizeof(_megaimage) );
 }
 

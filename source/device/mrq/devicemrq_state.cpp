@@ -89,8 +89,10 @@ void MrqFsm::toState( mrqState stat, RoboMsg &detail )
     {
         Q_ASSERT( mStateMap[stat] != NULL );
 
+        lockState();
         RoboFsm::toState( mStateMap[stat], detail );
         mState = stat;
+        unlockState();
 
         //! subscribe to leader
         if ( m_pLeader != NULL )
@@ -122,6 +124,21 @@ void MrqFsm::killTimer( int id )
     m_pMrq->killTimer( this, id );
 }
 
+int MrqFsm::setState( int stat )
+{
+    Q_ASSERT( mStateMap.contains( (mrqState)stat ) );
+    lockState();
+        m_pNowState =  mStateMap[ (mrqState)stat ];
+        mState = (mrqState)stat;
+    unlockState();
+
+    if ( stat != mrq_state_idle
+         && stat != mrq_state_calcend )
+    { startTimer( state_timer_id, state_timer_tmo ); }
+
+    return 0;
+}
+
 int MrqFsm::state()
 { return mState; }
 
@@ -149,7 +166,7 @@ void MrqUnit::onTimer( int id )
     if ( id == state_timer_id )
     {
         selfFsm()->Mrq()->requestMotionState( *selfFsm() );
-//        logDbg()<<id;
+        logDbg()<<id;
 //        sysLog( __FUNCTION__ );
 //        logWarning()<<id;
     }
@@ -194,7 +211,7 @@ void IdleMrqUnit::proc( int msg, RoboMsg &detail )
     { toState( mrq_state_calcing, detail ); }
 
     else if ( msg == mrq_msg_calcend )
-    { /*toState( mrq_state_calcend, detail );*/ logDbg(); }
+    { /*toState( mrq_state_calcend, detail ); sysLog(__FUNCTION__, QString::number(__LINE__) );*/ }
 
     else if ( msg == mrq_msg_standby )
     { toState( mrq_state_standby, detail ); logDbg(); }
@@ -408,6 +425,9 @@ logDbg()<<QThread::currentThreadId()<<msg;
     else if ( msg == mrq_msg_rst )
     { toState(mrq_state_idle, detail );  sysLog( __FUNCTION__, QString::number(__LINE__) );}
 
+    else if ( msg == mrq_msg_prepare )
+    { startTimer( prepare_timer_id, prepare_timer_tmo ); }
+
     else if ( msg == mrq_msg_program )
     { toState( mrq_state_program, detail ); }
 
@@ -418,32 +438,9 @@ logDbg()<<QThread::currentThreadId()<<msg;
     else if ( msg == mrq_msg_calcing )
     { toState( mrq_state_calcing, detail ); }
 
+    //! do nothing
     else if ( msg == mrq_msg_calcend )
     {
-//        toState( mrq_state_calcend); logDbg();
-
-//        selfFsm()->Mrq()->setMOTION_SWITCH(
-//                                                selfFsm()->axes(),
-
-//                                                MRQ_MOTION_SWITCH_PREPARE,
-//                                                (MRQ_MOTION_SWITCH_1)selfFsm()->page()
-//                                            );
-
-//        //! prepare run
-//        if ( selfFsm()->runReqed() )
-//        {
-//            int ret;
-//            ret = selfFsm()->Mrq()->setMOTION_SWITCH(
-//                                                selfFsm()->axes(),
-
-//                                                MRQ_MOTION_SWITCH_PREPARE,
-//                                                (MRQ_MOTION_SWITCH_1)selfFsm()->page()
-//                                            );
-//            if ( ret != 0 )
-//            {
-//                toState( mrq_state_idle, detail );
-//            }
-//        }
     }
 
     else if ( msg == mrq_msg_standby )
@@ -549,7 +546,7 @@ void StandbyMrqUnit::proc( int msg, RoboMsg &detail )
 
     //! end
     else if ( msg == mrq_msg_calcend )
-    { toState( mrq_state_idle, detail ); sysLog( __FUNCTION__, QString::number(__LINE__) ); }
+    { toState( mrq_state_idle, detail );/* sysLog( __FUNCTION__, QString::number(__LINE__) );*/ }
 
     else if ( msg == mrq_msg_standby )
     {

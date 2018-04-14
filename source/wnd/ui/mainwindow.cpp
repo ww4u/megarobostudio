@@ -243,6 +243,11 @@ void MainWindow::buildConnection()
              this,
              SLOT(on_itemXActivated( mcModelObj *)));
 
+    connect( m_pDeviceMgr,
+             SIGNAL(signalModelUpdated(mcModelObj*)),
+             this,
+             SLOT(slot_itemModelUpdated(mcModelObj*)));
+
     connect( m_pRoboMgr,
              SIGNAL(itemXActivated(mcModelObj*)),
              this,
@@ -422,6 +427,12 @@ void MainWindow::setupService()
     event.setMainSubCode( mc_MOTION, sc_MOTION_STATE_Q );
     mMcModel.m_pInstMgr->getInterruptSource()->setFrameEventEnable( event, true );
 
+//    //! alarm event
+//    event.setEnable( true );
+//    event.setId( event_alarm );
+//    event.setMainSubCode( mc_SYSTEM, sc_SYSTEM_EVENTCODE_Q );
+//    mMcModel.m_pInstMgr->getInterruptSource()->setFrameEventEnable( event, true );
+
     //! sample thread
     m_pSampleThread = new sampleThread();
     Q_ASSERT( NULL != m_pSampleThread );
@@ -488,6 +499,7 @@ void MainWindow::slot_post_load_prj()
     QString fullName;
 
     fullName = mMcModel.mSysPref.latestPrjPath() + QDir::separator() + mMcModel.mSysPref.latestPrjName();
+    fullName = QDir::toNativeSeparators( fullName );
     if ( QFile::exists( fullName ) )
     {
         doLoadPrj( mMcModel.mSysPref.latestPrjPath(),
@@ -534,8 +546,10 @@ void MainWindow::on_itemXActivated( mcModelObj *pObj )
 
     //! find view
     modelView *pView = findView( pObj );logDbg();
+//    modelView *pView = NULL;
     if ( NULL != pView )
-    {
+    {logDbg()<<QString::number( (quint32)pView, 16 );
+
         int index;
         index = ui->widget->indexOf( pView );
         if ( index >= 0 )
@@ -594,9 +608,10 @@ void MainWindow::on_itemXActivated( mcModelObj *pObj )
     //! setup from scene
     else if ( pObj->getType() == mcModelObj::model_scene_variable
               || pObj->getType() == mcModelObj::model_device
+              || pObj->getType() == mcModelObj::model_composite_device
               )
     {logDbg();
-        createRoboProp( pObj );
+        createRoboProp( pObj );logDbg();
     }
 
     //! scene file
@@ -612,6 +627,11 @@ void MainWindow::on_itemXActivated( mcModelObj *pObj )
                  SIGNAL(itemXActivated(mcModelObj*)),
                  this,
                  SLOT(on_itemXActivated(mcModelObj*)));
+
+        connect( pWorkScene,
+                 SIGNAL(signalSceneChanged()),
+                 this,
+                 SLOT(slot_scene_changed()) );
     }
 
     //! py file
@@ -625,7 +645,25 @@ void MainWindow::on_itemXActivated( mcModelObj *pObj )
     }
     else
     {}
-    logDbg();
+
+}
+
+//! model updated
+void MainWindow::slot_itemModelUpdated( mcModelObj *pObj )
+{
+    Q_ASSERT( NULL != pObj );
+
+    for ( int i = 0; i < ui->widget->count(); i++ )
+    {
+        Q_ASSERT( NULL != ui->widget->widget(i) );
+        //! match model
+        if ( pObj == ((modelView*)ui->widget->widget(i))->getModelObj() )
+        {
+            ((modelView*)ui->widget->widget(i))->updateScreen();
+            logDbg();
+        }
+
+    }
 }
 
 void MainWindow::on_signalReport( int err, const QString &str )
@@ -681,6 +719,9 @@ void MainWindow::slot_instmgr_changed( bool bEnd, MegaDevice::InstMgr *pMgr )
     logDbg()<<bEnd;
     Q_ASSERT( NULL != pMgr );
 
+    //! close robo/device setting tab
+    slot_wndcloseRobo();
+
     if ( !bEnd )
     {
         m_pSampleThread->clear();
@@ -711,15 +752,14 @@ void MainWindow::slot_instmgr_changed( bool bEnd, MegaDevice::InstMgr *pMgr )
     }
 }
 
-void MainWindow::slot_net_event( const QString &name,
-                     int axes,
-                     RoboMsg msg )
+void MainWindow::slot_net_event(
+                                const QString &name,
+                                int axes,
+                                RoboMsg msg )
 {
     //! event id, frame id, byte array
     if ( msg.getMsg() == e_interrupt_occuring )
     {
-//        logDbg()<<name;
-
         int eId;
         eId = msg.at(0).toInt();
         if ( eId >= event_exception_min
@@ -727,6 +767,28 @@ void MainWindow::slot_net_event( const QString &name,
         {
             exceptionProc( name, eId, msg );
         }
+//        //! event id, send id, bytearray
+//        else if ( event_alarm == eId )
+//        {
+//            if( !msg.checkType( QMetaType::Int,
+//                               QMetaType::Int,
+//                               QMetaType::QByteArray ) )
+//            {
+//                sysError( tr("invalid alarm") );
+//                return;
+//            }
+
+//            QByteArray ary = msg.at(2).toByteArray();
+//            onExceptionAlarm( name,
+//                              msg,
+//                              ary );
+//        }
+        else
+        {
+
+        }
+
+        return;
     }
 
     //! progress
@@ -797,7 +859,7 @@ void MainWindow::slot_tabwidget_currentChanged(int index)
     Q_ASSERT( pViewModel->getModelObj() != NULL );
     mcModelObj::obj_type objType = pViewModel->getModelObj()->getType();
     if (  objType == mcModelObj::model_tpv
-          || objType == mcModelObj::model_device )
+          /*|| objType == mcModelObj::model_device */)
     {
         m_pToolbarAxesConn->setVisible( true );
     }
@@ -815,6 +877,17 @@ void MainWindow::slot_tabwidget_currentChanged(int index)
     }
     else
     {}
+
+    //! check filled
+    if ( objType == mcModelObj::model_device )
+    {
+        if ( pViewModel->getModelObj()->isFilled() )
+        {}
+        else
+        {
+            MegaMessageBox::information( this, tr("Info"), tr("Device setting has not been updated") );
+        }
+    }
 }
 
 modelView *MainWindow::findView( mcModelObj *pModel )
@@ -850,12 +923,11 @@ modelView *MainWindow::createModelView( modelView *pView,
     ui->widget->addTab( pView, comAssist::pureFileName(pObj->getName()) );
     ui->widget->setCurrentWidget( pView );
 
-
     //! wnd manage
     connect( pView,
              SIGNAL(destroyed(QObject*)),
              this,
-             SLOT(modelview_destroyed(QObject*)) );logDbg();
+             SLOT(modelview_destroyed(QObject*)) );
 
     connect( pView,
              SIGNAL(sigClose(QWidget *)),
@@ -890,7 +962,7 @@ void MainWindow::destroyModelView( modelView *pView )
     Q_ASSERT( NULL != pView );
     mModelViews.removeAll( pView );
 }
-
+#include "testprop.h"
 modelView *MainWindow::createRoboProp( mcModelObj *pObj )
 {
     Q_ASSERT( NULL != pObj );
@@ -903,6 +975,10 @@ modelView *MainWindow::createRoboProp( mcModelObj *pObj )
     {
         mrqProperty *pProp;
         pProp = new mrqProperty( pBase );logDbg();
+
+//        TestProp *pProp;
+//        pProp = new TestProp();
+
         Q_ASSERT( NULL != pProp );
         createModelView( pProp, pBase );        //! device is a model
 
@@ -1022,17 +1098,42 @@ void MainWindow::on_actionWindows_W_triggered(bool checked)
 
 void MainWindow::slot_wndcloseAll()
 {
-//    for( int i = 0; i < ui->widget->count(); i++ )
-//    {
-////        if ( ui->widget->tabText(i) == str )
-////        {
-////            ui->widget->setCurrentWidget( ui->widget->widget(i) );
-////        }
-//        ui->widget->widget(i)->close();
-//    }
     ui->widget->clear();
     mModelViews.clear();
 }
+
+//! close robo,device
+void MainWindow::slot_wndcloseRobo()
+{
+    mcModelObj *pObj;
+    modelView *pView;
+
+    //! get the view
+    for ( int i = 0 ;i < ui->widget->count(); i++ )
+    {
+        pView = (modelView*)ui->widget->widget( i );
+        if ( pView != NULL )
+        {
+            pObj = pView->getModelObj();
+            Q_ASSERT( NULL != pObj );
+            //! for mrq/robo setting
+            if ( pObj->getType() == mcModelObj::model_scene_variable
+                 || pObj->getType() == mcModelObj::model_device
+                 || pObj->getType() == mcModelObj::model_composite_device )
+            {
+                pView->close();
+                mModelViews.removeAll( pView );
+            }
+            else
+            {}
+        }
+        else
+        {
+            Q_ASSERT( false );
+        }
+    }
+}
+
 //! active window
 void MainWindow::slot_wndActive( QString str )
 {
@@ -1053,73 +1154,8 @@ void MainWindow::slot_wndHide()
     }
 }
 
-//void MainWindow::on_actionSave_Scene_triggered()
-//{
-//    //! get current scenne
-//    roboScene *pRoboScene = currentRoboScene();
-//    if ( NULL == pRoboScene )
-//    { return; }
-
-//    //! have path
-//    if ( pRoboScene->getModelObj()->getPath().length() > 0 )
-//    {
-//        pRoboScene->save();
-//    }
-//    else
-//    { on_actionSave_Scene_As_triggered(); }
-//}
-
-//void MainWindow::on_actionSave_Scene_As_triggered()
-//{
-//    //! get current scenne
-//    roboScene *pRoboScene = currentRoboScene();
-//    if ( NULL == pRoboScene )
-//    { return; }
-
-//    //! dialog
-//    QFileDialog fDlg;
-
-//    fDlg.setAcceptMode( QFileDialog::AcceptSave );
-//    fDlg.setNameFilter( tr("scene file (*.sce)") );
-//    if ( QDialog::Accepted != fDlg.exec() )
-//    { return; }
-
-//    pRoboScene->getModelObj()->setPath( fDlg.directory().absolutePath() );
-//    pRoboScene->getModelObj()->setName( fDlg.selectedFiles().first() );
-//    pRoboScene->save( fDlg.selectedFiles().first() );
-
-//    //! change the tab title
-//    int curIndex = ui->widget->currentIndex();
-//    ui->widget->setTabText( curIndex,
-//                            comAssist::pureFileName( fDlg.selectedFiles().first() )
-//                            );
-//}
-
-//void MainWindow::on_actionOpen_Scene_triggered()
-//{
-//    QFileDialog fDlg;
-
-//    fDlg.setAcceptMode( QFileDialog::AcceptOpen );
-//    fDlg.setNameFilter( tr("scene file (*.sce)") );
-//    if ( QDialog::Accepted != fDlg.exec() )
-//    { return; }
-
-//    m_pScriptMgr->openScene( fDlg.directory().absolutePath(),
-//                             fDlg.selectedFiles().first() );
-//}
-
-
 void MainWindow::slot_scriptmgr_changed()
 {
-//    Q_ASSERT( NULL != m_pScriptMgr );
-
-//    QStringList sceneList, pathList;
-
-//    sceneList = m_pScriptMgr->sceneList( pathList );
-//    logDbg()<<sceneList<<pathList;
-
-//    m_pRoboConnTool->setScenes( sceneList, pathList );
-
     slot_scene_changed();
 }
 
@@ -1199,6 +1235,7 @@ void MainWindow::on_actionMotor_Panel_triggered()
     { return; }
 
     m_pMotorMonitor->show();
+    m_pMotorMonitor->activateWindow();
 }
 
 void MainWindow::on_actiontest_triggered()

@@ -2,6 +2,8 @@
 #ifndef _ROBOT_RAW_ROBO_H_
 #define _ROBOT_RAW_ROBO_H_
 
+#include <QMutex>
+
 #include "../../device/vrobot.h"
 #include "../../device/robostate.h"
 #include "../../device/mrq/deviceMRQ.h"
@@ -109,6 +111,7 @@ public:
                             RoboMsg &detail );
 
     virtual void toState( int stat, RoboMsg &detail );
+    void setState( int state = 0 );
     int state();
 
     virtual void startTimer( int id=0, int tmous=1000 );
@@ -123,7 +126,8 @@ public:
     bool runReqed();
 
 protected:
-    QMutex mMutex;
+//    QMutex mMutex( QMutex::Recursive );
+
     RawRobo *m_pRobot;
 
     QMap< int, RawRoboUnit *> mStateMap;

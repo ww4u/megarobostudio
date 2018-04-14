@@ -27,7 +27,7 @@ protected:
 public:
     void updateUi();
 
-protected:
+public:
     virtual void modelChanged();
 
 private:

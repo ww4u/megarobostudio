@@ -123,6 +123,9 @@
       </item>
       <item>
        <widget class="QStackedWidget" name="stackedWidget">
+        <property name="focusPolicy">
+         <enum>Qt::NoFocus</enum>
+        </property>
         <property name="frameShape">
          <enum>QFrame::NoFrame</enum>
         </property>

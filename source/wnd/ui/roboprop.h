@@ -38,6 +38,9 @@ public:
     virtual int  save( QString &outFileName );
     virtual int  saveAs( QString &outFileName );
 
+    virtual void updateScreen();
+    virtual void updateModel();
+
 protected:
     void setupUi( int roboId );
     void desetupUi();

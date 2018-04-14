@@ -8,6 +8,8 @@ mrqSys::mrqSys(QWidget *parent) :
     ui(new Ui::mrqSys)
 {
     ui->setupUi(this);
+
+    spyEdited();
 }
 
 mrqSys::~mrqSys()
@@ -23,6 +25,29 @@ int mrqSys::setApply()
 void mrqSys::modelChanged()
 { updateUi(); }
 
+void mrqSys::spyEdited()
+{
+    QCheckBox *checkBoxes[]=
+    {
+        ui->chkOtp,
+    };
+
+    QLineEdit *edits[]={
+        ui->edtAlias,
+    };
+
+    QSpinBox *spinBoxes[]={
+    };
+    QDoubleSpinBox *doubleSpinBoxes[]={
+        ui->spinOtpTemperature,
+    };
+
+    QComboBox *comboxes[]={
+        ui->cmbAction,
+    };
+
+    install_spy();
+}
 void mrqSys::setupUi()
 {}
 void mrqSys::desetupUi()
@@ -55,6 +80,8 @@ int mrqSys::updateUi()
 //    ui->chkOtp->setChecked( (bool)m_pMrqModel->mOTP_STATE );
 //    ui->spinOtpTemperature->setValue( ( m_pMrqModel->mOTP_THRESHOLD)*otp_temprature_unit );
 //    ui->cmbAction->setCurrentIndex( m_pMrqModel->mOTP_RESPONSE );
+
+    Q_ASSERT( NULL != m_pMrqModel );
 
     //! name
     ui->edtAlias->setText( m_pMrqModel->getName() );

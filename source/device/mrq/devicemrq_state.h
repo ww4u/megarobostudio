@@ -68,6 +68,7 @@ public:
     virtual void killTimer( int id=0 );
 
 public:
+    int setState( int stat );
     int state();
 
 protected:

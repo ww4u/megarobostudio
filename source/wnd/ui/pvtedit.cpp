@@ -63,7 +63,7 @@ void pvtEdit::setModelObj( mcModelObj *pObj )
 int pvtEdit::save( QString &outFileName )
 {
     outFileName = mTpvGroup->getPath() + QDir::separator() + mTpvGroup->getName();
-
+    outFileName = QDir::toNativeSeparators( outFileName );
     return mTpvGroup->save( outFileName );
 }
 

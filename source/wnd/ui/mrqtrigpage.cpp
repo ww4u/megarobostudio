@@ -14,6 +14,8 @@ MrqTrigPage::MrqTrigPage(QWidget *parent) :
     //! sub chans
     mTrigChans.append( ui->tabLeft );
     mTrigChans.append( ui->tabRight );
+
+    spyEdited();
 }
 
 MrqTrigPage::~MrqTrigPage()
@@ -69,8 +71,17 @@ int MrqTrigPage::apply()
 
     return 0;
 }
+
+void MrqTrigPage::spyEdited()
+{
+    LINK_MODIFIED( ui->tabLeft );
+    LINK_MODIFIED( ui->tabRight );
+}
+
 int MrqTrigPage::updateUi()
 {
+    Q_ASSERT( NULL != m_pMrqModel );
+
     if ( NULL == m_pMrqModel )
     { return ERR_NULL_POINTER; }
 

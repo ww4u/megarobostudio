@@ -80,17 +80,31 @@ int roboProp::save( QString &outFileName )
     {
         outFileName = getModelObj()->getPath() +
                       QDir::separator() + getModelObj()->getName();
-        logDbg()<<outFileName;
     }
+    outFileName = QDir::toNativeSeparators( outFileName );
+
+    slotModified( false );
 
     return ((VRobot*)getModelObj())->save( outFileName + setup_d_ext);
 }
 
-int  roboProp::saveAs( QString &outFileName )
+int roboProp::saveAs( QString &outFileName )
 {
+    slotModified( false );
+
     return ((VRobot*)getModelObj())->save( outFileName );
 }
 
+void roboProp::updateScreen()
+{
+    foreach( modelView *pView, mPrefPages )
+    {
+        Q_ASSERT( NULL != pView );
+        pView->updateScreen();
+    }
+}
+ void roboProp::updateModel()
+{}
 
 #define new_widget( widget, icon, name )  ( names.append(name), \
                                             icons.append(icon), \
@@ -101,8 +115,6 @@ void roboProp::setupUi( int id )
     QStringList icons,names;
 
     //! new
-//    m_pInfoPage = new roboInfo();
-//    m_pComPref = new RoboComPref();
     m_pInfoPage = new_widget( roboInfo, ":/res/image/icon2/info.png", tr("Info") );
     m_pDetailPage = new_widget( RoboDesc, ":/res/image/icon2/info.png", tr("Detail") );
     m_pComPref  = new_widget( RoboComPref, ":/res/image/icon2/settings_light.png", tr("Option") );
@@ -160,7 +172,9 @@ void roboProp::setupUi( int id )
     }
 
     //! post
-    slot_page_changed( ui->stackedWidget->currentIndex() );
+//    slot_page_changed( ui->stackedWidget->currentIndex() );
+
+    ui->stackedWidget->setCurrentWidget( m_pComPref );
 }
 
 void roboProp::desetupUi()

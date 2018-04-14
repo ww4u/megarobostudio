@@ -25,6 +25,7 @@ RoboHand::~RoboHand()
     delete ui;
 }
 
+//! \todo
 void RoboHand::spyEdited()
 {
 
@@ -38,7 +39,9 @@ void RoboHand::setModelObj( mcModelObj *pObj )
     VRobot *pRobot = (VRobot*)pObj;
     ui->tableView->setModel( pRobot->handActions() );
 }
-
+//! \todo
+void RoboHand::updateScreen()
+{}
 void RoboHand::on_btnExport_clicked()
 {
     QFileDialog fDlg;

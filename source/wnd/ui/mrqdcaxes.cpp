@@ -6,9 +6,13 @@ MrqDcAxes::MrqDcAxes(QWidget *parent) :
     ui(new Ui::MrqDcAxes)
 {
     ui->setupUi(this);
+
+    spyEdited();
 }
 
 MrqDcAxes::~MrqDcAxes()
 {
     delete ui;
 }
+void MrqDcAxes::spyEdited()
+{}

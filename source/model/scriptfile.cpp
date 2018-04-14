@@ -123,11 +123,14 @@ int scriptFile::serialIn( QXmlStreamReader &reader )
         { mName = reader.readElementText(); }
 
         //! ref to the project
-        if ( reader.name() == "path" )
+        else if ( reader.name() == "path" )
         { mPath = reader.readElementText(); }
 
-        if ( reader.name() == "skip" )
+        else if ( reader.name() == "skip" )
         { mSkip = reader.readElementText().toInt(); }
+
+        else
+        { reader.skipCurrentElement(); }
     }
 
     return 0;

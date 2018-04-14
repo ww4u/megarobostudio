@@ -11,6 +11,8 @@ void modelView::attachDpcObj( dpcObj *pObj )
 modelView::modelView( QWidget *parent ) : appWidget( parent )
 {
     m_pModelObj = NULL;
+    mbGc = false;
+
     m_pmcModel = NULL;
     mbModified = false;
 
@@ -27,7 +29,8 @@ modelView::modelView( QWidget *parent ) : appWidget( parent )
 }
 modelView::~modelView()
 {
-    if ( NULL != m_pModelObj && m_pModelObj->getGc() )
+    //! shadow gc in local
+    if ( mbGc && NULL != m_pModelObj && m_pModelObj->getGc() )
     {
         delete m_pModelObj;
         m_pModelObj = NULL;
@@ -82,6 +85,7 @@ void modelView::setModelObj( mcModelObj *pObj )
     Q_ASSERT( NULL != pObj );
 
     m_pModelObj = pObj;
+    mbGc = m_pModelObj->getGc();        //! shadow gc
 }
 mcModelObj *modelView::getModelObj()
 { return m_pModelObj; }
@@ -143,5 +147,8 @@ bool modelView::modified()
 
 void modelView::syncData()
 {
-
 }
+void modelView::updateScreen()
+{}
+void modelView::updateModel()
+{}

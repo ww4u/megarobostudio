@@ -32,8 +32,12 @@ int modelRobotMgr::load( const QString &str )
                 {
                     mRobots.append( reader.readElementText() );
                 }
+                else
+                { reader.skipCurrentElement(); }
             }
         }
+        else
+        { reader.skipCurrentElement(); }
     }
 
     return 0;

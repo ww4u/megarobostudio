@@ -5,11 +5,25 @@
 
 #define DEF_TPV_CAP             256
 #define DEF_WAV_BUF_SIZE        (125*1024)      //! bytes
-#define INC_ANGLE_TO_DEG( angle )   (360.0f*angle)/(1<<18)
-#define ABS_ANGLE_TO_DEG( angle )   (360.0f*angle)/((1<<18)-1)
+
+#define ABS_ANGLE_TO_DEG( angle )   (360.0f*(angle))/((1<<18)-1)
+#define INC_ANGLE_TO_DEG( angle )   (360.0f*(angle))/(1<<18)
+
+#define VALUE_TO_ABS_ANGLE( val )   (quint32)( (val) * ((1<<18)-1) / 360.0f )
+#define VALUE_TO_INC_ANGLE( val )   (quint32)( (val) * ((1<<18)) / 360.0f )
 
 namespace MegaDevice
 {
+
+float deviceMRQ::absAngleToValue( quint32 angle )
+{ return ABS_ANGLE_TO_DEG( angle ); }
+quint32 deviceMRQ::valueToAbsAngle( float val )
+{ return VALUE_TO_ABS_ANGLE(val); }
+
+float deviceMRQ::incAngleToValue( quint32 angle )
+{ return INC_ANGLE_TO_DEG( angle ); }
+quint32 deviceMRQ::valueToIncAngle( float val )
+{ return VALUE_TO_INC_ANGLE(val); }
 
 deviceMRQ::deviceMRQ()
 {
@@ -91,11 +105,11 @@ void deviceMRQ::postCtor()
             mProxyMotors.insert( region, pProxyMotor );
 
             //! tpv caps
-            mTpvCaps.insert( region, DEF_TPV_CAP );logDbg()<<region.axes()<<region.page();
+            mTpvCaps.insert( region, DEF_TPV_CAP );//logDbg()<<region.axes()<<region.page();
             mTpvIndexes.insert( region, 0 );
 
             //! buf caps
-            mTpvBufferSizes.insert( region, DEF_WAV_BUF_SIZE );logDbg()<<region.axes()<<region.page();
+            mTpvBufferSizes.insert( region, DEF_WAV_BUF_SIZE );//logDbg()<<region.axes()<<region.page();
 
             //! loader for each region
             pLoader = new tpvDownloader();
@@ -177,6 +191,89 @@ QMetaType::Type deviceMRQ::getREPORT_TYPE( MRQ_REPORT_STATE stat )
     return QMetaType::UInt;
 }
 
+int deviceMRQ::setFanDuty( int duty )
+{
+    mFanInfo.mDuty = duty;
+
+    return m_pBus->write( DEVICE_RECEIVE_ID,
+                    (byte)mc_SYSTEM,
+                   (byte)sc_SYSTEM_FANPARA,
+                   mFanInfo.mDuty,
+                   mFanInfo.mFreq );
+}
+int deviceMRQ::setLedDuty( int i, int duty )
+{
+    Q_ASSERT( i >= 0 && i < 4 );
+
+    mLedInfo[i].mDuty = duty;
+
+    return m_pBus->write( DEVICE_RECEIVE_ID,
+                          (byte)mc_SYSTEM,
+                           (byte)sc_SYSTEM_ARMLEDPARA,
+                           (byte)i,
+                           mLedInfo[i].mDuty,
+                           mLedInfo[i].mFreq );
+}
+
+int deviceMRQ::setFanFreq( int freq )
+{
+    mFanInfo.mFreq = freq;
+
+    return m_pBus->write( DEVICE_RECEIVE_ID,
+                          (byte)mc_SYSTEM,
+                           (byte)sc_SYSTEM_FANPARA,
+                           mFanInfo.mDuty,
+                           mFanInfo.mFreq );
+}
+int deviceMRQ::setLedFreq( int ax, int freq )
+{
+    Q_ASSERT( ax >= 0 && ax < 4 );
+
+    mLedInfo[ax].mFreq = freq;
+
+    return m_pBus->write( DEVICE_RECEIVE_ID,
+                          (byte)mc_SYSTEM,
+                   (byte)sc_SYSTEM_ARMLEDPARA,
+                   (byte)ax,
+                   mFanInfo.mDuty,
+                   mLedInfo[ax].mFreq );
+}
+
+int deviceMRQ::setFan( int duty, int freq )
+{
+    mFanInfo.mDuty = duty;
+    mFanInfo.mFreq = freq;
+
+    return m_pBus->write( DEVICE_RECEIVE_ID,
+                          (byte)mc_SYSTEM,
+                   (byte)sc_SYSTEM_FANPARA,
+                   mFanInfo.mDuty,
+                   mFanInfo.mFreq );
+}
+int deviceMRQ::setLed( int i, int duty, int freq )
+{
+    Q_ASSERT( i >= 0 && i < 4 );
+    mLedInfo[i].mDuty = duty;
+    mLedInfo[i].mFreq = freq;
+
+    return m_pBus->write( DEVICE_RECEIVE_ID,
+                          (byte)mc_SYSTEM,
+                   (byte)sc_SYSTEM_ARMLEDPARA,
+                   (byte)i,
+                   mLedInfo[i].mDuty,
+                   mLedInfo[i].mFreq );
+}
+
+int deviceMRQ::hRst()
+{
+    Q_ASSERT( NULL != m_pBus );
+
+    return m_pBus->write( DEVICE_RECEIVE_ID,
+                          (byte)0XCA,
+                          (byte)0X24,
+                          (byte)0XA5 );
+}
+
 //! [0~360)
 float deviceMRQ::getIncAngle( int ax )
 {
@@ -202,8 +299,8 @@ float deviceMRQ::getAbsAngle( int ax )
     if ( ret != 0 )
     { return -1; }
     else
-    {
-        return ABS_ANGLE_TO_DEG( xangle );
+    {logDbg()<<QString::number(xangle,16);
+        return ABS_ANGLE_TO_DEG( (xangle&0x0ffffff) );  //! only 24 bit
     }
 }
 

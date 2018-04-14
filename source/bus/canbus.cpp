@@ -50,7 +50,6 @@ int CANBus::open( int devType, int devId, int canId )
 
     QString fullPath ;
     fullPath = QCoreApplication::applicationDirPath() + QDir::separator() + dllName;
-
     fullPath = QDir::toNativeSeparators( fullPath );
     if ( !mApi.load( fullPath) )
     {
@@ -229,11 +228,9 @@ logDbg()<<canObj.ID<<canObj.Data[0]<<canObj.Data[1]<<canObj.Data[2]<<canObj.Data
     IBus::unlock();
     if ( 1 !=  ret )
     {
-        logDbg();
+        sysError( __FUNCTION__, QString::number(__LINE__) );
         return -1;
     }
-
-//    IBus::wait_us( mWtInterval );
 
     return 0;
 }
@@ -244,6 +241,12 @@ int CANBus::doReceive( int *pFrameId, byte *pBuf, int *pLen )
     CAN_OBJ canObj;
     int ret;
 
+//    //! check data
+//    if ( mApi.getSize( can_device_desc ) > 0 )
+//    {}
+//    else
+//    { return -1; }
+
     IBus::lock();
     //! receive fail
     //! \note timout invalid and can not be 0
@@ -251,7 +254,10 @@ int CANBus::doReceive( int *pFrameId, byte *pBuf, int *pLen )
     IBus::unlock();
 
     if ( ret != 1 )
-    { return -1; }
+    {
+//        sysError( __FUNCTION__, QString::number(__LINE__) );
+        return -1;
+    }
     //! success
     else
     {  }
@@ -367,15 +373,14 @@ int CANBus::enumerate( const modelSysPref &pref )
 
     beginEnumerate();
 
-    ret = collectHash( );
-    if ( ret != 0 ) return ret;
-
-    ret = assignIds( pref );
-    if ( ret != 0 ) return ret;
+    if ( pref.mbAutoAssignId )
+    { ret = autoEnumerate( pref ); }
+    else
+    { ret = rawEnumerate( pref ); }
 
     endEnumerate();
 
-    return 0;
+    return ret;
 }
 
 int CANBus::getDevType()
@@ -391,6 +396,74 @@ void CANBus::beginEnumerate()
     delete_all( mEnumDevices );
 }
 
+void CANBus::endEnumerate()
+{
+    //! clear the current
+    delete_all( mDevices );
+
+    //! copy the enums
+    mDevices = mEnumDevices;
+
+    //! \note keep the deviceIds
+    mEnumDevices.clear();
+}
+
+int CANBus::autoEnumerate( const modelSysPref &pref )
+{
+    int ret;
+
+    ret = collectHash();
+    if ( ret != 0 ) return ret;
+
+    ret = assignIds( pref );
+    if ( ret != 0 ) return ret;
+
+    return ret;
+}
+int CANBus::rawEnumerate( const modelSysPref &pref )
+{
+    int ret;
+
+    //! send-hash
+    QMap< int, quint32 > sendHashMap;
+    ret = collectHash( sendHashMap );
+    if ( ret != 0 )
+    { return ret; }
+
+    //! send-recv
+    QMap< int, quint32 > sendRecvMap;
+    ret = collectRecvId( sendRecvMap );
+    if ( ret != 0 )
+    { return ret; }
+
+    //! check the size
+    if ( sendRecvMap.size() != sendHashMap.size() )
+    {
+        sysError( QObject::tr("ID match fail") );
+        return -1;
+    }
+
+    //! check the ids
+    QList<int> sendHashKeys, sendRecvKeys;
+    sendHashKeys = sendHashMap.keys();
+    sendRecvKeys = sendRecvMap.keys();
+
+    qSort( sendHashKeys );
+    qSort( sendRecvKeys );
+
+    if ( sendHashKeys != sendRecvKeys )
+    {
+        sysError( QObject::tr("ID match fail") );
+        return -1;
+    }
+
+    //! build
+    buildDeviceIds( sendHashMap, sendRecvMap );
+
+    return 0;
+}
+
+
 int CANBus::collectHash( )
 {
     byte buf[] = { mc_CAN, sc_CAN_NETMANAGEHASH_Q };
@@ -404,7 +477,6 @@ int CANBus::collectHash( )
     if ( ret != 0 )
     { return ret; }
 
-    logDbg()<<mEnumerateTmo;
     wait_us( mEnumerateTmo );
 
     //! 2. frame count
@@ -427,7 +499,8 @@ int CANBus::collectHash( )
     for ( int i = 0; i < frame; i++ )
     {
         pDeviceId = new DeviceId();
-        Q_ASSERT( NULL != pDeviceId );
+        if ( NULL == pDeviceId )
+        { return -1; }
 
         //! get hash id
         memcpy( &hashId, (readBuf + i * collectFrameSize) + 2, 4 );
@@ -445,8 +518,123 @@ int CANBus::collectHash( )
            deviceIdLessThan );
 
     return 0;
-
 }
+
+//! send: hash
+int CANBus::collectHash( QMap< int, quint32 > &sendHashMap )
+{
+    byte buf[] = { mc_CAN, sc_CAN_NETMANAGEHASH_Q };
+    int ret;
+
+    m_pRecvCache->clear();
+
+    //! 1. broadcast
+    DeviceId broadId( CAN_BROAD_ID );
+    ret = doWrite( broadId, buf, sizeof(buf) );
+    if ( ret != 0 )
+    { return ret; }
+
+    wait_us( mEnumerateTmo );
+
+    //! 2. frame count
+    int frame = size();logDbg()<<frame;
+    if ( frame < 1 )
+    { logDbg(); return -1; }
+
+    //! 3. read all frame
+    int collectFrameSize = 6;
+    byte readBuf[ collectFrameSize * frame ];
+    int frameIds[ frame ];
+
+    ret = doFrameRead( broadId, frameIds, readBuf, collectFrameSize, frame );
+    if ( ret != frame )
+    { return -1; }
+
+    //! 4. all frames
+    uint32 hashId;
+    for ( int i = 0; i < frame; i++ )
+    {
+        //! get hash id
+        memcpy( &hashId, (readBuf + i * collectFrameSize) + 2, 4 );
+
+        sendHashMap.insert( frameIds[i], hashId );
+    }
+
+    return 0;
+}
+
+int CANBus::collectRecvId( QMap< int, quint32 > &sendRecvMap )
+{
+    byte buf[] = { mc_CAN, sc_CAN_RECEIVEID_Q };
+    int ret;
+
+    m_pRecvCache->clear();
+
+    //! 1. broadcast
+    DeviceId broadId( CAN_BROAD_ID );
+    ret = doWrite( broadId, buf, sizeof(buf) );
+    if ( ret != 0 )
+    { return ret; }
+
+    wait_us( mEnumerateTmo );
+
+    //! 2. frame count
+    int frame = size();logDbg()<<frame;
+    if ( frame < 1 )
+    { logDbg(); return -1; }
+
+    //! 3. read all frame
+    int collectFrameSize = 6;
+    byte readBuf[ collectFrameSize * frame ];
+    int frameIds[ frame ];
+
+    ret = doFrameRead( broadId, frameIds, readBuf, collectFrameSize, frame );
+    if ( ret != frame )
+    { return -1; }
+
+    //! 4. all frames
+    uint32 recvId;
+    for ( int i = 0; i < frame; i++ )
+    {
+        //! get recv id
+        memcpy( &recvId, (readBuf + i * collectFrameSize) + 2, 4 );
+
+        sendRecvMap.insert( frameIds[i], recvId );
+    }
+
+    return 0;
+}
+
+void CANBus::buildDeviceIds( QMap< int, quint32 > &sendHashMap,
+                     QMap< int, quint32 > &sendRecvMap )
+{
+    DeviceId *pDeviceId;
+
+    //! match the sendId: recvid, signature
+    QMapIterator<int, quint32> iter(sendHashMap);
+    while (iter.hasNext())
+    {
+        iter.next();
+
+        pDeviceId = new DeviceId();
+        if ( NULL == pDeviceId )
+        { break; }
+
+        pDeviceId->setSendId( iter.key() );
+        pDeviceId->setSignature( iter.value() );
+
+        Q_ASSERT( sendRecvMap.contains( iter.key() ) );
+        pDeviceId->setRecvId( sendRecvMap.value( iter.key()) );
+
+        mEnumDevices.append( pDeviceId );
+    }
+
+    //!  sort the device by id
+    qSort( mEnumDevices.begin(),
+           mEnumDevices.end(),
+           deviceIdLessThan );
+}
+
 //! \todo check repeatable
 int CANBus::assignIds( const modelSysPref &pref )
 {
@@ -466,18 +654,6 @@ int CANBus::assignIds( const modelSysPref &pref )
     }
 
     return 0;
-}
-
-void CANBus::endEnumerate()
-{
-    //! clear the current
-    delete_all( mDevices );
-
-    //! copy the enums
-    mDevices = mEnumDevices;
-
-    //! \note keep the deviceIds
-    mEnumDevices.clear();
 }
 
 }

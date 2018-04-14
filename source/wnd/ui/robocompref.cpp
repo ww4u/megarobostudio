@@ -62,21 +62,20 @@ int RoboComPref::setApply()
 
     applyGroupId();
 
-    //! set connection
-    Q_ASSERT( m_pModelObj != NULL );
-    VRobot *pBase = ( VRobot *)m_pModelObj;
-    Q_ASSERT( NULL != pBase );
-
-    pBase->mAxesConnectionName.clear();
-    for ( int i = 0; i < pBase->axes(); i++ )
-    { pBase->mAxesConnectionName<<mAxesEdits.at(i)->text(); }
-
     return 0;
 }
 
+void RoboComPref::updateScreen()
+{
+    updateUi();
+}
 
 void RoboComPref::spyEdited()
 {
+    QCheckBox *checkBoxes[]=
+    {
+    };
+
     QLineEdit *edits[]={
         ui->edtAlias,
     };
@@ -92,7 +91,7 @@ void RoboComPref::spyEdited()
     };
 
     QComboBox *comboxes[]={
-        ui->cmbGpSubId,
+//        ui->cmbGpSubId,
         ui->cmbGroup,
         ui->cmbInterpMode,
     };
@@ -116,7 +115,7 @@ void RoboComPref::updateUi()
     Q_ASSERT( NULL != m_pmcModel );
     ui->spinBox->setValue( pBase->canGroupId() );
     ui->cmbGroup->setCurrentIndex( pBase->subGroup() );
-    ui->cmbGpSubId->setCurrentText( QString::number( pBase->subGroupId() ) );
+//    ui->cmbGpSubId->setCurrentText( QString::number( pBase->subGroupId() ) );
 
     ui->spinZeroSpeed->setValue( pBase->zeroSpeed() );
 
@@ -155,6 +154,14 @@ void RoboComPref::updateData()
     RawRobo *pRawRobo = (RawRobo*)pRobo;
     pRawRobo->setPlanStep( ui->spinInterpStep->value() );
     pRawRobo->setPlanMode( (eRoboPlanMode)ui->cmbInterpMode->currentIndex() );
+
+    //! zero speed
+    pRawRobo->setZeroSpeed( ui->spinZeroSpeed->value() );
+
+    //! set connection
+    pRobo->mAxesConnectionName.clear();
+    for ( int i = 0; i < pRobo->axes(); i++ )
+    { pRobo->mAxesConnectionName<<mAxesEdits.at(i)->text(); }
 }
 
 int RoboComPref::applyGroupId()
@@ -165,23 +172,22 @@ int RoboComPref::applyGroupId()
     pRobo = (VRobot*)m_pModelObj;
     if ( NULL == pRobo )
     { return ERR_INVALID_DEVICE_NAME; }
-logDbg();
+
     //! foreach sub device
     MegaDevice::deviceMRQ *pMRQ;
     int ret;
-    int gpId, subGroup, axesId;
+    int gpId, axesId;
     foreach( QString str, pRobo->mAxesConnectionName )
     {
         axesId = 0;
-logDbg()<<str;
+
         //! find device by connection name
         pMRQ = pRobo->findDevice( str, &axesId );
         if ( NULL == pMRQ )
         {
-            logDbg()<<str;
             return ERR_INVALID_DEVICE_NAME;
         }
-logDbg();
+
         //! set group id
         gpId = ui->spinBox->value();
         ret = pMRQ->setCAN_GROUPID1( gpId );
@@ -197,15 +203,6 @@ logDbg();
 
         pMRQ->setCAN_APPLYPARA();
     }
-
-    pRobo->setZeroSpeed( ui->spinZeroSpeed->value() );
-
-logDbg();
-//    //! for self id
-//    pRobo->setGroupCanId( gpId );
-
-//    //! set sub id
-//    pRobo->setSubGroupId( subGroup );
 
     return 0;
 }

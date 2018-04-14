@@ -1,12 +1,13 @@
 #include "mrqsubuart.h"
 #include "ui_mrqsubuart.h"
-#include "modelview.h"
 
 MrqSubUart::MrqSubUart(QWidget *parent) :
-    QWidget(parent),
+    modelView(parent),
     ui(new Ui::MrqSubUart)
 {
     ui->setupUi(this);
+
+    spyEdited();
 }
 
 MrqSubUart::~MrqSubUart()
@@ -33,4 +34,34 @@ void MrqSubUart::getConfig( subUartConfig &cfg )
     exchange_spin( spinReceiveLen, cfg.mReceiveNum, false )
 
     exchange_spin( spinInvterval, cfg.mInterval, false )
+}
+
+void MrqSubUart::spyEdited()
+{
+    QCheckBox *checkBoxes[]=
+    {
+        ui->chkSensor,
+    };
+
+    QLineEdit *edits[]={
+
+    };
+
+    QSpinBox *spinBoxes[]={
+        ui->spinSof,
+        ui->spinBox,
+        ui->spinFrameLen,
+        ui->spinReceiveLen,
+
+    };
+    QDoubleSpinBox *doubleSpinBoxes[]={
+        ui->spinInvterval,
+
+    };
+
+    QComboBox *comboxes[]={
+
+    };
+
+    install_spy();
 }

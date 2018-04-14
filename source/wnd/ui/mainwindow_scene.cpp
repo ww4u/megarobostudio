@@ -56,7 +56,7 @@ VRoboList MainWindow::sceneRobotList(
     roboScene scene;
     QString fullPath;
     fullPath = path + QDir::separator() + name;
-    logDbg()<<fullPath;
+    fullPath = QDir::fromNativeSeparators( fullPath );
 
     VRoboList complexRoboList;
     //! load the file

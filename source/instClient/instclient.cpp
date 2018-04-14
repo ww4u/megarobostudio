@@ -36,9 +36,13 @@ int instClient::open( const QString &name,
 
     if ( mSocket.waitForConnected() )
     {
-        QString latName = name + "\n";
+        QString latName = name + "\r\n";
         mSocket.write( latName.toLatin1() );
-        qDebug()<<latName;
+        mSocket.flush();
+
+//        mSocket.write( latName.toLatin1() );
+//        mSocket.flush();
+//        qDebug()<<latName;
         return 0;
     }
     else
@@ -60,7 +64,11 @@ int instClient::write( const char *data, int len )
     else
     { return 0; }
 
-    return mSocket.write( data, len );
+    qint64 ret;
+    ret = mSocket.write( data, len );
+
+    mSocket.flush();
+    return ret;
 }
 int instClient::size( int tmo )
 {

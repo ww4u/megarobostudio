@@ -18,7 +18,7 @@ public:
 public:
     virtual void setModelObj( mcModelObj *pObj );
     virtual int setApply();
-
+    virtual void updateScreen();
 protected:
     void updateData();
     void updateUi();

@@ -51,8 +51,16 @@ int DeltaConfig::setApply()
     return 0;
 }
 
+void DeltaConfig::updateScreen()
+{
+    updateUi();
+}
 void DeltaConfig::spyEdited()
 {
+    QCheckBox *checkBoxes[]=
+    {
+    };
+
     QLineEdit *edits[]={
 
     };

@@ -78,6 +78,7 @@ void MainWindow::on_actionSave_Prj_triggered()
     QString strFileName;
 
     strFileName = m_pScriptMgr->getPath() + QDir::separator() + m_pScriptMgr->getName();
+    strFileName = QDir::toNativeSeparators( strFileName );
     if ( strFileName.contains(".prj") )
     {}
     else

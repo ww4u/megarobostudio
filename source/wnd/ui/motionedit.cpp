@@ -121,7 +121,7 @@ void motionEdit::setModelObj( mcModelObj *pObj )
 int motionEdit::save( QString &outFileName )
 {
     outFileName = mMotionGroup->getPath() +QDir::separator() + mMotionGroup->getName();
-
+    outFileName = QDir::toNativeSeparators( outFileName );
     return mMotionGroup->save( outFileName );
 }
 

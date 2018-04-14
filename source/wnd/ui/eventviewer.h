@@ -20,8 +20,11 @@ public:
     static int exceptionCode( const QString &str );
     static int actionCode( const QString &str );
 
-    static int exceptionMCode( int exceptionId );
-    static int exceptionSCode( int exceptionId );
+//    static int exceptionMCode( int exceptionId );
+//    static int exceptionSCode( int exceptionId );
+
+    static int exceptionIndex( const QString &str );
+
 public:
     explicit eventViewer( receiveCache *pIntSrc,
                           EventActionModel *pModel,

@@ -63,16 +63,17 @@ void mrqInfo::initModel()
     mTableItems.at(12)->setText( tr("Send ID") );
     mTableItems.at(14)->setText( tr("Receive ID") );
     mTableItems.at(16)->setText( tr("Boradcast ID") );
-    mTableItems.at(18)->setText( tr("Capacity") );
-    mTableItems.at(20)->setText( tr("Buffer") );
+    mTableItems.at(18)->setText( tr("Signature") );
+    mTableItems.at(20)->setText( tr("Capacity") );
+    mTableItems.at(22)->setText( tr("Buffer") );
 }
 
 void mrqInfo::deinitModel()
 {
-    foreach( QTableWidgetItem *pItem, mTableItems )
-    {
-        delete pItem;
-    }
+//    foreach( QTableWidgetItem *pItem, mTableItems )
+//    {
+//        delete pItem;
+//    }
 }
 
 void mrqInfo::updateUi()
@@ -96,13 +97,16 @@ void mrqInfo::updateUi()
 
     uint32 id;
     pModel->getCAN_SENDID( &id );
-    mTableItems.at(13)->setText( QString::number( id, 16 ) );
+    mTableItems.at(13)->setText( "0X" + QString::number( id, 16 ).toUpper() );
 
     pModel->getCAN_RECEIVEID( &id );
-    mTableItems.at(15)->setText( QString::number( id, 16 ) );
+    mTableItems.at(15)->setText( "0X" + QString::number( id, 16 ).toUpper() );
 
     pModel->getCAN_BROADCASTID( &id );
-    mTableItems.at(17)->setText( QString::number( id, 16 ) );
+    mTableItems.at(17)->setText( "0X" + QString::number( id, 16 ).toUpper() );
+
+    id = pModel->getSignature();
+    mTableItems.at(19)->setText( "0X" + QString::number( id, 16 ).toUpper() );
 
     //! caps
     int cap;
@@ -114,7 +118,7 @@ void mrqInfo::updateUi()
         strCaps += sep + QString::number( cap );
         sep = "/";
     }
-    mTableItems.at(19)->setText( strCaps );
+    mTableItems.at(21)->setText( strCaps );
 
     //! buffers
     int bufSize;
@@ -126,7 +130,7 @@ void mrqInfo::updateUi()
         strBufs += sep + QString("%1M").arg( bufSize / (1024*1024.0));
         sep = "/";
     }
-    mTableItems.at(21)->setText( strBufs );
+    mTableItems.at(23)->setText( strBufs );
 
     //! image
     ui->labImg->setPixmap( QPixmap::fromImage( pModel->getImage() ) );

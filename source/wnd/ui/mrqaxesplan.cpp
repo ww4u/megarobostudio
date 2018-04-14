@@ -6,6 +6,8 @@ MrqAxesPlan::MrqAxesPlan(QWidget *parent) :
     ui(new Ui::MrqAxesPlan)
 {
     ui->setupUi(this);
+
+    spyEdited();
 }
 
 MrqAxesPlan::~MrqAxesPlan()
@@ -21,6 +23,11 @@ int MrqAxesPlan::setApply()
 void MrqAxesPlan::modelChanged()
 {
     updateUi();logDbg();
+}
+
+void MrqAxesPlan::spyEdited()
+{
+
 }
 
 int MrqAxesPlan::apply()
@@ -39,6 +46,8 @@ int MrqAxesPlan::apply()
 }
 int MrqAxesPlan::updateUi()
 {
+    Q_ASSERT( NULL != m_pMrqModel );
+
     if ( NULL == m_pMrqModel )
     { return ERR_NULL_POINTER; }
 

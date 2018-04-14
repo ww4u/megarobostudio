@@ -22,6 +22,9 @@ ADDMOD obj\devicemrq_state.o
 ADDMOD obj\devicemrq_addr.o
 ADDMOD obj\devicemrq_setting.o
 ADDMOD obj\devicemrq_tpv.o
+ADDMOD obj\mrq_model_serial.o
+ADDMOD obj\devicemrq_setting_up.o
+ADDMOD obj\devicemrq_setting_down.o
 ADDMOD obj\moc_tpvdownloader.o
 ADDMOD obj\moc_roboworker.o
 SAVE

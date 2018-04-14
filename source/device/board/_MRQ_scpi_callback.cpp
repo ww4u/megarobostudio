@@ -290,6 +290,74 @@ static scpi_result_t _scpi_getSYSTEM_DIOSTATE( scpi_t * context )
 
 	return SCPI_RES_OK;
 }
+static scpi_result_t _scpi_setSYSTEM_FANPARA( scpi_t * context )
+{
+	// write
+	CHECK_CONTEXT();
+	DEF_LOCAL_VAR();
+
+	byte val0;
+	if ( SCPI_ParamInt32(context, &localIntVal, true) != SCPI_RES_OK ) 
+        { return SCPI_RES_ERR; }
+	val0 = (byte)localIntVal;
+
+	(SET_OBJ(context))->setSYSTEM_FANPARA( val0 );
+	return SCPI_RES_OK;
+}
+static scpi_result_t _scpi_getSYSTEM_FANPARA( scpi_t * context )
+{
+	// read
+	DEF_LOCAL_VAR();
+
+	byte oval0;
+
+	(GET_OBJ(context))->getSYSTEM_FANPARA( &oval0 );
+	SCPI_ResultInt32(context, oval0);
+
+	return SCPI_RES_OK;
+}
+static scpi_result_t _scpi_setSYSTEM_ARMLEDPARA( scpi_t * context )
+{
+	// write
+	CHECK_CONTEXT();
+	DEF_LOCAL_VAR();
+
+	MRQ_SYSTEM_ARMLEDPARA val0;
+	if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
+        { return SCPI_RES_ERR; }
+	if (strLen < 1)
+        { return SCPI_RES_ERR; }
+	if ( MRQ_SYSTEM_ARMLEDPARA_toValue( pLocalStr, &val0) != 0 ) 
+        { return SCPI_RES_ERR; }
+
+	byte val1;
+	if ( SCPI_ParamInt32(context, &localIntVal, true) != SCPI_RES_OK ) 
+        { return SCPI_RES_ERR; }
+	val1 = (byte)localIntVal;
+
+	(SET_OBJ(context))->setSYSTEM_ARMLEDPARA( val0, val1 );
+	return SCPI_RES_OK;
+}
+static scpi_result_t _scpi_getSYSTEM_ARMLEDPARA( scpi_t * context )
+{
+	// read
+	DEF_LOCAL_VAR();
+
+	MRQ_SYSTEM_ARMLEDPARA val0;
+	if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
+        { return SCPI_RES_ERR; }
+	if (strLen < 1)
+        { return SCPI_RES_ERR; }
+	if ( MRQ_SYSTEM_ARMLEDPARA_toValue( pLocalStr, &val0) != 0 ) 
+        { return SCPI_RES_ERR; }
+
+	byte oval0;
+
+	(GET_OBJ(context))->getSYSTEM_ARMLEDPARA( val0, &oval0 );
+	SCPI_ResultInt32(context, oval0);
+
+	return SCPI_RES_OK;
+}
 static scpi_result_t _scpi_setRS232_BAUD( scpi_t * context )
 {
 	// write

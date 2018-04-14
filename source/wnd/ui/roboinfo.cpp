@@ -28,6 +28,11 @@ void roboInfo::setModelObj( mcModelObj *pObj )
     updateUi();
 }
 
+void roboInfo::updateScreen()
+{
+    updateUi();
+}
+
 void roboInfo::initModel()
 {
     for( int i = 0; i < ui->tableWidget->rowCount(); i++ )
@@ -52,10 +57,10 @@ void roboInfo::initModel()
 
 void roboInfo::deInitModel()
 {
-    foreach( QTableWidgetItem *pItem, mItems )
-    {
-       delete pItem;
-    }
+//    foreach( QTableWidgetItem *pItem, mItems )
+//    {
+//       delete pItem;
+//    }
 }
 
 void roboInfo::updateUi()

@@ -12,6 +12,8 @@ mrqSensor::mrqSensor(QWidget *parent) :
     ui->setupUi(this);
 
     setupUi();
+
+    spyEdited();
 }
 
 mrqSensor::~mrqSensor()
@@ -35,6 +37,13 @@ int mrqSensor::setApply()
 
 void mrqSensor::modelChanged()
 { updateUi(); }
+
+void mrqSensor::spyEdited()
+{
+    LINK_MODIFIED(ui->tab);
+    LINK_MODIFIED(ui->tab_2)
+
+}
 
 void mrqSensor::setupUi()
 {}

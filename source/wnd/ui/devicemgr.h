@@ -36,6 +36,7 @@ protected:
 
 Q_SIGNALS:
     void itemXActivated( mcModelObj* );
+    void signalModelUpdated( mcModelObj* );
 
     void signalReport( int errCode, const QString &expr="" );
 
@@ -80,6 +81,10 @@ protected:
     void beginLoadOn( void *pPara );
     void endLoadOn( int ret, void *pPara );
 
+    int postImport( appMsg msg, void *pPara );
+    void beginImport( void *pPara );
+    void endImport( int ret, void *pPara );
+
     //! motor test
     int postMotorTest( appMsg msg, void *pPara );
     void beginMotorTest( void *pPara );
@@ -107,6 +112,8 @@ public:
     Ui::deviceMgr *ui;
 
     QMenu *m_pDeviceMenu;
+    QAction *m_pDeviceImportAction;
+
     QMenu *m_pRoboMenu;
 
     MegaDevice::InstMgr *m_pMgr;
@@ -115,6 +122,8 @@ public:
 
     //! current
     MegaDevice::deviceMRQ *m_pMRQ;
+    QString mImportFileName;
+
     VRobot *m_pRobo;
     QTreeWidgetItem *m_pCurrTreeItem;
     int mCurrentAxes;

@@ -21,6 +21,8 @@ static msg_type _msg_patterns[] =
     },
     { mrq_msg_program, { TPV_REGEION_TYPE_ID },
     },
+    { mrq_msg_prepare, { TPV_REGEION_TYPE_ID },
+    },
     { mrq_msg_call, { TPV_REGEION_TYPE_ID },
     },
 

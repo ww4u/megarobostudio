@@ -8,17 +8,29 @@ void MainWindow::exceptionProc( const QString &name,
 {
     Q_ASSERT( NULL != mMcModel.mEventActionModel.items() );
 
+    int actId;
     foreach( EventAction *pAction, *mMcModel.mEventActionModel.items() )
     {
         Q_ASSERT( NULL != pAction );
 
-        if ( pAction->enable() )
+        actId = eventViewer::exceptionCode( pAction->event() );
+
+        if ( exceptionId == actId
+             && pAction->enable() )
         {
-            int exceptionAction;
+            int exceptionAction = eventViewer::actionCode( pAction->action() );
 
-            exceptionAction = eventViewer::actionCode( pAction->action() );
+            //! stop
+            if ( exceptionAction == e_device_action_stop
+                 || exceptionAction == e_device_action_prompt_stop )
+            { on_actionForceStop_triggered(); }
+            else
+            {}
 
-            if ( exceptionAction == e_device_action_prompt )
+            //! prompt
+            if ( exceptionAction == e_device_action_prompt
+                 || exceptionAction == e_device_action_prompt_stop
+                 )
             {
                 if ( NULL == m_pWarnPrompt )
                 { m_pWarnPrompt = new WarnPrompt(this); }
@@ -29,10 +41,9 @@ void MainWindow::exceptionProc( const QString &name,
 
                 m_pWarnPrompt->show();
             }
-            else if ( exceptionAction == e_device_action_stop )
-            { on_actionForceStop_triggered(); }
             else
             {}
         }
     }
 }
+

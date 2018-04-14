@@ -2,7 +2,7 @@
 #define MRQUART_H
 
 #include <QWidget>
-
+#include "modelview.h"
 namespace Ui {
 class MrqUart;
 }
@@ -17,7 +17,7 @@ public:
     int mFlowInd;
 };
 
-class MrqUart : public QWidget
+class MrqUart : public modelView
 {
     Q_OBJECT
 
@@ -26,9 +26,9 @@ public:
     ~MrqUart();
 
     void setConfig(  uartConfig &cfg );
-
     void getConfig( uartConfig &cfg );
-
+protected:
+    void spyEdited();
 private:
     Ui::MrqUart *ui;
 };

@@ -22,7 +22,9 @@ QString EventAction::header( int col )
 
 EventAction::EventAction()
 {
-    mEnable = false;
+    mEnable = true;
+    mEvent = "Lose step";
+    mAction ="Stop";
 }
 EventAction::~EventAction()
 {}
@@ -221,6 +223,8 @@ int EventActionModel::load( const QString &fileName )
         {
             ret = serialIn( reader );
         }
+        else
+        { reader.skipCurrentElement(); }
     }
 
     fileIn.close();
@@ -271,11 +275,13 @@ int EventActionModel::serialIn( QXmlStreamReader & reader )
                 else if ( reader.name() == "comment" )
                 { pItem->setComment( reader.readElementText() ) ; }
                 else
-                {}
+                { reader.skipCurrentElement(); }
             }
 
             localItems.append( pItem );
         }
+        else
+        { reader.skipCurrentElement(); }
     }
 
     //! assign

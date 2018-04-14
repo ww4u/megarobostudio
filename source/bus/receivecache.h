@@ -11,23 +11,26 @@ enum eventId
 
     event_exception_min, //! exceptions [_min, _max)
 
-    event_lose_step = event_exception_min,
-    event_over_pe,
+    event_over_step = event_exception_min,
+    event_over_angle,
+    event_over_distance,
+
 
     event_exception_max,
 
     event_stop,
 
     event_status,       //! status change
+//    event_alarm,
 
 };
 Q_DECLARE_METATYPE( eventId )
 
 enum exceptionAction
 {
-    exception_action_none,
     exception_action_stop,
     exception_action_prompt,
+    exception_action_prompt_stop,
 };
 
 class frameEvent : public QByteArray
@@ -42,10 +45,18 @@ public:
     bool getEnable();
 
     void setMainSubCode( int mainCode, int subCode );
+    void setMainSubCode( int mainCode,
+                         int subCode,
+                         int patterns[],
+                         int pattLen );
 
+    bool match( QByteArray &ary );
 protected:
     eventId mEventId;
     bool mbEn;
+
+    int mPatterns[6];
+    int mPatternLen;
 };
 
 class frameData : public QByteArray

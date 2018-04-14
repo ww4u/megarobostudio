@@ -12,6 +12,7 @@ public:
         model_none,
         model_bus,
         model_device,
+        model_composite_device,
         model_tpv,
 
         model_robot,
@@ -43,6 +44,9 @@ public:
     void setGc( bool b );
     bool getGc( );
 
+    void setFilled( bool b );
+    bool isFilled();
+
     void setFile( bool b );
     bool getFile();
 
@@ -71,6 +75,7 @@ public:
 
 protected:
     bool mbGc;
+    bool mbFilled;      //! has filled
     bool mbFile;
 
     QString mName;

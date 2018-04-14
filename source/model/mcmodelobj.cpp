@@ -40,6 +40,7 @@ mcModelObj::mcModelObj()
     m_pObj = NULL;
 
     mbGc = false;
+    mbFilled = false;
     mbFile = false;
 }
 
@@ -51,6 +52,11 @@ bool mcModelObj::getGc( )
 {
     return mbGc;
 }
+
+void mcModelObj::setFilled( bool b )
+{ mbFilled = b; }
+bool mcModelObj::isFilled()
+{ return mbFilled; }
 
 void mcModelObj::setFile( bool b )
 {

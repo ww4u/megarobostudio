@@ -6,6 +6,8 @@
 #include "../../com/robomsg.h"
 #include "../../model/mcmodel.h"
 
+#include "../../widget/flowlayout.h"
+
 namespace Ui {
 class MotorMonitor;
 }
@@ -44,6 +46,8 @@ private:
     Ui::MotorMonitor *ui;
 
     mcModel *m_pModel;
+
+    FlowLayout *m_pFlowLayout;
 
     QList<MotorState*> mMotors;
     QStringList mMonitors;

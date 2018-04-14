@@ -59,37 +59,8 @@ int scriptGroup::load( const QString &str )
         {
             serialIn( reader );
         }
-
-//        if ( reader.name() == "prj" )                   //! top level
-//        {
-//            while( reader.readNextStartElement() )
-//            {
-//                if ( reader.name() == "name" )          //! project name
-//                { mName = reader.readElementText(); }
-
-//                //! group
-//                if ( reader.name() == "group" )         //! sub group
-//                {
-//                    scriptGroup *pGroup;
-//                    pGroup = new scriptGroup();
-//                    Q_ASSERT( NULL != pGroup );
-//                    pGroup->serialIn( reader );
-
-//                    appendNode( pGroup );
-//                }
-
-//                //! a new file
-//                if ( reader.name() == "file" )          //! sub file
-//                {
-//                    scriptFile *pFile;
-//                    pFile = new scriptFile();
-//                    Q_ASSERT( NULL != pFile );
-//                    pFile->serialIn( reader );
-
-//                    appendNode( pFile );
-//                }
-//            }
-//        }
+        else
+        { reader.skipCurrentElement(); }
     }
 
     dbgPrint();
@@ -120,10 +91,11 @@ int scriptGroup::serialIn( QXmlStreamReader &reader )
     {
         if ( reader.name() == "name" )
         { mName = reader.readElementText(); logDbg()<<mName; }
-        if ( reader.name() == "skip" )
+
+        else if ( reader.name() == "skip" )
         { mSkip = reader.readElementText().toInt(); }
 
-        if ( reader.name() == "file" )          //! sub file
+        else if ( reader.name() == "file" )          //! sub file
         {
             scriptFile *pFile;
 
@@ -133,7 +105,8 @@ int scriptGroup::serialIn( QXmlStreamReader &reader )
 
             appendNode( pFile );
         }
-        if( reader.name() == "group" )          //! sub group
+
+        else if( reader.name() == "group" )          //! sub group
         {
             scriptGroup *pGroup;
             pGroup = new scriptGroup();
@@ -144,6 +117,8 @@ int scriptGroup::serialIn( QXmlStreamReader &reader )
             logDbg()<<pGroup->getName();
             logDbg()<<pGroup->childCount();
         }
+        else
+        { reader.skipCurrentElement(); }
     }
 
     return 0;
@@ -151,6 +126,7 @@ int scriptGroup::serialIn( QXmlStreamReader &reader )
 
 int scriptGroup::saveAll( const QString &dir )
 {
+    QString fullName;
     foreach( scriptNode *pNode, mNodeList )
     {
         if ( pNode->getNodeType() == scriptNode::node_group )
@@ -159,7 +135,9 @@ int scriptGroup::saveAll( const QString &dir )
         }
         else if ( pNode->getNodeType() == scriptNode::node_file )
         {
-            dynamic_cast<scriptFile*>( pNode )->save( dir + QDir::separator() + pNode->getPath() + QDir::separator() + pNode->getName() );
+            fullName = dir + QDir::separator() + pNode->getPath() + QDir::separator() + pNode->getName();
+            fullName = QDir::toNativeSeparators( fullName );
+            dynamic_cast<scriptFile*>( pNode )->save( fullName );
         }
         else
         {}

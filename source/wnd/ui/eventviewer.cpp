@@ -10,12 +10,33 @@ struct struExceptionDesc
     int id;
     int mCode;
     int sCode;
+    int len;
+    int mPattern[6];       //! -1 not care
+
 };
 
 static struExceptionDesc _exceptions_[]=
 {
-    { QStringLiteral("Lose step"), event_lose_step, mc_CLOCK, sc_CLOCK_SYNCREGISTER_Q }, //! \debug
-    { QStringLiteral("Over Power Effiency"), event_over_pe, mc_CLOCK, sc_CLOCK_FREQUENCY_Q },
+    { QStringLiteral("Lose Step"),
+      event_over_step,
+      mc_SYSTEM, sc_SYSTEM_EVENTCODE_Q,
+      6,
+      { -1, 4, 0, -1, -1, -1,}
+    },
+
+    { QStringLiteral("Over Distance"),
+      event_over_distance,
+      mc_SYSTEM, sc_SYSTEM_EVENTCODE_Q,
+      6,
+      { -1, 2, 0, -1, -1, -1,}
+    },
+    { QStringLiteral("Over Angle"),
+      event_over_angle,
+      mc_SYSTEM, sc_SYSTEM_EVENTCODE_Q,
+      6,
+      { -1, 2, 1, -1, -1, -1,}
+    },
+
 };
 
 struct struExceptionActionDesc
@@ -25,9 +46,9 @@ struct struExceptionActionDesc
 };
 static struExceptionActionDesc _exception_actions_[] =
 {
-    { QStringLiteral("None"), exception_action_none },
     { QStringLiteral("Stop"), exception_action_stop },
     { QStringLiteral("Prompt"), exception_action_prompt },
+    { QStringLiteral("Prompt+Stop"), exception_action_prompt_stop },
 };
 
 int eventViewer::exceptionCode( const QString &str )
@@ -51,26 +72,38 @@ int eventViewer::actionCode( const QString &str )
     return _exception_actions_[0].id;
 }
 
-int eventViewer::exceptionMCode( int exceptionId )
+//int eventViewer::exceptionMCode( int exceptionId )
+//{
+//    for ( int i = 0; i < sizeof_array(_exceptions_); i++ )
+//    {
+//        if ( _exceptions_[i].id == exceptionId )
+//        { return _exceptions_[i].mCode; }
+//    }
+
+//    Q_ASSERT( false );
+//    return 0;
+//}
+//int eventViewer::exceptionSCode( int exceptionId )
+//{
+//    for ( int i = 0; i < sizeof_array(_exceptions_); i++ )
+//    {
+//        if ( _exceptions_[i].id == exceptionId )
+//        { return _exceptions_[i].sCode; }
+//    }
+
+//    Q_ASSERT( false );
+//    return 0;
+//}
+
+int eventViewer::exceptionIndex( const QString &str )
 {
-    for ( int i = 0; i < sizeof_array(_exceptions_); i++ )
+    for( int i = 0; i < sizeof_array(_exceptions_); i++ )
     {
-        if ( _exceptions_[i].id == exceptionId )
-        { return _exceptions_[i].mCode; }
+        if ( _exceptions_[i].str == str )
+        { return i; }
     }
 
-    Q_ASSERT( false );
-    return 0;
-}
-int eventViewer::exceptionSCode( int exceptionId )
-{
-    for ( int i = 0; i < sizeof_array(_exceptions_); i++ )
-    {
-        if ( _exceptions_[i].id == exceptionId )
-        { return _exceptions_[i].sCode; }
-    }
-
-    Q_ASSERT( false );
+//    Q_ASSERT( false );
     return 0;
 }
 
@@ -148,16 +181,20 @@ void eventViewer::slot_event( eventId id, frameData data )
 void eventViewer::slot_exception_changed()
 {
     Q_ASSERT( NULL != m_pInterruptSrc );
-logDbg();
+
     //! disable all
     frameEvent event;logDbg();
     for ( int i = 0; i < sizeof_array(_exceptions_); i++ )
-    {logDbg();
+    {
         event.setId( (eventId)_exceptions_[i].id );logDbg();
-        event.setMainSubCode( _exceptions_[i].mCode, _exceptions_[i].sCode );logDbg();
+        event.setMainSubCode( _exceptions_[i].mCode,
+                              _exceptions_[i].sCode,
+                              _exceptions_[i].mPattern,
+                              _exceptions_[i].len );
         m_pInterruptSrc->setFrameEventEnable( event, false );logDbg();
+
     }
-logDbg();
+
     //! enable the current
     Q_ASSERT( NULL != ui->eventView->model() );
     EventActionModel *pEventActionModel;
@@ -166,16 +203,20 @@ logDbg();
 
     Q_ASSERT( NULL != pEventActionModel->items() );
 logDbg();
-    int eId;
+
+    int eIndex;
     foreach( EventAction *pAction, *pEventActionModel->items() )
     {
         Q_ASSERT( NULL != pAction );
 
-        eId = exceptionCode( pAction->event() );
-        event.setId( (eventId)eId );
+        eIndex = exceptionIndex( pAction->event() );
 
-        event.setMainSubCode( exceptionMCode( eId ),
-                              exceptionSCode( eId ) );
+        event.setId( (eventId)_exceptions_[eIndex].id );
+
+        event.setMainSubCode( _exceptions_[eIndex].mCode,
+                              _exceptions_[eIndex].sCode,
+                              _exceptions_[eIndex].mPattern,
+                              _exceptions_[eIndex].len );
 
         m_pInterruptSrc->setFrameEventEnable( event, pAction->enable() );
     }logDbg();

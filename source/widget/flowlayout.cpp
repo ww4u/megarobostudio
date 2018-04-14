@@ -125,6 +125,7 @@ QLayoutItem *FlowLayout::takeAt(int index)
 Qt::Orientations FlowLayout::expandingDirections() const
 {
     return 0;
+//    return Qt::Horizontal | Qt::Vertical;
 }
 //! [6]
 
@@ -183,11 +184,11 @@ int FlowLayout::doLayout(const QRect &rect, bool testOnly) const
         int spaceX = horizontalSpacing();
         if (spaceX == -1)
             spaceX = wid->style()->layoutSpacing(
-                QSizePolicy::PushButton, QSizePolicy::PushButton, Qt::Horizontal);
+                QSizePolicy::GroupBox, QSizePolicy::GroupBox, Qt::Horizontal);
         int spaceY = verticalSpacing();
         if (spaceY == -1)
             spaceY = wid->style()->layoutSpacing(
-                QSizePolicy::PushButton, QSizePolicy::PushButton, Qt::Vertical);
+                QSizePolicy::GroupBox, QSizePolicy::GroupBox, Qt::Vertical);
 //! [10]
 //! [11]
         int nextX = x + item->sizeHint().width() + spaceX;
@@ -197,7 +198,7 @@ int FlowLayout::doLayout(const QRect &rect, bool testOnly) const
             nextX = x + item->sizeHint().width() + spaceX;
             lineHeight = 0;
         }
-
+//qDebug()<<item->sizeHint();
         if (!testOnly)
             item->setGeometry(QRect(QPoint(x, y), item->sizeHint()));
 

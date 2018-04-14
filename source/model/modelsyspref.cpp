@@ -16,6 +16,7 @@ void modelSysPref::rst()
     mInterval = time_us(100);       //! by port
     mTpvInterval = time_ms( 1 );
     mFailTryCnt = 2;
+    mbAutoAssignId = false;
 
     mRecvIdFrom = receive_id_from;  //! id range
     mRecvIdTo = receive_id_to;
@@ -84,6 +85,7 @@ int modelSysPref::save( const QString &str )
     writer.writeTextElement( "fail_try", QString::number(mFailTryCnt) );
     writer.writeTextElement( "enum_tmo", QString::number(mEnumerateTimeout) );
     writer.writeTextElement( "tpv_interval", QString::number(mTpvInterval) );
+    writer.writeTextElement( "auto_assign_id", QString::number( mbAutoAssignId ) );
 
     //! ids
     writer.writeStartElement("id");
@@ -187,28 +189,31 @@ int modelSysPref::load( const QString &str )
                 if ( reader.name() == "version" )
                 { mVersion = reader.readElementText().toInt(); }
 
-                if ( reader.name() == "port" )
+                else if ( reader.name() == "port" )
                 { mPort = reader.readElementText().toInt(); }
 
-                if ( reader.name() == "speed" )
+                else if ( reader.name() == "speed" )
                 { mSpeed = reader.readElementText().toInt(); }
 
-                if ( reader.name() == "tmo" )
+                else if ( reader.name() == "tmo" )
                 { mTimeout = reader.readElementText().toInt(); }
 
-                if ( reader.name() == "interval" )
+                else if ( reader.name() == "interval" )
                 { mInterval = reader.readElementText().toInt(); }
 
-                if ( reader.name() == "fail_try" )
+                else if ( reader.name() == "fail_try" )
                 { mFailTryCnt = reader.readElementText().toInt(); }
 
-                if ( reader.name() == "enum_tmo" )
+                else if ( reader.name() == "enum_tmo" )
                 { mEnumerateTimeout = reader.readElementText().toInt(); }
 
-                if ( reader.name() == "tpv_interval" )
+                else if ( reader.name() == "tpv_interval" )
                 { mTpvInterval = reader.readElementText().toInt(); }
 
-                if ( reader.name() == "id" )
+                else if ( reader.name() == "auto_assign_id" )
+                { mbAutoAssignId = reader.readElementText().toInt() > 0; }
+
+                else if ( reader.name() == "id" )
                 {
                     while( reader.readNextStartElement() )
                     {
@@ -225,11 +230,11 @@ int modelSysPref::load( const QString &str )
                             loadFromTo( reader, mGroupIdFrom, mGroupIdTo );
                         }
                         else
-                        {}
+                        { reader.skipCurrentElement(); }
                     }
                 }
 
-                if ( reader.name() == "unit" )
+                else if ( reader.name() == "unit" )
                 {
                     while( reader.readNextStartElement() )
                     {
@@ -240,11 +245,11 @@ int modelSysPref::load( const QString &str )
                         else if ( reader.name() == "velocity" )
                         { mVelUnit = reader.readElementText().toDouble(); }
                         else
-                        {}
+                        { reader.skipCurrentElement(); }
                     }
                 }
 
-                if ( reader.name() == "user" )
+                else if ( reader.name() == "user" )
                 {
                     while( reader.readNextStartElement() )
                     {
@@ -272,16 +277,16 @@ int modelSysPref::load( const QString &str )
                         else if ( reader.name() == "latest_prj_name" )
                         { mLatestPrjName = reader.readElementText(); }
                         else
-                        {}                        
+                        { reader.skipCurrentElement(); }
                     }
                 }
 
-                if ( reader.name() == "database" )
+                else if ( reader.name() == "database" )
                 {
                     loadDatabase( reader );
                 }
 
-                if ( reader.name() == "misa" )
+                else if ( reader.name() == "misa" )
                 {
                     while( reader.readNextStartElement() )
                     {
@@ -292,20 +297,26 @@ int modelSysPref::load( const QString &str )
                         else if ( reader.name() == "path" )
                         { mRemoteDirPath = reader.readElementText(); }
                         else
-                        {}
+                        { reader.skipCurrentElement(); }
                     }
                 }
 
-                if ( reader.name() == "motion" )
+                else if ( reader.name() == "motion" )
                 {
                     while( reader.readNextStartElement() )
                     {
                         if ( reader.name() == "space_resolution" )
                         { mSpaceResolution = reader.readElementText().toInt(); }
+                        else
+                        { reader.skipCurrentElement(); }
                     }
                 }
+                else
+                { reader.skipCurrentElement(); }
             }
         }
+        else
+        { reader.skipCurrentElement(); }
     }
 
     return 0;
@@ -318,8 +329,10 @@ int modelSysPref::loadFromTo( QXmlStreamReader &reader, int &from, int &to )
         if ( reader.name() == "from" )
         { from = reader.readElementText().toInt(); }
 
-        if ( reader.name() == "to" )
+        else if ( reader.name() == "to" )
         { to = reader.readElementText().toInt(); }
+        else
+        { reader.skipCurrentElement(); }
     }
 
     return 0;
@@ -331,16 +344,18 @@ int modelSysPref::loadDatabase( QXmlStreamReader &reader )
     {
         if ( reader.name() == "upload" )
         { mDbMeta.mbUpload = reader.readElementText().toInt() > 0; }
-        if ( reader.name() == "hostname" )
+        else if ( reader.name() == "hostname" )
         { mDbMeta.mHostName = reader.readElementText(); }
-        if ( reader.name() == "dbname" )
+        else if ( reader.name() == "dbname" )
         { mDbMeta.mDbName = reader.readElementText(); }
-        if ( reader.name() == "tablename" )
+        else if ( reader.name() == "tablename" )
         { mDbMeta.mTableName = reader.readElementText(); }
-        if ( reader.name() == "username" )
+        else if ( reader.name() == "username" )
         { mDbMeta.mUserName = reader.readElementText(); }
-        if ( reader.name() == "password" )
+        else if ( reader.name() == "password" )
         { mDbMeta.mPassword = reader.readElementText(); }
+        else
+        { reader.skipCurrentElement(); }
     }
 
     return 0;

@@ -23,7 +23,7 @@ public:
     {}
 
     //! device id
-    virtual int setDeviceId( DeviceId &id, int siblingCnt );
+    virtual int setDeviceId( DeviceId &id );
     DeviceId getDeviceId();
 
     //! recv id

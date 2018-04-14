@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>363</width>
-    <height>380</height>
+    <height>393</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -58,7 +58,7 @@
         <property name="minimumSize">
          <size>
           <width>0</width>
-          <height>330</height>
+          <height>360</height>
          </size>
         </property>
         <property name="font">
@@ -80,7 +80,7 @@
          <bool>true</bool>
         </property>
         <property name="rowCount">
-         <number>11</number>
+         <number>12</number>
         </property>
         <property name="columnCount">
          <number>2</number>
@@ -94,6 +94,7 @@
         <attribute name="verticalHeaderVisible">
          <bool>false</bool>
         </attribute>
+        <row/>
         <row/>
         <row/>
         <row/>

@@ -10,7 +10,7 @@ int robotMegatron::serialIn( QXmlStreamReader &reader )
         else if ( reader.name() == "zero" )
         { serialInZero(reader); }
         else
-        {}
+        { reader.skipCurrentElement(); }
     }
 
     return 0;
@@ -44,10 +44,10 @@ int robotMegatron::serialInZero( QXmlStreamReader &reader )
         { mZeroTime = reader.readElementText().toDouble(); }
         else if ( reader.name() == "angle" )
         { mZeroAngle = reader.readElementText().toDouble(); }
-        if ( reader.name() == "speed" )
+        else if ( reader.name() == "speed" )
         { mZeroSpeed = reader.readElementText().toDouble(); }
         else
-        {}
+        { reader.skipCurrentElement(); }
     }
 
     return 0;

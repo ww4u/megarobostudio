@@ -35,14 +35,52 @@ static scpi_result_t _scpi_idn( scpi_t * context )
     // read
     DEF_LOCAL_VAR();
 
-    qDebug()<<__FUNCTION__<<__LINE__;
-
     QString str;
 
     str = ((MegaDevice::deviceMRQ*)context->user_context)->getModel()->getSN();
 
-    qDebug()<<str<<__FUNCTION__<<__LINE__;
     SCPI_ResultText( context, str.toLatin1().data() );
+
+    return SCPI_RES_OK;
+}
+
+//! lrn setup.stp
+static scpi_result_t _scpi_lrn( scpi_t * context )
+{
+    DEF_LOCAL_VAR();
+
+    if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
+    { scpi_ret( SCPI_RES_ERR ); }logDbg()<<strLen<<pLocalStr;
+    if (strLen < 1)
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    DEF_MRQ();
+    QByteArray rawFileName( pLocalStr, strLen );
+    QString fileName( rawFileName );
+    if ( comAssist::ammendFileName( fileName ) )
+    {}
+    else
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    Q_ASSERT( LOCALMRQ() != NULL );
+    int ret = LOCALMRQ()->getModel()->load( fileName );
+    if ( ret != 0 )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    ret = LOCALMRQ()->applySetting();
+    if ( ret != 0 )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    return SCPI_RES_OK;
+}
+
+static scpi_result_t _scpi_hrst( scpi_t * context )
+{
+    DEF_LOCAL_VAR();
+
+    DEF_MRQ();
+
+    LOCALMRQ()->hRst();
 
     return SCPI_RES_OK;
 }
@@ -263,11 +301,74 @@ static scpi_result_t _scpi_absangle( scpi_t * context )
     return SCPI_RES_OK;
 }
 
+static scpi_result_t _scpi_distance( scpi_t * context )
+{
+    // read
+    DEF_LOCAL_VAR();
+
+    int val1;
+
+    if ( SCPI_RES_OK != SCPI_ParamInt32( context, &val1, true ) )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    float val = 0;
+    val = ((MegaDevice::deviceMRQ*)context->user_context)->getDist( val1 );
+
+    SCPI_ResultFloat( context, val );
+
+    return SCPI_RES_OK;
+}
+
+//! duty
+static scpi_result_t _scpi_fanduty( scpi_t * context )
+{
+    // read
+    DEF_LOCAL_VAR();
+
+    int val1;
+
+    if ( SCPI_RES_OK != SCPI_ParamInt32( context, &val1, true ) )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    DEF_MRQ();
+    int ret;
+    ret =  LOCALMRQ()->setFanDuty( val1 );
+    if ( ret != 0 )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    return SCPI_RES_OK;
+}
+
+//! ax,duty
+static scpi_result_t _scpi_ledduty( scpi_t * context )
+{
+    // read
+    DEF_LOCAL_VAR();
+
+    int val1, val2;
+
+    if ( SCPI_RES_OK != SCPI_ParamInt32( context, &val1, true ) )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    if ( SCPI_RES_OK != SCPI_ParamInt32( context, &val2, true ) )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    DEF_MRQ();
+    int ret;
+    ret =  LOCALMRQ()->setLedDuty( val1, val2 );
+    if ( ret != 0 )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    return SCPI_RES_OK;
+}
+
 static scpi_command_t _mrq_scpi_cmds[]=
 {
     #include "../board/_MRQ_scpi_cmd.h"
 
     CMD_ITEM( "*IDN?", _scpi_idn ),
+    CMD_ITEM( "*LRN", _scpi_lrn ),      //! setupfile
+    CMD_ITEM( "HRST", _scpi_hrst ),
 
     CMD_ITEM( "TEST:ADD", _scpi_testAdd ),
 
@@ -279,12 +380,16 @@ static scpi_command_t _mrq_scpi_cmds[]=
 
     CMD_ITEM( "ANGLE:INCREASE?", _scpi_incangle ),
     CMD_ITEM( "ANGLE:ABSOLUTE?", _scpi_absangle ),
+    CMD_ITEM( "DISTANCE?", _scpi_distance ),
 
     CMD_ITEM( "PROGRAM", _scpi_program ),
 
     CMD_ITEM( "CALL", _scpi_call ),
 
     CMD_ITEM( "LZERO", _scpi_lightZero ),             //! light zero
+
+    CMD_ITEM( "FANDUTY", _scpi_fanduty ),
+    CMD_ITEM( "LEDDUTY", _scpi_ledduty ),
 
     SCPI_CMD_LIST_END
 };

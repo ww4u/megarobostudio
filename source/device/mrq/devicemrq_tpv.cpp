@@ -67,6 +67,10 @@ int deviceMRQ::beginTpvDownload( const tpvRegion &region )
 
     DELOAD_REGION();
 
+    checked_call( setMOTION_SWITCH( region.axes(),
+                                    MRQ_MOTION_SWITCH_RESET,
+                                    (MRQ_MOTION_SWITCH_1)region.page()) );
+
     //! \errant exec mode to cycle
     checked_call( setMOTIONPLAN_EXECUTEMODE( pvt_page_p,
                                              MRQ_MOTIONPLAN_EXECUTEMODE_1_CYCLE) );
@@ -180,6 +184,9 @@ int deviceMRQ::pvtWrite( pvt_region,
               int from,
               int len )
 {logDbg()<<region.axes()<<region.page()<<list.size()<<name();
+
+    Q_ASSERT( mMrqFsms.contains(region) );
+    mMrqFsms[ region ]->setState( mrq_state_program );
 
     tpvDownloader *pLoader = downloader( region );
     Q_ASSERT( NULL != pLoader );
@@ -307,7 +314,5 @@ void deviceMRQ::accTpvIndex( pvt_region )
     else
     {}
 }
-
-
 
 }

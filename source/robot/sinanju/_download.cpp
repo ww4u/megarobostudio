@@ -48,6 +48,8 @@ int robotSinanju::downloadTrace( const tpvRegion &region )
 
     onLine();
 
+    fsm( region )->setState( MegaDevice::mrq_state_idle );
+
     QList<int> jointsTabList;
     jointsTabList<<0<<1<<2<<3<<4;
     ret = download( mJointsGroup, jointsTabList, region );

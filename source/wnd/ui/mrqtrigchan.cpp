@@ -2,10 +2,12 @@
 #include "ui_mrqtrigchan.h"
 #include "modelview.h"
 MrqTrigChan::MrqTrigChan(QWidget *parent) :
-    QWidget(parent),
+    modelView(parent),
     ui(new Ui::MrqTrigChan)
 {
     ui->setupUi(this);
+
+    spyEdited();
 }
 
 MrqTrigChan::~MrqTrigChan()
@@ -35,4 +37,28 @@ void MrqTrigChan::getConfig(
     exchange_combox( cmbLevelResponse, levConfig.mRespIndex, false );
 
     exchange_spin( spinLevelPeriod, levConfig.mPeriod, false );
+}
+
+void MrqTrigChan::spyEdited()
+{
+    QCheckBox *checkBoxes[]=
+    {
+        ui->chkLevel,
+    };
+
+    QLineEdit *edits[]={
+    };
+
+    QSpinBox *spinBoxes[]={
+    };
+    QDoubleSpinBox *doubleSpinBoxes[]={
+        ui->spinLevelPeriod,
+    };
+
+    QComboBox *comboxes[]={
+        ui->cmbLevelMode,
+        ui->cmbLevelResponse,
+    };
+
+    install_spy();
 }

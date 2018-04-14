@@ -55,11 +55,22 @@ public:
 
 protected:
     void beginEnumerate();
+    void endEnumerate();
+
+    int autoEnumerate( const modelSysPref &pref );
+    int rawEnumerate( const modelSysPref &pref );
 
     int collectHash( );
+
+    int collectHash( QMap< int, quint32 > &sendHashMap );
+    int collectRecvId( QMap< int, quint32 > &sendRecvMap );
+
+    void buildDeviceIds( QMap< int, quint32 > &sendHashMap,
+                         QMap< int, quint32 > &sendRecvMap );
+
     int assignIds( const modelSysPref &pref );
 
-    void endEnumerate();
+
 
 protected:
     int mHandle;

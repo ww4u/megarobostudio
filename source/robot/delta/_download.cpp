@@ -9,6 +9,8 @@ int robotDelta::downloadTrace( const tpvRegion &region )
 
     onLine();
 
+    fsm( region )->setState( MegaDevice::mrq_state_idle );
+
     QList<int> jointsTabList;
     //! left/right/plate/end
     jointsTabList<<0<<1<<2<<3;

@@ -36,6 +36,11 @@ int AxnPref::setApply()
     return 0;
 }
 
+void AxnPref::updateScreen()
+{
+    updateUi();
+}
+
 void AxnPref::updateData()
 {
     Q_ASSERT( m_pModelObj != NULL );

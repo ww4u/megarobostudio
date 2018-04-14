@@ -4,6 +4,12 @@ frameEvent::frameEvent()
 {
     mEventId = event_none;
     mbEn = false;
+
+    mPatternLen = 0;
+    for ( int i = 0; i < sizeof_array( mPatterns); i++ )
+    {
+        mPatterns[i] = -1;
+    }
 }
 
 void frameEvent::setId( eventId id )
@@ -26,6 +32,53 @@ void frameEvent::setMainSubCode( int mainCode,
     clear();
     append( (char)(mainCode & 0xff) );
     append( (char)(subCode & 0xff) );
+}
+
+void frameEvent::setMainSubCode( int mainCode,
+                     int subCode,
+                     int patterns[],
+                     int pattLen )
+{
+    setMainSubCode( mainCode, subCode );
+
+    Q_ASSERT( pattLen <= sizeof_array(mPatterns) );
+    for ( int i = 0; i < pattLen; i++ )
+    {
+        mPatterns[i] = patterns[i];
+    }
+    mPatternLen = pattLen;
+}
+
+bool frameEvent::match( QByteArray &ary )
+{
+    if ( ary.length() < 2 + mPatternLen )
+    { return false; }
+
+    do
+    {
+        if ( ary.at(0) != at(0) )
+        { break; }
+
+        if ( ary.at(1) != at(1) )
+        { break; }
+
+
+        for ( int i = 0; i < mPatternLen; i++ )
+        {
+            if ( mPatterns[i] != -1 )
+            {
+                 if ( (byte)mPatterns[i] != ary.at(i+2) )
+                 { return false; }
+            }
+            else
+            {}
+        }
+
+        return true;
+
+    }while( 0 );
+
+    return false;
 }
 
 //! -- frame data
@@ -422,6 +475,7 @@ logDbg();
             {}
 
             //! read interval
+            //! the shortest reply time: 160us
             m_pBus->wait_us( m_pBus->rdInterval() );
 
         }while( 0 );
@@ -434,7 +488,8 @@ bool receiveCache::detectEvent( frameData &ary )
     {
         Q_ASSERT( NULL != pEvt );
         //! find event
-        if ( ary.startsWith( *pEvt) && pEvt->getEnable() )
+//        if ( ary.startsWith( *pEvt) && pEvt->getEnable() )
+        if ( pEvt->getEnable() && pEvt->match(ary) )
         {
             emit sig_event( pEvt->getId(), ary );
             logDbg()<<QString::number( ary.getFrameId(), 16)<<ary.toHex(' ');

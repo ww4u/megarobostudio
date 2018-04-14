@@ -27,38 +27,10 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="3">
-       <widget class="QComboBox" name="cmbGroup">
-        <item>
-         <property name="text">
-          <string>Group1</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Group2</string>
-         </property>
-        </item>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QLabel" name="label_10">
-        <property name="text">
-         <string>Group</string>
-        </property>
-       </widget>
-      </item>
       <item row="0" column="3">
        <widget class="QLineEdit" name="edtAlias">
         <property name="text">
          <string>robotname</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="4">
-       <widget class="QLabel" name="label_11">
-        <property name="text">
-         <string>Sub ID</string>
         </property>
        </widget>
       </item>
@@ -69,42 +41,23 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="4" colspan="2">
-       <spacer name="horizontalSpacer_3">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
+      <item row="2" column="1">
+       <widget class="QLabel" name="label_10">
+        <property name="text">
+         <string>Group</string>
         </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
+       </widget>
       </item>
-      <item row="2" column="5">
-       <widget class="QComboBox" name="cmbGpSubId">
-        <property name="editable">
-         <bool>true</bool>
-        </property>
+      <item row="2" column="3">
+       <widget class="QComboBox" name="cmbGroup">
         <item>
          <property name="text">
-          <string>130</string>
+          <string>Group1</string>
          </property>
         </item>
         <item>
          <property name="text">
-          <string>150</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>200</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>255</string>
+          <string>Group2</string>
          </property>
         </item>
        </widget>

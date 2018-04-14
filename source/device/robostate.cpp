@@ -39,6 +39,9 @@ RoboFsm::RoboFsm()
     mId1 = 0;
     mId2 = 0;
     mId3 = 0;
+
+    m_pMutex = new QMutex( QMutex::Recursive );
+    Q_ASSERT( NULL != m_pMutex );
 }
 
 void RoboFsm::build()
@@ -122,6 +125,15 @@ void RoboFsm::attachCondition( RoboCondition *pCond )
 void RoboFsm::detachCondition()
 {
     m_pCond = NULL;
+}
+
+void RoboFsm::lockState()
+{
+    m_pMutex->lock();
+}
+void RoboFsm::unlockState()
+{
+    m_pMutex->unlock();
 }
 
 //! \note split the attach and wait, as the event can be triggered

@@ -4,12 +4,13 @@
 #include <QtCore>
 
 //#define ULONG   uint32
-#include "./include/MegaCanDevice.h"
+#include "./include/MegaCanDevice.h"      //! MegaCanDevice_VC
 
 namespace MegaDevice {
 
 #undef CALL
 #define CALL
+typedef unsigned int  CALL (*p_VCI_FindDevice)(unsigned int DeviceType,char* desc );
 typedef unsigned int  CALL (*p_VCI_OpenDevice)(unsigned int DeviceType, unsigned int DeviceInd, unsigned int Reserved);
 typedef unsigned int  CALL (*p_VCI_CloseDevice)(unsigned int DeviceType, unsigned int DeviceInd);
 
@@ -35,6 +36,7 @@ protected:
     bool loadApi();
 
 public:
+    p_VCI_FindDevice find;
     p_VCI_OpenDevice open;
     p_VCI_CloseDevice close;
 

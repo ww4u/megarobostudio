@@ -5,13 +5,12 @@
 #include "../../include/mcstd.h"
 #include "../../com/basetype.h"
 //#include "../../../arith/kinematic/kinematic.h"
-//#include "../../../arith/pathplan/pathplan.h"
+#include "../../../arith/pathplan/pathplan.h"
 
 //int main(int argc, char *argv[])
 //{
 //    QCoreApplication a(argc, argv);
 
-//    int ret;
 
 //    endPoint endPoints[] =
 //    {
@@ -23,10 +22,10 @@
 //    //! plan
 //    //! trace plan
 //    int xyzResLen;
-//    int ret = ns_pathplan::GetPvtLen( &pEndPoints->datas,
-//                                      count,
-//                                      ui->spinStep->value(),
-//                                      ui->cmbInterp->currentIndex(),
+//    int ret = ns_pathplan::GetPvtLen( &endPoints[0].datas,
+//                                      2,
+//                                      0.005,
+//                                      0,
 //                                      &xyzResLen );
 
 
@@ -34,15 +33,15 @@
 
 
 
-//    ret = ns_kinematic::GetArmPosition( (double*)(&angle),
+////    ret = ns_kinematic::GetArmPosition( (double*)(&angle),
 
-//                    &m_pTracePoint->datas + offsetof_double( tracePoint, x ), sizeof_double(tracePoint),
-//                    &m_pTracePoint->datas + offsetof_double( tracePoint, vx ),sizeof_double(tracePoint),
-//                    &m_pTracePoint->datas + offsetof_double( tracePoint, t ), sizeof_double(tracePoint),
+////                    &m_pTracePoint->datas + offsetof_double( tracePoint, x ), sizeof_double(tracePoint),
+////                    &m_pTracePoint->datas + offsetof_double( tracePoint, vx ),sizeof_double(tracePoint),
+////                    &m_pTracePoint->datas + offsetof_double( tracePoint, t ), sizeof_double(tracePoint),
 
-//                    mTracePointSize,
-//                    &m_pJointsTrace->datas
-//                    );
+////                    mTracePointSize,
+////                    &m_pJointsTrace->datas
+////                    );
 
 
 
@@ -51,10 +50,10 @@
 //    file.open( QIODevice::WriteOnly );
 //    QTextStream textStream( &file );
 
-//    for ( int i = 0; i < tps.size(); i++ )
-//    {
-//        textStream<<tps[i].x()<<","<<tps[i].y()<<","<<tvs[i].y()<<"\n";
-//    }
+////    for ( int i = 0; i < tps.size(); i++ )
+////    {
+////        textStream<<tps[i].x()<<","<<tps[i].y()<<","<<tvs[i].y()<<"\n";
+////    }
 
 //    file.close();
 
@@ -62,7 +61,7 @@
 //}
 
 #include "../../../arith/pathplan/pathplan.h"
-#include "../../../arith/kinematic/kinematic.h"
+#include "../../../arith/sinanju_split/sinanju_split.h"
 
 void kinematicFullTest()
 {
@@ -70,13 +69,32 @@ void kinematicFullTest()
     endPoint points[]=
     {
         //! x, y, z, end, t, interp
-        { 280,21.5,452.75,  0,0,1,},
-        { 250,0,502,        0,1,1,},
-//        { 280,21.5,452.75,  0,2,1,},
+//        { 280,21.5,452.75,  0,0,1,},
+//        { 250,0,502,        0,1,1,},
+////        { 280,21.5,452.75,  0,2,1,},
+//        { 250,0,512,  0,0,1,},
+//        { 280,21,512,  0,1,1,},
+
+//        { 250,0,512,  0,0,1,},
+//        { 19.4,1.4,704, 0, 5, 1 },
+//        { 250,0,512,  0,10,1,},
+
+//        { 118.77,12.44,494,  0,0,1,},
+//        { 250,0,512,  0,10,1,},
+
+        { 250,	0,	512,0,0,1},
+        { 204.4,	-51,	257,0,1,1,},
+        { 203.5,	-51,	257,0,2,1,},
+
+
+//        { 250,0,512,  0,0,1,},
+//        { 240,0,512,  0,5,1,},
+
+//        { 250,0,512,  0,10,1,},
     };
 
     int resLen;
-    int ret = ns_pathplan::GetPvtLen( (double*)points, sizeof_array(points), 5, 0, &resLen );
+    int ret = ns_pathplan::GetPointLen( (double*)points, sizeof_array(points), 2, 0, &resLen );
 
     logDbg()<<resLen<<ret;
     xxxGroup<tracePoint> tracePoints;
@@ -84,52 +102,68 @@ void kinematicFullTest()
 
     tracePoints.alloc( traceCount );
 
-    ns_pathplan::GetPvtInfo( &tracePoints.data()->datas, resLen );
+    ns_pathplan::GetPointInfo( &tracePoints.data()->datas, resLen );
 
     tracePoint *pTrace = tracePoints.data();
 
+    QFile file("E:/trash/a.csv");
+    file.open( QIODevice::WriteOnly );
+    QTextStream textStream( &file );
+//    textStream.setPadChar(' ');
+//    textStream.setFieldWidth( 10 );
+//    textStream.setFieldAlignment( QTextStream::AlignLeft );
     for( int i = 0; i < tracePoints.size(); i++ )
     {
-        logDbg()<<i<<pTrace[i].t<<pTrace[i].x<<pTrace[i].y<<pTrace[i].z<<pTrace[i].vx<<pTrace[i].vy<<pTrace[i].vz;
+//        logDbg()<<i<<pTrace[i].t<<pTrace[i].x<<pTrace[i].y<<pTrace[i].z<<pTrace[i].vx<<pTrace[i].vy<<pTrace[i].vz;
+        textStream<<pTrace[i].t<<","
+                  <<pTrace[i].x<<","
+                  <<pTrace[i].y<<","
+                  <<pTrace[i].z<<","
+                  <<pTrace[i].vx<<","
+                  <<pTrace[i].vy<<","
+                  <<pTrace[i].vz<<"\n";
     }
+    file.close();
 //    return ;
 
-    //! arm
-//    jointsAngle refAngle={ 0, 90, -90, -90 };
-//    jointsAngle convertAngle={ 0, 90, 180, 180 };
+//    //! arm
+////    jointsAngle refAngle={ 0, 90, -90, -90 };
+////    jointsAngle convertAngle={ 0, 90, 180, 180 };
 
-//    jointsAngle refAngle={ 0, 90, -90, -90 };
-//    jointsAngle refAngle={ 0, 180, -90, -90 };    //! 250 0 502
-//    jointsAngle refAngle={ 0, 180, 0, -90 };        //! 0,0,752
-//    jointsAngle refAngle={ 0, 180, 90, -90 };        //! -250,0,502
-//    jointsAngle refAngle={ 0, 180, 90, 90 };        //! -250,0,502
-//    jointsAngle refAngle={ 0, -90, 0, 0 };        //! -505,0,247
-//    jointsAngle refAngle={ 0, 90, 0, 0 };        //! 505,0,247
-    jointsAngle refAngle={ 0, 135, -90, 0 };        //! 505,0,247
-//    jointsAngle convertAngle={ 0, 90, -90, -90 };
+////    jointsAngle refAngle={ 0, 90, -90, -90 };
+////    jointsAngle refAngle={ 0, 180, -90, -90 };    //! 250 0 502
+////    jointsAngle refAngle={ 0, 180, 0, -90 };        //! 0,0,752
+////    jointsAngle refAngle={ 0, 180, 90, -90 };        //! -250,0,502
+////    jointsAngle refAngle={ 0, 180, 90, 90 };        //! -250,0,502
+////    jointsAngle refAngle={ 0, -90, 0, 0 };        //! -505,0,247
+////    jointsAngle refAngle={ 0, 90, 0, 0 };        //! 505,0,247
+//    jointsAngle refAngle={ 0, 135, -90, 0 };        //! 505,0,247
+////    jointsAngle convertAngle={ 0, 90, -90, -90 };
 
-    jointsAngle convertAngle={ 0, 90, 0, -90 };
-    jointsAngle archAngle={ 0, 180, -90, -90 };
-//    jointsAngle shiftAngle={ 0, 0, 0, 0 };
-    jointsAngle shiftAngle={ 0, 90, 0, 0 };
+//    jointsAngle convertAngle={ 0, 90, 0, -90 };
+//    jointsAngle archAngle={ 0, 180, -90, -90 };
+////    jointsAngle shiftAngle={ 0, 0, 0, 0 };
+//    jointsAngle shiftAngle={ 0, 90, 0, 0 };
 
-    double armLength[]={ 247.75, 255, 250, 0, 0, 0 };
+    double armLength[]={ 257, 255, 250, 0, 0, 0 };
 
-    double xyz[3];
-    ns_kinematic::GetEndPosition( armLength,sizeof_array(armLength),
-                                  convertAngle.angles,
-                                  archAngle.angles,
-                                  shiftAngle.angles,
-                                  4,
-                                  xyz );
-    logDbg()<<xyz[0]<<xyz[1]<<xyz[2];
+//    double xyz[3];
+//    ns_sinanju::GetEndPosition( armLength,sizeof_array(armLength),
+//                                  convertAngle.angles,
+//                                  archAngle.angles,
+//                                  shiftAngle.angles,
+//                                  4,
+//                                  xyz );
+//    logDbg()<<xyz[0]<<xyz[1]<<xyz[2];
 
     int outSize;
-    ret = ns_kinematic::getArmPosition_Size(
+    double archAngles[]= {0,90,180,180};
+    double initAngles[]= {0,180,90,90};
+    ret = ns_sinanju::GetPvtLen(
 
-                    armLength,sizeof_array(armLength),
-                    convertAngle.angles, 4,
-                    refAngle.angles,
+                armLength,
+                                                   archAngles,
+                                                   initAngles,
 
                     &pTrace->datas + offsetof( tracePoint, x )/sizeof(double), sizeof(tracePoint)/sizeof(double),
                     &pTrace->datas + offsetof( tracePoint, vx )/sizeof(double),sizeof(tracePoint)/sizeof(double),
@@ -139,6 +173,7 @@ void kinematicFullTest()
                     &outSize
 
                     );
+    logDbg()<<ret<<outSize<<traceCount;
     if ( ret == 0 && outSize > 0 )
     {}
     else
@@ -148,31 +183,21 @@ void kinematicFullTest()
     if ( 0 != jointTraces.alloc( outSize ) )
     { return; }
 
-    ret = ns_kinematic::getArmPosition_Data(
-
-                    armLength,sizeof_array(armLength),
-                    convertAngle.angles, 4,
-                    refAngle.angles,
-
-                    &pTrace->datas + offsetof( tracePoint, x )/sizeof(double), sizeof(tracePoint)/sizeof(double),
-                    &pTrace->datas + offsetof( tracePoint, vx )/sizeof(double),sizeof(tracePoint)/sizeof(double),
-                    &pTrace->datas + offsetof( tracePoint, t )/sizeof(double),sizeof(tracePoint)/sizeof(double),
-
-                    traceCount,
-                    &jointTraces.data()->datas,
-                    outSize );
+    ret = ns_sinanju::GetPvtInfo(
+                    &jointTraces.data()->datas
+                     );
     logDbg()<<ret;
     jointsTrace *pJointsTrace = jointTraces.data();
     if ( ret == 0 )
     {
-        QFile file("e:/trash/k.csv");
-        if ( file.open( QIODevice::WriteOnly ) )
+        QFile fileb("e:/trash/k.csv");
+        if ( fileb.open( QIODevice::WriteOnly ) )
         {}
         else
         { return; }
 
         logDbg()<<jointTraces.size();
-        QTextStream textStream( &file );
+        QTextStream textStream( &fileb );
 
         textStream<<"t"<<","
                 <<"p1"<<","
@@ -196,14 +221,14 @@ void kinematicFullTest()
                     <<pJointsTrace[i].v[3]<<"\n";
         }
 
-        file.close();
+        fileb.close();
     }
 }
 
-void kinematic_CrossTest()
-{
-    ns_kinematic::zeroCrossTest();
-}
+//void kinematic_CrossTest()
+//{
+//    ns_kinematic::zeroCrossTest();
+//}
 
 int main(int argc, char *argv[] )
 {

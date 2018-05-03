@@ -5,6 +5,9 @@ tableEdit::tableEdit( QWidget *parent ) : modelView( parent )
     m_pEditMenu = NULL;
 
     setupUi();
+
+//    scroll();
+//    setHorizontalScrollBarPolicy
 }
 
 tableEdit::~tableEdit()

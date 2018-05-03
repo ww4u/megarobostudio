@@ -126,6 +126,8 @@ roboTimer * SysTimerThread::sysFindTimer( VRobot *pRobot,
     if( NULL == SysTimerThread::_sys_timer_ )
     { return NULL; }
 
+    SysTimerThread::mTimerMutex.lock();
+
     foreach( roboTimer *theTimer, SysTimerThread::_sys_timer_->mTimers )
     {
         Q_ASSERT( NULL != theTimer );
@@ -133,8 +135,13 @@ roboTimer * SysTimerThread::sysFindTimer( VRobot *pRobot,
         if ( (quint32)theTimer->Robot() == (quint32)pRobot
              && ( theTimer->Context() == pContext )
              && ( theTimer->Id() == id ) )
-        { return theTimer; }
+        {
+            SysTimerThread::mTimerMutex.unlock();
+            return theTimer;
+        }
     }
+
+    SysTimerThread::mTimerMutex.unlock();
 
     return NULL;
 }

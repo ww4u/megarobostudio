@@ -10,8 +10,7 @@
 #ifdef MEGACANDEVICE_EXPORTS
 #define MEGACANDEVICE_API extern "C" __declspec(dllexport)
 #else
-#define MEGACANDEVICE_API extern "C"
-//__declspec(dllimport)
+#define MEGACANDEVICE_API __declspec(dllimport)
 #endif
 
 #define VCI_UNKNOW      0
@@ -118,7 +117,8 @@ typedef struct _tagChgDesIPAndPort
 	int desport;
 }CHGDESIPANDPORT;
  
-#define CALL  __stdcall
+//#define CALL  __stdcall 
+#define CALL  __cdecl 
 MEGACANDEVICE_API unsigned int  CALL VCI_OpenDevice(unsigned int DeviceType, unsigned int DeviceInd, unsigned int Reserved);
 MEGACANDEVICE_API unsigned int  CALL VCI_CloseDevice(unsigned int DeviceType, unsigned int DeviceInd);
 
@@ -131,7 +131,7 @@ MEGACANDEVICE_API unsigned int  CALL VCI_ReadCANStatus(unsigned int DeviceType, 
 MEGACANDEVICE_API unsigned int  CALL VCI_GetReference(unsigned int DeviceType, unsigned int DeviceInd, unsigned int CANInd, unsigned int RefType, void* pData);
 MEGACANDEVICE_API unsigned int  CALL VCI_SetReference(unsigned int DeviceType, unsigned int DeviceInd, unsigned int CANInd, unsigned int RefType, void* pData);
 
-MEGACANDEVICE_API unsigned int  CALL VCI_GetReceiveNum(unsigned int DeviceType, unsigned int DeviceInd, unsigned int CANInd);
+ MEGACANDEVICE_API unsigned int  CALL VCI_GetReceiveNum(unsigned int DeviceType, unsigned int DeviceInd, unsigned int CANInd);
 MEGACANDEVICE_API unsigned int  CALL VCI_ClearBuffer(unsigned int DeviceType, unsigned int DeviceInd, unsigned int CANInd);
 
 MEGACANDEVICE_API unsigned int  CALL VCI_StartCAN(unsigned int DeviceType, unsigned int DeviceInd, unsigned int CANInd);
@@ -143,4 +143,5 @@ MEGACANDEVICE_API unsigned int  CALL VCI_Receive(unsigned int DeviceType, unsign
 MEGACANDEVICE_API unsigned int CALL VCI_Write(unsigned int DeviceType, unsigned int DeviceInd, char * data, unsigned int Len);
 MEGACANDEVICE_API unsigned int CALL VCI_Read(unsigned int DeviceType, unsigned int DeviceInd, char* pReceive, unsigned int Length, int WaitTime);
 
+MEGACANDEVICE_API unsigned int CALL VCI_FindDevice(unsigned int DeviceType, char* desc);
 #endif // MEGA_CAN_DEVICE_H_

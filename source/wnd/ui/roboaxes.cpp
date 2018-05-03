@@ -6,15 +6,19 @@
 #include "../../device/mrq/deviceMRQ.h"
 #include "../../widget/megamessagebox.h"
 roboAxes::roboAxes(mcModel *pModel,
+                   const QString &roboName,
                    QWidget *parent) :
     DlgView( pModel, parent ),
     ui(new Ui::roboAxes)
 {
     ui->setupUi(this);
 
+    setWindowTitle( roboName );
+
+    setAttribute( Qt::WA_DeleteOnClose );
+
     connect( &mTimer, SIGNAL(timeout()),
              this, SLOT(slot_timeout()) );
-
 
     mJoints.append( ui->jointTab0 );
     mJoints.append( ui->jointTab1 );
@@ -22,17 +26,6 @@ roboAxes::roboAxes(mcModel *pModel,
     mJoints.append( ui->jointTab3 );
     mJoints.append( ui->jointTab4 );
     mJoints.append( ui->jointTab5 );
-
-//    //! title
-//    mJoints[0]->setTitle( tr("Basement") );
-//    mJoints[1]->setTitle( tr("Big Arm") );
-//    mJoints[2]->setTitle( tr("Little Arm") );
-//    mJoints[3]->setTitle( tr("Wrist") );
-//    mJoints[4]->setTitle( tr("Hand") );
-//    mJoints[5]->setTitle( tr("Hand") );
-
-//    //! angle
-//    mJoints[4]->setAngleVisible( false );
 
     //! joint id
     for ( int i = 0; i < mJoints.size(); i++ )
@@ -54,7 +47,7 @@ roboAxes::roboAxes(mcModel *pModel,
     mTimer.setInterval( ui->sampleTimer->value() );
 
     //! by model data
-    slot_robo_changed("");
+    slot_robo_changed( roboName );
 }
 
 roboAxes::~roboAxes()
@@ -111,6 +104,20 @@ void roboAxes::slot_timeout()
         Q_ASSERT( jointId < mJoints.size() );
         mJoints.at( jointId )->setAngle( angle );
     }
+
+    //! robo pos
+    float pos[16];
+    if ( pRobo->poseCount() > 0 )
+    {
+        if ( pRobo->getPOSE( pos ) == 0 )
+        {
+            ui->lcdPosX->display( pos[0] );
+            ui->lcdPosY->display( pos[1] );
+            ui->lcdPosZ->display( pos[2] );
+        }
+        else
+        {}
+    }
 }
 
 void roboAxes::slot_joint_action( int id, float dt, float angle )
@@ -140,12 +147,20 @@ void roboAxes::slot_robo_changed( const QString &roboName )
 
     //! update the ui by robo
     adapteUiToRobot( pRobo );
+
+    setWindowIcon( QIcon( QPixmap::fromImage(pRobo->mImage)) );
+}
+
+void roboAxes::slot_device_changed()
+{
+    close();
 }
 
 VRobot *roboAxes::Robot()
 {
     Q_ASSERT( NULL != m_pMcModel );
-    return m_pMcModel->m_pInstMgr->findRobot( m_pMcModel->mConn.getRoboName() );
+//    return m_pMcModel->m_pInstMgr->findRobot( m_pMcModel->mConn.getRoboName() );
+    return m_pMcModel->m_pInstMgr->findRobot( windowTitle() );
 }
 
 void roboAxes::adapteUiToRobot( VRobot *pRobo )
@@ -174,11 +189,18 @@ void roboAxes::adapteUiToRobot( VRobot *pRobo )
     }
 
     //! joint angle
+    int angleCnt = 0;
     for ( jointId = 0; jointId < pRobo->axes(); jointId++ )
     {
         Q_ASSERT( jointId < pRobo->mJointAngleMask.size() );
         mJoints[jointId]->setAngleVisible( pRobo->mJointAngleMask[jointId] );
+        if ( pRobo->mJointAngleMask[jointId] )
+        { angleCnt++; }
     }
+
+    ui->groupBox_3->setVisible( angleCnt > 0 );
+
+    ui->gpLcdPos->setVisible( pRobo->poseCount() > 0 );
 }
 
 void roboAxes::buildConnection()

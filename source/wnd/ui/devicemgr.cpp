@@ -7,6 +7,9 @@
 
 #include "deviceconsole.h"
 
+#include "axesknob.h"
+#include "roboaxes.h"
+
 deviceMgr::deviceMgr(QWidget *parent) :
     modelView(parent),
     ui(new Ui::deviceMgr)
@@ -86,11 +89,15 @@ void deviceMgr::setupUi()
                               tr("Console..."),
                               this,
                               SLOT( context_mrq_console() ) );
-    m_pDeviceMenu->addSeparator();
-    m_pDeviceMenu->addAction( QIcon( ":/res/image/icon2/mobile.png" ),
+
+
+    //! axes menu
+    m_pAxesMenu = new QMenu(this);
+    m_pAxesMenu->addAction( QIcon( ":/res/image/icon2/mobile.png" ),
                               tr("Panel..."),
                               this,
                               SLOT( context_mrq_panel() ) );
+
 
     //! robo menu
     m_pRoboMenu = new QMenu( this );
@@ -209,6 +216,7 @@ void deviceMgr::updatePhyBusTree( VRoboList *pRoboList )
             strName = QString("CH%1").arg( i + 1 );
             pItemAxes->setText( 0, strName );
             pItemAxes->setToolTip( 0, strName );
+            pItemAxes->setData( 0, Qt::UserRole, QVariant(i) );     //! type is int,and axes
 
             pItemAxes->setIcon( 0, QIcon(":/res/image/icon2/focus.png") );
 
@@ -393,13 +401,35 @@ void deviceMgr::on_treeWidget_itemActivated(QTreeWidgetItem *item, int column)
     if ( item == 0 || column < 0 )
     { return; }
 
-    QVariant var = item->data( 0, Qt::UserRole );
-
-    VRobot *pRobot = var.value<VRobot*>();
-    if ( NULL != pRobot )
+    QVariant var;
+    VRobot *pObj;
+    //! robo node
+    if ( item->data(0,Qt::UserRole).type() == (QVariant::Type)QMetaType::User )
     {
+        var = item->data( 0, Qt::UserRole );
+        VRobot *pRobot = var.value<VRobot*>();
         emit itemXActivated( (mcModelObj*)pRobot );
     }
+    //! mrq axes
+    else if ( item->data(0,Qt::UserRole).type() == (QVariant::Type)QMetaType::Int )
+    {
+        Q_ASSERT( item->parent() != NULL );
+        //! get parent
+        var = item->parent()->data(0, Qt::UserRole);
+        pObj = var.value<VRobot *>();
+        if ( NULL == item || NULL == pObj )
+        { return; }
+
+        //! panel
+        m_pRobo = ( pObj );
+        m_pMRQ = (MegaDevice::deviceMRQ*)( m_pRobo );
+        mCurrentAxes = item->data(0,Qt::UserRole).toInt();
+
+        context_mrq_panel();
+    }
+    else
+    {}
+
 }
 
 //! quick
@@ -501,6 +531,7 @@ void deviceMgr::context_mrq_console()
              pConsole, SLOT(slot_device_changed()));
 
     pConsole->setMrq( true );
+    pConsole->setClassName( "mrq" );
 
     //! title name
     pConsole->setWindowTitle( m_pMRQ->getModel()->getFullDesc( mCurrentAxes ) );
@@ -511,7 +542,19 @@ void deviceMgr::context_mrq_console()
 
 void deviceMgr::context_mrq_panel()
 {
+    Q_ASSERT( NULL != m_pMRQ );
+    Q_ASSERT( NULL != m_pmcModel );
 
+    axesKnob *pKnob = new axesKnob( m_pmcModel,
+                                    QString("CH%1@%2").arg(mCurrentAxes+1).arg(m_pMRQ->name() ),
+                                    this );
+    if ( NULL == pKnob )
+    { return; }
+
+    connect( this, SIGNAL(signal_instmgr_changed(bool,MegaDevice::InstMgr*)),
+             pKnob, SLOT(slot_device_changed()));
+
+    pKnob->show();
 }
 
 void deviceMgr::context_robo_console()
@@ -528,6 +571,7 @@ void deviceMgr::context_robo_console()
     pConsole->setMrq( false );
 
     Q_ASSERT( NULL != m_pRobo );
+    pConsole->setClassName( m_pRobo->getClass().toLower() );
 
     //! title name
     pConsole->setWindowTitle( m_pRobo->name() );
@@ -537,7 +581,22 @@ void deviceMgr::context_robo_console()
 }
 
 void deviceMgr::context_robo_panel()
-{}
+{
+    Q_ASSERT( NULL != m_pmcModel );
+    Q_ASSERT( NULL != m_pRobo );
+
+    roboAxes *pRoboPanel;
+
+    pRoboPanel = new roboAxes( m_pmcModel,
+                               QString("%1@%2").arg(m_pRobo->name()).arg( mCurrNodeName ),
+                               this );
+    if ( pRoboPanel == NULL )
+    { return; }
+
+    connect( this, SIGNAL(signal_instmgr_changed(bool,MegaDevice::InstMgr*)),
+             pRoboPanel, SLOT(slot_device_changed()) );
+    pRoboPanel->show();
+}
 
 void deviceMgr::contextMenuEvent(QContextMenuEvent *event)
 {
@@ -555,6 +614,32 @@ void deviceMgr::contextMenuEvent(QContextMenuEvent *event)
     //! get pointer
     VRobot *pObj;
     QVariant var;
+
+    //! robo node
+    if ( pItem->data(0,Qt::UserRole).type() == (QVariant::Type)QMetaType::User )
+    {}
+    //! mrq axes
+    else if ( pItem->data(0,Qt::UserRole).type() == (QVariant::Type)QMetaType::Int )
+    {
+        Q_ASSERT( pItem->parent() != NULL );
+        //! get parent
+        var = pItem->parent()->data(0, Qt::UserRole);
+        pObj = var.value<VRobot *>();
+        if ( NULL == pItem || NULL == pObj )
+        { return; }
+
+        m_pRobo = ( pObj );
+        m_pMRQ = (MegaDevice::deviceMRQ*)( m_pRobo );
+        mCurrentAxes = pItem->data(0,Qt::UserRole).toInt();
+
+        m_pAxesMenu->popup( mapToGlobal( event->pos() ) );
+
+        event->accept();
+        return;
+    }
+    else
+    { return; }
+
     var = pItem->data( 0, Qt::UserRole );
     pObj = var.value<VRobot *>();
     if ( NULL == pItem || NULL == pObj )
@@ -580,6 +665,8 @@ void deviceMgr::contextMenuEvent(QContextMenuEvent *event)
         //! robot
         else if ( robot_is_robot( m_pRobo->getId() ) )
         {
+            Q_ASSERT( NULL != pItem->parent() );
+            mCurrNodeName = pItem->parent()->text(0);
             m_pRoboMenu->popup( mapToGlobal( event->pos() ) );
             event->accept();
         }

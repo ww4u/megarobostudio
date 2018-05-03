@@ -43,13 +43,4 @@ int calc( QList<deltaPoint> &deltaPoints,
           arithDeltaConfig &config );
 }
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-void delta_test();
-
-#ifdef __cplusplus
-}
-#endif
-
 #endif // ARITH_DELTA_H

@@ -13,6 +13,24 @@ class receiveCache;
 
 #define is_phy_bus( busType )       ( (busType) == MegaDevice::IBus::e_bus_can )
 
+class frameData : public QByteArray
+{
+public:
+    frameData();
+
+    void setFrameId( int frameid );
+    int frameId();
+
+    void setTimeStamp( quint64 t );
+    quint64 timeStamp();
+
+protected:
+    int mFrameId;
+    quint64 mTimeStamp;
+};
+Q_DECLARE_METATYPE( frameData )
+Q_DECLARE_METATYPE( frameData* )
+
 namespace MegaDevice {
 
 class IBus
@@ -66,8 +84,11 @@ public :
     void setPId( int pid );
     int pId();
 
-    virtual int open(QString dev);
-    virtual int open( int devType, int devId, int canId );
+//    virtual int open(QString dev);
+    virtual int open( int devType,
+                      int devId, int canId,
+                      const QString &desc="" );
+
     virtual void close();
 
     virtual int size();
@@ -76,8 +97,11 @@ public :
 
     //! write to bus
     virtual int doWrite( DeviceId &id, byte *pBuf, int len );
+    virtual int doWrite( QList<frameData> &canFrames );
     //! read from bus
     virtual int doReceive( int *pFrameId, byte *pBuf, int *pLen );
+
+    virtual int doReceive( QList< frameData > &receiveFrames );
 
     virtual int doRead( DeviceId &id, byte *pBuf, int cap, int *pLen );
 

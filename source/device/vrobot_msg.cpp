@@ -40,7 +40,7 @@ void VRobot::event_motionStatus( frameData &data )
     char page = data.at(3);
     char stat = data.at(4);
 
-    setStatus( stat, tpvRegion(ch, page) );
+    setStatus( stat, tpvRegion(ch, page), data );
 }
 
 void VRobot::event_motionStatus( frameData &data, VRobot *pRobot )

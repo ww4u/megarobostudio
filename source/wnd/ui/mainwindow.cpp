@@ -181,11 +181,6 @@ void MainWindow::setupUi_docks()
     ui->menuView_V->addAction( pAction );
 
     //! menu event
-    m_pEventViewer = new eventViewer( mMcModel.m_pInstMgr->getInterruptSource(),
-                                      &mMcModel.mEventActionModel,
-                                      this );
-    Q_ASSERT( NULL != m_pEventViewer );
-
     m_pMotorMonitor = new MotorMonitor(this);
     Q_ASSERT( NULL != m_pMotorMonitor );
 }
@@ -194,6 +189,7 @@ void MainWindow::setupToolbar()
 {
     //! file tool
     ui->mainToolBar->addAction( ui->actionOpen_Prj );
+    ui->mainToolBar->addAction( ui->actionSave_Prj );
     ui->mainToolBar->addSeparator();
     ui->mainToolBar->addAction( ui->actionOpen );
     ui->mainToolBar->addAction( ui->actionSave );
@@ -214,6 +210,7 @@ void MainWindow::setupToolbar()
 
     //! op tool
     m_pToolbarQuickOp = new QToolBar();
+    m_pToolbarQuickOp->addAction( ui->actionEvent_E );
     m_pToolbarQuickOp->addAction( ui->actionReset );
     m_pToolbarQuickOp->addAction( ui->actionForceStop );
     addToolBar( m_pToolbarQuickOp );
@@ -298,7 +295,8 @@ void MainWindow::buildConnection()
     connect( mMcModel.m_pInstMgr->getInterruptSource(),
              SIGNAL(sig_event(eventId,frameData)),
              m_pEventViewer,
-             SLOT(slot_event(eventId,frameData)));
+             SLOT(slot_event(eventId,frameData)),
+             Qt::QueuedConnection);
     connect( m_pEventViewer,
              SIGNAL(accepted()),
              this,
@@ -320,6 +318,8 @@ void MainWindow::buildConnection()
              this, SLOT(slot_status( const QString &)) );
     connect( m_pRoboNetThread, SIGNAL(signal_logout( const QString &)),
              this, SLOT(slot_logout( const QString &)) );
+    connect( m_pRoboNetThread, SIGNAL(signal_prompt( const QString &)),
+             this, SLOT(slot_prompt( const QString &)));
 
     //! robo conn
     connect( m_pRoboConnTool->getCombName(),
@@ -353,6 +353,34 @@ void MainWindow::loadSetup()
     mMcModel.mSysPref.load( pref_file_name );
 
     mRoboModelMgr.load(  robo_mgr_name );
+
+    //! default action
+    EventAction *pAction = new EventAction();
+    if ( NULL != pAction )
+    {
+        pAction->setEnable( true );
+        pAction->setEvent( QStringLiteral("Over Distance") );
+        pAction->setAction( QStringLiteral("Prompt+Stop") );
+        pAction->setComment( tr("Sinanju Distance alarm") );
+        mMcModel.mEventActionModel.items()->append( pAction );
+    }
+
+    pAction = new EventAction();
+    if ( NULL != pAction )
+    {
+        pAction->setEnable( true );
+        pAction->setEvent( QStringLiteral("Over Angle") );
+        pAction->setAction( QStringLiteral("Prompt+Stop") );
+        pAction->setComment( tr("Sinanju Angle alarm") );
+        mMcModel.mEventActionModel.items()->append( pAction );
+    }
+//    Q_ASSERT( NULL != m_pEventViewer );
+//    m_pEventViewer->slot_exception_changed();
+
+    m_pEventViewer = new eventViewer( mMcModel.m_pInstMgr->getInterruptSource(),
+                                      &mMcModel.mEventActionModel,
+                                      this );
+    Q_ASSERT( NULL != m_pEventViewer );
 }
 
 void MainWindow::setupData()
@@ -807,6 +835,22 @@ void MainWindow::slot_progress_para( int mi, int ma, int n, const QString &str )
 void MainWindow::slot_progress_visible( bool b )
 {
     Q_ASSERT( NULL != m_pStateBar );
+
+    if ( b  )
+    {
+        if ( m_pStateBar->progressInfo()->isHidden() )
+        {
+            QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+        }
+    }
+    else
+    {
+        if ( m_pStateBar->progressInfo()->isVisible() )
+        {
+            QApplication::restoreOverrideCursor();
+        }
+    }
+
     m_pStateBar->progressBar()->setVisible( b );
     m_pStateBar->progressInfo()->setVisible( b );
 }
@@ -821,6 +865,19 @@ void MainWindow::slot_logout( const QString &str )
 {
     Q_ASSERT( NULL != m_pLogout );
     m_pLogout->logIn(str);
+}
+
+void MainWindow::slot_prompt( const QString &str )
+{
+    if ( m_pWarnPrompt == NULL  )
+    { m_pWarnPrompt = new WarnPrompt(this); }
+
+    if ( NULL == m_pWarnPrompt )
+    { return; }
+
+    m_pWarnPrompt->addInfo( str );
+    m_pWarnPrompt->show();
+    m_pWarnPrompt->activateWindow();
 }
 
 void MainWindow::slot_robo_name_changed( const QString &name )
@@ -1099,6 +1156,12 @@ void MainWindow::on_actionWindows_W_triggered(bool checked)
 void MainWindow::slot_wndcloseAll()
 {
     ui->widget->clear();
+
+    foreach ( modelView *pView, mModelViews )
+    {
+        Q_ASSERT( NULL != pView );
+        pView->close();
+    }
     mModelViews.clear();
 }
 
@@ -1236,6 +1299,28 @@ void MainWindow::on_actionMotor_Panel_triggered()
 
     m_pMotorMonitor->show();
     m_pMotorMonitor->activateWindow();
+}
+
+void MainWindow::on_actionCamera_triggered()
+{
+    QString app;
+    app = QCoreApplication::applicationDirPath() + QDir::separator() + QStringLiteral("camera.exe");
+    //! \todo linux
+//    app.replace("/", QDir::separator() );
+//    app.replace("/", "\\" );
+//    sysLog( app );
+    QProcess::execute( "\"" + app + "\"" );
+}
+
+void MainWindow::on_actionClose_All_triggered()
+{
+    slot_wndcloseAll();
+}
+
+void MainWindow::on_actionImport_I_triggered()
+{
+    Q_ASSERT( NULL != m_pScriptMgr );
+    m_pScriptMgr->slot_context_import();
 }
 
 void MainWindow::on_actiontest_triggered()

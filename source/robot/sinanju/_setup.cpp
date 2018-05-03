@@ -17,8 +17,6 @@ int robotSinanju::serialIn( QXmlStreamReader &reader )
         { logDbg();ret = serialInArm( reader ); }
         else if ( reader.name() == "init_pos" )
         { logDbg();ret = serialInInitPos( reader ); }
-        else if ( reader.name() == "hand" )
-        { logDbg();ret = mHandActionModel.serialIn( reader ); }
         else
         { reader.skipCurrentElement(); }
     }
@@ -46,10 +44,6 @@ int robotSinanju::serialOut( QXmlStreamWriter &writer )
 
     writer.writeStartElement("init_pos");
     ret = serialOutInitPos( writer );
-    writer.writeEndElement();
-
-    writer.writeStartElement("hand");
-    ret = mHandActionModel.serialOut( writer );
     writer.writeEndElement();
 
     return ret;

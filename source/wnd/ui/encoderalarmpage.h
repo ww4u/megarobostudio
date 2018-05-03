@@ -28,8 +28,20 @@ public:
     void setData( EncoderAlarmConfig &config );
     void data( EncoderAlarmConfig &config );
 
-protected:
+protected: 
     void spyEdited();
+
+    void limitToRange( float valL, float valU,
+                       float zero,
+                       bool bZeroRoll,
+                       float &rangeL, float &rangeU
+                       );
+
+    void rangeToLimit( float rangeL, float rangeU,
+                       float zero,
+                       bool & bZeroRoll,
+                       float &valL, float &valU );
+
 private:
     Ui::EncoderAlarmPage *ui;
 };

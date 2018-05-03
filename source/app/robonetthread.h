@@ -26,7 +26,7 @@ Q_SIGNALS:
     void signal_progress( bool b );
     void signal_status( const QString &str );
     void signal_logout( const QString &str );
-
+    void signal_prompt( const QString &str );
 protected:
     mcModel *m_pModel;
 };

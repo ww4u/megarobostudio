@@ -18,6 +18,9 @@ void modelSysPref::rst()
     mFailTryCnt = 2;
     mbAutoAssignId = false;
 
+    mVisaTmo = 20000;
+    mVisaAddr = "TCPIP::172.16.0.1::INSTR";
+
     mRecvIdFrom = receive_id_from;  //! id range
     mRecvIdTo = receive_id_to;
 
@@ -36,6 +39,7 @@ void modelSysPref::rst()
     mbMaximizeStartup = true;
     mbAutoLoadPrj = true;
     mbAffirmZero = true;
+    mbAutoStatusView = true;
 
     mDumpPath = QCoreApplication::applicationDirPath() + "/temp";
 
@@ -78,6 +82,8 @@ int modelSysPref::save( const QString &str )
     //! port
     writer.writeTextElement( "port", QString::number(mPort) );
     writer.writeTextElement( "speed", QString::number(mSpeed) );
+    writer.writeTextElement( "visa_addr",( mVisaAddr ) );
+    writer.writeTextElement( "visa_tmo", QString::number( mVisaTmo ) );
 
     //! time
     writer.writeTextElement( "tmo", QString::number(mTimeout) );
@@ -126,6 +132,7 @@ int modelSysPref::save( const QString &str )
     writer.writeTextElement( "max_startup", QString::number( mbMaximizeStartup) );
     writer.writeTextElement( "auto_load_prj", QString::number( mbAutoLoadPrj) );
     writer.writeTextElement( "affirm_zero", QString::number( mbAffirmZero) );
+    writer.writeTextElement( "auto_status", QString::number( mbAutoStatusView) );
 
     writer.writeTextElement( "language_id", QString::number(mLangIndex) );
     writer.writeTextElement( "style_id", QString::number(mStyleIndex) );
@@ -194,6 +201,12 @@ int modelSysPref::load( const QString &str )
 
                 else if ( reader.name() == "speed" )
                 { mSpeed = reader.readElementText().toInt(); }
+
+                else if ( reader.name() == "visa_addr" )
+                { mVisaAddr = reader.readElementText(); }
+
+                else if ( reader.name() == "visa_tmo" )
+                { mVisaTmo = reader.readElementText().toInt(); }
 
                 else if ( reader.name() == "tmo" )
                 { mTimeout = reader.readElementText().toInt(); }
@@ -268,6 +281,8 @@ int modelSysPref::load( const QString &str )
                         { mbAutoLoadPrj = reader.readElementText().toInt() > 0; }
                         else if ( reader.name() == "affirm_zero" )
                         { mbAffirmZero = reader.readElementText().toInt() > 0; }
+                        else if ( reader.name() == "auto_status" )
+                        { mbAutoStatusView = reader.readElementText().toInt() > 0; }
                         else if ( reader.name() == "language_id" )
                         { mLangIndex = reader.readElementText().toInt() > 0 ; }
                         else if ( reader.name() == "style_id" )

@@ -4,18 +4,6 @@
 #include <QtCore>
 #include "../megaarith.h"
 
-#ifdef MEGA_EXPORT
-#undef MEGA_EXPORT
-#endif
-
-#if defined(EXPORT_LIBRARY)
-#  define MEGA_EXPORT Q_DECL_EXPORT
-#else
-#  define MEGA_EXPORT Q_DECL_IMPORT
-#endif
-
-#undef MEGA_EXPORT
-#define MEGA_EXPORT
 
 // 导出函数
 //PATH_PLAN_EXPORT int  GetPvtInfo(double** pIn, int length, double pStep, int pMode,double* resOut);
@@ -52,8 +40,11 @@ struct tracePoint
 
 namespace ns_pathplan {
 
-MEGA_EXPORT int  GetPvtLen(double* pIn, int length, double pStep, int pMode, int* resLength);
-MEGA_EXPORT int  GetPvtInfo(double* outPut,int len);
+//MEGA_EXPORT int  GetPvtLen(double* pIn, int length, double pStep, int pMode, int* resLength);
+//MEGA_EXPORT int  GetPvtInfo(double* outPut,int len);
+
+MEGA_EXTERN MEGA_EXPORT int  GetPointLen(double* pIn, int length, double pStep, int pMode, int* resLength);
+MEGA_EXTERN MEGA_EXPORT int  GetPointInfo(double* outPut, int len);
 
 }
 

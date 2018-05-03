@@ -51,6 +51,8 @@ public:
     bool isOkAble();
     bool isApplyAble();
 
+    QString name();
+
 public:
     virtual void setModelObj( mcModelObj *pObj );
     mcModelObj *getModelObj();
@@ -82,6 +84,7 @@ protected:
 
     bool mbModified;
     quint32 mAttributes;
+    QString mName;
 
 };
 

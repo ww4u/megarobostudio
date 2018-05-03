@@ -1,8 +1,8 @@
 #include "motionedit.h"
 #include "ui_motionedit.h"
 
-#include "../../arith/pathplan/pathplan.h"
-#include "../../arith/kinematic/kinematic.h"
+//#include "../../arith/pathplan/pathplan.h"
+//#include "../../arith/kinematic/kinematic.h"
 
 void motionEdit::on_btnGraph_clicked()
 {
@@ -26,6 +26,12 @@ void motionEdit::on_btnGraph_clicked()
     updatePlot();
 
     m_pPlot->show();
+}
+
+void motionEdit::on_btnReverse_clicked()
+{
+    Q_ASSERT( NULL != m_pMotionGroup );
+    m_pMotionGroup->reverse();
 }
 
 void motionEdit::updatePlot()

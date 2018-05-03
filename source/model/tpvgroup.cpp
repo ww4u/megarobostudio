@@ -39,7 +39,7 @@ tpvGroup* tpvGroup::createDemoGroup( float dT, float dP )
     return pGroup;
 }
 
-tpvGroup::tpvGroup()
+tpvGroup::tpvGroup() : MegaTableModel("","")
 {
 
 }
@@ -213,11 +213,11 @@ int tpvGroup::addItem( tpvType t, tpvType p, tpvType v )
     pItem = findItem( t );
 
     if ( NULL != pItem )
-    { return -1; }
+    { logDbg()<<t; return -1; }
 
     pItem = new tpvItem( t, p, v );
     if ( NULL == pItem )
-    { return -2; }
+    { logDbg(); return -2; }
 
     mItems.append( pItem );
 

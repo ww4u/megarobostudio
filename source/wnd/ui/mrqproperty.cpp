@@ -133,11 +133,17 @@ int mrqProperty::setApply()
     }
 
     //! foreach apply
+    int id = 0;
     foreach( modelView *pView, mViewPages )
     {
         Q_ASSERT( NULL != pView );
+        sysProgress( id++, pView->name(), mViewPages.size(), 0 );
+        sysProgress( true );
         pView->setApply();
+        sysProgress( id, pView->name(), mViewPages.size(), 0 );
     }
+
+    sysProgress( false );
 
     return 0;
 }

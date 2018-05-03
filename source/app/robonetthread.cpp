@@ -46,7 +46,10 @@ void RoboNetThread::onMsg( RoboMsg &msg )
         //! name, region
         else if ( msg.mMsg == e_download_started
                   || msg.mMsg == e_download_started
-                  || msg.mMsg == e_download_completed )
+                  || msg.mMsg == e_download_completed
+                  || msg.mMsg == e_download_terminated
+                  || msg.mMsg == e_download_canceled
+                  )
         {
             //! check
             if ( !msg.checkType( QMetaType::QString,
@@ -113,6 +116,14 @@ void RoboNetThread::onMsg( RoboMsg &msg )
             { return; }
 
             emit signal_logout( msg.at(0).toString() );
+        }
+
+        else if ( msg.mMsg == e_prompt )
+        {
+            if ( !msg.checkType( QMetaType::QString ) )
+            { return; }
+
+            emit signal_prompt( msg.at(0).toString() );
         }
 
         //! name, status

@@ -14,10 +14,16 @@ public:
     void clean();
 
 public:
-    double *m_pPX, *m_pPY, *m_pPZ;
-    double *m_pVX, *m_pVY, *m_pVZ;
-    double *m_pAX, *m_pAY, *m_pAZ;
+//    double *m_pPX, *m_pPY, *m_pPZ;
+//    double *m_pVX, *m_pVY, *m_pVZ;
+//    double *m_pAX, *m_pAY, *m_pAZ;
 
+    double *m_pPXYZ;
+    double *m_pT;
+
+    double *m_pV;
+
+    double *m_pOutput;
     int mSize;
 };
 

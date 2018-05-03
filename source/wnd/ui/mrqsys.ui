@@ -61,38 +61,7 @@
          <string>Device</string>
         </property>
         <layout class="QGridLayout" name="gridLayout_2">
-         <item row="0" column="0">
-          <widget class="QCheckBox" name="chkWarn">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="text">
-            <string>Warning</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="label_3">
-           <property name="text">
-            <string>Alias</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QCheckBox" name="chkLed">
-           <property name="text">
-            <string>LED Identity</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1">
-          <widget class="QLineEdit" name="edtAlias">
-           <property name="enabled">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="2">
+         <item row="1" column="2">
           <spacer name="horizontalSpacer_2">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
@@ -105,77 +74,25 @@
            </property>
           </spacer>
          </item>
-        </layout>
-       </widget>
-      </item>
-      <item>
-       <widget class="QGroupBox" name="groupBox_2">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
-        <property name="title">
-         <string>Temperature Protection</string>
-        </property>
-        <layout class="QGridLayout" name="gridLayout">
-         <item row="0" column="0">
-          <widget class="QCheckBox" name="chkOtp">
-           <property name="text">
-            <string>ON/OFF</string>
-           </property>
-          </widget>
-         </item>
          <item row="1" column="0">
-          <widget class="QLabel" name="label">
+          <widget class="QLabel" name="label_3">
            <property name="text">
-            <string>Threshold</string>
+            <string>Alias</string>
            </property>
           </widget>
-         </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="label_2">
-           <property name="text">
-            <string>Action</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="3">
-          <spacer name="horizontalSpacer">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
          </item>
          <item row="1" column="1">
-          <widget class="QDoubleSpinBox" name="spinOtpTemperature"/>
+          <widget class="QLineEdit" name="edtAlias">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
+          </widget>
          </item>
-         <item row="2" column="1">
-          <widget class="QComboBox" name="cmbAction">
-           <item>
-            <property name="text">
-             <string>No</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Warning</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Stop</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Warning + Stop</string>
-            </property>
-           </item>
+         <item row="0" column="0">
+          <widget class="QCheckBox" name="chkLed">
+           <property name="text">
+            <string>LED Identity</string>
+           </property>
           </widget>
          </item>
         </layout>

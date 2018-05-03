@@ -56,15 +56,21 @@ void roboProp::setMcModel( mcModel *pMcModel )
 
 int roboProp::setApply()
 {
-    int ret;
+    int ret,id;
+    id = 0;
     foreach( modelView *pView, mPrefPages )
     {
         Q_ASSERT( NULL != pView );
 
+        sysProgress( id++, pView->name(), mPrefPages.size(), 0 );
+        sysProgress( true );
         ret = pView->setApply();
+        sysProgress( id, pView->name(), mPrefPages.size(), 0 );
         if ( ret != 0 )
-        { return ret; }
+        { break; }
     }
+
+    sysProgress( false );
 
     return ret;
 }
@@ -128,12 +134,16 @@ void roboProp::setupUi( int id )
     {
         m_pMegatronPref  = new_widget( MegatronPref, ":/res/image/icon2/settings_light.png", tr("Zero") );
     }
+    else if ( VRobot::robot_h2 == id )
+    {
+        m_pH2Pref = new_widget( H2Pref, ":/res/image/icon2/settings_light.png", tr("Zero") );
+    }
     else if ( VRobot::robot_sinanju == id )
     {
         m_pSinanjuPref  = new_widget( SinanjuPref, ":/res/image/icon2/settings_light.png", tr("Zero") );
         m_pSinanjuConfig = new_widget( SinanjuConfig, ":/res/image/icon2/settings_light.png", tr("Pref") );
 
-        m_pHandPage  = new_widget( RoboHand, ":/res/image/icon2/activity.png", tr("Action") );
+//        m_pHandPage  = new_widget( RoboHand, ":/res/image/icon2/activity.png", tr("Action") );
     }
     else if ( VRobot::robot_h2 == id
               || VRobot::robot_slide == id

@@ -114,6 +114,8 @@ public:
     QMenu *m_pDeviceMenu;
     QAction *m_pDeviceImportAction;
 
+    QMenu *m_pAxesMenu;
+
     QMenu *m_pRoboMenu;
 
     MegaDevice::InstMgr *m_pMgr;
@@ -125,6 +127,7 @@ public:
     QString mImportFileName;
 
     VRobot *m_pRobo;
+    QString mCurrNodeName;
     QTreeWidgetItem *m_pCurrTreeItem;
     int mCurrentAxes;
 

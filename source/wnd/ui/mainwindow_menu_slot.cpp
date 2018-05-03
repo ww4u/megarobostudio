@@ -2,6 +2,8 @@
 #include "ui_mainwindow.h"
 
 #include "../../com/comassist.h"
+#include "motionwizard.h"
+
 
 //! file
 //void MainWindow::on_actionNew_triggered()
@@ -190,15 +192,29 @@ void MainWindow::on_actionOpen_triggered()
 //! news
 void MainWindow::on_actionNewMotion_triggered()
 {
+    MotionWizard motionWizard;
+
+    if ( QDialog::Accepted == motionWizard.exec() )
+    {}
+    else
+    { return; }
+
     QFileDialog fDlg;
     fDlg.setAcceptMode( QFileDialog::AcceptSave );
     fDlg.setNameFilter( tr("motion file (*.mc)") );
     if ( fDlg.exec() != QFileDialog::Accepted )
     { return; }
 
-    motionGroup *pNewModelObj = new motionGroup();
-    Q_ASSERT( NULL != pNewModelObj );
+    //! create the type
+    MegaTableModel *pNewModelObj;
+    pNewModelObj = scriptMgr::newMotion( motionWizard.motionName() );
+    if ( NULL == pNewModelObj )
+    {
+        sysError( tr("fali"), motionWizard.motionName() );
+        return;
+    }
 
+    //! init obj
     pNewModelObj->setName( comAssist::pureFileName( fDlg.selectedFiles().first() ) );
     pNewModelObj->setPath( fDlg.directory().absolutePath() );
 

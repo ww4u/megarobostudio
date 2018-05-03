@@ -28,5 +28,6 @@ protected:
 
 #define COL_SEP     ","
 #define ROW_SEP     endl
+#define HEAD_SEP    "#!"
 
 #endif // ISERIAL_H

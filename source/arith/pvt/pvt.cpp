@@ -131,8 +131,22 @@ int pvtInterp(  enumInterpMode eInterp,
     Q_ASSERT( pPvtCalcData->posnConvertInfo.posnToStep != 0  );
     localContext.mSteps = qAbs( p2.y() - p1.y() ) * pPvtCalcData->posnConvertInfo.posnToStep;
 
-    Q_ASSERT( localContext.mSteps > 0  );                       //! t * v = pStep
-    localContext.mPStep = ( p2.y() - p1.y() ) / localContext.mSteps;
+    Q_ASSERT( localContext.mSteps >= 0  );                       //! t * v = pStep
+    if ( localContext.mSteps > 0 )
+    { localContext.mPStep = ( p2.y() - p1.y() ) / localContext.mSteps; }
+    //! == 0
+    else
+    {
+//        localContext.mPStep = 0;
+        tp.append( p2 );
+        tv.append( QPoint( p2.x(), 0 ) );
+
+        localContext.mtNow = p2.x();
+        localContext.mpNow = p2.y();
+
+        return 0;
+    }
+
     localContext.mMicroSteps = pPvtCalcData->posnConvertInfo.posnToStep;                           //! step count
 
     localContext.mp_tPs = &tp;

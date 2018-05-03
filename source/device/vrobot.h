@@ -14,8 +14,10 @@
 #include "../bus/receivecache.h"
 
 #include "../model/tpvgroup.h"
-#include "../model/motiongroup.h"
+#include "../model/sinanjumotiongroup.h"
 
+#include "../arith/pathplan/pathplan.h" //! joints trace
+#include "../arith/sinanju_split/sinanju_split.h"
 
 //! \todo setup
 
@@ -104,12 +106,18 @@ protected:
     virtual void event_motionStatus( frameData &data, VRobot *pRobot );
 
 public:
+    virtual int build( MegaTableModel *pModel,
+
+                       xxxGroup< tracePoint > &tracePlan,
+                       xxxGroup< jointsTrace > &jointsPlan,
+                       QList< tpvGroup *> &gp );
+
     //! action
     virtual int transform( int axes = 0 );
 
     //! for robot -- axes is joint
     virtual int download( tpvGroup *pGroup, const tpvRegion &region );
-    virtual int download( motionGroup *pGroup, const tpvRegion &region );
+//    virtual int download( motionGroup *pGroup, const tpvRegion &region );
 
     virtual int download( QList<tpvGroup*> &groups,
                           QList<int> &joints,
@@ -124,6 +132,12 @@ public:
     virtual int goZero( int jointTabId, bool bCcw );
     virtual int goZero( const QList<int> &jointList,
                         const QList<bool> &ccwList );
+
+    virtual bool checkZeroValid();
+    virtual float getZero( int jointTabId );
+    virtual int  setZero( int jointTabId, float val );
+
+    virtual int getPOSE( float pos[] ); //! mPOSITION
 
     virtual int setLoop( int n, const tpvRegion &region=0 );
     virtual int loopNow();
@@ -204,6 +218,9 @@ public:
     void setAlarms( int n);
     int alarms();
 
+    void setPoseCount( int pos );
+    int poseCount();
+
     void setZeroSpeed( double spd );
     double zeroSpeed();
 
@@ -215,7 +232,7 @@ public:
     virtual QAbstractTableModel *handActions();
 
     //! MOTION_STAUS
-    virtual void setStatus( int stat, const tpvRegion &region );
+    virtual void setStatus( int stat, const tpvRegion &region, frameData &data );
     int status( const tpvRegion &region );
 
     void setInstMgr( MegaDevice::InstMgr *pMgr );
@@ -259,7 +276,7 @@ protected:
     int mAbsEncoderAlarms, mDistanceAlarms;
     int mAlarms;
 
-
+    int mPoseCount;                      //! 0,3..
 
 public:
     QString mClass;                     //! robot class

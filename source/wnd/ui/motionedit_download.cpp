@@ -2,22 +2,21 @@
 #include "motionedit.h"
 #include "ui_motionedit.h"
 
-#include "../../arith/pathplan/pathplan.h"
-#include "../../arith/kinematic/kinematic.h"
+//#include "../../arith/pathplan/pathplan.h"
+//#include "../../arith/kinematic/kinematic.h"
 
 int motionEdit::postDownload( appMsg msg, void *pPara )
 {
 //    testDownload();
 //    return 0;
 logDbg();
+    on_spinLoop_valueChanged( ui->spinLoop->value() );
+
     int ret;
-    ret = setLoop( ui->spinLoop->value() );
-    if ( ret != 0 )
-    { return ret; }
-logDbg();
-    ret = buildTpvGroups();
-    if ( ret != 0 )
-    { logDbg();return ret; }
+//logDbg();
+//    ret = buildTpvGroups();
+//    if ( ret != 0 )
+//    { logDbg();return ret; }
 logDbg();
     //! check groups
     if ( mJointsTpvGroup.size() > 0 )
@@ -58,77 +57,6 @@ int motionEdit::doDownload( QList<tpvGroup *> &groups,
                      tpvRegion(0,0) );  //! \todo page
 
     return 0;
-}
-
-int motionEdit::buildTpvGroups()
-{
-    delete_all( mJointsTpvGroup );
-
-    if( mJointsPlan.size() > 0 )
-    {}
-    else
-    { return ERR_NO_TPV_DATA; }
-
-    //! create each joints group
-    int ret;
-    for ( int i = 0; i < 4; i++ )
-    {
-        tpvGroup *pGroup = new tpvGroup();
-        Q_ASSERT( NULL != pGroup );
-
-        for ( int j = 0; j < mJointsPlan.size(); j++ )
-        {
-            ret = pGroup->addItem(
-                             mJointsPlan.data()[j].t,
-                             mJointsPlan.data()[j].p[i],
-                             mJointsPlan.data()[j].v[i]
-                             );
-            if ( ret != 0 )
-            {
-                delete_all( mJointsTpvGroup );
-                return ret;
-            }
-        }
-
-        mJointsTpvGroup.append( pGroup );
-    }
-
-    //! add the hand tpv
-    for ( int i = 0; i < 1; i++ )
-    {
-        tpvGroup *pGroup = new tpvGroup();
-        Q_ASSERT( NULL != pGroup );
-
-        foreach( tpvItem *pItem, mHandTpvGroup.mItems )
-        {
-            Q_ASSERT( NULL != pItem );
-            ret = pGroup->addItem( pItem->getT(),
-                                   pItem->getP(),
-                                   pItem->getV() );
-            if ( ret != 0 )
-            {
-                delete_all( mJointsTpvGroup );
-                return ret;
-            }
-        }
-
-        mJointsTpvGroup.append( pGroup );
-    }
-
-    return 0;
-}
-
-void motionEdit::jointsRotate( jointsTrace *pJ, int len )
-{
-    Q_ASSERT( NULL != pJ );
-
-    for ( int i = 0; i < len; i++ )
-    {
-        for ( int j = 0; j < 4; j++ )
-        {
-            pJ[i].p[j] = RAD_TO_DEG( pJ[i].p[j] )*5;
-        }
-    }
 }
 
 

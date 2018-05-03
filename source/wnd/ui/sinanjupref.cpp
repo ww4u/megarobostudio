@@ -203,3 +203,40 @@ void SinanjuPref::on_btnZeroHand_clicked()
         pBase->goZero( 4, ui->chkHandZeroCcw->isChecked() );
     }
 }
+
+void SinanjuPref::on_btnUploadZero_clicked()
+{
+    Q_ASSERT( m_pModelObj != NULL );
+    VRobot *pBase = ( VRobot *)m_pModelObj;
+    Q_ASSERT( NULL != pBase );
+
+    if ( pBase->checkZeroValid() )
+    {}
+    else
+    {
+        MegaZeroAffirmMessageBox::warning(this, tr("Error"), tr("Zero in device is invalid") );
+        return;
+    }
+
+    //! get from device
+    float zeros[4];
+    for ( int i = 0; i < 4; i++ )
+    {
+        zeros[i] = pBase->getZero(i);
+    }
+
+    //! update the ui
+    ui->spinAngleBase->setValue( zeros[0] );
+    ui->spinAngleBArm->setValue( zeros[1] );
+    ui->spinAngleSArm->setValue( zeros[2] );
+    ui->spinAngleWrist->setValue( zeros[3] );
+
+    //! save the angle
+    Q_ASSERT( pBase->mInitAngles.size() >= 4 );
+    for ( int i = 0; i < 4; i++ )
+    {
+        pBase->mInitAngles[i] = zeros[i];
+    }
+
+    emit sigModified( true );
+}

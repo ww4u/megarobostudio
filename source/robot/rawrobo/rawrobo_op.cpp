@@ -61,6 +61,7 @@ void RawRobo::switchRun( const tpvRegion &region )
 }
 void RawRobo::switchPrepare( const tpvRegion &region )
 {
+    //! group prepare
     Q_ASSERT( NULL != m_pBus );
     MegaDevice::DeviceId id( mCanGroupId );
     m_pBus->write( id, mc_MOTION, sc_MOTION_SWITCH,

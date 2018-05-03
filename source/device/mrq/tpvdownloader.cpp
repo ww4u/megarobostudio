@@ -5,7 +5,8 @@
 
 
 int tpvDownloader::_downloaderInterval = 0;
-
+QList<tpvDownloader*> tpvDownloader::_activeLoaders;
+QMutex tpvDownloader::_activeLoadersMutex;
 void tpvDownloader::setInterval( int interval )
 {
     _downloaderInterval = interval;
@@ -13,6 +14,20 @@ void tpvDownloader::setInterval( int interval )
 int tpvDownloader::interval()
 {
     return _downloaderInterval;
+}
+
+void tpvDownloader::cancelActives()
+{
+    tpvDownloader::_activeLoadersMutex.lock();
+
+    foreach( tpvDownloader*pLoader,
+             tpvDownloader::_activeLoaders )
+    {
+        Q_ASSERT( pLoader != NULL );
+        pLoader->requestInterruption();
+    }
+
+    tpvDownloader::_activeLoadersMutex.unlock();
 }
 
 tpvDownloader::tpvDownloader( QObject *pObj ) : QThread( pObj )
@@ -26,16 +41,34 @@ tpvDownloader::~tpvDownloader()
 void tpvDownloader::run()
 {
     Q_ASSERT( NULL != m_pMRQ );
+
+    tpvDownloader::_activeLoadersMutex.lock();
+    tpvDownloader::_activeLoaders.append( this );
+    tpvDownloader::_activeLoadersMutex.unlock();
+
 //sysLog( QString::number(mRegion.mAx), QString::number(mRegion.mPage), "down start" );
     m_pMRQ->acquireDownloader();
 
-    downloadProc();
+    int ret = downloadProc();
 
     m_pMRQ->releaseDownloader();
+
+    tpvDownloader::_activeLoadersMutex.lock();
+    tpvDownloader::_activeLoaders.removeAll( this );
+    tpvDownloader::_activeLoadersMutex.unlock();
+
+    if ( ret == ERR_INTERRUPT_REQUESTED
+         && tpvDownloader::_activeLoaders.size() == 0 )
+    {
+        sysQueue()->postMsg( e_download_canceled,
+                             m_pMRQ->name(),
+                             mRegion );
+    }
+
 //sysLog( QString::number(mRegion.mAx), QString::number(mRegion.mPage), "down end" );
 }
 
-void tpvDownloader::downloadProc()
+int tpvDownloader::downloadProc()
 {
     Q_ASSERT( NULL != m_pMRQ );
 
@@ -48,26 +81,59 @@ void tpvDownloader::downloadProc()
 
     //! download
     int ret;
+    QQueue< tpvRow *> transferTpvs;
     for ( int i = 0; i < 2; i++ )
     {
-        ret = transmissionProc();
+        //! copy send buf
+        mQueueMutex.lock();
+        transferTpvs = mTpvs;
+        mQueueMutex.unlock();
+
+        ret = transmissionProc( transferTpvs );
         if ( ret == 0 )
         { break; }
+        else if ( ret == ERR_INTERRUPT_REQUESTED )
+        { break; }
+        else
+        { sysError( QObject::tr("download fail"), QString::number(__LINE__) ); }
     }
+
+    //! gc
+    mQueueMutex.lock();
+    for ( int i = 0; i < mTpvs.size(); i++ )
+    {
+        Q_ASSERT( NULL != mTpvs.at(i) );
+        if ( mTpvs.at(i)->gc() )
+        { delete mTpvs.at(i); }
+    }
+    mTpvs.clear();
+    mQueueMutex.unlock();
+
     if ( ret != 0 )
     {
         m_pMRQ->lpc( mRegion.axes() )->postMsg( (eRoboMsg)MegaDevice::mrq_msg_error,
-                                         mRegion );
+                                                 mRegion );
 
-        logDbg()<<"*********"<<m_pMRQ->name();
+        sysError( QObject::tr("download fail"), QString::number(__LINE__) );
+    }
+
+    if ( ret == ERR_INTERRUPT_REQUESTED )
+    {
+        sysQueue()->postMsg( e_download_terminated,
+                             m_pMRQ->name(),
+                             mRegion );
+
     }
 
     sysQueue()->postMsg( e_download_completed,
                          m_pMRQ->name(),
                          mRegion );
+
+    return ret;
 }
 
-int tpvDownloader::batchDownload( int batchSize,
+int tpvDownloader::batchDownload( QQueue< tpvRow *> &transQueue,
+                                  int batchSize,
                                   int &total,
                                   int &now )
 {
@@ -76,9 +142,13 @@ int tpvDownloader::batchDownload( int batchSize,
 
     Q_ASSERT( NULL != m_pMRQ );
 
-    while( mTpvs.size() > 0 && batchSize > 0 )
+    while( transQueue.size() > 0 && batchSize > 0 )
     {
-        pItem = mTpvs.head();
+        pItem = transQueue.head();
+
+        //! check interrupt
+        if ( isInterruptionRequested() )
+        { return ERR_INTERRUPT_REQUESTED; }
 
         //! download the item
         ret = m_pMRQ->tpvDownload( mRegion, pItem );
@@ -87,30 +157,25 @@ int tpvDownloader::batchDownload( int batchSize,
         if ( tpvDownloader::_downloaderInterval > 0 )
         { QThread::usleep( tpvDownloader::_downloaderInterval ); }
 
-        //! gc the item
-        if ( pItem->gc() )
-        { delete pItem; }
-
         //! fail
         if ( ret != 0 )
         { return ret; }
         //! success
         else
         {
-            mQueueMutex.lock();
-            mTpvs.dequeue();
-            mQueueMutex.unlock();
+            transQueue.dequeue();
 
             batchSize--;
         }
 
         //! time tick in net
         sysQueue()->postMsg( e_download_processing,
-                          m_pMRQ->name(),
-                          mRegion,
-                          now,
-                          total
-                          );
+                              m_pMRQ->name(),
+                              mRegion,
+                              now,
+                              total,
+                              sysTimeStamp()
+                              );
         //! tune the total
         now++;
         if ( now > total )
@@ -120,7 +185,7 @@ int tpvDownloader::batchDownload( int batchSize,
     return 0;
 }
 
-int tpvDownloader::transmissionProc()
+int tpvDownloader::transmissionProc( QQueue< tpvRow *> &transQueue )
 {
     int ret;
     int total, now;
@@ -131,11 +196,15 @@ logDbg()<<mRegion.axes()<<mRegion.page();
     { logDbg();return ret; }
 
     //! acc the progress
-    total = mTpvs.size();
+    total = transQueue.size();
     now = 0;
-    while( mTpvs.size() > 0 )
+    while( transQueue.size() > 0 )
     {
-        //! check remain
+        //! check interrupt
+        if ( isInterruptionRequested() )
+        { return ERR_INTERRUPT_REQUESTED; }
+
+        //! check remain data
         quint16 batchSize;
         ret = m_pMRQ->getMOTIONPLAN_REMAINPOINT( mRegion.axes(),
                                                  (MRQ_MOTION_SWITCH_1)mRegion.page(),
@@ -145,6 +214,15 @@ logDbg()<<mRegion.axes()<<mRegion.page();
         else
         {}
 
+        //! 1024 / (8*3) = 42
+        if ( batchSize > 36 )
+        { batchSize = 36; }
+
+//        if ( batchSize > 128 )
+//        { batchSize = 128; }
+
+//        if ( batchSize > 64 )
+//        { batchSize = 64; }
 
 //        sysLog( __FUNCTION__, QString::number(__LINE__),
 //                QString::number(batchSize),
@@ -153,7 +231,13 @@ logDbg()<<mRegion.axes()<<mRegion.page();
 //                );
         if ( batchSize > 0 )
         {
-            ret = batchDownload( batchSize, total, now );
+//            receiveCache::lock();   //! disable read
+
+            ret = batchDownload( transQueue,
+                                 batchSize, total, now );
+
+//            receiveCache::unlock();
+
             if ( ret != 0 )
             { return ret; }
         }
@@ -182,6 +266,7 @@ void tpvDownloader::setRegion( const tpvRegion &region )
 
 void tpvDownloader::append( QList<tpvRow*> &rows, int from, int len )
 {
+    tpvRow *pSendRow;
     mQueueMutex.lock();
 
     int iEnd = from + (len < 0 ? rows.length() : len );
@@ -189,7 +274,14 @@ void tpvDownloader::append( QList<tpvRow*> &rows, int from, int len )
     for ( int i = from; i < iEnd; i++ )
     {
         Q_ASSERT( rows.at(i) != NULL );
-        mTpvs.enqueue( rows[i] );
+
+        pSendRow = new tpvRow();
+        Q_ASSERT( NULL != pSendRow );
+
+        *pSendRow = *rows.at(i);
+        pSendRow->setGc( true );
+
+        mTpvs.enqueue( pSendRow );
     }
 
     mQueueMutex.unlock();

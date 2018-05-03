@@ -35,7 +35,9 @@ CANBus::~CANBus()
     delete_all( mDevices );
 }
 
-int CANBus::open( int devType, int devId, int canId )
+int CANBus::open( int devType,
+                  int devId, int canId,
+                  const QString &desc )
 {
     mDevType = devType;
     mDevId = devId;
@@ -43,14 +45,35 @@ int CANBus::open( int devType, int devId, int canId )
 
     //! full dll path
     QString dllName;
-    if ( mPId == 1 )
-    { dllName = "usbcanii.dll"; }
-    else
-    { dllName = "MegaCanDevice.dll"; }
+    int busType;
+    if ( mPId == 1 )            //! usb can ii
+    {
+        dllName = "usbcanii.dll";
+        busType = VCI_MR_USBCAN;
+    }
+    else if ( mPId == 3 )       //! mini usb can
+    {
+        dllName = "miniusbcan.dll";
+//        dllName = "ControlCAN.dll";
+        busType = VCI_MR_USBCAN;
+    }
+    else if ( mPId == 0 )
+    {
+        dllName = "MegaCanDevice.dll";
+        busType = VCI_MR_USBCAN;
+    }
+    else    //!  ( mPId == 2 )
+    {
+        dllName = "MegaCanDevice.dll";
+        busType = VCI_MR_LANCAN;
+    }
 
+    //! load dll
     QString fullPath ;
     fullPath = QCoreApplication::applicationDirPath() + QDir::separator() + dllName;
     fullPath = QDir::toNativeSeparators( fullPath );
+//    Q_ASSERT( mApi.mDll.isLoaded() == false );
+logDbg();
     if ( !mApi.load( fullPath) )
     {
         sysLog( fullPath );
@@ -59,18 +82,50 @@ int CANBus::open( int devType, int devId, int canId )
         return -1;
     }
 
+    //! find
+    if ( busType == VCI_MR_LANCAN )
+    {
+        sysLog( desc );
+        if ( 0 == mApi.find( VCI_MR_LANCAN, desc.toLatin1().data() ) )
+        {
+            sysError( QObject::tr("device find fail") );
+            close();
+            return -1;
+        }
+    }
+    else if ( busType == VCI_MR_USBCAN )
+    {
+
+    }
+    else
+    { return -1; }
+logDbg();
+    //! open
     mHandle = mApi.open( mDevType, mDevId, mCanId );
+logDbg();
     if ( mHandle != 1 )
     {
         sysError( QObject::tr("CAN open fail") );
+        close();
         return -2;
     }
 
     //! init
-    if ( 0 != initBus() )
+    if ( busType == VCI_MR_LANCAN )
     {
-        close();
-        return -3;
+
+    }
+    else if ( busType == VCI_MR_USBCAN )
+    {
+        if ( 0 != initBus() )
+        {
+            close();
+            return -3;
+        }
+    }
+    else
+    {
+        return -1;
     }
 
     return 0;
@@ -81,7 +136,7 @@ void CANBus::close()
     {
         int ret;
         ret = mApi.close( mDevType, mDevId );
-        logDbg()<<ret;
+        logDbg()<<ret<<mDevType<<mDevId;
         mHandle = 0;
 
         mApi.unload();
@@ -141,11 +196,18 @@ int CANBus::initBus()
     canConfig.baud = mSpeed;
     canConfig.Timing0 = _bps_timer_matrix[speedId].timer0;
     canConfig.Timing1 = _bps_timer_matrix[speedId].timer1;
-
+logDbg()<<canConfig.Timing0<<canConfig.Timing1<<mSpeed<<mDevType<<mDevId<<mCanId;
     int ret = mApi.init( mDevType, mDevId, mCanId, &canConfig );
     if ( ret != 1 )
     {
         sysError( QObject::tr("Can init fail") );
+        return -1;
+    }
+
+    ret = mApi.start( mDevType, mDevId, mCanId );
+    if ( ret != 1 )
+    {
+        sysError( QObject::tr("Can start fail") );
         return -1;
     }
 
@@ -205,11 +267,14 @@ int CANBus::doWrite(DeviceId &nodeId, byte *pBuf, int len)
     Q_ASSERT( len > 0 && len < 9 );
 
     CAN_OBJ canObj;
+    memset( &canObj, 0, sizeof(CAN_OBJ));
 
     canObj.ID = nodeId.recvId();                //! \note receive id
     canObj.TimeStamp = 0;
     canObj.TimeFlag = 0;
+
     canObj.SendType = (mPId == 1 ? 1 : 0);      //! \note USB CAN II be 1, do not know why
+
     canObj.RemoteFlag = 0;
     canObj.ExternFlag = 1;
     canObj.DataLen = len;
@@ -223,7 +288,8 @@ logDbg()<<canObj.ID<<canObj.Data[0]<<canObj.Data[1]<<canObj.Data[2]<<canObj.Data
     IBus::lock();
     ret = mApi.transmit( can_device_desc, &canObj, 1);
 
-    IBus::wait_us( mWtInterval );
+    if ( mWtInterval > 0 )
+    { IBus::wait_us( mWtInterval ); }
 
     IBus::unlock();
     if ( 1 !=  ret )
@@ -231,47 +297,130 @@ logDbg()<<canObj.ID<<canObj.Data[0]<<canObj.Data[1]<<canObj.Data[2]<<canObj.Data
         sysError( __FUNCTION__, QString::number(__LINE__) );
         return -1;
     }
+    else
+    { return 0; }
+}
 
-    return 0;
+int CANBus::doWrite( QList<frameData> &canFrames )
+{
+    if ( canFrames.size() > 0 )
+    {}
+    else
+    { return -1; }
+
+    CAN_OBJ objs[ canFrames.size() ];
+
+    //! copy the data
+    for ( int i = 0; i < canFrames.size(); i++ )
+    {
+        memset( &objs[i], 0, sizeof(CAN_OBJ));
+
+        objs[i].ID = canFrames[i].frameId();
+
+        objs[i].SendType = (mPId == 1 ? 1 : 0 );
+        objs[i].RemoteFlag = 0;
+        objs[i].ExternFlag = 1;
+        objs[i].DataLen = canFrames.at(i).size();
+
+        //! copy data
+        Q_ASSERT( objs[i].DataLen > 0 && objs[i].DataLen <= 8 );
+        memcpy( objs[i].Data, canFrames.at(i).constData(), objs[i].DataLen );
+    }
+IBus::lock();
+    int ret =  mApi.transmit( can_device_desc, objs, canFrames.size() );
+IBus::unlock();
+    if ( ret != canFrames.size() )
+    { return -1; }
+    else
+    { return 0; }
 }
 
 //! read from bus
-int CANBus::doReceive( int *pFrameId, byte *pBuf, int *pLen )
-{
-    CAN_OBJ canObj;
-    int ret;
+//int CANBus::doReceive( int *pFrameId, byte *pBuf, int *pLen )
+//{
+//    CAN_OBJ canObj[128];
+//    int ret;
 
+////    //! check data
+////    if ( mApi.getSize( can_device_desc ) > 0 )
+////    {}
+////    else
+////    { return -1; }
+
+////    IBus::lock();
+//    //! receive fail
+//    //! \note timout invalid and can not be 0
+//    ret = mApi.receive( can_device_desc, &canObj[0], sizeof_array( canObj ), 10 );
+////    IBus::unlock();
+
+//    //! read fail
+//    if ( ret > sizeof_array( canObj ) || ret < 1 )
+//    { return -1; }
+
+//    //! for each frame
+
+////    if ( ret != 1 )
+////    {
+////        return -1;
+////    }
+////    //! success
+////    else
+////    {  }
+
+//    if ( canObj[0].DataLen < 1 || canObj[0].DataLen > 8 )
+//    {
+//        Q_ASSERT( false );
+//        return -2;
+//    }
+
+//    //! export
+//    *pFrameId = canObj[0].ID;
+//    for ( int i = 0; i < canObj[0].DataLen; i++ )
+//    {
+//        pBuf[i] = canObj[0].Data[i];
+//    }
+//    *pLen = canObj[0].DataLen;
+
+//    return 0;
+//}
+
+int CANBus::doReceive( QList<frameData> &canFrames )
+{
+    CAN_OBJ canObj[10];
+    int ret;
+IBus::lock();
 //    //! check data
 //    if ( mApi.getSize( can_device_desc ) > 0 )
 //    {}
 //    else
-//    { return -1; }
+//    { IBus::unlock(); return -1; }
 
-    IBus::lock();
-    //! receive fail
+    //! no need to lock as the receive is from the buffer
+
     //! \note timout invalid and can not be 0
-    ret = mApi.receive( can_device_desc, &canObj, 1, 1 );
+    ret = mApi.receive( can_device_desc, &canObj[0], /*sizeof_array( canObj ) > 1 ? 1 :*/ sizeof_array( canObj ), 1 );
     IBus::unlock();
 
-    if ( ret != 1 )
-    {
-//        sysError( __FUNCTION__, QString::number(__LINE__) );
-        return -1;
-    }
-    //! success
-    else
-    {  }
+    //! read fail
+    if ( ret > sizeof_array( canObj ) || ret < 1 )
+    { return -1; }
 
-    if ( canObj.DataLen < 1 || canObj.DataLen > 8 )
-    { return -2; }
-
-    //! export
-    *pFrameId = canObj.ID;
-    for ( int i = 0; i < canObj.DataLen; i++ )
+    //! for each frame
+    frameData tFrame;
+    for ( int i = 0; i < ret; i++ )
     {
-        pBuf[i] = canObj.Data[i];
+        Q_ASSERT( canObj[i].DataLen > 0 && canObj[i].DataLen <= 8 );
+
+        tFrame.clear();
+        tFrame.setFrameId( canObj[i].ID );
+        tFrame.append( (const char*)canObj[i].Data, canObj[i].DataLen );
+        canFrames.append( tFrame );
     }
-    *pLen = canObj.DataLen;
+    if ( ret >= 2 )
+    {
+        for ( int i = 0; i < ret; i++  )
+        { logDbg()<<canFrames.at(i); }
+    }
 
     return 0;
 }
@@ -324,7 +473,7 @@ int CANBus::doFrameRead( DeviceId &nodeId, int *pFrameId, byte *pBuf, int eachFr
     int i = 0;
     for ( i = 0; i < frames.size() && i < n ; i++ )
     {
-        pFrameId[i] = frames[i].getFrameId();
+        pFrameId[i] = frames[i].frameId();
         memcpy( pBuf + i * eachFrameSize,
                 frames[i].data(),
                 qMin( frames[i].size(), eachFrameSize )
@@ -354,7 +503,7 @@ int CANBus::doSplitRead( DeviceId &nodeId, int packOffset, byte *pBuf, int cap, 
 
         total = frameBuf[ packOffset ] & 0x0f;
         slice = ( frameBuf[ packOffset ] >> 4 ) & 0x0f;
-
+logDbg()<<total<<slice;
         //! cat the data
         for ( int i = packOffset + 1; i < retLen && outLen < cap; i++, outLen++ )
         {
@@ -372,12 +521,12 @@ int CANBus::enumerate( const modelSysPref &pref )
     int ret;
 
     beginEnumerate();
-
+logDbg();
     if ( pref.mbAutoAssignId )
     { ret = autoEnumerate( pref ); }
     else
     { ret = rawEnumerate( pref ); }
-
+logDbg();
     endEnumerate();
 
     return ret;

@@ -31,6 +31,16 @@ void RawRoboUnit::toState( int stat, RoboMsg &detail )
 void RawRoboUnit::onEnter( RoboMsg &detail )
 {
     initState();
+
+//    selfFsm()->Robot()->lpc()->clear();
+}
+
+//! rst state
+void RawRoboUnit::onExit( RoboMsg &detail )
+{
+    initState();
+
+//    selfFsm()->Robot()->lpc()->clear();
 }
 
 void RawRoboUnit::proc( int msg, RoboMsg &detail )
@@ -101,7 +111,7 @@ void RawRoboUnit::proc( int msg, RoboMsg &detail )
     { toState( MegaDevice::mrq_state_calcing, detail ); }
 
     else if ( msg == MegaDevice::mrq_msg_calcend )
-    { toState( MegaDevice::mrq_state_calcend, detail ); }
+    { Q_ASSERT(false); toState( MegaDevice::mrq_state_calcend, detail ); }
 
     else if ( msg == MegaDevice::mrq_msg_standby )
     { toState( MegaDevice::mrq_state_standby, detail ); }
@@ -188,7 +198,7 @@ void IdleRawRoboUnit::proc( int msg, RoboMsg &detail )
 
 void IdleRawRoboUnit::onEnter( RoboMsg &detail )
 {
-    RawRoboUnit::initState();
+    RawRoboUnit::onEnter( detail );
 
     selfFsm()->reqRun( false );
 
@@ -246,6 +256,7 @@ void CalcendRawRoboUnit:: proc( int msg, RoboMsg &detail )
     if ( msg == MegaDevice::mrq_msg_run
          || msg == MegaDevice::mrq_msg_call )
     {
+        sysLog( __FUNCTION__, QString::number(__LINE__) );logDbg();
         selfFsm()->reqRun( true );
         selfFsm()->Robot()->switchPrepare( selfFsm()->region() );
         startTimer( status_timer_id, status_timer_prepare );
@@ -259,10 +270,11 @@ void CalcendRawRoboUnit:: proc( int msg, RoboMsg &detail )
 
 void CalcendRawRoboUnit::onEnter( RoboMsg &detail )
 {
-    RawRoboUnit::initState();
+    RawRoboUnit::onEnter( detail );
 
     if ( selfFsm()->runReqed() )
     {
+//        sysLog( __FUNCTION__, QString::number(__LINE__) );logDbg();
         selfFsm()->Robot()->switchPrepare( selfFsm()->region() );
         startTimer( status_timer_id, status_timer_prepare );
     }
@@ -290,7 +302,7 @@ void StandbyRawRoboUnit::proc( int msg, RoboMsg &detail )
 }
 void StandbyRawRoboUnit::onEnter( RoboMsg &detail )
 {
-    RawRoboUnit::initState();
+    RawRoboUnit::onEnter( detail );
 
     logDbg()<<selfFsm()->region().page();
     if ( selfFsm()->runReqed() )
@@ -307,6 +319,8 @@ void StandbyRawRoboUnit::onEnter( RoboMsg &detail )
 }
 void StandbyRawRoboUnit::onExit( RoboMsg &detail )
 {
+    RawRoboUnit::onExit( detail );
+
     selfFsm()->reqRun( false );
 }
 //! pre run
@@ -323,7 +337,7 @@ PreRunRawRoboUnit::PreRunRawRoboUnit( MegaDevice::RoboFsm *pFsm,
 
 void PreRunRawRoboUnit::onEnter( RoboMsg &detail )
 {
-    RawRoboUnit::initState();
+    RawRoboUnit::onEnter( detail );
 
     startTimer( status_timer_id, status_timer_tmo );
 }
@@ -341,7 +355,7 @@ RunningRawRoboUnit::RunningRawRoboUnit( MegaDevice::RoboFsm *pFsm,
 
 void RunningRawRoboUnit::onEnter( RoboMsg &detail )
 {
-    RawRoboUnit::initState();
+    RawRoboUnit::onEnter( detail );
 
     startTimer( status_timer_id, status_timer_tmo );
 }
@@ -358,7 +372,7 @@ PreStopRawRoboUnit::PreStopRawRoboUnit( MegaDevice::RoboFsm *pFsm,
 //}
 void PreStopRawRoboUnit::onEnter( RoboMsg &detail )
 {
-    RawRoboUnit::initState();
+    RawRoboUnit::onEnter( detail );
 
     startTimer( status_timer_id, status_timer_tmo );
 }

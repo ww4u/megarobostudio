@@ -22,10 +22,17 @@ public:
 
     void setMrq( bool b );
 
+    void setClassName( const QString &cls );
+    QString className();
+
+Q_SIGNALS:
+    void signal_classname_changed();
+
 protected Q_SLOTS:
     void on_btnWrite_clicked();
     void on_btnRead_clicked();
     void slot_device_changed();
+    void slot_classname_changed();
 
 private slots:
     void on_comboBox_editTextChanged(const QString &arg1);
@@ -35,6 +42,8 @@ private slots:
 
     void on_comboBox_currentTextChanged(const QString &arg1);
 
+    void on_btnCmdSet_clicked();
+
 protected:
     void doWrite( const QString &str );
 
@@ -42,6 +51,8 @@ private:
     Ui::deviceConsole *ui;
 
     scpiShell *m_pScpiShell;
+    QString mClassName;
+    QString mCommandsetFullName;
 };
 
 #endif // DEVICECONSOLE_H

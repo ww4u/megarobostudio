@@ -295,6 +295,7 @@ MRQ_PROGRESS( 75, ("ISI") );
                                                 mABSENCALARM_UPLIMIT[i] ) );
             checked_call( setABSENCALARM_DOWNLIMIT( (MRQ_IDENTITY_LABEL_1)i,
                                                 mABSENCALARM_DOWNLIMIT[i] ) );
+            //! \todo zero value can not be motified by setup
             checked_call( setABSENCALARM_ZEROVALUE( (MRQ_IDENTITY_LABEL_1)i,
                                                 mABSENCALARM_ZEROVALUE[i] ) );
 

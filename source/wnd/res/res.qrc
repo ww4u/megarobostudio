@@ -35,6 +35,9 @@
 
         <file>image/can2.png</file>
         <file>image/megacan.png</file>
+        <file>image/mrh-t.png</file>
+        <file>image/miniusbcan.png</file>
+
 
 <file>image/icon/03.png</file>
 <file>image/icon/205.png</file>
@@ -73,11 +76,14 @@
 <file>image/icon/manage.png</file>
 <file>image/icon/order.png</file>
 <file>image/icon/playon.png</file>
+<file>image/icon/stop.png</file>
 <file>image/icon/questions.png</file>
 <file>image/icon/stealth.png</file>
 <file>image/icon/supply.png</file>
 <file>image/icon/trash.png</file>
 <file>image/icon/workbench.png</file>
+<file>image/icon/camera.png</file>
+<file>image/icon/closeall.png</file>
 
 <file>image/icon2/activity.png</file>
 <file>image/icon2/circle.png</file>
@@ -107,6 +113,11 @@
 <file>image/joint/kinematic_s_a.png</file>
 <file>image/joint/kinematic_base.png</file>
 <file>image/joint/kinematic_wrist.png</file>
+
+<file>image/joint/sinanju.png</file>
+<file>image/joint/delta.png</file>
+<file>image/joint/megatron.png</file>
+<file>image/joint/h2.png</file>
 
 <file>image/slice/down_arrow.png</file>
 <file>image/slice/down_arrow_disabled.png</file>

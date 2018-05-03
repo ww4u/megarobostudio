@@ -61,15 +61,47 @@ int deviceMRQ::getTpvBuf( pvt_region )
     Q_ASSERT( mTpvBufferSizes.contains(region) );
     return mTpvBufferSizes[ region ];
 }
+
+//! vernier/ratio/step angle
+int deviceMRQ::loadMotorBasic()
+{
+    int ret;
+    for ( byte i = 0; i < axes(); i++ )
+    {
+        ret = getMOTOR_STEPANGLE( i, &mMOTOR_STEPANGLE[i] );
+        if ( ret != 0 )
+        { return ret; }
+
+        ret = getMOTOR_GEARRATIONUM( i, &mMOTOR_GEARRATIONUM[i] );
+        if ( ret != 0 )
+        { return ret; }
+
+        ret = getMOTOR_GEARRATIODEN( i, &mMOTOR_GEARRATIODEN[i] );
+        if ( ret != 0 )
+        { return ret; }
+
+        ret = getDRIVER_MICROSTEPS( i, &mDRIVER_MICROSTEPS[i] );
+        if ( ret != 0 )
+        { return ret; }
+    }
+
+    return 0;
+}
+
+
 int deviceMRQ::beginTpvDownload( const tpvRegion &region )
 {
     int ret;
 
     DELOAD_REGION();
 
+    //! reset
     checked_call( setMOTION_SWITCH( region.axes(),
                                     MRQ_MOTION_SWITCH_RESET,
                                     (MRQ_MOTION_SWITCH_1)region.page()) );
+
+    //! force to idle
+    ((MrqFsm*)Fsm( region ))->setState( MegaDevice::mrq_state_idle );
 
     //! \errant exec mode to cycle
     checked_call( setMOTIONPLAN_EXECUTEMODE( pvt_page_p,
@@ -84,6 +116,7 @@ int deviceMRQ::beginTpvDownload( const tpvRegion &region )
 
     return ret;
 }
+//! \todo in one call
 int deviceMRQ::tpvDownload(
                  const tpvRegion &region,
                  int index,
@@ -95,9 +128,48 @@ int deviceMRQ::tpvDownload(
 
     DELOAD_REGION();
 
-    checked_call( setPOSITION( pvt_page_p, index, p * _mPBase ) );
-    checked_call( setVELOCITY( pvt_page_p, index, v * _mVBase ) );
-    checked_call( setTIME( pvt_page_p, index, t * _mTBase ) );
+//    checked_call( setPOSITION( pvt_page_p, index, p * _mPBase ) );
+//    checked_call( setVELOCITY( pvt_page_p, index, v * _mVBase ) );
+//    checked_call( setTIME( pvt_page_p, index, t * _mTBase ) );
+
+    QList<frameData> tpvPacks;
+    frameData framePackage;
+    float val;
+
+    //! p
+    framePackage.clear();
+    framePackage.setFrameId( mDeviceId.mRecvId );
+    framePackage.append( (byte)mc_POSITION );
+    framePackage.append( (byte)ax );
+    framePackage.append( (byte)page );
+    framePackage.append( (byte)index );
+    val = p * _mPBase;
+    framePackage.append( (const char*)&val, sizeof(val) );
+    tpvPacks.append( framePackage );
+
+    //! v
+    framePackage.clear();
+    framePackage.setFrameId( mDeviceId.mRecvId );
+    framePackage.append( (byte)mc_VELOCITY );
+    framePackage.append( (byte)ax );
+    framePackage.append( (byte)page );
+    framePackage.append( (byte)index );
+    val = v * _mVBase;
+    framePackage.append( (const char*)&val, sizeof(val) );
+    tpvPacks.append( framePackage );
+
+    //! t
+    framePackage.clear();
+    framePackage.setFrameId( mDeviceId.mRecvId );
+    framePackage.append( (byte)mc_TIME );
+    framePackage.append( (byte)ax );
+    framePackage.append( (byte)page );
+    framePackage.append( (byte)index );
+    val = t * _mTBase;
+    framePackage.append( (const char*)&val, sizeof(val) );
+    tpvPacks.append( framePackage );
+
+    ret = m_pBus->doWrite( tpvPacks );
 
 //logWarning()<<axesId<<index<<p<<v<<t;
     return ret;
@@ -184,6 +256,15 @@ int deviceMRQ::pvtWrite( pvt_region,
               int from,
               int len )
 {logDbg()<<region.axes()<<region.page()<<list.size()<<name();
+
+    //! verify the memory
+    if( pvtVerify( region, list ) )
+    { }
+    else
+    {
+        sysPrompt( QObject::tr("pvt verify fail") );
+        return ERR_CAN_NOT_RUN;
+    }
 
     Q_ASSERT( mMrqFsms.contains(region) );
     mMrqFsms[ region ]->setState( mrq_state_program );
@@ -313,6 +394,49 @@ void deviceMRQ::accTpvIndex( pvt_region )
     }
     else
     {}
+}
+
+bool deviceMRQ::pvtVerify( pvt_region,
+                QList<tpvRow *> &list )
+{
+    //! sum the dist
+    if ( list.size() < 2 )
+    {
+        sysError( QObject::tr("inefficient data %1").arg( list.size()) );
+        return false;
+    }
+
+    float dist = 0;
+    for( int i = 1; i < list.size(); i++ )
+    {
+        dist += qAbs( list.at(i)->mP - list.at(i-1)->mP );
+    }
+
+    //! calc the mem
+    //! dist * slow ratio * micro / step angle
+    float memDot = dist * deviceMRQ::_mPBase
+                    * slowRatio( region.axes() )
+                    * microStep( region.axes() )
+                    / stepAngle( region.axes() );
+    Q_ASSERT( stepAngle( region.axes() ) > 0 );
+    if ( memDot < 0 )
+    {
+        Q_ASSERT( memDot >= 0 );
+        logDbg()<<dist<<deviceMRQ::_mPBase<<slowRatio( region.axes() )<<microStep( region.axes() )<<stepAngle( region.axes() );
+    }
+
+    if ( memDot > getTpvBuf( region ) )
+    {
+        sysError( QObject::tr("over pvt memory"), QString::number(memDot), QString::number( getTpvBuf(region) ) );
+        return false;
+    }
+    else
+    {
+        sysLog( QString::number(memDot), QString::number( getTpvBuf(region) ),
+                QString::number(region.axes()),
+                QString::number(list.size()) );
+        return true;
+    }
 }
 
 }

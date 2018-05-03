@@ -18,14 +18,6 @@ EncoderAlarmPage::~EncoderAlarmPage()
 }
 
 #define angle_error     (1e-6)
-//#define align_angle_value( angle )    \
-                                        ( comAssist::align( \
-                                         MegaDevice::deviceMRQ::absAngleToValue( angle),\
-                                         angle_error)*angle_error )
-
-//#define align_value_angle( value )     ( comAssist::align ( \
-                                        MegaDevice::deviceMRQ::valueToAbsAngle( value ), \
-                                        angle_error)*angle_error )
 
 #define align_angle_value( angle )    \
                                         ( ( \
@@ -38,20 +30,48 @@ EncoderAlarmPage::~EncoderAlarmPage()
 
 void EncoderAlarmPage::setData( EncoderAlarmConfig &config )
 {
+    float valDown, valUp;
+    float zero;
+
+    float rangeL, rangeU;
+
+    //! vals from reg
+    valDown = align_angle_value( config.mDownLimit);
+    valUp = align_angle_value(config.mUpLimit);
+    zero = align_angle_value( config.mZero);
+
+    //! convert
+    limitToRange( valDown, valUp, zero, config.mZeroPos == 1, rangeL, rangeU );
+//logDbg()<<valDown<<valUp<<rangeL<<rangeU;
     ui->checkBox->setChecked( config.mbEn );
-    ui->doubleSpinBox->setValue( align_angle_value(config.mUpLimit) );
-    ui->doubleSpinBox_2->setValue( align_angle_value( config.mDownLimit) );
-    ui->doubleSpinBox_3->setValue( align_angle_value( config.mZero) );
+    ui->doubleSpinBox->setValue(  rangeU );
+    ui->doubleSpinBox_2->setValue(  rangeL );
+    ui->doubleSpinBox_3->setValue( zero );
+
     ui->comboBox->setCurrentIndex( config.mZeroPos );
 }
 void EncoderAlarmPage::data( EncoderAlarmConfig &config )
 {
+    float limitL, limitU;
+    bool bZeroRoll;
+
+    //! convert
+    rangeToLimit( ui->doubleSpinBox_2->value(),
+                  ui->doubleSpinBox->value(),
+                  ui->doubleSpinBox_3->value(),
+                  bZeroRoll,
+                  limitL,
+                  limitU );
+
     config.mbEn = ui->checkBox->isChecked();
-    config.mUpLimit =  align_value_angle( ui->doubleSpinBox->value() );
-    config.mDownLimit =  align_value_angle( ui->doubleSpinBox_2->value() );
+    config.mUpLimit =  align_value_angle( limitU );
+    config.mDownLimit =  align_value_angle( limitL );
 
     config.mZero =  align_value_angle( ui->doubleSpinBox_3->value() );
-    config.mZeroPos = ui->comboBox->currentIndex();
+
+    config.mZeroPos = bZeroRoll ? 1 : 0;
+
+    ui->comboBox->setCurrentIndex( config.mZeroPos );
 }
 
 void EncoderAlarmPage::spyEdited()
@@ -79,4 +99,61 @@ void EncoderAlarmPage::spyEdited()
     };
 
     install_spy();
+}
+
+void EncoderAlarmPage::limitToRange( float valDown, float valUp,
+                   float zero,
+                   bool bZeroRoll,
+                   float &rangeL, float &rangeU
+                   )
+{
+
+    if ( bZeroRoll )
+    {
+        //!  -------  down --- up  --- zero
+        if ( zero >= valUp )
+        {
+            rangeL = valUp - zero;
+            rangeU = ( valDown + 360 ) - zero;
+        }
+        //!  zero  down ---- up ---
+        else
+        {
+            rangeU = valDown - zero;
+            rangeL = valUp - ( zero + 360 );
+        }
+    }
+    //! down   --- zero --- up
+    else
+    {
+        rangeL = valDown - zero;
+        rangeU = valUp - zero;
+    }
+}
+
+void EncoderAlarmPage::rangeToLimit( float rangeL, float rangeU,
+                   float zero,
+                   bool & bZeroRoll,
+                   float &valL, float &valU )
+{
+    valL = zero + rangeL;
+    valU = zero + rangeU;
+
+    valL = comAssist::normalizeDegree360( valL );
+    valU = comAssist::normalizeDegree360( valU );
+
+    //! sort the l,u
+    if ( valL  <= valU )
+    {
+    }
+    else
+    {
+        qSwap( valL, valU );
+    }
+
+    //! find the range
+    if ( valL <= zero && zero <= valU )
+    { bZeroRoll = false; }
+    else
+    { bZeroRoll = true; }
 }

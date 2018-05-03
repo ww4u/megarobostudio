@@ -28,6 +28,7 @@ public:
 protected:
     bool validateDb();
     bool updateValidateEn();
+    bool validateVisaRsrc( QString &strIdn );
 
 private slots:
     void on_buttonBox_clicked(QAbstractButton *button);
@@ -42,6 +43,9 @@ private slots:
 
     void slot_styleLang_changed( int index );
 
+    void on_btnVerify_2_clicked();
+
+    void on_edtVisa_textChanged(const QString &arg1);
 
 private:
     Ui::sysPref *ui;

@@ -79,6 +79,10 @@ bool RoboMsgQueue::filter( const RoboMsg & msg )
     if ( tick <= 0 )
     { return false; }
 
+    //! no time
+    if ( msg.timeStamp() == 0 )
+    { return false; }
+
     //! find the queue
     for ( int i = mQueue.size() - 1; i >= 0 ; i-- )
     {
@@ -95,7 +99,7 @@ bool RoboMsgQueue::filter( const RoboMsg & msg )
     return false;
 }
 
-void RoboMsgQueue::postMsg( const RoboMsg &msg )
+void RoboMsgQueue::postMsg( const RoboMsg &msg, quint64 t )
 {
     lock();
     if ( filter(msg) )
@@ -103,7 +107,9 @@ void RoboMsgQueue::postMsg( const RoboMsg &msg )
     else
     {
         _msgSema.release();
-        mQueue.enqueue( msg );
+        RoboMsg lMsg = msg;
+        lMsg.setTimeStamp( t );
+        mQueue.enqueue( lMsg );
 
         //! thread not running
         if ( NULL != m_pMsgThread && !m_pMsgThread->isRunning() )
@@ -115,26 +121,26 @@ void RoboMsgQueue::postMsg( const RoboMsg &msg )
     unlock();
 }
 
-void RoboMsgQueue::postMsg( eRoboMsg msg )
+void RoboMsgQueue::postMsg( eRoboMsg msg, quint64 t )
 {
     RoboMsg lMsg;
 
     lMsg.setMsg( msg );
 
-    postMsg( lMsg );
+    postMsg( lMsg, t );
 }
 
-void RoboMsgQueue::postMsg( eRoboMsg msg, const tpvRegion &region )
+void RoboMsgQueue::postMsg( eRoboMsg msg, const tpvRegion &region, quint64 t )
 {
     RoboMsg lMsg;
 
     lMsg.setMsg( msg );
     lMsg.append( QVariant::fromValue(region) );
 
-    postMsg( lMsg );
+    postMsg( lMsg, t );
 }
 
-void RoboMsgQueue::postMsg( eRoboMsg msg, const tpvRegion &region, int p1 )
+void RoboMsgQueue::postMsg( eRoboMsg msg, const tpvRegion &region, int p1, quint64 t )
 {
     RoboMsg lMsg;
 
@@ -142,13 +148,14 @@ void RoboMsgQueue::postMsg( eRoboMsg msg, const tpvRegion &region, int p1 )
     lMsg.append( QVariant::fromValue(region) );
     lMsg.append( p1 );
 
-    postMsg( lMsg );
+    postMsg( lMsg, t );
 }
 
 void RoboMsgQueue::postMsg( eRoboMsg msg,
                             int subax,
                             const tpvRegion &region,
-                            int p1 )
+                            int p1,
+                            quint64 t)
 {
     RoboMsg lMsg;
 
@@ -157,30 +164,30 @@ void RoboMsgQueue::postMsg( eRoboMsg msg,
     lMsg.append( QVariant::fromValue(region) );
     lMsg.append( p1 );
 
-    postMsg( lMsg );
+    postMsg( lMsg, t );
 }
 
-void RoboMsgQueue::postMsg( eRoboMsg msg, const RoboMsg &leafMsg )
+void RoboMsgQueue::postMsg( eRoboMsg msg, const RoboMsg &leafMsg, quint64 t  )
 {
     RoboMsg lMsg;
 
     lMsg.setMsg( msg );
     lMsg.append( QVariant::fromValue(leafMsg) );
 
-    postMsg( lMsg );
+    postMsg( lMsg, t );
 }
 
 
-void RoboMsgQueue::postMsg( eRoboMsg msg, int p1 )
+void RoboMsgQueue::postMsg( eRoboMsg msg, int p1, quint64 t )
 {
     RoboMsg lMsg;
 
     lMsg.setMsg( msg );
     lMsg.append( QVariant(p1) );
 
-    postMsg( lMsg );
+    postMsg( lMsg, t );
 }
-void RoboMsgQueue::postMsg( eRoboMsg msg, int p1, int p2 )
+void RoboMsgQueue::postMsg( eRoboMsg msg, int p1, int p2, quint64 t )
 {
     RoboMsg lMsg;
 
@@ -188,9 +195,9 @@ void RoboMsgQueue::postMsg( eRoboMsg msg, int p1, int p2 )
     lMsg.append( QVariant(p1) );
     lMsg.append( QVariant(p2) );
 
-    postMsg( lMsg );
+    postMsg( lMsg, t );
 }
-void RoboMsgQueue::postMsg( eRoboMsg msg, int p1, int p2, int p3 )
+void RoboMsgQueue::postMsg( eRoboMsg msg, int p1, int p2, int p3, quint64 t )
 {
     RoboMsg lMsg;
 
@@ -199,12 +206,13 @@ void RoboMsgQueue::postMsg( eRoboMsg msg, int p1, int p2, int p3 )
     lMsg.append( QVariant(p2) );
     lMsg.append( QVariant(p3) );
 
-    postMsg( lMsg );
+    postMsg( lMsg, t );
 }
 
 void RoboMsgQueue::postMsg( eRoboMsg msg,
                      const QString &name,
-                     const tpvRegion &region
+                     const tpvRegion &region,
+                     quint64 t
                      )
 {
     RoboMsg lMsg;
@@ -213,13 +221,14 @@ void RoboMsgQueue::postMsg( eRoboMsg msg,
     lMsg.append( QVariant(name) );
     lMsg.append( QVariant::fromValue(region) );
 
-    postMsg( lMsg );
+    postMsg( lMsg, t );
 }
 
 void RoboMsgQueue::postMsg( eRoboMsg msg,
                      const QString &name,
                      const tpvRegion &region,
-                     int p1
+                     int p1,
+                     quint64 t
                      )
 {
     RoboMsg lMsg;
@@ -229,14 +238,15 @@ void RoboMsgQueue::postMsg( eRoboMsg msg,
     lMsg.append( QVariant::fromValue(region) );
     lMsg.append( QVariant(p1) );
 
-    postMsg( lMsg );
+    postMsg( lMsg, t );
 }
 
 void RoboMsgQueue::postMsg( eRoboMsg msg,
                      const QString &name,
                      const tpvRegion &region,
                      int p1,
-                     int p2
+                     int p2,
+                     quint64 t
                      )
 {
     RoboMsg lMsg;
@@ -247,27 +257,13 @@ void RoboMsgQueue::postMsg( eRoboMsg msg,
     lMsg.append( QVariant(p1) );
     lMsg.append( QVariant(p2) );
 
-    postMsg( lMsg );
-}
-
-void RoboMsgQueue::postMsg( eRoboMsg msg,
-                     const QString &name,
-                     int p1
-                     )
-{
-    RoboMsg lMsg;
-
-    lMsg.setMsg( msg );
-    lMsg.append( QVariant(name) );
-    lMsg.append( QVariant(p1) );
-
-    postMsg( lMsg );
+    postMsg( lMsg, t );
 }
 
 void RoboMsgQueue::postMsg( eRoboMsg msg,
                      const QString &name,
                      int p1,
-                     int p2
+                     quint64 t
                      )
 {
     RoboMsg lMsg;
@@ -275,16 +271,33 @@ void RoboMsgQueue::postMsg( eRoboMsg msg,
     lMsg.setMsg( msg );
     lMsg.append( QVariant(name) );
     lMsg.append( QVariant(p1) );
-    lMsg.append( QVariant(p2) );
 
-    postMsg( lMsg );
+    postMsg( lMsg, t );
 }
 
 void RoboMsgQueue::postMsg( eRoboMsg msg,
                      const QString &name,
                      int p1,
                      int p2,
-                     int p3
+                     quint64 t
+                     )
+{
+    RoboMsg lMsg;
+
+    lMsg.setMsg( msg );
+    lMsg.append( QVariant(name) );
+    lMsg.append( QVariant(p1) );
+    lMsg.append( QVariant(p2) );
+
+    postMsg( lMsg, t );
+}
+
+void RoboMsgQueue::postMsg( eRoboMsg msg,
+                     const QString &name,
+                     int p1,
+                     int p2,
+                     int p3,
+                     quint64 t
                      )
 {
     RoboMsg lMsg;
@@ -295,13 +308,14 @@ void RoboMsgQueue::postMsg( eRoboMsg msg,
     lMsg.append( QVariant(p2) );
     lMsg.append( QVariant(p3) );
 
-    postMsg( lMsg );
+    postMsg( lMsg, t );
 }
 
 void RoboMsgQueue::postMsg( eRoboMsg msg,
                      int eId,
                      int fId,
-                     const QByteArray &ary
+                     const QByteArray &ary,
+                     quint64 t
                      )
 {
     RoboMsg lMsg;
@@ -311,12 +325,13 @@ void RoboMsgQueue::postMsg( eRoboMsg msg,
     lMsg.append( QVariant(fId) );
     lMsg.append( QVariant(ary) );
 
-    postMsg( lMsg );
+    postMsg( lMsg, t );
 }
 
 void RoboMsgQueue::postMsg( eRoboMsg msg,
               int mi, int ma, int n,
-              const QString &str )
+              const QString &str,
+              quint64 t        )
 {
     RoboMsg lMsg;
 
@@ -326,28 +341,30 @@ void RoboMsgQueue::postMsg( eRoboMsg msg,
     lMsg.append( QVariant(n) );
     lMsg.append( QVariant(str) );
 
-    postMsg( lMsg );
+    postMsg( lMsg, t );
 }
 void RoboMsgQueue::postMsg( eRoboMsg msg,
-              bool b )
+              bool b,
+              quint64 t )
 {
     RoboMsg lMsg;
 
     lMsg.setMsg( msg );
     lMsg.append( QVariant(b) );
 
-    postMsg( lMsg );
+    postMsg( lMsg, t );
 }
 
 void RoboMsgQueue::postMsg( eRoboMsg msg,
-              const QString &str )
+                            const QString &str,
+                            quint64 t )
 {
     RoboMsg lMsg;
 
     lMsg.setMsg( msg );
     lMsg.append( QVariant(str) );
 
-    postMsg( lMsg );
+    postMsg( lMsg, t );
 }
 
 void RoboMsgQueue::process( int intervalus,

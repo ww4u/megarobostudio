@@ -1,5 +1,5 @@
 #include "scriptgroup.h"
-#include "motiongroup.h"
+#include "sinanjumotiongroup.h"
 
 scriptGroup::scriptGroup( const QString &name )
 {

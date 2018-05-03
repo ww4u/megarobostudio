@@ -3,12 +3,12 @@
 #include "../../../include/mcdef.h"
 #include "arith_delta.h"
 
-#include "./header/dllMain.h"
-#include "./header/configure.h"
-
 #include "deltadatacache.h"
 
 namespace arith_delta {
+
+//! apis
+#include "./arith/functions.cpp"
 
 //! a * pi/180
 static void degToRad(double *degs,
@@ -100,125 +100,154 @@ static void rollPhase( double *pDat,    //! in out
     {}
 }
 
-//! ret : 0 -- no error
-int slove( QList<D4Point> & points,
-           QList<deltaPoint> & deltaPoints,
-           arithDeltaConfig &config )
+////! ret : 0 -- no error
+//int slove( QList<D4Point> & points,
+//           QList<deltaPoint> & deltaPoints,
+//           arithDeltaConfig &config )
+//{
+//    int ret;
+
+//    //! config
+//    int sloveSet[4] = {INVERSE_KINEMATICS, TYPE1, ANTICLOCKWISE, };
+////    int sloveSet[4] = {INVERSE_KINEMATICS, TYPE1, CLOCKWISE, };
+
+//    //! cache
+//    int dataLen = points.size();
+//    DeltaDataCache dataCache;
+//    if ( 0 != dataCache.alloc( dataLen  ) )
+//    { return -1; }
+
+//    //! copy data
+//    for ( int i = 0; i < dataLen; i++ )
+//    {
+//        dataCache.m_pPX[i] = points.at(i).x;
+//        dataCache.m_pPY[i] = points.at(i).y;
+//        dataCache.m_pPZ[i] = points.at(i).z;
+//    }
+
+//    //! config length
+//    sloveSet[3] = dataLen;
+
+//    ret = solveDeltaKinematics( config.mLengths,
+//                                config.mAngleLimits,
+//                                config.mP0,
+//                                config.mAngle0,
+
+//                                dataCache.m_pPX, dataCache.m_pPY, dataCache.m_pPZ,
+//                                dataCache.m_pVX, dataCache.m_pVY, dataCache.m_pVZ,
+//                                dataCache.m_pAX, dataCache.m_pAY, dataCache.m_pAZ,
+
+//                                sloveSet,
+//                                config.mError
+//                                );
+//    if ( ret != SOLVE_OVER )
+//    { return -1; }
+//    else
+//    {  }
+
+//    //! range shift
+//    rollPhase( dataCache.m_pPX, dataLen );
+//    rollPhase( dataCache.m_pPY, dataLen );
+//    rollPhase( dataCache.m_pPZ, dataLen );
+
+//    //! normalize phase to degree
+//    radToDeg( dataCache.m_pPX, dataLen, dataCache.m_pPX );
+//    radToDeg( dataCache.m_pPY, dataLen, dataCache.m_pPY );
+//    radToDeg( dataCache.m_pPZ, dataLen, dataCache.m_pPZ );
+
+//    //! export data
+//    deltaPoint dPt;
+//    for ( int i = 0; i < dataLen; i++ )
+//    {
+//        //! set data
+//        dPt.t = points.at(i).t;
+
+//        dPt.p[0] = dataCache.m_pPX[i];
+//        dPt.p[1] = dataCache.m_pPY[i];
+//        dPt.p[2] = dataCache.m_pPZ[i];
+
+//        dPt.v[0] = dataCache.m_pVX[i];
+//        dPt.v[1] = dataCache.m_pVY[i];
+//        dPt.v[2] = dataCache.m_pVZ[i];
+
+//        dPt.a[0] = dataCache.m_pAX[i];
+//        dPt.a[1] = dataCache.m_pAY[i];
+//        dPt.a[2] = dataCache.m_pAZ[i];
+
+//        //! append
+//        deltaPoints.append( dPt );
+//    }
+
+//    return 0;
+//}
+
+struct deltaConfig
 {
-    int ret;
+    double mArmLength[3];
+    double mDeltaPosition[2];
+    double mDeltaAngles[2];
+    double mP[2];
 
-    //! config
-    int sloveSet[4] = {INVERSE_KINEMATICS, TYPE1, ANTICLOCKWISE, };
-//    int sloveSet[4] = {INVERSE_KINEMATICS, TYPE1, CLOCKWISE, };
+    double mPosLast[2];
 
-    //! cache
-    int dataLen = points.size();
-    DeltaDataCache dataCache;
-    if ( 0 != dataCache.alloc( dataLen  ) )
-    { return -1; }
-
-    //! copy data
-    for ( int i = 0; i < dataLen; i++ )
+    deltaConfig()
     {
-        dataCache.m_pPX[i] = points.at(i).x;
-        dataCache.m_pPY[i] = points.at(i).y;
-        dataCache.m_pPZ[i] = points.at(i).z;
+        mArmLength[0] = 132;
+        mArmLength[1] = 262.5;
+        mArmLength[2] = 13;
+
+        mDeltaPosition[0] = 0;
+        mDeltaPosition[1] = 218.818;
+
+        mDeltaAngles[0] = 450;
+        mDeltaAngles[1] = 90;
+
+        mP[0] = 0;
+        mP[1] = 218.818;
+
+        mPosLast[0] = 0;
+        mPosLast[1] = 180;
     }
-
-    //! config length
-    sloveSet[3] = dataLen;
-
-    ret = solveDeltaKinematics( config.mLengths,
-                                config.mAngleLimits,
-                                config.mP0,
-                                config.mAngle0,
-
-                                dataCache.m_pPX, dataCache.m_pPY, dataCache.m_pPZ,
-                                dataCache.m_pVX, dataCache.m_pVY, dataCache.m_pVZ,
-                                dataCache.m_pAX, dataCache.m_pAY, dataCache.m_pAZ,
-
-                                sloveSet,
-                                config.mError
-                                );
-    if ( ret != SOLVE_OVER )
-    { return -1; }
-    else
-    {  }
-
-    //! range shift
-    rollPhase( dataCache.m_pPX, dataLen );
-    rollPhase( dataCache.m_pPY, dataLen );
-    rollPhase( dataCache.m_pPZ, dataLen );
-
-    //! normalize phase to degree
-    radToDeg( dataCache.m_pPX, dataLen, dataCache.m_pPX );
-    radToDeg( dataCache.m_pPY, dataLen, dataCache.m_pPY );
-    radToDeg( dataCache.m_pPZ, dataLen, dataCache.m_pPZ );
-
-    //! export data
-    deltaPoint dPt;
-    for ( int i = 0; i < dataLen; i++ )
-    {
-        //! set data
-        dPt.t = points.at(i).t;
-
-        dPt.p[0] = dataCache.m_pPX[i];
-        dPt.p[1] = dataCache.m_pPY[i];
-        dPt.p[2] = dataCache.m_pPZ[i];
-
-        dPt.v[0] = dataCache.m_pVX[i];
-        dPt.v[1] = dataCache.m_pVY[i];
-        dPt.v[2] = dataCache.m_pVZ[i];
-
-        dPt.a[0] = dataCache.m_pAX[i];
-        dPt.a[1] = dataCache.m_pAY[i];
-        dPt.a[2] = dataCache.m_pAZ[i];
-
-        //! append
-        deltaPoints.append( dPt );
-    }
-
-    return 0;
-}
+};
 
 #define ANGLE_L_LIMIT     (0)
 #define ANGLE_U_LIMIT     (2*MATH_PI)
 int slove( QList<D4Point> & points,
            QList<deltaPoint> & deltaPoints )
 {
-    //! default config
-    arithDeltaConfig config;
+    //! move data
+    DeltaDataCache deltaCache;
+    if ( 0 != deltaCache.alloc( points.size() ) )
+    { return -1; }
 
-    config.mLengths[0] = 132;
-    config.mLengths[1] = 262.5;
-    config.mLengths[2] = 90;
-    config.mLengths[3] = 64;
-    config.mLengths[4] = -10;
+    for ( int i = 0; i < points.size(); i++ )
+    {
+        deltaCache.m_pPXYZ[i*3+0] = points.at(i).x;
+        deltaCache.m_pPXYZ[i*3+1] = points.at(i).y;
+        deltaCache.m_pPXYZ[i*3+2] = points.at(i).z;
 
-    config.mAngleLimits[0] = ANGLE_L_LIMIT;
-    config.mAngleLimits[1] = ANGLE_U_LIMIT;
-    config.mAngleLimits[2] = ANGLE_L_LIMIT;
-    config.mAngleLimits[3] = ANGLE_U_LIMIT;
-    config.mAngleLimits[4] = ANGLE_L_LIMIT;
-    config.mAngleLimits[5] = ANGLE_U_LIMIT;
+        deltaCache.m_pT[i] = points.at(i).t;
 
-    config.mP0[0] = 0;
-    config.mP0[1] = -218.8;
-    config.mP0[2] = 0;
+        deltaCache.m_pV[i] = points.at(i).v;
+    }
 
-    config.mAngle0[0] = 0;
-    config.mAngle0[1] = 0;
-    config.mAngle0[2] = 0.5;
+    //! slove
+    deltaConfig localConfig;
+    int ret;
+    ret = GetDeltArmPosition( localConfig.mArmLength,
+                        localConfig.mDeltaPosition,
+                        localConfig.mDeltaAngles,
+                        localConfig.mPosLast,
 
-    config.mError = 1.0e-5;
+                        deltaCache.m_pPXYZ,
+                        deltaCache.m_pV,
+                        deltaCache.m_pT,
+                        points.size(),
+                        deltaCache.m_pOutput
+                        );
+    if ( ret != 0 )
+    { return ret; }
 
-    return slove( points, deltaPoints, config );
-}
-
-int calc( QList<deltaPoint> &deltaPoints,
-          QList<D4Point> &points,
-          arithDeltaConfig &config )
-{
     return 0;
 }
 

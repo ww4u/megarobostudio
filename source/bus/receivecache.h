@@ -59,19 +59,7 @@ protected:
     int mPatternLen;
 };
 
-class frameData : public QByteArray
-{
-public:
-    frameData();
 
-    void setFrameId( int frameid );
-    int getFrameId();
-
-protected:
-    int mFrameId;
-};
-Q_DECLARE_METATYPE( frameData )
-Q_DECLARE_METATYPE( frameData* )
 
 //! for each device
 class frameHouse : public QQueue< frameData >
@@ -118,6 +106,17 @@ protected:
 class receiveCache : public QThread
 {
     Q_OBJECT
+
+protected:
+    static QMutex _threadMutex;
+    static quint64 _timeStamp;
+public:
+    //! thread
+    static void lock();
+    static void unlock();
+
+    static quint64 timeStamp();
+
 public:
     receiveCache( QObject *parent = 0 );
     ~receiveCache();
@@ -144,10 +143,6 @@ public:
 
     int frameCount();
 
-    //! thread
-    void lock();
-    void unlock();
-
     void lockWarehouse();
     void unlockWarehouse();
 
@@ -166,7 +161,6 @@ protected:
     frameWarehouse mFrameWarehouse;
 
     QMutex mCacheMutex;
-    QMutex mThreadMutex;
     QList< frameEvent* > mEvents;
 
     byte mFrameBuf[8];

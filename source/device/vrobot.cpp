@@ -1,12 +1,12 @@
 #include "vrobot.h"
 
-#include "../../inst/instmgr.h"
+#include "../inst/instmgr.h"
 
-#include "../../model/tpvgroup.h"
-#include "../../model/motiongroup.h"
+#include "../model/tpvgroup.h"
+//#include "../../model/motiongroup.h"
 
-#include "../../device/mrq/deviceMRQ.h"
-#include "../../com/robomsg.h"
+#include "../device/mrq/deviceMRQ.h"
+#include "../com/robomsg.h"
 
 double VRobot::_mTBase = 1.0;
 double VRobot::_mPBase = 1.0;
@@ -52,6 +52,8 @@ VRobot::VRobot()
     mAbsEncoderAlarms = 0;
     mDistanceAlarms = 0;
     mAlarms = 0;
+
+    mPoseCount = 0;
 
     m_pInstMgr = NULL;
 
@@ -104,7 +106,7 @@ void VRobot::gcWorker()
 QAbstractTableModel *VRobot::handActions()
 { return NULL; }
 
-void VRobot::setStatus( int stat, const tpvRegion &region )
+void VRobot::setStatus( int stat, const tpvRegion &region, frameData &data )
 {
     mRobotStatus[ region ] = stat;
     Q_ASSERT( mRobotStatus.contains( region ) );

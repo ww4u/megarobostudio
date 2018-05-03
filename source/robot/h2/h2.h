@@ -11,7 +11,7 @@
 
 //! arith
 #include "../../arith/pathplan/pathplan.h"
-#include "../../arith/kinematic/kinematic.h"
+//#include "../../arith/kinematic/kinematic.h"
 
 class robotH2 : public RawRobo
 {
@@ -40,6 +40,12 @@ public:
     int moveTest1( const tpvRegion &region=0 );
     int moveTest2( const tpvRegion &region=0 );
 
+public:
+    void setZeroAttr( double zeroTime, double zeroAngle, double zeroSpeed );
+    void zeroAttr( double &zeroTime, double &zeroAngle, double &zeroSpeed );
+
+    int serialOutZero( QXmlStreamWriter &writer);
+    int serialInZero( QXmlStreamReader &reader );
 
 protected:
     int buildTrace( QList<H2KeyPoint> &curve );
@@ -47,7 +53,7 @@ protected:
 
 
 protected:
-
+    double mZeroTime, mZeroAngle;
 };
 
 #endif

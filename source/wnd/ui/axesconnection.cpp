@@ -50,3 +50,9 @@ QComboBox *axesConnection::getCombCH()
 {
     return ui->cmbDeviceAxes;
 }
+
+//! check name
+void axesConnection::on_cmbDeviceName_currentIndexChanged(const QString &arg1)
+{
+
+}

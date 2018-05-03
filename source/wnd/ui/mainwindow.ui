@@ -127,6 +127,7 @@
     <addaction name="actionSave"/>
     <addaction name="actionSave_As"/>
     <addaction name="actionImport_I"/>
+    <addaction name="actionClose_All"/>
     <addaction name="separator"/>
     <addaction name="actionOpen_Prj"/>
     <addaction name="actionSave_Prj"/>
@@ -178,6 +179,7 @@
     <addaction name="actionAngle_A"/>
     <addaction name="actionDistance_D"/>
     <addaction name="actionMotor_Panel"/>
+    <addaction name="actionCamera"/>
     <addaction name="actiontest"/>
    </widget>
    <addaction name="menu_F"/>
@@ -397,7 +399,7 @@
      <normaloff>:/res/image/icon/36.png</normaloff>:/res/image/icon/36.png</iconset>
    </property>
    <property name="text">
-    <string>Motion</string>
+    <string>Motion...</string>
    </property>
   </action>
   <action name="actionNewPVT">
@@ -467,6 +469,9 @@
    </property>
   </action>
   <action name="actiontest">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>test</string>
    </property>
@@ -478,6 +483,25 @@
    </property>
    <property name="text">
     <string>Package...</string>
+   </property>
+  </action>
+  <action name="actionCamera">
+   <property name="icon">
+    <iconset resource="../res/res.qrc">
+     <normaloff>:/res/image/icon/camera.png</normaloff>:/res/image/icon/camera.png</iconset>
+   </property>
+   <property name="text">
+    <string>Camera...</string>
+   </property>
+  </action>
+  <action name="actionClose_All">
+   <property name="icon">
+    <iconset>
+     <activeon>:/res/image/icon/closeall.png</activeon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>Close All</string>
    </property>
   </action>
  </widget>

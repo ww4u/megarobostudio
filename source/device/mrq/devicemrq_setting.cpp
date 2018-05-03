@@ -64,8 +64,14 @@ int deviceMRQ::upload()
 
     loadTpvCap();
 
+    loadMotorBasic();
+
     if ( mId == robot_geogoog_5_1 )
-    { loadPwms(); }
+    {
+        loadPwms();
+
+        loadEncoderZero();
+    }
 
     return 0;
 }
@@ -109,6 +115,7 @@ QString deviceMRQ::loadSN()
     if ( retLen < sizeof_array(buf) && retLen > 0 )
     {
         mSn = QByteArray( (const char*)buf, retLen );
+        logDbg()<<mSn;
     }
 
     return mSn;
@@ -123,6 +130,7 @@ QString deviceMRQ::loadSwVer()
     if ( ret == 0 )
     {
         mSwVer = QString("%1.%2.%3").arg((int)v0).arg((int)v1).arg((int)v2);
+        logDbg()<<mSwVer;
     }
 
     return mSwVer;
@@ -212,6 +220,23 @@ int deviceMRQ::loadLedPwm()
 
         logDbg()<<mLedInfo[i].mDuty<<mLedInfo[i].mFreq;
     }
+    return 0;
+}
+
+//! only for t4
+int deviceMRQ::loadEncoderZero()
+{
+    int ret;
+    for ( int i = 0; i < 4; i++ )
+    {
+        ret = getABSENCALARM_ZEROVALUE(
+                                        (MRQ_IDENTITY_LABEL_1)(i),
+                                        &mABSENCALARM_ZEROVALUE[i]
+                                        );
+        if ( ret != 0 )
+        { return ret; }
+    }
+
     return 0;
 }
 

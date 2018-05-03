@@ -7,11 +7,13 @@
 #include "../../device/mrq/deviceMRQ.h"
 #include "../../device/_scpi_xxx_device.h"
 
-#include "../../model/handactionmodel.h"
+//#include "../../model/handactionmodel.h"
 
 //! arith
 #include "../../arith/pathplan/pathplan.h"
-#include "../../arith/kinematic/kinematic.h"
+#include "../../arith/sinanju_split/sinanju_split.h"
+
+#include "../../model/sinanjumotiongroup.h"
 
 class robotSinanju : public RawRobo
 {
@@ -39,6 +41,12 @@ public:
     virtual int goZero();
     virtual int goZero( int jointId, bool bCcw );
 
+    virtual bool checkZeroValid();
+    virtual float getZero( int jointTabId );
+    virtual int  setZero( int jointTabId, float zero );
+
+    virtual int getPOSE( float pos[] );
+
     virtual int setLoop( int n, const tpvRegion &region=0 );
     virtual int loopNow();
 
@@ -48,7 +56,12 @@ public:
     virtual void toState(int stat);
 
 public:
-    virtual QAbstractTableModel *handActions();
+//    virtual QAbstractTableModel *handActions();
+
+    virtual int build( MegaTableModel *pModel,
+                       xxxGroup<tracePoint> &tracePlan,
+                       xxxGroup<jointsTrace> &jointsPlan,
+                       QList< tpvGroup *> &tpvGroups );
 
 public:
     int call( const tpvRegion &region=0 );  //! load + run
@@ -65,7 +78,10 @@ public:
     int moveTest2( const tpvRegion &region=0 );
 
     int nowPose( TraceKeyPoint &pos );
-    int nowAngle( QList<double> &angles );
+    int nowAngle( float angles[] );
+    //! ref to the joint angle
+    int nowJointAngle( float angles[4] );
+
     int angleToPos( float angles[4],
                      TraceKeyPoint &pos );
     void diffAngle( float angles[4],
@@ -75,9 +91,15 @@ public:
 
     int nowDist( QList<float> &dists );
 
+
+
 protected:
     int buildTrace( QList<TraceKeyPoint> &curve,
-                    xxxGroup<jointsTrace> &jointsPlan );
+                    xxxGroup<tracePoint> &tracePlan,
+                    xxxGroup<jointsTrace> &jointsPlan
+                     );
+
+    int verifyTrace( QList<TraceKeyPoint> &curve );
 
     int planTrace( QList<TraceKeyPoint> &curve,
                    xxxGroup<tracePoint> &tracePoints );
@@ -86,9 +108,11 @@ protected:
                     xxxGroup<jointsTrace> &traceJoints );
 
     int convertTrace(   QList<TraceKeyPoint> &curve,
-                        xxxGroup<jointsTrace> &jointsPlan );
+                        xxxGroup<jointsTrace> &jointsPlan,
+                        QList< tpvGroup *> &groups );
 
-    int downloadTrace( const tpvRegion &region );
+    int downloadTrace( const tpvRegion &region,
+                       QList< tpvGroup *> &groups );
     int buildTpvGroup( xxxGroup<jointsTrace> &jointsPlan,
                        QList< tpvGroup *> &gp );
 
@@ -104,12 +128,17 @@ protected:
 
     int serialInInitPos( QXmlStreamReader &reader );
     int serialOutInitPos( QXmlStreamWriter &writer );
+
+protected:
+    void exportPlan( const QString &fileName, xxxGroup<tracePoint> &tracePlan );
+    void exportJoints( const QString &fileName, xxxGroup<jointsTrace> &jointsPlan );
+
 public:
     void setHandZeroAttr( double zeroTime, double zeroAngle, double zeroSpeed );
     void handZeroAttr( double &zeroTime, double &zeroAngle, double &zeroSpeed );
 
 protected:
-    handActionModel mHandActionModel;
+//    handActionModel mHandActionModel;
 
     double mHandZeroTime, mHandZeroAngle, mHandZeroSpeed;
 

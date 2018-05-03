@@ -109,6 +109,8 @@ public:
     int loadFanPwm();
     int loadLedPwm();
 
+    int loadEncoderZero();
+
     QString loadName();
 
     //! overwrite
@@ -143,11 +145,17 @@ public:
 
     float getSensor( int ax, int dataId );
 
+    bool  getEncoderZeroValid();
+    int   setEncoderZero( int ax, float zero );
+    float getEncoderZero( int ax );
+
 public:
     //! pvt ops
     int loadTpvCap();
     int getTpvCap( pvt_region );
     int getTpvBuf( pvt_region );
+
+    int loadMotorBasic();
 
     int beginTpvDownload( pvt_region );
     int tpvDownload(
@@ -193,6 +201,9 @@ public:
     int  getTpvIndex( pvt_region );
     void accTpvIndex( pvt_region );
 
+    bool pvtVerify( pvt_region,
+                    QList<tpvRow *> &list );
+
     void terminate( pvt_region );
 
     int requestMotionState( pvt_region );
@@ -213,7 +224,7 @@ public:
     virtual int run( const tpvRegion &reg=tpvRegion() );
     virtual int stop( const tpvRegion &reg=tpvRegion() );
 
-    virtual void setStatus( int stat, const tpvRegion &reg );
+    virtual void setStatus( int stat, const tpvRegion &reg, frameData &data );
 public:
     virtual void onMsg( int subAxes, RoboMsg &msg );
     virtual void onTimer( void *pContext, int id );
@@ -228,6 +239,11 @@ public:
 
     deviceProxyMotor *Motor( const tpvRegion &region );
     tpvDownloader *downloader( const tpvRegion &region );
+
+protected:
+    float slowRatio( int ax );
+    float stepAngle( int ax );
+    float microStep( int ax );
 
 protected:
     QMap< tpvRegion, int > mTpvIndexes;

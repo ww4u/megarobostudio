@@ -72,29 +72,6 @@ int eventViewer::actionCode( const QString &str )
     return _exception_actions_[0].id;
 }
 
-//int eventViewer::exceptionMCode( int exceptionId )
-//{
-//    for ( int i = 0; i < sizeof_array(_exceptions_); i++ )
-//    {
-//        if ( _exceptions_[i].id == exceptionId )
-//        { return _exceptions_[i].mCode; }
-//    }
-
-//    Q_ASSERT( false );
-//    return 0;
-//}
-//int eventViewer::exceptionSCode( int exceptionId )
-//{
-//    for ( int i = 0; i < sizeof_array(_exceptions_); i++ )
-//    {
-//        if ( _exceptions_[i].id == exceptionId )
-//        { return _exceptions_[i].sCode; }
-//    }
-
-//    Q_ASSERT( false );
-//    return 0;
-//}
-
 int eventViewer::exceptionIndex( const QString &str )
 {
     for( int i = 0; i < sizeof_array(_exceptions_); i++ )
@@ -115,7 +92,6 @@ eventViewer::eventViewer( receiveCache *pIntSrc,
 {
     Q_ASSERT( NULL != pIntSrc );
     Q_ASSERT( NULL != pModel );
-
 
     ui->setupUi(this);
 
@@ -169,7 +145,7 @@ void eventViewer::slot_event( eventId id, frameData data )
 
         QString str;
 
-        str = QString("ID:%1 Time:%2 FrameId:%3 Data:").arg( id ).arg( QDateTime::currentDateTime().toString("hh:mm:ss.zzz") ).arg( data.getFrameId(), 0, 16 );
+        str = QString("ID:%1 Time:%2 FrameId:%3 Data:").arg( id ).arg( QDateTime::currentDateTime().toString("hh:mm:ss.zzz") ).arg( data.frameId(), 0, 16 );
         str.append( data.toHex(' ') );
 
         ui->listWidget->addItem(str);

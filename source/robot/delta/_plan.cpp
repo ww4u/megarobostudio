@@ -52,7 +52,7 @@ int robotDelta::planTrace( QList<TraceKeyPoint> &curve,
     }
 
     int xyzResLen;
-    int ret = ns_pathplan::GetPvtLen( &endPoints.data()->datas,
+    int ret = ns_pathplan::GetPointLen( &endPoints.data()->datas,
                                       curve.size(),
                                       mPlanStep,
                                       mPlanMode,
@@ -71,7 +71,7 @@ int robotDelta::planTrace( QList<TraceKeyPoint> &curve,
     if ( 0 != tracePlan.alloc( traceSize ) )
     { return ERR_ALLOC_FAIL; }
 
-    ret = ns_pathplan::GetPvtInfo( &tracePlan.data()->datas, xyzResLen );
+    ret = ns_pathplan::GetPointInfo( &tracePlan.data()->datas, xyzResLen );
     if ( ret != 0 )
     { return ERR_PLAN_FAIL; }
 

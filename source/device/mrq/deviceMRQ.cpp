@@ -333,6 +333,31 @@ float deviceMRQ::getSensor( int ax, int dataId )
     { return 0; }
 }
 
+bool  deviceMRQ::getEncoderZeroValid()
+{
+    //! check all are 0
+    for ( int i = 0; i < 4; i++ )
+    {
+        if ( mABSENCALARM_ZEROVALUE[i] != 0 )
+        { return true; }
+    }
+
+    return false;
+}
+int   deviceMRQ::setEncoderZero( int ax, float zero )
+{
+    quint32 zeroEnc = valueToAbsAngle( zero );
+
+    return setABSENCALARM_ZEROVALUE( (MRQ_IDENTITY_LABEL_1)ax, zeroEnc );
+}
+float deviceMRQ::getEncoderZero( int ax )
+{
+    if ( ax < 0 || ax > 3 )
+    { return 0; }
+
+    return absAngleToValue( mABSENCALARM_ZEROVALUE[ax] );
+}
+
 //! only write no read
 int deviceMRQ::requestMotionState( pvt_region )
 {

@@ -155,6 +155,10 @@ void MotorMonitor::slot_net_event(
     else
     { return; }
 
+    //! auto view
+    if ( m_pModel->mSysPref.mbAutoStatusView && isHidden() )
+    { show(); }
+
     motorStateChanged( name, axes, msg );
 }
 

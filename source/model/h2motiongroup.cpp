@@ -1,21 +1,22 @@
-#include "motiongroup.h"
+#include "h2motiongroup.h"
 
-motionGroup::motionGroup( const QString&name ):scriptFile(name)
+H2MotionGroup::H2MotionGroup( const QString &className, const QString &fileName )
+                             : MegaTableModel( className, fileName)
 {
 
 }
 
-motionGroup::~motionGroup()
+H2MotionGroup::~H2MotionGroup()
 {
     removeRows( 0, mItems.size(), QModelIndex() );
 }
 
-int motionGroup::rowCount(const QModelIndex &parent) const
+int H2MotionGroup::rowCount(const QModelIndex &parent) const
 { return mItems.size(); }
-int motionGroup::columnCount(const QModelIndex &parent) const
-{ return motionItem::columns(); }
+int H2MotionGroup::columnCount(const QModelIndex &parent) const
+{ return H2MotionItem::columns(); }
 
-QVariant motionGroup::data(const QModelIndex &index, int role) const
+QVariant H2MotionGroup::data(const QModelIndex &index, int role) const
 {
     if ( !index.isValid() )
     { return QVariant(); }
@@ -27,25 +28,27 @@ QVariant motionGroup::data(const QModelIndex &index, int role) const
     int row = index.row();
 
     if ( col == 0 )
-    { return QVariant( mItems[row]->getBreak() ); }
+    { return QVariant( mItems[row]->enable() ); }
     if ( col == 1 )
-    { return QVariant( mItems[row]->getCmd() ); }
+    { return QVariant( mItems[row]->name() ); }
+
     if ( col == 2 )
-    { return QVariant( (double)mItems[row]->getT() ); }
+    { return QVariant( (double)mItems[row]->T() ); }
 
     if ( col == 3 )
-    { return QVariant( (double)mItems[row]->getX() ); }
+    { return QVariant( (double)mItems[row]->X() ); }
     if ( col == 4 )
-    { return QVariant( (double)mItems[row]->getY() ); }
+    { return QVariant( (double)mItems[row]->Y() ); }
     if ( col == 5 )
-    { return QVariant( (double)mItems[row]->getZ() ); }
+    { return QVariant( (double)mItems[row]->Z() ); }
+
     if ( col == 6 )
-    { return QVariant( mItems[row]->getComment() ); }
+    { return QVariant( mItems[row]->comment() ); }
 
     return QVariant();
 }
 
-bool motionGroup::setData(const QModelIndex &index, const QVariant &value, int role)
+bool H2MotionGroup::setData(const QModelIndex &index, const QVariant &value, int role)
 {
     if ( index.isValid() && role == Qt::EditRole )
     {}
@@ -55,33 +58,21 @@ bool motionGroup::setData(const QModelIndex &index, const QVariant &value, int r
     int col = index.column();
     int row = index.row();
     if ( col == 0 )
-    {
-        mItems[ row ]->setBreak( value.toBool() );
-    }
+    { mItems[ row ]->setEnable( value.toBool() ); }
     else if ( index.column() == 1 )
-    {
-        mItems[ row ]->setCmd( value.toString() );
-    }
+    { mItems[ row ]->setName( value.toString() ); }
+
     else if ( index.column() == 2 )
-    {
-        mItems[ row ]->setT( value.toFloat() );
-    }
+    { mItems[ row ]->setT( value.toFloat() ); }
     else if ( index.column() == 3 )
-    {
-        mItems[ row ]->setX( value.toFloat() );
-    }
+    { mItems[ row ]->setX( value.toFloat() ); }
     else if ( index.column() == 4 )
-    {
-        mItems[ row ]->setY( value.toFloat() );
-    }
+    { mItems[ row ]->setY( value.toFloat() ); }
     else if ( index.column() == 5 )
-    {
-        mItems[ row ]->setZ( value.toFloat() );
-    }
+    { mItems[ row ]->setZ( value.toFloat() ); }
+
     else if ( index.column() == 6 )
-    {
-        mItems[ row ]->setComment( value.toString() );
-    }
+    { mItems[ row ]->setComment( value.toString() ); }
     else
     {}
 
@@ -89,7 +80,7 @@ bool motionGroup::setData(const QModelIndex &index, const QVariant &value, int r
 
     return true;
 }
-Qt::ItemFlags motionGroup::flags(const QModelIndex &index) const
+Qt::ItemFlags H2MotionGroup::flags(const QModelIndex &index) const
 {
     if (!index.isValid())
           return Qt::ItemIsEnabled;
@@ -97,24 +88,24 @@ Qt::ItemFlags motionGroup::flags(const QModelIndex &index) const
     return QAbstractItemModel::flags(index) | Qt::ItemIsEditable;
 }
 
-bool motionGroup::insertRows(int position, int rows, const QModelIndex &parent)
+bool H2MotionGroup::insertRows(int position, int rows, const QModelIndex &parent)
 {
     if ( position < 0 || rows < 0 )
     { return false; }
 
     beginInsertRows(QModelIndex(), position, position+rows-1);
 
-    motionItem *pItem;
+    H2MotionItem *pItem;
     for (int row = 0; row < rows; ++row)
     {
-        pItem = new motionItem();
+        pItem = new H2MotionItem();
         mItems.insert( position+row, pItem );
     }
 
     endInsertRows();
     return true;
 }
-bool motionGroup::removeRows(int position, int rows, const QModelIndex &parent)
+bool H2MotionGroup::removeRows(int position, int rows, const QModelIndex &parent)
 {
     if ( position < 0 || rows < 1 )
     { return false; }
@@ -131,25 +122,25 @@ bool motionGroup::removeRows(int position, int rows, const QModelIndex &parent)
     return true;
 }
 
-QVariant motionGroup::headerData(int section, Qt::Orientation orientation, int role ) const
+QVariant H2MotionGroup::headerData(int section, Qt::Orientation orientation, int role ) const
 {
     if ( role != Qt::DisplayRole )
     { return QVariant(); }
 
     if ( orientation == Qt::Horizontal )
-    { return QVariant( motionItem::header(section)); }
+    { return QVariant( H2MotionItem::header(section)); }
     else
     { return QVariant(section);}
 }
 
-motionItem *motionGroup::operator[]( int index )
+H2MotionItem *H2MotionGroup::operator[]( int index )
 {
     Q_ASSERT( index >=0 && index < mItems.size() );
 
     return mItems[ index ];
 }
 
-int motionGroup::save( const QString &fileName )
+int H2MotionGroup::save( const QString &fileName )
 {
     QFile file( fileName );
 
@@ -157,8 +148,16 @@ int motionGroup::save( const QString &fileName )
     { return ERR_FILE_OPEN_FAIL; }
 
     ImcStream text( &file );
-
-    foreach( motionItem *pItem, mItems )
+    text<<HEAD_SEP<<className()<<ROW_SEP;
+    text<<HEAD_SEP
+        <<"enable"<<COL_SEP
+        <<"name"<<COL_SEP
+        <<"t"<<COL_SEP
+        <<"x"<<COL_SEP
+        <<"y"<<COL_SEP
+        <<"z"<<COL_SEP
+        <<"comment"<<ROW_SEP;
+    foreach( H2MotionItem *pItem, mItems )
     {
         if ( 0 != pItem->serialOut( text ) )
         {
@@ -168,7 +167,7 @@ int motionGroup::save( const QString &fileName )
 
     return 0;
 }
-int motionGroup::load( const QString &fileName )
+int H2MotionGroup::load( const QString &fileName )
 {
     QFile file( fileName );
 
@@ -194,7 +193,7 @@ int motionGroup::load( const QString &fileName )
         }
         else
         {
-            motionItem item;
+            H2MotionItem item;
             lineStream.setString( &lineStr, QIODevice::ReadOnly );
             if ( 0 != item.serialIn( lineStream ) )
             {
@@ -208,7 +207,7 @@ int motionGroup::load( const QString &fileName )
     }while( !text.atEnd() );
 
     emit dataChanged( index(0,0),
-                      index(mItems.count(), motionItem::columns() - 1) );
+                      index(mItems.count(), H2MotionItem::columns() - 1) );
     logDbg()<<mItems.size();
     return 0;
 }

@@ -24,68 +24,78 @@ public:
 
     bool filter( const RoboMsg & msg );
 
-    void postMsg( const RoboMsg & msg );
+    void postMsg( const RoboMsg & msg, quint64 t );
 
-    void postMsg( eRoboMsg msg );
-    void postMsg( eRoboMsg msg, const tpvRegion &region );
-    void postMsg( eRoboMsg msg, const tpvRegion &region, int p1 );
-    void postMsg( eRoboMsg msg, int subax, const tpvRegion &region, int p1 );
+    void postMsg( eRoboMsg msg, quint64 t = 0 );
+    void postMsg( eRoboMsg msg, const tpvRegion &region, quint64 t = 0 );
+    void postMsg( eRoboMsg msg, const tpvRegion &region, int p1, quint64 t = 0 );
+    void postMsg( eRoboMsg msg, int subax, const tpvRegion &region, int p1, quint64 t = 0 );
 
-    void postMsg( eRoboMsg msg, const RoboMsg &leafMsg );
+    void postMsg( eRoboMsg msg, const RoboMsg &leafMsg, quint64 t = 0 );
 
-    void postMsg( eRoboMsg msg, int p1 );
-    void postMsg( eRoboMsg msg, int p1, int p2 );
-    void postMsg( eRoboMsg msg, int p1, int p2, int p3 );
+    void postMsg( eRoboMsg msg, int p1, quint64 t = 0 );
+    void postMsg( eRoboMsg msg, int p1, int p2, quint64 t = 0 );
+    void postMsg( eRoboMsg msg, int p1, int p2, int p3, quint64 t = 0 );
 
-
-    void postMsg( eRoboMsg msg,
-                         const QString &name,
-                         const tpvRegion &region
-                         );
 
     void postMsg( eRoboMsg msg,
                          const QString &name,
                          const tpvRegion &region,
-                         int p1
+                         quint64 t = 0
                          );
 
     void postMsg( eRoboMsg msg,
                          const QString &name,
                          const tpvRegion &region,
                          int p1,
-                         int p2
+                         quint64 t = 0
                          );
 
     void postMsg( eRoboMsg msg,
                          const QString &name,
-                         int p1
+                         const tpvRegion &region,
+                         int p1,
+                         int p2,
+                         quint64 t = 0
+                         );
+
+    void postMsg( eRoboMsg msg,
+                         const QString &name,
+                         int p1,
+                         quint64 t = 0
                          );
     void postMsg( eRoboMsg msg,
                          const QString &name,
                          int p1,
-                         int p2
+                         int p2,
+                         quint64 t = 0
                          );
 
     void postMsg( eRoboMsg msg,
                          const QString &name,
                          int p1,
                          int p2,
-                         int p3
+                         int p3,
+                         quint64 t = 0
                          );
 
     void postMsg( eRoboMsg msg,
                          int eId,
                          int fId,       //! get name from device
-                         const QByteArray &ary
+                         const QByteArray &ary,
+                         quint64 t = 0
                          );
 
     void postMsg( eRoboMsg msg,
                   int mi, int ma, int n,
-                  const QString &str );
+                  const QString &str,
+                  quint64 t = 0 );
     void postMsg( eRoboMsg msg,
-                  bool b );
+                  bool b,
+                  quint64 t = 0 );
     void postMsg( eRoboMsg msg,
-                  const QString &str );
+                  const QString &str,
+                  quint64 t = 0 );
 
 
     void process( int intervalus = 100,

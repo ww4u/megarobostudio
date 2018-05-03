@@ -106,6 +106,27 @@ static scpi_result_t _scpi_run( scpi_t * context )
     return SCPI_RES_OK;
 }
 
+//! ax,page
+static scpi_result_t _scpi_stop( scpi_t * context )
+{
+    // read
+    DEF_LOCAL_VAR();
+
+    int ax, page;
+
+    if ( SCPI_RES_OK != SCPI_ParamInt32( context, &ax, true ) )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    if ( SCPI_RES_OK != SCPI_ParamInt32( context, &page, true ) )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    DEF_MRQ();
+
+    LOCALMRQ()->stop( tpvRegion(ax,page) );
+
+    return SCPI_RES_OK;
+}
+
 //! int, float, float
 //! ax, page, t, angle
 static scpi_result_t _scpi_rotate( scpi_t * context )
@@ -373,8 +394,10 @@ static scpi_command_t _mrq_scpi_cmds[]=
     CMD_ITEM( "TEST:ADD", _scpi_testAdd ),
 
     CMD_ITEM( "RUN", _scpi_run ),
+    CMD_ITEM( "STOP", _scpi_stop ),
 
     CMD_ITEM( "ROTATE", _scpi_rotate ),
+    CMD_ITEM( "MOVE", _scpi_rotate ),
 
     CMD_ITEM( "STATE?", _scpi_fsmState ),
 
@@ -383,10 +406,12 @@ static scpi_command_t _mrq_scpi_cmds[]=
     CMD_ITEM( "DISTANCE?", _scpi_distance ),
 
     CMD_ITEM( "PROGRAM", _scpi_program ),
+    CMD_ITEM( "DOWNLOAD", _scpi_program ),
 
     CMD_ITEM( "CALL", _scpi_call ),
 
     CMD_ITEM( "LZERO", _scpi_lightZero ),             //! light zero
+    CMD_ITEM( "PEZERO", _scpi_lightZero ),
 
     CMD_ITEM( "FANDUTY", _scpi_fanduty ),
     CMD_ITEM( "LEDDUTY", _scpi_ledduty ),

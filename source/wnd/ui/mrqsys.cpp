@@ -29,7 +29,7 @@ void mrqSys::spyEdited()
 {
     QCheckBox *checkBoxes[]=
     {
-        ui->chkOtp,
+
     };
 
     QLineEdit *edits[]={
@@ -39,11 +39,11 @@ void mrqSys::spyEdited()
     QSpinBox *spinBoxes[]={
     };
     QDoubleSpinBox *doubleSpinBoxes[]={
-        ui->spinOtpTemperature,
+
     };
 
     QComboBox *comboxes[]={
-        ui->cmbAction,
+
     };
 
     install_spy();

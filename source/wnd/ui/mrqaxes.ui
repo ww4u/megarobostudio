@@ -227,12 +227,51 @@
         <property name="spacing">
          <number>6</number>
         </property>
+        <item row="2" column="1">
+         <widget class="QDoubleSpinBox" name="dblCurrent">
+          <property name="minimum">
+           <double>0.100000000000000</double>
+          </property>
+          <property name="maximum">
+           <double>25.000000000000000</double>
+          </property>
+          <property name="value">
+           <double>1.000000000000000</double>
+          </property>
+         </widget>
+        </item>
         <item row="7" column="0">
          <widget class="QLabel" name="label_13">
           <property name="text">
            <string>Vernier</string>
           </property>
          </widget>
+        </item>
+        <item row="10" column="0">
+         <spacer name="verticalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>0</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="2" column="2">
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
         </item>
         <item row="2" column="0">
          <widget class="QLabel" name="label_14">
@@ -296,44 +335,58 @@
           </item>
          </widget>
         </item>
-        <item row="2" column="1">
-         <widget class="QDoubleSpinBox" name="dblCurrent">
+        <item row="8" column="1">
+         <widget class="QDoubleSpinBox" name="spinIdleCurrent">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
           <property name="minimum">
            <double>0.100000000000000</double>
           </property>
           <property name="maximum">
            <double>25.000000000000000</double>
           </property>
-          <property name="value">
-           <double>1.000000000000000</double>
+         </widget>
+        </item>
+        <item row="8" column="0">
+         <widget class="QLabel" name="label_22">
+          <property name="text">
+           <string>Idle current</string>
           </property>
          </widget>
         </item>
-        <item row="2" column="2">
-         <spacer name="horizontalSpacer">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
+        <item row="9" column="0">
+         <widget class="QLabel" name="label_24">
+          <property name="text">
+           <string>Idle time</string>
           </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
+         </widget>
         </item>
-        <item row="8" column="0">
-         <spacer name="verticalSpacer_2">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
+        <item row="9" column="1">
+         <widget class="QDoubleSpinBox" name="spinIdleTime">
+          <property name="enabled">
+           <bool>true</bool>
           </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>0</height>
-           </size>
+          <property name="decimals">
+           <number>3</number>
           </property>
-         </spacer>
+          <property name="minimum">
+           <double>0.001000000000000</double>
+          </property>
+          <property name="maximum">
+           <double>100.000000000000000</double>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0">
+         <widget class="QCheckBox" name="chkDriverState">
+          <property name="layoutDirection">
+           <enum>Qt::LeftToRight</enum>
+          </property>
+          <property name="text">
+           <string>On/Off</string>
+          </property>
+         </widget>
         </item>
        </layout>
       </widget>
@@ -414,16 +467,6 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="6">
-       <widget class="QCheckBox" name="chkIdle">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="text">
-         <string>Idle</string>
-        </property>
-       </widget>
-      </item>
       <item row="1" column="0">
        <widget class="QLabel" name="label_3">
         <property name="text">
@@ -464,20 +507,6 @@
       </item>
       <item row="1" column="4">
        <widget class="QDoubleSpinBox" name="spinMaxCurrent"/>
-      </item>
-      <item row="1" column="6">
-       <widget class="QLabel" name="label_22">
-        <property name="text">
-         <string>Idle current</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="7">
-       <widget class="QDoubleSpinBox" name="spinIdleCurrent">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-       </widget>
       </item>
       <item row="1" column="8">
        <spacer name="horizontalSpacer_4">
@@ -522,20 +551,6 @@
       </item>
       <item row="2" column="4">
        <widget class="QDoubleSpinBox" name="spinMaxVelocity"/>
-      </item>
-      <item row="2" column="6">
-       <widget class="QLabel" name="label_24">
-        <property name="text">
-         <string>Idle time</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="7">
-       <widget class="QDoubleSpinBox" name="spinIdleTime">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-       </widget>
       </item>
       <item row="3" column="0">
        <widget class="QLabel" name="label_28">

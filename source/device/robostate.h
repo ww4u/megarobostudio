@@ -130,9 +130,14 @@ public:
     void startTimer( int id=0, int tmous=10000000 );
     void killTimer( int id=0 );
 
+    void setTimeStamp( quint64 t );
+    quint64 timeStamp();
+
 protected:
     RoboFsm *m_pFsm;
     QString mName;
+
+    quint64 mTimeStamp;
 };
 
 }

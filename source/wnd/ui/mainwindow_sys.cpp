@@ -80,6 +80,11 @@ void sysStatus( const QString &str )
     sysQueue()->postMsg( e_status, str );
 }
 
+void sysPrompt( const QString &str )
+{
+    sysQueue()->postMsg( e_prompt, str );
+}
+
 void attachSysQueue( RoboMsgThread* pQueue )
 {
     Q_ASSERT( NULL != pQueue );
@@ -88,3 +93,6 @@ void attachSysQueue( RoboMsgThread* pQueue )
 
 RoboMsgThread* sysQueue()
 { return _sysRunTime.m_pSysQueue; }
+
+quint64 sysTimeStamp()
+{ return receiveCache::timeStamp(); }

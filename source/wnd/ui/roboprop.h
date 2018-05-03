@@ -8,6 +8,7 @@
 #include "robocompref.h"
 
 #include "megatronpref.h"
+#include "h2pref.h"
 
 #include "deltapref.h"
 #include "deltaconfig.h"
@@ -16,7 +17,6 @@
 #include "sinanjuconfig.h"
 #include "axnpref.h"
 
-#include "robohand.h"
 
 //! use mrq property
 namespace Ui {
@@ -66,6 +66,8 @@ private:
 
     MegatronPref *m_pMegatronPref;
 
+    H2Pref *m_pH2Pref;
+
     DeltaPref *m_pDeltaPref;
     DeltaConfig *m_pDeltaConfig;
 
@@ -74,7 +76,7 @@ private:
 
     AxnPref *m_pAxnPref;
 
-    RoboHand *m_pHandPage;
+//    RoboHand *m_pHandPage;
 
     int mPrefId;                //! id by robot
     QList<modelView*> mPrefPages;

@@ -19,9 +19,14 @@ class tpvDownloader : public QThread
 
 private:
     static int _downloaderInterval;
+    static QList<tpvDownloader*> _activeLoaders;
+    static QMutex _activeLoadersMutex;
+
 public:
     static void setInterval( int interval );
     static int interval();
+
+    static void cancelActives();
 
 public:
     tpvDownloader( QObject *pObj=0 );
@@ -34,13 +39,14 @@ protected:
     virtual void run();
 
 protected:
-    void downloadProc();
+    int downloadProc();
 
-    int batchDownload( int batchSize,
+    int batchDownload( QQueue< tpvRow *> &transQueue,
+                       int batchSize,
                        int &total,
                        int &now
                        );
-    int transmissionProc();
+    int transmissionProc( QQueue< tpvRow *> &transQueue );
 
 public:
     void attachDevice( MegaDevice::deviceMRQ *pDev,
@@ -59,6 +65,9 @@ protected:
     tpvRegion mRegion;
 
     QQueue< tpvRow *> mTpvs;
+
+//    QQueue< tpvRow *> mTransferTpvs;      //! transfer tpvs
+
     QMutex mQueueMutex;
 
 };

@@ -37,9 +37,9 @@ void MainWindow::exceptionProc( const QString &name,
 
                 Q_ASSERT( NULL != m_pWarnPrompt );
 
-                m_pWarnPrompt->setInfo( name + ":" + pAction->event() );
-
+                m_pWarnPrompt->addInfo( name + ":" + pAction->event() );
                 m_pWarnPrompt->show();
+                m_pWarnPrompt->activateWindow();
             }
             else
             {}

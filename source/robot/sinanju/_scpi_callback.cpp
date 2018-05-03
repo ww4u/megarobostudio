@@ -8,7 +8,7 @@
 #define DEF_ROBO()      robotSinanju *pRobo;\
                         pRobo = ((robotSinanju*)context->user_context);\
                         Q_ASSERT( NULL != pRobo );
-
+#define LOCAL_ROBO()    pRobo
 
 static scpi_result_t _scpi_idn( scpi_t * context )
 {
@@ -27,13 +27,36 @@ static scpi_result_t _scpi_idn( scpi_t * context )
     return SCPI_RES_OK;
 }
 
-//! page
+//! ax, page
 static scpi_result_t _scpi_run( scpi_t * context )
 {
     DEF_LOCAL_VAR();
     DEF_ROBO();
 
-    pRobo->run();logDbg();
+    int ax, page;
+    if ( SCPI_ParamInt32(context, &ax, true) != true )
+    { scpi_ret( SCPI_RES_ERR ); }
+    if ( SCPI_ParamInt32(context, &page, true) != true )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    pRobo->run( tpvRegion(ax,page) );logDbg();
+
+    return SCPI_RES_OK;
+}
+
+//! ax, page
+static scpi_result_t _scpi_stop( scpi_t * context )
+{
+    DEF_LOCAL_VAR();
+    DEF_ROBO();
+
+    int ax, page;
+    if ( SCPI_ParamInt32(context, &ax, true) != true )
+    { scpi_ret( SCPI_RES_ERR ); }
+    if ( SCPI_ParamInt32(context, &page, true) != true )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    pRobo->stop( tpvRegion(ax,page) );logDbg();
 
     return SCPI_RES_OK;
 }
@@ -77,6 +100,44 @@ static scpi_result_t _scpi_move( scpi_t * context )
     return SCPI_RES_OK;
 }
 
+//! goto x1,y1,z1,t
+static scpi_result_t _scpi_goto( scpi_t * context )
+{
+    DEF_LOCAL_VAR();
+
+    float vals[4];
+
+    for ( int i = 0; i < sizeof_array(vals); i++ )
+    {
+        if ( SCPI_RES_OK != SCPI_ParamFloat( context, vals+i, true ) )
+        { scpi_ret( SCPI_RES_ERR ); }
+    }
+
+    for ( int i = 0; i < sizeof_array(vals); i++ )
+    { logDbg()<<vals[i]; }
+
+    //! robo op
+    DEF_ROBO();
+
+    //! current
+    TraceKeyPoint pose;
+    int ret = pRobo->nowPose( pose );
+    if ( ret != 0 )
+    { scpi_ret( SCPI_RES_ERR ); }
+    logDbg()<<pose.x<<pose.y<<pose.z;
+    //! default interp
+    TraceKeyPoint pt1( 0, pose.x, pose.y, pose.z, 0 );
+    TraceKeyPoint pt2( vals[3], vals[0], vals[1], vals[2], 0 );
+
+    TraceKeyPointList curve;
+    curve.append( pt1 );
+    curve.append( pt2 );
+
+    pRobo->move( curve, tpvRegion(0,0) );
+
+    return SCPI_RES_OK;
+}
+
 //! ax, page, file
 static scpi_result_t _scpi_program( scpi_t * context )
 {
@@ -96,7 +157,6 @@ static scpi_result_t _scpi_program( scpi_t * context )
     if (strLen < 1)
     { scpi_ret( SCPI_RES_ERR ); }
 
-    //! x,y,z,h,interp,t
     QList<float> dataset;
     int col = 6;
     if ( 0 != comAssist::loadDataset( pLocalStr, strLen, col, dataset ) )
@@ -122,6 +182,8 @@ static scpi_result_t _scpi_program( scpi_t * context )
         tp.iMask = dataset.at( i * col + 5 );
 
         curve.append( tp );
+
+        logDbg()<<tp.t<<tp.x<<tp.y<<tp.z<<tp.hand<<tp.iMask;
     }
 
     DEF_ROBO();
@@ -251,10 +313,10 @@ static scpi_result_t _scpi_pose( scpi_t * context )
     { scpi_ret( SCPI_RES_ERR ); }
 
     //! x,y,z,h
-    SCPI_ResultInt32( context, pose.x );
-    SCPI_ResultInt32( context, pose.y );
-    SCPI_ResultInt32( context, pose.z );
-    SCPI_ResultInt32( context, pose.hand );
+    SCPI_ResultFloat( context, pose.x );
+    SCPI_ResultFloat( context, pose.y );
+    SCPI_ResultFloat( context, pose.z );
+    SCPI_ResultFloat( context, pose.hand );
 
     return SCPI_RES_OK;
 }
@@ -336,12 +398,38 @@ static scpi_result_t _scpi_gozero( scpi_t * context )
     return SCPI_RES_OK;
 }
 
+//! four rad
+//! ref the the zero
+//! angle in rad
+static scpi_result_t _scpi_jointRad( scpi_t * context )
+{
+    DEF_LOCAL_VAR();
+    DEF_ROBO();
+
+    //! joint rad
+    float jAngles[4];
+    if ( 0 != LOCAL_ROBO()->nowJointAngle( jAngles ) )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    //! convert
+    comAssist::degToRad( jAngles, 4 );
+
+    //! output
+    for ( int i = 0; i < 4; i++ )
+    { SCPI_ResultFloat( context, jAngles[i] ); }
+
+    return SCPI_RES_OK;
+}
+
 static scpi_command_t _scpi_cmds[]=
 {
 
     CMD_ITEM( "*IDN?", _scpi_idn ),
     CMD_ITEM( "RUN",  _scpi_run ),
+    CMD_ITEM( "STOP", _scpi_stop ),
     CMD_ITEM( "MOVE", _scpi_move ),
+
+    CMD_ITEM( "GOTO", _scpi_goto ),
 
     CMD_ITEM( "STATE?", _scpi_fsmState ),
     CMD_ITEM( "POSE?", _scpi_pose ),
@@ -351,6 +439,8 @@ static scpi_command_t _scpi_cmds[]=
     CMD_ITEM( "DOWNLOAD", _scpi_download ),
     CMD_ITEM( "CALL", _scpi_call ),
     CMD_ITEM( "ZERO", _scpi_gozero ),
+
+    CMD_ITEM( "JOINT:RAD?", _scpi_jointRad ),
 
     CMD_ITEM( "TEST1", _scpi_test1 ),
     CMD_ITEM( "TEST2", _scpi_test2 ),

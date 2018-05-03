@@ -33,7 +33,7 @@ public:
 
 protected Q_SLOTS:
     void slot_event( eventId id, frameData );
-
+public Q_SLOTS:
     void slot_exception_changed();
 
     void on_btnExport_clicked();

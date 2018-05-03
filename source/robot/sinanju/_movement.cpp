@@ -23,7 +23,7 @@ int robotSinanju::program( const QString &fileName,
     setLoop( 1 );
 
     //! 3.download
-    ret = downloadTrace( region );
+    ret = downloadTrace( region, mJointsGroup );
     if ( ret != 0 )
     { return ret; }
 
@@ -89,27 +89,32 @@ int robotSinanju::program( QList<TraceKeyPoint> &curve,
 {
     int ret;
 
-    //! 0. check
-    //!
-
     //! 1.build
+    delete_all( mJointsGroup );
+
+    xxxGroup<tracePoint> tracePlan;
     xxxGroup<jointsTrace> jointsPlan;
-    ret = buildTrace( curve, jointsPlan );
+
+    ret = buildTrace( curve, tracePlan, jointsPlan );
     if ( ret != 0 )
     { return ret; }
 
     //! 2.convert
-    ret = convertTrace( curve, jointsPlan );
+    ret = convertTrace( curve, jointsPlan, mJointsGroup );
     if ( ret != 0 )
     { return ret; }
 
-    //! 3.config
-    setLoop( 1 );
-
-    //! 4.download
-    ret = downloadTrace( region );
+    //! 3.download
+    ret = downloadTrace( region, mJointsGroup );
     if ( ret != 0 )
     { return ret; }
+
+    //! 4.export
+    int lastPt = curve.size() - 1;
+    QString fileName = QString( "%1_%2_%3-%4_%5_%6.csv" ).arg( curve.at(0).x ).arg( curve.at(0).y ).arg( curve.at(0).z )
+                                                     .arg( curve.at(lastPt).x ).arg( curve.at(lastPt).y ).arg( curve.at(lastPt).z );
+    exportPlan( QCoreApplication::applicationDirPath() + "/dump/" + "plan_" + fileName, tracePlan );
+    exportJoints( QCoreApplication::applicationDirPath() + "/dump/" + "joints_" + fileName, jointsPlan );
 
     return 0;
 }
@@ -198,8 +203,18 @@ int robotSinanju::nowPose( TraceKeyPoint &pos )
 {
     //! get
     float angles[4];
+    if ( nowAngle( angles ) != 0 )
+    { return -1; }
+
+    //! convert
+    return angleToPos( angles, pos );
+}
+
+int robotSinanju::nowAngle( float angles[] )
+{
     MegaDevice::deviceMRQ *pDev;
     int ax;
+
     for ( int i = 0;  i < 4; i++ )
     {
         pDev = jointDevice( i, &ax );
@@ -211,26 +226,22 @@ int robotSinanju::nowPose( TraceKeyPoint &pos )
         { return -1; }
     }
 
-    //! convert
-    return angleToPos( angles, pos );
+    return 0;
 }
 
-int robotSinanju::nowAngle( QList<double> &angles )
+int robotSinanju::nowJointAngle( float angles[4] )
 {
-    MegaDevice::deviceMRQ *pDev;
-    float angle;
-    int ax;
-    angles.clear();
-    for ( int i = 0;  i < 4; i++ )
-    {
-        pDev = jointDevice( i, &ax );
-        if ( NULL == pDev )
-        { return -1; }
+    int ret;
+    float absAngles[4];
 
-        angle = pDev->getAbsAngle( ax );
-        if ( angle < 0 )
-        { return -1; }
-    }
+    ret = nowAngle( absAngles );
+    if ( ret != 0 )
+    { return ret; }
+
+    diffAngle( absAngles, angles );
+
+    //! normalize to [-pi,pi)
+    comAssist::normalizeDegreeN180_180( angles, 4 );
 
     return 0;
 }
@@ -256,7 +267,7 @@ int robotSinanju::nowAngle( QList<double> &angles )
 int robotSinanju::angleToPos( float angles[4],
                                TraceKeyPoint &pos )
 {
-    //! convert
+//    //! convert
     jointsAngle rotAngles={ rot_angles(0,1,2,3) };
     jointsAngle archAngles={ mArchAngles.at(0),
                              mArchAngles.at(1),
@@ -268,11 +279,12 @@ int robotSinanju::angleToPos( float angles[4],
     double xyz[3];
     int ret;
 
+    //! ref the the zero
     diffAngle( angles, dAngles );
 logDbg()<<dAngles[0]<<dAngles[1]<<dAngles[2]<<dAngles[3];
 logDbg()<<angles[0]<<angles[1]<<angles[2]<<angles[3];
 logDbg()<<mInitAngles[0]<<mInitAngles[1]<<mInitAngles[2]<<mInitAngles[3];
-    ret = ns_kinematic::GetEndPosition( armLength,sizeof_array(armLength),
+    ret = ns_sinanju::GetEndPosition( armLength,sizeof_array(armLength),
                                         rotAngles.angles,
                                         archAngles.angles,
                                         dAngles,
@@ -281,6 +293,16 @@ logDbg()<<mInitAngles[0]<<mInitAngles[1]<<mInitAngles[2]<<mInitAngles[3];
                                         );
     if ( ret != 0 )
     { return -1; }
+
+//    double archAngles[]={0,90,180,180};
+//    ret = ns_sinanju::GetEndPosition(  armLength,
+//                                        archAngles,
+
+//                                        dAngles,    //! convert angle
+//                                        xyz
+//                                        );
+//    if ( ret != 1 )
+//    { return -1; }
 
     //! export
     pos.hand = 0;
@@ -355,5 +377,6 @@ int robotSinanju::nowDist( QList<float> &dists )
 
     return 0;
 }
+
 
 

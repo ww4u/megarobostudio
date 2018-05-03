@@ -7,7 +7,7 @@
 
 #include "../../model/tpvgroup.h"
 #include "tableedit.h"
-#include "axesknob.h"
+//#include "axesknob.h"
 #include "tpvplot.h"
 
 #include "pvtpref.h"
@@ -90,7 +90,7 @@ protected Q_SLOTS:
     void on_btnClr_clicked();
     void on_btnGraph_clicked();
 
-    void on_btnKnob_clicked();
+//    void on_btnKnob_clicked();
     void slot_download_cancel();
 
     void on_spinLoop_valueChanged(int arg1);
@@ -105,7 +105,7 @@ private:
 
     tpvGroup *mTpvGroup;
     QProgressDialog *m_pProgress;
-    axesKnob *m_pWndKnob;
+//    axesKnob *m_pWndKnob;
 
     tpvPlot *m_pPlot;
 

@@ -11,6 +11,9 @@ deviceConsole::deviceConsole(QWidget *parent) :
 
     setAttribute( Qt::WA_DeleteOnClose );
 
+    connect( this, SIGNAL(signal_classname_changed()),
+             this, SLOT(slot_classname_changed()) );
+
     m_pScpiShell = NULL;
 }
 
@@ -34,6 +37,16 @@ void deviceConsole::setMrq( bool b )
     ui->btnCls->setVisible(b);
     ui->btnRst->setVisible(b);
 }
+
+void deviceConsole::setClassName( const QString &cls )
+{
+    mClassName = cls;
+
+    emit signal_classname_changed();
+
+}
+QString deviceConsole::className()
+{ return mClassName; }
 
 void deviceConsole::on_btnWrite_clicked()
 {   
@@ -62,7 +75,6 @@ void deviceConsole::on_btnWrite_clicked()
     {
         ui->comboBox->removeItem( ui->comboBox->count() - 1 );
     }
-
 }
 
 void deviceConsole::on_btnRead_clicked()
@@ -89,6 +101,20 @@ void deviceConsole::on_btnRead_clicked()
 void deviceConsole::slot_device_changed()
 {
     close();    //! as the mgr changed
+}
+
+void deviceConsole::slot_classname_changed()
+{
+
+    mCommandsetFullName = QCoreApplication::applicationDirPath()
+            + QDir::separator()
+            + QStringLiteral("doc")
+            + QDir::separator()
+            + mClassName
+            + QStringLiteral("_commandset.md");
+    mCommandsetFullName.replace("/","\\");
+
+    ui->btnCmdSet->setEnabled( QFile::exists( mCommandsetFullName ) );
 }
 
 void deviceConsole::on_btnRst_clicked()
@@ -130,3 +156,9 @@ void deviceConsole::on_comboBox_currentTextChanged(const QString &arg1)
     ui->btnWrite->setEnabled( arg1.trimmed().length() > 0 );
 }
 
+void deviceConsole::on_btnCmdSet_clicked()
+{
+    QStringList args;
+    args<<mCommandsetFullName;
+    QProcess::execute( "explorer.exe", args );
+}

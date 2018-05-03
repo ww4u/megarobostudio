@@ -33,11 +33,168 @@ public:
 };
 typedef QList< tpvRow *>  tpvList;
 
-class mcRow
+class SheetRow
 {
 public:
-    tpvType mT,mX,mY,mZ;
+    bool    mbEnable;
+    QString mComment;       //! comment of the row
+    QString mName;          //! name
+
+public:
+    SheetRow()
+    {  mbEnable = true; }
+    virtual ~SheetRow()
+    {}
+
+public:
+    void setEnable( bool bEn )
+    { mbEnable = bEn; }
+    bool enable()
+    { return mbEnable; }
+
+    void setComment( const QString &comment )
+    { mComment = comment; }
+    QString comment()
+    { return mComment; }
+
+    void setName( const QString &name )
+    { mName = name; }
+    QString name()
+    { return mName; }
 };
+
+class MotionRow
+{
+public:
+    tpvType mT;
+    quint32 mIAttr;
+
+public:
+    MotionRow()
+    {
+        mT = 0;
+        mIAttr = 1;
+    }
+    virtual ~MotionRow()
+    {}
+
+public:
+    void setT( tpvType t )
+    { mT = t; }
+    tpvType T()
+    { return mT; }
+
+    void setIAttr( quint32 iAttr )
+    { mIAttr = iAttr; }
+    quint32 IAttr()
+    { return mIAttr; }
+};
+
+class H2Row : public MotionRow
+{
+public:
+    tpvType mX,mY,mZ;
+public:
+    H2Row()
+    {
+        mX = 0;
+        mY = 0;
+        mZ = 0;
+    }
+    virtual ~H2Row()
+    {}
+
+public:
+    void setX( tpvType v )
+    { mX = v; }
+    tpvType X()
+    { return mX; }
+
+    void setY( tpvType v )
+    { mY = v; }
+    tpvType Y()
+    { return mY; }
+
+    void setZ( tpvType v )
+    { mZ = v; }
+    tpvType Z()
+    { return mZ; }
+};
+
+//! t,x,y,z,h
+class SinanjuRow : public H2Row
+{
+public:
+    tpvType mH;
+
+public:
+    SinanjuRow()
+    {
+        mH = 0;
+    }
+
+    virtual ~SinanjuRow()
+    {}
+
+public:
+    void setH( tpvType h )
+    { mH = h; }
+    tpvType H()
+    { return mH; }
+};
+
+//! t,fx,fz,bx,bz,ly,ry
+class MegatronRow : public MotionRow
+{
+public:
+    tpvType mFx, mFz, mBx, mBz, mLy, mRy;
+
+public:
+    MegatronRow()
+    {
+
+        mFx = 0;
+        mBx = 0;
+        mFz = 0;
+        mBz = 0;
+        mLy = 0;
+        mRy = 0;
+    }
+    virtual ~MegatronRow()
+    {}
+
+    void setFx( tpvType v )
+    { mFx = v; }
+    tpvType Fx()
+    { return mFx; }
+
+    void setFz( tpvType v )
+    { mFz = v; }
+    tpvType Fz()
+    { return mFz; }
+
+    void setBx( tpvType v )
+    { mBx = v; }
+    tpvType Bx()
+    { return mBx; }
+
+    void setBz( tpvType v )
+    { mBz = v; }
+    tpvType Bz()
+    { return mBz; }
+
+    void setLy( tpvType v )
+    { mLy = v; }
+    tpvType Ly()
+    { return mLy; }
+
+    void setRy( tpvType v )
+    { mRy = v; }
+    tpvType Ry()
+    { return mRy; }
+
+};
+
 
 class tpvRegion
 {

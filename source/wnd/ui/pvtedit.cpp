@@ -17,7 +17,7 @@ pvtEdit::pvtEdit(QWidget *parent) :
 
     mFilePattern<<pvt_desc<<pvt_ext;
 
-    m_pWndKnob = NULL;
+//    m_pWndKnob = NULL;
     m_pProgress = NULL;
 
     mTStep = 1;
@@ -94,7 +94,7 @@ void pvtEdit::onNetEvent(const QString &name,
 }
 
 void pvtEdit::onMotionStatus( int axes, MRQ_MOTION_STATE_2 stat )
-{logDbg()<<stat;
+{logDbg()<<stat;/*sysLog(__FUNCTION__, QString::number( (int)stat ) );*/
     if ( stat == MRQ_MOTION_STATE_2_IDLE )
     {
         ui->btnDown->setEnabled( true );
@@ -109,8 +109,8 @@ void pvtEdit::onMotionStatus( int axes, MRQ_MOTION_STATE_2 stat )
     }
     else if ( stat == MRQ_MOTION_STATE_2_STANDBY )
     {
-        ui->btnDown->setEnabled( true );
-        ui->btnStart->setEnabled( true );
+        ui->btnDown->setEnabled( false );
+        ui->btnStart->setEnabled( false );
         ui->btnStop->setEnabled( false );
     }
     else if ( stat == MRQ_MOTION_STATE_2_RUNNING )
@@ -277,7 +277,12 @@ int pvtEdit::postStart( appMsg msg, void *pPara )
 void pvtEdit::beginStart( void *pPara )
 {}
 void pvtEdit::endStart( int ret, void *pPara )
-{}
+{
+    if ( ret != 0 )
+    { sysError( tr("start fail") ); }
+    else
+    { }
+}
 
 //! stop
 int pvtEdit::postStop( appMsg msg, void *pPara )
@@ -500,6 +505,9 @@ void pvtEdit::on_btnStart_clicked()
     if ( !checkChan() )
     { return; }
 
+    //! diable start
+    ui->btnStart->setEnabled( false );
+
     post_request( msg_start_pvt, pvtEdit, Start );
 }
 void pvtEdit::on_btnStop_clicked()
@@ -530,6 +538,14 @@ void pvtEdit::on_btnAdd_clicked()
 void pvtEdit::on_btnDel_clicked()
 {
     mTpvGroup->removeRow( ui->tableView->currentIndex().row() );
+
+//    QItemSelectionModel *pModel = ui->tableView->selectionModel();
+
+//    QModelIndexList selectList = pModel->selectedIndexes();
+//    foreach( QModelIndex index, selectList )
+//    {
+//        mTpvGroup->removeRow( index.row() );
+//    }
 }
 
 void pvtEdit::on_btnClr_clicked()
@@ -560,30 +576,30 @@ void pvtEdit::on_btnGraph_clicked()
     m_pPlot->show();
 }
 
-void pvtEdit::on_btnKnob_clicked()
-{
-    if ( !checkChan() )
-    { return; }
+//void pvtEdit::on_btnKnob_clicked()
+//{
+//    if ( !checkChan() )
+//    { return; }
 
-    if ( m_pWndKnob == NULL )
-    {
-        m_pWndKnob = new axesKnob( m_pmcModel, this);
-        Q_ASSERT( NULL != m_pWndKnob );
-    }
+//    if ( m_pWndKnob == NULL )
+//    {
+//        m_pWndKnob = new axesKnob( m_pmcModel, this);
+//        Q_ASSERT( NULL != m_pWndKnob );
+//    }
 
-//    //! set model && axesid
-//    QString str;
-//    int id;
-//    str = m_pmcModel->getConnection().getDeviceName();
-//    id = m_pmcModel->getConnection().getDeviceCH();
+////    //! set model && axesid
+////    QString str;
+////    int id;
+////    str = m_pmcModel->getConnection().getDeviceName();
+////    id = m_pmcModel->getConnection().getDeviceCH();
 
-////    MegaDevice::deviceMRQ *pMrq = m_pmcModel->m_pInstMgr->findDevice( str,
-////                                                                      id );
-//////    m_pWndKnob->setDevice( pMrq, id );
-//////    m_pWndKnob->setConnection( QString("CH%1@%2").arg(id + 1 ).arg( str ) );
+//////    MegaDevice::deviceMRQ *pMrq = m_pmcModel->m_pInstMgr->findDevice( str,
+//////                                                                      id );
+////////    m_pWndKnob->setDevice( pMrq, id );
+////////    m_pWndKnob->setConnection( QString("CH%1@%2").arg(id + 1 ).arg( str ) );
 
-    m_pWndKnob->show();
-}
+//    m_pWndKnob->show();
+//}
 
 void pvtEdit::slot_download_cancel()
 {

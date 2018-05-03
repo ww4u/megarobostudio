@@ -1,6 +1,14 @@
 #include "vrobot.h"
 
-#include "../../app/systimer.h"
+#include "../app/systimer.h"
+
+int VRobot::build( MegaTableModel *pModel,
+                   xxxGroup< tracePoint > &tracePlan,
+                   xxxGroup< jointsTrace > &jointsPlan,
+                   QList< tpvGroup *> &gp )
+{
+    return -1;
+}
 
 //! action
 int VRobot::transform( int axes )
@@ -13,13 +21,13 @@ int VRobot::download( tpvGroup *pGroup,
 
     return 0;
 }
-int VRobot::download( motionGroup *pGroup,
-                      const tpvRegion &region )
-{
-    Q_ASSERT( NULL != pGroup );
+//int VRobot::download( motionGroup *pGroup,
+//                      const tpvRegion &region )
+//{
+//    Q_ASSERT( NULL != pGroup );
 
-    return 0;
-}
+//    return 0;
+//}
 int VRobot::download( QList<tpvGroup*> &groups,
                       QList<int> &joints,
                       const tpvRegion &region )
@@ -51,6 +59,16 @@ int VRobot::goZero( int jointTabId, bool bCcw )
 int VRobot::goZero( const QList<int> &jointList,
                     const QList<bool> &ccwList )
 { return 0; }
+
+bool VRobot::checkZeroValid()
+{ return false; }
+float VRobot::getZero( int jointTabId )
+{ return 0; }
+int  VRobot::setZero( int jointTabId, float val )
+{ return 0; }
+
+int VRobot::getPOSE( float pos[] )
+{ return -1; }
 
 int VRobot::setLoop( int n, const tpvRegion &region )
 { return 0;  }

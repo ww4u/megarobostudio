@@ -41,7 +41,7 @@ void mrqAxes::spyEdited()
 {
     QCheckBox *checkBoxes[]=
     {
-        ui->chkIdle,
+        ui->chkDriverState,
     };
 
     QLineEdit *edits[]={
@@ -115,10 +115,11 @@ int mrqAxes::apply()
     pDevice->setMOTOR_PEAKSPEED( mAxesId, ui->spinMaxVelocity->value() );
     pDevice->setMOTOR_PEAKACCELERATION( mAxesId, ui->spinMaxAcc->value() );
 
+    //! driver
+    pDevice->setDRIVER_STATE( mAxesId, (MRQ_CAN_NETMANAGELED)ui->chkDriverState->isChecked() );
     pDevice->setDRIVER_IDLECURRENT( mAxesId, comAssist::align( ui->spinIdleCurrent->value(),motor_current_unit) );
     pDevice->setDRIVER_SWITCHTIME( mAxesId, comAssist::align( ui->spinIdleTime->value(),driver_time_unit) );
 
-    //! driver
     pDevice->setDRIVER_CURRENT( mAxesId, comAssist::align( ui->dblCurrent->value(),driver_current_unit) );
     pDevice->setDRIVER_MICROSTEPS( mAxesId, (MRQ_DRIVER_MICROSTEPS)ui->cmbDrvVernier->currentIndex() );
 
@@ -163,10 +164,13 @@ logDbg();
     ui->spinMaxVelocity->setValue( ( pModel->mMOTOR_PEAKSPEED[mAxesId] ) );
     ui->spinMaxAcc->setValue( ( pModel->mMOTOR_PEAKACCELERATION[mAxesId] ) );
 
+//    pDevice->setDRIVER_STATE( mAxesId, (MRQ_CAN_NETMANAGELED)ui->chkDriverState->isChecked() );
+
+    //! driver
+    ui->chkDriverState->setChecked( pModel->mDRIVER_STATE[mAxesId] );
     ui->spinIdleCurrent->setValue( pModel->mDRIVER_IDLECURRENT[mAxesId]*driver_current_unit );
     ui->spinIdleTime->setValue( pModel->mDRIVER_SWITCHTIME[mAxesId]*driver_time_unit );
 
-    //! driver
     ui->dblCurrent->setValue( pModel->mDRIVER_CURRENT[mAxesId]*driver_current_unit );
     ui->cmbDrvVernier->setCurrentIndex( pModel->mDRIVER_MICROSTEPS[mAxesId] );
 

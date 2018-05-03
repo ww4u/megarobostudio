@@ -19,6 +19,7 @@ class roboAxes : public DlgView
 
 public:
     explicit roboAxes( mcModel *pModel,
+                       const QString &roboName,
                        QWidget *parent = 0);
     ~roboAxes();
 
@@ -34,6 +35,7 @@ protected Q_SLOTS:
     void slot_joint_zero( int id, bool bCcw );
 
     void slot_robo_changed( const QString &roboName );
+    void slot_device_changed();
 
 protected:
     VRobot *Robot();

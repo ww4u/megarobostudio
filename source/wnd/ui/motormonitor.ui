@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Motor</string>
+   <string>Motor Status</string>
   </property>
   <property name="windowIcon">
    <iconset resource="../res/res.qrc">

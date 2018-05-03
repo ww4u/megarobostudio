@@ -18,7 +18,7 @@ bool RoboMsg::checkMsg( RoboMsg &msg, msg_type msgPatterns[], int n )
 RoboMsg::RoboMsg()
 {
     mMsg = e_robo_none;
-    mMs = QDateTime::currentMSecsSinceEpoch();
+    mTimeStamp = 0;
 }
 
 void RoboMsg::setMsg( eRoboMsg msg )
@@ -31,7 +31,7 @@ eRoboMsg RoboMsg::Msg()
 
 qint64 RoboMsg::operator- ( const RoboMsg &rMsg ) const
 {
-    return mMs - rMsg.mMs;
+    return mTimeStamp - rMsg.timeStamp();
 }
 
 #define check_tx( x ) if ( t##x != QMetaType::UnknownType && size() > x ) \
@@ -64,4 +64,8 @@ bool RoboMsg::checkType( QMetaType::Type ts[6] )
                       ts[4], ts[5] );
 }
 
+void RoboMsg::setTimeStamp( quint64 t )
+{ mTimeStamp = t; }
+quint64 RoboMsg::timeStamp() const
+{ return mTimeStamp; }
 

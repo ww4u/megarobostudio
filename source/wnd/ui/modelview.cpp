@@ -80,6 +80,9 @@ bool modelView::isOkAble()
 bool modelView::isApplyAble()
 { return is_bit1(mAttributes,APPLY_ABLE_BIT); }
 
+QString modelView::name()
+{ return mName; }
+
 void modelView::setModelObj( mcModelObj *pObj )
 {
     Q_ASSERT( NULL != pObj );

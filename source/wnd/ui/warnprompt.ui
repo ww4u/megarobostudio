@@ -54,14 +54,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QLabel" name="labInfo">
-       <property name="text">
-        <string>Info:</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-       </property>
-      </widget>
+      <widget class="QListWidget" name="listWidget"/>
      </item>
     </layout>
    </item>

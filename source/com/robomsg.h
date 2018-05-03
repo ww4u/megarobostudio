@@ -12,11 +12,13 @@ enum eRoboMsg
     e_download_completed,   //! name, region
 
     e_download_terminated,  //! name, axes
+    e_download_canceled,    //! name, axes, all
 
     e_progress_para,        //! mi,ma,n,info
     e_progress_visible,     //! b
     e_status,               //! string
     e_logout,               //! string
+    e_prompt,               //! string
 
     e_interrupt_occuring,       //! event id, frame id, byte array
 //    e_axes_status,              //! name, region, status
@@ -71,9 +73,12 @@ public:
 
     bool checkType( QMetaType::Type ts[6] );
 
+    void setTimeStamp( quint64 t );
+    quint64 timeStamp() const;
+
 public:
     eRoboMsg mMsg;
-    qint64   mMs;
+    qint64   mTimeStamp;
 };
 
 Q_DECLARE_METATYPE( RoboMsg )

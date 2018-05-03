@@ -2,11 +2,33 @@
 #include "ui_scriptmgr.h"
 #include "../../com/comassist.h"
 
-#include "../../model/motiongroup.h"
 #include "../../model/tpvgroup.h"
 #include "../../model/roboscenemodel.h"
 
 #include "../../robot/robotfact.h"
+
+
+#include "../model/sinanjumotiongroup.h"
+#include "../model/megatronmotiongroup.h"
+#include "../model/h2motiongroup.h"
+
+
+MegaTableModel *scriptMgr::newMotion( const QString &clsName )
+{
+    MegaTableModel *pNewModelObj;
+    if ( clsName.compare("sinanju", Qt::CaseInsensitive) == 0 )
+    { pNewModelObj = new SinanjuMotionGroup( clsName ); }
+    else if ( clsName.compare("megatron", Qt::CaseInsensitive) == 0 )
+    { pNewModelObj = new MegatronMotionGroup( clsName ); }
+    else if ( clsName.compare("delta", Qt::CaseInsensitive) == 0 )
+    { pNewModelObj = new SinanjuMotionGroup( clsName ); }
+    else if ( clsName.compare("h2", Qt::CaseInsensitive) == 0 )
+    { pNewModelObj = new H2MotionGroup( clsName ); }
+    else
+    { return NULL; }
+
+    return pNewModelObj;
+}
 
 scriptMgr::scriptMgr(QWidget *parent) :
     QWidget(parent),
@@ -131,7 +153,7 @@ int scriptMgr::saveActiveFile( const QString &file )
     if ( NULL == pNode || pNode->getNodeType() != scriptNode::node_file )
     { return ERR_INVALID_SCRIPT_FILE_NODE; }
 
-    motionGroup *pGroup = dynamic_cast<motionGroup*>( pNode );
+    SinanjuMotionGroup *pGroup = dynamic_cast<SinanjuMotionGroup*>( pNode );
     if ( NULL == pGroup )
     { return ERR_INVALID_SCRIPT_FILE_NODE; }
 
@@ -174,28 +196,48 @@ int scriptMgr::openFile( const QString &path,
 
 int scriptMgr::openMotionGroup( const QString &path, const QString &file )
 {
-    motionGroup *pGroup;
+    //! read the first line
+    QFile fileRaw( file );
+    if ( fileRaw.open(QIODevice::ReadOnly) )
+    { }
+    else
+    { return ERR_FILE_OPEN_FAIL; }
 
-    pGroup = new motionGroup();
-    Q_ASSERT( NULL != pGroup );
-    int ret = pGroup->load( file );
+    QByteArray ary;
+    ary = fileRaw.readLine( 128 );
+    fileRaw.close();
+    QString lineStr(ary);
+    if ( lineStr.startsWith("#!") )
+    {}
+    else
+    { return ERR_FILE_DO_NOT_SUPPORT; }
+
+    lineStr.remove("#!");
+    lineStr = lineStr.trimmed().toLower();
+
+    MegaTableModel *pModel;
+    pModel = scriptMgr::newMotion( lineStr );
+    if ( NULL == pModel )
+    { return ERR_FILE_OPEN_FAIL; }
+
+    int ret = pModel->load( file );
     if ( ret != 0 )
     {
-        delete pGroup;
+        delete pModel;
         return ret;
     }
 
-    logDbg()<<pGroup->mItems.size();
+//    logDbg()<<pModel->mItems.size();
 
-    pGroup->setPath( path );
-    pGroup->setName( comAssist::pureFileName(file) );
-    pGroup->setFile( true );
-    pGroup->setGc( true );
+    pModel->setPath( path );
+    pModel->setName( comAssist::pureFileName(file) );
+    pModel->setFile( true );
+    pModel->setGc( true );
 
-    pGroup->set( mcModelObj::model_motion_file,
-                 pGroup );
+    pModel->set( mcModelObj::model_motion_file,
+                 pModel );
 
-    emit itemXActivated( pGroup );
+    emit itemXActivated( pModel );
 
     return ERR_NONE;
 }
@@ -317,7 +359,7 @@ int scriptMgr::saveActiveFile()
     if ( NULL == pNode || pNode->getNodeType() != scriptNode::node_file )
     { return ERR_INVALID_SCRIPT_FILE_NODE; }
 
-    motionGroup *pGroup = dynamic_cast<motionGroup*>( pNode );
+    MegaTableModel *pGroup = dynamic_cast<MegaTableModel*>( pNode );
     if ( NULL == pGroup )
     { return ERR_INVALID_SCRIPT_FILE_NODE; }
 
@@ -535,6 +577,9 @@ void scriptMgr::slot_context_newgroup()
     if (ok && !text.isEmpty())
     { newGroup( text ); }
 }
+void scriptMgr::slot_context_delete()
+{ deleteCurrent( ); }
+
 void scriptMgr::slot_context_import()
 {
     QFileDialog fDlg;
@@ -565,6 +610,5 @@ void scriptMgr::slot_context_import()
 
     m_pRootModel->appendNode( ui->scriptView->currentIndex(), pFile );
 }
-void scriptMgr::slot_context_delete()
-{ deleteCurrent( ); }
+
 

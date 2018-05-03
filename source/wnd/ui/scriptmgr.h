@@ -3,9 +3,11 @@
 
 #include <QtWidgets>
 
-#include "../../model/motionitem.h"
+//#include "../../model/sinanjumotionitem.h"
 #include "../../model/scriptmodel.h"
 #include "../../model/roboscenemodel.h"
+
+#include "../../model/megatablemodel.h"
 
 namespace Ui {
 class scriptMgr;
@@ -14,6 +16,9 @@ class scriptMgr;
 class scriptMgr : public QWidget
 {
     Q_OBJECT
+
+public:
+    static MegaTableModel *newMotion( const QString &clsName );
 
 public:
     explicit scriptMgr(QWidget *parent = 0);
@@ -82,8 +87,9 @@ private Q_SLOTS:
 
 //    void slot_context_newfile();
     void slot_context_newgroup();
-    void slot_context_import();
     void slot_context_delete();
+public Q_SLOTS:
+    void slot_context_import();
 
 private:
     Ui::scriptMgr *ui;

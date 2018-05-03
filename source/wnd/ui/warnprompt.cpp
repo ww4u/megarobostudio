@@ -15,5 +15,17 @@ WarnPrompt::~WarnPrompt()
 
 void WarnPrompt::setInfo( const QString &str )
 {
-    ui->labInfo->setText( str );
+    ui->listWidget->addItem( str );
+    ui->listWidget->setCurrentRow( ui->listWidget->count() - 1 );
+}
+
+void WarnPrompt::addInfo( const QString &str )
+{
+    ui->listWidget->addItem( str );
+    ui->listWidget->setCurrentRow( ui->listWidget->count() - 1 );
+}
+
+void WarnPrompt::hideEvent(QHideEvent *event)
+{
+    ui->listWidget->clear();
 }

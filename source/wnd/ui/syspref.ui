@@ -65,7 +65,7 @@
       <enum>QTabWidget::North</enum>
      </property>
      <property name="currentIndex">
-      <number>3</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tab_2">
       <attribute name="title">
@@ -246,6 +246,16 @@
             </property>
            </widget>
           </item>
+          <item row="2" column="1">
+           <widget class="QCheckBox" name="chkAutoStatus">
+            <property name="layoutDirection">
+             <enum>Qt::RightToLeft</enum>
+            </property>
+            <property name="text">
+             <string>Auto Status View</string>
+            </property>
+           </widget>
+          </item>
          </layout>
         </widget>
        </item>
@@ -342,6 +352,12 @@
         <layout class="QHBoxLayout" name="horizontalLayout_2">
          <item>
           <widget class="QGroupBox" name="groupBox_3">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+             <horstretch>2</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="title">
             <string>Communication</string>
            </property>
@@ -361,30 +377,6 @@
             <property name="spacing">
              <number>3</number>
             </property>
-            <item row="6" column="0">
-             <widget class="QLabel" name="label_18">
-              <property name="text">
-               <string>Fail Try Count</string>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="0">
-             <widget class="QLabel" name="label_4">
-              <property name="text">
-               <string>Speed(bps)</string>
-              </property>
-             </widget>
-            </item>
-            <item row="8" column="1">
-             <widget class="QSpinBox" name="spinPvtInterval">
-              <property name="minimum">
-               <number>0</number>
-              </property>
-              <property name="maximum">
-               <number>1000000</number>
-              </property>
-             </widget>
-            </item>
             <item row="0" column="1">
              <widget class="QComboBox" name="cmbPort">
               <property name="enabled">
@@ -420,149 +412,24 @@
                  <normaloff>:/res/image/can2.png</normaloff>:/res/image/can2.png</iconset>
                </property>
               </item>
-             </widget>
-            </item>
-            <item row="8" column="0">
-             <widget class="QLabel" name="label_27">
-              <property name="text">
-               <string>PVT Interval(us)</string>
-              </property>
-             </widget>
-            </item>
-            <item row="7" column="0">
-             <widget class="QLabel" name="label_22">
-              <property name="text">
-               <string>Enumerate Timeout(us)</string>
-              </property>
-             </widget>
-            </item>
-            <item row="3" column="0">
-             <widget class="QLabel" name="label">
-              <property name="text">
-               <string>Timeout(us)</string>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="1">
-             <widget class="QComboBox" name="cmbSpeed">
-              <property name="editable">
-               <bool>false</bool>
-              </property>
               <item>
                <property name="text">
-                <string>1000000</string>
+                <string>MRH-T</string>
+               </property>
+               <property name="icon">
+                <iconset resource="../res/res.qrc">
+                 <normaloff>:/res/image/mrh-t.png</normaloff>:/res/image/mrh-t.png</iconset>
                </property>
               </item>
               <item>
                <property name="text">
-                <string>800000</string>
+                <string>MiniUSBCAN</string>
+               </property>
+               <property name="icon">
+                <iconset resource="../res/res.qrc">
+                 <normaloff>:/res/image/miniusbcan.png</normaloff>:/res/image/miniusbcan.png</iconset>
                </property>
               </item>
-              <item>
-               <property name="text">
-                <string>666000</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>500000</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>400000</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>250000</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>200000</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>125000</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>100000</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>80000</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>50000</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>40000</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>20000</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>10000</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>5000</string>
-               </property>
-              </item>
-             </widget>
-            </item>
-            <item row="6" column="1">
-             <widget class="QSpinBox" name="spinFailTry"/>
-            </item>
-            <item row="4" column="0">
-             <widget class="QLabel" name="label_6">
-              <property name="text">
-               <string>Send Interval(us)</string>
-              </property>
-             </widget>
-            </item>
-            <item row="7" column="1">
-             <widget class="QSpinBox" name="spinEnumTmo">
-              <property name="minimum">
-               <number>1000</number>
-              </property>
-              <property name="maximum">
-               <number>10000000</number>
-              </property>
-             </widget>
-            </item>
-            <item row="9" column="1">
-             <widget class="QCheckBox" name="chkAutoAssignId">
-              <property name="toolTip">
-               <string>Auto Assign: Auto assign send/receive id for each device</string>
-              </property>
-              <property name="layoutDirection">
-               <enum>Qt::LeftToRight</enum>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
-             </widget>
-            </item>
-            <item row="9" column="0">
-             <widget class="QLabel" name="label_28">
-              <property name="text">
-               <string>Auto Assign ID</string>
-              </property>
              </widget>
             </item>
             <item row="0" column="0">
@@ -572,24 +439,259 @@
               </property>
              </widget>
             </item>
-            <item row="3" column="1">
-             <widget class="QSpinBox" name="spinTmo">
-              <property name="minimum">
-               <number>1000</number>
-              </property>
-              <property name="maximum">
-               <number>1000000</number>
-              </property>
-             </widget>
-            </item>
-            <item row="4" column="1">
-             <widget class="QSpinBox" name="spinInterval">
-              <property name="minimum">
+            <item row="3" column="0" colspan="2">
+             <widget class="QTabWidget" name="tabWidget_2">
+              <property name="currentIndex">
                <number>0</number>
               </property>
-              <property name="maximum">
-               <number>1000000</number>
+              <widget class="QWidget" name="tab_5">
+               <attribute name="title">
+                <string>CAN</string>
+               </attribute>
+               <layout class="QFormLayout" name="formLayout_3">
+                <item row="0" column="0">
+                 <widget class="QLabel" name="label_4">
+                  <property name="text">
+                   <string>Speed(bps)</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="1">
+                 <widget class="QComboBox" name="cmbSpeed">
+                  <property name="editable">
+                   <bool>false</bool>
+                  </property>
+                  <item>
+                   <property name="text">
+                    <string>1000000</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>800000</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>666000</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>500000</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>400000</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>250000</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>200000</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>125000</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>100000</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>80000</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>50000</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>40000</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>20000</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>10000</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>5000</string>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+                <item row="1" column="0">
+                 <widget class="QLabel" name="label_22">
+                  <property name="text">
+                   <string>Enumerate Timeout(us)</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="1">
+                 <widget class="QSpinBox" name="spinEnumTmo">
+                  <property name="minimum">
+                   <number>1000</number>
+                  </property>
+                  <property name="maximum">
+                   <number>10000000</number>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="0">
+                 <widget class="QLabel" name="label_28">
+                  <property name="text">
+                   <string>Auto Assign ID</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="1">
+                 <widget class="QCheckBox" name="chkAutoAssignId">
+                  <property name="toolTip">
+                   <string>Auto Assign: Auto assign send/receive id for each device</string>
+                  </property>
+                  <property name="layoutDirection">
+                   <enum>Qt::LeftToRight</enum>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+              <widget class="QWidget" name="tab_6">
+               <attribute name="title">
+                <string>MRH</string>
+               </attribute>
+               <layout class="QFormLayout" name="formLayout_7">
+                <item row="0" column="0">
+                 <widget class="QLabel" name="label_32">
+                  <property name="text">
+                   <string>Address</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="1">
+                 <widget class="QLineEdit" name="edtVisa">
+                  <property name="text">
+                   <string>TCPIP0::192.168.131.192::inst0::INSTR</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="0">
+                 <widget class="QPushButton" name="btnVerify_2">
+                  <property name="text">
+                   <string>Verify</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="0">
+                 <widget class="QLabel" name="label_33">
+                  <property name="text">
+                   <string>Timeout(ms)</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="1">
+                 <widget class="QSpinBox" name="spinVisaTmo">
+                  <property name="minimum">
+                   <number>1</number>
+                  </property>
+                  <property name="maximum">
+                   <number>1000000</number>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </widget>
+            </item>
+            <item row="4" column="0" colspan="2">
+             <widget class="QGroupBox" name="groupBox_12">
+              <property name="title">
+               <string/>
               </property>
+              <layout class="QFormLayout" name="formLayout_8">
+               <item row="0" column="0">
+                <widget class="QLabel" name="label">
+                 <property name="text">
+                  <string>Timeout(us)</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="1">
+                <widget class="QSpinBox" name="spinTmo">
+                 <property name="minimum">
+                  <number>1000</number>
+                 </property>
+                 <property name="maximum">
+                  <number>1000000</number>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="0">
+                <widget class="QLabel" name="label_6">
+                 <property name="text">
+                  <string>Send Interval(us)</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="1">
+                <widget class="QSpinBox" name="spinInterval">
+                 <property name="minimum">
+                  <number>0</number>
+                 </property>
+                 <property name="maximum">
+                  <number>1000000</number>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="0">
+                <widget class="QLabel" name="label_18">
+                 <property name="text">
+                  <string>Fail Try Count</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="1">
+                <widget class="QSpinBox" name="spinFailTry"/>
+               </item>
+               <item row="3" column="0">
+                <widget class="QLabel" name="label_27">
+                 <property name="text">
+                  <string>PVT Interval(us)</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="1">
+                <widget class="QSpinBox" name="spinPvtInterval">
+                 <property name="minimum">
+                  <number>0</number>
+                 </property>
+                 <property name="maximum">
+                  <number>1000000</number>
+                 </property>
+                </widget>
+               </item>
+              </layout>
              </widget>
             </item>
            </layout>
@@ -597,6 +699,12 @@
          </item>
          <item>
           <widget class="QGroupBox" name="groupBox_11">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+             <horstretch>1</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="title">
             <string/>
            </property>
@@ -605,8 +713,8 @@
              <widget class="QLabel" name="labelCanPic">
               <property name="maximumSize">
                <size>
-                <width>64</width>
-                <height>64</height>
+                <width>128</width>
+                <height>128</height>
                </size>
               </property>
               <property name="text">

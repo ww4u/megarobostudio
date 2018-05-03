@@ -16,6 +16,10 @@ public:
     ~WarnPrompt();
 
     void setInfo( const QString &str );
+    void addInfo( const QString &str );
+
+protected:
+    virtual void hideEvent(QHideEvent *event);
 
 private:
     Ui::WarnPrompt *ui;

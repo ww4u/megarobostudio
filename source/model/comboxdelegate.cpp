@@ -10,9 +10,11 @@ QWidget *comboxDelegate::createEditor(QWidget *parent, const QStyleOptionViewIte
                       const QModelIndex &index) const
 {
     QComboBox *pCombox = new QComboBox( parent );
+    Q_ASSERT( NULL != pCombox );
 
     pCombox->setFrame( false );
     pCombox->setInsertPolicy( QComboBox::NoInsert );
+    pCombox->setEditable( false );
 
     QMapIterator<QString, int > iter(mTables);
     while( iter.hasNext() )
@@ -27,9 +29,23 @@ QWidget *comboxDelegate::createEditor(QWidget *parent, const QStyleOptionViewIte
 
 void comboxDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
 {
+    if ( index.isValid() )
+    {}
+    else
+    { return; }
+
     QString value = index.model()->data(index, Qt::EditRole).toString();
 
     QComboBox *pCombox = static_cast<QComboBox*>(editor);
+
+    //! not empty
+    if ( value.length() > 0 )
+    {}
+    else
+    {
+        pCombox->setCurrentIndex( 0 );
+        return;
+    }
 
     if ( mTables.find(value) != mTables.end() )
     {
@@ -78,16 +94,17 @@ void comboxDelegate::setItems( const QStringList &strList,
 int comboxDelegate::value( const QString &name,
                            int *pVal )
 {
-    if ( mTables.contains(name) )
+    foreach( QString str, mTables.keys() )
     {
-        *pVal = mTables[name];
-
-        return 0;
+        if ( name.compare( str, Qt::CaseInsensitive) == 0 )
+        {
+            *pVal = mTables[str];
+            return 0;
+        }
     }
-    else
-    { return -1; }
 
-    { return -1; }
+    return 0;
+
 }
 
 QString comboxDelegate::toString( int id )
@@ -102,5 +119,6 @@ QString comboxDelegate::toString( int id )
           { return iter.key(); }
     }
 
-    return "";
+    return mTables.firstKey();
 }
+

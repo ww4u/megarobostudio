@@ -1,7 +1,7 @@
 #ifndef PROGRESSELEMENT_H
 #define PROGRESSELEMENT_H
 
-#include <QWidget>
+#include <QtWidgets>
 
 namespace Ui {
 class ProgressElement;
@@ -15,9 +15,11 @@ public:
     explicit ProgressElement(QWidget *parent = 0);
     ~ProgressElement();
 
+protected:
+    virtual void hideEvent(QHideEvent *event );
+
 Q_SIGNALS:
     void sigCancel( const QString &name, int id );
-
 
 public:
     void set( const QString &name, int id );
@@ -39,6 +41,9 @@ private:
 
     QString mName;
     int mId;
+
+    QTime mLatestTime;
+    int mLatestProg;
 
 };
 

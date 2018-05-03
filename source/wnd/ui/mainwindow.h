@@ -42,6 +42,8 @@
 #include "anglemonitor.h"
 #include "motormonitor.h"
 
+#include "warnprompt.h"
+
 //! models
 #include "../../model/mcmodel.h"
 #include "../../model/modelsyspref.h"
@@ -128,6 +130,7 @@ protected Q_SLOTS:
     void slot_status( const QString &str );
 
     void slot_logout( const QString &str );
+    void slot_prompt( const QString &str );
 
     //! connection
     void slot_robo_name_changed( const QString& );
@@ -139,7 +142,7 @@ protected Q_SLOTS:
     void slot_tabwidget_currentChanged(int index);
 
     void slot_scene_changed();
-
+    void slot_download_cancel( const QString &name, int id );
 protected:
     modelView *findView( mcModelObj *pModel );
     modelView *createModelView( modelView *pView, mcModelObj *pModel );
@@ -216,6 +219,12 @@ private slots:
     void on_actionDistance_D_triggered();
 
     void on_actionMotor_Panel_triggered();
+
+    void on_actionCamera_triggered();
+
+    void on_actionClose_All_triggered();
+
+    void on_actionImport_I_triggered();
 
     void on_actiontest_triggered();
 

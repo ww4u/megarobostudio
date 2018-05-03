@@ -1,0 +1,29 @@
+#ifndef MOTIONWIZARD_H
+#define MOTIONWIZARD_H
+
+#include <QtWidgets>
+
+namespace Ui {
+class MotionWizard;
+}
+
+class MotionWizard : public QDialog
+{
+    Q_OBJECT
+
+public:
+    explicit MotionWizard(QWidget *parent = 0);
+    ~MotionWizard();
+
+public:
+    QString motionName();
+
+
+private slots:
+    void on_listWidget_currentTextChanged(const QString &currentText);
+
+private:
+    Ui::MotionWizard *ui;
+};
+
+#endif // MOTIONWIZARD_H

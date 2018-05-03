@@ -3,11 +3,13 @@
 
 #include <QtWidgets>
 
-#include "../../model/motiongroup.h"
+#include "../../model/sinanjumotiongroup.h"
+#include "../../model/megatronmotiongroup.h"
+
 #include "../../model/comboxdelegate.h"
 
 #include "../../arith/pathplan/pathplan.h"
-#include "../../arith/kinematic/kinematic.h"
+#include "../../arith/sinanju_split/sinanju_split.h"
 
 #include "tableedit.h"
 #include "roboAxes.h"
@@ -20,7 +22,6 @@ namespace Ui {
 class motionEdit;
 }
 
-
 class motionEdit : public tableEdit
 {
     Q_OBJECT
@@ -30,14 +31,6 @@ public:
 
 protected:
     void buildConnection();
-
-Q_SIGNALS:
-    void sig_joints_trace_changed();
-    void sig_robo_changed( const QString &roboName );
-
-public Q_SLOTS:
-    void slot_robo_changed( const QString &roboName );
-    void slot_joints_trace_changed( );
 
 public:
     virtual void setModelObj( mcModelObj *pObj );
@@ -58,12 +51,11 @@ protected:
     void beginDownload( void *pPara);
     void endDownload( int ret, void *pPara );
 
-    ProgressGroup *progress();
+//    ProgressGroup *progress();
 
     VRobot *currentRobot();
 
 protected:
-    int setLoop( int loop );
     int doDownload( QList<tpvGroup *> &groups,
                     QList<int> &jointTabId );
 
@@ -79,47 +71,37 @@ protected:
     //! check
     int checkRobot();
 
-    int checkTrace();
-    int checkJointsTrace();
-    int checkHandTrace();
+//    int checkTrace();
+//    int checkJointsTrace();
 
     //! build
-    int buildTrace();
+//    int buildTrace();
 
-    int buildJointsTrace();
+//    int buildJointsTrace();
 
-    int planJointsTrace();
-    int splitJointsTrace();
+//    int planJointsTrace();
+//    int splitJointsTrace();
 
-    int buildHandTrace();
+//    int buildHandTrace();
 
     //! onvert
-    int buildTpvGroups();
+//    int buildTpvGroups();
 
-    void jointsRotate( jointsTrace *pJ, int len );
+//    void jointsRotate( jointsTrace *pJ, int len );
+
+Q_SIGNALS:
+    void sig_joints_trace_changed();
+    void sig_robo_changed( const QString &roboName );
 
 protected Q_SLOTS:
+    void slot_robo_changed( const QString &roboName );
+    void slot_joints_trace_changed( );
+//    void slot_download_cancel( const QString &name, int id );
+
     void on_btnAdd_clicked();
     void on_btnDel_clicked();
     void on_btnClr_clicked();
 
-
-    void slot_download_cancel( const QString &name, int id );
-
-protected Q_SLOTS:
-    void on_btnGraph_clicked();
-
-protected:
-    void updatePlot();
-
-protected:
-    virtual void context_remove();
-    virtual void context_add_before();
-    virtual void context_add_below();
-    virtual void context_clear();
-
-private slots:
-    void on_btnKnob_clicked();
     void on_btnDown_clicked();
     void on_btnStart_clicked();
     void on_btnStop_clicked();
@@ -132,25 +114,36 @@ private slots:
 
     void on_spinLoop_valueChanged(int arg1);
 
+    void on_btnGraph_clicked();
+
+    void on_btnReverse_clicked();
+protected:
+    void updatePlot();
+
+protected:
+    virtual void context_remove();
+    virtual void context_add_before();
+    virtual void context_add_below();
+    virtual void context_clear();    
+
 private:
     Ui::motionEdit *ui;
 
-    motionGroup *mMotionGroup;
-    roboAxes *m_pRoboAxes;
+//    SinanjuMotionGroup *mMotionGroup;
+    MegaTableModel *m_pMotionGroup;
     tpvPlot *m_pPlot;
 
     xxxGroup< tracePoint > mTracePlan;
     xxxGroup< jointsTrace > mJointsPlan;
 
-    ProgressGroup *m_pProgress;
+//    ProgressGroup *m_pProgress;
 
     comboxDelegate *m_pActionDelegate;
 
     QList< tpvGroup *> mJointsTpvGroup;
-    tpvGroup mHandTpvGroup;
+//    tpvGroup mHandTpvGroup;
 
     MotionModel mMotionPref;
-
 };
 
 #endif // MOTIONEDIT_H

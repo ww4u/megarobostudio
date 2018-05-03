@@ -8,6 +8,8 @@
 #include "../../device/robostate.h"
 #include "../../device/mrq/deviceMRQ.h"
 
+#include "../../arith/pathplan/pathplan.h"
+
 enum eRoboPlanMode
 {
     plan_linear = 0,
@@ -209,6 +211,8 @@ protected:
     eRoboPlanMode mPlanMode;
 
     QList< tpvGroup *> mJointsGroup;
+    xxxGroup<tracePoint> mTracePlan;
+
 };
 
 //! base state
@@ -223,6 +227,7 @@ public:
 
     virtual void proc( int msg, RoboMsg &detail );
     virtual void onEnter( RoboMsg &detail );
+    virtual void onExit( RoboMsg &detail );
 
     virtual void onTimer( int id );
 public:

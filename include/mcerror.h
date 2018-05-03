@@ -31,6 +31,7 @@ enum mcError {
         ERR_INVALID_TPV_T,
         ERR_INVALID_TPV_COUNT,
         ERR_INVALID_TPV_CMD,
+        ERR_INTERRUPT_REQUESTED,
         ERR_FAIL_ADD_TPV,
 
         ERR_FETCH_FAIL,

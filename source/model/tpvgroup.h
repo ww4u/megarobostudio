@@ -5,11 +5,7 @@
 #include "megatablemodel.h"
 #include "tpvitem.h"
 
-//#include "../../intf/iserial.h"
-
-#include "scriptfile.h"
-
-class tpvGroup : public MegaTableModel, public scriptFile
+class tpvGroup : public MegaTableModel
 {
     Q_OBJECT
 

@@ -17,7 +17,7 @@
     </message>
     <message>
         <source>Sure to delete all?</source>
-        <translation type="unfinished">是否删除所有项目？</translation>
+        <translation type="obsolete">是否删除所有项目？</translation>
     </message>
     <message>
         <source>...</source>
@@ -26,6 +26,10 @@
     <message>
         <source>sample fail</source>
         <translation type="unfinished">采样失败</translation>
+    </message>
+    <message>
+        <source>Item</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -36,6 +40,193 @@
     </message>
     <message>
         <source>X</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>AxnPref</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Connection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>X</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Y</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Z</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>DeltaConfig</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Length</source>
+        <translation type="unfinished">帧长度</translation>
+    </message>
+    <message>
+        <source>[0]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>[1]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>[2]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>[3]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>[4]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Range</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Range1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Range0</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Range2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>P0</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Angle0</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>DistanceAlarmPage</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ON/OFF</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Distance1(mm)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Distance2(mm)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Distance3(mm)</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>EncoderAlarmPage</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ON/OFF</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Upper Limit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Lower Limit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zero</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zero In Range</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Not</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>In</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>H2Pref</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zero Config</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Time</source>
+        <translation type="unfinished">时间</translation>
+    </message>
+    <message>
+        <source>Distance</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Speed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zero Axes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>X</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CCW</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Y</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zero</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zero Body</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -75,7 +266,7 @@
     </message>
     <message>
         <source>About(A)...</source>
-        <translation type="unfinished">关于(&amp;A)...</translation>
+        <translation type="unfinished">关于...</translation>
     </message>
     <message>
         <source>Device Mgr</source>
@@ -127,7 +318,7 @@
     </message>
     <message>
         <source>Open(O)...</source>
-        <translation type="unfinished">打开(&amp;O)...</translation>
+        <translation type="unfinished">打开...</translation>
     </message>
     <message>
         <source>Open</source>
@@ -135,7 +326,7 @@
     </message>
     <message>
         <source>Ctrl+O</source>
-        <translation type="unfinished">打开</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Save(&amp;S)</source>
@@ -147,7 +338,7 @@
     </message>
     <message>
         <source>Ctrl+S</source>
-        <translation type="unfinished">存储</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Save As...</source>
@@ -155,7 +346,7 @@
     </message>
     <message>
         <source>Ctrl+Shift+S</source>
-        <translation type="unfinished">全部存储</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Exit</source>
@@ -163,7 +354,7 @@
     </message>
     <message>
         <source>Alt+X</source>
-        <translation type="unfinished">退出</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Spy</source>
@@ -179,7 +370,7 @@
     </message>
     <message>
         <source>Windows(W)...</source>
-        <translation type="unfinished">窗口(&amp;W)...</translation>
+        <translation type="unfinished">窗口...</translation>
     </message>
     <message>
         <source>Windows</source>
@@ -187,7 +378,7 @@
     </message>
     <message>
         <source>Motion</source>
-        <translation type="unfinished">机器人运动</translation>
+        <translation type="obsolete">机器人运动</translation>
     </message>
     <message>
         <source>PVT</source>
@@ -215,7 +406,7 @@
     </message>
     <message>
         <source>Distance(D)...</source>
-        <translation type="unfinished">距离传感器(&amp;D)...</translation>
+        <translation type="unfinished">距离传感器...</translation>
     </message>
     <message>
         <source>Motor Panel(&amp;M)...</source>
@@ -345,6 +536,76 @@
         <source>samples cleared!</source>
         <translation type="unfinished">清除采样数据!</translation>
     </message>
+    <message>
+        <source>Motion...</source>
+        <translation type="unfinished">运动文件...</translation>
+    </message>
+    <message>
+        <source>Package...</source>
+        <translation type="unfinished">包目录...</translation>
+    </message>
+    <message>
+        <source>Camera...</source>
+        <translation type="unfinished">摄像头...</translation>
+    </message>
+    <message>
+        <source>Close All</source>
+        <translation type="unfinished">全部关闭</translation>
+    </message>
+    <message>
+        <source>Setting may has been changed without apply, confirm to close?</source>
+        <translation type="unfinished">设置可能已被修改但没有应用，确定关闭?</translation>
+    </message>
+    <message>
+        <source>Info</source>
+        <translation type="unfinished">信息</translation>
+    </message>
+    <message>
+        <source>Device setting has not been updated</source>
+        <translation type="unfinished">设备设置还没有更新</translation>
+    </message>
+    <message>
+        <source>Increase Angle</source>
+        <translation type="unfinished">增量式编码器角度</translation>
+    </message>
+    <message>
+        <source>Absolute Angle</source>
+        <translation type="unfinished">绝对值编码器角度</translation>
+    </message>
+    <message>
+        <source>Saving...</source>
+        <translation type="unfinished">存储中...</translation>
+    </message>
+    <message>
+        <source>fali</source>
+        <translation type="unfinished">失败</translation>
+    </message>
+</context>
+<context>
+    <name>MegaDeleteAffirmMessageBox</name>
+    <message>
+        <source>Affirm to delete?</source>
+        <translation type="unfinished">确认删除?</translation>
+    </message>
+    <message>
+        <source>Affirm</source>
+        <translation type="unfinished">确认</translation>
+    </message>
+</context>
+<context>
+    <name>MegaZeroAffirmMessageBox</name>
+    <message>
+        <source>Affirm to zero?</source>
+        <translation type="unfinished">确认归零?</translation>
+    </message>
+    <message>
+        <source>Affirm</source>
+        <translation type="unfinished">确认</translation>
+    </message>
+    <message>
+        <source>Auto zero affirm</source>
+        <translation type="unfinished">归零确认</translation>
+    </message>
 </context>
 <context>
     <name>MotionPref</name>
@@ -382,10 +643,37 @@
     </message>
 </context>
 <context>
+    <name>MotionWizard</name>
+    <message>
+        <source>Motion Wizard</source>
+        <translation type="unfinished">运动文件向导</translation>
+    </message>
+    <message>
+        <source>Sinanju</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Megatron</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delta</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>H2</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>MotorMonitor</name>
     <message>
         <source>Motor</source>
-        <translation type="unfinished">电机</translation>
+        <translation type="obsolete">电机</translation>
+    </message>
+    <message>
+        <source>Motor Status</source>
+        <translation type="unfinished">运动状态</translation>
     </message>
 </context>
 <context>
@@ -420,6 +708,373 @@
     </message>
     <message>
         <source>IDLE</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>MrqAlarm</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Encoder</source>
+        <translation type="unfinished">编码器</translation>
+    </message>
+    <message>
+        <source>Response</source>
+        <translation type="unfinished">响应</translation>
+    </message>
+    <message>
+        <source>NONE</source>
+        <translation type="unfinished">无</translation>
+    </message>
+    <message>
+        <source>ALARM</source>
+        <translation type="unfinished">警报</translation>
+    </message>
+    <message>
+        <source>STOP</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ALARM+STOP</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Distance</source>
+        <translation type="unfinished">距离</translation>
+    </message>
+    <message>
+        <source>S</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>MrqAxesPage</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Motor</source>
+        <translation type="unfinished">电机</translation>
+    </message>
+    <message>
+        <source>Motion</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Trigger</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Plan</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>MrqAxesPlan</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Plan</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>End State</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>STOP</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>HOLD</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>MrqDcAxes</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>DC Axes</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>MrqSensorPage</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>S1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>S2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>S3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>S4</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>MrqSubUart</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Frame</source>
+        <translation type="unfinished">帧</translation>
+    </message>
+    <message>
+        <source>ON/OFF</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Length</source>
+        <translation type="unfinished">帧长度</translation>
+    </message>
+    <message>
+        <source>SOF</source>
+        <translation type="unfinished">SOF</translation>
+    </message>
+    <message>
+        <source>Interval(s)</source>
+        <translation type="unfinished">读取间隔</translation>
+    </message>
+    <message>
+        <source>Receive Num</source>
+        <translation type="unfinished">接收长度</translation>
+    </message>
+</context>
+<context>
+    <name>MrqTrigChan</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Level</source>
+        <translation type="unfinished">电平</translation>
+    </message>
+    <message>
+        <source>ON/OFF</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Level Mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>RESERVE</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>LOW</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>RISE</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>FALL</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>HIGH</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Level Response</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>NONE</source>
+        <translation type="unfinished">无</translation>
+    </message>
+    <message>
+        <source>ALARM</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>STOP</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ALARM + STOP</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Period</source>
+        <translation type="unfinished">周期</translation>
+    </message>
+    <message>
+        <source>Pattern</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>MrqTrigPage</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mode</source>
+        <translation type="unfinished">模式</translation>
+    </message>
+    <message>
+        <source>PATTERN</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>LEVEL</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Trigger Left</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Trigger Right</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>MrqUart</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Serial</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Baud</source>
+        <translation type="unfinished">波特率</translation>
+    </message>
+    <message>
+        <source>None</source>
+        <translation type="unfinished">无</translation>
+    </message>
+    <message>
+        <source>RTS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CTS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>RTS&amp;CTS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Data</source>
+        <translation type="unfinished">数据</translation>
+    </message>
+    <message>
+        <source>8</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>9</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Parity</source>
+        <translation type="unfinished">校验</translation>
+    </message>
+    <message>
+        <source>Even</source>
+        <translation type="unfinished">偶校验</translation>
+    </message>
+    <message>
+        <source>Odd</source>
+        <translation type="unfinished">奇校验</translation>
+    </message>
+    <message>
+        <source>Stop</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>0.5</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>1.5</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Flow</source>
+        <translation type="unfinished">流控</translation>
+    </message>
+    <message>
+        <source>4800</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>7200</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>9600</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>14400</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>19200</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>38400</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>57600</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>115200</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>128000</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>2000000</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>2500000</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -504,7 +1159,7 @@
     </message>
     <message>
         <source>Hand Action</source>
-        <translation type="unfinished">手动作</translation>
+        <translation type="obsolete">手动作</translation>
     </message>
     <message>
         <source>t(s)</source>
@@ -533,6 +1188,46 @@
     <message>
         <source>v</source>
         <translation type="unfinished">速度</translation>
+    </message>
+    <message>
+        <source>do not exist</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <translation type="unfinished">连接名</translation>
+    </message>
+    <message>
+        <source>Fx(mm)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fz(mm)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Bx(mm)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Bz(mm)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ly(mm)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ry(mm)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>h(mm)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Interp</source>
+        <translation type="unfinished">插值方式</translation>
     </message>
 </context>
 <context>
@@ -567,26 +1262,80 @@
     </message>
     <message>
         <source>Sub ID</source>
-        <translation type="unfinished">子ID</translation>
+        <translation type="obsolete">子ID</translation>
     </message>
     <message>
         <source>Group ID</source>
         <translation type="unfinished">组ID</translation>
     </message>
     <message>
-        <source>130</source>
+        <source>Trace</source>
+        <translation type="unfinished">路径</translation>
+    </message>
+    <message>
+        <source>Step(mm)</source>
+        <translation type="unfinished">步长(毫米)</translation>
+    </message>
+    <message>
+        <source>Interp</source>
+        <translation type="unfinished">插值方式</translation>
+    </message>
+    <message>
+        <source>Line</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>150</source>
+        <source>3rd Poly</source>
+        <translation type="unfinished">3阶多项式</translation>
+    </message>
+    <message>
+        <source>5th Poly</source>
+        <translation type="unfinished">5阶多项式</translation>
+    </message>
+    <message>
+        <source>Connection</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>200</source>
+        <source>Label</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>255</source>
+        <source>TextLabel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zero</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zero Speed</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>RoboConfig</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ArmLength</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>TextLabel</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>RoboDesc</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Description</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -618,6 +1367,154 @@
     </message>
 </context>
 <context>
+    <name>RoboJoint</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zero</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CCW</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>SinanjuConfig</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Length</source>
+        <translation type="unfinished">帧长度</translation>
+    </message>
+    <message>
+        <source>Basement</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Big Arm</source>
+        <translation type="unfinished">大臂</translation>
+    </message>
+    <message>
+        <source>Little Arm</source>
+        <translation type="unfinished">小臂</translation>
+    </message>
+    <message>
+        <source>Init Position</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>X</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Y</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Z</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>SinanjuPref</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zero</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Arm</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dir:+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wrist</source>
+        <translation type="unfinished">腕</translation>
+    </message>
+    <message>
+        <source>Init Angle</source>
+        <translation type="unfinished">初始角度</translation>
+    </message>
+    <message>
+        <source>Small Arm</source>
+        <translation type="unfinished">小臂</translation>
+    </message>
+    <message>
+        <source>Big Arm</source>
+        <translation type="unfinished">大臂</translation>
+    </message>
+    <message>
+        <source>Base</source>
+        <translation type="unfinished">基座</translation>
+    </message>
+    <message>
+        <source>Upload Zero</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hand</source>
+        <translation type="unfinished">手</translation>
+    </message>
+    <message>
+        <source>Zero Time</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zero Speed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zero Angle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CCW</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zero Arms</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zero Hand</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid robot</source>
+        <translation type="unfinished">无效机器人</translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zero in device is invalid</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>TestProp</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>TextLabel</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>WarnPrompt</name>
     <message>
         <source>Warning</source>
@@ -625,7 +1522,7 @@
     </message>
     <message>
         <source>Info:</source>
-        <translation type="unfinished">信息:</translation>
+        <translation type="obsolete">信息:</translation>
     </message>
 </context>
 <context>
@@ -639,11 +1536,11 @@
         <translation type="unfinished">镁伽机器人</translation>
     </message>
     <message>
-        <source>0.0.1</source>
+        <source>www.megarobo.cc</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>www.megarobo.cc</source>
+        <source>0.0.2</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -677,6 +1574,30 @@
         <source>CH4</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>CH5</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CH6</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CH7</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CH8</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CH9</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CH10</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>axesKnob</name>
@@ -695,6 +1616,10 @@
     <message>
         <source>Device is busy now, try later!</source>
         <translation type="unfinished">设备忙，稍后尝试!</translation>
+    </message>
+    <message>
+        <source>Invalid device</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -722,18 +1647,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Connection</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Left shulder</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Right shulder</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Hand</source>
         <translation type="unfinished">手</translation>
     </message>
@@ -743,7 +1656,63 @@
     </message>
     <message>
         <source>Length</source>
-        <translation type="unfinished">帧长度</translation>
+        <translation type="obsolete">帧长度</translation>
+    </message>
+    <message>
+        <source>Shulder Init Angle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Left </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Right</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zero Config</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Time</source>
+        <translation type="unfinished">时间</translation>
+    </message>
+    <message>
+        <source>Distance</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Speed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zero Axes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CCW</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zero</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Left Shulder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Right Shulder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zero Body</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -778,6 +1747,10 @@
     </message>
     <message>
         <source>STATE?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Commandset.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -875,6 +1848,34 @@
         <source>error</source>
         <translation type="unfinished">错误</translation>
     </message>
+    <message>
+        <source>Panel...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>load fail</source>
+        <translation type="unfinished">加载失败</translation>
+    </message>
+    <message>
+        <source>apply fail</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>apply success</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import fail</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>question</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Device setting has not been updated, sure to export?</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>dlgWndList</name>
@@ -935,7 +1936,7 @@
     </message>
     <message>
         <source>*Note: To enable the event, you have to enable the event in the device at first.</source>
-        <translation type="unfinished">*说明：在允许事件监视前，需要在设备中打开事件功能.</translation>
+        <translation type="obsolete">*说明：在允许事件监视前，需要在设备中打开事件功能.</translation>
     </message>
     <message>
         <source>CSV (*.csv )</source>
@@ -996,10 +1997,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Connection</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>FX</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1020,7 +2017,43 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>LZ</source>
+        <source>Zero Config</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Time</source>
+        <translation type="unfinished">时间</translation>
+    </message>
+    <message>
+        <source>Distance</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Speed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zero Axes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CCW</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zero</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>RY</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zero Body</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1044,7 +2077,7 @@
     </message>
     <message>
         <source>Hand pvt</source>
-        <translation type="unfinished">手运动pvt</translation>
+        <translation type="obsolete">手运动pvt</translation>
     </message>
     <message>
         <source>Hand t-xyz</source>
@@ -1096,7 +2129,7 @@
     </message>
     <message>
         <source>Sure to delete all?</source>
-        <translation type="unfinished">确认删除所有项?</translation>
+        <translation type="obsolete">确认删除所有项?</translation>
     </message>
     <message>
         <source>Form</source>
@@ -1124,19 +2157,23 @@
     </message>
     <message>
         <source>less than 2 points</source>
-        <translation type="unfinished">小于两个点</translation>
+        <translation type="obsolete">小于两个点</translation>
     </message>
     <message>
         <source>invalid robot</source>
-        <translation type="unfinished">无效机器人</translation>
+        <translation type="obsolete">无效机器人</translation>
     </message>
     <message>
         <source>invalid hand action</source>
-        <translation type="unfinished">无效手动作</translation>
+        <translation type="obsolete">无效手动作</translation>
     </message>
     <message>
         <source>invalid cmd at line %1</source>
-        <translation type="unfinished">无效命令在行 %1</translation>
+        <translation type="obsolete">无效命令在行 %1</translation>
+    </message>
+    <message>
+        <source>robo do not match</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1211,7 +2248,7 @@
     </message>
     <message>
         <source>Idle</source>
-        <translation type="unfinished">空闲开关</translation>
+        <translation type="obsolete">空闲开关</translation>
     </message>
     <message>
         <source>Idle current</source>
@@ -1287,7 +2324,7 @@
     </message>
     <message>
         <source>Max Current(A)</source>
-        <translation type="unfinished">最大电路(A)</translation>
+        <translation type="unfinished">最大电流(A)</translation>
     </message>
     <message>
         <source>Max Velocity(deg/s)</source>
@@ -1397,6 +2434,10 @@
         <source>:</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>On/Off</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>mrqAxes2</name>
@@ -1457,6 +2498,18 @@
     </message>
     <message>
         <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Signature</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Capacity</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Buffer</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1709,92 +2762,100 @@
         <source>Form</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Axes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Alarm</source>
+        <translation type="unfinished">报警</translation>
+    </message>
 </context>
 <context>
     <name>mrqSensor</name>
     <message>
         <source>Serial</source>
-        <translation type="unfinished">串口</translation>
+        <translation type="obsolete">串口</translation>
     </message>
     <message>
         <source>Flow</source>
-        <translation type="unfinished">流控</translation>
+        <translation type="obsolete">流控</translation>
     </message>
     <message>
         <source>None</source>
-        <translation type="unfinished">无</translation>
+        <translation type="obsolete">无</translation>
     </message>
     <message>
         <source>Even</source>
-        <translation type="unfinished">偶校验</translation>
+        <translation type="obsolete">偶校验</translation>
     </message>
     <message>
         <source>Odd</source>
-        <translation type="unfinished">奇校验</translation>
+        <translation type="obsolete">奇校验</translation>
     </message>
     <message>
         <source>Stop</source>
-        <translation type="unfinished">停止位</translation>
+        <translation type="obsolete">停止位</translation>
     </message>
     <message>
         <source>Data</source>
-        <translation type="unfinished">数据</translation>
+        <translation type="obsolete">数据</translation>
     </message>
     <message>
         <source>Baud</source>
-        <translation type="unfinished">波特率</translation>
+        <translation type="obsolete">波特率</translation>
     </message>
     <message>
         <source>Parity</source>
-        <translation type="unfinished">校验</translation>
+        <translation type="obsolete">校验</translation>
     </message>
     <message>
         <source>Receive Num</source>
-        <translation type="unfinished">接收长度</translation>
+        <translation type="obsolete">接收长度</translation>
     </message>
     <message>
         <source>SOF</source>
-        <translation type="unfinished">SOF</translation>
+        <translation type="obsolete">SOF</translation>
     </message>
     <message>
         <source>Interval(s)</source>
-        <translation type="unfinished">读取间隔</translation>
+        <translation type="obsolete">读取间隔</translation>
     </message>
     <message>
         <source>Apply</source>
-        <translation type="unfinished">应用</translation>
+        <translation type="obsolete">应用</translation>
     </message>
     <message>
         <source>Port</source>
-        <translation type="unfinished">端口</translation>
+        <translation type="obsolete">端口</translation>
     </message>
     <message>
         <source>Frame</source>
-        <translation type="unfinished">帧</translation>
+        <translation type="obsolete">帧</translation>
     </message>
     <message>
         <source>Sensor1</source>
-        <translation type="unfinished">传感器1</translation>
+        <translation type="obsolete">传感器1</translation>
     </message>
     <message>
         <source>Sensor2</source>
-        <translation type="unfinished">传感器2</translation>
+        <translation type="obsolete">传感器2</translation>
     </message>
     <message>
         <source>Sensor3</source>
-        <translation type="unfinished">传感器3</translation>
+        <translation type="obsolete">传感器3</translation>
     </message>
     <message>
         <source>Sensor4</source>
-        <translation type="unfinished">传感器4</translation>
+        <translation type="obsolete">传感器4</translation>
     </message>
     <message>
         <source>Sensor</source>
-        <translation type="unfinished">传感器</translation>
+        <translation type="obsolete">传感器</translation>
     </message>
     <message>
         <source>ON/OFF</source>
-        <translation type="unfinished">开关</translation>
+        <translation type="obsolete">开关</translation>
     </message>
     <message>
         <source>Chan</source>
@@ -1802,7 +2863,7 @@
     </message>
     <message>
         <source>Length</source>
-        <translation type="unfinished">帧长度</translation>
+        <translation type="obsolete">帧长度</translation>
     </message>
     <message>
         <source>Head</source>
@@ -1829,78 +2890,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>0.5</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>1.5</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>RTS</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>CTS</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>RTS&amp;CTS</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>4800</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>7200</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>9600</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>14400</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>19200</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>38400</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>57600</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>115200</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>128000</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>8</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>9</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Sensor apply fail</source>
         <translation type="unfinished">传感器配置失败</translation>
     </message>
@@ -1917,7 +2906,7 @@
     </message>
     <message>
         <source>Warning</source>
-        <translation type="unfinished">报警</translation>
+        <translation type="obsolete">报警</translation>
     </message>
     <message>
         <source>Alias</source>
@@ -1929,31 +2918,31 @@
     </message>
     <message>
         <source>Temperature Protection</source>
-        <translation type="unfinished">温度保护</translation>
+        <translation type="obsolete">温度保护</translation>
     </message>
     <message>
         <source>ON/OFF</source>
-        <translation type="unfinished">开关</translation>
+        <translation type="obsolete">开关</translation>
     </message>
     <message>
         <source>Threshold</source>
-        <translation type="unfinished">门限</translation>
+        <translation type="obsolete">门限</translation>
     </message>
     <message>
         <source>Action</source>
-        <translation type="unfinished">动作</translation>
+        <translation type="obsolete">动作</translation>
     </message>
     <message>
         <source>No</source>
-        <translation type="unfinished">无</translation>
+        <translation type="obsolete">无</translation>
     </message>
     <message>
         <source>Stop</source>
-        <translation type="unfinished">停止</translation>
+        <translation type="obsolete">停止</translation>
     </message>
     <message>
         <source>Warning + Stop</source>
-        <translation type="unfinished">报警+停止</translation>
+        <translation type="obsolete">报警+停止</translation>
     </message>
     <message>
         <source>Form</source>
@@ -2217,7 +3206,7 @@
     </message>
     <message>
         <source>Sure to delete all?</source>
-        <translation type="unfinished">确认删除所有项目?</translation>
+        <translation type="obsolete">确认删除所有项目?</translation>
     </message>
     <message>
         <source>Form</source>
@@ -2246,6 +3235,10 @@
     <message>
         <source>Line build completed</source>
         <translation type="unfinished">构建完成</translation>
+    </message>
+    <message>
+        <source>start fail</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2414,27 +3407,27 @@
     </message>
     <message>
         <source>End</source>
-        <translation type="unfinished">末端</translation>
+        <translation type="obsolete">末端</translation>
     </message>
     <message>
         <source>Wrist</source>
-        <translation type="unfinished">腕</translation>
+        <translation type="obsolete">腕</translation>
     </message>
     <message>
         <source>Base</source>
-        <translation type="unfinished">基座</translation>
+        <translation type="obsolete">基座</translation>
     </message>
     <message>
         <source>Big Arm</source>
-        <translation type="unfinished">大臂</translation>
+        <translation type="obsolete">大臂</translation>
     </message>
     <message>
         <source>Little Arm</source>
-        <translation type="unfinished">小臂</translation>
+        <translation type="obsolete">小臂</translation>
     </message>
     <message>
         <source>To Default</source>
-        <translation type="unfinished">回零</translation>
+        <translation type="obsolete">回零</translation>
     </message>
     <message>
         <source>Reset</source>
@@ -2451,6 +3444,26 @@
     <message>
         <source>Stop</source>
         <translation type="obsolete">停止</translation>
+    </message>
+    <message>
+        <source>Angle</source>
+        <translation type="unfinished">弧度</translation>
+    </message>
+    <message>
+        <source>ms</source>
+        <translation type="unfinished">毫秒</translation>
+    </message>
+    <message>
+        <source>To Zero</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid device</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid robot</source>
+        <translation type="unfinished">无效机器人</translation>
     </message>
 </context>
 <context>
@@ -2498,147 +3511,111 @@
     <name>roboPref</name>
     <message>
         <source>Preference</source>
-        <translation type="unfinished">属性</translation>
+        <translation type="obsolete">属性</translation>
     </message>
     <message>
         <source>Base Compensation</source>
-        <translation type="unfinished">基座补偿</translation>
+        <translation type="obsolete">基座补偿</translation>
     </message>
     <message>
         <source>Length Unit(mm)</source>
-        <translation type="unfinished">长度单位(mm)</translation>
+        <translation type="obsolete">长度单位(mm)</translation>
     </message>
     <message>
         <source>Trace</source>
-        <translation type="unfinished">路径</translation>
+        <translation type="obsolete">路径</translation>
     </message>
     <message>
         <source>Step(ms)</source>
-        <translation type="unfinished">步长(mm)</translation>
+        <translation type="obsolete">步长(mm)</translation>
     </message>
     <message>
         <source>Interp</source>
-        <translation type="unfinished">插值方式</translation>
+        <translation type="obsolete">插值方式</translation>
     </message>
     <message>
         <source>Line</source>
-        <translation type="unfinished">线性</translation>
+        <translation type="obsolete">线性</translation>
     </message>
     <message>
         <source>3rd Poly</source>
-        <translation type="unfinished">3阶多项式</translation>
+        <translation type="obsolete">3阶多项式</translation>
     </message>
     <message>
         <source>5th Poly</source>
-        <translation type="unfinished">5阶多项式</translation>
+        <translation type="obsolete">5阶多项式</translation>
     </message>
     <message>
         <source>Motor</source>
-        <translation type="unfinished">电机</translation>
+        <translation type="obsolete">电机</translation>
     </message>
     <message>
         <source>Base</source>
-        <translation type="unfinished">基座</translation>
+        <translation type="obsolete">基座</translation>
     </message>
     <message>
         <source>Big Arm</source>
-        <translation type="unfinished">大臂</translation>
+        <translation type="obsolete">大臂</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;devicename@ch_id&lt;/p&gt;&lt;p&gt;devicename: device name set in the device manager&lt;/p&gt;&lt;p&gt;ch_id: ch id, from 1 to the axes count of the device&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;ch_id@devicename&lt;/p&gt;&lt;p&gt;devicename: 在设备管理器中显示的设备名称&lt;/p&gt;&lt;p&gt;ch_id: 通道号，从1到轴的数量&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation type="obsolete">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;ch_id@devicename&lt;/p&gt;&lt;p&gt;devicename: 在设备管理器中显示的设备名称&lt;/p&gt;&lt;p&gt;ch_id: 通道号，从1到轴的数量&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished">连接名</translation>
+        <translation type="obsolete">连接名</translation>
     </message>
     <message>
         <source>Wrist</source>
-        <translation type="unfinished">腕</translation>
+        <translation type="obsolete">腕</translation>
     </message>
     <message>
         <source>Hand</source>
-        <translation type="unfinished">手</translation>
+        <translation type="obsolete">手</translation>
     </message>
     <message>
         <source>Small Arm</source>
-        <translation type="unfinished">小臂</translation>
+        <translation type="obsolete">小臂</translation>
     </message>
     <message>
         <source>Rotate Angle</source>
-        <translation type="unfinished">转换角度</translation>
+        <translation type="obsolete">转换角度</translation>
     </message>
     <message>
         <source>Init Angle</source>
-        <translation type="unfinished">初始角度</translation>
+        <translation type="obsolete">初始角度</translation>
     </message>
     <message>
         <source>Robot</source>
-        <translation type="unfinished">机器人</translation>
+        <translation type="obsolete">机器人</translation>
     </message>
     <message>
         <source>Alias</source>
-        <translation type="unfinished">别名</translation>
+        <translation type="obsolete">别名</translation>
     </message>
     <message>
         <source>Group1</source>
-        <translation type="unfinished">组1</translation>
+        <translation type="obsolete">组1</translation>
     </message>
     <message>
         <source>Group2</source>
-        <translation type="unfinished">组2</translation>
+        <translation type="obsolete">组2</translation>
     </message>
     <message>
         <source>Group</source>
-        <translation type="unfinished">组</translation>
+        <translation type="obsolete">组</translation>
     </message>
     <message>
         <source>Sub ID</source>
-        <translation type="unfinished">子ID</translation>
+        <translation type="obsolete">子ID</translation>
     </message>
     <message>
         <source>Group ID</source>
-        <translation type="unfinished">组ID</translation>
+        <translation type="obsolete">组ID</translation>
     </message>
     <message>
         <source>Time Unit</source>
         <translation type="obsolete">时间单位</translation>
-    </message>
-    <message>
-        <source>Form</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>device1@CH1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>device1@CH2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>device2@CH1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>robotname</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>130</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>150</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>200</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>255</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2661,7 +3638,19 @@
     </message>
     <message>
         <source>Action</source>
-        <translation type="unfinished">动作</translation>
+        <translation type="obsolete">动作</translation>
+    </message>
+    <message>
+        <source>Detail</source>
+        <translation type="unfinished">详细信息</translation>
+    </message>
+    <message>
+        <source>Option</source>
+        <translation type="unfinished">选项</translation>
+    </message>
+    <message>
+        <source>Zero</source>
+        <translation type="unfinished">零位</translation>
     </message>
 </context>
 <context>
@@ -2688,7 +3677,7 @@
     </message>
     <message>
         <source>loaded!</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">加载!</translation>
     </message>
 </context>
 <context>
@@ -3018,14 +4007,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>root</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>a</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -3051,6 +4032,114 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Remote Path</source>
         <translation type="unfinished">远程文件路径</translation>
+    </message>
+    <message>
+        <source>User</source>
+        <translation type="unfinished">用户设置</translation>
+    </message>
+    <message>
+        <source>Style</source>
+        <translation type="unfinished">风格</translation>
+    </message>
+    <message>
+        <source>Language</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>English</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Chinese</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Classic</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>MegaRobo</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Note: Style, Language need be retarted.</source>
+        <translation type="unfinished">说明：风格，语言更新后需要重启.</translation>
+    </message>
+    <message>
+        <source>Auto Load Last Project</source>
+        <translation type="unfinished">自动打开上次工程</translation>
+    </message>
+    <message>
+        <source>Maxmize on Startup</source>
+        <translation type="unfinished">启动后最大化</translation>
+    </message>
+    <message>
+        <source>Zero Affirm</source>
+        <translation type="unfinished">归零确认</translation>
+    </message>
+    <message>
+        <source>Auto Status View</source>
+        <translation type="unfinished">自动打开状态</translation>
+    </message>
+    <message>
+        <source>MRH-T</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CAN</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Auto Assign ID</source>
+        <translation type="unfinished">自动分别CAN ID</translation>
+    </message>
+    <message>
+        <source>Auto Assign: Auto assign send/receive id for each device</source>
+        <translation type="unfinished">自动分配发送，接收ID</translation>
+    </message>
+    <message>
+        <source>MRH</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Address</source>
+        <translation type="unfinished">地址</translation>
+    </message>
+    <message>
+        <source>TCPIP0::192.168.131.192::inst0::INSTR</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Timeout(ms)</source>
+        <translation type="unfinished">超时(ms)</translation>
+    </message>
+    <message>
+        <source>PVT Interval(us)</source>
+        <translation type="unfinished">PVT发送间隔(us)</translation>
+    </message>
+    <message>
+        <source>ID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Info</source>
+        <translation type="unfinished">信息</translation>
+    </message>
+    <message>
+        <source>Setting need be restartd to validate</source>
+        <translation type="unfinished">设置需要重启后才能生效</translation>
+    </message>
+    <message>
+        <source>Connect success </source>
+        <translation type="unfinished">连接成功 </translation>
+    </message>
+    <message>
+        <source>Connect fail</source>
+        <translation type="unfinished">连接失败</translation>
     </message>
 </context>
 <context>

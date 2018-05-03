@@ -23,6 +23,16 @@ public:
     static int     align( double val, double unit );
     static float   normalizeDegree360( float degree );
     static float   normalizeDegreeN360( float degree );
+
+    static float   normalizeDegreeN180_180( float degree );
+    static float   normalizeDegreeN180_180( float degree[], int n );
+
+    static float   radToDeg( float rad );
+    static float   radToDeg( float rad[], int n );
+
+    static float   degToRad( float deg );
+    static float   degToRad( float deg[], int n );
+
     static float   eulcidenDistance( float x1, float y1, float z1,
                                      float x2, float y2, float z2 );
 

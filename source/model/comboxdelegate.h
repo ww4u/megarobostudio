@@ -2,6 +2,7 @@
 #define COMBOXDELEGATE_H
 #include <QStyledItemDelegate>
 #include <QMap>
+
 class comboxDelegate : public QStyledItemDelegate
 {
     Q_OBJECT
@@ -27,8 +28,10 @@ public:
     int value( const QString &name, int *pVal );
     QString toString( int id );
 
+
 protected:
     QMap<QString, int> mTables;
+//    QComboBox *m_pCombobox;
 };
 
 #endif // COMBOXDELEGATE_H

@@ -36,6 +36,7 @@ int robotSinanju::goZero()
 
     move( curve, tpvRegion(0,0) );
     logDbg()<<nowP.x<<nowP.y<<nowP.z<<dist;
+    logDbg()<<dstP.x<<dstP.y<<dstP.z<<dist;
 
     return 0;
 }
@@ -91,6 +92,57 @@ int robotSinanju::goZero( int jointId, bool bCcw )
 
         sysLog( QString::number( bCcw ? (-mHandZeroAngle) : ( mHandZeroAngle ) ) );
     }
+
+    return 0;
+}
+
+bool robotSinanju::checkZeroValid()
+{
+    //! device
+    MegaDevice::deviceMRQ *pMrq;
+    int subAx;
+
+    pMrq = jointDevice( 0, &subAx );
+    if ( NULL == pMrq )
+    { return false; }
+
+    return pMrq->getEncoderZeroValid();
+}
+float robotSinanju::getZero( int jointTabId )
+{
+    //! device
+    MegaDevice::deviceMRQ *pMrq;
+    int subAx;
+
+    pMrq = jointDevice( jointTabId, &subAx );
+    Q_ASSERT( NULL != pMrq );
+
+    return pMrq->getEncoderZero( subAx );
+}
+int  robotSinanju::setZero( int jointTabId, float zero )
+{
+    //! device
+    MegaDevice::deviceMRQ *pMrq;
+    int subAx;
+
+    pMrq = jointDevice( jointTabId, &subAx );
+    Q_ASSERT( NULL != pMrq );
+
+    return pMrq->setEncoderZero( subAx, zero );
+}
+
+int robotSinanju::getPOSE( float pos[] )
+{
+    int ret;
+
+    TraceKeyPoint nowP;
+    ret = nowPose( nowP );
+    if ( ret != 0 )
+    { return ret; }
+
+    pos[0] = nowP.x;
+    pos[1] = nowP.y;
+    pos[2] = nowP.z;
 
     return 0;
 }

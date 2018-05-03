@@ -108,6 +108,11 @@ void VRobot::setAlarms( int n)
 int VRobot::alarms()
 { return mAlarms; }
 
+void VRobot::setPoseCount( int pos )
+{ mPoseCount = pos; }
+int VRobot::poseCount()
+{ return mPoseCount; }
+
 void VRobot::setZeroSpeed( double spd )
 {
     mZeroSpeed = spd;

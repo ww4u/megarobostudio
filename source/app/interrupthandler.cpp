@@ -21,7 +21,7 @@ void interruptHandler::slot_event( eventId id,
 {
     //! find device by event id
     Q_ASSERT( NULL != m_pInstMgr );
-    VRobot *pRobo = m_pInstMgr->findRobotBySendId( data.getFrameId() );
+    VRobot *pRobo = m_pInstMgr->findRobotBySendId( data.frameId() );
 
     //! proc the interrupt
     if ( NULL != pRobo )
@@ -48,7 +48,7 @@ void interruptHandler::slot_event( eventId id,
     sysQueue()->postMsg(
                           e_interrupt_occuring,
                           (int)id,              //! event id
-                          data.getFrameId(),
+                          data.frameId(),
                           (QByteArray)data
                           );
 //    logDbg();
@@ -80,5 +80,6 @@ void interruptThread::connectInterrupt( receiveCache *pCache )
     connect( pCache,
              SIGNAL(sig_event(eventId,frameData)),
              &mDefInterruptHandle,
-             SLOT(slot_event( eventId,frameData)) );
+             SLOT(slot_event( eventId,frameData)),
+             Qt::QueuedConnection );
 }

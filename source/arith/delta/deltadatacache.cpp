@@ -5,17 +5,23 @@ namespace arith_delta {
 
 DeltaDataCache::DeltaDataCache()
 {
-    m_pPX = NULL;
-    m_pPY = NULL;
-    m_pPZ = NULL;
+//    m_pPX = NULL;
+//    m_pPY = NULL;
+//    m_pPZ = NULL;
 
-    m_pVX = NULL;
-    m_pVY = NULL;
-    m_pVZ = NULL;
+//    m_pVX = NULL;
+//    m_pVY = NULL;
+//    m_pVZ = NULL;
 
-    m_pAX = NULL;
-    m_pAY = NULL;
-    m_pAZ = NULL;
+//    m_pAX = NULL;
+//    m_pAY = NULL;
+//    m_pAZ = NULL;
+
+    m_pPXYZ = NULL;
+    m_pT = NULL;
+    m_pV = NULL;
+
+    m_pOutput = NULL;
 
     mSize = 0;
 }
@@ -41,9 +47,16 @@ int DeltaDataCache::alloc( int size )
     clean();
 
     //! again
-    new_array3( m_pPX, m_pPY, m_pPZ );
-    new_array3( m_pVX, m_pVY, m_pVZ );
-    new_array3( m_pAX, m_pAY, m_pAZ );
+    m_pPXYZ = new double[ 3 * size ];
+    if ( NULL == m_pPXYZ )
+    { return -1; }
+
+    new_array2( m_pT, m_pV );
+
+    //! output
+    m_pOutput = new double[ 5 * size ];
+    if ( NULL == m_pOutput )
+    { return -1; }
 
     mSize = size;
 
@@ -54,9 +67,8 @@ void DeltaDataCache::clean()
 {
     mSize = 0;
 
-    gc_array3( m_pPX, m_pPY, m_pPZ );
-    gc_array3( m_pVX, m_pVY, m_pVZ );
-    gc_array3( m_pAX, m_pAY, m_pAZ );
+    gc_array3( m_pPXYZ, m_pT, m_pV );
+    gc_array( m_pOutput );
 }
 
 

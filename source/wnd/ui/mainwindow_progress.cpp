@@ -1,5 +1,10 @@
 #include "mainwindow.h"
 
+void MainWindow::slot_download_cancel( const QString &name, int id )
+{
+    tpvDownloader::cancelActives();
+}
+
 ProgressGroup *MainWindow::progress()
 {
     if ( NULL != m_pProgress )
@@ -8,10 +13,10 @@ ProgressGroup *MainWindow::progress()
     {
         m_pProgress = new ProgressGroup(this);
 
-//        connect( m_pProgress,
-//                 SIGNAL(sigCancel( const QString &, int)),
-//                 this,
-//                 SLOT(slot_download_cancel( const QString &, int)) );
+        connect( m_pProgress,
+                 SIGNAL(sigCancel( const QString &, int)),
+                 this,
+                 SLOT(slot_download_cancel( const QString &, int)) );
     }
 
     Q_ASSERT( NULL != m_pProgress );
@@ -46,21 +51,21 @@ bool MainWindow::progressProc(  const QString &name,
     }
     else if ( msg.getMsg() == e_download_completed )
     {
-//        logDbg()<<name<<axes;
-
         progress()->progressShow( name, axes, false );
     }
     else if ( msg.getMsg() == e_download_terminated )
     {
-//        sysLog( msg.at(0).toString(),
-//                QString("%1").arg( msg.at(1).toInt()),
-//                tr("Terminated") );
-
-//        ui->btnDown->setEnabled( true );
-
-//        logDbg()<<name<<axes;
+        sysLog( name,
+                QString("%1").arg( axes ),
+                tr("Terminated") );
 
         progress()->progressShow( name, axes, false );
+    }
+    else if ( msg.getMsg() == e_download_canceled )
+    {
+        sysPrompt( tr("Download canceled") );
+
+        on_actionReset_triggered();
     }
     else
     { return false; }

@@ -176,7 +176,14 @@
           <widget class="ValueComboBox" name="cmbPlanMode"/>
          </item>
          <item row="3" column="1" colspan="2">
-          <widget class="QDoubleSpinBox" name="spinFeedback"/>
+          <widget class="QDoubleSpinBox" name="spinFeedback">
+           <property name="minimum">
+            <double>1.000000000000000</double>
+           </property>
+           <property name="maximum">
+            <double>128.000000000000000</double>
+           </property>
+          </widget>
          </item>
         </layout>
        </widget>

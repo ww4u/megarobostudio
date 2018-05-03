@@ -3,6 +3,8 @@
 
 namespace h2_split {
 
+#include "./arith/functions.cpp"
+
 //! no memory check
 int _h2Split(
                     QList< endPoint *> & points,

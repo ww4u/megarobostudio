@@ -92,10 +92,13 @@ int InstMgr::probeBus()
 {
     Q_ASSERT( NULL != m_pMainModel );
     int ret;
-
+logDbg();
     preProbeBus();
-
+logDbg();
+    QThread::msleep( 1000 );        //! USB-CAN can not enumerate on close - open
+logDbg();
     ret = probeCanBus();
+logDbg();
 //    ret = -1;
 
     postProbeBus();
@@ -110,6 +113,13 @@ int InstMgr::probeCanBus()
 {
     int ret;
 
+    int portDevType[]={VCI_MR_USBCAN,
+                       VCI_MR_USBCAN,
+                       VCI_MR_LANCAN,
+                       VCI_USBCAN2
+//                       VCI_MR_USBCAN,
+    };
+    Q_ASSERT( NULL != m_pMainModel );
     //! bus prop.
     mCanBus.setPId( m_pMainModel->mSysPref.mPort );
     mCanBus.setSpeed( m_pMainModel->mSysPref.mSpeed );
@@ -117,13 +127,16 @@ int InstMgr::probeCanBus()
     mCanBus.setRdTmo( m_pMainModel->mSysPref.mTimeout );
     mCanBus.setEnumTmo( m_pMainModel->mSysPref.mEnumerateTimeout );
     mCanBus.setFailTry( m_pMainModel->mSysPref.mFailTryCnt );
-
+logDbg();
     //! open
-    ret = mCanBus.open();
+    Q_ASSERT( m_pMainModel->mSysPref.mPort < sizeof_array(portDevType) );
+    ret = mCanBus.open( portDevType[m_pMainModel->mSysPref.mPort],
+                        0, 0, m_pMainModel->mSysPref.mVisaAddr );
     if ( ret != 0 )
     { logDbg()<<ret; return ret; }
-
+logDbg();
     //! start the receive cache
+    Q_ASSERT( NULL != m_pReceiveCache );
     m_pReceiveCache->attachBus( &mCanBus );
     mCanBus.attachReceiveCache( m_pReceiveCache );
     if ( m_pReceiveCache->isRunning() )
@@ -676,6 +689,7 @@ void InstMgr::gc()
 
 void InstMgr::gcPhyBus()
 {
+    Q_ASSERT( NULL != m_pReceiveCache );
     m_pReceiveCache->detachBus();
     mCanBus.close();
 

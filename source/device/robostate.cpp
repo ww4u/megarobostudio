@@ -1,6 +1,6 @@
 #include "../../include/mcstd.h"
 #include "robostate.h"
-
+#include "../../sys/sysapi.h"
 namespace MegaDevice {
 
 //! state condition
@@ -69,7 +69,23 @@ logDbg()<<"enter"<<strName;
     if ( msg == e_robot_timeout )
     { m_pNowState->onTimer( detail.at(1).toInt() ); }
     else
-    { m_pNowState->proc( msg, detail ); }
+    {
+//        if ( msg == 65541 && strName.compare("calcend", Qt::CaseInsensitive) != 0 )
+//        { logDbg()<<m_pNowState->name(); Q_ASSERT(false); }
+
+        //! check time stamp
+        if ( detail.timeStamp() == 0  )
+        { m_pNowState->proc( msg, detail ); logDbg(); }
+        else
+        {
+            if ( detail.timeStamp() >= m_pNowState->timeStamp() )
+            { m_pNowState->proc( msg, detail ); logDbg(); }
+            else
+            {
+//                sysLog( __FUNCTION__,QString::number(__LINE__), QString::number(msg), strName );
+            }
+        }
+    }
 logDbg()<<"exit"<<strName;
 }
 
@@ -99,7 +115,7 @@ void RoboFsm::toState( RoboStateUnit *pState, RoboMsg &detail )
         m_pNowState->onExit( detail );logDbg()<<m_pNowState->name()<<Id1()<<Id2()<<"exit";
 
         m_pNowState = pState;
-
+        m_pNowState->setTimeStamp( sysTimeStamp() );        //! save the time stamp
         m_pNowState->onEnter( detail );logDbg()<<m_pNowState->name()<<Id1()<<Id2()<<"enter";
     }
     else
@@ -184,6 +200,7 @@ int RoboFsm::Id3()
 RoboStateUnit::RoboStateUnit( RoboFsm *pFsm )
 {
     m_pFsm = pFsm;
+    mTimeStamp = 0;
 }
 RoboStateUnit::~RoboStateUnit()
 {}
@@ -240,6 +257,15 @@ void RoboStateUnit::killTimer( int id )
 
     m_pFsm->killTimer( id );
 }
+
+void RoboStateUnit::setTimeStamp( quint64 t )
+{
+    if ( t != 0 )
+    { mTimeStamp = t; }
+}
+
+quint64 RoboStateUnit::timeStamp()
+{ return mTimeStamp; }
 
 RoboCondition::RoboCondition()
 {

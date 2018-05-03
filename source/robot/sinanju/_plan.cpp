@@ -1,25 +1,70 @@
 #include "sinanju.h"
 
-
 int robotSinanju::buildTrace( QList<TraceKeyPoint> &curve,
-                xxxGroup<jointsTrace> &jointsPlan )
+                              xxxGroup<tracePoint> &tracePlan,
+                              xxxGroup<jointsTrace> &jointsPlan )
 {
     int ret;
 
-    xxxGroup<tracePoint> tracePlan;
+    ret = verifyTrace( curve );
+    if ( ret != 0 )
+    { return ret; }
+logDbg()<<curve.size();
     ret = planTrace( curve, tracePlan );
     if ( ret != 0 )
-    { return ret; }
-
+    {
+        sysError( QObject::tr("interp fail") );
+        return ret;
+    }
+logDbg()<<tracePlan.size();
+for ( int i = 0; i < tracePlan.size(); i++ )
+{
+    logDbg()<<tracePlan.data()[i].t
+            <<tracePlan.data()[i].x
+            <<tracePlan.data()[i].y
+            <<tracePlan.data()[i].z;
+}
     ret = splitTrace( tracePlan, jointsPlan );
     if ( ret != 0 )
-    { return ret; }
+    {
+        sysError( QObject::tr("deslove fail") );
+        return ret;
+    }
+logDbg();
+    return 0;
+}
+
+int robotSinanju::verifyTrace( QList<TraceKeyPoint> &curve )
+{
+    if ( curve.size() < 2 )
+    {
+        sysError( QObject::tr("inefficient curve %1").arg( curve.size() ) );
+        return -1;
+    }
+
+    float tPre;
+    tPre = curve.at(0).t;
+    if ( tPre < 0 )
+    { return -1; }
+
+    for ( int i = 1; i < curve.size(); i++ )
+    {
+        if ( tPre < curve.at(i).t )
+        {}
+        else
+        {
+            sysError( QObject::tr("invalid time at %1 %2").arg(i).arg( curve.at(i).t ) );
+            return -1;
+        }
+
+        tPre = curve.at(i).t;
+    }
 
     return 0;
 }
 
 int robotSinanju::planTrace( QList<TraceKeyPoint> &curve,
-                              xxxGroup<tracePoint> &tracePlan )
+                             xxxGroup<tracePoint> &tracePlan )
 {
     xxxGroup<endPoint> endPoints;
 
@@ -50,7 +95,7 @@ int robotSinanju::planTrace( QList<TraceKeyPoint> &curve,
     }
 
     int xyzResLen;
-    int ret = ns_pathplan::GetPvtLen( &endPoints.data()->datas,
+    int ret = ns_pathplan::GetPointLen( &endPoints.data()->datas,
                                       curve.size(),
                                       mPlanStep,
                                       mPlanMode,
@@ -69,7 +114,7 @@ int robotSinanju::planTrace( QList<TraceKeyPoint> &curve,
     if ( 0 != tracePlan.alloc( traceSize ) )
     { return ERR_ALLOC_FAIL; }
 
-    ret = ns_pathplan::GetPvtInfo( &tracePlan.data()->datas, xyzResLen );
+    ret = ns_pathplan::GetPointInfo( &tracePlan.data()->datas, xyzResLen );
     if ( ret != 0 )
     { return ERR_PLAN_FAIL; }
 
@@ -97,7 +142,7 @@ int robotSinanju::planTrace( QList<TraceKeyPoint> &curve,
                                                 arm_len( id6 ),
 
 int robotSinanju::splitTrace( xxxGroup<tracePoint> &tracePoints,
-                                xxxGroup<jointsTrace> &traceJoints )
+                              xxxGroup<jointsTrace> &traceJoints )
 {
     jointsAngle refAngle={ ref_angles(0,1,2,3) };       //! \todo ref angle by now
     jointsAngle convertAngle={ rot_angles(0,1,2,3) };
@@ -105,54 +150,51 @@ int robotSinanju::splitTrace( xxxGroup<tracePoint> &tracePoints,
 
     //! size
     int ret, nRes;
-    ret = ns_kinematic::getArmPosition_Size(
+//    ret = ns_kinematic::getArmPosition_Size(
 
-                    armLength,sizeof_array(armLength),
-//                    convertAngle.angles, sizeof_array(convertAngle.angles),
+//                    armLength,sizeof_array(armLength),
+////                    convertAngle.angles, sizeof_array(convertAngle.angles),
+////                    refAngle.angles,
+
+//                    convertAngle.angles,
 //                    refAngle.angles,
+//                    sizeof_array(convertAngle.angles),
 
-                    convertAngle.angles,
-                    refAngle.angles,
-                    sizeof_array(convertAngle.angles),
+//                    &tracePoints.data()->datas + offsetof_double( tracePoint, x ), sizeof_double(tracePoint),
+//                    &tracePoints.data()->datas + offsetof_double( tracePoint, vx ),sizeof_double(tracePoint),
+//                    &tracePoints.data()->datas + offsetof_double( tracePoint, t ), sizeof_double(tracePoint),
 
-                    &tracePoints.data()->datas + offsetof_double( tracePoint, x ), sizeof_double(tracePoint),
-                    &tracePoints.data()->datas + offsetof_double( tracePoint, vx ),sizeof_double(tracePoint),
-                    &tracePoints.data()->datas + offsetof_double( tracePoint, t ), sizeof_double(tracePoint),
+//                    tracePoints.size(),
 
-                    tracePoints.size(),
+//                    &nRes
+//                    );
 
-                    &nRes
-                    );
+    double archAngles[]= {0,90,180,180};
+    double initAngles[]= {0,180,90,90};
+    ret = ns_sinanju::GetPvtLen( armLength,
+                                   archAngles,
+                                   initAngles,
+                                   &tracePoints.data()->datas + offsetof_double( tracePoint, x ), sizeof_double(tracePoint),
+                                   &tracePoints.data()->datas + offsetof_double( tracePoint, vx ), sizeof_double(tracePoint),
+                                   &tracePoints.data()->datas + offsetof_double( tracePoint, t ), sizeof_double(tracePoint),
+
+                                   tracePoints.size(),
+                                   &nRes
+
+                                   );
     if ( ret == 0 && nRes > 0 )
     {}
     else
-    { return ERR_PLAN_SLOVE_FAIL; }
+    { logDbg(); return ERR_PLAN_SLOVE_FAIL; }
 
     //! data
     if ( 0 != traceJoints.alloc( nRes ) )
-    { return ERR_ALLOC_FAIL; }
+    { logDbg(); return ERR_ALLOC_FAIL; }
 
-    ret = ns_kinematic::getArmPosition_Data(
+    ret = ns_sinanju::GetPvtInfo( &traceJoints.data()->datas );
 
-                armLength,sizeof_array(armLength),
-//                convertAngle.angles, sizeof_array(convertAngle.angles),
-//                refAngle.angles,
-
-                convertAngle.angles,
-                refAngle.angles,
-                sizeof_array(convertAngle.angles),
-
-                &tracePoints.data()->datas + offsetof_double( tracePoint, x ), sizeof_double(tracePoint),
-                &tracePoints.data()->datas + offsetof_double( tracePoint, vx ),sizeof_double(tracePoint),
-                &tracePoints.data()->datas + offsetof_double( tracePoint, t ), sizeof_double(tracePoint),
-
-                tracePoints.size(),
-
-                &traceJoints.data()->datas,
-                traceJoints.size()
-                );
     if ( ret != 0 )
-    { return ERR_PLAN_SLOVE_FAIL; }
+    { logDbg(); return ERR_PLAN_SLOVE_FAIL; }
 
     return 0;
 }

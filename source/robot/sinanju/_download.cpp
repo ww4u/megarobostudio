@@ -1,21 +1,27 @@
 #include "sinanju.h"
 
-int robotSinanju::convertTrace(  QList<TraceKeyPoint> &curve,
-                    xxxGroup<jointsTrace> &jointsPlan )
+int robotSinanju::convertTrace( QList<TraceKeyPoint> &curve,
+                                xxxGroup<jointsTrace> &jointsPlan,
+                                QList< tpvGroup *> &groups )
 {
     //! 0.check
     if( jointsPlan.size() > 0 )
     {}
     else
-    { return ERR_NO_TPV_DATA; }
+    {
+        sysError( QObject::tr("no plan") );
+        return ERR_NO_TPV_DATA;
+    }
 
     int ret;
-    delete_all( mJointsGroup );
 
     //! 0~3
-    ret = buildTpvGroup( jointsPlan, mJointsGroup );
+    ret = buildTpvGroup( jointsPlan, groups );
     if ( ret != 0 )
-    { return ret; }
+    {
+        sysError( QObject::tr("split joint") );
+        return ret;
+    }
 
     //! tail
     //! for hand
@@ -29,22 +35,27 @@ int robotSinanju::convertTrace(  QList<TraceKeyPoint> &curve,
         if ( ret != 0 )
         {
             delete pGroup;
+            sysError( QObject::tr("new group") );
             return ERR_FAIL_ADD_TPV;
         }
     }
 
-    mJointsGroup.append( pGroup );
+    groups.append( pGroup );
 
 // MOVE 280,21.5,452.75,0,250,0,502,90,0.5
     return 0;
 }
 
 //! only for 4 joints
-int robotSinanju::downloadTrace( const tpvRegion &region )
+int robotSinanju::downloadTrace( const tpvRegion &region,
+                                 QList< tpvGroup *> &groups )
 {
     int ret;
-    if ( mJointsGroup.size() != axes() )
-    { return ERR_INVALID_DATA; }
+    if ( groups.size() != axes() )
+    {
+        sysError(QObject::tr("not enough axes") );
+        return ERR_INVALID_DATA;
+    }
 
     onLine();
 
@@ -52,10 +63,10 @@ int robotSinanju::downloadTrace( const tpvRegion &region )
 
     QList<int> jointsTabList;
     jointsTabList<<0<<1<<2<<3<<4;
-    ret = download( mJointsGroup, jointsTabList, region );
+    ret = download( groups, jointsTabList, region );
     if ( ret != 0 )
     { return ret; }
-logDbg()<<mJointsGroup.size();
+logDbg()<<groups.size();
 
     return 0;
 }
@@ -72,10 +83,10 @@ int robotSinanju::buildTpvGroup( xxxGroup<jointsTrace> &jointsPlan,
     {
         tpvGroup *pGroup = new tpvGroup();
         Q_ASSERT( NULL != pGroup );
-
+logDbg()<<i<<jointsPlan.size();
         //! for each data
         for ( int j = 0; j < jointsPlan.size(); j++ )
-        {
+        {logDbg()<<jointsPlan.data()[j].t<<jointsPlan.data()[j].p[i]<<jointsPlan.data()[j].v[i];
             ret = pGroup->addItem(
                              jointsPlan.data()[j].t,
                              jointsPlan.data()[j].p[i],

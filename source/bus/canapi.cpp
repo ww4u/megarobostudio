@@ -50,6 +50,11 @@ void CANApi::unload()
 
 bool CANApi::loadApi()
 {
+    //! usb can-ii do not have find device
+    find = (p_VCI_FindDevice)mDll.resolve("VCI_FindDevice");
+    if ( !find )
+    {}
+
     open = (p_VCI_OpenDevice)mDll.resolve("VCI_OpenDevice");
     if ( !open )
     { logDbg();return false; }

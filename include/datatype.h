@@ -41,6 +41,7 @@ struct D4Point
 {
     float t;
     float x, y, z;
+    float v;
 };
 
 #endif

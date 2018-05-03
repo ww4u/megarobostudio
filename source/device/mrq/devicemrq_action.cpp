@@ -31,41 +31,44 @@ int deviceMRQ::stop( const tpvRegion &region )
 //MRQ_MOTION_STATE_STANDBY,
 //MRQ_MOTION_STATE_RUNNING,
 //MRQ_MOTION_STATE_ERROR,
-void deviceMRQ::setStatus( int stat, const tpvRegion &region  )
+void deviceMRQ::setStatus( int stat, const tpvRegion &region, frameData &data  )
 {
     int ch = region.axes();
-    MRQ::setStatus( stat, region );
+    MRQ::setStatus( stat, region, data );
 
     if ( stat == MRQ_MOTION_STATE_2_POWERON )
     {
-        lpc( ch )->postMsg( (eRoboMsg)mrq_msg_idle, region ) ;
+        lpc( ch )->postMsg( (eRoboMsg)mrq_msg_idle, region, data.timeStamp() ) ;
     }
     else if ( stat == MRQ_MOTION_STATE_2_IDLE )
     {
-        lpc( ch )->postMsg( (eRoboMsg)mrq_msg_idle, region ) ;
+        lpc( ch )->postMsg( (eRoboMsg)mrq_msg_idle, region, data.timeStamp() ) ;
     }
     else if ( stat == MRQ_MOTION_STATE_2_CALCING )
     {
-        lpc( ch )->postMsg( (eRoboMsg)mrq_msg_calcing, region ) ;
+        lpc( ch )->postMsg( (eRoboMsg)mrq_msg_calcing, region, data.timeStamp() ) ;
     }
     else if ( stat == MRQ_MOTION_STATE_2_CALCEND )
     {
-        lpc( ch )->postMsg( (eRoboMsg)mrq_msg_calcend, region ) ;
+        lpc( ch )->postMsg( (eRoboMsg)mrq_msg_calcend, region, data.timeStamp() ) ;
     }
     else if ( stat == MRQ_MOTION_STATE_2_STANDBY )
     {
-        lpc( ch )->postMsg( (eRoboMsg)mrq_msg_standby, region ) ;
+        lpc( ch )->postMsg( (eRoboMsg)mrq_msg_standby, region, data.timeStamp() ) ;
     }
     else if ( stat == MRQ_MOTION_STATE_2_RUNNING )
     {
-        lpc( ch )->postMsg( (eRoboMsg)mrq_msg_running, region ) ;
+        lpc( ch )->postMsg( (eRoboMsg)mrq_msg_running, region, data.timeStamp() ) ;
     }
     else if ( stat == MRQ_MOTION_STATE_2_ERROR )
     {
-        lpc( ch )->postMsg( (eRoboMsg)mrq_msg_idle, region ) ;
+        lpc( ch )->postMsg( (eRoboMsg)mrq_msg_idle, region, data.timeStamp() ) ;
     }
     else
-    { Q_ASSERT(false); }
+    {
+        logDbg()<<stat;
+        Q_ASSERT(false);
+    }
 }
 
 }

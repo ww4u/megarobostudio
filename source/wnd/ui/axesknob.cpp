@@ -3,12 +3,17 @@
 #include <QMessageBox>
 #include "../../device/mrq/deviceMRQ.h"
 
-axesKnob::axesKnob( mcModel *pModel,
+axesKnob::axesKnob( mcModel *pMcModel,
+                    const QString &connStr,
                     QWidget *parent) :
-    DlgView( pModel, parent),
+    DlgView( pMcModel, parent),
     ui(new Ui::axesKnob)
-{
+{    
     ui->setupUi(this);
+
+    ui->labConnection->setText( connStr );
+
+    setAttribute( Qt::WA_DeleteOnClose );
 }
 
 axesKnob::~axesKnob()
@@ -20,17 +25,24 @@ MegaDevice::deviceMRQ * axesKnob::currentDevice( int &ax )
 {
     Q_ASSERT( NULL != m_pMcModel );
 
-    //! set model && axesid
-    QString str;
-    int id;
-    str = m_pMcModel->getConnection().getDeviceName();
-    id = m_pMcModel->getConnection().getDeviceCH();
-
-    MegaDevice::deviceMRQ *pMrq = m_pMcModel->m_pInstMgr->findDevice( str,
-                                                                      id );
-    ax = id;
+    MegaDevice::deviceMRQ *pMrq = m_pMcModel->m_pInstMgr->findDevice(  ui->labConnection->text(),
+                                                                       &ax );
     return pMrq;
+
+//    //! set model && axesid
+//    QString str;
+//    int id;
+//    str = m_pMcModel->getConnection().getDeviceName();
+//    id = m_pMcModel->getConnection().getDeviceCH();
+
+//    MegaDevice::deviceMRQ *pMrq = m_pMcModel->m_pInstMgr->findDevice( str,
+//                                                                      id );
+//    ax = id;
+//    return pMrq;
 }
+
+void axesKnob::slot_device_changed()
+{ close(); }
 
 void axesKnob::on_sliderValue_valueChanged(int val )
 {

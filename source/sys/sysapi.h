@@ -47,9 +47,13 @@ void sysProgress( bool b );
 //! sys status
 void sysStatus( const QString &str );
 
+void sysPrompt( const QString &str );
+
 //! sys queue
 void attachSysQueue( RoboMsgThread* pQueue );
 RoboMsgThread* sysQueue();
+
+quint64 sysTimeStamp();
 
 class sysRunTime
 {

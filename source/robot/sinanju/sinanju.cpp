@@ -5,7 +5,7 @@
 
 static quint8 _megaimage[]=
 {
-    #include "./robot1.cpp"
+    #include "./robot.cpp"
 };
 
 static quint8 _detail[]=
@@ -24,6 +24,8 @@ robotSinanju::robotSinanju()
     setAxes( 5 );
     setAxesDefName( 5 );
     setJointName( 5 );
+
+    setPoseCount( 3 );   //! x,y,z
 
     mDetail = QString::fromLocal8Bit( (char*)_detail, sizeof_array(_detail) );
 
@@ -89,7 +91,7 @@ robotSinanju::robotSinanju()
     mArchAngles.append( -90 );
 
     //! arm length
-    //! 247.75, 255, 250, 0, 0, 0
+    //! 257, 255, 250, 0, 0, 0
     mArmLengths.append( 257 );
     mArmLengths.append( 255 );
     mArmLengths.append( 250 );
@@ -161,8 +163,6 @@ void robotSinanju::onMsg( int subAxes, RoboMsg &msg )
 
     fsm( region )->proc( msg.Msg(), msg );
 }
-
-
 
 int robotSinanju::download( QList<tpvGroup*> &groups,
                              QList<int> &joints,
@@ -285,8 +285,8 @@ void robotSinanju::offLine()
 //    detachBus();
 }
 
-QAbstractTableModel *robotSinanju::handActions()
-{ return &mHandActionModel; }
+//QAbstractTableModel *robotSinanju::handActions()
+//{ return &mHandActionModel; }
 
 
 void robotSinanju::setHandZeroAttr( double zeroTime, double zeroAngle, double zeroSpeed )

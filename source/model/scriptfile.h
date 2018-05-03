@@ -3,7 +3,7 @@
 
 #include <QtCore>
 
-#include "motionitem.h"
+#include "sinanjumotionitem.h"
 #include "mcmodelobj.h"
 #include "../intf/iserial.h"
 

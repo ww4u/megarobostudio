@@ -4,6 +4,7 @@
 
 #define state_timer_id      1
 #define state_timer_tmo     time_s(1)    //! us
+#define prefetch_timer_tmo  time_ms(100)
 
 #define prepare_timer_id    2
 #define prepare_timer_tmo   time_s(5)
@@ -155,10 +156,15 @@ void MrqUnit::toState( mrqState stat, RoboMsg &detail )
 void MrqUnit::onEnter( RoboMsg &detail )
 {
     killTimer( state_timer_id );
+
+//    selfFsm()->Mrq()->lpc( selfFsm()->axes() )->clear();
+
 }
 void MrqUnit::onExit( RoboMsg &detail )
 {
     killTimer( state_timer_id );
+
+//    selfFsm()->Mrq()->lpc( selfFsm()->axes() )->clear();
 }
 
 void MrqUnit::onTimer( int id )
@@ -185,16 +191,17 @@ IdleMrqUnit::IdleMrqUnit( RoboFsm *pFsm ) : MrqUnit( pFsm )
 void IdleMrqUnit::proc( int msg, RoboMsg &detail )
 {
     //! ops
-    if ( msg == mrq_msg_run )
+/*    if ( msg == mrq_msg_run )
     { toState( mrq_state_run_reqed, detail ); }
 
-    else if ( msg == mrq_msg_stop )
+    else */if ( msg == mrq_msg_stop )
     { }
 
     else if ( msg == mrq_msg_rst )
     { }
 
-    else if ( msg == mrq_msg_call )
+    else if ( msg == mrq_msg_call
+              || msg == mrq_msg_run )
     {logDbg();
         selfFsm()->reqRun(true);
         toState( mrq_state_calcend, detail );
@@ -402,9 +409,9 @@ void CalcendMrqUnit::proc( int msg, RoboMsg &detail )
     {
         selfFsm()->reqRun( true );
 
-        startTimer( state_timer_id, state_timer_tmo );
+        startTimer( state_timer_id, prefetch_timer_tmo );
         startTimer( prepare_timer_id, prepare_timer_tmo );
-logDbg()<<QThread::currentThreadId()<<msg;
+//logDbg()<<QThread::currentThreadId()<<msg;
         int ret;
         ret = selfFsm()->Mrq()->setMOTION_SWITCH(
                                             selfFsm()->axes(),
@@ -416,27 +423,37 @@ logDbg()<<QThread::currentThreadId()<<msg;
     }
 
     else if ( msg == mrq_msg_stop )
-    {
-        toState(mrq_state_idle, detail );sysLog( __FUNCTION__, QString::number(__LINE__) );
+    {sysLog( __FUNCTION__, QString::number(__LINE__) );
+        toState(mrq_state_idle, detail );
 
         //! \todo stop downloading
     }
 
     else if ( msg == mrq_msg_rst )
-    { toState(mrq_state_idle, detail );  sysLog( __FUNCTION__, QString::number(__LINE__) );}
+    { sysLog( __FUNCTION__, QString::number(__LINE__) );
+        toState(mrq_state_idle, detail );
+    }
 
     else if ( msg == mrq_msg_prepare )
-    { startTimer( prepare_timer_id, prepare_timer_tmo ); }
+    {
+        startTimer( prepare_timer_id, prepare_timer_tmo );
+    }
 
     else if ( msg == mrq_msg_program )
-    { toState( mrq_state_program, detail ); }
+    { sysLog( __FUNCTION__, QString::number(__LINE__) );
+        toState( mrq_state_program, detail );
+    }
 
     //! device status
     else if ( msg == mrq_msg_idle )
-    { sysLog( __FUNCTION__, QString::number(__LINE__) ); toState(mrq_state_idle, detail ); }
+    { sysLog( __FUNCTION__, QString::number(__LINE__) );
+        toState(mrq_state_idle, detail );
+    }
 
     else if ( msg == mrq_msg_calcing )
-    { toState( mrq_state_calcing, detail ); }
+    { sysLog( __FUNCTION__, QString::number(__LINE__) );
+        toState( mrq_state_calcing, detail );
+    }
 
     //! do nothing
     else if ( msg == mrq_msg_calcend )
@@ -444,13 +461,19 @@ logDbg()<<QThread::currentThreadId()<<msg;
     }
 
     else if ( msg == mrq_msg_standby )
-    { toState( mrq_state_standby, detail ); logDbg(); }
+    {
+        toState( mrq_state_standby, detail );
+    }
 
     else if ( msg == mrq_msg_running )
-    { toState( mrq_state_running, detail ); }
+    { sysLog( __FUNCTION__, QString::number(__LINE__) );
+        toState( mrq_state_running, detail );
+    }
 
     else if ( msg == mrq_msg_error )
-    { sysLog( __FUNCTION__, QString::number(__LINE__) ); toState(mrq_state_idle, detail ); }
+    { sysLog( __FUNCTION__, QString::number(__LINE__) );
+        toState(mrq_state_idle, detail );
+    }
 
     else    //! keep
     { }
@@ -475,7 +498,7 @@ void CalcendMrqUnit::onEnter( RoboMsg &detail )
         }
         else
         {
-             startTimer( state_timer_id, state_timer_tmo );
+             startTimer( state_timer_id, prefetch_timer_tmo );
              startTimer( prepare_timer_id, prepare_timer_tmo );
         }
     }
@@ -498,7 +521,7 @@ void CalcendMrqUnit::onTimer( int id )
                                                     MRQ_MOTION_SWITCH_PREPARE,
                                                     (MRQ_MOTION_SWITCH_1)selfFsm()->page()
                                                 );
-        sysError("parepare fail");
+        sysError("parepare fail", QString::number( selfFsm()->axes() ) );
     }
 }
 

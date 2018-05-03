@@ -49,7 +49,7 @@ void EventAction::setComment( const QString &cmt )
 QString EventAction::comment()
 { return mComment; }
 
-EventActionModel::EventActionModel()
+EventActionModel::EventActionModel() : MegaTableModel("","")
 {
 
 }

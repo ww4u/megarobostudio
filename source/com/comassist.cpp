@@ -1,6 +1,6 @@
 #include <QApplication>
 #include "comassist.h"
-
+#include "../../source/sys/sysapi.h"    //! sysLog
 QStringList comAssist::_mRemotePath;
 
 void comAssist::setRemotePath( const QStringList &path )
@@ -106,6 +106,45 @@ float comAssist::normalizeDegreeN360( float degree )
     return degree;
 }
 
+float comAssist::normalizeDegreeN180_180( float degree )
+{
+    while( degree > 180 )
+    { degree -= 360; }
+    while( degree <= -180 )
+    { degree += 360; }
+
+    return degree;
+}
+float comAssist::normalizeDegreeN180_180( float degree[], int n )
+{
+    for ( int i = 0; i < n; i++ )
+    {
+        degree[i] = comAssist::normalizeDegreeN180_180( degree[i] );
+    }
+
+    return 0;
+}
+
+float comAssist::radToDeg( float rad )
+{ return RAD_TO_DEG(rad); }
+float comAssist::radToDeg( float rad[], int n )
+{
+    for ( int i = 0; i < n; i++ )
+    { rad[i] = radToDeg( rad[i] ); }
+
+    return 0;
+}
+
+float comAssist::degToRad( float deg )
+{ return DEG_TO_RAD(deg); }
+float comAssist::degToRad( float deg[], int n )
+{
+    for ( int i = 0; i < n; i++ )
+    { deg[i] = degToRad( deg[i] ); }
+
+    return 0;
+}
+
 float comAssist::eulcidenDistance( float x1, float y1, float z1,
                                  float x2, float y2, float z2 )
 {
@@ -161,9 +200,15 @@ bool    comAssist::ammendFileName( QString &fileName )
                    + QDir::separator() + fileName;
         fullName = QDir::toNativeSeparators( fullName );
         if ( QFile::exists( fullName ) )
-        { return true; }
+        {
+            fileName = fullName;
+            return true;
+        }
 
     }while(0);
+
+    //! show file error
+    sysError( fileName, QObject::tr("do not exist") );
 
     return false;
 }

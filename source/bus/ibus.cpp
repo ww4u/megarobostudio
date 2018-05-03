@@ -27,7 +27,8 @@ IBus::IBus()
 
     mRdTmo = time_ms(200);
     mRdInterval = time_us(50);
-    mRdTick = time_us(1000);
+//    mRdInterval = time_ms(50);
+    mRdTick = time_us(500);
 
     mEnumerateTmo = time_ms( 50 );     //! ref to the device count, each = 200us
 
@@ -62,9 +63,9 @@ void IBus::setPId( int pid )
 int IBus::pId()
 { return mPId; }
 
-int IBus::open(QString dev)
-{ return 0; }
-int IBus::open( int devType, int devId, int canId )
+//int IBus::open(QString dev)
+//{ return 0; }
+int IBus::open( int devType, int devId, int canId, const QString &desc )
 { return 0; }
 void IBus::close()
 { return; }
@@ -77,7 +78,11 @@ int IBus::clear()
 { return 0; }
 int IBus::doWrite( DeviceId &nodeId, byte *pBuf, int len )
 { return -1; }
+int IBus::doWrite( QList<frameData> &canFrames )
+{ return -1; }
 int IBus::doReceive( int *pFrameId, byte *pBuf, int *pLen )
+{ return -1; }
+int IBus::doReceive( QList< frameData > &receiveFrames )
 { return -1; }
 int IBus::doRead( DeviceId &nodeId, byte *pBuf, int cap, int *pLen )
 { return -1; }

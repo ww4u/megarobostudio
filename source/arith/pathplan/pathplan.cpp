@@ -40,6 +40,7 @@ static void trimPoints( double *pIn, int length )
     }
 }
 
-#include "functions.cpp"
+
+#include "./arith/functions.cpp"
 
 }

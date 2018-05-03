@@ -9,6 +9,7 @@ logOut::logOut(QWidget *parent) :
 
     connect( this, SIGNAL(sig_log_item( const QString &)),
              this, SLOT(slot_log_item( const QString &)));
+
 }
 
 logOut::~logOut()
@@ -42,6 +43,15 @@ void logOut::on_btnExport_clicked()
 void logOut::slot_log_item( const QString &str )
 {
     mMutex.lock();
+    QListWidgetItem *pItem;
+    while ( ui->listWidget->count() >= ui->spinBox->value() )
+    {
+        pItem = ui->listWidget->takeItem(0);
+        Q_ASSERT( NULL != pItem );
+        delete pItem;
+    }
+
+    //! add to last
     ui->listWidget->addItem( str );
     ui->listWidget->setCurrentRow( ui->listWidget->count() - 1 );
     mMutex.unlock();

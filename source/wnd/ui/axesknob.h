@@ -19,7 +19,9 @@ class axesKnob : public DlgView
     Q_OBJECT
 
 public:
-    explicit axesKnob( mcModel *pModel, QWidget *parent = 0);
+    explicit axesKnob( mcModel *pMcModel,
+                       const QString &connectStr,
+                       QWidget *parent = 0);
     ~axesKnob();
 
 protected:
@@ -31,6 +33,8 @@ protected:
 //    void setConnection( const QString &conn );
 
 private slots:
+    void slot_device_changed();
+
     void on_sliderValue_valueChanged(int value);
 
     void on_spinNow_valueChanged(double arg1);
@@ -38,6 +42,7 @@ private slots:
     void on_sliderValue_sliderPressed();
 
     void on_sliderValue_sliderReleased();
+
 
 private:
     Ui::axesKnob *ui;

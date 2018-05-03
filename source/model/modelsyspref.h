@@ -40,6 +40,9 @@ public:
     int mFailTryCnt;
     bool mbAutoAssignId;
 
+    QString mVisaAddr;
+    int mVisaTmo;
+
     int mEnumerateTimeout;
     int mSampleTick;
 
@@ -59,6 +62,7 @@ public:
     bool mbMaximizeStartup;
     bool mbAutoLoadPrj;
     bool mbAffirmZero;
+    bool mbAutoStatusView;
 
     dbMeta mDbMeta;
                             //! misa

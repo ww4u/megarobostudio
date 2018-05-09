@@ -225,6 +225,8 @@ public:
     virtual int stop( const tpvRegion &reg=tpvRegion() );
 
     virtual void setStatus( int stat, const tpvRegion &reg, frameData &data );
+    //! p1:ax, p2:page
+    virtual bool checkLink( int p1=0, int p2 = 0 );
 public:
     virtual void onMsg( int subAxes, RoboMsg &msg );
     virtual void onTimer( void *pContext, int id );

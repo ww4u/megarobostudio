@@ -47,6 +47,13 @@ protected:
 
     void buildConnection();
 
+    int postApply( appMsg msg, void *pPara );
+    void beginApply( void *pPara);
+    void endApply( int ret, void *pPara );
+
+    void saveBtnSnap( bool bNow = false );
+    void restoreBtnSnap();
+
 private slots:
     void slot_page_changed( int index );
 
@@ -80,6 +87,7 @@ private:
 
     int mPrefId;                //! id by robot
     QList<modelView*> mPrefPages;
+    QList< bool > mbtnEnableSnap;
 };
 
 #endif // ROBOPROP_H

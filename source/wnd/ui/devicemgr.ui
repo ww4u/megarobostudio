@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>185</width>
+    <width>193</width>
     <height>379</height>
    </rect>
   </property>
@@ -68,6 +68,17 @@
         </size>
        </property>
       </spacer>
+     </item>
+     <item>
+      <widget class="QToolButton" name="toolState">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset resource="../res/res.qrc">
+         <normaloff>:/res/image/icon/closeall.png</normaloff>:/res/image/icon/closeall.png</iconset>
+       </property>
+      </widget>
      </item>
      <item>
       <widget class="QToolButton" name="btnPanel">

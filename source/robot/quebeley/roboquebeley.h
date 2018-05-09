@@ -7,7 +7,7 @@
 class roboQuebeley : public MegaDevice::deviceMRQ
 {
 public:
-    roboQuebeley();
+    roboQuebeley( robotEnum id );
 
 protected:
     virtual int serialIn( QXmlStreamReader &reader );

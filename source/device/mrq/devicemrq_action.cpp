@@ -71,4 +71,21 @@ void deviceMRQ::setStatus( int stat, const tpvRegion &region, frameData &data  )
     }
 }
 
+bool deviceMRQ::checkLink( int p1, int p2 )
+{
+    do
+    {
+        if ( p1 < 0 || p1 >= axes() )
+        { break; }
+        if ( p2 < 0 || p2 >= regions() )
+        { break; }
+
+        return false;
+    }while( 0 );
+
+    sysError( QObject::tr("Invalid region/page"), QString::number( p1 ), QString::number( p2 ) );
+
+    return false;
+}
+
 }

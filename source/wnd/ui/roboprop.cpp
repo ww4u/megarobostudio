@@ -15,6 +15,11 @@ roboProp::roboProp( int id , QWidget *parent) :
     setupUi( id );
 
     buildConnection();
+
+    //! three btns
+    mbtnEnableSnap.append( false );
+    mbtnEnableSnap.append( false );
+    mbtnEnableSnap.append( false );
 }
 
 roboProp::~roboProp()
@@ -56,23 +61,27 @@ void roboProp::setMcModel( mcModel *pMcModel )
 
 int roboProp::setApply()
 {
-    int ret,id;
-    id = 0;
-    foreach( modelView *pView, mPrefPages )
-    {
-        Q_ASSERT( NULL != pView );
+//    int ret,id;
+//    id = 0;
+//    foreach( modelView *pView, mPrefPages )
+//    {
+//        Q_ASSERT( NULL != pView );
 
-        sysProgress( id++, pView->name(), mPrefPages.size(), 0 );
-        sysProgress( true );
-        ret = pView->setApply();
-        sysProgress( id, pView->name(), mPrefPages.size(), 0 );
-        if ( ret != 0 )
-        { break; }
-    }
+//        sysProgress( id++, pView->name(), mPrefPages.size(), 0 );
+//        sysProgress( true );
+//        ret = pView->setApply();
+//        sysProgress( id, pView->name(), mPrefPages.size(), 0 );
+//        if ( ret != 0 )
+//        { break; }
+//    }
 
-    sysProgress( false );
+//    sysProgress( false );
 
-    return ret;
+//    return ret;
+
+    post_request( msg_robo_property_apply, roboProp, Apply );
+
+    return 0;
 }
 
 int roboProp::save( QString &outFileName )
@@ -199,6 +208,58 @@ void roboProp::buildConnection()
 
     connect( ui->stackedWidget, SIGNAL(currentChanged(int)),
              this, SLOT(slot_page_changed(int)));
+}
+
+int roboProp::postApply( appMsg msg, void *pPara )
+{
+    int ret,id;
+    id = 0;
+    foreach( modelView *pView, mPrefPages )
+    {
+        Q_ASSERT( NULL != pView );
+
+        sysProgress( id++, pView->name(), mPrefPages.size(), 0 );
+        sysProgress( true );
+        ret = pView->setApply();
+        sysProgress( id, pView->name(), mPrefPages.size(), 0 );
+        if ( ret != 0 )
+        { break; }
+    }
+
+    return ret;
+}
+void roboProp::beginApply( void *pPara)
+{
+    sysProgress( 0, tr("Begin apply") );
+    sysProgress(true);
+
+    saveBtnSnap();
+}
+void roboProp::endApply( int ret, void *pPara )
+{
+    sysProgress(false);
+
+    restoreBtnSnap();
+}
+
+void roboProp::saveBtnSnap( bool bNow )
+{
+    //! save
+    mbtnEnableSnap[0] = ui->btnApply->isEnabled();
+    mbtnEnableSnap[1] = ui->btnOK->isEnabled();
+    mbtnEnableSnap[2] = ui->btnCancel->isEnabled();
+
+    //! config
+    ui->btnApply->setEnabled( bNow );
+    ui->btnOK->setEnabled( bNow );
+    ui->btnCancel->setEnabled( bNow );
+}
+void roboProp::restoreBtnSnap()
+{
+    //! restore
+    ui->btnApply->setEnabled( mbtnEnableSnap[0] );
+    ui->btnOK->setEnabled( mbtnEnableSnap[1] );
+    ui->btnCancel->setEnabled( mbtnEnableSnap[2] );
 }
 
 void roboProp::slot_page_changed( int index )

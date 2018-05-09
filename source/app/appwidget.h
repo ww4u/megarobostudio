@@ -21,6 +21,9 @@ enum appMsg
     msg_start_motion,
     msg_stop_motion,
 
+    msg_mrq_property_apply,
+    msg_robo_property_apply,
+
     msg_mgr_motor_test,
     msg_mgr_robo_test,
 };

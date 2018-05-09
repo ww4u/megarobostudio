@@ -262,14 +262,14 @@ int pvtEdit::postStart( appMsg msg, void *pPara )
                                                                       axesId );
     Q_ASSERT( NULL != pMrq );
 
-    MRQ_MOTION_STATE_2 stat;
+//    MRQ_MOTION_STATE_2 stat;
 
-    int ret = pMrq->getMOTION_STATE( axesId, MRQ_MOTION_SWITCH_1_MAIN, &stat );
-    if ( ret != 0 )
-    { return ret; }
-    if ( stat != MRQ_MOTION_STATE_2_CALCEND )
-    { return ERR_CAN_NOT_RUN; }
-
+//    int ret = pMrq->getMOTION_STATE( axesId, MRQ_MOTION_SWITCH_1_MAIN, &stat );
+//    if ( ret != 0 )
+//    { return ret; }
+//    if ( stat != MRQ_MOTION_STATE_2_CALCEND )
+//    { return ERR_CAN_NOT_RUN; }
+    int ret;
     ret = pMrq->run( tpvRegion(axesId,0) );
 
     return ret;

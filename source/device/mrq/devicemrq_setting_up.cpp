@@ -52,7 +52,7 @@ MRQ_PROGRESS( 10, ("MOTION") );
     //! state
     foreach_page()
     {
-        checked_call( getMOTION_STATE( _i, _axPage, mMOTION_STATE[_i] + _j) );
+//        checked_call( getMOTION_STATE( _i, _axPage, mMOTION_STATE[_i] + _j) );
     }
     end_foreach_page()
 

@@ -15,7 +15,7 @@ static quint8 _detail[]=
 
 robotSinanju::robotSinanju()
 {
-    mClass = QObject::tr("Sinanju");
+    mClass = QObject::tr("MRX-T4");
     mId = robot_sinanju;
 
     //! default gpid
@@ -236,54 +236,54 @@ int robotSinanju::setLoop( int n, const tpvRegion &region )
 int robotSinanju::loopNow()
 { return 0; }
 
-void robotSinanju::onLine()
-{
-    MegaDevice::deviceMRQ *pMrq;
-    int ax;
+//void robotSinanju::onLine()
+//{
+//    MegaDevice::deviceMRQ *pMrq;
+//    int ax;
 
-    //! each ax
-    for ( int i = 0; i < axes(); i++ )
-    {
-        pMrq = jointDevice( i, &ax );
+//    //! each ax
+//    for ( int i = 0; i < axes(); i++ )
+//    {
+//        pMrq = jointDevice( i, &ax );
 
-        Q_ASSERT( NULL != pMrq );
+//        Q_ASSERT( NULL != pMrq );
 
-        Q_ASSERT( regions() == pMrq->regions() );
+//        Q_ASSERT( regions() == pMrq->regions() );
 
-        //! each region
-        for ( int j = 0; j < regions(); j++ )
-        {
-            Q_ASSERT( pMrq->Fsm( tpvRegion(ax,j) ) != NULL );
-            Q_ASSERT( NULL != mFsms[ tpvRegion(0,j) ] );
-            pMrq->Fsm( tpvRegion(ax,j) )->setLeader( mFsms[ tpvRegion(0,j) ],
-                                                    (void*)i );
-        }
+//        //! each region
+//        for ( int j = 0; j < regions(); j++ )
+//        {
+//            Q_ASSERT( pMrq->Fsm( tpvRegion(ax,j) ) != NULL );
+//            Q_ASSERT( NULL != mFsms[ tpvRegion(0,j) ] );
+//            pMrq->Fsm( tpvRegion(ax,j) )->setLeader( mFsms[ tpvRegion(0,j) ],
+//                                                    (void*)i );
+//        }
 
-        //! use phy bus
-        attachBus( pMrq->Bus() );
-    }
-}
-void robotSinanju::offLine()
-{
-    MegaDevice::deviceMRQ *pMrq;
-    int ax;
+//        //! use phy bus
+//        attachBus( pMrq->Bus() );
+//    }
+//}
+//void robotSinanju::offLine()
+//{
+//    MegaDevice::deviceMRQ *pMrq;
+//    int ax;
 
-    //! each ax
-    for ( int i = 0; i < axes(); i++ )
-    {
-        pMrq = jointDevice( i, &ax );
+//    //! each ax
+//    for ( int i = 0; i < axes(); i++ )
+//    {
+//        pMrq = jointDevice( i, &ax );
 
-        //! each region
-        for ( int j = 0; j < regions(); j++ )
-        {
-            Q_ASSERT( pMrq->Fsm( tpvRegion(ax,j) ) != NULL );
-            pMrq->Fsm( tpvRegion(ax,j) )->setLeader( NULL, NULL );
-        }
-    }
+//        //! each region
+//        for ( int j = 0; j < regions(); j++ )
+//        {
+//            Q_ASSERT( pMrq->Fsm( tpvRegion(ax,j) ) != NULL );
+//            pMrq->Fsm( tpvRegion(ax,j) )->setLeader( NULL, NULL );
+//        }
+//    }
 
-    //! \todo
-//    detachBus();
-}
+//    //! \todo
+////    detachBus();
+//}
 
 //QAbstractTableModel *robotSinanju::handActions()
 //{ return &mHandActionModel; }

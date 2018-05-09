@@ -352,7 +352,7 @@ int receiveCache::readAFrame( MegaDevice::DeviceId &nodeId,
             pHouse = mFrameWarehouse.findHouseBySendId( nodeId.sendId() );
             if ( NULL == pHouse )
             { break; }
-logDbg();
+
             //! 2. find
             pHouse->lock();
             if ( pHouse->size() > 0 )
@@ -360,7 +360,7 @@ logDbg();
                 frameData ary;
                 ary = pHouse->dequeue();
                 pHouse->unlock();
-
+logDbg();
                 *pFrameId = ary.frameId();
                 memcpy( pBuf, ary.data(), ary.length() );
 
@@ -505,6 +505,7 @@ void receiveCache::run()
 
 bool receiveCache::detectEvent( frameData &ary )
 {
+    bool bEvent = false;
     foreach( frameEvent *pEvt, mEvents )
     {
         Q_ASSERT( NULL != pEvt );
@@ -514,8 +515,9 @@ bool receiveCache::detectEvent( frameData &ary )
         {
             emit sig_event( pEvt->getId(), ary );
             logDbg()<<QString::number( ary.frameId(), 16)<<ary.toHex(' ')<<ary.timeStamp();
+            bEvent = true;
         }
     }
 logDbg()<<mEvents.size();
-    return false;
+    return bEvent;
 }

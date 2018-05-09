@@ -172,7 +172,8 @@ public:
 
     virtual void onLine();
     virtual void offLine();
-
+    virtual void offLine( const tpvRegion &region );
+    virtual bool checkLink( int p1 = 0, int p2 = 0 );
     //! interface
     virtual int call( const tpvRegion &region=0 );  //! load + run
 
@@ -192,7 +193,6 @@ public:
 protected:
     int serialOutRaw( QXmlStreamWriter &writer );
     int serialInRaw( QXmlStreamReader &reader );
-
 public:
     void setPlanStep( float step );
     float planStep();

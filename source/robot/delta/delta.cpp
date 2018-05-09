@@ -3,12 +3,12 @@
 
 static quint8 _megaimage[]=
 {
-    #include "./robot1.cpp"
+    #include "./robot.cpp"
 };
 
 robotDelta::robotDelta()
 {
-    mClass = QObject::tr("Delta");
+    mClass = QObject::tr("MRX-DT");
     mId = robot_delta;
 
     //! default gpid

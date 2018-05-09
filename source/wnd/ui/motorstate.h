@@ -26,8 +26,8 @@ public:
                    int page = 0 );
     QString state( int page = 0 );
 
-    void setProgress( int mi, int ma, int n );
-    void setProgress( bool b );
+    void setProgress( int page, int mi, int ma, int n );
+    void setProgress( int page, bool b );
 
 private slots:
     void on_cmbRegion_activated(int index);
@@ -37,8 +37,12 @@ private:
 
     QMap<int,QString> mStates;
 
-    QTime mRunningTime;
-    bool mbTimerRunning;
+//    QTime mRunningTime;
+//    bool mbTimerRunning;
+
+    QList< QTime *> mRunningTimes;
+    QList< bool > mTimerRunnings;
+
     int mLastProg;
 };
 

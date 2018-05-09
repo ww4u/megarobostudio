@@ -8,7 +8,7 @@ static quint8 _megaimage[]=
 
 roboGeo10::roboGeo10()
 {
-    mClass = "Geogoog10";
+    mClass = "MRQ_MC_1710";
     mId = robot_geogoog_10;
     setAxes( 10 );
     setAxesDefName( 10 );

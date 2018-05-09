@@ -3,7 +3,8 @@
 #include "./deviceMRQ.h"
 
 #define state_timer_id      1
-#define state_timer_tmo     time_s(1)    //! us
+//#define state_timer_tmo     time_s(1)    //! us
+#define state_timer_tmo     time_ms(500)
 #define prefetch_timer_tmo  time_ms(100)
 
 #define prepare_timer_id    2

@@ -48,3 +48,37 @@ void RawRobo::offLine()
     //! \todo
 //    detachBus();
 }
+
+void  RawRobo::offLine( const tpvRegion &region )
+{
+    MegaDevice::deviceMRQ *pMrq;
+    int ax;
+
+    for ( int i = 0; i < axes(); i++ )
+    {
+        pMrq = jointDevice( i, &ax );
+
+        //! some region
+        Q_ASSERT( pMrq->Fsm( tpvRegion(ax, region.page()) ) != NULL );
+        pMrq->Fsm( tpvRegion(ax, region.page()) )->setLeader( NULL, NULL );
+    }
+}
+
+bool RawRobo::checkLink( int p1, int p2 )
+{
+    MegaDevice::deviceMRQ *pMrq;
+    int ax;
+
+    for ( int i = 0; i < axes(); i++ )
+    {
+        pMrq = jointDevice( i, &ax );
+        //! find fail
+        if ( NULL == pMrq )
+        {
+            sysError( QObject::tr("Invalid link") );
+            return false;
+        }
+    }
+
+    return true;
+}

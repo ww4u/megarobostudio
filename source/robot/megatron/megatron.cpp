@@ -5,7 +5,7 @@
 
 static quint8 _megaimage[]=
 {
-    #include "./robot1.cpp"
+    #include "./robot.cpp"
 };
 
 static quint8 _detail[]=
@@ -15,7 +15,7 @@ static quint8 _detail[]=
 
 robotMegatron::robotMegatron()
 {
-    mClass = QObject::tr("Megatron");
+    mClass = QObject::tr("MRX-AS");
     mId = robot_megatron;
 
     //! default gpid
@@ -173,52 +173,52 @@ int robotMegatron::setLoop( int n, const tpvRegion &region )
 int robotMegatron::loopNow()
 { return 0; }
 
-void robotMegatron::onLine()
-{
-    MegaDevice::deviceMRQ *pMrq;
-    int ax;
+//void robotMegatron::onLine()
+//{
+//    MegaDevice::deviceMRQ *pMrq;
+//    int ax;
 
-    //! each ax
-    for ( int i = 0; i < axes(); i++ )
-    {
-        pMrq = jointDevice( i, &ax );
+//    //! each ax
+//    for ( int i = 0; i < axes(); i++ )
+//    {
+//        pMrq = jointDevice( i, &ax );
 
-        Q_ASSERT( NULL != pMrq );
+//        Q_ASSERT( NULL != pMrq );
 
-        Q_ASSERT( regions() == pMrq->regions() );
+//        Q_ASSERT( regions() == pMrq->regions() );
 
-        //! each region
-        for ( int j = 0; j < regions(); j++ )
-        {
-            Q_ASSERT( pMrq->Fsm( tpvRegion(ax,j) ) != NULL );
-            pMrq->Fsm( tpvRegion(ax,j) )->setLeader( mFsms[ tpvRegion(0,j) ],
-                                                    (void*)i );
-        }
+//        //! each region
+//        for ( int j = 0; j < regions(); j++ )
+//        {
+//            Q_ASSERT( pMrq->Fsm( tpvRegion(ax,j) ) != NULL );
+//            pMrq->Fsm( tpvRegion(ax,j) )->setLeader( mFsms[ tpvRegion(0,j) ],
+//                                                    (void*)i );
+//        }
 
-        //! use phy bus
-        attachBus( pMrq->Bus() );
-    }
-}
-void robotMegatron::offLine()
-{
-    MegaDevice::deviceMRQ *pMrq;
-    int ax;
+//        //! use phy bus
+//        attachBus( pMrq->Bus() );
+//    }
+//}
+//void robotMegatron::offLine()
+//{
+//    MegaDevice::deviceMRQ *pMrq;
+//    int ax;
 
-    //! each ax
-    for ( int i = 0; i < axes(); i++ )
-    {
-        pMrq = jointDevice( i, &ax );
+//    //! each ax
+//    for ( int i = 0; i < axes(); i++ )
+//    {
+//        pMrq = jointDevice( i, &ax );
 
-        //! each region
-        for ( int j = 0; j < regions(); j++ )
-        {
-            Q_ASSERT( pMrq->Fsm( tpvRegion(ax,j) ) != NULL );
-            pMrq->Fsm( tpvRegion(ax,j) )->setLeader( NULL, NULL );
-        }
-    }
+//        //! each region
+//        for ( int j = 0; j < regions(); j++ )
+//        {
+//            Q_ASSERT( pMrq->Fsm( tpvRegion(ax,j) ) != NULL );
+//            pMrq->Fsm( tpvRegion(ax,j) )->setLeader( NULL, NULL );
+//        }
+//    }
 
-    detachBus();
-}
+//    detachBus();
+//}
 
 
 

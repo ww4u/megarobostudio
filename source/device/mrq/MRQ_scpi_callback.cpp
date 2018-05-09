@@ -11,6 +11,11 @@
 #define DEF_MRQ()   MegaDevice::deviceMRQ* _localMrq = (GET_OBJ(context));
 #define LOCALMRQ()  _localMrq
 
+#define CHECK_LINK( ax, page )    if ( LOCALMRQ()->checkLink(ax,page) )\
+                        {}\
+                        else\
+                        { scpi_ret( SCPI_RES_ERR ); }
+
 static scpi_result_t _scpi_testAdd( scpi_t * context )
 {
     // read
@@ -101,6 +106,8 @@ static scpi_result_t _scpi_run( scpi_t * context )
 
     DEF_MRQ();
 
+    CHECK_LINK( ax, page );
+
     LOCALMRQ()->run( tpvRegion(ax,page) );
 
     return SCPI_RES_OK;
@@ -121,6 +128,8 @@ static scpi_result_t _scpi_stop( scpi_t * context )
     { scpi_ret( SCPI_RES_ERR ); }
 
     DEF_MRQ();
+
+    CHECK_LINK( ax, page );
 
     LOCALMRQ()->stop( tpvRegion(ax,page) );
 
@@ -149,7 +158,11 @@ static scpi_result_t _scpi_rotate( scpi_t * context )
     if ( SCPI_RES_OK != SCPI_ParamFloat( context, &val3, true ) )
     { scpi_ret( SCPI_RES_ERR ); }
 
-    ((MegaDevice::deviceMRQ*)context->user_context)->rotate( tpvRegion(ax,page), val2, val3 );
+    DEF_MRQ();
+
+    CHECK_LINK( ax, page );
+
+    LOCALMRQ()->rotate( tpvRegion(ax,page), val2, val3 );
 
     return SCPI_RES_OK;
 }
@@ -169,6 +182,8 @@ static scpi_result_t _scpi_call( _scpi_t * context )
     { scpi_ret( SCPI_RES_ERR ); }
 
     DEF_MRQ();
+
+    CHECK_LINK( ax, page );
 
     LOCALMRQ()->call( tpvRegion(ax, page) );
 
@@ -200,6 +215,8 @@ static scpi_result_t _scpi_lightZero( _scpi_t * context )
     { scpi_ret( SCPI_RES_ERR ); }
 
     DEF_MRQ();
+
+    CHECK_LINK( ax, page );
 
     LOCALMRQ()->lightCouplingZero( tpvRegion(ax,page),
                                    t, angle, speed );
@@ -252,9 +269,13 @@ static scpi_result_t _scpi_program( scpi_t * context )
         }
     }
 
+    DEF_MRQ();
+
+    CHECK_LINK( ax, page );
+
     //! send
     int ret = -1;
-    ret = ((MegaDevice::deviceMRQ*)context->user_context)->pvtWrite( tpvRegion(ax, page), pDots, dotSize );
+    ret = LOCALMRQ()->pvtWrite( tpvRegion(ax, page), pDots, dotSize );
 
     gc_array( pDots );
 
@@ -270,15 +291,19 @@ static scpi_result_t _scpi_fsmState( scpi_t * context )
     // read
     DEF_LOCAL_VAR();
 
-    int val1, val2, ret;
+    int ax, page, ret;
 
-    if ( SCPI_RES_OK != SCPI_ParamInt32( context, &val1, true ) )
+    if ( SCPI_RES_OK != SCPI_ParamInt32( context, &ax, true ) )
     { scpi_ret( SCPI_RES_ERR ); }
 
-    if ( SCPI_RES_OK != SCPI_ParamInt32( context, &val2, true ) )
+    if ( SCPI_RES_OK != SCPI_ParamInt32( context, &page, true ) )
     { scpi_ret( SCPI_RES_ERR ); }
 
-    ret = ((MegaDevice::deviceMRQ*)context->user_context)->fsmState(  tpvRegion(val1,val2) );
+    DEF_MRQ();
+
+    CHECK_LINK( ax, page );
+
+    ret = LOCALMRQ()->fsmState(  tpvRegion(ax,page) );
 
     SCPI_ResultInt32( context, ret );
 
@@ -291,13 +316,18 @@ static scpi_result_t _scpi_incangle( scpi_t * context )
     // read
     DEF_LOCAL_VAR();
 
-    int val1;
+    int ax;
 
-    if ( SCPI_RES_OK != SCPI_ParamInt32( context, &val1, true ) )
+    if ( SCPI_RES_OK != SCPI_ParamInt32( context, &ax, true ) )
     { scpi_ret( SCPI_RES_ERR ); }
 
     float val = 0;
-    val = ((MegaDevice::deviceMRQ*)context->user_context)->getIncAngle( val1 );
+
+    DEF_MRQ();
+
+    CHECK_LINK( ax, 0 );
+
+    val = LOCALMRQ()->getIncAngle( ax );
 
     SCPI_ResultFloat( context, val );
 
@@ -309,13 +339,18 @@ static scpi_result_t _scpi_absangle( scpi_t * context )
     // read
     DEF_LOCAL_VAR();
 
-    int val1;
+    int ax;
 
-    if ( SCPI_RES_OK != SCPI_ParamInt32( context, &val1, true ) )
+    if ( SCPI_RES_OK != SCPI_ParamInt32( context, &ax, true ) )
     { scpi_ret( SCPI_RES_ERR ); }
 
     float val = 0;
-    val = ((MegaDevice::deviceMRQ*)context->user_context)->getAbsAngle( val1 );
+
+    DEF_MRQ();
+
+    CHECK_LINK( ax, 0 );
+
+    val = LOCALMRQ()->getAbsAngle( ax );
 
     SCPI_ResultFloat( context, val );
 
@@ -327,13 +362,18 @@ static scpi_result_t _scpi_distance( scpi_t * context )
     // read
     DEF_LOCAL_VAR();
 
-    int val1;
+    int ax;
 
-    if ( SCPI_RES_OK != SCPI_ParamInt32( context, &val1, true ) )
+    if ( SCPI_RES_OK != SCPI_ParamInt32( context, &ax, true ) )
     { scpi_ret( SCPI_RES_ERR ); }
 
     float val = 0;
-    val = ((MegaDevice::deviceMRQ*)context->user_context)->getDist( val1 );
+
+    DEF_MRQ();
+
+    CHECK_LINK( ax, 0 );
+
+    val = LOCALMRQ()->getDist( ax );
 
     SCPI_ResultFloat( context, val );
 

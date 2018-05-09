@@ -128,12 +128,12 @@ void MotorMonitor::motorStateChanged( const QString &name,
         int capMax;
         capMax = pDev->getTpvCap( tpvRegion( axes, page) );
 
-        pWig->setProgress( 0, capMax, prog );
-        pWig->setProgress( true );
+        pWig->setProgress( page, 0, capMax, prog );
+        pWig->setProgress( page, true );
     }
     else
     {
-        pWig->setProgress( false );
+        pWig->setProgress( page, false );
     }
 }
 

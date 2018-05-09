@@ -5,7 +5,7 @@
 
 static quint8 _megaimage[]=
 {
-    #include "./robot1.cpp"
+    #include "./robot.cpp"
 };
 
 static quint8 _detail[]=
@@ -15,7 +15,7 @@ static quint8 _detail[]=
 
 robotH2::robotH2()
 {
-    mClass = QObject::tr("H2");
+    mClass = QObject::tr("MRX-H2");
     mId = robot_h2;
 
     //! default gpid

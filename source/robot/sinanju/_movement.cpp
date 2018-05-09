@@ -325,13 +325,17 @@ void robotSinanju::diffAngle( float angles[4],
         anglesOut[i] = (angles[i] - mInitAngles.at(i));
     }
 
+    int signs[]={ -1, -1, 1, 1 };
+
     //! direction
     for ( int i = 0; i < 4; i++ )
     {
-        if ( mAngleDir.at(i) )
-        {}
-        else
-        { anglesOut[i] = -anglesOut[i]; }
+//        if ( mAngleDir.at(i) )
+//        {}
+//        else
+//        { anglesOut[i] = -anglesOut[i]; }
+
+        anglesOut[i] = signs[i] * anglesOut[i];
 
         anglesOut[i] = comAssist::normalizeDegree360( anglesOut[i] );
     }

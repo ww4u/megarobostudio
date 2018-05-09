@@ -419,7 +419,7 @@ IBus::lock();
     if ( ret >= 2 )
     {
         for ( int i = 0; i < ret; i++  )
-        { logDbg()<<canFrames.at(i); }
+        { logDbg()<<canFrames.at(i)<<ret<<canFrames.at(i).size(); }
     }
 
     return 0;
@@ -442,6 +442,8 @@ int CANBus::doRead( DeviceId &nodeId, byte *pBuf, int cap, int *pLen )
 
     if ( cap != retLen )
     {
+        for( int i = 0; i < retLen; i++ )
+        { logDbg()<<QString::number( frameBuf[i], 16 ); }
         *pLen = retLen;logDbg()<<retLen<<cap<<frameId<<nodeId.sendId()<<nodeId.recvId();
         return -2;
     }

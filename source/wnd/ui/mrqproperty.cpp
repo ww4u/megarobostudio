@@ -19,6 +19,11 @@ mrqProperty::mrqProperty( VRobot *pMrqRobo,
     setupUi();
 
     buildConnection( );
+
+    //! three btns
+    mbtnEnableSnap.append( false );
+    mbtnEnableSnap.append( false );
+    mbtnEnableSnap.append( false );
 }
 
 mrqProperty::~mrqProperty()
@@ -124,26 +129,28 @@ void mrqProperty::setMcModel( mcModel *pMcModel )
 
 int mrqProperty::setApply()
 {
-    //! check device
-    MegaDevice::deviceMRQ *pDevice;
-    pDevice = getDevice();
-    if ( NULL == pDevice )
-    {
-        return ERR_INVALID_DEVICE_NAME;
-    }
+//    //! check device
+//    MegaDevice::deviceMRQ *pDevice;
+//    pDevice = getDevice();
+//    if ( NULL == pDevice )
+//    {
+//        return ERR_INVALID_DEVICE_NAME;
+//    }
 
-    //! foreach apply
-    int id = 0;
-    foreach( modelView *pView, mViewPages )
-    {
-        Q_ASSERT( NULL != pView );
-        sysProgress( id++, pView->name(), mViewPages.size(), 0 );
-        sysProgress( true );
-        pView->setApply();
-        sysProgress( id, pView->name(), mViewPages.size(), 0 );
-    }
+//    //! foreach apply
+//    int id = 0;
+//    foreach( modelView *pView, mViewPages )
+//    {
+//        Q_ASSERT( NULL != pView );
+//        sysProgress( id++, pView->name(), mViewPages.size(), 0 );
+//        sysProgress( true );
+//        pView->setApply();
+//        sysProgress( id, pView->name(), mViewPages.size(), 0 );
+//    }
 
-    sysProgress( false );
+//    sysProgress( false );
+
+    post_request( msg_mrq_property_apply, mrqProperty, Apply );
 
     return 0;
 }
@@ -308,4 +315,62 @@ void mrqProperty::buildConnection()
 
     connect( ui->stackedWidget, SIGNAL(currentChanged(int)),
              this, SLOT(slot_page_changed(int)));
+}
+
+int mrqProperty::postApply( appMsg msg, void *pPara )
+{
+    //! check device
+    MegaDevice::deviceMRQ *pDevice;
+    pDevice = getDevice();
+    if ( NULL == pDevice )
+    {
+        sysPrompt( tr("Invalid device") );
+        return ERR_INVALID_DEVICE_NAME;
+    }
+
+    //! foreach apply
+    int id = 0;
+    foreach( modelView *pView, mViewPages )
+    {
+        Q_ASSERT( NULL != pView );
+        sysProgress( id++, pView->name(), mViewPages.size(), 0 );
+        sysProgress( true );
+        pView->setApply();
+        sysProgress( id, pView->name(), mViewPages.size(), 0 );
+    }
+
+    return 0;
+}
+void mrqProperty::beginApply( void *pPara)
+{
+    sysProgress( 0, tr("Begin apply") );
+    sysProgress( true );
+
+    saveBtnSnap();
+}
+void mrqProperty::endApply( int ret, void *pPara )
+{
+    sysProgress( false );
+
+    restoreBtnSnap();
+}
+
+void mrqProperty::saveBtnSnap( bool bNow )
+{
+    //! save
+    mbtnEnableSnap[0] = ui->btnApply->isEnabled();
+    mbtnEnableSnap[1] = ui->btnOK->isEnabled();
+    mbtnEnableSnap[2] = ui->btnCancel->isEnabled();
+
+    //! config
+    ui->btnApply->setEnabled( bNow );
+    ui->btnOK->setEnabled( bNow );
+    ui->btnCancel->setEnabled( bNow );
+}
+void mrqProperty::restoreBtnSnap()
+{
+    //! restore
+    ui->btnApply->setEnabled( mbtnEnableSnap[0] );
+    ui->btnOK->setEnabled( mbtnEnableSnap[1] );
+    ui->btnCancel->setEnabled( mbtnEnableSnap[2] );
 }

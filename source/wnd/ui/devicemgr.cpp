@@ -54,7 +54,7 @@ void deviceMgr::init()
     m_pMRQ = NULL;
 
     m_pProgress = NULL;
-
+    m_pDiagram = NULL;
     mAxesCount = 0;
 }
 void deviceMgr::deinit()
@@ -315,11 +315,16 @@ void deviceMgr::beginLoadOn( void *pPara )
 {
     ui->pushButton->setEnabled( false );
 
+    sysProgress( 0, tr("Begin load") );
+    sysProgress( true );
+
     emit signalReport( 0, tr("start upload") );
 }
 void deviceMgr::endLoadOn( int ret, void *pPara )
 {
     ui->pushButton->setEnabled( true );
+
+    sysProgress( false );
 
     if ( ret != 0 )
     {
@@ -717,4 +722,17 @@ void deviceMgr::updateUi()
     emit signal_instmgr_changed( true, m_pMgr );
 }
 
+void deviceMgr::on_toolState_clicked()
+{
+    if ( m_pDiagram != NULL )
+    {}
+    else
+    {
+        m_pDiagram = new StateDiagram(this);
+    }
 
+    if ( NULL == m_pDiagram )
+    { return; }
+
+    m_pDiagram->setVisible( !m_pDiagram->isVisible() );
+}

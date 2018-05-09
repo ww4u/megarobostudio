@@ -50,8 +50,8 @@ public:
     virtual int setLoop( int n, const tpvRegion &region=0 );
     virtual int loopNow();
 
-    virtual void onLine();
-    virtual void offLine();
+//    virtual void onLine();
+//    virtual void offLine();
 
     virtual void toState(int stat);
 
@@ -100,6 +100,8 @@ protected:
                      );
 
     int verifyTrace( QList<TraceKeyPoint> &curve );
+
+    void interpTune( QList<TraceKeyPoint> &curve );
 
     int planTrace( QList<TraceKeyPoint> &curve,
                    xxxGroup<tracePoint> &tracePoints );

@@ -6,23 +6,27 @@ VRobot *robotFact::createRobot( const QString &str )
     VRobot *pRobo;
     do
     {
-        if ( QString::compare(str,"megatron",Qt::CaseInsensitive) == 0 )
+        if ( QString::compare(str,"megatron",Qt::CaseInsensitive) == 0
+             || QString::compare(str,"mrx-as",Qt::CaseInsensitive) == 0 )
         {
             pRobo = new robotMegatron();
             break;
         }
 
-        if ( QString::compare(str,"sinanju",Qt::CaseInsensitive) == 0 )
+        if ( QString::compare(str,"sinanju",Qt::CaseInsensitive) == 0
+             || QString::compare(str,"mrx-t4",Qt::CaseInsensitive) == 0 )
         {
             pRobo = new robotSinanju();
             break;
         }
-        if ( QString::compare(str,"delta",Qt::CaseInsensitive) == 0 )
+        if ( QString::compare(str,"delta",Qt::CaseInsensitive) == 0
+             || QString::compare(str,"mrx-dt",Qt::CaseInsensitive) == 0 )
         {
             pRobo = new robotDelta();
             break;
         }
-        if ( QString::compare(str,"h2",Qt::CaseInsensitive) == 0 )
+        if ( QString::compare(str,"h2",Qt::CaseInsensitive) == 0
+             || QString::compare(str,"mrx-h2",Qt::CaseInsensitive) == 0 )
         {
             pRobo = new robotH2();
             break;
@@ -44,22 +48,27 @@ VRobot *robotFact::createRobot( const QString &str )
     //        return new robotSlide2();
     //    }
 
-        if ( QString::compare(str,"quebeley",Qt::CaseInsensitive) == 0 )
+        if ( QString::compare(str,"quebeley",Qt::CaseInsensitive) == 0
+             || QString::compare(str,"MRQ-C-23-D",Qt::CaseInsensitive) == 0 )
         {
-            pRobo = new roboQuebeley();
+            pRobo = new roboQuebeley( VRobot::robot_qubeley_d );
             break;
         }
-        if ( QString::compare(str,"geogoog",Qt::CaseInsensitive) == 0 )
+
+        if ( QString::compare(str,"MRQ-C-23-S",Qt::CaseInsensitive) == 0 )
+        {
+            pRobo = new roboQuebeley( VRobot::robot_qubeley_s );
+            break;
+        }
+        if ( QString::compare(str,"geogoog",Qt::CaseInsensitive) == 0
+             || QString::compare(str,"MRQ-M-23-04",Qt::CaseInsensitive) == 0 )
         {
             pRobo = new roboGeogoog();
             break;
         }
-        if ( QString::compare(str,"geogoog8",Qt::CaseInsensitive) == 0 )
-        {
-            pRobo = new roboGeo8();
-            break;
-        }
-        if ( QString::compare(str,"geogoog10",Qt::CaseInsensitive) == 0 )
+
+        if ( QString::compare(str,"geogoog10",Qt::CaseInsensitive) == 0
+             || QString::compare(str,"MRQ_MC_1710",Qt::CaseInsensitive) == 0)
         {
             pRobo = new roboGeo10();
             break;
@@ -72,6 +81,7 @@ VRobot *robotFact::createRobot( const QString &str )
 
         else
         {
+            logDbg()<<str;
             Q_ASSERT(false);
             return NULL;
         }

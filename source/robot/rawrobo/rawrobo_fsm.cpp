@@ -81,6 +81,7 @@ void RawRoboFsm::toState( int stat, RoboMsg &detail )
         lockState();
         RoboFsm::toState( mStateMap[stat], detail );
         mState = stat;
+//        sysLog( __FUNCTION__, QString::number(axes()), QString::number( page() ), QString::number(stat) );
         unlockState();
 
         //! subscribe to leader
@@ -111,6 +112,7 @@ void RawRoboFsm::setState( int state  )
 
         m_pNowState = mStateMap[state];
         mState = state;
+//        sysLog( __FUNCTION__, QString::number(axes()), QString::number( page() ), QString::number(state) );
     unlockState();
 }
 int RawRoboFsm::state()

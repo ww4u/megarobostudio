@@ -58,6 +58,12 @@ protected:
 
     void buildConnection();
 
+    int postApply( appMsg msg, void *pPara );
+    void beginApply( void *pPara);
+    void endApply( int ret, void *pPara );
+
+    void saveBtnSnap( bool bNow = false );
+    void restoreBtnSnap();
 private:
     Ui::mrqProperty *ui;
 
@@ -76,6 +82,7 @@ public:
     MrqAlarm *m_pAlarmPage;
 
     QList<modelView *> mViewPages;
+    QList< bool > mbtnEnableSnap;
 };
 
 #endif // MRQPROPERTY_H

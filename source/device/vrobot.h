@@ -41,7 +41,8 @@ public:
         robot_unk = 0,
 
         robot_raw = 256,
-        robot_qubeley = 256,
+        robot_qubeley_d = 256,
+        robot_qubeley_s,
         robot_geogoog,
         robot_geogoog_8,
         robot_geogoog_10,
@@ -100,6 +101,7 @@ public:
 
     virtual void onLine();
     virtual void offLine();
+    virtual bool checkLink( int p1=0, int p2=0 );
 
 protected:
     virtual void event_motionStatus( frameData &data );

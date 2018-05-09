@@ -29,6 +29,8 @@ void VRobot::onLine()
 {}
 void VRobot::offLine()
 {}
+bool VRobot::checkLink( int p1, int p2 )
+{ return false; }
 
 void VRobot::event_motionStatus( frameData &data )
 {

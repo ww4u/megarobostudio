@@ -9,7 +9,7 @@
 #include "../../inst/instmgr.h"
 #include "../../model/mcmodelobj.h"
 #include "../../com/drivercontroller.h"
-
+#include "statediagram.h"
 namespace Ui {
 class deviceMgr;
 }
@@ -132,9 +132,11 @@ public:
     int mCurrentAxes;
 
     QProgressDialog *m_pProgress;
-
+    StateDiagram *m_pDiagram;
     int mAxesCount;
 
+private slots:
+    void on_toolState_clicked();
 };
 
 #endif // DEVICEMGR_H

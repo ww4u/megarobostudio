@@ -6,10 +6,20 @@ static quint8 _megaimage[]=
     #include "./robot.cpp"
 };
 
-roboQuebeley::roboQuebeley()
+static quint8 _megaimage_s[]=
 {
-    mClass = "Quebeley";
-    mId = robot_qubeley;
+    #include "./robot_s.cpp"
+};
+
+roboQuebeley::roboQuebeley( robotEnum id )
+{
+    if ( id == robot_qubeley_d )
+    { mClass = "MRQ-C-23-D"; }
+    else if ( id == robot_qubeley_s )
+    { mClass = "MRQ-C-23-S"; }
+    else
+    { Q_ASSERT(false); }
+    mId = id;
     setAxes( 1 );
     setAxesDefName( 1 );
     setJointName( 1 );
@@ -20,7 +30,12 @@ roboQuebeley::roboQuebeley()
     mAINs = 0;
     mUARTs = 0;
 
-    mImage = QImage::fromData( _megaimage, sizeof(_megaimage) );
+    if ( id == robot_qubeley_d )
+    { mImage = QImage::fromData( _megaimage, sizeof(_megaimage) ); }
+    else if ( id == robot_qubeley_s )
+    { mImage = QImage::fromData( _megaimage, sizeof(_megaimage_s) ); }
+    else
+    { Q_ASSERT(false); }
 }
 
 int roboQuebeley::serialIn( QXmlStreamReader &reader )

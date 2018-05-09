@@ -16,13 +16,13 @@
 MegaTableModel *scriptMgr::newMotion( const QString &clsName )
 {
     MegaTableModel *pNewModelObj;
-    if ( clsName.compare("sinanju", Qt::CaseInsensitive) == 0 )
+    if ( clsName.compare("MRX-T4", Qt::CaseInsensitive) == 0 )
     { pNewModelObj = new SinanjuMotionGroup( clsName ); }
-    else if ( clsName.compare("megatron", Qt::CaseInsensitive) == 0 )
+    else if ( clsName.compare("MRX-AS", Qt::CaseInsensitive) == 0 )
     { pNewModelObj = new MegatronMotionGroup( clsName ); }
-    else if ( clsName.compare("delta", Qt::CaseInsensitive) == 0 )
+    else if ( clsName.compare("MRX-DT", Qt::CaseInsensitive) == 0 )
     { pNewModelObj = new SinanjuMotionGroup( clsName ); }
-    else if ( clsName.compare("h2", Qt::CaseInsensitive) == 0 )
+    else if ( clsName.compare("MRX-H2", Qt::CaseInsensitive) == 0 )
     { pNewModelObj = new H2MotionGroup( clsName ); }
     else
     { return NULL; }

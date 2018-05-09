@@ -3,8 +3,12 @@
 #include "../../device/board/_MRQ_enum.h"
 
 #define status_timer_id     2
-#define status_timer_tmo    time_s( 1 )    //! us
-#define status_timer_prepare    time_s( 2 )
+//#define status_timer_tmo    time_s( 1 )    //! us
+//#define status_timer_prepare    time_s( 2 )
+
+#define status_timer_tmo    time_ms( 500 )    //! us
+#define status_timer_prepare    time_ms( 500 )
+
 //! state unit
 RawRoboUnit::RawRoboUnit( MegaDevice::RoboFsm *pFsm,
                           int members )
@@ -200,11 +204,11 @@ void IdleRawRoboUnit::onEnter( RoboMsg &detail )
 {
     RawRoboUnit::onEnter( detail );
 
-    selfFsm()->reqRun( false );
+    selfFsm( )->reqRun( false );
 
     killTimer( status_timer_id );
 
-    selfFsm()->Robot()->offLine();
+    selfFsm( )->Robot()->offLine( selfFsm()->region() );
 }
 
 //! run reqed
@@ -256,7 +260,7 @@ void CalcendRawRoboUnit:: proc( int msg, RoboMsg &detail )
     if ( msg == MegaDevice::mrq_msg_run
          || msg == MegaDevice::mrq_msg_call )
     {
-        sysLog( __FUNCTION__, QString::number(__LINE__) );logDbg();
+//        sysLog( __FUNCTION__, QString::number(__LINE__) );logDbg();
         selfFsm()->reqRun( true );
         selfFsm()->Robot()->switchPrepare( selfFsm()->region() );
         startTimer( status_timer_id, status_timer_prepare );

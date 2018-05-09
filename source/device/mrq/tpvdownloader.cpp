@@ -193,7 +193,7 @@ logDbg()<<mRegion.axes()<<mRegion.page();
     //! in transmisstion
     ret = m_pMRQ->beginTpvDownload( mRegion );
     if ( ret != 0 )
-    { logDbg();return ret; }
+    { sysError( __FUNCTION__, QString::number(__LINE__) ); /*Q_ASSERT(false);*/ return ret; }
 
     //! acc the progress
     total = transQueue.size();
@@ -206,11 +206,11 @@ logDbg()<<mRegion.axes()<<mRegion.page();
 
         //! check remain data
         quint16 batchSize;
-        ret = m_pMRQ->getMOTIONPLAN_REMAINPOINT( mRegion.axes(),
-                                                 (MRQ_MOTION_SWITCH_1)mRegion.page(),
-                                                 &batchSize );
+        ret = m_pMRQ->getMOTIONPLAN_REMAINPOINT(  mRegion.axes(),
+                                                  (MRQ_MOTION_SWITCH_1)mRegion.page(),
+                                                  &batchSize );
         if ( ret != 0 )
-        { sysError( __FUNCTION__, QString::number(__LINE__) ); return ret; }
+        { sysError( __FUNCTION__, QString::number(__LINE__) ); /*Q_ASSERT(false);*/ return ret; }
         else
         {}
 
@@ -239,7 +239,7 @@ logDbg()<<mRegion.axes()<<mRegion.page();
 //            receiveCache::unlock();
 
             if ( ret != 0 )
-            { return ret; }
+            { sysError( __FUNCTION__, QString::number(__LINE__) ); return ret; }
         }
         //! wait batch size
         else
@@ -249,6 +249,9 @@ logDbg()<<mRegion.axes()<<mRegion.page();
     }
 
     ret = m_pMRQ->endTpvDownload( mRegion );
+    if ( ret != 0 )
+    { sysError( __FUNCTION__, QString::number(__LINE__) ); /*Q_ASSERT(false);*/ return ret; }
+
     return ret;
 }
 

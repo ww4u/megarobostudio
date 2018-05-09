@@ -95,6 +95,9 @@ int deviceMRQ::beginTpvDownload( const tpvRegion &region )
 
     DELOAD_REGION();
 
+    //! clear
+    checked_call( setMOTIONPLAN_PVTCONFIG( pvt_page_p, MRQ_MOTIONPLAN_PVTCONFIG_1_CLEAR ) );
+
     //! reset
     checked_call( setMOTION_SWITCH( region.axes(),
                                     MRQ_MOTION_SWITCH_RESET,
@@ -106,8 +109,6 @@ int deviceMRQ::beginTpvDownload( const tpvRegion &region )
     //! \errant exec mode to cycle
     checked_call( setMOTIONPLAN_EXECUTEMODE( pvt_page_p,
                                              MRQ_MOTIONPLAN_EXECUTEMODE_1_CYCLE) );
-
-    checked_call( setMOTIONPLAN_PVTCONFIG( pvt_page_p, MRQ_MOTIONPLAN_PVTCONFIG_1_CLEAR ) );
     checked_call( getMOTIONPLAN_REMAINPOINT( pvt_page_p, mMOTIONPLAN_REMAINPOINT[ax]+page ) );
 
     checked_call( setMOTION_STATEREPORT( ax, MRQ_MOTION_STATEREPORT_QUERY ) );
@@ -272,13 +273,13 @@ int deviceMRQ::pvtWrite( pvt_region,
     tpvDownloader *pLoader = downloader( region );
     Q_ASSERT( NULL != pLoader );
 
-    if ( pLoader->isRunning() )
+    if ( pLoader->isRunning() && !pLoader->wait( 10000 ) )
     {
-        sysError( QObject::tr("Busy now, can not downloading") );
+        sysError( QObject::tr("Busy now, can not download") );
         sysError( QString::number(region.axes()), QString::number(region.page()) );
         return ERR_CAN_NOT_RUN;
     }
-    else
+    // else
     {
         pLoader->append( list, from, len );
         pLoader->setRegion( region );
@@ -399,6 +400,20 @@ void deviceMRQ::accTpvIndex( pvt_region )
 bool deviceMRQ::pvtVerify( pvt_region,
                 QList<tpvRow *> &list )
 {
+    //! region ax
+    if ( region.axes() < 0 || region.axes() >= axes() )
+    {
+        sysError( QObject::tr("Invalid axes %1").arg( region.axes() ) );
+        return false;
+    }
+
+    //! region page
+    if ( region.page() < 0 || region.page() >= regions() )
+    {
+        sysError( QObject::tr("Invalid page %1").arg( region.page() ) );
+        return false;
+    }
+
     //! sum the dist
     if ( list.size() < 2 )
     {
@@ -432,9 +447,9 @@ bool deviceMRQ::pvtVerify( pvt_region,
     }
     else
     {
-        sysLog( QString::number(memDot), QString::number( getTpvBuf(region) ),
-                QString::number(region.axes()),
-                QString::number(list.size()) );
+//        sysLog( QString::number(memDot), QString::number( getTpvBuf(region) ),
+//                QString::number(region.axes()),
+//                QString::number(list.size()) );
         return true;
     }
 }

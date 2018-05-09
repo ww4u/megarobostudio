@@ -361,7 +361,7 @@ void MainWindow::loadSetup()
         pAction->setEnable( true );
         pAction->setEvent( QStringLiteral("Over Distance") );
         pAction->setAction( QStringLiteral("Prompt+Stop") );
-        pAction->setComment( tr("Sinanju Distance alarm") );
+        pAction->setComment( tr("MRX-T4 Distance warning") );
         mMcModel.mEventActionModel.items()->append( pAction );
     }
 
@@ -371,7 +371,7 @@ void MainWindow::loadSetup()
         pAction->setEnable( true );
         pAction->setEvent( QStringLiteral("Over Angle") );
         pAction->setAction( QStringLiteral("Prompt+Stop") );
-        pAction->setComment( tr("Sinanju Angle alarm") );
+        pAction->setComment( tr("MRX-T4 Angle warning") );
         mMcModel.mEventActionModel.items()->append( pAction );
     }
 //    Q_ASSERT( NULL != m_pEventViewer );

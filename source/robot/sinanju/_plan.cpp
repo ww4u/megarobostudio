@@ -1,5 +1,5 @@
 #include "sinanju.h"
-
+#include "../../com/comassist.h"
 int robotSinanju::buildTrace( QList<TraceKeyPoint> &curve,
                               xxxGroup<tracePoint> &tracePlan,
                               xxxGroup<jointsTrace> &jointsPlan )
@@ -9,6 +9,10 @@ int robotSinanju::buildTrace( QList<TraceKeyPoint> &curve,
     ret = verifyTrace( curve );
     if ( ret != 0 )
     { return ret; }
+
+    //! interp
+    interpTune( curve );
+
 logDbg()<<curve.size();
     ret = planTrace( curve, tracePlan );
     if ( ret != 0 )
@@ -61,6 +65,23 @@ int robotSinanju::verifyTrace( QList<TraceKeyPoint> &curve )
     }
 
     return 0;
+}
+
+void robotSinanju::interpTune( QList<TraceKeyPoint> &curve )
+{
+    float dist;
+    for ( int i = 0; i < curve.size() - 1; i++ )
+    {
+        //! check distance
+        dist = comAssist::eulcidenDistance( curve.at(i).x, curve.at(i).y, curve.at(i).z,
+                                            curve.at(i+1).x, curve.at(i+1).y, curve.at(i+1).z
+                                            );
+        //! todo by out
+        if ( dist < 5 )
+        {
+            unset_bit( curve[i].iMask, BIT_INTERP );
+        }
+    }
 }
 
 int robotSinanju::planTrace( QList<TraceKeyPoint> &curve,

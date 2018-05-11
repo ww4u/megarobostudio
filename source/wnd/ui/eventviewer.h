@@ -26,7 +26,7 @@ public:
     static int exceptionIndex( const QString &str );
 
 public:
-    explicit eventViewer( receiveCache *pIntSrc,
+    explicit eventViewer(
                           EventActionModel *pModel,
                           QWidget *parent = 0);
     ~eventViewer();
@@ -61,7 +61,7 @@ private:
     QStringList mActionStringList;
     comboxDelegate mActionDelegate;
 
-    receiveCache * m_pInterruptSrc;
+//    receiveCache * m_pInterruptSrc;
 };
 
 #endif // EVENTVIEWER_H

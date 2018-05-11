@@ -28,17 +28,17 @@ MegaDevice::deviceMRQ * axesKnob::currentDevice( int &ax )
     MegaDevice::deviceMRQ *pMrq = m_pMcModel->m_pInstMgr->findDevice(  ui->labConnection->text(),
                                                                        &ax );
     return pMrq;
+}
 
-//    //! set model && axesid
-//    QString str;
-//    int id;
-//    str = m_pMcModel->getConnection().getDeviceName();
-//    id = m_pMcModel->getConnection().getDeviceCH();
+void axesKnob::actionChanged( const QDateTime &endTime, int valEnd  )
+{
+    float dt = mStartTime.msecsTo( endTime );
 
-//    MegaDevice::deviceMRQ *pMrq = m_pMcModel->m_pInstMgr->findDevice( str,
-//                                                                      id );
-//    ax = id;
-//    return pMrq;
+    QString strInfo;
+
+    mStopAngle = valEnd;
+    strInfo = QString( "%1ms %2%3" ).arg( dt ).arg( mStopAngle-mStartAngle ).arg(QChar(0x00B0));
+    ui->label->setText( strInfo );
 }
 
 void axesKnob::slot_device_changed()
@@ -64,7 +64,8 @@ void axesKnob::on_sliderValue_sliderPressed()
 void axesKnob::on_sliderValue_sliderReleased()
 {
     mStopTime = QDateTime::currentDateTime();
-    mStopAngle = ui->spinNow->value();
+
+    actionChanged( mStopTime, mStopAngle );
 
     int ax;
     MegaDevice::deviceMRQ *pMrq = currentDevice( ax );
@@ -76,7 +77,7 @@ void axesKnob::on_sliderValue_sliderReleased()
 
     if ( pMrq->fsmState( tpvRegion(ax,0) ) != MegaDevice::mrq_state_idle )
     {
-        QMessageBox::warning( this, tr("Warning"), tr("Device is busy now, try later!") );
+        QMessageBox::warning( this, tr("Warning"), tr("Device is not idle now, try later!") );
         return;
     }
 
@@ -103,7 +104,11 @@ void axesKnob::on_sliderValue_sliderReleased()
     { return; }
 
     //! view connection
-    ui->labConnection->setText( QString("CH%1@%2").arg( ax + 1 ).arg( m_pMcModel->getConnection().getDeviceName() ) );
     ui->label->setText( QString("%1ms %2%3").arg( mStartTime.msecsTo( mStopTime ) )
                                           .arg( mStopAngle - mStartAngle ).arg(QChar(0x00B0)) );
+}
+
+void axesKnob::on_sliderValue_sliderMoved(int position)
+{
+    actionChanged( QDateTime::currentDateTime(), ui->sliderValue ->value() );
 }

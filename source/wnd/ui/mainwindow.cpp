@@ -377,7 +377,7 @@ void MainWindow::loadSetup()
 //    Q_ASSERT( NULL != m_pEventViewer );
 //    m_pEventViewer->slot_exception_changed();
 
-    m_pEventViewer = new eventViewer( mMcModel.m_pInstMgr->getInterruptSource(),
+    m_pEventViewer = new eventViewer(
                                       &mMcModel.mEventActionModel,
                                       this );
     Q_ASSERT( NULL != m_pEventViewer );
@@ -445,21 +445,15 @@ void MainWindow::setupService()
     m_pInterruptThread = new interruptThread();
     Q_ASSERT( NULL != m_pInterruptThread );
     m_pInterruptThread->connectInterrupt( mMcModel.m_pInstMgr->getInterruptSource() );
-    m_pInterruptThread->start( QThread::TimeCriticalPriority );
     m_pInterruptThread->setInstMgr( mMcModel.m_pInstMgr );
+    m_pInterruptThread->start(  );
 
     //! interrupt event
     frameEvent event;
     event.setEnable( true );
     event.setId( event_status );
     event.setMainSubCode( mc_MOTION, sc_MOTION_STATE_Q );
-    mMcModel.m_pInstMgr->getInterruptSource()->setFrameEventEnable( event, true );
-
-//    //! alarm event
-//    event.setEnable( true );
-//    event.setId( event_alarm );
-//    event.setMainSubCode( mc_SYSTEM, sc_SYSTEM_EVENTCODE_Q );
-//    mMcModel.m_pInstMgr->getInterruptSource()->setFrameEventEnable( event, true );
+    receiveCache::setFrameEventEnable( event, true );
 
     //! sample thread
     m_pSampleThread = new sampleThread();
@@ -916,7 +910,7 @@ void MainWindow::slot_tabwidget_currentChanged(int index)
     Q_ASSERT( pViewModel->getModelObj() != NULL );
     mcModelObj::obj_type objType = pViewModel->getModelObj()->getType();
     if (  objType == mcModelObj::model_tpv
-          /*|| objType == mcModelObj::model_device */)
+          || objType == mcModelObj::model_device )
     {
         m_pToolbarAxesConn->setVisible( true );
     }

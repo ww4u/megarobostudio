@@ -24,6 +24,9 @@ enum appMsg
     msg_mrq_property_apply,
     msg_robo_property_apply,
 
+    msg_mrq_property_ok,
+    msg_robo_property_ok,
+
     msg_mgr_motor_test,
     msg_mgr_robo_test,
 };

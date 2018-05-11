@@ -84,23 +84,15 @@ int eventViewer::exceptionIndex( const QString &str )
     return 0;
 }
 
-eventViewer::eventViewer( receiveCache *pIntSrc,
+eventViewer::eventViewer(
                           EventActionModel *pModel,
                           QWidget *parent) :
     QDialog(parent),
     ui(new Ui::eventViewer)
 {
-    Q_ASSERT( NULL != pIntSrc );
     Q_ASSERT( NULL != pModel );
 
     ui->setupUi(this);
-
-//    ui->listWidget->addItem("a");
-//    ui->listWidget->addItem("b");
-//    ui->listWidget->addItem("c");
-
-    //! set interrupt src
-    m_pInterruptSrc = pIntSrc;
 
     //! set model
     ui->eventView->setModel( pModel );
@@ -159,8 +151,6 @@ void eventViewer::slot_event( eventId id, frameData data )
 //! disable all event then istall now
 void eventViewer::slot_exception_changed()
 {
-    Q_ASSERT( NULL != m_pInterruptSrc );
-
     //! disable all
     frameEvent event;logDbg();
     for ( int i = 0; i < sizeof_array(_exceptions_); i++ )
@@ -170,7 +160,7 @@ void eventViewer::slot_exception_changed()
                               _exceptions_[i].sCode,
                               _exceptions_[i].mPattern,
                               _exceptions_[i].len );
-        m_pInterruptSrc->setFrameEventEnable( event, false );logDbg();
+        receiveCache::setFrameEventEnable( event, false );logDbg();
 
     }
 
@@ -197,7 +187,7 @@ logDbg();
                               _exceptions_[eIndex].mPattern,
                               _exceptions_[eIndex].len );
 
-        m_pInterruptSrc->setFrameEventEnable( event, pAction->enable() );
+        receiveCache::setFrameEventEnable( event, pAction->enable() );
     }logDbg();
 }
 

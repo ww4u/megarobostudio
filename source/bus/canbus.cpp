@@ -54,7 +54,6 @@ int CANBus::open( int devType,
     else if ( mPId == 3 )       //! mini usb can
     {
         dllName = "miniusbcan.dll";
-//        dllName = "ControlCAN.dll";
         busType = VCI_MR_USBCAN;
     }
     else if ( mPId == 0 )
@@ -127,13 +126,33 @@ logDbg();
     {
         return -1;
     }
-
+logDbg();
+    //! open cache
+    Q_ASSERT( NULL == m_pRecvCache );
+    m_pRecvCache = new receiveCache();
+    if ( NULL == m_pRecvCache )
+    {logDbg();
+        close();
+        return -3;
+    }logDbg();
+    m_pRecvCache->attachBus( this );
+    m_pRecvCache->start( QThread::TimeCriticalPriority );
+logDbg();
     return 0;
 }
 void CANBus::close()
 {
     if ( mHandle != 0 )
     {
+        //! clean cache
+        if ( NULL != m_pRecvCache )
+        {
+            m_pRecvCache->requestInterruption();
+            m_pRecvCache->wait();
+            delete m_pRecvCache;
+            m_pRecvCache = NULL;
+        }
+
         int ret;
         ret = mApi.close( mDevType, mDevId );
         logDbg()<<ret<<mDevType<<mDevId;
@@ -413,6 +432,7 @@ IBus::lock();
 
         tFrame.clear();
         tFrame.setFrameId( canObj[i].ID );
+        tFrame.setDevId( mDevId );
         tFrame.append( (const char*)canObj[i].Data, canObj[i].DataLen );
         canFrames.append( tFrame );
     }
@@ -536,8 +556,6 @@ logDbg();
 
 int CANBus::getDevType()
 { return mDevType; }
-int CANBus::getDevId()
-{ return mDevId; }
 int CANBus::getCanId()
 { return mCanId; }
 

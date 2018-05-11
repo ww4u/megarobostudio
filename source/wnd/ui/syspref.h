@@ -47,6 +47,18 @@ private slots:
 
     void on_edtVisa_textChanged(const QString &arg1);
 
+    void on_btnAdd_clicked();
+
+    void on_btnRemove_clicked();
+
+    void on_btnClear_clicked();
+
+    void on_edtVisa_textEdited(const QString &arg1);
+
+    void slot_validate_listmrt();
+
+    void on_listMRTs_currentRowChanged(int currentRow);
+
 private:
     Ui::sysPref *ui;
 

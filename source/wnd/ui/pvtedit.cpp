@@ -85,7 +85,7 @@ void pvtEdit::onNetEvent(const QString &name,
         if ( msg.at(0).toInt() == event_status  )
         {
             QByteArray ary;
-            ary = msg.at(2).toByteArray();
+            ary = msg.at(3).toByteArray();
             onMotionStatus( axes, (MRQ_MOTION_STATE_2)ary.at(4) );
         }
     }

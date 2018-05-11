@@ -53,11 +53,7 @@ void mrqProperty::on_btnApply_clicked()
 }
 void mrqProperty::on_btnOK_clicked()
 {
-    setApply();
-
-    slotModified( false );
-
-    emit sigClose( this );
+     post_request( msg_mrq_property_ok, mrqProperty, Ok );
 }
 
 void mrqProperty::on_btnCancel_clicked()
@@ -353,6 +349,24 @@ void mrqProperty::endApply( int ret, void *pPara )
     sysProgress( false );
 
     restoreBtnSnap();
+}
+
+int mrqProperty::postOk( appMsg msg, void *pPara )
+{
+//    return postApply( msg_mrq_property_apply, pPara );
+    return 0;
+}
+void mrqProperty::beginOk( void *pPara)
+{
+    beginApply( pPara );
+}
+void mrqProperty::endOk( int ret, void *pPara )
+{
+    endApply( ret, pPara );
+
+    slotModified( false );
+
+    emit sigClose( this );
 }
 
 void mrqProperty::saveBtnSnap( bool bNow )

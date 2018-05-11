@@ -51,6 +51,10 @@ protected:
     void beginApply( void *pPara);
     void endApply( int ret, void *pPara );
 
+    int postOk( appMsg msg, void *pPara );
+    void beginOk( void *pPara);
+    void endOk( int ret, void *pPara );
+
     void saveBtnSnap( bool bNow = false );
     void restoreBtnSnap();
 

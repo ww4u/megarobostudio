@@ -22,24 +22,27 @@ void RoboNetThread::onMsg( RoboMsg &msg )
     {
         Q_ASSERT( NULL != m_pModel );
 
-        //! event id, frame id, byte array
+        //!  0          1      2         3
+        //! event id, devId, frame id, byte array
         if ( msg.mMsg == e_interrupt_occuring )
         {
             //! check
             if ( !msg.checkType( QMetaType::Int,
+                           QMetaType::Int,
                            QMetaType::Int,
                            QMetaType::QByteArray ) )
             { logDbg(); return; }
 
             //! convert to device name
             QString name;
-            name = m_pModel->m_pInstMgr->sendIdToName( msg.at(1).toInt() );
+            name = m_pModel->m_pInstMgr->sendIdToName( msg.at(1).toInt(),
+                                                       msg.at(2).toInt() );
             if ( name.isEmpty() )
             { logDbg()<<msg.at(1).toInt(); return; }
 
             //! signal
-            QByteArray ary = msg.at(2).toByteArray();
-//            logDbg()<<ary;
+            QByteArray ary = msg.at(3).toByteArray();
+
             emit signal_net( name, ary.at(2), msg );
         }
 

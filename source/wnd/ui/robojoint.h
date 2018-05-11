@@ -45,7 +45,7 @@ private:
     Ui::RoboJoint *ui;
 
     QDateTime mPressTime;
-    int mPressValue;
+    int mPressValue, mCurValue;
     int mId;
 };
 

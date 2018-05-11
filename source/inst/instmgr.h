@@ -23,6 +23,20 @@ typedef QList< VRoboList * > DeviceTree;
 namespace MegaDevice 
 {
 
+class INTRThread : public QThread
+{
+    Q_OBJECT
+
+public:
+    INTRThread( QObject *parent = 0 );
+    virtual ~INTRThread( );
+
+Q_SIGNALS:
+    void sig_event( eventId id, frameData );
+protected Q_SLOTS:
+    void slot_event( eventId id, frameData dat );
+};
+
 class InstMgr : public instServer
 {
     Q_OBJECT
@@ -48,6 +62,7 @@ public:
 
     int probeBus();
     int probeCanBus();
+    int _probeCanBus();
 
     int emergencyStop();
     int hardReset();
@@ -66,7 +81,7 @@ public:
 
     deviceMRQ *getDevice( int id );
 
-    receiveCache *getInterruptSource();
+    INTRThread *getInterruptSource();
 
     //! find robot
     VRobot * findRobot( const QString &name, int axesId );
@@ -77,13 +92,13 @@ public:
 
     VRoboList *findBus( const QString &busName );
 
-    VRobot * findRobotBySendId( int sendId, int axesId = 0 );
-    VRobot * findRobotByRecvId( int recvId, int axesId = 0 );
+    VRobot * findRobotBySendId( int sendId, int devId, int axesId = 0 );
+    VRobot * findRobotByRecvId( int recvId, int devId, int axesId = 0 );
 
     deviceMRQ *findDevice( const QString &name, int axesId=0 );
     deviceMRQ *findDevice( const QString &name, int *pAx );     //! chx@name
 
-    QString sendIdToName( int sendId );
+    QString sendIdToName( int devId, int sendId );
 
     QStringList getResources();
     QStringList getChans();     //! chx@devicename
@@ -93,6 +108,12 @@ public:
 protected:
     void preProbeBus();
     void postProbeBus();
+
+    int probeCANBus( CANBus *pBus,
+                     int id,
+                     const QString &devRsrc,
+                     VRoboList &roboList,
+                     int &seq );
 
     void gc();
 
@@ -106,6 +127,8 @@ public:
 
     //! can bus
     CANBus mCanBus;
+                                //! can buses
+    QList< CANBus *> mCanBuses;
 
     //! \todo other bus
 
@@ -117,7 +140,8 @@ public:
 
     QList<IBus *> mFileBusList;
 
-    receiveCache *m_pReceiveCache;
+//    receiveCache *m_pReceiveCache;
+    INTRThread *m_pINTR;
 };
 	
 }

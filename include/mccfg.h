@@ -16,15 +16,15 @@
 #define max_loops                       1000000000
 
 //! id range
-#define receive_id_from                 0x10
-#define receive_id_to                   0xff
+#define receive_id_from                 0x180
+#define receive_id_to                   0x1ff
 
-#define send_id_from                    0x100
-#define send_id_to                      0x1ff
+#define send_id_from                    0x200
+#define send_id_to                      0x27f
 
-#define group_id_from                   0x200
-#define group_id_to                     0x2ff
-#define group_segment                   0x20
+#define group_id_from                   0x80
+#define group_id_to                     0xff
+#define group_segment                   0x10
 
 #define sub_group_id_from               130
 #define sub_group_id_to                 255

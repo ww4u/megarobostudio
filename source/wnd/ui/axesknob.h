@@ -27,6 +27,7 @@ public:
 protected:
     MegaDevice::deviceMRQ * currentDevice( int &ax );
 
+    void actionChanged( const QDateTime &time, int valEnd  );
 //public:
 //    void setDevice( MegaDevice::VDevice *pDevice,
 //                    int axesId );
@@ -43,6 +44,8 @@ private slots:
 
     void on_sliderValue_sliderReleased();
 
+
+    void on_sliderValue_sliderMoved(int position);
 
 private:
     Ui::axesKnob *ui;

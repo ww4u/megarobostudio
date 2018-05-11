@@ -164,6 +164,8 @@ void deviceMgr::updatePhyBusTree( VRoboList *pRoboList )
 {
     Q_ASSERT( NULL != pRoboList );
 
+    QString toolTips;
+
     //! bus
     QTreeWidgetItem *pItemBus;
     pItemBus = new QTreeWidgetItem( ui->treeWidget );
@@ -171,13 +173,13 @@ void deviceMgr::updatePhyBusTree( VRoboList *pRoboList )
     Q_ASSERT( pRoboList->bus() != NULL );
     pItemBus->setText( 0, pRoboList->bus()->name() );
     pItemBus->setIcon( 0, QIcon(":/res/image/icon2/order.png") );
+    toolTips= QString("DeviceId:%1").arg( pRoboList->bus()->devId() );
+    pItemBus->setToolTip( 0, toolTips );
 
     //! device
     QTreeWidgetItem *pItemDev;
     QTreeWidgetItem *pItemAxes;
     MegaDevice::MRQ_model *pMrqModel;
-
-    QString toolTips;
 
     //! robot
     foreach( VRobot *pDev, *pRoboList )

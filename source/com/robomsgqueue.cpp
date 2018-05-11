@@ -329,6 +329,25 @@ void RoboMsgQueue::postMsg( eRoboMsg msg,
 }
 
 void RoboMsgQueue::postMsg( eRoboMsg msg,
+                     int eId,
+                     int devId,
+                     int fId,
+                     const QByteArray &ary,
+                     quint64 t
+                     )
+{
+    RoboMsg lMsg;
+
+    lMsg.setMsg( msg );
+    lMsg.append( QVariant(eId) );
+    lMsg.append( QVariant(devId) );
+    lMsg.append( QVariant(fId) );
+    lMsg.append( QVariant(ary) );
+
+    postMsg( lMsg, t );
+}
+
+void RoboMsgQueue::postMsg( eRoboMsg msg,
               int mi, int ma, int n,
               const QString &str,
               quint64 t        )

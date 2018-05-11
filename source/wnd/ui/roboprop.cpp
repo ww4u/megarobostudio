@@ -242,6 +242,23 @@ void roboProp::endApply( int ret, void *pPara )
     restoreBtnSnap();
 }
 
+int roboProp::postOk( appMsg msg, void *pPara )
+{
+    return postApply( msg_robo_property_apply, pPara );
+}
+void roboProp::beginOk( void *pPara)
+{ beginApply(pPara); }
+void roboProp::endOk( int ret, void *pPara )
+{
+    endApply( ret, pPara);
+
+    slotModified( false );
+
+    emit sigSaveRequest( this );
+
+    emit sigClose( this );
+}
+
 void roboProp::saveBtnSnap( bool bNow )
 {
     //! save
@@ -277,14 +294,7 @@ void roboProp::slot_page_changed( int index )
 
 void roboProp::on_btnOK_clicked()
 {
-    //! apply
-    setApply();
-
-    slotModified( false );
-
-    emit sigSaveRequest( this );
-
-    emit sigClose( this );
+    post_request( msg_robo_property_ok, roboProp, Ok );
 }
 
 void roboProp::on_btnCancel_clicked()

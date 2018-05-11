@@ -38,6 +38,7 @@ void RoboJoint::actionChanged( const QDateTime &endTime, int endVal )
 
     QString strInfo;
 
+    mCurValue = endVal;
     strInfo = QString( "%1ms %2%3" ).arg( dt ).arg( endVal-mPressValue ).arg(QChar(0x00B0));
     ui->label_2->setText( strInfo );
 }
@@ -60,7 +61,7 @@ void RoboJoint::on_horizontalSlider_sliderPressed()
 
 void RoboJoint::on_horizontalSlider_sliderReleased()
 {
-    actionChanged( QDateTime::currentDateTime(), ui->horizontalSlider->value() );
+    actionChanged( QDateTime::currentDateTime(), mCurValue );   //! show time
 
     float dT = mPressTime.msecsTo( QDateTime::currentDateTime() );
 

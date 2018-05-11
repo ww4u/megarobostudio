@@ -32,7 +32,7 @@ protected:
     virtual void run();
 
 public:
-    void connectInterrupt( receiveCache *pCache );
+    void connectInterrupt( MegaDevice::INTRThread *pINTR );
 
 protected:
     interruptHandler mDefInterruptHandle;

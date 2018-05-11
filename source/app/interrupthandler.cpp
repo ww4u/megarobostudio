@@ -21,11 +21,14 @@ void interruptHandler::slot_event( eventId id,
 {
     //! find device by event id
     Q_ASSERT( NULL != m_pInstMgr );
-    VRobot *pRobo = m_pInstMgr->findRobotBySendId( data.frameId() );
+    VRobot *pRobo = m_pInstMgr->findRobotBySendId( data.frameId(), data.devId() );
 
     //! proc the interrupt
     if ( NULL != pRobo )
-    { pRobo->interruptHandler( id, data ); }
+    {
+        logDbg()<<pRobo->name();
+        pRobo->interruptHandler( id, data );
+    }
 
     //! complex robot
     if( NULL != pRobo )
@@ -48,7 +51,8 @@ void interruptHandler::slot_event( eventId id,
     sysQueue()->postMsg(
                           e_interrupt_occuring,
                           (int)id,              //! event id
-                          data.frameId(),
+                          (int)data.devId(),    //! device id
+                           data.frameId(),      //! frame id
                           (QByteArray)data
                           );
 //    logDbg();
@@ -73,11 +77,11 @@ void interruptThread::run()
     QThread::run();
 }
 
-void interruptThread::connectInterrupt( receiveCache *pCache )
+void interruptThread::connectInterrupt( MegaDevice::INTRThread *pINTR )
 {
-    Q_ASSERT( NULL != pCache );
+    Q_ASSERT( NULL != pINTR );
 
-    connect( pCache,
+    connect( pINTR,
              SIGNAL(sig_event(eventId,frameData)),
              &mDefInterruptHandle,
              SLOT(slot_event( eventId,frameData)),

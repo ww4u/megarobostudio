@@ -86,12 +86,19 @@ frameData::frameData()
 {
     mFrameId = 0;
     mTimeStamp = 0;
+
+    mDevId = 0;
 }
 
 void frameData::setFrameId( int frameId )
 { mFrameId = frameId; }
 int frameData::frameId()
 { return mFrameId; }
+
+void frameData::setDevId( int devId )
+{ mDevId = devId; }
+int frameData::devId()
+{ return mDevId; }
 
 void frameData::setTimeStamp( quint64 t )
 { mTimeStamp = t; }
@@ -207,10 +214,19 @@ QList< frameHouse *> *frameWarehouse::houses()
 //! -- receive cache
 QMutex receiveCache::_threadMutex;
 quint64 receiveCache::_timeStamp = 0;
+
+QList< frameEvent* > receiveCache::_frameEvents;
+QMutex receiveCache::_frameEventsMutex;
+
 void receiveCache::lock()
 { _threadMutex.lock(); }
 void receiveCache::unlock()
 { _threadMutex.unlock(); }
+
+void receiveCache::lockFrameEvents()
+{ receiveCache::_frameEventsMutex.lock(); }
+void receiveCache::unlockFrameEvents()
+{ receiveCache::_frameEventsMutex.unlock(); }
 
 quint64 receiveCache::timeStamp()
 { return receiveCache::_timeStamp; }
@@ -221,7 +237,9 @@ receiveCache::receiveCache( QObject *parent ) : QThread( parent )
 }
 receiveCache::~receiveCache()
 {
-    delete_all( mEvents );
+    receiveCache::lockFrameEvents();
+//    delete_all( receiveCache::_frameEvents );
+    receiveCache::unlockFrameEvents();
 }
 void receiveCache::attachBus( MegaDevice::IBus *pBus
                                )
@@ -244,21 +262,27 @@ int receiveCache::setFrameEventEnable( frameEvent &evt, bool b )
     frameEvent *pEvt;
 
     //! find
+    receiveCache::lockFrameEvents();
     pEvt = findFrameEvent( evt );
     if ( NULL != pEvt )
     {
         pEvt->setEnable(b);
+        receiveCache::unlockFrameEvents();
         return 0;
     }
     //! add a new one
     else
     {
+        receiveCache::unlockFrameEvents();
+
         pEvt = new frameEvent();
         Q_ASSERT( NULL != pEvt );
 
         *pEvt = evt;
         pEvt->setEnable( b );
-        mEvents.append( pEvt );
+        receiveCache::lockFrameEvents();
+        receiveCache::_frameEvents.append( pEvt );
+        receiveCache::unlockFrameEvents();
 
         return 0;
     }
@@ -267,11 +291,19 @@ bool receiveCache::getFrameEventEnable( frameEvent &evt )
 {
     frameEvent *pEvt;
 
+    receiveCache::lockFrameEvents();
     pEvt = findFrameEvent( evt );
     if ( NULL != pEvt )
-    { return pEvt->getEnable(); }
+    {
+        bool bEn = pEvt->getEnable();
+        receiveCache::unlockFrameEvents();
+        return bEn;
+    }
     else
-    { return false; }
+    {
+        receiveCache::unlockFrameEvents();
+        return false;
+    }
 }
 
 frameEvent* receiveCache::findFrameEvent( frameEvent &evt )
@@ -281,13 +313,20 @@ frameEvent* receiveCache::findFrameEvent( frameEvent &evt )
 
 frameEvent* receiveCache::findFrameEvent( eventId id )
 {
-    foreach( frameEvent *pEvt, mEvents )
+    foreach( frameEvent *pEvt, receiveCache::_frameEvents )
     {
         if ( pEvt->getId() == id )
         { return pEvt; }
     }
 
     return NULL;
+}
+
+void receiveCache::clearFrameEvent()
+{
+    receiveCache::lockFrameEvents();
+    delete_all( receiveCache::_frameEvents );
+    receiveCache::unlockFrameEvents();
 }
 
 void receiveCache::append( frameData &ary )
@@ -459,11 +498,15 @@ void receiveCache::run()
     QList< frameData > frameCache;
     Q_FOREVER
     {
+        if ( isInterruptionRequested() )
+        { break; }
+
         do
         {
             frameCache.clear();
 
             receiveCache::lock();
+
             //! have detatched
             if ( m_pBus == NULL )
             {
@@ -506,7 +549,10 @@ void receiveCache::run()
 bool receiveCache::detectEvent( frameData &ary )
 {
     bool bEvent = false;
-    foreach( frameEvent *pEvt, mEvents )
+
+    receiveCache::lockFrameEvents();
+
+    foreach( frameEvent *pEvt, receiveCache::_frameEvents )
     {
         Q_ASSERT( NULL != pEvt );
         //! find event
@@ -518,6 +564,9 @@ bool receiveCache::detectEvent( frameData &ary )
             bEvent = true;
         }
     }
-logDbg()<<mEvents.size();
+
+    receiveCache::unlockFrameEvents();
+
+logDbg()<<receiveCache::_frameEvents;
     return bEvent;
 }

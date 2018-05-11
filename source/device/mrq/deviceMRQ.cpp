@@ -415,6 +415,45 @@ int deviceMRQ::rotate( pvt_region, float t, float ang, float endV )
     return pvtWrite( pvt_region_p, t, ang, endV );
 }
 
+int deviceMRQ::preRotate( pvt_region, float t, float ang, float endV )
+{
+    return pvtWrite( pvt_region_p, t, ang, endV );
+}
+
+int deviceMRQ::movej( pvt_region, float ang, float t, float angJ, float tj, float endV )
+{
+    run( pvt_region_p );
+
+    return preMovej( pvt_region_p, ang, t, angJ, tj, endV );
+}
+
+int deviceMRQ::preMovej( pvt_region, float ang, float t, float angJ, float tj, float endV )
+{
+    tpvRow row;
+
+    QList<tpvRow> rows;
+
+    //! pt0
+    row.mT = 0;
+    row.mP = 0;
+    row.mV = 0;
+    rows.append( row );
+
+    //! pt1
+    row.mT = t;
+    row.mP = ang;
+    row.mV = 0;
+    rows.append( row );
+
+    //! pt2
+    row.mT = t + tj;
+    row.mP = angJ;
+    row.mV = endV;
+    rows.append( row );
+
+    return pvtWrite( pvt_region_p, rows );
+}
+
 int deviceMRQ::lightCouplingZero( pvt_region, float t, float angle, float endV )
 {
     return rotate( pvt_region_p, t, angle, endV );

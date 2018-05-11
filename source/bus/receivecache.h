@@ -110,10 +110,17 @@ class receiveCache : public QThread
 protected:
     static QMutex _threadMutex;
     static quint64 _timeStamp;
+
+    static QList< frameEvent* > _frameEvents;
+    static QMutex _frameEventsMutex;
+
 public:
     //! thread
     static void lock();
     static void unlock();
+
+    static void lockFrameEvents();
+    static void unlockFrameEvents();
 
     static quint64 timeStamp();
 
@@ -128,10 +135,12 @@ public:
     void attachBus( MegaDevice::IBus *pBus );
     void detachBus();
 
-    int  setFrameEventEnable( frameEvent &evt, bool b );
-    bool getFrameEventEnable( frameEvent &evt );
-    frameEvent* findFrameEvent( frameEvent &evt );
-    frameEvent* findFrameEvent( eventId id );
+    static int  setFrameEventEnable( frameEvent &evt, bool b );
+    static bool getFrameEventEnable( frameEvent &evt );
+    static frameEvent* findFrameEvent( frameEvent &evt );
+    static frameEvent* findFrameEvent( eventId id );
+
+    static void clearFrameEvent();
 
     void append( frameData &ary );
 //    int readAFrame( frameData &ary, int tmous );
@@ -154,14 +163,10 @@ protected:
 
 protected:
     MegaDevice::IBus *m_pBus;
-//    int mNodeId;
-
-//    QQueue< frameData > mRecvCache;
 
     frameWarehouse mFrameWarehouse;
 
     QMutex mCacheMutex;
-    QList< frameEvent* > mEvents;
 
     byte mFrameBuf[8];
 };

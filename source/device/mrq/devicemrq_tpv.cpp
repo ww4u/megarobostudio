@@ -364,6 +364,30 @@ int deviceMRQ::pvtWrite( pvt_region,
     return pvtWrite( pvt_region_p, transRows );
 }
 
+int deviceMRQ::pvtWrite( pvt_region,
+              QList<tpvRow> &rows )
+{
+    QList< tpvRow *> transRows;
+    tpvRow *pRow;
+    for ( int i = 0; i < rows.size(); i++ )
+    {
+        pRow = new tpvRow();
+        if ( NULL == pRow )      //! new fail
+        {
+            delete_all(transRows);
+            return -1;
+        }
+
+        //! copy
+        *pRow = rows.at(i);
+        pRow->setGc( true );
+
+        transRows.append( pRow );
+    }
+
+    return pvtWrite( pvt_region_p, transRows );
+}
+
 
 void deviceMRQ::setTpvIndex( pvt_region, int index )
 {

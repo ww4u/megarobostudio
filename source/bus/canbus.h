@@ -55,7 +55,7 @@ public:
 	
 //    QString getDesc();
     int getDevType();
-    int getDevId();
+//    int getDevId();
     int getCanId();
 
 protected:
@@ -75,12 +75,10 @@ protected:
 
     int assignIds( const modelSysPref &pref );
 
-
-
 protected:
     int mHandle;
     int mDevType;
-    int mDevId;
+
     int mCanId;
 
     CANApi mApi;

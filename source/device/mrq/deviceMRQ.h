@@ -196,6 +196,8 @@ public:
                   tpvRow *pRows,
                   int n
                   );
+    int pvtWrite( pvt_region,
+                  QList<tpvRow> &rows );
 
     void setTpvIndex( pvt_region, int index );
     int  getTpvIndex( pvt_region );
@@ -214,6 +216,10 @@ public:
 public:
     int call( pvt_region );
     int rotate( pvt_region, float t, float ang, float endV = 0 );
+    int preRotate( pvt_region, float t, float ang, float endV = 0 );
+
+    int movej( pvt_region, float ang, float t, float angJ, float tj, float endV = 0 );
+    int preMovej( pvt_region, float ang, float t, float angJ, float tj, float endV = 0 );
 
     int lightCouplingZero( pvt_region,
                            float t, float angle, float endV = 1 );

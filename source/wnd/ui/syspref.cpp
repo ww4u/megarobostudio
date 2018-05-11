@@ -33,6 +33,7 @@ sysPref::sysPref(QWidget *parent) :
              this, SLOT(slot_styleLang_changed(int) ));
 
     slot_updateValidateEn();
+    slot_validate_listmrt();
 }
 
 sysPref::~sysPref()
@@ -59,6 +60,8 @@ void sysPref::updateUi()
 
     ui->edtVisa->setText( mPref.mVisaAddr );
     ui->spinVisaTmo->setValue( mPref.mVisaTmo );
+    ui->listMRTs->clear();
+    ui->listMRTs->addItems( mPref.mVisaList );
 
     ui->spinTmo->setValue( mPref.mTimeout );
     ui->spinInterval->setValue( mPref.mInterval );
@@ -67,6 +70,8 @@ void sysPref::updateUi()
     ui->spinEnumTmo->setValue( mPref.mEnumerateTimeout );
     ui->spinPvtInterval->setValue( mPref.mTpvInterval );
     ui->chkAutoAssignId->setChecked( mPref.mbAutoAssignId );
+    ui->spinDeviceCount->setValue( mPref.mDeviceCount );
+    ui->spinDeviceId->setValue( mPref.mDeviceId );
 
     ui->spinSendFrom->setValue((mPref.mSendIdFrom));
     ui->spinSendTo->setValue((mPref.mSendIdTo));
@@ -120,6 +125,9 @@ void sysPref::updateData()
 
     mPref.mVisaAddr = ui->edtVisa->text();
     mPref.mVisaTmo = ui->spinVisaTmo->value();
+    mPref.mVisaList.clear();
+    for ( int i = 0; i < ui->listMRTs->count(); i++ )
+    { mPref.mVisaList.append( ui->listMRTs->item(i)->text() ); }
 
     mPref.mTimeout = ui->spinTmo->value();
     mPref.mInterval = ui->spinInterval->value();
@@ -127,6 +135,8 @@ void sysPref::updateData()
     mPref.mEnumerateTimeout = ui->spinEnumTmo->value();
     mPref.mTpvInterval = ui->spinPvtInterval->value();
     mPref.mbAutoAssignId = ui->chkAutoAssignId->isChecked();
+    mPref.mDeviceCount = ui->spinDeviceCount->value();
+    mPref.mDeviceId = ui->spinDeviceId->value();
 
     mPref.mSendIdFrom = ui->spinSendFrom->value();
     mPref.mSendIdTo = ui->spinSendTo->value();
@@ -366,17 +376,71 @@ void sysPref::slot_styleLang_changed( int index )
 void sysPref::on_btnVerify_2_clicked()
 {
     QString strIdn;
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
     if ( validateVisaRsrc( strIdn ) )
     {
         MegaMessageBox::information( this, tr("Info"), tr("Connect success ") + strIdn );
+        ui->btnAdd->setEnabled( true );
     }
     else
     {
         MegaMessageBox::warning( this, tr("Info"), tr("Connect fail") );
+        ui->btnAdd->setEnabled( false );
     }
+    QApplication::restoreOverrideCursor();
 }
 
 void sysPref::on_edtVisa_textChanged(const QString &arg1)
 {
-    ui->btnVerify_2->setEnabled( ui->edtVisa->text().length() > 0 );
+    slot_validate_listmrt();
+}
+
+void sysPref::on_btnAdd_clicked()
+{
+    ui->listMRTs->addItem( ui->edtVisa->text() );
+}
+
+void sysPref::on_btnRemove_clicked()
+{
+//    ui->listMRTs->removeItemWidget( ui->listMRTs->currentItem() );
+    delete ( ui->listMRTs->takeItem( ui->listMRTs->currentRow() ) );
+}
+
+void sysPref::on_btnClear_clicked()
+{
+    ui->listMRTs->clear();
+}
+
+void sysPref::on_edtVisa_textEdited(const QString &arg1)
+{
+    slot_validate_listmrt();
+}
+
+void sysPref::slot_validate_listmrt()
+{
+    if ( ui->edtVisa->text().length() > 0 )
+    {
+        ui->btnVerify_2->setEnabled(true);
+        ui->btnAdd->setEnabled( true );
+    }
+    else
+    {
+        ui->btnVerify_2->setEnabled(false);
+        ui->btnAdd->setEnabled( false );
+    }
+
+    if ( ui->listMRTs->currentItem() != NULL )
+    { ui->btnRemove->setEnabled( true ); }
+    else
+    { ui->btnRemove->setEnabled( false );}
+
+    if ( ui->listMRTs->count() > 0 )
+    { ui->btnClear->setEnabled( true ); }
+    else
+    { ui->btnClear->setEnabled( false ); }
+}
+
+void sysPref::on_listMRTs_currentRowChanged(int currentRow)
+{
+    slot_validate_listmrt();
 }

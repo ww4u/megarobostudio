@@ -21,11 +21,15 @@ public:
     void setFrameId( int frameid );
     int frameId();
 
+    void setDevId( int devId );
+    int devId();
+
     void setTimeStamp( quint64 t );
     quint64 timeStamp();
 
 protected:
     int mFrameId;
+    int mDevId;
     quint64 mTimeStamp;
 };
 Q_DECLARE_METATYPE( frameData )
@@ -56,12 +60,16 @@ protected:
     int mSpeed;           //! speed
     int mPId;             //! productId: 0 -- mega can
                           //! 1 -- usb can ii
+    int mDevId;
 
     QString mName;
 
     eBusType mBusType;
-                        //! receive cache
+                            //! receive cache
     receiveCache *m_pRecvCache;
+
+    QMutex mbus_mutext;     //! for each bus
+    QMutex mbus_query_mutext;
 
 public:
     QList< DeviceId *> mDevices;
@@ -84,7 +92,9 @@ public :
     void setPId( int pid );
     int pId();
 
-//    virtual int open(QString dev);
+    void setDevId( int devId );
+    int devId();
+
     virtual int open( int devType,
                       int devId, int canId,
                       const QString &desc="" );
@@ -158,7 +168,9 @@ public :
     int failTry()
     { return mFailTry; }
 
-    void attachReceiveCache( receiveCache *pCache );
+//    void attachReceiveCache( receiveCache *pCache );
+    receiveCache *receiveProxy()
+    { return m_pRecvCache; }
 
 	//! apis
 	public:

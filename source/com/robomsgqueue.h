@@ -87,6 +87,14 @@ public:
                          );
 
     void postMsg( eRoboMsg msg,
+                         int eId,
+                         int devId,
+                         int fId,       //! get name from device
+                         const QByteArray &ary,
+                         quint64 t = 0
+                         );
+
+    void postMsg( eRoboMsg msg,
                   int mi, int ma, int n,
                   const QString &str,
                   quint64 t = 0 );

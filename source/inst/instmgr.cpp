@@ -3,26 +3,44 @@
 
 #include "../../model/mcmodel.h"
 
+#define MRH_T_PORT  2
+
 namespace MegaDevice
 {
 
+INTRThread::INTRThread(QObject *parent) : QThread( parent )
+{}
+
+INTRThread::~INTRThread()
+{}
+
+void INTRThread::slot_event( eventId id, frameData dat )
+{
+//    logDbg()<<id<<dat;
+    emit sig_event( id, dat );
+}
+
+//! instmgr
 InstMgr *InstMgr::_mpMgr = NULL;
 
 InstMgr::InstMgr( QObject *parent ) : instServer( parent )
 {
     m_pMainModel = NULL;
 
-    m_pReceiveCache = new receiveCache();
+    m_pINTR = new INTRThread();
+    Q_ASSERT( NULL != m_pINTR );
+    m_pINTR->start( QThread::HighPriority );
 }
 
 InstMgr::~InstMgr()
 {
+    m_pINTR->terminate();
+    m_pINTR->wait();
+    delete m_pINTR;
+
     gc();
 
-    //! receive end
-    m_pReceiveCache->terminate();
-    m_pReceiveCache->wait();
-    delete m_pReceiveCache;
+    receiveCache::clearFrameEvent();
 }
 
 InstMgr *InstMgr::proxy()
@@ -111,6 +129,78 @@ logDbg();
 
 int InstMgr::probeCanBus()
 {
+    CANBus *pNewBus;
+    int ret, deviceSeq;
+
+    Q_ASSERT( NULL != m_pMainModel );
+
+    //! -T
+    int devCount;
+    if ( m_pMainModel->mSysPref.mPort == MRH_T_PORT )
+    { devCount = m_pMainModel->mSysPref.mVisaList.count(); }
+    else
+    { devCount = m_pMainModel->mSysPref.mDeviceCount; }
+
+    deviceSeq = 1;
+    for ( int i = 0; i < devCount; i++ )
+    {
+        pNewBus = new CANBus();
+        if ( NULL == pNewBus )
+        { return ERR_ALLOC_FAIL; }
+
+        VRoboList *pRoboList;
+        pRoboList = new VRoboList();
+        if ( NULL == pRoboList )
+        {
+            delete pNewBus;
+            return ERR_ALLOC_FAIL;
+        }
+
+        ret = probeCANBus( pNewBus,
+                           m_pMainModel->mSysPref.mDeviceId + i,
+                           m_pMainModel->mSysPref.mVisaList.value( i, "" ),
+                           *pRoboList,
+                           deviceSeq );
+        do
+        {
+            //! fail
+            if ( ret != 0 )
+            {
+                delete pNewBus;
+                delete pRoboList;
+                break;
+            }
+
+            //! no item
+            if ( pRoboList->size() > 0 )
+            { }
+            else
+            { break; }
+
+            //! success
+            {
+                //! add the bus
+                mCanBuses.append( pNewBus );
+
+                //! add the tree
+                mDeviceTree.append( pRoboList );
+
+                //! each robot
+                mDevices.append( *pRoboList );
+
+                //! connect
+                connect( pNewBus->receiveProxy(), SIGNAL(sig_event(eventId,frameData)),
+                         m_pINTR, SIGNAL(sig_event(eventId,frameData)) );
+
+            }
+        }while( 0 );
+    }
+
+    return 0;
+}
+
+int InstMgr::_probeCanBus()
+{
     int ret;
 
     int portDevType[]={VCI_MR_USBCAN,
@@ -135,16 +225,6 @@ logDbg();
     if ( ret != 0 )
     { logDbg()<<ret; return ret; }
 logDbg();
-    //! start the receive cache
-    Q_ASSERT( NULL != m_pReceiveCache );
-    m_pReceiveCache->attachBus( &mCanBus );
-    mCanBus.attachReceiveCache( m_pReceiveCache );
-    if ( m_pReceiveCache->isRunning() )
-    {}
-    else
-    {
-        m_pReceiveCache->start( QThread::TimeCriticalPriority );
-    }
     sysProgress( 5, tr("enumerate") );
 
     //! enumerate
@@ -277,7 +357,12 @@ int InstMgr::emergencyStop()
 
     //! 1. broadcast
     DeviceId broadId( CAN_BROAD_ID );
-    ret = mCanBus.doWrite( broadId, buf, sizeof(buf) );
+    foreach ( CANBus *pBus, mCanBuses)
+    {
+        Q_ASSERT( NULL != pBus );
+        ret = pBus->doWrite( broadId, buf, sizeof(buf) );
+    }
+//    ret = mCanBus.doWrite( broadId, buf, sizeof(buf) );
 
     //! 2. request
     ret = requestStates();
@@ -292,7 +377,12 @@ int InstMgr::hardReset()
 
     //! 1. broadcast
     DeviceId broadId( CAN_BROAD_ID );
-    ret = mCanBus.doWrite( broadId, buf, sizeof(buf) );
+    foreach ( CANBus *pBus, mCanBuses)
+    {
+        Q_ASSERT( NULL != pBus );
+        ret = pBus->doWrite( broadId, buf, sizeof(buf) );
+    }
+//    ret = mCanBus.doWrite( broadId, buf, sizeof(buf) );
 
     //! 2. request state
     ret = requestStates();
@@ -307,10 +397,16 @@ int InstMgr::requestStates()
     //! request state for each page
     byte stateBuf[]= { mc_MOTION, sc_MOTION_STATE_Q, CAN_BROAD_CHAN, 0 };
 
+    //! for each page
     for ( byte i = 0; i < 10; i++ )
     {
         stateBuf[3] = i;
-        ret = mCanBus.doWrite( broadId, stateBuf, sizeof(stateBuf) );
+        foreach ( CANBus *pBus, mCanBuses)
+        {
+            Q_ASSERT( NULL != pBus );
+            ret = pBus->doWrite( broadId, stateBuf, sizeof(stateBuf) );
+        }
+//        ret = mCanBus.doWrite( broadId, stateBuf, sizeof(stateBuf) );
         if ( ret != 0 )
         { return ret; }
     }
@@ -448,10 +544,8 @@ deviceMRQ *InstMgr::getDevice( int id )
     return (deviceMRQ *)mDeviceTree.at( 0 )->at( id );
 }
 
-receiveCache *InstMgr::getInterruptSource()
-{
-    return m_pReceiveCache;
-}
+INTRThread *InstMgr::getInterruptSource()
+{ return m_pINTR; }
 
 VRobot * InstMgr::findRobot( const QString &name, int axesId  )
 {
@@ -520,11 +614,18 @@ VRoboList *InstMgr::findBus( const QString &busName )
     return NULL;
 }
 
-VRobot * InstMgr::findRobotBySendId( int sendId, int axesId )
+VRobot * InstMgr::findRobotBySendId( int sendId, int devId, int axesId )
 {
     foreach( VRoboList *pRoboList, mDeviceTree )
-    {
+    {        
         Q_ASSERT( NULL != pRoboList );
+        Q_ASSERT( pRoboList->bus() != NULL );
+
+        if ( pRoboList->bus()->devId() == devId )
+        {}
+        else
+        { continue; }
+
         foreach( VRobot * pDev, *pRoboList )
         {
             Q_ASSERT( NULL != pDev );
@@ -537,11 +638,19 @@ VRobot * InstMgr::findRobotBySendId( int sendId, int axesId )
     return NULL;
 }
 
-VRobot * InstMgr::findRobotByRecvId( int recvId, int axesId )
+VRobot * InstMgr::findRobotByRecvId( int recvId, int devId, int axesId )
 {
     foreach( VRoboList *pRoboList, mDeviceTree )
     {
         Q_ASSERT( NULL != pRoboList );
+
+        Q_ASSERT( pRoboList->bus() != NULL );
+
+        if ( pRoboList->bus()->devId() == devId )
+        {}
+        else
+        { continue; }
+
         foreach( VRobot * pDev, *pRoboList )
         {
             Q_ASSERT( NULL != pDev );
@@ -594,13 +703,20 @@ deviceMRQ *InstMgr::findDevice( const QString &name, int *pAxes )
     return findDevice( strList[1], axesId - 1 );
 }
 
-QString InstMgr::sendIdToName( int sendId )
+QString InstMgr::sendIdToName( int devId, int sendId)
 {
     deviceMRQ *pMrq;
 
     foreach( VRoboList *pRoboList, mDeviceTree )
     {
         Q_ASSERT( NULL != pRoboList );
+
+        Q_ASSERT( NULL != pRoboList->bus() );
+        if ( pRoboList->bus()->devId() == devId )
+        {}
+        else
+        { continue; }
+
         foreach( VRobot * pDev, *pRoboList )
         {
             Q_ASSERT( NULL != pDev );
@@ -678,6 +794,157 @@ void InstMgr::preProbeBus()
 void InstMgr::postProbeBus()
 {}
 
+int InstMgr::probeCANBus( CANBus *pNewBus,
+                          int id,
+                          const QString &devRsrc,
+                          VRoboList &roboList,
+                          int &seq )
+{
+    Q_ASSERT( NULL != pNewBus );
+
+    //! check type
+    int ret;
+
+    int portDevType[]={VCI_MR_USBCAN,
+                       VCI_MR_USBCAN,
+                       VCI_MR_LANCAN,
+                       VCI_USBCAN2 };
+
+    Q_ASSERT( NULL != m_pMainModel );
+    //! bus prop.
+    pNewBus->setPId( m_pMainModel->mSysPref.mPort );
+    pNewBus->setSpeed( m_pMainModel->mSysPref.mSpeed );
+    pNewBus->setWtInterval( m_pMainModel->mSysPref.mInterval );
+    pNewBus->setRdTmo( m_pMainModel->mSysPref.mTimeout );
+    pNewBus->setEnumTmo( m_pMainModel->mSysPref.mEnumerateTimeout );
+    pNewBus->setFailTry( m_pMainModel->mSysPref.mFailTryCnt );
+
+    //! open
+    Q_ASSERT( m_pMainModel->mSysPref.mPort < sizeof_array(portDevType) );
+    ret = pNewBus->open( portDevType[m_pMainModel->mSysPref.mPort],
+                         id,
+                         0,
+                         devRsrc );
+    if ( ret != 0 )
+    { logDbg()<<ret; return ret; }
+
+    sysProgress( 5, tr("enumerate") );
+
+    //! enumerate
+    ret = pNewBus->enumerate( m_pMainModel->mSysPref );
+    logDbg()<<ret;
+    if ( ret != 0 )
+    { logDbg(); return ret; }
+    sysProgress( 30, tr("enumerate") );
+
+    //! create the device
+    deviceMRQ *pMRQ;
+    VRobot *pRobo;
+
+    //! a robo list
+//    VRoboList *pRoboList = new VRoboList();
+//    Q_ASSERT( NULL != pRoboList );
+    roboList.attachBus( pNewBus );
+
+    int uiProgBase = 30;
+    float uiProgStep = 0;
+    if ( pNewBus->mDevices.size() > 0 )
+    { uiProgStep = 60/( pNewBus->mDevices.size()*2); }
+    int uiStep = 1;
+
+    foreach( DeviceId * pId, pNewBus->mDevices )
+    {
+        //! detect device
+        {
+            pMRQ = new deviceMRQ();
+            Q_ASSERT( NULL != pMRQ );
+
+            //! bus config
+            pMRQ->setInterval( m_pMainModel->mSysPref.mInterval );
+            pMRQ->setTimeout( m_pMainModel->mSysPref.mTimeout );
+
+            pMRQ->attachBus( pNewBus );
+            pMRQ->setInstMgr( this );
+
+            //! iter ref the sibling
+            ret = pMRQ->setDeviceId( *pId );
+            if ( ret != 0 )
+            {
+                logDbg()<<ret;
+                delete pMRQ;
+                return ret;
+            }
+
+            //! get info
+            pMRQ->rst();
+            pMRQ->uploadDesc();
+
+//            logDbg()<<QString::number( (uint32)pMRQ, 16 );
+//            logDbg()<<seq<<pMRQ->getModel()->mCAN_SENDID;
+//            logDbg()<<seq<<pMRQ->getModel()->mCAN_RECEIVEID;
+        }
+        sysProgress( uiProgBase + (uiStep++)*uiProgStep, tr("mrq") );
+
+        //! gen robo
+        {
+            //! get class
+            QString roboClass;
+
+            //! class
+            roboClass = m_pMainModel->mDeviceDbs.findClass( pMRQ->getDesc() );
+            delete pMRQ;
+
+            pRobo = robotFact::createRobot( roboClass );
+            if ( NULL == pRobo )
+            { return ERR_ALLOC_FAIL; }
+
+            //! delete the robo
+            //! bus config
+            pRobo->setInterval( m_pMainModel->mSysPref.mInterval );
+            pRobo->setTimeout( m_pMainModel->mSysPref.mTimeout );
+
+            pRobo->attachBus( pNewBus );
+            pRobo->setInstMgr( this );
+
+            //! iter ref the sibling
+            ret = pRobo->setDeviceId( *pId );
+            if ( ret != 0 )
+            {
+                logDbg()<<ret;
+                delete pMRQ;
+                return ret;
+            }
+
+            //! get info
+            pRobo->rst();
+            pRobo->upload();
+
+            //! auto load setup
+            if ( m_pMainModel->mSysPref.mbAutoLoadSetup )
+            {
+                if ( 0!= pRobo->uploadSetting() )
+                { sysError( tr("load fail") ) ; }
+                else
+                { sysLog( tr("load success"), pRobo->name() );}
+            }
+
+            //! add robot
+            roboList.append( pRobo );
+
+            //! set def scpi name
+            //! default device name
+            pRobo->setName( QString("device%1").arg(seq) );
+            seq++;
+
+            //! open scpi
+            pRobo->open();
+        }
+        sysProgress( uiProgBase + (uiStep++)*uiProgStep, tr("robo") );
+    }
+
+    return 0;
+}
+
 void InstMgr::gc()
 {
     gcPhyBus();
@@ -689,9 +956,17 @@ void InstMgr::gc()
 
 void InstMgr::gcPhyBus()
 {
-    Q_ASSERT( NULL != m_pReceiveCache );
-    m_pReceiveCache->detachBus();
-    mCanBus.close();
+//    Q_ASSERT( NULL != m_pReceiveCache );
+//    m_pReceiveCache->detachBus();
+//    mCanBus.close();
+
+    foreach( CANBus *pBus, mCanBuses )
+    {
+        Q_ASSERT( NULL != pBus );
+        pBus->close();
+    }
+
+    delete_all( mCanBuses );
 
     delete_all( mDeviceTree );
 

@@ -167,6 +167,99 @@ static scpi_result_t _scpi_rotate( scpi_t * context )
     return SCPI_RES_OK;
 }
 
+//! int, float, float
+//! ax, page, t, angle
+static scpi_result_t _scpi_preRotate( scpi_t * context )
+{
+    // read
+    DEF_LOCAL_VAR();
+
+    int ax, page;
+    float val2, val3;
+
+    if ( SCPI_RES_OK != SCPI_ParamInt32( context, &ax, true ) )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    if ( SCPI_RES_OK != SCPI_ParamInt32( context, &page, true ) )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    if ( SCPI_RES_OK != SCPI_ParamFloat( context, &val2, true ) )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    if ( SCPI_RES_OK != SCPI_ParamFloat( context, &val3, true ) )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    DEF_MRQ();
+
+    CHECK_LINK( ax, page );
+
+    LOCALMRQ()->preRotate( tpvRegion(ax,page), val2, val3 );
+
+    return SCPI_RES_OK;
+}
+
+//! ax, page, t, angle, tj, j
+static scpi_result_t _scpi_movej( scpi_t * context )
+{
+    // read
+    DEF_LOCAL_VAR();
+
+    int ax, page;
+    float vals[4];
+
+    if ( SCPI_RES_OK != SCPI_ParamInt32( context, &ax, true ) )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    if ( SCPI_RES_OK != SCPI_ParamInt32( context, &page, true ) )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    //! deload para
+    for ( int i = 0; i < sizeof_array(vals); i++ )
+    {
+        if ( SCPI_RES_OK != SCPI_ParamFloat( context, &vals[i], true ) )
+        { scpi_ret( SCPI_RES_ERR ); }
+    }
+
+    DEF_MRQ();
+
+    CHECK_LINK( ax, page );
+
+    LOCALMRQ()->movej( tpvRegion(ax,page), vals[1], vals[0], vals[3], vals[2] );
+
+    return SCPI_RES_OK;
+}
+
+//! ax, page, t, angle, tj, j
+static scpi_result_t _scpi_preMovej( scpi_t * context )
+{
+    // read
+    DEF_LOCAL_VAR();
+
+    int ax, page;
+    float vals[4];
+
+    if ( SCPI_RES_OK != SCPI_ParamInt32( context, &ax, true ) )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    if ( SCPI_RES_OK != SCPI_ParamInt32( context, &page, true ) )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    //! deload para
+    for ( int i = 0; i < sizeof_array(vals); i++ )
+    {
+        if ( SCPI_RES_OK != SCPI_ParamFloat( context, &vals[i], true ) )
+        { scpi_ret( SCPI_RES_ERR ); }
+    }
+
+    DEF_MRQ();
+
+    CHECK_LINK( ax, page );
+
+    LOCALMRQ()->preMovej( tpvRegion(ax,page), vals[1], vals[0], vals[3], vals[2] );
+
+    return SCPI_RES_OK;
+}
+
 //! CALL ax, page
 static scpi_result_t _scpi_call( _scpi_t * context )
 {
@@ -334,6 +427,7 @@ static scpi_result_t _scpi_incangle( scpi_t * context )
     return SCPI_RES_OK;
 }
 
+//! ax
 static scpi_result_t _scpi_absangle( scpi_t * context )
 {
     // read
@@ -423,6 +517,47 @@ static scpi_result_t _scpi_ledduty( scpi_t * context )
     return SCPI_RES_OK;
 }
 
+static scpi_result_t _scpi_encoderZeroValid( scpi_t * context )
+{
+    // read
+    DEF_LOCAL_VAR();
+
+    DEF_MRQ();
+
+    bool bRet = LOCALMRQ()->getEncoderZeroValid();
+
+    SCPI_ResultInt32( context, bRet );
+
+    return SCPI_RES_OK;
+}
+
+//! ax
+//! valid, zeroAngle
+static scpi_result_t _scpi_encoderZero( scpi_t * context )
+{
+    // read
+    DEF_LOCAL_VAR();
+
+    int val1;
+
+    if ( SCPI_RES_OK != SCPI_ParamInt32( context, &val1, true ) )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    DEF_MRQ();
+
+    if ( LOCALMRQ()->getEncoderZeroValid() )
+    {}
+    else
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    float angle;
+    angle =  LOCALMRQ()->getEncoderZero( val1 );
+
+    SCPI_ResultFloat( context, angle );
+
+    return SCPI_RES_OK;
+}
+
 static scpi_command_t _mrq_scpi_cmds[]=
 {
     #include "../board/_MRQ_scpi_cmd.h"
@@ -438,6 +573,10 @@ static scpi_command_t _mrq_scpi_cmds[]=
 
     CMD_ITEM( "ROTATE", _scpi_rotate ),
     CMD_ITEM( "MOVE", _scpi_rotate ),
+    CMD_ITEM( "PREMOVE", _scpi_preRotate ),
+
+    CMD_ITEM( "MOVEJ", _scpi_movej ),
+    CMD_ITEM( "PREMOVEJ", _scpi_preMovej ),
 
     CMD_ITEM( "STATE?", _scpi_fsmState ),
 
@@ -455,6 +594,9 @@ static scpi_command_t _mrq_scpi_cmds[]=
 
     CMD_ITEM( "FANDUTY", _scpi_fanduty ),
     CMD_ITEM( "LEDDUTY", _scpi_ledduty ),
+
+    CMD_ITEM( "ENCODER:ZEROVALID?", _scpi_encoderZeroValid ),
+    CMD_ITEM( "ENCODER:ZERO?", _scpi_encoderZero ),
 
     SCPI_CMD_LIST_END
 };

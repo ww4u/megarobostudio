@@ -17,8 +17,6 @@
 
 namespace MegaDevice {
 
-static QMutex _bus_mutext;
-static QMutex _bus_query_mutext;
 
 IBus::IBus()
 {
@@ -37,6 +35,7 @@ IBus::IBus()
     mBusType = e_bus_unk;
     mSpeed = 1000000;
     mPId = 0;
+    mDevId = 0;
 }
 
 void IBus::setName( const QString & name )
@@ -62,6 +61,11 @@ void IBus::setPId( int pid )
 { mPId = pid; }
 int IBus::pId()
 { return mPId; }
+
+void IBus::setDevId( int devId )
+{ mDevId = devId; }
+int IBus::devId()
+{ return mDevId; }
 
 //int IBus::open(QString dev)
 //{ return 0; }
@@ -101,25 +105,25 @@ int IBus::enumerate( const modelSysPref &pref )
 
 void IBus::lock()
 {
-    _bus_mutext.lock();
+    mbus_mutext.lock();
 }
 void IBus::unlock()
 {
-    _bus_mutext.unlock();
+    mbus_mutext.unlock();
 }
 
 void IBus::lockQuery()
-{ _bus_query_mutext.lock(); }
+{ mbus_query_mutext.lock(); }
 void IBus::unlockQuery()
-{ _bus_query_mutext.unlock(); }
+{ mbus_query_mutext.unlock(); }
 
-void IBus::attachReceiveCache( receiveCache *pCache )
-{
-    Q_ASSERT( NULL != pCache );
-    m_pRecvCache = pCache;
+//void IBus::attachReceiveCache( receiveCache *pCache )
+//{
+//    Q_ASSERT( NULL != pCache );
+//    m_pRecvCache = pCache;
 
-    m_pRecvCache->attachBus( this );
-}
+//    m_pRecvCache->attachBus( this );
+//}
 
 //! write
 //! no para

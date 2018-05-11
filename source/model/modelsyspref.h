@@ -39,9 +39,12 @@ public:
     int mTpvInterval;
     int mFailTryCnt;
     bool mbAutoAssignId;
+    int mDeviceId;
+    int mDeviceCount;
 
     QString mVisaAddr;
     int mVisaTmo;
+    QStringList mVisaList;
 
     int mEnumerateTimeout;
     int mSampleTick;

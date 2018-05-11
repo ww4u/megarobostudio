@@ -49,12 +49,13 @@ public:
         robot_geogoog_5_1,
 
         robot_complex = 1024,
-        robot_motor = 1024,
-        robot_slide,
+        robot_sinanju = 1024,
         robot_delta,
         robot_megatron,
-        robot_sinanju,
         robot_h2,
+
+        robot_motor,
+        robot_slide,
 
         robot_user = 65536,
     };

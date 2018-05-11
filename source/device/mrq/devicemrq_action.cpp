@@ -80,7 +80,7 @@ bool deviceMRQ::checkLink( int p1, int p2 )
         if ( p2 < 0 || p2 >= regions() )
         { break; }
 
-        return false;
+        return true;
     }while( 0 );
 
     sysError( QObject::tr("Invalid region/page"), QString::number( p1 ), QString::number( p2 ) );

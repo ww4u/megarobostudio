@@ -57,7 +57,7 @@ MRQ_PROGRESS( 10, ("MOTION") );
     //! motion 1--4
     for ( int i = 0; i < axes(); i++ )
     {
-        checked_call( setMOTION_STATEREPORT( i, mMOTION_STATEREPORT[i]) );
+//        checked_call( setMOTION_STATEREPORT( i, mMOTION_STATEREPORT[i]) );
 
         checked_call( setMOTION_STARTSOURCE( i, mMOTION_STARTSOURCE[i]) );
         checked_call( setMOTION_STARTTYPE( i, mMOTION_STARTTYPE[i]) );
@@ -291,16 +291,16 @@ MRQ_PROGRESS( 75, ("ISI") );
         {
             checked_call( setABSENCALARM_STATE( (MRQ_IDENTITY_LABEL_1)i,
                                                 mABSENCALARM_STATE[i] ) );
-            checked_call( setABSENCALARM_UPLIMIT( (MRQ_IDENTITY_LABEL_1)i,
-                                                mABSENCALARM_UPLIMIT[i] ) );
-            checked_call( setABSENCALARM_DOWNLIMIT( (MRQ_IDENTITY_LABEL_1)i,
-                                                mABSENCALARM_DOWNLIMIT[i] ) );
-            //! \todo zero value can not be motified by setup
-            checked_call( setABSENCALARM_ZEROVALUE( (MRQ_IDENTITY_LABEL_1)i,
-                                                mABSENCALARM_ZEROVALUE[i] ) );
+//            checked_call( setABSENCALARM_UPLIMIT( (MRQ_IDENTITY_LABEL_1)i,
+//                                                mABSENCALARM_UPLIMIT[i] ) );
+//            checked_call( setABSENCALARM_DOWNLIMIT( (MRQ_IDENTITY_LABEL_1)i,
+//                                                mABSENCALARM_DOWNLIMIT[i] ) );
+//            //! \todo zero value can not be motified by setup
+//            checked_call( setABSENCALARM_ZEROVALUE( (MRQ_IDENTITY_LABEL_1)i,
+//                                                mABSENCALARM_ZEROVALUE[i] ) );
 
-            checked_call( setABSENCALARM_ZEROPOSITION( (MRQ_IDENTITY_LABEL_1)i,
-                                                mABSENCALARM_ZEROPOSITION[i] ) );
+//            checked_call( setABSENCALARM_ZEROPOSITION( (MRQ_IDENTITY_LABEL_1)i,
+//                                                mABSENCALARM_ZEROPOSITION[i] ) );
         }
         checked_call( setABSENCALARM_RESPONSE(
                                             mABSENCALARM_RESPONSE ) );

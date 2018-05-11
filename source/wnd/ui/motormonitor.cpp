@@ -98,7 +98,7 @@ void MotorMonitor::motorStateChanged( const QString &name,
 
     //! now for status
     QByteArray ary;
-    ary = msg.at(2).toByteArray();
+    ary = msg.at(3).toByteArray();
 
     //! get status
     int stat = ary.at(4);

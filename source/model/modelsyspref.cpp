@@ -17,6 +17,8 @@ void modelSysPref::rst()
     mTpvInterval = time_ms( 1 );
     mFailTryCnt = 2;
     mbAutoAssignId = false;
+    mDeviceId = 0;
+    mDeviceCount = 1;
 
     mVisaTmo = 20000;
     mVisaAddr = "TCPIP::172.16.0.1::INSTR";
@@ -84,6 +86,7 @@ int modelSysPref::save( const QString &str )
     writer.writeTextElement( "speed", QString::number(mSpeed) );
     writer.writeTextElement( "visa_addr",( mVisaAddr ) );
     writer.writeTextElement( "visa_tmo", QString::number( mVisaTmo ) );
+    writer.writeTextElement( "visa_list", mVisaList.join(',') );
 
     //! time
     writer.writeTextElement( "tmo", QString::number(mTimeout) );
@@ -92,6 +95,8 @@ int modelSysPref::save( const QString &str )
     writer.writeTextElement( "enum_tmo", QString::number(mEnumerateTimeout) );
     writer.writeTextElement( "tpv_interval", QString::number(mTpvInterval) );
     writer.writeTextElement( "auto_assign_id", QString::number( mbAutoAssignId ) );
+    writer.writeTextElement( "device_count", QString::number( mDeviceCount ) );
+    writer.writeTextElement( "device_id", QString::number( mDeviceId ) );
 
     //! ids
     writer.writeStartElement("id");
@@ -208,6 +213,9 @@ int modelSysPref::load( const QString &str )
                 else if ( reader.name() == "visa_tmo" )
                 { mVisaTmo = reader.readElementText().toInt(); }
 
+                else if ( reader.name() == "visa_list" )
+                { mVisaList = reader.readElementText().split(',',QString::SkipEmptyParts); }
+
                 else if ( reader.name() == "tmo" )
                 { mTimeout = reader.readElementText().toInt(); }
 
@@ -225,6 +233,12 @@ int modelSysPref::load( const QString &str )
 
                 else if ( reader.name() == "auto_assign_id" )
                 { mbAutoAssignId = reader.readElementText().toInt() > 0; }
+
+                else if ( reader.name() == "device_count" )
+                { mDeviceCount = reader.readElementText().toInt(); }
+
+                else if ( reader.name() == "device_id" )
+                { mDeviceId = reader.readElementText().toInt(); }
 
                 else if ( reader.name() == "id" )
                 {

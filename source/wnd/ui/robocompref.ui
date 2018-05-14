@@ -65,20 +65,20 @@
       <item row="1" column="3">
        <widget class="QSpinBox" name="spinBox">
         <property name="minimum">
-         <number>4097</number>
+         <number>128</number>
         </property>
         <property name="maximum">
-         <number>65535</number>
+         <number>255</number>
         </property>
        </widget>
       </item>
       <item row="1" column="4">
        <widget class="QSpinBox" name="spinBox_2">
         <property name="minimum">
-         <number>4097</number>
+         <number>128</number>
         </property>
         <property name="maximum">
-         <number>65535</number>
+         <number>255</number>
         </property>
         <property name="displayIntegerBase">
          <number>16</number>

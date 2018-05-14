@@ -1,5 +1,5 @@
 // DllManager.cpp : 定义 DLL 应用程序的导出函数。
-#include "T4Params.h"
+#include "T4params.h"
 #include "AddPointParams.h"
 #include "math.h"
 #include <vector>

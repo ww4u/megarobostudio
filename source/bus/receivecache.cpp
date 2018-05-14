@@ -381,7 +381,7 @@ int receiveCache::readAFrame( MegaDevice::DeviceId &nodeId,
     int ret = -1;
     frameHouse *pHouse;
     Q_ASSERT( NULL != m_pBus );
-    logDbg()<<tmous<<m_pBus->rdTick()<<nodeId.sendId();
+    logDbg()<<tmous<<m_pBus->rdTick()<<nodeId.sendId()<<tmous;
     do
     {
         do
@@ -481,7 +481,7 @@ int receiveCache::frameCount()
 
     return sum;
 }
-
+#include "../../source/sys/sysapi.h"
 void receiveCache::lockWarehouse()
 { mCacheMutex.lock(); }
 void receiveCache::unlockWarehouse()
@@ -519,7 +519,7 @@ void receiveCache::run()
             Q_ASSERT( NULL != m_pBus );
             ret = m_pBus->doReceive( frameCache );
             receiveCache::unlock();
-
+//sysLog( QString::number(ret), QString::number(__LINE__) );
             //! success
             if ( ret == 0 )
             {

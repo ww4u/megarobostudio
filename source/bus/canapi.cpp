@@ -1,5 +1,6 @@
 #include "canapi.h"
 #include "../../include/mcstd.h"
+
 namespace MegaDevice {
 
 CANApi::CANApi()
@@ -23,6 +24,7 @@ CANApi::~CANApi()
     unload();
 
 }
+
 bool CANApi::load( QString str )
 {
     mDll.setFileName( str );

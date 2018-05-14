@@ -2,7 +2,7 @@
 #define TABLEEDIT_H
 
 #include <QtWidgets>
-#include "modelView.h"
+#include "modelview.h"
 
 class tableEdit : public modelView
 {

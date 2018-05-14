@@ -28,7 +28,4 @@ SOURCES += \
 
 HEADERS += \
         instclient.h
-unix {
-    target.path = /usr/lib
-    INSTALLS += target
-}
+

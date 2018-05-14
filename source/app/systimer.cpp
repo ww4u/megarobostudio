@@ -132,7 +132,7 @@ roboTimer * SysTimerThread::sysFindTimer( VRobot *pRobot,
     {
         Q_ASSERT( NULL != theTimer );
 
-        if ( (quint32)theTimer->Robot() == (quint32)pRobot
+        if ( (UINT_PTR)theTimer->Robot() == (UINT_PTR)pRobot
              && ( theTimer->Context() == pContext )
              && ( theTimer->Id() == id ) )
         {

@@ -30,7 +30,4 @@ SOURCES += \
 
 HEADERS += \
         robogeo51.h
-unix {
-    target.path = /usr/lib
-    INSTALLS += target
-}
+

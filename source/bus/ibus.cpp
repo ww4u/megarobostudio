@@ -1,6 +1,6 @@
 
-#include ".\ibus.h"
-#include ".\receiveCache.h"
+#include "./ibus.h"
+#include "./receivecache.h"
 
 #define hw_hb( d )  (byte)(((d)>>24)&0xff)
 #define hw_lb( d )  (byte)(((d)>>16)&0xff)
@@ -24,8 +24,9 @@ IBus::IBus()
     mFailTry = 2;
 
     mRdTmo = time_ms(200);
-    mRdInterval = time_us(50);
-//    mRdInterval = time_ms(50);
+    mRdInterval = time_us( 100 );
+    mRecvTmo = 1;                //!  \note can not be 1ms for -E WIN7 Fail
+
     mRdTick = time_us(500);
 
     mEnumerateTmo = time_ms( 50 );     //! ref to the device count, each = 200us

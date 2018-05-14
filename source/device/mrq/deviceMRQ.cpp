@@ -95,7 +95,7 @@ void deviceMRQ::postCtor()
 
             pFsm->build();
             pFsm->setContext( this );
-            pFsm->setId( (quint32)this, i, j );
+            pFsm->setId( (UINT_PTR)this, i, j );
             mMrqFsms.insert( region, pFsm );
 
             //! motor proxy

@@ -172,7 +172,25 @@ void deviceMgr::updatePhyBusTree( VRoboList *pRoboList )
     Q_ASSERT( NULL != pItemBus );
     Q_ASSERT( pRoboList->bus() != NULL );
     pItemBus->setText( 0, pRoboList->bus()->name() );
-    pItemBus->setIcon( 0, QIcon(":/res/image/icon2/order.png") );
+
+    QStringList strList,typeList;
+    strList<<":/res/image/megacan.png"
+           <<":/res/image/can2.png"
+           <<":/res/image/mrh-t.png"
+           <<":/res/image/miniusbcan.png";
+    typeList<<"MRH-E"
+           <<"USBCAN-II"
+           <<"MRH-T"
+           <<"MRH-U";
+    int pId = pRoboList->bus()->pId();
+    if (  pId >=0 && pId < strList.size() )
+    {
+        pItemBus->setIcon( 0, QIcon( strList.at(pId) ) );
+        pItemBus->setToolTip( 0, QString("%1(%2)").arg( typeList.at(pId)).arg( pRoboList->bus()->devId() ) );
+    }
+    else
+    { pItemBus->setIcon( 0, QIcon(":/res/image/icon2/order.png") ); }
+
     toolTips= QString("DeviceId:%1").arg( pRoboList->bus()->devId() );
     pItemBus->setToolTip( 0, toolTips );
 
@@ -387,7 +405,7 @@ void deviceMgr::endImport( int ret, void *pPara )
 
 int deviceMgr::doTest( appMsg msg, void *pPara )
 {
-    logDbg()<<QString::number( (quint32)pPara, 16 );
+//    logDbg()<<QString::number( (quint32)pPara, 16 );
     return msg;
 }
 

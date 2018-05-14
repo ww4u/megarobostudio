@@ -200,6 +200,7 @@ int CANBus::initBus()
 
     //! config
     canConfig.AccCode = 0xffffffff;
+//    canConfig.AccCode = 0x00000000;
     canConfig.AccMask = 0xffffffff;
     canConfig.Filter = 0;
     canConfig.Mode = 0;
@@ -212,7 +213,8 @@ int CANBus::initBus()
         return -1;
     }
 
-    canConfig.baud = mSpeed;
+//    canConfig.baud = mSpeed;
+    canConfig.baud = 0;
     canConfig.Timing0 = _bps_timer_matrix[speedId].timer0;
     canConfig.Timing1 = _bps_timer_matrix[speedId].timer1;
 logDbg()<<canConfig.Timing0<<canConfig.Timing1<<mSpeed<<mDevType<<mDevId<<mCanId;
@@ -354,58 +356,11 @@ IBus::unlock();
     { return 0; }
 }
 
-//! read from bus
-//int CANBus::doReceive( int *pFrameId, byte *pBuf, int *pLen )
-//{
-//    CAN_OBJ canObj[128];
-//    int ret;
-
-////    //! check data
-////    if ( mApi.getSize( can_device_desc ) > 0 )
-////    {}
-////    else
-////    { return -1; }
-
-////    IBus::lock();
-//    //! receive fail
-//    //! \note timout invalid and can not be 0
-//    ret = mApi.receive( can_device_desc, &canObj[0], sizeof_array( canObj ), 10 );
-////    IBus::unlock();
-
-//    //! read fail
-//    if ( ret > sizeof_array( canObj ) || ret < 1 )
-//    { return -1; }
-
-//    //! for each frame
-
-////    if ( ret != 1 )
-////    {
-////        return -1;
-////    }
-////    //! success
-////    else
-////    {  }
-
-//    if ( canObj[0].DataLen < 1 || canObj[0].DataLen > 8 )
-//    {
-//        Q_ASSERT( false );
-//        return -2;
-//    }
-
-//    //! export
-//    *pFrameId = canObj[0].ID;
-//    for ( int i = 0; i < canObj[0].DataLen; i++ )
-//    {
-//        pBuf[i] = canObj[0].Data[i];
-//    }
-//    *pLen = canObj[0].DataLen;
-
-//    return 0;
-//}
 
 int CANBus::doReceive( QList<frameData> &canFrames )
 {
     CAN_OBJ canObj[10];
+//    CAN_OBJ canObj[1];
     int ret;
 IBus::lock();
 //    //! check data
@@ -416,8 +371,10 @@ IBus::lock();
 
     //! no need to lock as the receive is from the buffer
 
-    //! \note timout invalid and can not be 0
-    ret = mApi.receive( can_device_desc, &canObj[0], /*sizeof_array( canObj ) > 1 ? 1 :*/ sizeof_array( canObj ), 1 );
+    ret = mApi.receive( can_device_desc,
+                        &canObj[0],
+                        sizeof_array(canObj),
+                        mRecvTmo );
     IBus::unlock();
 
     //! read fail
@@ -436,8 +393,8 @@ IBus::lock();
         tFrame.append( (const char*)canObj[i].Data, canObj[i].DataLen );
         canFrames.append( tFrame );
     }
-    if ( ret >= 2 )
-    {
+    if ( ret >= 1 )
+    {/*sysLog( QString::number(ret), QString::number(__LINE__));*/
         for ( int i = 0; i < ret; i++  )
         { logDbg()<<canFrames.at(i)<<ret<<canFrames.at(i).size(); }
     }
@@ -651,14 +608,15 @@ int CANBus::collectHash( )
     //! 2. frame count
     int frame = size();logDbg()<<frame;
     if ( frame < 1 )
-    { logDbg(); return -1; }
+    { /*sysLog( QString::number(frame), QString::number(__LINE__) );*/ logDbg(); return -1; }
 
     //! 3. read all frame
     int collectFrameSize = 6;
     byte readBuf[ collectFrameSize * frame ];
     int frameIds[ frame ];
-
+//sysLog( QString::number(frame), QString::number(__LINE__) );
     ret = doFrameRead( broadId, frameIds, readBuf, collectFrameSize, frame );
+//sysLog( QString::number(ret), QString::number(__LINE__) );
     if ( ret != frame )
     { return -1; }
 

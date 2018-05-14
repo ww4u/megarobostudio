@@ -60,12 +60,12 @@ void RawRoboFsm::subscribe( MegaDevice::RoboFsm *pMember,   //! child
     Q_ASSERT( Robot() != NULL );
     Q_ASSERT( Robot()->lpc() != NULL );
 
-logDbg()<<QString::number( (quint32)pMember, 16 )<<(qint32)pMember->leaderPara();
+logDbg()<<QString::number( (UINT_PTR)pMember, 16 )<<(UINT_PTR)pMember->leaderPara();
 
     //! subax, region, state
     //! \note to robot, not robt.ax
     Robot()->lpc()->postMsg( (eRoboMsg)msg,
-                             (qint32)pMember->leaderPara(),
+                             (qint32)(UINT_PTR)pMember->leaderPara(),
 //                             tpvRegion( pMember->axes(), pMember->page() ),
                              pMember->region(),
                              stat

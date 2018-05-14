@@ -1,12 +1,12 @@
 TEMPLATE = subdirs
 
 SUBDIRS = \
-          .\robotfact.pro \
-          .\megatron\megatron.pro \
-          .\delta\delta.pro \
-          .\motor\motor.pro \
-          .\slide\slide.pro \
-#          .\slide2\slide2.pro \
+          ./robotfact.pro \
+          ./megatron/megatron.pro \
+          ./delta/delta.pro \
+          ./motor/motor.pro \
+          ./slide/slide.pro \
+#          ./slide2/slide2.pro \
     quebeley/quebeley.pro \
     geogoog/geogoog.pro \
     geo8/geo8.pro \

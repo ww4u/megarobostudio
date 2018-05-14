@@ -44,4 +44,10 @@ struct D4Point
     float v;
 };
 
+#ifdef ARCH_32
+#define UINT_PTR quint32
+#else
+#define UINT_PTR quint64
+#endif
+
 #endif

@@ -215,6 +215,7 @@ int InstMgr::_probeCanBus()
     mCanBus.setSpeed( m_pMainModel->mSysPref.mSpeed );
     mCanBus.setWtInterval( m_pMainModel->mSysPref.mInterval );
     mCanBus.setRdTmo( m_pMainModel->mSysPref.mTimeout );
+    mCanBus.setRecvTmo( m_pMainModel->mSysPref.mRecvTmo );
     mCanBus.setEnumTmo( m_pMainModel->mSysPref.mEnumerateTimeout );
     mCanBus.setFailTry( m_pMainModel->mSysPref.mFailTryCnt );
 logDbg();
@@ -1001,7 +1002,7 @@ scpiShell *InstMgr::findShell( const QString &name )
         foreach( scpiShell * pDev, *pRoboList )
         {
             Q_ASSERT( NULL != pDev );
-            if ( pDev->getName() == name )
+            if ( QString::compare( pDev->getName(), name, Qt::CaseInsensitive)==0 )
             { return pDev; }
         }
     }

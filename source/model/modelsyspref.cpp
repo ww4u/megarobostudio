@@ -13,6 +13,7 @@ void modelSysPref::rst()
     mSpeed = 1000000;                     //! 1M index
 
     mTimeout = time_ms(100);
+    mRecvTmo = 1;                   //! ms
     mInterval = time_us(100);       //! by port
     mTpvInterval = time_ms( 1 );
     mFailTryCnt = 2;
@@ -90,6 +91,7 @@ int modelSysPref::save( const QString &str )
 
     //! time
     writer.writeTextElement( "tmo", QString::number(mTimeout) );
+    writer.writeTextElement( "recv_tmo", QString::number(mRecvTmo) );
     writer.writeTextElement( "interval", QString::number(mInterval) );
     writer.writeTextElement( "fail_try", QString::number(mFailTryCnt) );
     writer.writeTextElement( "enum_tmo", QString::number(mEnumerateTimeout) );
@@ -218,6 +220,9 @@ int modelSysPref::load( const QString &str )
 
                 else if ( reader.name() == "tmo" )
                 { mTimeout = reader.readElementText().toInt(); }
+
+                else if ( reader.name() == "recv_tmo" )
+                { mRecvTmo = reader.readElementText().toInt(); }
 
                 else if ( reader.name() == "interval" )
                 { mInterval = reader.readElementText().toInt(); }

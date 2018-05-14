@@ -1,5 +1,5 @@
 #include "axnpref.h"
-#include "ui_AxnPref.h"
+#include "ui_axnpref.h"
 
 AxnPref::AxnPref( QWidget *parent) :
     modelView(parent),

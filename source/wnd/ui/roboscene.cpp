@@ -293,7 +293,6 @@ void roboScene::fromSceneModel( roboSceneModel *pSceneModel,
         pNewRobot->setName( pModel->mName );
 
         //! try to load the stp from the scene path
-
         fullName = path + QDir::separator() + pModel->mName +  setup_d_ext;
         fullName = QDir::toNativeSeparators( fullName );
         QFile file( fullName );

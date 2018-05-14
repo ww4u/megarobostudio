@@ -442,7 +442,7 @@
             <item row="3" column="0" colspan="2">
              <widget class="QTabWidget" name="tabWidget_2">
               <property name="currentIndex">
-               <number>1</number>
+               <number>0</number>
               </property>
               <widget class="QWidget" name="tab_5">
                <attribute name="title">
@@ -681,14 +681,14 @@
                <string/>
               </property>
               <layout class="QFormLayout" name="formLayout_8">
-               <item row="0" column="0">
+               <item row="1" column="0">
                 <widget class="QLabel" name="label">
                  <property name="text">
                   <string>Timeout(us)</string>
                  </property>
                 </widget>
                </item>
-               <item row="0" column="1">
+               <item row="1" column="1">
                 <widget class="QSpinBox" name="spinTmo">
                  <property name="minimum">
                   <number>1000</number>
@@ -698,14 +698,14 @@
                  </property>
                 </widget>
                </item>
-               <item row="1" column="0">
+               <item row="2" column="0">
                 <widget class="QLabel" name="label_6">
                  <property name="text">
                   <string>Send Interval(us)</string>
                  </property>
                 </widget>
                </item>
-               <item row="1" column="1">
+               <item row="2" column="1">
                 <widget class="QSpinBox" name="spinInterval">
                  <property name="minimum">
                   <number>0</number>
@@ -715,30 +715,47 @@
                  </property>
                 </widget>
                </item>
-               <item row="2" column="0">
+               <item row="3" column="0">
                 <widget class="QLabel" name="label_18">
                  <property name="text">
                   <string>Fail Try Count</string>
                  </property>
                 </widget>
                </item>
-               <item row="2" column="1">
+               <item row="3" column="1">
                 <widget class="QSpinBox" name="spinFailTry"/>
                </item>
-               <item row="3" column="0">
+               <item row="4" column="0">
                 <widget class="QLabel" name="label_27">
                  <property name="text">
                   <string>PVT Interval(us)</string>
                  </property>
                 </widget>
                </item>
-               <item row="3" column="1">
+               <item row="4" column="1">
                 <widget class="QSpinBox" name="spinPvtInterval">
                  <property name="minimum">
                   <number>0</number>
                  </property>
                  <property name="maximum">
                   <number>1000000</number>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="0">
+                <widget class="QLabel" name="label_42">
+                 <property name="text">
+                  <string>Receive Timeout(ms)</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="1">
+                <widget class="QSpinBox" name="spinRecvTmo">
+                 <property name="minimum">
+                  <number>1</number>
+                 </property>
+                 <property name="maximum">
+                  <number>100</number>
                  </property>
                 </widget>
                </item>
@@ -923,25 +940,35 @@
           <item row="0" column="3">
            <widget class="QSpinBox" name="spinSendTo">
             <property name="minimum">
-             <number>16</number>
+             <number>512</number>
             </property>
             <property name="maximum">
-             <number>255</number>
+             <number>639</number>
             </property>
             <property name="value">
-             <number>255</number>
+             <number>639</number>
             </property>
            </widget>
           </item>
           <item row="2" column="3">
            <widget class="QSpinBox" name="spinRecvTo">
             <property name="minimum">
-             <number>256</number>
+             <number>384</number>
             </property>
             <property name="maximum">
              <number>511</number>
             </property>
             <property name="value">
+             <number>511</number>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QSpinBox" name="spinRecvFrom">
+            <property name="minimum">
+             <number>384</number>
+            </property>
+            <property name="maximum">
              <number>511</number>
             </property>
            </widget>
@@ -950,16 +977,6 @@
            <widget class="QLabel" name="label_7">
             <property name="text">
              <string>Receive ID</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1">
-           <widget class="QSpinBox" name="spinRecvFrom">
-            <property name="minimum">
-             <number>256</number>
-            </property>
-            <property name="maximum">
-             <number>511</number>
             </property>
            </widget>
           </item>
@@ -977,39 +994,26 @@
             </property>
            </widget>
           </item>
-          <item row="4" column="1">
-           <widget class="QSpinBox" name="spinGpFrom">
+          <item row="0" column="1">
+           <widget class="QSpinBox" name="spinSendFrom">
             <property name="minimum">
              <number>512</number>
             </property>
             <property name="maximum">
-             <number>767</number>
-            </property>
-            <property name="value">
-             <number>512</number>
+             <number>639</number>
             </property>
            </widget>
           </item>
-          <item row="0" column="1">
-           <widget class="QSpinBox" name="spinSendFrom">
+          <item row="4" column="1">
+           <widget class="QSpinBox" name="spinGpFrom">
             <property name="minimum">
-             <number>16</number>
+             <number>128</number>
             </property>
             <property name="maximum">
              <number>255</number>
             </property>
-           </widget>
-          </item>
-          <item row="4" column="3">
-           <widget class="QSpinBox" name="spinGpTo">
-            <property name="minimum">
-             <number>512</number>
-            </property>
-            <property name="maximum">
-             <number>767</number>
-            </property>
             <property name="value">
-             <number>767</number>
+             <number>128</number>
             </property>
            </widget>
           </item>
@@ -1020,13 +1024,33 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="1">
-           <widget class="QSpinBox" name="spinSendHexFrom">
+          <item row="4" column="3">
+           <widget class="QSpinBox" name="spinGpTo">
             <property name="minimum">
-             <number>16</number>
+             <number>128</number>
             </property>
             <property name="maximum">
              <number>255</number>
+            </property>
+            <property name="value">
+             <number>255</number>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <widget class="QLabel" name="label_29">
+            <property name="text">
+             <string>:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QSpinBox" name="spinSendHexFrom">
+            <property name="minimum">
+             <number>512</number>
+            </property>
+            <property name="maximum">
+             <number>639</number>
             </property>
             <property name="displayIntegerBase">
              <number>16</number>
@@ -1036,23 +1060,16 @@
           <item row="1" column="3">
            <widget class="QSpinBox" name="spinSendHexTo">
             <property name="minimum">
-             <number>16</number>
+             <number>512</number>
             </property>
             <property name="maximum">
-             <number>255</number>
+             <number>639</number>
             </property>
             <property name="value">
-             <number>255</number>
+             <number>639</number>
             </property>
             <property name="displayIntegerBase">
              <number>16</number>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="2">
-           <widget class="QLabel" name="label_29">
-            <property name="text">
-             <string>:</string>
             </property>
            </widget>
           </item>
@@ -1066,26 +1083,13 @@
           <item row="5" column="1">
            <widget class="QSpinBox" name="spinGpHexFrom">
             <property name="minimum">
-             <number>512</number>
+             <number>128</number>
             </property>
             <property name="maximum">
-             <number>767</number>
-            </property>
-            <property name="displayIntegerBase">
-             <number>16</number>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="3">
-           <widget class="QSpinBox" name="spinRecvHexTo">
-            <property name="minimum">
-             <number>256</number>
-            </property>
-            <property name="maximum">
-             <number>511</number>
+             <number>255</number>
             </property>
             <property name="value">
-             <number>511</number>
+             <number>128</number>
             </property>
             <property name="displayIntegerBase">
              <number>16</number>
@@ -1095,9 +1099,25 @@
           <item row="3" column="1">
            <widget class="QSpinBox" name="spinRecvHexFrom">
             <property name="minimum">
-             <number>256</number>
+             <number>384</number>
             </property>
             <property name="maximum">
+             <number>511</number>
+            </property>
+            <property name="displayIntegerBase">
+             <number>16</number>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="3">
+           <widget class="QSpinBox" name="spinRecvHexTo">
+            <property name="minimum">
+             <number>384</number>
+            </property>
+            <property name="maximum">
+             <number>511</number>
+            </property>
+            <property name="value">
              <number>511</number>
             </property>
             <property name="displayIntegerBase">
@@ -1108,20 +1128,20 @@
           <item row="5" column="3">
            <widget class="QSpinBox" name="spinGpHexTo">
             <property name="minimum">
-             <number>512</number>
+             <number>128</number>
             </property>
             <property name="maximum">
-             <number>767</number>
+             <number>255</number>
             </property>
             <property name="value">
-             <number>767</number>
+             <number>255</number>
             </property>
             <property name="displayIntegerBase">
              <number>16</number>
             </property>
            </widget>
           </item>
-          <item row="0" column="4">
+          <item row="0" column="5">
            <spacer name="horizontalSpacer_2">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
@@ -1133,6 +1153,48 @@
              </size>
             </property>
            </spacer>
+          </item>
+          <item row="0" column="4">
+           <widget class="QLabel" name="label_36">
+            <property name="text">
+             <string>(HEX)</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="4">
+           <widget class="QLabel" name="label_37">
+            <property name="text">
+             <string>(DEC)</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="4">
+           <widget class="QLabel" name="label_38">
+            <property name="text">
+             <string>(HEX)</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="4">
+           <widget class="QLabel" name="label_39">
+            <property name="text">
+             <string>(DEC)</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="4">
+           <widget class="QLabel" name="label_40">
+            <property name="text">
+             <string>(HEX)</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="4">
+           <widget class="QLabel" name="label_41">
+            <property name="text">
+             <string>(DEC)</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>

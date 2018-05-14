@@ -28,7 +28,3 @@ SOURCES += \
 
 HEADERS += \
         instserver.h
-unix {
-    target.path = /usr/lib
-    INSTALLS += target
-}

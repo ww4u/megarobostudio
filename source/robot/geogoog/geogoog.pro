@@ -30,7 +30,4 @@ SOURCES += \
 
 HEADERS += \
         robogeogoog.h
-unix {
-    target.path = /usr/lib
-    INSTALLS += target
-}
+

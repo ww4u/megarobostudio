@@ -5,7 +5,17 @@ CONFIG += static
 
 TARGET = ../../../../lib/pvt
 
+win32 {
 INCLUDEPATH += "D:/Program Files (x86)/IAR Systems/Embedded Workbench 7.5/arm/CMSIS/Include"
+}
+unix{
+INCLUDEPATH += "/home/w/work/megarobostudio/arm/include"
+}
+
+macx{
+INCLUDEPATH += "/home/w/work/megarobostudio/arm/include"
+}
+
 INCLUDEPATH += ./GelgoogProject/APP/Sources/Common
 INCLUDEPATH += ./GelgoogProject/APP/Sources
 INCLUDEPATH += ./GelgoogProject/BSP/BSP

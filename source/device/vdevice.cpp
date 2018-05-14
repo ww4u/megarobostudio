@@ -1,5 +1,5 @@
 
-#include "..\..\include\datatype.h"
+#include "../../include/datatype.h"
 #include "vdevice.h"
 
 namespace MegaDevice 

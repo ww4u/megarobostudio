@@ -3,7 +3,7 @@
 #define _DEVICE_MRQ_H_
 
 #include "../../../include/mcstd.h"
-#include "../VDevice.h"
+#include "../vdevice.h"
 #include "../board/MRQ.h"
 #include "../motor/motor.h"
 

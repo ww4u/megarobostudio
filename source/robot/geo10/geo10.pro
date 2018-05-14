@@ -30,7 +30,3 @@ SOURCES += \
 
 HEADERS += \
         robogeo10.h
-unix {
-    target.path = /usr/lib
-    INSTALLS += target
-}

@@ -564,13 +564,14 @@ void MainWindow::on_itemXActivated( mcModelObj *pObj )
     if ( NULL == pObj )
     { return; }
 
-    logDbg()<<QString::number( (quint32)pObj, 16 );
+//    logDbg()<<QString::number( (quint32)pObj, 16 );
 
     //! find view
     modelView *pView = findView( pObj );logDbg();
 //    modelView *pView = NULL;
     if ( NULL != pView )
-    {logDbg()<<QString::number( (quint32)pView, 16 );
+    {
+//        logDbg()<<QString::number( (quint32)pView, 16 );
 
         int index;
         index = ui->widget->indexOf( pView );

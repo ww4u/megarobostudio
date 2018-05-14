@@ -30,7 +30,4 @@ SOURCES += \
 
 HEADERS += \
         roboquebeley.h
-unix {
-    target.path = /usr/lib
-    INSTALLS += target
-}
+

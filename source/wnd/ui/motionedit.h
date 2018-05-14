@@ -12,7 +12,7 @@
 #include "../../arith/sinanju_split/sinanju_split.h"
 
 #include "tableedit.h"
-#include "roboAxes.h"
+#include "roboaxes.h"
 #include "tpvplot.h"
 
 #include "../ui/progressgroup.h"

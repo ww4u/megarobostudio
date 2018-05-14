@@ -2,7 +2,7 @@
 #ifndef _IBUS_H_
 #define _IBUS_H_
 
-#include "..\..\include\datatype.h"
+#include "../../include/datatype.h"
 #include <QtCore>
 
 #include "deviceid.h"
@@ -51,6 +51,7 @@ protected:
     int mRdTmo;           //! us -- read timeout
     int mRdTick;          //! us -- cache read
     int mRdInterval;      //! us -- bus read
+    int mRecvTmo;         //! ms
 
     int mEnumerateTmo;    //! us -- enumerate timeout
 
@@ -137,6 +138,11 @@ public :
         if ( us > 0 )
         { QThread::usleep(us); }
     }
+
+    void setRecvTmo( int tmo )
+    { mRecvTmo = tmo; }
+    int recvTmo()
+    { return mRecvTmo; }
 
     void setRdTmo(int tmo)
     { mRdTmo = tmo; }

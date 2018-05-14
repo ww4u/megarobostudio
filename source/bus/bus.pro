@@ -8,8 +8,6 @@ CONFIG += static
 
 
 INCLUDEPATH += ../scpi-parser/libscpi/inc
-#INCLUDEPATH += "C:\Program Files (x86)\IVI Foundation\VISA\WinNT\Include"
-#INCLUDEPATH += "G:\work\lib\MRGateWay_PC\MegaCanDevice_VC"
 
 TARGET = ../../../lib/bus
 

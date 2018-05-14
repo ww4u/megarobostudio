@@ -141,7 +141,7 @@ void tpvPlot::on_btnZoomOut_clicked()
 {
     //! dump file
     QString name = ui->tabWidget->tabText( ui->tabWidget->currentIndex() );
-    QString fileName = mDumpDir + QDir::separator() + "@" + name + "@" + QString::number( (quint32)this, 16 );
+    QString fileName = mDumpDir + QDir::separator() + "@" + name + "@" + QString::number( rand(), 16 );
 
     NameCache *pCache = findCache( name );
     if ( NULL == pCache )

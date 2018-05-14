@@ -7,7 +7,9 @@
 
 #include "../widget/megamessagebox.h"
 
+#ifdef NI_VISA
 #include "visa.h"
+#endif
 
 sysPref::sysPref(QWidget *parent) :
     QDialog(parent),
@@ -64,6 +66,7 @@ void sysPref::updateUi()
     ui->listMRTs->addItems( mPref.mVisaList );
 
     ui->spinTmo->setValue( mPref.mTimeout );
+    ui->spinRecvTmo->setValue( mPref.mRecvTmo );
     ui->spinInterval->setValue( mPref.mInterval );
 
     ui->spinFailTry->setValue( mPref.mFailTryCnt );
@@ -130,6 +133,7 @@ void sysPref::updateData()
     { mPref.mVisaList.append( ui->listMRTs->item(i)->text() ); }
 
     mPref.mTimeout = ui->spinTmo->value();
+    mPref.mRecvTmo = ui->spinRecvTmo->value();
     mPref.mInterval = ui->spinInterval->value();
     mPref.mFailTryCnt = ui->spinFailTry->value();
     mPref.mEnumerateTimeout = ui->spinEnumTmo->value();
@@ -243,6 +247,7 @@ bool sysPref::updateValidateEn()
 
 bool sysPref::validateVisaRsrc( QString &strIdn )
 {
+#ifdef NI_VISA
     ViStatus stat;
     ViSession viDef, viSes;
 
@@ -278,7 +283,7 @@ bool sysPref::validateVisaRsrc( QString &strIdn )
     stat = viClose( viDef );
     if ( stat != VI_SUCCESS )
     { return false; }
-
+#endif
     return true;
 }
 

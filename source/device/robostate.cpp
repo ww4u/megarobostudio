@@ -13,7 +13,7 @@ RoboStateCondition::RoboStateCondition( int axes, int stat )
 
 void RoboStateCondition::trigger( void *pPara )
 {
-    int stat = int(pPara);
+    int stat = (int)(UINT_PTR)(pPara);
 
     if ( stat == mState )
     { mSema.release();logDbg()<<stat; }

@@ -382,6 +382,10 @@ int receiveCache::readAFrame( MegaDevice::DeviceId &nodeId,
     frameHouse *pHouse;
     Q_ASSERT( NULL != m_pBus );
     logDbg()<<tmous<<m_pBus->rdTick()<<nodeId.sendId()<<tmous;
+
+    QThread::usleep( 100 );     //! wait a little
+    int loopCount = 0;
+
     do
     {
         do
@@ -399,7 +403,7 @@ int receiveCache::readAFrame( MegaDevice::DeviceId &nodeId,
                 frameData ary;
                 ary = pHouse->dequeue();
                 pHouse->unlock();
-logDbg();
+logDbg()<<loopCount;
                 *pFrameId = ary.frameId();
                 memcpy( pBuf, ary.data(), ary.length() );
 
@@ -417,9 +421,9 @@ logDbg();
         tmous -= m_pBus->rdTick();
         m_pBus->wait_us( m_pBus->rdTick() );
 
-
+        loopCount++;
     }while( tmous > 0 );
-logDbg()<<pHouse->size()<<pHouse->sendId()<<nodeId.sendId()<<QThread::currentThreadId();
+logDbg()<<pHouse->size()<<pHouse->sendId()<<nodeId.sendId()<<QThread::currentThreadId()<<loopCount;
     return ret;
 }
 

@@ -3,7 +3,7 @@
 
 #include "../../com/comassist.h"
 
-#define peri_unit   0.001f
+//#define peri_unit   0.001f
 
 MrqTrigPage::MrqTrigPage(QWidget *parent) :
     mrqView(parent),
@@ -12,10 +12,21 @@ MrqTrigPage::MrqTrigPage(QWidget *parent) :
     ui->setupUi(this);
 
     //! sub chans
-    mTrigChans.append( ui->tabLeft );
-    mTrigChans.append( ui->tabRight );
+//    mTrigChans.append( ui->tabLeft );
+//    mTrigChans.append( ui->tabRight );
 
-    spyEdited();
+//    MrqTrigChan *pTrigChan;
+//    for ( int i = 0; i < 5; i++ )
+//    {
+//        pTrigChan = new MrqTrigChan();
+//        Q_ASSERT( NULL != pTrigChan );
+
+//        mTrigChans.append( pTrigChan );
+
+//        ui->tabWidget->addTab( pTrigChan, QString("TRIG%1").arg(i+1) );
+//    }
+
+//    spyEdited();
 }
 
 MrqTrigPage::~MrqTrigPage()
@@ -30,7 +41,28 @@ int MrqTrigPage::setApply()
 
 void MrqTrigPage::modelChanged()
 {
-    updateUi();logDbg();
+    //! the first time
+    if ( mTrigChans.size() < 1 )
+    {
+        //! trig chan
+        Q_ASSERT( NULL != m_pMrqModel );
+        MrqTrigChan *pTrigChan;
+        for ( int i = 0; i < m_pMrqModel->trigSrcs(); i++ )
+        {
+            pTrigChan = new MrqTrigChan();
+            Q_ASSERT( NULL != pTrigChan );
+
+            mTrigChans.append( pTrigChan );
+
+            Q_ASSERT(  mAxesId < m_pMrqModel->axes() );
+            ui->tabWidget->addTab( pTrigChan,
+                                   m_pMrqModel->trigSrcAlias( mAxesId, i ) );
+        }
+
+        spyEdited();
+    }
+
+    updateUi();
 }
 
 int MrqTrigPage::apply()
@@ -46,7 +78,7 @@ int MrqTrigPage::apply()
 
     for ( int i = 0; i < mTrigChans.size(); i++ )
     {
-        Q_ASSERT( i <= MRQ_TRIGGER_LEVELSTATE_TRIGR );
+        Q_ASSERT( i <= MRQ_TRIGGER_LEVELSTATE_TRIG5 );
 
         mTrigChans.at(i)->getConfig( levelConifg, pattConfig );
 
@@ -64,7 +96,7 @@ int MrqTrigPage::apply()
 
         pDevice->setTRIGGER_LEVELSPERIOD( mAxesId,
                                         (MRQ_TRIGGER_LEVELSTATE)i,
-                                        comAssist::align( levelConifg.mPeriod, peri_unit) );
+                                         levelConifg.mPeriod );
 
         //! \todo patt
     }
@@ -74,8 +106,10 @@ int MrqTrigPage::apply()
 
 void MrqTrigPage::spyEdited()
 {
-    LINK_MODIFIED( ui->tabLeft );
-    LINK_MODIFIED( ui->tabRight );
+    foreach( MrqTrigChan *pPage, mTrigChans )
+    {
+        LINK_MODIFIED( pPage );
+    }
 }
 
 int MrqTrigPage::updateUi()
@@ -91,7 +125,8 @@ int MrqTrigPage::updateUi()
     trigLevelConfig levelConifg;
     trigPatternConfig pattConfig;
 
-    ui->comboBox->setCurrentIndex( pModel->mTRIGGER_MODE[mAxesId] );
+    //! \todo only pattern
+//    ui->comboBox->setCurrentIndex( pModel->mTRIGGER_MODE[mAxesId] );
 
     for ( int i = 0; i < mTrigChans.size(); i++ )
     {
@@ -100,7 +135,7 @@ int MrqTrigPage::updateUi()
         levelConifg.mbOnOff = pModel->mTRIGGER_LEVELSTATE[ mAxesId ][ i ];
         levelConifg.mTypeIndex = pModel->mTRIGGER_LEVELTYPE[ mAxesId ][ i ];
         levelConifg.mRespIndex = pModel->mTRIGGER_LEVELRESP[ mAxesId ][ i ];
-        levelConifg.mPeriod = pModel->mTRIGGER_LEVELSPERIOD[ mAxesId ][ i ] * peri_unit;
+        levelConifg.mPeriod = pModel->mTRIGGER_LEVELSPERIOD[ mAxesId ][ i ] /** peri_unit*/;
 
         //! \todo patt config
 
@@ -133,7 +168,7 @@ int MrqTrigPage::updateData()
         pModel->mTRIGGER_LEVELSTATE[ mAxesId ][ i ] = (MRQ_CAN_NETMANAGELED)levelConifg.mbOnOff;
         pModel->mTRIGGER_LEVELTYPE[ mAxesId ][ i ] = (MRQ_TRIGGER_LEVELTYPE_1)levelConifg.mTypeIndex;
         pModel->mTRIGGER_LEVELRESP[ mAxesId ][ i ] = (MRQ_MOTIONPLAN_OOSLINERESPONSE_1)levelConifg.mRespIndex;
-        pModel->mTRIGGER_LEVELSPERIOD[ mAxesId ][ i ] = comAssist::align( levelConifg.mPeriod, peri_unit );
+        pModel->mTRIGGER_LEVELSPERIOD[ mAxesId ][ i ] = levelConifg.mPeriod;
 
         //! \todo patt
     }

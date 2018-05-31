@@ -90,7 +90,8 @@ void mrqInfo::updateUi()
     mTableItems.at(1)->setText( pModel->getDesc() );
     mTableItems.at(3)->setText( pModel->getSN() );
     mTableItems.at(5)->setText( pModel->getHwVer() );
-    mTableItems.at(7)->setText( pModel->getSwVer() );
+//    mTableItems.at(7)->setText( pModel->getSwVer() );
+    mTableItems.at(7)->setText( pModel->getSeqVer() );
 
     mTableItems.at(9)->setText( pModel->getFwVer() );
     mTableItems.at(11)->setText( pModel->getBtVer() );

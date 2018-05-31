@@ -59,7 +59,7 @@ int tpvItem::serialIn_tpv( ImcStream &stream )
 {
     QString str = stream.readLine();
 
-    QStringList strList = str.split( COL_SEP, QString::SkipEmptyParts );
+    QStringList strList = str.split( COL_SEP );
 
     if ( strList.size() > 0 )
     { mValid = strList[0].toFloat(); }
@@ -83,7 +83,7 @@ int tpvItem::serialIn_pvt( ImcStream &stream )
 {
     QString str = stream.readLine();
 
-    QStringList strList = str.split( COL_SEP, QString::SkipEmptyParts );
+    QStringList strList = str.split( COL_SEP );
 
     mValid = true;
 

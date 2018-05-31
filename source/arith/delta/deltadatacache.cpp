@@ -5,18 +5,6 @@ namespace arith_delta {
 
 DeltaDataCache::DeltaDataCache()
 {
-//    m_pPX = NULL;
-//    m_pPY = NULL;
-//    m_pPZ = NULL;
-
-//    m_pVX = NULL;
-//    m_pVY = NULL;
-//    m_pVZ = NULL;
-
-//    m_pAX = NULL;
-//    m_pAY = NULL;
-//    m_pAZ = NULL;
-
     m_pPXYZ = NULL;
     m_pT = NULL;
     m_pV = NULL;
@@ -51,7 +39,11 @@ int DeltaDataCache::alloc( int size )
     if ( NULL == m_pPXYZ )
     { return -1; }
 
-    new_array2( m_pT, m_pV );
+    m_pV = new double[ 3 * size ];
+    if ( NULL == m_pPXYZ )
+    { return -1; }
+
+    new_array( m_pT );
 
     //! output
     m_pOutput = new double[ 5 * size ];
@@ -65,11 +57,40 @@ int DeltaDataCache::alloc( int size )
 
 void DeltaDataCache::clean()
 {
-    mSize = 0;
-
     gc_array3( m_pPXYZ, m_pT, m_pV );
     gc_array( m_pOutput );
+
+    mSize = 0;
 }
 
+DeltaPhaseCache::DeltaPhaseCache()
+{
+    mSize = 0;
+    m_pPhase = NULL;
+}
+
+DeltaPhaseCache::~DeltaPhaseCache()
+{ clean(); }
+
+int DeltaPhaseCache::alloc( int size )
+{
+    Q_ASSERT( size > 0 );
+
+    clean();
+
+    m_pPhase = new double[ size * 2 ];
+    if ( NULL == m_pPhase )
+    { return -1; }
+
+    mSize = size;
+
+    return 0;
+}
+void DeltaPhaseCache::clean()
+{
+    gc_array( m_pPhase );
+
+    mSize = 0;
+}
 
 }

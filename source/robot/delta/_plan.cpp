@@ -2,16 +2,42 @@
 
 #include "../../arith/delta/arith_delta.h"
 
+int robotDelta::verifyTrace( QList<TraceKeyPoint> &curve )
+{
+    //! check size
+    if ( curve.size() < 2 )
+    {
+        sysError( QObject::tr("Invalid data length: less than 2") );
+        return -1;
+    }
+
+    //! check t
+    float t;
+    t = curve.at(0).t;
+    for ( int i = 1; i < curve.size(); i++ )
+    {
+        if ( t >= curve.at(i).t )
+        {
+            sysError( QObject::tr("Invalid time at line:") + QString::number(i) );
+            return -1;
+        }
+
+        t = curve.at(i).t;
+    }
+
+    return 0;
+}
+
 int robotDelta::buildTrace( QList<TraceKeyPoint> &curve,
                 QList<arith_delta::deltaPoint> &jointsPlan )
 {
     int ret;
 
-    xxxGroup<tracePoint> tracePlan;
+    xxxGroup<tracePoint> tracePlan;logDbg()<<curve.size();
     ret = planTrace( curve, tracePlan );
     if ( ret != 0 )
     { return ret; }
-
+logDbg()<<tracePlan.size();
     ret = splitTrace( tracePlan, jointsPlan );
     if ( ret != 0 )
     { return ret; }
@@ -54,12 +80,12 @@ int robotDelta::planTrace( QList<TraceKeyPoint> &curve,
     int xyzResLen;
     int ret = ns_pathplan::GetPointLen( &endPoints.data()->datas,
                                       curve.size(),
-                                      mPlanStep,
-                                      mPlanMode,
+                                      mPlanAttr.mStep,
+                                      mPlanAttr.mMode,
                                       &xyzResLen );
     if ( ret != 0 )
     { return ERR_PLAN_FAIL; }
-
+logDbg()<<curve.size()<<xyzResLen;
     int traceSize;
     traceSize = xyzResLen * sizeof(double) / sizeof(tracePoint);
     if ( traceSize > 1 )
@@ -81,9 +107,9 @@ int robotDelta::planTrace( QList<TraceKeyPoint> &curve,
 int robotDelta::splitTrace( xxxGroup<tracePoint> &tracePoints,
                             QList<arith_delta::deltaPoint> &traceJoints )
 {
-    QList<D4Point> points;
+    QList<arith_delta::D4Point> points;
 
-    D4Point d4Pt;
+    arith_delta::D4Point d4Pt;
     for ( int i = 0; i < tracePoints.size(); i++ )
     {
         d4Pt.t = tracePoints.data()[i].t;
@@ -91,18 +117,26 @@ int robotDelta::splitTrace( xxxGroup<tracePoint> &tracePoints,
         d4Pt.y = tracePoints.data()[i].y;
         d4Pt.z = tracePoints.data()[i].z;
 
+        d4Pt.vx = tracePoints.data()[i].vx;
+        d4Pt.vy = tracePoints.data()[i].vy;
+        d4Pt.vz = tracePoints.data()[i].vz;
+
         points.append( d4Pt );
 
-        logDbg()<<d4Pt.t<<d4Pt.x<<d4Pt.y<<d4Pt.z;
+//        logDbg()<<d4Pt.t<<d4Pt.x<<d4Pt.y<<d4Pt.z<<d4Pt.vx<<d4Pt.vy<<d4Pt.vz;
     }
 
     int ret;
-    ret = arith_delta::slove( points, traceJoints );
+logDbg();
+    ret = arith_delta::ccwSlove( points, traceJoints );
+logDbg();
     return ret;
 }
 
 int robotDelta::convertTrace(  QList<TraceKeyPoint> &curve,
-                               QList<arith_delta::deltaPoint> &jointsPlan )
+                               QList<arith_delta::deltaPoint> &jointsPlan,
+                               QList< tpvGroup *> &gp,
+                               QList< int > &sectionList )
 {
     //! 0.check
     if( jointsPlan.size() > 0 )
@@ -111,10 +145,10 @@ int robotDelta::convertTrace(  QList<TraceKeyPoint> &curve,
     { return ERR_NO_TPV_DATA; }
 
     int ret;
-    delete_all( mJointsGroup );
+    delete_all( gp );
 
-    //! 0~2
-    ret = buildTpvGroup( jointsPlan, mJointsGroup );
+    //! 0~1
+    ret = buildTpvGroup( curve, jointsPlan, gp );
     if ( ret != 0 )
     { return ret; }
 
@@ -134,7 +168,11 @@ int robotDelta::convertTrace(  QList<TraceKeyPoint> &curve,
         }
     }
 
-    mJointsGroup.append( pGroup );
+    gp.append( pGroup );
+
+    //! sections
+    //! x,z,y,h
+    sectionList<<0<<2<<2<<2;
 
 //    //! log joint group
 //    foreach ( tpvGroup *pGp, mJointsGroup )
@@ -149,19 +187,20 @@ int robotDelta::convertTrace(  QList<TraceKeyPoint> &curve,
     return 0;
 }
 
-int robotDelta::buildTpvGroup( QList<arith_delta::deltaPoint> &jointsPlan,
+int robotDelta::buildTpvGroup( QList<TraceKeyPoint> &curve,
+                               QList<arith_delta::deltaPoint> &jointsPlan,
                                QList< tpvGroup *> &jointsGroup )
 {
     //! create each joints group
     delete_all( jointsGroup );
 
     int ret;
-    //! for each axis
-    for ( int i = 0; i < 3; i++ )
+    //! for x,z
+    for ( int i = 0; i < 2; i++ )
     {
         tpvGroup *pGroup = new tpvGroup();
         Q_ASSERT( NULL != pGroup );
-
+logDbg()<<jointsPlan.size();
         //! for each data
         for ( int j = 0; j < jointsPlan.size(); j++ )
         {
@@ -179,6 +218,23 @@ int robotDelta::buildTpvGroup( QList<arith_delta::deltaPoint> &jointsPlan,
 
         jointsGroup.append( pGroup );
     }
+
+    //! for y
+    tpvGroup *pGroup = new tpvGroup();
+    Q_ASSERT( NULL != pGroup );
+
+    for ( int i = 0; i < curve.size(); i++ )
+    {
+        ret = pGroup->addItem( curve.at(i).t,
+                               curve.at(i).y,
+                               0 );
+        if ( ret != 0 )
+        {
+            delete_all( jointsGroup );
+            return ret;
+        }
+    }
+    jointsGroup.append( pGroup );
 
     return 0;
 }

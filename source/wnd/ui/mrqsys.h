@@ -29,8 +29,12 @@ protected:
     int apply();
     int updateUi();
 
+    void adaptUi();
+
 private slots:
     void on_chkLed_clicked(bool checked);
+
+    void on_edtAlias_textEdited(const QString &arg1);
 
 private:
     Ui::mrqSys *ui;

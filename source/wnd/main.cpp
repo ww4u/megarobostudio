@@ -224,7 +224,28 @@ int main(int argc, char *argv[])
         pref.load( pref_file_name );
         if ( pref.mLangIndex != 0 )
         {
-            if ( translator.load( QLocale(),
+            QLocale::Language lang;
+            QLocale::Country area;
+            if ( pref.mLangIndex == 1 )
+            {
+                lang = QLocale::Chinese;
+                area = QLocale::China;
+            }
+            else if ( pref.mLangIndex == 2 )
+            {
+                lang = QLocale::Chinese;
+                area = QLocale::Taiwan;
+            }
+            else
+            {
+                lang = QLocale::AnyLanguage;
+                area = QLocale::AnyCountry;
+            }
+
+            QLocale local( lang, area );
+            local.setDefault( QLocale( QLocale::English) );
+
+            if ( translator.load( local,
                                   QLatin1String("megarobostudio"),
                                   QLatin1String("_"),
                                   a.applicationDirPath() + "/translate"

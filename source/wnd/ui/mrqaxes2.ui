@@ -58,49 +58,24 @@
       <item>
        <widget class="QGroupBox" name="gb_tuning">
         <property name="title">
-         <string>Tuning</string>
+         <string>Motion</string>
         </property>
         <layout class="QGridLayout" name="gridLayout">
-         <item row="2" column="0">
-          <widget class="QLabel" name="label_23">
-           <property name="minimumSize">
-            <size>
-             <width>64</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>Time Duty</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="3">
-          <spacer name="horizontalSpacer">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item row="0" column="0">
-          <widget class="QLabel" name="label_22">
-           <property name="minimumSize">
-            <size>
-             <width>64</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>Mode</string>
-           </property>
-          </widget>
-         </item>
          <item row="0" column="1" colspan="2">
+          <widget class="QComboBox" name="cmbExecMode">
+           <item>
+            <property name="text">
+             <string>CYCLE</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>FIFO</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item row="1" column="1" colspan="2">
           <widget class="QComboBox" name="cmbTuneMode">
            <property name="minimumSize">
             <size>
@@ -115,14 +90,105 @@
            </item>
            <item>
             <property name="text">
-             <string>无时间LVT</string>
+             <string>No Time LVT</string>
             </property>
            </item>
            <item>
             <property name="text">
-             <string>有时间LVT</string>
+             <string>With Time LVT</string>
             </property>
            </item>
+          </widget>
+         </item>
+         <item row="1" column="4">
+          <spacer name="horizontalSpacer">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="label_22">
+           <property name="minimumSize">
+            <size>
+             <width>64</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>Mode</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="1" colspan="2">
+          <widget class="ValueComboBox" name="cmbPlanMode"/>
+         </item>
+         <item row="3" column="0">
+          <widget class="QLabel" name="label_9">
+           <property name="text">
+            <string>Plan Mode</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0">
+          <widget class="QLabel" name="label_4">
+           <property name="text">
+            <string>Execute Mode</string>
+           </property>
+          </widget>
+         </item>
+         <item row="6" column="0">
+          <widget class="QLabel" name="label_6">
+           <property name="text">
+            <string>End State</string>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="0">
+          <widget class="QLabel" name="label_5">
+           <property name="text">
+            <string>Warn Point</string>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="1" colspan="2">
+          <widget class="QSpinBox" name="spinWarnPoint">
+           <property name="maximum">
+            <number>255</number>
+           </property>
+          </widget>
+         </item>
+         <item row="6" column="1" colspan="2">
+          <widget class="QComboBox" name="cmbEndState">
+           <item>
+            <property name="text">
+             <string>STOP</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>HOLD</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="label_23">
+           <property name="minimumSize">
+            <size>
+             <width>64</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>Time Duty</string>
+           </property>
           </widget>
          </item>
          <item row="2" column="1" colspan="2">
@@ -152,119 +218,52 @@
            </item>
           </widget>
          </item>
-         <item row="3" column="0">
-          <widget class="QLabel" name="label_24">
-           <property name="minimumSize">
-            <size>
-             <width>64</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>Feedback</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="label_9">
-           <property name="text">
-            <string>Plan Mode</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1" colspan="2">
-          <widget class="ValueComboBox" name="cmbPlanMode"/>
-         </item>
-         <item row="3" column="1" colspan="2">
-          <widget class="QDoubleSpinBox" name="spinFeedback">
-           <property name="minimum">
-            <double>1.000000000000000</double>
-           </property>
-           <property name="maximum">
-            <double>128.000000000000000</double>
-           </property>
-          </widget>
-         </item>
         </layout>
        </widget>
       </item>
       <item>
-       <widget class="QGroupBox" name="groupBox_2">
+       <widget class="QGroupBox" name="gpSAcc">
         <property name="title">
-         <string>Default Position</string>
+         <string>S Acc.</string>
         </property>
         <layout class="QGridLayout" name="gridLayout_4">
-         <item row="0" column="0">
-          <widget class="QLabel" name="label_4">
-           <property name="text">
-            <string>Unit</string>
+         <item row="2" column="1">
+          <widget class="QDoubleSpinBox" name="spinSDec">
+           <property name="minimum">
+            <double>0.100000000000000</double>
+           </property>
+           <property name="maximum">
+            <double>0.500000000000000</double>
+           </property>
+           <property name="singleStep">
+            <double>0.100000000000000</double>
            </property>
           </widget>
          </item>
          <item row="0" column="1">
-          <widget class="QComboBox" name="cmbInitUnit">
-           <item>
-            <property name="text">
-             <string>Angle</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Radian</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>mm</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>IO</string>
-            </property>
-           </item>
+          <widget class="QDoubleSpinBox" name="spinSAcc">
+           <property name="minimum">
+            <double>0.100000000000000</double>
+           </property>
+           <property name="maximum">
+            <double>0.500000000000000</double>
+           </property>
+           <property name="singleStep">
+            <double>0.100000000000000</double>
+           </property>
           </widget>
          </item>
-         <item row="2" column="1">
-          <widget class="QComboBox" name="cmbInitIO">
-           <item>
-            <property name="text">
-             <string>TRIG1</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>TRIG2</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>TRIG3</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>TRIG4</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>TRIG5</string>
-            </property>
-           </item>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="label_5">
+         <item row="0" column="0">
+          <widget class="QLabel" name="label_10">
            <property name="text">
-            <string>Position</string>
+            <string>Acc Scale</string>
            </property>
           </widget>
          </item>
          <item row="2" column="0">
-          <widget class="QLabel" name="label_6">
+          <widget class="QLabel" name="label_11">
            <property name="text">
-            <string>IO</string>
+            <string>Dec Scale</string>
            </property>
           </widget>
          </item>
@@ -281,18 +280,82 @@
            </property>
           </spacer>
          </item>
-         <item row="3" column="0" colspan="2">
-          <widget class="QPushButton" name="btnInitZero">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QGroupBox" name="groupBox">
+        <property name="title">
+         <string>Emergency Stop</string>
+        </property>
+        <layout class="QGridLayout" name="gridLayout_3">
+         <item row="1" column="0">
+          <widget class="QLabel" name="label_2">
            <property name="text">
-            <string>To Default</string>
+            <string>Distance</string>
            </property>
           </widget>
          </item>
+         <item row="0" column="0">
+          <widget class="QLabel" name="label">
+           <property name="text">
+            <string>Mode</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="label_3">
+           <property name="text">
+            <string>Time</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QDoubleSpinBox" name="spinStopTime">
+           <property name="minimum">
+            <double>0.010000000000000</double>
+           </property>
+           <property name="maximum">
+            <double>10000.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QComboBox" name="cmbStopMode">
+           <item>
+            <property name="text">
+             <string>Immediately</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Delay</string>
+            </property>
+           </item>
+          </widget>
+         </item>
          <item row="1" column="1">
-          <widget class="QDoubleSpinBox" name="spinInitPosition"/>
+          <widget class="QDoubleSpinBox" name="spinStopDistance">
+           <property name="minimum">
+            <double>0.010000000000000</double>
+           </property>
+           <property name="maximum">
+            <double>1000.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="2">
+          <spacer name="horizontalSpacer_3">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
          </item>
         </layout>
        </widget>
@@ -315,13 +378,6 @@
             </size>
            </property>
           </spacer>
-         </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="label_8">
-           <property name="text">
-            <string>Line response</string>
-           </property>
-          </widget>
          </item>
          <item row="2" column="1">
           <widget class="QComboBox" name="cmbLineResponse">
@@ -354,10 +410,20 @@
            </property>
           </widget>
          </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="label_8">
+           <property name="text">
+            <string>Line response</string>
+           </property>
+          </widget>
+         </item>
          <item row="1" column="1">
           <widget class="QSpinBox" name="spinOutOfLine">
+           <property name="minimum">
+            <number>1</number>
+           </property>
            <property name="maximum">
-            <number>10000000</number>
+            <number>65535</number>
            </property>
           </widget>
          </item>
@@ -367,69 +433,6 @@
             <string>ON/OFF</string>
            </property>
           </widget>
-         </item>
-        </layout>
-       </widget>
-      </item>
-      <item>
-       <widget class="QGroupBox" name="groupBox">
-        <property name="title">
-         <string>Emergency Stop</string>
-        </property>
-        <layout class="QGridLayout" name="gridLayout_3">
-         <item row="0" column="0">
-          <widget class="QLabel" name="label">
-           <property name="text">
-            <string>Mode</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="label_2">
-           <property name="text">
-            <string>Distance</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QComboBox" name="cmbStopMode">
-           <item>
-            <property name="text">
-             <string>Immediately</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Delay</string>
-            </property>
-           </item>
-          </widget>
-         </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="label_3">
-           <property name="text">
-            <string>Time</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="2">
-          <spacer name="horizontalSpacer_3">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item row="1" column="1">
-          <widget class="QDoubleSpinBox" name="spinStopDistance"/>
-         </item>
-         <item row="2" column="1">
-          <widget class="QDoubleSpinBox" name="spinStopTime"/>
          </item>
         </layout>
        </widget>

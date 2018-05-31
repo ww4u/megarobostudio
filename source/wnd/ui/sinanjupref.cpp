@@ -182,6 +182,12 @@ void SinanjuPref::on_btnGoZero_clicked()
     VRobot *pBase = ( VRobot *)m_pModelObj;
     Q_ASSERT( NULL != pBase );
 
+    if ( !pBase->checkLink() )
+    {
+        sysPrompt( tr("Invalid link") );
+        return ;
+    }
+
     MegaZeroAffirmMessageBox msgBox;
     int ret = msgBox.exec();
     if ( ret == QMessageBox::Ok )
@@ -196,6 +202,12 @@ void SinanjuPref::on_btnZeroHand_clicked()
     VRobot *pBase = ( VRobot *)m_pModelObj;
     Q_ASSERT( NULL != pBase );
 
+    if ( !pBase->checkLink() )
+    {
+        sysPrompt( tr("Invalid link") );
+        return ;
+    }
+
     MegaZeroAffirmMessageBox msgBox;
     int ret = msgBox.exec();
     if ( ret == QMessageBox::Ok )
@@ -209,6 +221,12 @@ void SinanjuPref::on_btnUploadZero_clicked()
     Q_ASSERT( m_pModelObj != NULL );
     VRobot *pBase = ( VRobot *)m_pModelObj;
     Q_ASSERT( NULL != pBase );
+
+    if ( !pBase->checkLink() )
+    {
+        sysPrompt( tr("Invalid link") );
+        return ;
+    }
 
     if ( pBase->checkZeroValid() )
     {}

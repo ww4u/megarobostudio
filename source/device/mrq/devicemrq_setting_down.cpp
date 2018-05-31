@@ -8,11 +8,15 @@
 namespace MegaDevice
 {
 
+
+#define MRQ_PROGRESS_DOWN( prog, info )      MRQ_PROGRESS( prog, info );\
+                                    QThread::msleep( 50 );
+
 int deviceMRQ::_applySetting()
 {
     int ret=-1;
 
-MRQ_PROGRESS( 0, ("LINK") );
+MRQ_PROGRESS_DOWN( 0, ("LINK") );
 
     checked_call( setLINK_INTFC(mLINK_INTFC) );
     checked_call( setSYSTEM_WORKMODE(mSYSTEM_WORKMODE) );
@@ -86,9 +90,9 @@ MRQ_PROGRESS( 10, ("MOTION") );
 //        checked_call( setMOTION_COUNTCIRCLE( i, mMOTION_COUNTCIRCLE[i]) );
 //        checked_call( setMOTION_ABCOUNT( i, mMOTION_ABCOUNT[i]) );
 //        checked_call( setMOTION_REVMOTION( i, mMOTION_REVMOTION[i]) );
-    }
 
-MRQ_PROGRESS( 20, ("MOTOR") );
+        MRQ_PROGRESS_DOWN( 20, ("MOTOR") );
+    }
 
     checked_call( setIDENTITY_DISTDEVICE( mIDENTITY_DISTDEVICE ) );
     for ( int i = 0; i < axes(); i++ )
@@ -125,9 +129,9 @@ MRQ_PROGRESS( 20, ("MOTOR") );
         checked_call( setENCODER_MULTIPLE( i, mENCODER_MULTIPLE[i]) );
         checked_call( setENCODER_STATE( i, mENCODER_STATE[i]) );
         checked_call( setENCODER_FEEDBACKRATIO( i, mENCODER_FEEDBACKRATIO[i]) );
-    }
 
-MRQ_PROGRESS( 30, ("MOTORPLAN") );
+        MRQ_PROGRESS_DOWN( 30, ("MOTORPLAN") );
+    }
 
     foreach_page()
     {
@@ -164,12 +168,9 @@ MRQ_PROGRESS( 30, ("MOTORPLAN") );
         checked_call( setMOTIONPLAN_OOSTOTALOUTNUM( _i, _axPage, mMOTIONPLAN_OOSTOTALOUTNUM[_i][_j]) );
         checked_call( setMOTIONPLAN_OOSTOTALRESPONSE( _i, _axPage, mMOTIONPLAN_OOSTOTALRESPONSE[_i][_j]) );
 
-        MRQ_PROGRESS( 30 + (_i*regions() + _j)*20/(axes()*regions()) ,
-                  ("MOTORPLAN") );
+        MRQ_PROGRESS_DOWN( 30 + (_i*regions() + _j)*20/(axes()*regions()), ("MOTORPLAN") );
     }
     end_foreach_page()
-
-MRQ_PROGRESS( 50, ("TRIGGER") );
 
     for ( int i = 0; i < axes(); i++ )
     {
@@ -194,7 +195,7 @@ MRQ_PROGRESS( 50, ("TRIGGER") );
         checked_call( setTRIGGER_PATTSMODE( i, mTRIGGER_PATTSMODE[i]) );
         checked_call( setTRIGGER_PATTSPERIOD( i, mTRIGGER_PATTSPERIOD[i]) );
 
-        for( int j = 0; j < 2; j++ )
+        for( int j = 0; j < mTrigSrcs; j++ )
         {
             checked_call( setTRIGGER_LEVELSTATE( i, (MRQ_TRIGGER_LEVELSTATE)j, mTRIGGER_LEVELSTATE[i][j]) );
             checked_call( setTRIGGER_LEVELTYPE( i, (MRQ_TRIGGER_LEVELSTATE)j, mTRIGGER_LEVELTYPE[i][j]) );
@@ -202,6 +203,8 @@ MRQ_PROGRESS( 50, ("TRIGGER") );
             checked_call( setTRIGGER_LEVELSMODE( i, (MRQ_TRIGGER_LEVELSTATE)j, mTRIGGER_LEVELSMODE[i][j]) );
             checked_call( setTRIGGER_LEVELSPERIOD( i, (MRQ_TRIGGER_LEVELSTATE)j, mTRIGGER_LEVELSPERIOD[i][j]) );
         }
+
+        MRQ_PROGRESS_DOWN( 50, ("TRIGGER") );
 
 //        checked_call( setDRIVER_TYPE( i, mDRIVER_TYPE[i]) );
         for( int j = 0; j < 3; j++ )
@@ -218,9 +221,9 @@ MRQ_PROGRESS( 50, ("TRIGGER") );
         checked_call( setDRIVER_IDLECURRENT( i, mDRIVER_IDLECURRENT[i]) );
         checked_call( setDRIVER_SWITCHTIME( i, mDRIVER_SWITCHTIME[i]) );
         checked_call( setDRIVER_MINICURRRATIO( i, mDRIVER_MINICURRRATIO[i]) );
-    }
 
-MRQ_PROGRESS( 60, ("DO") );
+        MRQ_PROGRESS_DOWN( 55, ("DRIVER") );
+    }
 
     for ( int i = 0; i < mDOs; i++ )
     {
@@ -233,9 +236,9 @@ MRQ_PROGRESS( 60, ("DO") );
         checked_call( setDIGITALOUTPUT_CONDITION( (MRQ_DIGITALOUTPUT_STATE)i, mDIGITALOUTPUT_CONDITION[i]) );
         checked_call( setDIGITALOUTPUT_PERIOD( (MRQ_DIGITALOUTPUT_STATE)i, mDIGITALOUTPUT_PERIOD[i]) );
         checked_call( setDIGITALOUTPUT_DUTY( (MRQ_DIGITALOUTPUT_STATE)i, mDIGITALOUTPUT_DUTY[i]) );
-    }
 
-MRQ_PROGRESS( 65, ("ISO") );
+        MRQ_PROGRESS_DOWN( 60, ("DO") );
+    }
 
     for( int i = 0; i < mISOs; i++ )
     {
@@ -244,8 +247,9 @@ MRQ_PROGRESS( 65, ("ISO") );
         checked_call( setISOLATOROUTPUT_SOURCE( (MRQ_ISOLATOROUTPUT_STATE)i, mISOLATOROUTPUT_SOURCE[i]) );
         checked_call( setISOLATOROUTPUT_CONDITION( (MRQ_ISOLATOROUTPUT_STATE)i, mISOLATOROUTPUT_CONDITION[i]) );
         checked_call( setISOLATOROUTPUT_RESPONSE( (MRQ_ISOLATOROUTPUT_STATE)i, mISOLATOROUTPUT_RESPONSE[i]) );
+
+        MRQ_PROGRESS_DOWN( 65, ("ISO") );
     }
-MRQ_PROGRESS( 70, ("SENSOR") );
 
     //! sensor uart
     for ( int i = 0; i < uarts(); i++ )
@@ -267,10 +271,10 @@ MRQ_PROGRESS( 70, ("SENSOR") );
 
             checked_call( setSENSORUART_RECEIVENUM( (MRQ_SENSORUART_BAUD)i, (MRQ_IDENTITY_LABEL_1)j, mSENSORUART_RECEIVENUM[i][j]) );
             checked_call( setSENSORUART_SWITCHTIME( (MRQ_SENSORUART_BAUD)i, (MRQ_IDENTITY_LABEL_1)j, mSENSORUART_SWITCHTIME[i][j]) );
+
+            MRQ_PROGRESS_DOWN( 70, ("SENSOR") );
         }
     }
-
-MRQ_PROGRESS( 75, ("ISI") );
 
     for ( int i = 0; i < mISIs; i++ )
     {
@@ -282,11 +286,13 @@ MRQ_PROGRESS( 75, ("ISI") );
 
         checked_call( setISOLATORIN_SMODE( mISOLATORIN_SMODE ) );
         checked_call( setISOLATORIN_SPERIOD( mISOLATORIN_SPERIOD ) );
+
+        MRQ_PROGRESS_DOWN( 75, ("ISI") );
     }
 
     if ( mAlarms > 0 )
     {
-    MRQ_PROGRESS( 80, ("ENCODER ALARM") );
+    MRQ_PROGRESS_DOWN( 80, ("ENCODER ALARM") );
         for ( int i = 0; i < mAbsEncoderAlarms; i++ )
         {
             checked_call( setABSENCALARM_STATE( (MRQ_IDENTITY_LABEL_1)i,
@@ -305,8 +311,7 @@ MRQ_PROGRESS( 75, ("ISI") );
         checked_call( setABSENCALARM_RESPONSE(
                                             mABSENCALARM_RESPONSE ) );
 
-
-    MRQ_PROGRESS( 85, ("DISTANCE ALARM") );
+    MRQ_PROGRESS_DOWN( 85, ("DISTANCE ALARM") );
         for ( int i = 0; i < mDistanceAlarms; i++ )
         {
             checked_call( setDISTANCEALARM_STATE( (MRQ_IDENTITY_LABEL_1)i,
@@ -318,6 +323,32 @@ MRQ_PROGRESS( 75, ("ISI") );
             checked_call( setDISTANCEALARM_ALARM3DIST( (MRQ_IDENTITY_LABEL_1)i,
                                                 mDISTANCEALARM_ALARM3DIST[i] ) );
         }
+    }
+
+    //! analog input
+    if ( ains() > 0 )
+    {
+        MRQ_PROGRESS_DOWN( 90, ("ANALOG INPUT") );
+        checked_call( setANALOGIN_STATE( mANALOGIN_STATE) );
+
+        checked_call( setANALOGIN_THRESHOLDH( mANALOGIN_THRESHOLDH) );
+        checked_call( setANALOGIN_THRESHOLDL( mANALOGIN_THRESHOLDL) );
+
+        checked_call( setANALOGIN_RESPONSEH( mANALOGIN_RESPONSEH) );
+        checked_call( setANALOGIN_RESPONSEL( mANALOGIN_RESPONSEL) );
+    }
+
+    //! otp
+    if ( temperatures() > 0 )
+    {
+        MRQ_PROGRESS_DOWN( 95, ("OTP") );
+
+        checked_call( setOTP_STATE( mOTP_STATE) );
+
+        checked_call( setOTP_THRESHOLD( mOTP_THRESHOLD) );
+        checked_call( setOTP_RESPONSE( mOTP_RESPONSE) );
+
+        checked_call( setOTP_PERIOD( mOTP_PERIOD ) );
     }
 
 MRQ_PROGRESS_HIDE();

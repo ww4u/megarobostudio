@@ -12,7 +12,7 @@ int robotMegatron::downloadTrace( const tpvRegion &region )
     fsm( region )->setState( MegaDevice::mrq_state_idle );
 
     //! data order:
-    //! x1,y1,z1,x2,y2,z2
+    //! fx ly fz bx ry bz t
     //!
     //! joint id: x1,z1,x2,z2,y1,y2
     //!           fx,fz,bx,bz,ly,ry

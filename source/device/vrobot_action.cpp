@@ -5,7 +5,8 @@
 int VRobot::build( MegaTableModel *pModel,
                    xxxGroup< tracePoint > &tracePlan,
                    xxxGroup< jointsTrace > &jointsPlan,
-                   QList< tpvGroup *> &gp )
+                   QList< tpvGroup *> &gp,
+                   QList< int> &sectionList )
 {
     return -1;
 }

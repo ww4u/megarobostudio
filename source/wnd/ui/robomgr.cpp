@@ -19,6 +19,9 @@ roboMgr::~roboMgr()
     delete ui;
 }
 
+QSize roboMgr::sizeHint() const
+{ return QSize(180,0);}
+
 void roboMgr::setModel( const modelRobotMgr &mgr )
 {
     foreach( QString str, mgr.mRobots )

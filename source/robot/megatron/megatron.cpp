@@ -19,7 +19,7 @@ robotMegatron::robotMegatron()
     mId = robot_megatron;
 
     //! default gpid
-    mCanGroupId = group_id_from + mId - robot_complex;
+    mCanGroupId = group_id_from + (mId - robot_complex)*group_id_from;
 
     setAxes( 6 );
     setAxesDefName( 6 );
@@ -38,6 +38,9 @@ robotMegatron::robotMegatron()
 
     mImage = QImage::fromData( _megaimage, sizeof(_megaimage) );
 
+    mJointZeroCcw.clear();
+    mJointZeroCcw<<true<<true<<true<<true<<true<<true;
+
     //! debug used
     //! alter the axes name
     Q_ASSERT( mAxesConnectionName.size() == 6 );
@@ -51,6 +54,10 @@ robotMegatron::robotMegatron()
     mZeroTime = 5;
     mZeroSpeed = 5;
     mZeroAngle = 100;
+
+    mGapTime = 1;
+    mGapDistance = 10;
+    mGapSpeed = 1;
 }
 
 robotMegatron::~robotMegatron()
@@ -153,23 +160,6 @@ int robotMegatron::stop( const tpvRegion &region  )
     return 0;
 }
 
-int robotMegatron::setLoop( int n, const tpvRegion &region )
-{
-    MegaDevice::deviceMRQ *pMrq;
-    int ax;
-    for ( int i = 0; i < axes(); i++ )
-    {
-        pMrq = jointDevice( i, &ax );
-
-        Q_ASSERT( NULL != pMrq );
-
-        pMrq->setMOTIONPLAN_CYCLENUM( ax,
-                                      (MRQ_MOTION_SWITCH_1)region.page(),
-                                      n );
-    }
-
-    return 0;
-}
 int robotMegatron::loopNow()
 { return 0; }
 

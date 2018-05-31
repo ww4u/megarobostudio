@@ -269,8 +269,11 @@ static value_desc _value_desc_MRQ_TRIGGER_PATTSMODE[] = {
 	{2,"SINGLE",},
 };
 static value_desc _value_desc_MRQ_TRIGGER_LEVELSTATE[] = {
-	{0,"TRIGL",},
-	{1,"TRIGR",},
+	{0,"TRIG1",},
+	{1,"TRIG2",},
+	{2,"TRIG3",},
+	{3,"TRIG4",},
+	{4,"TRIG5",},
 };
 static value_desc _value_desc_MRQ_TRIGGER_LEVELTYPE_1[] = {
 	{0,"RESERVE",},

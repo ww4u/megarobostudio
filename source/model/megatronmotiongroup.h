@@ -32,6 +32,10 @@ public:
 public:
     virtual int save( const QString &fileName );
     virtual int load( const QString &fileName );
+
+public:
+    virtual void reverse();
+
 public:
     QList< MegatronMotionItem *> mItems;
 };

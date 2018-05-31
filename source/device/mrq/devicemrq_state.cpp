@@ -37,7 +37,7 @@ deviceMRQ *MrqFsmContext::Mrq()
 
 void MrqFsmContext::reqRun( bool b )
 {
-    mbRunReqed = b;logWarning()<<b<<QString::number( (UINT_PTR)(&mbRunReqed), 16 );
+    mbRunReqed = b;//logWarning()<<b<<QString::number( (UINT_PTR)(&mbRunReqed), 16 );
 }
 bool MrqFsmContext::runReqed()
 {//logDbg()<<QString::number( (quint32)(&mbRunReqed), 16 );

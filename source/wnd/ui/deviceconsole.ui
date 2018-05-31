@@ -30,45 +30,23 @@
     <number>0</number>
    </property>
    <item row="2" column="0" colspan="2">
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
+    <widget class="QComboBox" name="comboBox">
+     <property name="editable">
+      <bool>true</bool>
+     </property>
      <item>
-      <widget class="QPushButton" name="btnRst">
-       <property name="text">
-        <string>+360</string>
-       </property>
-       <property name="icon">
-        <iconset resource="../res/res.qrc">
-         <normaloff>:/res/image/icon/332.png</normaloff>:/res/image/icon/332.png</iconset>
-       </property>
-      </widget>
+      <property name="text">
+       <string>STATE?</string>
+      </property>
      </item>
      <item>
-      <widget class="QPushButton" name="btnCls">
-       <property name="text">
-        <string>-360</string>
-       </property>
-       <property name="icon">
-        <iconset resource="../res/res.qrc">
-         <normaloff>:/res/image/icon/332.png</normaloff>:/res/image/icon/332.png</iconset>
-       </property>
-      </widget>
+      <property name="text">
+       <string>*IDN?</string>
+      </property>
      </item>
-     <item>
-      <spacer name="horizontalSpacer_3">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-    </layout>
+    </widget>
    </item>
-   <item row="4" column="0" colspan="2">
+   <item row="3" column="0" colspan="2">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <spacer name="horizontalSpacer">
@@ -107,7 +85,7 @@
      </item>
     </layout>
    </item>
-   <item row="7" column="0" colspan="2">
+   <item row="6" column="0" colspan="2">
     <widget class="QListWidget" name="listWidget">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -117,7 +95,7 @@
      </property>
     </widget>
    </item>
-   <item row="9" column="0" colspan="2">
+   <item row="8" column="0" colspan="2">
     <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
       <widget class="QPushButton" name="btnCmdSet">
@@ -154,23 +132,6 @@
       </widget>
      </item>
     </layout>
-   </item>
-   <item row="3" column="0" colspan="2">
-    <widget class="QComboBox" name="comboBox">
-     <property name="editable">
-      <bool>true</bool>
-     </property>
-     <item>
-      <property name="text">
-       <string>STATE?</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>*IDN?</string>
-      </property>
-     </item>
-    </widget>
    </item>
   </layout>
  </widget>

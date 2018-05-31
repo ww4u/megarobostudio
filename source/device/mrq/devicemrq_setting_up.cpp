@@ -196,7 +196,7 @@ MRQ_PROGRESS( 50, ("TRIGGER") );
         checked_call( getTRIGGER_PATTSMODE( i, mTRIGGER_PATTSMODE+i) );
         checked_call( getTRIGGER_PATTSPERIOD( i, mTRIGGER_PATTSPERIOD+i) );
 
-        for( int j = 0; j < 2; j++ )
+        for( int j = 0; j < mTrigSrcs; j++ )
         {
             checked_call( getTRIGGER_LEVELSTATE( i, (MRQ_TRIGGER_LEVELSTATE)j, mTRIGGER_LEVELSTATE[i]+j) );
             checked_call( getTRIGGER_LEVELTYPE( i, (MRQ_TRIGGER_LEVELSTATE)j, mTRIGGER_LEVELTYPE[i]+j) );
@@ -319,6 +319,32 @@ MRQ_PROGRESS( 75, ("ISI") );
             checked_call( getDISTANCEALARM_ALARM3DIST( (MRQ_IDENTITY_LABEL_1)i,
                                                 &mDISTANCEALARM_ALARM3DIST[i] ) );
         }
+    }
+
+    //! analog input
+    if ( ains() > 0 )
+    {
+        MRQ_PROGRESS( 90, ("ANALOG INPUT") );
+        checked_call( getANALOGIN_STATE( &mANALOGIN_STATE) );
+
+        checked_call( getANALOGIN_THRESHOLDH( &mANALOGIN_THRESHOLDH) );
+        checked_call( getANALOGIN_THRESHOLDL( &mANALOGIN_THRESHOLDL) );
+
+        checked_call( getANALOGIN_RESPONSEH( &mANALOGIN_RESPONSEH) );
+        checked_call( getANALOGIN_RESPONSEL( &mANALOGIN_RESPONSEL) );
+    }
+
+    //! otp
+    if ( temperatures() > 0 )
+    {
+        MRQ_PROGRESS( 95, ("OTP") );
+
+        checked_call( getOTP_STATE( &mOTP_STATE) );
+
+        checked_call( getOTP_THRESHOLD( &mOTP_THRESHOLD) );
+        checked_call( getOTP_RESPONSE( &mOTP_RESPONSE) );
+
+        checked_call( getOTP_PERIOD( &mOTP_PERIOD ) );
     }
 
 MRQ_PROGRESS_HIDE();

@@ -24,16 +24,18 @@ typedef unsigned int  CALL (*p_VCI_StartCAN)(unsigned int DeviceType, unsigned i
 typedef unsigned int  CALL (*p_VCI_Transmit)(unsigned int DeviceType, unsigned int DeviceInd, unsigned int CANInd, P_CAN_OBJ pSend, unsigned int Len);
 typedef unsigned int  CALL (*p_VCI_Receive)(unsigned int DeviceType, unsigned int DeviceInd, unsigned int CANInd, P_CAN_OBJ pReceive, unsigned int Len, int WaitTime);
 
+typedef unsigned int  CALL (*p_VCI_Write)(unsigned int DeviceType, unsigned int DeviceInd, char * data, unsigned int Len);
+
 class CANApi
 {
 public:
     CANApi();
     ~CANApi();
-    bool load( QString str );
+    bool load( QString str, int portId );
     void unload();
 
 protected:
-    bool loadApi();
+    bool loadApi( int portId );
 
 public:
     p_VCI_FindDevice find;
@@ -50,8 +52,12 @@ public:
     p_VCI_Transmit transmit;
     p_VCI_Receive receive;
 
+    p_VCI_Write write;
+
 public:
     QLibrary mDll;
+
+    int mPortId;
 };
 
 }

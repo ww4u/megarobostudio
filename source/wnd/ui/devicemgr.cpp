@@ -34,6 +34,9 @@ deviceMgr::~deviceMgr()
     delete ui;
 }
 
+QSize deviceMgr::sizeHint() const
+{ return QSize(200,0);}
+
 void deviceMgr::setMcModel( mcModel *pMcModel )
 {
     modelView::setMcModel( pMcModel );

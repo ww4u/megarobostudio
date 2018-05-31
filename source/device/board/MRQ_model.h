@@ -123,6 +123,9 @@ protected:
     int saveISOi( QXmlStreamWriter &writer );
     int loadISOi( QXmlStreamReader &reader );
 
+    int saveAi( QXmlStreamWriter &writer );
+    int loadAi( QXmlStreamReader &reader );
+
     int saveAngleAlarm( QXmlStreamWriter &writer );
     int loadAngleAlarm( QXmlStreamReader &reader );
 
@@ -134,6 +137,9 @@ protected:
 
     int saveSubDistanceAlarm( int sub, QXmlStreamWriter &writer );
     int loadSubDistanceAlarm( int sub, QXmlStreamReader &reader );
+
+    int saveOtp( QXmlStreamWriter &writer );
+    int loadOtp( QXmlStreamReader &reader );
 
 public:
     void setSignature( quint32 hash );
@@ -149,6 +155,8 @@ public:
     QString getFwVer();
     QString getBtVer();
 
+    QString getSeqVer();
+
 protected:
     QString mDesc;
 
@@ -157,6 +165,7 @@ protected:
     QString mHwVer;
     QString mFwVer;
     QString mBtVer;
+    QString mSeqVer;    //! from ca 02
 
     quint32 mSignature;
 

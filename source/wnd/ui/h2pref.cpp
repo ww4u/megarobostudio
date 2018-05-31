@@ -9,34 +9,13 @@ H2Pref::H2Pref(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    //! checks
-    mBodyChecks.append( ui->chkXBody );
-    mBodyChecks.append( ui->chkYBody );
-
-    mCcwChecks.append( ui->chkXCcw );
-    mCcwChecks.append( ui->chkYCcw );
-
-    foreach( QCheckBox *pCheck, mBodyChecks )
-    {
-        connect( pCheck, SIGNAL(clicked(bool)),
-                 this, SLOT(slot_body_changed()) );
-    }
-    connect( ui->chkAllBody, SIGNAL(clicked(bool)),
-             this, SLOT(slot_body_changed()) );
-
-    foreach( QCheckBox *pCheck, mCcwChecks )
-    {
-        connect( pCheck, SIGNAL(clicked(bool)),
-                 this, SLOT(slot_ccw_changed()) );
-    }
-
-    connect( this, SIGNAL(signal_joint_zero(int,bool)),
-             this, SLOT(slot_joint_zero(int,bool)) );
+    connect( this, SIGNAL(signal_joint_zero(int)),
+             this, SLOT(slot_joint_zero(int)) );
 
 
     //! post change
-    slot_body_changed();
-    slot_ccw_changed();
+//    slot_body_changed();
+//    slot_ccw_changed();
 
     spyEdited();
 }
@@ -80,7 +59,10 @@ void H2Pref::spyEdited()
     QDoubleSpinBox *doubleSpinBoxes[]={
         ui->spinZeroTime,
         ui->spinZeroAngle,
-        ui->spinZeroSpeed,
+//        ui->spinZeroSpeed,
+
+        ui->spinGapTime,
+        ui->spinGapDist,
     };
 
     QComboBox *comboxes[]={
@@ -99,8 +81,10 @@ void H2Pref::updateData()
     robotH2 *pRobo = (robotH2*)pBase;
     Q_ASSERT( NULL != pRobo );
     pRobo->setZeroAttr( ui->spinZeroTime->value(),
-                        ui->spinZeroAngle->value(),
-                        ui->spinZeroSpeed->value() );
+                        ui->spinZeroAngle->value() );
+
+    pRobo->setGap( ui->spinGapTime->value(),
+                   ui->spinGapDist->value() );
 }
 
 void H2Pref::updateUi()
@@ -112,12 +96,16 @@ void H2Pref::updateUi()
     robotH2 *pRobo = (robotH2*)pBase;
     Q_ASSERT( NULL != pRobo );
 
-    double time, angle, speed;
-    pRobo->zeroAttr( time, angle, speed );
+    double time, dist;
+    pRobo->zeroAttr( time, dist );
 
     ui->spinZeroTime->setValue( time );
-    ui->spinZeroAngle->setValue( angle );
-    ui->spinZeroSpeed->setValue( speed );
+    ui->spinZeroAngle->setValue( dist );
+
+    double gapTime, gapDistance;
+    pRobo->gap( gapTime, gapDistance );
+    ui->spinGapTime->setValue( gapTime );
+    ui->spinGapDist->setValue( gapDistance );
 }
 
 void H2Pref::zeroJoint( int jointId, bool bCcw )
@@ -126,82 +114,32 @@ void H2Pref::zeroJoint( int jointId, bool bCcw )
     VRobot *pBase = ( VRobot *)m_pModelObj;
     Q_ASSERT( NULL != pBase );
 
+    if ( !pBase->checkLink() )
+    {
+        sysPrompt( tr("Invalid conection") );
+        return;
+    }
+
     pBase->goZero( jointId, bCcw );
 }
 
-void H2Pref::slot_joint_zero( int jId, bool bccw )
+void H2Pref::slot_joint_zero( int jId )
 {
     MegaZeroAffirmMessageBox msgBox;
     int ret = msgBox.exec();
     if ( ret == QMessageBox::Ok )
-    { zeroJoint( jId, bccw ); }
+    { zeroJoint( jId, false ); }    //! \note no use for joint
 }
 
-void H2Pref::slot_ccw_changed()
-{
-    //! update the all
-    foreach( QCheckBox *pCheck, mCcwChecks )
-    {
-        if ( pCheck->isChecked() )
-        {}
-        else
-        {
-            ui->chkAllCcw->setChecked( false );
-            return;
-        }
-    }
-
-    ui->chkAllCcw->setChecked( true );
-}
-
-void H2Pref::slot_body_changed()
-{
-    int checkCount = 0;
-
-    foreach( QCheckBox *pCheck, mBodyChecks )
-    {
-        if ( pCheck->isChecked() )
-        { checkCount++; }
-        else
-        {}
-    }
-
-    if ( checkCount > 0 )
-    { ui->btnZeroBody->setEnabled(true);}
-    else
-    { ui->btnZeroBody->setEnabled(false);}
-
-    //! all
-    if ( checkCount == mBodyChecks.size() )
-    { ui->chkAllBody->setChecked(true); }
-    else
-    { ui->chkAllBody->setChecked(false); }
-}
-
-void H2Pref::on_chkAllCcw_clicked(bool checked)
-{
-    foreach( QCheckBox *pCheck, mCcwChecks )
-    {
-        pCheck->setChecked( checked );
-    }
-}
-
-void H2Pref::on_chkAllBody_clicked(bool checked)
-{
-    foreach( QCheckBox *pCheck, mBodyChecks )
-    {
-        pCheck->setChecked( checked );
-    }
-}
-#define sig_joint( id, chk )    emit signal_joint_zero( id, ui->chk->isChecked() );
+#define sig_joint( id )    emit signal_joint_zero( id );
 void H2Pref::on_btnZeroX_clicked()
 {
-    sig_joint(0, chkXCcw );
+    sig_joint( 0 );
 }
 
 void H2Pref::on_btnZeroY_clicked()
 {
-    sig_joint(0, chkYCcw );
+    sig_joint(1 );
 }
 
 void H2Pref::on_btnZeroBody_clicked()
@@ -213,23 +151,11 @@ void H2Pref::on_btnZeroBody_clicked()
     else
     { return; }
 
-    QList< int > jointList;
-    QList< bool > ccwList;
-
-    Q_ASSERT( mBodyChecks.size() == mCcwChecks.size() );
-
-    for( int i = 0; i < mBodyChecks.size(); i++ )
-    {
-        if ( mBodyChecks.at(i)->isChecked() )
-        {
-            jointList.append(i);
-            ccwList.append( mCcwChecks.at(i)->isChecked() );
-        }
-    }
-
     Q_ASSERT( m_pModelObj != NULL );
     VRobot *pBase = ( VRobot *)m_pModelObj;
     Q_ASSERT( NULL != pBase );
 
-    pBase->goZero( jointList, ccwList );
+    //! body zero
+    //! x + y
+    pBase->goZero( );
 }

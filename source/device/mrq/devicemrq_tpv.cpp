@@ -263,7 +263,7 @@ int deviceMRQ::pvtWrite( pvt_region,
     { }
     else
     {
-        sysPrompt( QObject::tr("pvt verify fail") );
+        sysPrompt( QObject::tr("pvt verify fail: memory overflow") );
         return ERR_CAN_NOT_RUN;
     }
 
@@ -280,7 +280,42 @@ int deviceMRQ::pvtWrite( pvt_region,
         return ERR_CAN_NOT_RUN;
     }
     // else
+    int ret;
     {
+        //! check end state
+        int lastIndex;
+        if ( len == -1 )
+        { lastIndex = list.size() - 1; }
+        else
+        { lastIndex = from + len - 1; }
+
+        //! check nan
+        Q_ASSERT( !qIsNaN(list.at(lastIndex)->mV) );
+        if ( list.at(lastIndex)->mV != 0 )
+        {
+            ret = setMOTIONPLAN_ENDSTATE( region.axes(),
+                                          (MRQ_MOTION_SWITCH_1)region.page(),
+                                          MRQ_MOTIONPLAN_ENDSTATE_1_HOLD );
+            if ( ret != 0 )
+            { sysError( QObject::tr("end speed keeped fail") ); }
+            else
+            {
+//                sysLog( QString::number( from), QString::number( len ), QString::number( list.size() ) );
+                sysLog( QString::number( list.at(lastIndex)->mV) );
+                sysLog( QObject::tr("end speed keeped") );
+            }
+        }
+        else
+        {
+            ret = setMOTIONPLAN_ENDSTATE( region.axes(),
+                                          (MRQ_MOTION_SWITCH_1)region.page(),
+                                          MRQ_MOTIONPLAN_ENDSTATE_1_STOP );
+            if ( ret != 0 )
+            { sysError( QObject::tr("end speed stoped fail") ); }
+            else
+            {  }
+        }
+
         pLoader->append( list, from, len );
         pLoader->setRegion( region );
         pLoader->start();
@@ -333,6 +368,8 @@ int deviceMRQ::pvtWrite( pvt_region,
                          float dAngle,
                          float endV )
 {
+    Q_ASSERT( dT > 0 );
+
     return pvtWrite( pvt_region_p, 0, 0, dT, dAngle, endV );
 }
 

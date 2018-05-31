@@ -3,8 +3,9 @@
 
 #include "../intf/iserial.h"
 #include "dbmeta.h"
+#include "../para/syspara.h"
 
-class modelSysPref : public ISerial
+class modelSysPref : public SysPara, public ISerial
 {
 public:
     enum enumPort
@@ -32,54 +33,8 @@ public:
     QString& latestPrjName();
 
 public:
-    int mPort;
-    int mSpeed;     //! speed index
-    int mTimeout;
-    int mRecvTmo;
-    int mInterval;  //! for write interval
-    int mTpvInterval;
-    int mFailTryCnt;
-    bool mbAutoAssignId;
-    int mDeviceId;
-    int mDeviceCount;
-
-    QString mVisaAddr;
-    int mVisaTmo;
-    QStringList mVisaList;
-
-    int mEnumerateTimeout;
-    int mSampleTick;
-
-    int mSendIdFrom, mSendIdTo;
-    int mRecvIdFrom, mRecvIdTo;
-    int mGroupIdFrom, mGroupIdTo;
-
-    double mTimeUnit;
-    double mPosUnit;
-    double mVelUnit;
-
-    bool mAutoExpand;
-    QString mDumpPath;      //! absolute path
-
-    bool mbSearchOnOpen;
-    bool mbAutoLoadSetup;
-    bool mbMaximizeStartup;
-    bool mbAutoLoadPrj;
-    bool mbAffirmZero;
-    bool mbAutoStatusView;
-
     dbMeta mDbMeta;
-                            //! misa
-    bool mMisaEn;
-    quint32 mMisaSocket;
-    QString mRemoteDirPath;
 
-                            //! motion
-    int mSpaceResolution;   //! 5mm
-
-                            //! user
-    int mStyleIndex, mLangIndex;
-    QString mLatestPrjPath, mLatestPrjName;
 };
 
 #endif // MODELSYSPREF_H

@@ -88,7 +88,6 @@ void MegatronPref::spyEdited()
     QDoubleSpinBox *doubleSpinBoxes[]={
         ui->spinZeroTime,
         ui->spinZeroAngle,
-        ui->spinZeroSpeed,
     };
 
     QComboBox *comboxes[]={
@@ -107,8 +106,10 @@ void MegatronPref::updateData()
     robotMegatron *pRobo = (robotMegatron*)pBase;
     Q_ASSERT( NULL != pRobo );
     pRobo->setZeroAttr( ui->spinZeroTime->value(),
-                        ui->spinZeroAngle->value(),
-                        ui->spinZeroSpeed->value() );
+                        ui->spinZeroAngle->value() );
+
+    pRobo->setGapAttr( ui->spinGapTime->value(),
+                       ui->spinGapDistance->value() );
 }
 
 void MegatronPref::updateUi()
@@ -120,13 +121,17 @@ void MegatronPref::updateUi()
     robotMegatron *pRobo = (robotMegatron*)pBase;
     Q_ASSERT( NULL != pRobo );
 
-    double time, angle, speed;
-    pRobo->zeroAttr( time, angle, speed );
+    double time, angle;
+    pRobo->zeroAttr( time, angle );
 
     ui->spinZeroTime->setValue( time );
     ui->spinZeroAngle->setValue( angle );
-    ui->spinZeroSpeed->setValue( speed );
+//    ui->spinZeroSpeed->setValue( speed );
 
+    pRobo->gapAttr( time, angle );
+    ui->spinGapTime->setValue( time );
+    ui->spinGapDistance->setValue( angle );
+//    ui->spinGapSpeed->setValue( speed );
 }
 
 void MegatronPref::zeroJoint( int jointId, bool bCcw )

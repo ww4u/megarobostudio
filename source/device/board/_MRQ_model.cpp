@@ -272,8 +272,11 @@ static value_desc _value_desc_MRQ_TRIGGER_PATTSMODE[] = {
 	{2,"SINGLE",},
 };
 static value_desc _value_desc_MRQ_TRIGGER_LEVELSTATE[] = {
-	{0,"TRIGL",},
-	{1,"TRIGR",},
+	{0,"TRIG1",},
+	{1,"TRIG2",},
+	{2,"TRIG3",},
+	{3,"TRIG4",},
+	{4,"TRIG5",},
 };
 static value_desc _value_desc_MRQ_TRIGGER_LEVELTYPE_1[] = {
 	{0,"RESERVE",},
@@ -866,28 +869,28 @@ mTRIGGER_PATTSPERIOD[i0] = (uint32)0;
 
 for ( int i0=0; i0 < 10; i0++ )
 {
-for ( int i1=0; i1 < 2; i1++ )
+for ( int i1=0; i1 < 5; i1++ )
 {
 mTRIGGER_LEVELSTATE[i0][i1] = (MRQ_CAN_NETMANAGELED)0;
 }
 }
 for ( int i0=0; i0 < 10; i0++ )
 {
-for ( int i1=0; i1 < 2; i1++ )
+for ( int i1=0; i1 < 5; i1++ )
 {
 mTRIGGER_LEVELTYPE[i0][i1] = (MRQ_TRIGGER_LEVELTYPE_1)0;
 }
 }
 for ( int i0=0; i0 < 10; i0++ )
 {
-for ( int i1=0; i1 < 2; i1++ )
+for ( int i1=0; i1 < 5; i1++ )
 {
 mTRIGGER_LEVELRESP[i0][i1] = (MRQ_MOTIONPLAN_OOSLINERESPONSE_1)0;
 }
 }
 for ( int i0=0; i0 < 10; i0++ )
 {
-for ( int i1=0; i1 < 2; i1++ )
+for ( int i1=0; i1 < 5; i1++ )
 {
 mTRIGGER_LEVELSMODE[i0][i1] = (MRQ_TRIGGER_PATTSMODE)0;
 }
@@ -895,7 +898,7 @@ mTRIGGER_LEVELSMODE[i0][i1] = (MRQ_TRIGGER_PATTSMODE)0;
 
 for ( int i0=0; i0 < 10; i0++ )
 {
-for ( int i1=0; i1 < 2; i1++ )
+for ( int i1=0; i1 < 5; i1++ )
 {
 mTRIGGER_LEVELSPERIOD[i0][i1] = (f32)0;
 }
@@ -1140,6 +1143,19 @@ for ( int i0=0; i0 < 4; i0++ )
 {
 mDISTANCEALARM_ALARM3DIST[i0] = (uint16)0;
 }
+	mOTP_STATE = (MRQ_CAN_NETMANAGELED)0;
+	mOTP_THRESHOLD = (uint16)0;
+
+	mOTP_RESPONSE = (MRQ_MOTIONPLAN_OOSLINERESPONSE_1)0;
+	mOTP_PERIOD = (uint32)0;
+	mOTP_DATA = (uint32)0;
+	mANALOGIN_STATE = (MRQ_CAN_NETMANAGELED)0;
+
+	mANALOGIN_THRESHOLDH = (f32)0;
+	mANALOGIN_THRESHOLDL = (f32)0;
+	mANALOGIN_RESPONSEH = (MRQ_MOTIONPLAN_OOSLINERESPONSE_1)0;
+	mANALOGIN_RESPONSEL = (MRQ_MOTIONPLAN_OOSLINERESPONSE_1)0;
+
 }
 QString _MRQ_model::toString( MRQ_LINK_INTFC eType )
 {
@@ -2743,6 +2759,15 @@ int _MRQ_model::getMOTION_REVMOTION( byte val0, MRQ_CAN_NETMANAGELED * val1, boo
 	*val1 = mMOTION_REVMOTION[ (int)val0 ];
 	return 0;
 }
+//! U8
+//! [CHANNUM]
+int _MRQ_model::setMOTION_ABCOUNTRESET( byte val0 )
+{
+	//! 21 34
+	int ret=0; 
+
+	return ret;
+}
 //! U8,ENUM,U8
 //! [CHANNUM],GROUP1|GROUP2
 int _MRQ_model::setIDENTITY_GROUP( byte val0
@@ -3986,7 +4011,7 @@ int _MRQ_model::getTRIGGER_PATTSPERIOD( byte val0, uint32 * val1, bool bQuery )
 	return 0;
 }
 //! U8,ENUM,ENUM
-//! [CHANNUM],TRIGL|TRIGR,OFF|ON
+//! [CHANNUM],TRIG1|TRIG2|TRIG3|TRIG4|TRIG5,OFF|ON
 int _MRQ_model::setTRIGGER_LEVELSTATE( byte val0
 ,MRQ_TRIGGER_LEVELSTATE val1
 ,MRQ_CAN_NETMANAGELED val2 )
@@ -3998,7 +4023,7 @@ int _MRQ_model::setTRIGGER_LEVELSTATE( byte val0
 	return ret;
 }
 //! U8,ENUM
-//! [CHANNUM],TRIGL|TRIGR
+//! [CHANNUM],TRIG1|TRIG2|TRIG3|TRIG4|TRIG5,OFF|ON
 int _MRQ_model::getTRIGGER_LEVELSTATE( byte val0
 ,MRQ_TRIGGER_LEVELSTATE val1, MRQ_CAN_NETMANAGELED * val2, bool bQuery )
 {
@@ -4010,7 +4035,7 @@ int _MRQ_model::getTRIGGER_LEVELSTATE( byte val0
 	return 0;
 }
 //! U8,ENUM,ENUM
-//! [CHANNUM],TRIGL|TRIGR,RESERVE|LOW|RISE|FALL|HIGH
+//! [CHANNUM],TRIG1|TRIG2|TRIG3|TRIG4|TRIG5,RESERVE|LOW|RISE|FALL|HIGH
 int _MRQ_model::setTRIGGER_LEVELTYPE( byte val0
 ,MRQ_TRIGGER_LEVELSTATE val1
 ,MRQ_TRIGGER_LEVELTYPE_1 val2 )
@@ -4022,7 +4047,7 @@ int _MRQ_model::setTRIGGER_LEVELTYPE( byte val0
 	return ret;
 }
 //! U8,ENUM
-//! [CHANNUM],TRIGL|TRIGR
+//! [CHANNUM],TRIG1|TRIG2|TRIG3|TRIG4|TRIG5
 int _MRQ_model::getTRIGGER_LEVELTYPE( byte val0
 ,MRQ_TRIGGER_LEVELSTATE val1, MRQ_TRIGGER_LEVELTYPE_1 * val2, bool bQuery )
 {
@@ -4034,7 +4059,7 @@ int _MRQ_model::getTRIGGER_LEVELTYPE( byte val0
 	return 0;
 }
 //! U8,ENUM,ENUM
-//! [CHANNUM],TRIGL|TRIGR,NONE|ALARM|STOP|ALARM&STOP
+//! [CHANNUM],TRIG1|TRIG2|TRIG3|TRIG4|TRIG5,NONE|ALARM|STOP|ALARM&STOP
 int _MRQ_model::setTRIGGER_LEVELRESP( byte val0
 ,MRQ_TRIGGER_LEVELSTATE val1
 ,MRQ_MOTIONPLAN_OOSLINERESPONSE_1 val2 )
@@ -4046,7 +4071,7 @@ int _MRQ_model::setTRIGGER_LEVELRESP( byte val0
 	return ret;
 }
 //! U8,ENUM
-//! [CHANNUM],TRIGL|TRIGR
+//! [CHANNUM],TRIG1|TRIG2|TRIG3|TRIG4|TRIG5
 int _MRQ_model::getTRIGGER_LEVELRESP( byte val0
 ,MRQ_TRIGGER_LEVELSTATE val1, MRQ_MOTIONPLAN_OOSLINERESPONSE_1 * val2, bool bQuery )
 {
@@ -4058,7 +4083,7 @@ int _MRQ_model::getTRIGGER_LEVELRESP( byte val0
 	return 0;
 }
 //! U8,ENUM,ENUM
-//! [CHANNUM],TRIGL|TRIGR,CONTINUED|INTERVAL|SINGLE
+//! [CHANNUM],TRIG1|TRIG2|TRIG3|TRIG4|TRIG5,CONTINUED|INTERVAL|SINGLE
 int _MRQ_model::setTRIGGER_LEVELSMODE( byte val0
 ,MRQ_TRIGGER_LEVELSTATE val1
 ,MRQ_TRIGGER_PATTSMODE val2 )
@@ -4070,7 +4095,7 @@ int _MRQ_model::setTRIGGER_LEVELSMODE( byte val0
 	return ret;
 }
 //! U8,ENUM
-//! [CHANNUM],TRIGL|TRIGR
+//! [CHANNUM],TRIG1|TRIG2|TRIG3|TRIG4|TRIG5
 int _MRQ_model::getTRIGGER_LEVELSMODE( byte val0
 ,MRQ_TRIGGER_LEVELSTATE val1, MRQ_TRIGGER_PATTSMODE * val2, bool bQuery )
 {
@@ -4082,7 +4107,7 @@ int _MRQ_model::getTRIGGER_LEVELSMODE( byte val0
 	return 0;
 }
 //! U8,ENUM,F32
-//! [CHANNUM],TRIGL|TRIGR
+//! [CHANNUM],TRIG1|TRIG2|TRIG3|TRIG4|TRIG5
 int _MRQ_model::setTRIGGER_LEVELSPERIOD( byte val0
 ,MRQ_TRIGGER_LEVELSTATE val1
 ,f32 val2 )
@@ -4094,7 +4119,7 @@ int _MRQ_model::setTRIGGER_LEVELSPERIOD( byte val0
 	return ret;
 }
 //! U8,ENUM
-//! [CHANNUM],TRIGL|TRIGR
+//! [CHANNUM],TRIG1|TRIG2|TRIG3|TRIG4|TRIG5
 int _MRQ_model::getTRIGGER_LEVELSPERIOD( byte val0
 ,MRQ_TRIGGER_LEVELSTATE val1, f32 * val2, bool bQuery )
 {
@@ -5176,6 +5201,206 @@ int _MRQ_model::getDISTANCEALARM_ALARM3DIST( MRQ_IDENTITY_LABEL_1 val0, uint16 *
 
 	uint16 lval0 = 0;
 	*val1 = mDISTANCEALARM_ALARM3DIST[ (int)val0 ];
+	return 0;
+}
+//! ENUM
+//! OFF|ON
+int _MRQ_model::setOTP_STATE( MRQ_CAN_NETMANAGELED val0 )
+{
+	//! 70 0
+	int ret=0; 
+	mOTP_STATE = val0;
+
+	return ret;
+}
+//! 
+//! 
+int _MRQ_model::getOTP_STATE(  MRQ_CAN_NETMANAGELED * val0, bool bQuery )
+{
+	//! 70 1
+	int ret = 0;
+
+	byte lval0 = 0;
+	*val0 = mOTP_STATE;
+	return 0;
+}
+//! U16
+//! 
+int _MRQ_model::setOTP_THRESHOLD( uint16 val0 )
+{
+	//! 70 2
+	int ret=0; 
+	mOTP_THRESHOLD = val0;
+
+	return ret;
+}
+//! 
+//! 
+int _MRQ_model::getOTP_THRESHOLD(  uint16 * val0, bool bQuery )
+{
+	//! 70 3
+	int ret = 0;
+
+	uint16 lval0 = 0;
+	*val0 = mOTP_THRESHOLD;
+	return 0;
+}
+//! ENUM
+//! NONE|ALARM|STOP|ALARM&STOP
+int _MRQ_model::setOTP_RESPONSE( MRQ_MOTIONPLAN_OOSLINERESPONSE_1 val0 )
+{
+	//! 70 4
+	int ret=0; 
+	mOTP_RESPONSE = val0;
+
+	return ret;
+}
+//! 
+//! 
+int _MRQ_model::getOTP_RESPONSE(  MRQ_MOTIONPLAN_OOSLINERESPONSE_1 * val0, bool bQuery )
+{
+	//! 70 5
+	int ret = 0;
+
+	byte lval0 = 0;
+	*val0 = mOTP_RESPONSE;
+	return 0;
+}
+//! U32
+//! 
+int _MRQ_model::setOTP_PERIOD( uint32 val0 )
+{
+	//! 70 6
+	int ret=0; 
+	mOTP_PERIOD = val0;
+
+	return ret;
+}
+//! 
+//! 
+int _MRQ_model::getOTP_PERIOD(  uint32 * val0, bool bQuery )
+{
+	//! 70 7
+	int ret = 0;
+
+	uint32 lval0 = 0;
+	*val0 = mOTP_PERIOD;
+	return 0;
+}
+//! 
+//! 
+int _MRQ_model::getOTP_DATA(  uint32 * val0, bool bQuery )
+{
+	//! 70 8
+	int ret = 0;
+
+	uint32 lval0 = 0;
+	*val0 = mOTP_DATA;
+	return 0;
+}
+//! ENUM
+//! OFF|ON
+int _MRQ_model::setANALOGIN_STATE( MRQ_CAN_NETMANAGELED val0 )
+{
+	//! 71 0
+	int ret=0; 
+	mANALOGIN_STATE = val0;
+
+	return ret;
+}
+//! 
+//! 
+int _MRQ_model::getANALOGIN_STATE(  MRQ_CAN_NETMANAGELED * val0, bool bQuery )
+{
+	//! 71 1
+	int ret = 0;
+
+	byte lval0 = 0;
+	*val0 = mANALOGIN_STATE;
+	return 0;
+}
+//! F32
+//! 
+int _MRQ_model::setANALOGIN_THRESHOLDH( f32 val0 )
+{
+	//! 71 2
+	int ret=0; 
+	mANALOGIN_THRESHOLDH = val0;
+
+	return ret;
+}
+//! 
+//! 
+int _MRQ_model::getANALOGIN_THRESHOLDH(  f32 * val0, bool bQuery )
+{
+	//! 71 3
+	int ret = 0;
+
+	f32 lval0 = 0;
+	*val0 = mANALOGIN_THRESHOLDH;
+	return 0;
+}
+//! F32
+//! 
+int _MRQ_model::setANALOGIN_THRESHOLDL( f32 val0 )
+{
+	//! 71 4
+	int ret=0; 
+	mANALOGIN_THRESHOLDL = val0;
+
+	return ret;
+}
+//! 
+//! 
+int _MRQ_model::getANALOGIN_THRESHOLDL(  f32 * val0, bool bQuery )
+{
+	//! 71 5
+	int ret = 0;
+
+	f32 lval0 = 0;
+	*val0 = mANALOGIN_THRESHOLDL;
+	return 0;
+}
+//! ENUM
+//! NONE|ALARM|STOP|ALARM&STOP
+int _MRQ_model::setANALOGIN_RESPONSEH( MRQ_MOTIONPLAN_OOSLINERESPONSE_1 val0 )
+{
+	//! 71 6
+	int ret=0; 
+	mANALOGIN_RESPONSEH = val0;
+
+	return ret;
+}
+//! 
+//! 
+int _MRQ_model::getANALOGIN_RESPONSEH(  MRQ_MOTIONPLAN_OOSLINERESPONSE_1 * val0, bool bQuery )
+{
+	//! 71 7
+	int ret = 0;
+
+	byte lval0 = 0;
+	*val0 = mANALOGIN_RESPONSEH;
+	return 0;
+}
+//! ENUM
+//! NONE|ALARM|STOP|ALARM&STOP
+int _MRQ_model::setANALOGIN_RESPONSEL( MRQ_MOTIONPLAN_OOSLINERESPONSE_1 val0 )
+{
+	//! 71 8
+	int ret=0; 
+	mANALOGIN_RESPONSEL = val0;
+
+	return ret;
+}
+//! 
+//! 
+int _MRQ_model::getANALOGIN_RESPONSEL(  MRQ_MOTIONPLAN_OOSLINERESPONSE_1 * val0, bool bQuery )
+{
+	//! 71 9
+	int ret = 0;
+
+	byte lval0 = 0;
+	*val0 = mANALOGIN_RESPONSEL;
 	return 0;
 }
 }

@@ -25,22 +25,46 @@ struct endPoint
     union
     {
         struct {
-            float t;
-            float x1,y1,z1;
+            double t;
+            double x,y;
+            double v;
         };
 
-        float datas[4];
+        double datas[4];
     };
 };
 
-int h2Split(  QList< endPoint *> &points,
-                    QList< tpvList*> &splitDataset );
+struct SlovePoint
+{
+    union
+    {
+        struct
+        {
+            double Pxy[2];
+            double Vxy[2];
+            double t;
+        };
+        double datas[5];
+    };
+};
+
+int h2Split( const QList<double> &armLengthes,
+             const QList<double> &zeroXy,
+             QList< endPoint *> &points,
+              QList< tpvList*> &splitDataset );
 int h2Split(
+                    const QList<double> &armLengthes,
+                    const QList<double> &zeroXy,
                     endPoint * pPoints,
                     int n,
                     QList< tpvList*> &splitDataset );
 
 int h2Gc( QList< tpvList*> &splitDataset );
+
+int h2Pose( const QList<double> &armLengthes,
+            const QList<double> &zeroXy,
+            float angleL, float angleR,
+            float &x, float &y );
 }
 
 #endif

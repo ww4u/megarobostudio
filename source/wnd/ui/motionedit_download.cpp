@@ -9,7 +9,7 @@ int motionEdit::postDownload( appMsg msg, void *pPara )
 {
 //    testDownload();
 //    return 0;
-logDbg();
+    //! loop changed
     on_spinLoop_valueChanged( ui->spinLoop->value() );
 
     int ret;
@@ -25,7 +25,8 @@ logDbg();
     { logDbg();return ERR_NO_TPV_DATA; }
 logDbg();
     QList<int> jointTabId;
-    jointTabId<<0<<1<<2<<3<<4;
+    for( int i = 0; i < mJointsTpvGroup.size(); i++ )
+    { jointTabId<<i; }
     ret = doDownload( mJointsTpvGroup, jointTabId );
 logDbg()<<ret;
 

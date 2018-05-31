@@ -11,7 +11,7 @@
 
 #define VALUE_TO_ABS_ANGLE( val )   (quint32)( (val) * ((1<<18)-1) / 360.0f )
 #define VALUE_TO_INC_ANGLE( val )   (quint32)( (val) * ((1<<18)) / 360.0f )
-
+#include "../../bus/canbus.h"
 namespace MegaDevice
 {
 
@@ -34,7 +34,7 @@ deviceMRQ::deviceMRQ()
     //! proxy motor in post ctor
 
     //! \note only a sema for one device
-    mDownloaderSema.release( 1 );
+//    mDownloaderSema.release( 1 );
 }
 
 deviceMRQ::~deviceMRQ()
@@ -71,6 +71,13 @@ deviceMRQ::~deviceMRQ()
         Q_ASSERT( NULL != value );
         delete value;
     }
+
+    //! tasks
+    foreach( MrqTaskThread *pThread, mTaskThread )
+    {
+        Q_ASSERT( NULL != pThread );
+        delete pThread;
+    }
 }
 
 void deviceMRQ::postCtor()
@@ -80,6 +87,7 @@ void deviceMRQ::postCtor()
     MrqFsm *pFsm;
     deviceProxyMotor *pProxyMotor;
     tpvDownloader *pLoader;
+    MrqTaskThread *pTask;
     for ( int i = 0; i < axes(); i++ )
     {
         for ( int j = 0; j < regions(); j++ )
@@ -117,7 +125,15 @@ void deviceMRQ::postCtor()
             pLoader->attachDevice( this, tpvRegion(i,j) );
             mDownloaders.insert( tpvRegion(i,j), pLoader );
         }
+
+        //! foreach axes
+        pTask = new MrqTaskThread();
+        Q_ASSERT( NULL != pTask );
+        mTaskThread.append( pTask );
     }
+
+    //! \note downloader for each axes
+    mDownloaderSema.release( axes() );
 }
 
 MRQ_model *deviceMRQ::getModel()
@@ -189,6 +205,20 @@ QMetaType::Type deviceMRQ::getREPORT_TYPE( MRQ_REPORT_STATE stat )
     }
 
     return QMetaType::UInt;
+}
+
+//!
+#define mc_SEQ      0xca
+#define mc_qVER     0x02
+int deviceMRQ::getSeqVer( quint8 *p1, quint8 *p2, quint8 *p3, quint8 *p4, bool bQuery )
+{
+    int ret = 0;
+
+    ret = m_pBus->read( DEVICE_RECEIVE_ID, mc_SEQ, mc_qVER , p1, p2, p3, p4, bQuery);
+    if ( ret != 0){ log_device(); }
+    if ( ret != 0) return ret;
+
+    return 0;
 }
 
 int deviceMRQ::setFanDuty( int duty )
@@ -420,6 +450,31 @@ int deviceMRQ::preRotate( pvt_region, float t, float ang, float endV )
     return pvtWrite( pvt_region_p, t, ang, endV );
 }
 
+int deviceMRQ::syncRotate( pvt_region, float t, float ang, float endV, int tmo, int tick )
+{
+    //! check angle
+    if ( VRobot::motionPredict( t, ang ) )
+    {}
+    else
+    { return 0; }
+
+    int ret = rotate( region, t, ang, endV );
+    if ( ret != 0 )
+    {
+        sysError( QObject::tr("rotate fail") );
+        return ret;
+    }
+
+    ret = waitFsm( region, mrq_state_idle, tmo, tick );
+    if ( ret != 0 )
+    {
+        sysError( QObject::tr("wait idle fail") );
+        return ret;
+    }
+
+    return 0;
+}
+
 int deviceMRQ::movej( pvt_region, float ang, float t, float angJ, float tj, float endV )
 {
     run( pvt_region_p );
@@ -459,10 +514,146 @@ int deviceMRQ::lightCouplingZero( pvt_region, float t, float angle, float endV )
     return rotate( pvt_region_p, t, angle, endV );
 }
 
-int deviceMRQ::fsmState( pvt_region )
+int deviceMRQ::lightCouplingZero( pvt_region,
+                                  float t, float angle, float endV,
+                                  float invT, float invAngle,
+                                  int tmous, int tickus )
+{
+    Q_ASSERT( mTaskThread.at(region.axes()) != NULL );
+
+    //! check busy
+    if ( mTaskThread.at(region.axes())->isRunning() )
+    {
+        sysError( QObject::tr("busy, can not run") );
+        return -1;
+    }
+
+    //! post do
+    ArgLightCoupZero *pArg = new ArgLightCoupZero();
+    if ( NULL == pArg )
+    { return ERR_ALLOC_FAIL; }
+
+    //! arg
+    pArg->mAx = region.axes();
+    pArg->mPage = region.page();
+
+    pArg->mT = t;
+    pArg->mAngle = angle;
+    pArg->mEndV = endV;
+
+    pArg->mInvT = invT;
+    pArg->mInvAngle = invAngle;
+
+    //! tmo
+    pArg->mTmo = tmous;
+    pArg->mTick = tickus;
+
+    //! request
+    RoboTaskRequest *pReq = new RoboTaskRequest();
+    Q_ASSERT( NULL != pReq );
+
+    pReq->request( this,
+                   (VRobot::apiTaskRequest)(this->taskLightCouplingZero),
+                   pArg );
+
+    //! start the thread
+    mTaskThread.at(region.axes())->setRequest( pReq );
+
+    mTaskThread.at( region.axes())->start();
+
+    return 0;
+}
+
+int deviceMRQ::taskLightCouplingZero( void *pArg )
+{
+    int ret;
+    Q_ASSERT( NULL != pArg );
+
+    ArgLightCoupZero *pLightZero;
+    pLightZero = (ArgLightCoupZero*)pArg;
+
+    ret = 0;
+    do
+    {
+        tpvRegion region( pLightZero->mAx, pLightZero->mPage );
+        //! 1. rotate
+        ret = syncRotate( region,
+                          pLightZero->mT, pLightZero->mAngle, pLightZero->mEndV,
+                          pLightZero->mTmo, pLightZero->mTick );
+        if ( ret != 0 )
+        { break; }
+
+        //! 2. inverse rotate
+        if ( pLightZero->mInvAngle != 0 )
+        {
+            ret = syncRotate( region,
+                              pLightZero->mInvT, pLightZero->mInvAngle, 0,
+                              pLightZero->mTmo, pLightZero->mTick );
+            if ( ret != 0 )
+            { break; }
+        }
+    }while( 0 );
+
+    //! delete the arg
+    delete pLightZero;
+
+    return ret;
+}
+
+int deviceMRQ::fsmState( pvt_region, int iTask )
 {
     Q_ASSERT( mMrqFsms.contains( region ) );
+
+    if ( iTask > 0 )        //! is internal task, real status
+    {
+    }
+    else                    //! not internal task
+    {
+        if ( mTaskThread.at( region.axes() )->isRunning() )
+        { return mrq_state_running; }
+        else
+        {}
+    }
+
     return mMrqFsms[ region ]->state();
+}
+
+//! only for internal task
+int deviceMRQ::waitFsm( pvt_region,
+             int dstState,
+             int tmo,
+             int tick
+             )
+{
+    do
+    {
+        Q_ASSERT( tick > 0 );
+        QThread::usleep( tick );
+
+        if ( fsmState( region, 1 ) == dstState )
+        { return 0; }
+
+        tmo -= tick;
+    }while( tmo > 0 );
+
+    return -1;
+}
+
+qint64 deviceMRQ::busFrames()
+{
+    return ((MegaDevice::CANBus*)m_pBus)->frames();
+}
+
+int deviceMRQ::ioOut( int id, int val  )
+{
+    Q_ASSERT( m_pBus != NULL );
+
+    int ret = 0;
+
+    checked_call( m_pBus->doSend( QString("DEBUG:FACTORY:IOCONFIG %1,1\n").arg(id) ) );
+    checked_call( m_pBus->doSend( QString("DEBUG:FACTORY:IOSET %1,%2\n").arg(id).arg(val) ) );
+
+    return 0;
 }
 
 }

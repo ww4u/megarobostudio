@@ -45,6 +45,9 @@ robotSinanju::robotSinanju()
     mJointAngleMask[2]=true;
     mJointAngleMask[3]=true;
 
+    mJointCcwMask.clear();
+    mJointCcwMask<<false<<false<<false<<false<<true;
+
     //! angle dir
     mAngleDir.clear();
     mAngleDir<<true<<false<<true<<false;     //! big arm invert
@@ -56,6 +59,9 @@ robotSinanju::robotSinanju()
 
     mInitPos.clear();
     mInitPos<<250<<0<<(257+255);
+
+    //! interp
+    mbInterpAble = true;
 
     //! debug used
     //! alter the axes name
@@ -216,23 +222,6 @@ int robotSinanju::stop( const tpvRegion &region  )
     return 0;
 }
 
-int robotSinanju::setLoop( int n, const tpvRegion &region )
-{
-    MegaDevice::deviceMRQ *pMrq;
-    int ax;
-    for ( int i = 0; i < axes(); i++ )
-    {
-        pMrq = jointDevice( i, &ax );
-
-        Q_ASSERT( NULL != pMrq );
-
-        pMrq->setMOTIONPLAN_CYCLENUM( ax,
-                                      (MRQ_MOTION_SWITCH_1)region.page(),
-                                      n );
-    }
-
-    return 0;
-}
 int robotSinanju::loopNow()
 { return 0; }
 

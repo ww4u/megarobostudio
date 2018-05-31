@@ -29,6 +29,7 @@ protected:
     int apply();
     int updateUi();
 
+    void adaptUi();
 
 private slots:
 

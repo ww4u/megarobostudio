@@ -55,6 +55,8 @@ protected:
 
     VRobot *currentRobot();
 
+    void setExportOpt( const QStringList &optList );
+
 protected:
     int doDownload( QList<tpvGroup *> &groups,
                     QList<int> &jointTabId );
@@ -70,24 +72,6 @@ protected:
 
     //! check
     int checkRobot();
-
-//    int checkTrace();
-//    int checkJointsTrace();
-
-    //! build
-//    int buildTrace();
-
-//    int buildJointsTrace();
-
-//    int planJointsTrace();
-//    int splitJointsTrace();
-
-//    int buildHandTrace();
-
-    //! onvert
-//    int buildTpvGroups();
-
-//    void jointsRotate( jointsTrace *pJ, int len );
 
 Q_SIGNALS:
     void sig_joints_trace_changed();
@@ -119,6 +103,9 @@ protected Q_SLOTS:
     void on_btnReverse_clicked();
 protected:
     void updatePlot();
+    void tpvGroupPlot( tpvGroup *pGroup, int id );
+
+    bool checkRobotLive( VRobot **ppRobot );
 
 protected:
     virtual void context_remove();
@@ -129,19 +116,16 @@ protected:
 private:
     Ui::motionEdit *ui;
 
-//    SinanjuMotionGroup *mMotionGroup;
     MegaTableModel *m_pMotionGroup;
     tpvPlot *m_pPlot;
 
     xxxGroup< tracePoint > mTracePlan;
     xxxGroup< jointsTrace > mJointsPlan;
 
-//    ProgressGroup *m_pProgress;
-
     comboxDelegate *m_pActionDelegate;
 
     QList< tpvGroup *> mJointsTpvGroup;
-//    tpvGroup mHandTpvGroup;
+    QList< int > mSectionList;
 
     MotionModel mMotionPref;
 };

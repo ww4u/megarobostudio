@@ -31,7 +31,8 @@ int deviceMRQ::uploadDesc()
 int deviceMRQ::uploadBaseInfo()
 {
     loadSN();
-    loadSwVer();
+//    loadSwVer();
+    loadSeqVer();
     loadHwVer();
 
     loadFwVer();
@@ -175,6 +176,21 @@ QString deviceMRQ::loadBtVer()
     return mBtVer;
 }
 
+QString deviceMRQ::loadSeqVer()
+{
+    byte v0, v1, v2, v3;
+
+    int ret;
+
+    ret = getSeqVer( &v0, &v1, &v2, &v3 );
+    if ( ret == 0 )
+    {
+        mSeqVer = QString( "%1.%2.%3.%4").arg(v0).arg(v1).arg(v2).arg(v3);
+    }
+
+    return mSeqVer;
+}
+
 int deviceMRQ::loadPwms()
 {
     int ret;
@@ -229,10 +245,72 @@ int deviceMRQ::loadEncoderZero()
     int ret;
     for ( int i = 0; i < 4; i++ )
     {
-        ret = getABSENCALARM_ZEROVALUE(
-                                        (MRQ_IDENTITY_LABEL_1)(i),
-                                        &mABSENCALARM_ZEROVALUE[i]
-                                        );
+//        ret = getABSENCALARM_ZEROVALUE(
+//                                        (MRQ_IDENTITY_LABEL_1)(i),
+//                                        &mABSENCALARM_ZEROVALUE[i]
+//                                        );
+//        if ( ret != 0 )
+//        { return ret; }
+
+        checked_call( getABSENCALARM_STATE( (MRQ_IDENTITY_LABEL_1)i,
+                                            &mABSENCALARM_STATE[i] ) );
+        checked_call( getABSENCALARM_UPLIMIT( (MRQ_IDENTITY_LABEL_1)i,
+                                            &mABSENCALARM_UPLIMIT[i] ) );
+        checked_call( getABSENCALARM_DOWNLIMIT( (MRQ_IDENTITY_LABEL_1)i,
+                                            &mABSENCALARM_DOWNLIMIT[i] ) );
+        checked_call( getABSENCALARM_ZEROVALUE( (MRQ_IDENTITY_LABEL_1)i,
+                                            &mABSENCALARM_ZEROVALUE[i] ) );
+
+        checked_call( getABSENCALARM_ZEROPOSITION( (MRQ_IDENTITY_LABEL_1)i,
+                                            &mABSENCALARM_ZEROPOSITION[i] ) );
+    }
+
+    return 0;
+}
+
+#define mc_FACTORY  0XCA
+#define mc_SN       0X00
+
+#define SPLIT_SIZE      5
+int deviceMRQ::setSN( const QString &sn )
+{
+    int ret, snLen;
+
+    snLen = sn.length();
+    if ( snLen <= 0 || snLen > SPLIT_SIZE * 0XF )
+    { return -1; }
+
+    QByteArray ary = sn.toLatin1();
+
+    //! split by SPLIT_SIZE
+    byte buf[ SPLIT_SIZE + 1];
+    int n,m;
+    n = 1;
+    m = (snLen + SPLIT_SIZE-1)/SPLIT_SIZE;      //! group
+
+    int offset, payLen;
+    offset = 0;
+    payLen = snLen;
+    for ( int i = 1; i <= m; i++ )
+    {
+        //! head
+        buf[0] = (i<<4) | m;                    //! sub/total
+
+        if ( snLen - offset > SPLIT_SIZE )
+        { payLen = SPLIT_SIZE; }
+        else
+        { payLen = snLen - offset; }
+
+        //! payload
+        memcpy( buf + 1, ary.data() + offset, payLen );
+
+        offset = offset + SPLIT_SIZE;
+
+        ret = m_pBus->write( DEVICE_RECEIVE_ID,
+                             (byte)mc_FACTORY, (byte)mc_SN,
+                             buf,
+                             payLen + 1 );
+
         if ( ret != 0 )
         { return ret; }
     }

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>708</width>
-    <height>641</height>
+    <height>633</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -33,26 +33,26 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="spacing">
-    <number>0</number>
+    <number>3</number>
    </property>
    <property name="leftMargin">
-    <number>0</number>
+    <number>3</number>
    </property>
    <property name="topMargin">
-    <number>0</number>
+    <number>3</number>
    </property>
    <property name="rightMargin">
-    <number>0</number>
+    <number>3</number>
    </property>
    <property name="bottomMargin">
-    <number>0</number>
+    <number>3</number>
    </property>
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+      <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
        <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
+       <verstretch>1</verstretch>
       </sizepolicy>
      </property>
      <property name="maximumSize">
@@ -102,6 +102,11 @@
             <item>
              <property name="text">
               <string>Chinese</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Traditional Chinese</string>
              </property>
             </item>
            </widget>
@@ -306,29 +311,6 @@
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="groupBox_6">
-         <property name="title">
-          <string>Editor</string>
-         </property>
-         <layout class="QFormLayout" name="formLayout_2">
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_16">
-            <property name="text">
-             <string>User Editor</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QLineEdit" name="lineEdit">
-            <property name="text">
-             <string>ue</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item>
         <spacer name="verticalSpacer_3">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -349,11 +331,14 @@
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_6">
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0,1">
+         <property name="sizeConstraint">
+          <enum>QLayout::SetDefaultConstraint</enum>
+         </property>
          <item>
           <widget class="QGroupBox" name="groupBox_3">
            <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+            <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
              <horstretch>2</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
@@ -442,11 +427,11 @@
             <item row="3" column="0" colspan="2">
              <widget class="QTabWidget" name="tabWidget_2">
               <property name="currentIndex">
-               <number>0</number>
+               <number>1</number>
               </property>
               <widget class="QWidget" name="tab_5">
                <attribute name="title">
-                <string>CAN</string>
+                <string>Setting</string>
                </attribute>
                <layout class="QFormLayout" name="formLayout_3">
                 <item row="0" column="0">
@@ -458,6 +443,9 @@
                 </item>
                 <item row="0" column="1">
                  <widget class="QComboBox" name="cmbSpeed">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
                   <property name="editable">
                    <bool>false</bool>
                   </property>
@@ -600,13 +588,17 @@
                  </widget>
                 </item>
                 <item row="4" column="1">
-                 <widget class="QSpinBox" name="spinDeviceId"/>
+                 <widget class="QSpinBox" name="spinDeviceId">
+                  <property name="maximum">
+                   <number>9</number>
+                  </property>
+                 </widget>
                 </item>
                </layout>
               </widget>
               <widget class="QWidget" name="tab_6">
                <attribute name="title">
-                <string>MRH</string>
+                <string>Setting</string>
                </attribute>
                <layout class="QFormLayout" name="formLayout_7">
                 <item row="0" column="0">
@@ -655,7 +647,14 @@
                  </widget>
                 </item>
                 <item row="3" column="0" colspan="2">
-                 <widget class="QListWidget" name="listMRTs"/>
+                 <widget class="QListWidget" name="listMRTs">
+                  <property name="minimumSize">
+                   <size>
+                    <width>0</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                 </widget>
                 </item>
                 <item row="4" column="0">
                  <widget class="QPushButton" name="btnRemove">
@@ -723,7 +722,14 @@
                 </widget>
                </item>
                <item row="3" column="1">
-                <widget class="QSpinBox" name="spinFailTry"/>
+                <widget class="QSpinBox" name="spinFailTry">
+                 <property name="minimum">
+                  <number>0</number>
+                 </property>
+                 <property name="maximum">
+                  <number>10</number>
+                 </property>
+                </widget>
                </item>
                <item row="4" column="0">
                 <widget class="QLabel" name="label_27">
@@ -819,6 +825,12 @@
        </item>
        <item>
         <widget class="QGroupBox" name="groupBox_2">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="title">
           <string>Unit</string>
          </property>
@@ -950,16 +962,10 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="3">
-           <widget class="QSpinBox" name="spinRecvTo">
-            <property name="minimum">
-             <number>384</number>
-            </property>
-            <property name="maximum">
-             <number>511</number>
-            </property>
-            <property name="value">
-             <number>511</number>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_7">
+            <property name="text">
+             <string>Receive ID</string>
             </property>
            </widget>
           </item>
@@ -973,10 +979,16 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="label_7">
-            <property name="text">
-             <string>Receive ID</string>
+          <item row="2" column="3">
+           <widget class="QSpinBox" name="spinRecvTo">
+            <property name="minimum">
+             <number>384</number>
+            </property>
+            <property name="maximum">
+             <number>511</number>
+            </property>
+            <property name="value">
+             <number>511</number>
             </property>
            </widget>
           </item>
@@ -984,23 +996,6 @@
            <widget class="QLabel" name="label_5">
             <property name="text">
              <string>Send ID</string>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="0">
-           <widget class="QLabel" name="label_8">
-            <property name="text">
-             <string>Group ID</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QSpinBox" name="spinSendFrom">
-            <property name="minimum">
-             <number>512</number>
-            </property>
-            <property name="maximum">
-             <number>639</number>
             </property>
            </widget>
           </item>
@@ -1017,13 +1012,6 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="2">
-           <widget class="QLabel" name="label_30">
-            <property name="text">
-             <string>:</string>
-            </property>
-           </widget>
-          </item>
           <item row="4" column="3">
            <widget class="QSpinBox" name="spinGpTo">
             <property name="minimum">
@@ -1034,6 +1022,62 @@
             </property>
             <property name="value">
              <number>255</number>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QSpinBox" name="spinSendFrom">
+            <property name="minimum">
+             <number>512</number>
+            </property>
+            <property name="maximum">
+             <number>639</number>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0">
+           <widget class="QLabel" name="label_8">
+            <property name="text">
+             <string>Group ID</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="2">
+           <widget class="QLabel" name="label_30">
+            <property name="text">
+             <string>:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="1">
+           <widget class="QSpinBox" name="spinGpHexFrom">
+            <property name="minimum">
+             <number>128</number>
+            </property>
+            <property name="maximum">
+             <number>255</number>
+            </property>
+            <property name="value">
+             <number>128</number>
+            </property>
+            <property name="displayIntegerBase">
+             <number>16</number>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="3">
+           <widget class="QSpinBox" name="spinSendHexTo">
+            <property name="minimum">
+             <number>512</number>
+            </property>
+            <property name="maximum">
+             <number>639</number>
+            </property>
+            <property name="value">
+             <number>639</number>
+            </property>
+            <property name="displayIntegerBase">
+             <number>16</number>
             </property>
            </widget>
           </item>
@@ -1057,55 +1101,10 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="3">
-           <widget class="QSpinBox" name="spinSendHexTo">
-            <property name="minimum">
-             <number>512</number>
-            </property>
-            <property name="maximum">
-             <number>639</number>
-            </property>
-            <property name="value">
-             <number>639</number>
-            </property>
-            <property name="displayIntegerBase">
-             <number>16</number>
-            </property>
-           </widget>
-          </item>
           <item row="4" column="2">
            <widget class="QLabel" name="label_31">
             <property name="text">
              <string>:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="1">
-           <widget class="QSpinBox" name="spinGpHexFrom">
-            <property name="minimum">
-             <number>128</number>
-            </property>
-            <property name="maximum">
-             <number>255</number>
-            </property>
-            <property name="value">
-             <number>128</number>
-            </property>
-            <property name="displayIntegerBase">
-             <number>16</number>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="1">
-           <widget class="QSpinBox" name="spinRecvHexFrom">
-            <property name="minimum">
-             <number>384</number>
-            </property>
-            <property name="maximum">
-             <number>511</number>
-            </property>
-            <property name="displayIntegerBase">
-             <number>16</number>
             </property>
            </widget>
           </item>
@@ -1141,7 +1140,7 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="5">
+          <item row="0" column="6">
            <spacer name="horizontalSpacer_2">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
@@ -1154,43 +1153,56 @@
             </property>
            </spacer>
           </item>
-          <item row="0" column="4">
+          <item row="3" column="1">
+           <widget class="QSpinBox" name="spinRecvHexFrom">
+            <property name="minimum">
+             <number>384</number>
+            </property>
+            <property name="maximum">
+             <number>511</number>
+            </property>
+            <property name="displayIntegerBase">
+             <number>16</number>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="5">
            <widget class="QLabel" name="label_36">
             <property name="text">
              <string>(HEX)</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="4">
-           <widget class="QLabel" name="label_37">
-            <property name="text">
-             <string>(DEC)</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="4">
+          <item row="2" column="5">
            <widget class="QLabel" name="label_38">
             <property name="text">
+             <string>(DEC)</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="5">
+           <widget class="QLabel" name="label_39">
+            <property name="text">
              <string>(HEX)</string>
             </property>
            </widget>
           </item>
-          <item row="3" column="4">
-           <widget class="QLabel" name="label_39">
+          <item row="4" column="5">
+           <widget class="QLabel" name="label_40">
             <property name="text">
              <string>(DEC)</string>
             </property>
            </widget>
           </item>
-          <item row="4" column="4">
-           <widget class="QLabel" name="label_40">
+          <item row="5" column="5">
+           <widget class="QLabel" name="label_41">
             <property name="text">
              <string>(HEX)</string>
             </property>
            </widget>
           </item>
-          <item row="5" column="4">
-           <widget class="QLabel" name="label_41">
+          <item row="1" column="5">
+           <widget class="QLabel" name="label_37">
             <property name="text">
              <string>(DEC)</string>
             </property>
@@ -1421,24 +1433,53 @@ p, li { white-space: pre-wrap; }
           <string/>
          </property>
          <layout class="QFormLayout" name="formLayout_4">
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_24">
-            <property name="text">
-             <string>Resolution(mm)</string>
+          <item row="1" column="1">
+           <widget class="QGroupBox" name="groupBox_13">
+            <property name="title">
+             <string>Resolution</string>
             </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QSpinBox" name="spinBox">
-            <property name="minimum">
-             <number>1</number>
-            </property>
-            <property name="maximum">
-             <number>20</number>
-            </property>
-            <property name="value">
-             <number>5</number>
-            </property>
+            <layout class="QFormLayout" name="formLayout_9">
+             <item row="1" column="0">
+              <widget class="QLabel" name="label_43">
+               <property name="text">
+                <string>Angle(deg)</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="0">
+              <widget class="QLabel" name="label_24">
+               <property name="text">
+                <string>Geometry distance(um)</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QDoubleSpinBox" name="spinAngleError">
+               <property name="decimals">
+                <number>3</number>
+               </property>
+               <property name="minimum">
+                <double>0.001000000000000</double>
+               </property>
+               <property name="maximum">
+                <double>10.000000000000000</double>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QDoubleSpinBox" name="spinDistanceError">
+               <property name="decimals">
+                <number>3</number>
+               </property>
+               <property name="minimum">
+                <double>0.001000000000000</double>
+               </property>
+               <property name="maximum">
+                <double>10.000000000000000</double>
+               </property>
+              </widget>
+             </item>
+            </layout>
            </widget>
           </item>
          </layout>
@@ -1453,7 +1494,7 @@ p, li { white-space: pre-wrap; }
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
        <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
+       <verstretch>1</verstretch>
       </sizepolicy>
      </property>
      <property name="maximumSize">
@@ -1466,19 +1507,6 @@ p, li { white-space: pre-wrap; }
       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok|QDialogButtonBox::Reset</set>
      </property>
     </widget>
-   </item>
-   <item>
-    <spacer name="verticalSpacer_2">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>1</height>
-      </size>
-     </property>
-    </spacer>
    </item>
   </layout>
  </widget>

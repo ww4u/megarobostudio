@@ -8,6 +8,9 @@ MrqSubUart::MrqSubUart(QWidget *parent) :
     ui->setupUi(this);
 
     spyEdited();
+
+    connect( ui->chkSensor, SIGNAL(clicked(bool)),
+             this, SIGNAL(signal_live_changed()));
 }
 
 MrqSubUart::~MrqSubUart()
@@ -34,6 +37,15 @@ void MrqSubUart::getConfig( subUartConfig &cfg )
     exchange_spin( spinReceiveLen, cfg.mReceiveNum, false )
 
     exchange_spin( spinInvterval, cfg.mInterval, false )
+}
+
+void MrqSubUart::setLive( bool bEn )
+{
+    ui->chkSensor->setChecked( bEn );
+}
+bool MrqSubUart::isLive()
+{
+    return ui->chkSensor->isChecked();
 }
 
 void MrqSubUart::spyEdited()

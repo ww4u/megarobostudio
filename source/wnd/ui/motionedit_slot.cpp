@@ -67,12 +67,12 @@ void motionEdit::slot_robo_changed( const QString &roboName )
 //! update the status by
 void motionEdit::slot_joints_trace_changed( )
 {
-    if ( mJointsPlan.size() > 0 )
+    if ( mJointsTpvGroup.size() > 0 )
     { ui->btnDown->setEnabled(true); }
     else
     { ui->btnDown->setEnabled(false); }
 
-    if ( mJointsPlan.size() > 0 )
+    if ( mJointsTpvGroup.size() > 0 )
     {
         ui->btnGraph->setEnabled(true);
 
@@ -86,11 +86,6 @@ void motionEdit::slot_joints_trace_changed( )
 
     ui->btnExport->setEnabled( ui->btnGraph->isEnabled() );
 }
-
-//void motionEdit::slot_download_cancel( const QString &name, int id )
-//{
-//    tpvDownloader::cancelActives();
-//}
 
 void motionEdit::on_btnAdd_clicked()
 {
@@ -121,6 +116,15 @@ void motionEdit::on_btnClr_clicked()
 
 void motionEdit::on_btnDown_clicked()
 {
+    VRobot *pRobot;
+    if ( checkRobotLive( &pRobot ) )
+    {}
+    else
+    {
+        sysPrompt( tr("Invalid robot") );
+        return;
+    }
+
     post_request( msg_download_motion, motionEdit, Download );
 }
 
@@ -186,72 +190,95 @@ void motionEdit::on_btnExport_clicked()
     QTextStream outStream( &fileCsv );
     outStream.setRealNumberPrecision( 8 );
 
-    //! switch type
-    if ( ui->cmbExport->currentIndex() == 0 )       //! joints
-    {
-        //! title
-        outStream<<"t,p1,p2,p3,p4,v1,v2,v3,v4"<<"\n";
+    int iIndex;
+    iIndex = ui->cmbExport->currentIndex();
 
-        //! items
-        for ( int i = 0; i < mJointsPlan.size(); i++ )
+    //! switch type
+    //! joints
+    if ( iIndex <= 1 )
+    {
+        Q_ASSERT( mSectionList.size() >= 2*(iIndex+1) );       //! 0,1
+
+        int columns = mJointsTpvGroup.size();       //! check
+        int from, len;
+
+        from = mSectionList.at( iIndex * 2 );
+        len = mSectionList.at( iIndex * 2 + 1 );
+                                                    //! columns
+        Q_ASSERT( from < columns );
+        Q_ASSERT( (from + len - 1) < columns );
+
+        //! title
+//        outStream<<"t,p1,p2,p3,p4,v1,v2,v3,v4"<<"\n";
+
+        outStream<<"t";
+        for ( int i = from; i < ( from + len ); i++ )
+        { outStream<<QString(",p%1").arg(i+1); }
+        for ( int i = from; i < ( from + len ); i++ )
+        { outStream<<QString(",v%1").arg(i+1); }
+        outStream<<CSV_LINE_SEP;
+
+        //! check each size
+        int itemCount = mJointsTpvGroup.at( from )->mItems.size();
+        for ( int i = ( from + 1 ); i < ( from + len ); i++ )
+        {
+            Q_ASSERT( mJointsTpvGroup.at(i) != NULL );
+            Q_ASSERT( itemCount == mJointsTpvGroup.at(i)->mItems.size() );
+        }
+
+        //! foreach item
+        for ( int i = 0; i < itemCount; i++ )
         {
             //! t
-            outStream<<( mJointsPlan.data()[i].t )<<",";
+            outStream<<mJointsTpvGroup[from]->mItems[i]->getT()<<CSV_COL_SEP;
 
-            for ( int j = 0; j < 4; j++ )
+            //! p
+            for ( int j = from; j < (from+len); j++ )
             {
-                outStream<<( mJointsPlan.data()[i].p[j] )<<",";
+                outStream<<mJointsTpvGroup[j]->mItems[i]->getP()<<CSV_COL_SEP;
             }
 
-            for ( int j = 0; j < 4; j++ )
+            //! v
+            for ( int j = from; j < (from+len); j++ )
             {
-                outStream<<( mJointsPlan.data()[i].v[j] )<<",";
+                outStream<<mJointsTpvGroup[j]->mItems[i]->getV()<<CSV_COL_SEP;
             }
 
-            outStream<<"\n";
+            outStream<<CSV_LINE_SEP;
         }
     }
-//    else if ( ui->cmbExport->currentIndex() == 1 )  //! hand
-//    {
-//        //! title
-//        outStream<<"t,p"<<"\n";
-
-//        for ( int i = 0; i < mHandTpvGroup.mItems.size(); i++ )
-//        {
-//            outStream<<mHandTpvGroup[i]->getT()<<","<<mHandTpvGroup[i]->getP()<<"\n";
-//        }
-//    }
-    else if ( ui->cmbExport->currentIndex() == 1 )  //! xyz
+    else if ( ui->cmbExport->currentIndex() == 2 )  //! xyz
     {
         //! title
-        outStream<<"t,x,y,z"<<"\n";
+        outStream<<"t,x,y,z"<<CSV_LINE_SEP;
 
         //! items
         for ( int i = 0; i < mTracePlan.size(); i++ )
         {
             //! t
-            outStream<<QString::number( mTracePlan.data()[i].t )<<",";
+            outStream<<QString::number( mTracePlan.data()[i].t )<<CSV_COL_SEP;
 
-            outStream<<QString::number( mTracePlan.data()[i].x )<<",";
-            outStream<<QString::number( mTracePlan.data()[i].y )<<",";
-            outStream<<QString::number( mTracePlan.data()[i].z )<<",";
+            outStream<<QString::number( mTracePlan.data()[i].x )<<CSV_COL_SEP;
+            outStream<<QString::number( mTracePlan.data()[i].y )<<CSV_COL_SEP;
+            outStream<<QString::number( mTracePlan.data()[i].z )<<CSV_COL_SEP;
 
-            outStream<<"\n";
+            outStream<<CSV_LINE_SEP;
         }
     }
     else
-    {}
+    { Q_ASSERT(false); }
 
     fileCsv.close();
 }
 
 void motionEdit::on_spinLoop_valueChanged(int arg1)
 {
-    //! connect to robot
-    VRobot *pRobot = currentRobot();
-    if ( NULL == pRobot )
+    VRobot *pRobot;
+    if ( checkRobotLive( &pRobot ) )
+    {}
+    else
     {
-        sysError( tr("Invalid robot") );
+        sysPrompt( tr("Invalid robot") );
         return;
     }
 

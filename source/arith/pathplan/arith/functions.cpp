@@ -59,7 +59,8 @@ void CallRobot(int len, int* resLength)
                 //! no interp
 		if (posIn[i * 6 + 5] == 0)
 		{
-			for (int k = 0; k < 2; k++)
+//			for (int k = 0; k < 2; k++)
+                        for (int k = 0; k < 1; k++)
 			{
 				res.Px = posIn[(i +k)* 6];
 				res.Py = posIn[(i + k) * 6 + 1];
@@ -67,7 +68,7 @@ void CallRobot(int len, int* resLength)
 				res.Vx = 0;
 				res.Vy = 0;
 				res.Vz = 0;
-				res.End = posIn[(i + k) * 6 + 3];
+                                res.End = 0;
 				res.T = posIn[(i + k) * 6 + 4];
 				resInfo.push_back(res);
 
@@ -82,9 +83,10 @@ void CallRobot(int len, int* resLength)
 		}
 
                 //! interp
-                pos[0] = lastPt;
-                for (int j = 1; j < 2; j++)
-//                for (int j = 0; j < 2; j++)
+//                pos[0] = lastPt;
+                //! p1
+//                for (int j = 1; j < 2; j++)
+                for (int j = 0; j < 2; j++)
 		{
 			pos[j].x = posIn[6 * (i+j)];
 			pos[j].y = posIn[6 * (i + j) + 1];
@@ -103,10 +105,14 @@ void CallRobot(int len, int* resLength)
                 if ( deltDis > step )
                 {
                     CalStepTraj();
-                    if (resInfo.size() > 0)
-                    { resInfo.pop_back(); }
 
-                    for (int k = 0; k < tempLen; k++)
+//                    //! remove the last?
+//                    if (resInfo.size() > 0)
+//                    { resInfo.pop_back(); }
+
+//                    for (int k = 0; k < tempLen; k++)
+                    //! do not include the upper range
+                    for ( int k = 0; k < tempLen -1; k++ )
                     {
                             res.Px = tempP[k] * delt[0] + posIn[i * 6];
                             res.Py = tempP[k] * delt[1] + posIn[i * 6 + 1];
@@ -114,14 +120,16 @@ void CallRobot(int len, int* resLength)
                             res.Vx = tempV[k] * delt[0];
                             res.Vy = tempV[k] * delt[1];
                             res.Vz = tempV[k] * delt[2];
-                            if (k < tempLen - 1)
-                            {
-                                    res.End = posIn[6*i + 3];
-                            }
-                            else
-                            {
-                                    res.End = posIn[6 * (i+1) + 3];
-                            }
+
+                            res.End = 0;
+//                            if (k < tempLen - 1)
+//                            {
+//                                    res.End = posIn[6*i + 3];
+//                            }
+//                            else
+//                            {
+//                                    res.End = posIn[6 * (i+1) + 3];
+//                            }
                             res.T = tempT[k];
                             resInfo.push_back(res);
                     }
@@ -135,6 +143,18 @@ void CallRobot(int len, int* resLength)
                 }
 	}
 
+        //! add the end
+        res.Px = posIn[(len-1)* 6];
+        res.Py = posIn[(len-1) * 6 + 1];
+        res.Pz = posIn[(len-1) * 6 + 2];
+        res.Vx = 0;
+        res.Vy = 0;
+        res.Vz = 0;
+        res.End = 0;
+        res.T = posIn[(len-1) * 6 + 4];
+        resInfo.push_back(res);
+
+        //! export
 	int size = resInfo.size();
 	resOut = new double[size * 7];
 	memset(resOut, 0, size * 7 * sizeof(double));

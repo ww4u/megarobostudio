@@ -32,6 +32,16 @@ void RoboJoint::setAngleVisible( bool b )
     ui->lcdNumber->setVisible( b );
 }
 
+void RoboJoint::setCcwVisible( bool b )
+{
+    ui->chkInvert->setVisible( b );
+}
+
+void RoboJoint::setCcwChecked( bool b )
+{
+    ui->chkInvert->setChecked( b );
+}
+
 void RoboJoint::actionChanged( const QDateTime &endTime, int endVal )
 {
     float dt = mPressTime.msecsTo( endTime );
@@ -39,7 +49,7 @@ void RoboJoint::actionChanged( const QDateTime &endTime, int endVal )
     QString strInfo;
 
     mCurValue = endVal;
-    strInfo = QString( "%1ms %2%3" ).arg( dt ).arg( endVal-mPressValue ).arg(QChar(0x00B0));
+    strInfo = QString( "%2%3 %1ms" ).arg( dt ).arg( endVal-mPressValue ).arg(QChar(0x00B0));
     ui->label_2->setText( strInfo );
 }
 

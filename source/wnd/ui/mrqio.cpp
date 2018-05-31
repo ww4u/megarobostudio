@@ -29,7 +29,11 @@ int mrqIo::setApply()
 }
 
 void mrqIo::modelChanged()
-{ updateUi(); }
+{
+    adaptUi();
+
+    updateUi();
+}
 
 void mrqIo::spyEdited()
 {
@@ -53,129 +57,143 @@ void mrqIo::spyEdited()
 //    };
 
 //    install_spy();
+
+    modelView *pView;
+    for ( int i = 0; i < ui->tabWidget->count(); i++ )
+    {
+        pView = (modelView*)ui->tabWidget->widget(i);
+        LINK_MODIFIED( pView );
+    }
+
+    for ( int i = 0; i < ui->tabWidget_2->count(); i++ )
+    {
+        pView = (modelView*)ui->tabWidget_2->widget(i);
+        LINK_MODIFIED( pView );
+    }
 }
 
 void mrqIo::setupUi()
-{}
+{
+
+}
 void mrqIo::desetupUi()
 {}
 
 int mrqIo::apply()
 {
+    MegaDevice::deviceMRQ *pDevice;
+    pDevice = getDevice();
+    Q_ASSERT( NULL != pDevice );
+
+    int ret;
+
+    //! for yo apply
+    for ( int i = 0; i < m_pMrqModel->isos(); i++ )
+    {
+        YoConfig cfg;
+
+        ((MrqYO*)ui->tabWidget->widget( i ))->getConfig( cfg );
+
+        MRQ_ISOLATOROUTPUT_STATE isoCH = (MRQ_ISOLATOROUTPUT_STATE)i;
+
+        checked_call( pDevice->setISOLATOROUTPUT_STATE( isoCH,
+                                          (MRQ_DIGITALOUTPUT_STATE_1)cfg.mbEn ) );
+        checked_call( pDevice->setISOLATOROUTPUT_SOURCE( isoCH,
+                                           cfg.mSrcIndex ) );
+        checked_call( pDevice->setISOLATOROUTPUT_CONDITION( isoCH,
+                                              (MRQ_DIGITALOUTPUT_CONDITION_1)cfg.mCondIndex ) );
+        checked_call( pDevice->setISOLATOROUTPUT_RESPONSE( isoCH,
+                                             (MRQ_ISOLATOROUTPUT_RESPONSE_1)cfg.mRespIndex ) );
+    }
+
+    //! for do apply
+    for ( int i = 0; i < m_pMrqModel->dos(); i++ )
+    {
+        DoConfig cfg;
+
+        ((MrqDO*)ui->tabWidget_2->widget( i ))->getConfig( cfg );
+
+        MRQ_DIGITALOUTPUT_STATE doCH;
+        doCH = (MRQ_DIGITALOUTPUT_STATE)i;
+
+        checked_call( pDevice->setDIGITALOUTPUT_STATE( doCH,
+                                      (MRQ_DIGITALOUTPUT_STATE_1)cfg.mbEn ) );
+        checked_call( pDevice->setDIGITALOUTPUT_POLARITY( doCH,
+                                         (MRQ_DIGITALOUTPUT_POLARITY_1)cfg.mPolarityIndex ) );
+        checked_call( pDevice->setDIGITALOUTPUT_PERIOD( doCH, (quint32)comAssist::align( cfg.mPeri, peri_unit) ) );
+        checked_call( pDevice->setDIGITALOUTPUT_DUTY( doCH, (quint16)comAssist::align( cfg.mDuty, duty_unit) ) );
+
+        checked_call( pDevice->setDIGITALOUTPUT_SOURCE( doCH,
+                                                        cfg.mSrcIndex ) );
+        checked_call( pDevice->setDIGITALOUTPUT_CONDITION( doCH,
+                                          (MRQ_DIGITALOUTPUT_CONDITION_1)cfg.mCondIndex ) );
+        checked_call( pDevice->setDIGITALOUTPUT_SIGNAL( doCH,
+                                       (MRQ_DIGITALOUTPUT_SIGNAL_1)cfg.mSignalIndex ) );
+    }
+
     return 0;
 }
 
 int mrqIo::updateUi()
-{ return 0; }
-
-int mrqIo::isoApply()
 {
     MegaDevice::deviceMRQ *pDevice;
     pDevice = getDevice();
     Q_ASSERT( NULL != pDevice );
 
-//    Q_ASSERT( m_pMrqModel != NULL );
-//    MegaDevice::deviceMRQ *pDevice;
-//    pDevice = m_pMrqModel;
+    //! for yo apply
+    for ( int i = 0; i < m_pMrqModel->isos(); i++ )
+    {
+        YoConfig cfg;
 
-    int ret;
+        cfg.mbEn = m_pMrqModel->mISOLATOROUTPUT_STATE[ i ];
 
-    //! iso
-    MRQ_ISOLATOROUTPUT_STATE isoCH;
+        cfg.mSrcIndex = m_pMrqModel->mISOLATOROUTPUT_SOURCE[ i ];
+        cfg.mCondIndex = m_pMrqModel->mISOLATOROUTPUT_CONDITION[ i ];
+        cfg.mRespIndex = m_pMrqModel->mISOLATOROUTPUT_RESPONSE[ i ];
 
-    isoCH = (MRQ_ISOLATOROUTPUT_STATE)ui->cmbIsoCH->currentIndex();
+        ((MrqYO*)ui->tabWidget->widget( i ))->setConfig( cfg );
+    }
 
-    checked_call( pDevice->setISOLATOROUTPUT_STATE( isoCH,
-                                      (MRQ_DIGITALOUTPUT_STATE_1)ui->chkIsoCH->isEnabled() ) );
-    checked_call( pDevice->setISOLATOROUTPUT_SOURCE( isoCH,
-                                       ui->cmbIsoSource->currentIndex() ) );
-    checked_call( pDevice->setISOLATOROUTPUT_CONDITION( isoCH,
-                                          (MRQ_DIGITALOUTPUT_CONDITION_1)ui->cmbIsoCondition->currentIndex() ) );
-    checked_call( pDevice->setISOLATOROUTPUT_RESPONSE( isoCH,
-                                         (MRQ_ISOLATOROUTPUT_RESPONSE_1)ui->cmbIsoAction->currentIndex() ) );
+    //! for do apply
+    for ( int i = 0; i < m_pMrqModel->dos(); i++ )
+    {
+        DoConfig cfg;
 
-    return ret;
+        cfg.mbEn = m_pMrqModel->mDIGITALOUTPUT_STATE[ i ];
+
+        cfg.mPolarityIndex = m_pMrqModel->mDIGITALOUTPUT_POLARITY[i];
+        cfg.mSignalIndex = m_pMrqModel->mDIGITALOUTPUT_SIGNAL[i];
+        cfg.mSrcIndex = m_pMrqModel->mDIGITALOUTPUT_SOURCE[i];
+        cfg.mCondIndex = m_pMrqModel->mDIGITALOUTPUT_CONDITION[i];
+
+        cfg.mPeri  = m_pMrqModel->mDIGITALOUTPUT_PERIOD[i] * peri_unit;
+        cfg.mDuty  = m_pMrqModel->mDIGITALOUTPUT_DUTY[i] * duty_unit;
+
+        ((MrqDO*)ui->tabWidget_2->widget( i ))->setConfig( cfg );
+    }
+
+    return 0;
 }
-int mrqIo::doApply()
+
+void mrqIo::adaptUi()
 {
-    MegaDevice::deviceMRQ *pDevice;
-    pDevice = getDevice();
-    Q_ASSERT( NULL != pDevice );
+    int cnt;
 
-    int ret;
+    //! for yo
+    cnt = ui->tabWidget->count();
+    for ( int i = m_pMrqModel->isos(); i < cnt; i++ )
+    {
+        ui->tabWidget->removeTab( m_pMrqModel->isos() );
+    }
 
-    //! do
-    MRQ_DIGITALOUTPUT_STATE doCH;
-    doCH = (MRQ_DIGITALOUTPUT_STATE)ui->cmbDo->currentIndex();
-
-    checked_call( pDevice->setDIGITALOUTPUT_STATE( doCH,
-                                  (MRQ_DIGITALOUTPUT_STATE_1)ui->chkDo->isEnabled() ) );
-    checked_call( pDevice->setDIGITALOUTPUT_POLARITY( doCH,
-                                     (MRQ_DIGITALOUTPUT_POLARITY_1)ui->cmbDoPolarity->currentIndex() ) );
-    checked_call( pDevice->setDIGITALOUTPUT_PERIOD( doCH, comAssist::align( ui->spinDoPeri->value(), peri_unit) ) );
-    checked_call( pDevice->setDIGITALOUTPUT_DUTY( doCH, comAssist::align( ui->spinDoDuty->value(), duty_unit) ) );
-
-    checked_call( pDevice->setDIGITALOUTPUT_SOURCE( doCH,
-                                                    ui->cmbDoSource->currentIndex() ) );
-    checked_call( pDevice->setDIGITALOUTPUT_CONDITION( doCH,
-                                      (MRQ_DIGITALOUTPUT_CONDITION_1)ui->cmbDoCondition->currentIndex() ) );
-    checked_call( pDevice->setDIGITALOUTPUT_SIGNAL( doCH,
-                                   (MRQ_DIGITALOUTPUT_SIGNAL_1)ui->cmbDoSignal->currentIndex() ) );
-
-    return ret;
-}
-int mrqIo::aiApply()
-{
-    MegaDevice::deviceMRQ *pDevice;
-    pDevice = getDevice();
-    Q_ASSERT( NULL != pDevice );
-
-    int ret = 0;
-
-    //! ai
-//    checked_call( pDevice->setANALOGIN_STATE( (MRQ_SYSTEM_REPORTSWITCH)ui->chkAi->isEnabled() ) );
-//    checked_call( pDevice->setANALOGIN_THRESHOLDH( ui->spinHighLevel->value() ) );
-//    checked_call( pDevice->setANALOGIN_THRESHOLDL( ui->spinLowLevel->value() ) );
-
-//    checked_call( pDevice->setANALOGIN_RESPONSEH( (MRQ_OUTOFSTEP_LINERESPONSE)ui->cmbHighResp->currentIndex() ) );
-//    checked_call( pDevice->setANALOGIN_RESPONSEL( (MRQ_OUTOFSTEP_LINERESPONSE)ui->cmbLowResp->currentIndex() ) );
-
-    return ret;
+    //! for do
+    cnt = ui->tabWidget_2->count();
+    for ( int i = m_pMrqModel->dos(); i < cnt; i++ )
+    {
+        ui->tabWidget_2->removeTab( m_pMrqModel->dos() );
+    }
 }
 
 
-void mrqIo::on_btnIsoApply_clicked()
-{
-    int ret;
 
-    ret = isoApply();
 
-    if ( ret != 0 )
-    { sysError( tr("Iso apply fail"));}
-    else
-    { sysLog( tr("Iso apply success") ) ;}
-}
-
-void mrqIo::on_btnDoApply_clicked()
-{
-    int ret;
-
-    ret = doApply();
-
-    if ( ret != 0 )
-    { sysError(tr("Do apply fail"));}
-    else
-    { sysLog(tr("Do apply success"));}
-}
-
-void mrqIo::on_btnAiApply_clicked()
-{
-    int ret;
-
-    ret = isoApply();
-
-    if ( ret != 0 )
-    { sysError(tr("Ai apply fail"));}
-    else
-    { sysLog(tr("Ai apply success"));}
-}

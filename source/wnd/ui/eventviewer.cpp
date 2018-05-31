@@ -140,7 +140,7 @@ void eventViewer::slot_event( eventId id, frameData data )
 
         QString str;
 
-        str = QString("ID:%1 Time:%2 FrameId:%3 Data:").arg( id ).arg( QDateTime::currentDateTime().toString("hh:mm:ss.zzz") ).arg( data.frameId(), 0, 16 );
+        str = QString("ID:%1,Time:%2,FrameId:%3,Data:").arg( id ).arg( QDateTime::currentDateTime().toString("hh:mm:ss.zzz") ).arg( data.frameId(), 0, 16 );
         str.append( data.toHex(' ') );
 
         ui->listWidget->addItem(str);
@@ -212,7 +212,7 @@ void eventViewer::on_btnExport_clicked()
     {
         var = ui->listWidget->item(i)->data( Qt::DisplayRole );
 
-        fileStream<<var.toString()<<"\n";
+        fileStream<<var.toString()<<ROW_SEP;
     }
 
     file.close();

@@ -23,6 +23,8 @@ CANBus::CANBus()
 
     mName = "CAN-BUS";
     mBusType = e_bus_can;
+
+    mFrames = 0;
 }
 
 CANBus::~CANBus()
@@ -73,7 +75,7 @@ int CANBus::open( int devType,
     fullPath = QDir::toNativeSeparators( fullPath );
 //    Q_ASSERT( mApi.mDll.isLoaded() == false );
 logDbg();
-    if ( !mApi.load( fullPath) )
+    if ( !mApi.load( fullPath, mPId ) )
     {
         sysLog( fullPath );
         sysError( dllName, QObject::tr("load fail") );
@@ -84,13 +86,32 @@ logDbg();
     //! find
     if ( busType == VCI_MR_LANCAN )
     {
-        sysLog( desc );
-        if ( 0 == mApi.find( VCI_MR_LANCAN, desc.toLatin1().data() ) )
+
+        char strs[ 1024 ] = { 0 };                          //! for the resources
+        if ( 0 == mApi.find( VCI_MR_LANCAN, strs ) )
         {
             sysError( QObject::tr("device find fail") );
             close();
             return -1;
         }
+
+        //! match the device id
+        QByteArray rawData;
+        rawData.setRawData( strs, qstrlen( strs ) );
+
+        //! split
+        QString rawStr = QString( rawData );
+        QStringList rsrcList = rawStr.split( ';', QString::SkipEmptyParts );
+
+        int id = rsrcList.indexOf( desc );
+        if ( id == -1 )
+        {
+            sysError( QObject::tr("no device: ") + desc );
+            close();
+        }
+        else
+        { mDevId = id; }
+
     }
     else if ( busType == VCI_MR_USBCAN )
     {
@@ -266,7 +287,9 @@ int CANBus::size()
 
 int CANBus::flush( DeviceId &id )
 {
+    IBus::lock();
     mApi.clear( mDevType, mDevId, mCanId );
+    IBus::unlock();
 
     if ( m_pRecvCache != NULL )
     { m_pRecvCache->flush( id ); }
@@ -280,6 +303,21 @@ int CANBus::clear()
     { m_pRecvCache->clear(); }
 
     return 0;
+}
+
+int CANBus::doSend( const QString &buf )
+{
+    Q_ASSERT( mPId == 0 );
+
+    IBus::lock();
+    int ret = mApi.write( mDevType, mDevId, buf.toLatin1().data(), buf.size() );
+    IBus::unlock();
+
+    logDbg()<<ret<<buf;
+    if ( ret != 1 )
+    { return -1; }
+    else
+    { return 0; }
 }
 
 int CANBus::doWrite(DeviceId &nodeId, byte *pBuf, int len)
@@ -304,11 +342,11 @@ int CANBus::doWrite(DeviceId &nodeId, byte *pBuf, int len)
     {
         canObj.Data[i] = pBuf[i];
     }
-logDbg()<<canObj.ID<<canObj.Data[0]<<canObj.Data[1]<<canObj.Data[2]<<canObj.Data[3]<<canObj.Data[4];
+//logDbg()<<canObj.ID<<canObj.Data[0]<<canObj.Data[1]<<canObj.Data[2]<<canObj.Data[3]<<canObj.Data[4];
     int ret;
     IBus::lock();
     ret = mApi.transmit( can_device_desc, &canObj, 1);
-
+    mFrames += 1;
     if ( mWtInterval > 0 )
     { IBus::wait_us( mWtInterval ); }
 
@@ -349,9 +387,13 @@ int CANBus::doWrite( QList<frameData> &canFrames )
     }
 IBus::lock();
     int ret =  mApi.transmit( can_device_desc, objs, canFrames.size() );
+    mFrames += canFrames.size();
 IBus::unlock();
     if ( ret != canFrames.size() )
-    { return -1; }
+    {
+        sysError( __FUNCTION__, QString::number(__LINE__) );
+        return -1;
+    }
     else
     { return 0; }
 }
@@ -359,7 +401,7 @@ IBus::unlock();
 
 int CANBus::doReceive( QList<frameData> &canFrames )
 {
-    CAN_OBJ canObj[10];
+    CAN_OBJ canObj[50];
 //    CAN_OBJ canObj[1];
     int ret;
 IBus::lock();
@@ -516,10 +558,15 @@ int CANBus::getDevType()
 int CANBus::getCanId()
 { return mCanId; }
 
+qint64 CANBus::frames()
+{ return mFrames; }
+
 void CANBus::beginEnumerate()
 {
     //! destroy the enumerate
     delete_all( mEnumDevices );
+
+    mFrames = 0;
 }
 
 void CANBus::endEnumerate()
@@ -650,13 +697,20 @@ int CANBus::collectHash( )
 //! send: hash
 int CANBus::collectHash( QMap< int, quint32 > &sendHashMap )
 {
-    byte buf[] = { mc_CAN, sc_CAN_NETMANAGEHASH_Q };
+
     int ret;
 
     m_pRecvCache->clear();
 
-    //! 1. broadcast
+    //! 0. can intf
     DeviceId broadId( CAN_BROAD_ID );
+    byte buf0[] = { mc_LINK, sc_LINK_INTFC, MRQ_LINK_INTFC_CAN };
+    ret = doWrite( broadId, buf0, sizeof(buf0) );
+    if ( ret != 0 )
+    { return ret; }
+
+    //! 1. broadcast
+    byte buf[] = { mc_CAN, sc_CAN_NETMANAGEHASH_Q };
     ret = doWrite( broadId, buf, sizeof(buf) );
     if ( ret != 0 )
     { return ret; }

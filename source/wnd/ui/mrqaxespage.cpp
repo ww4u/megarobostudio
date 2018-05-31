@@ -10,7 +10,7 @@ MrqAxesPage::MrqAxesPage(QWidget *parent) :
     mSubViews.append( ui->pageMotor );
     mSubViews.append( ui->pageMotion );
     mSubViews.append( ui->pageTrigger );
-    mSubViews.append( ui->pagePlan );
+//    mSubViews.append( ui->pagePlan );
 
     spyEdited();
 }
@@ -54,7 +54,13 @@ void MrqAxesPage::setPage( MRQ_AX_PAGE pg )
 
 int MrqAxesPage::setApply()
 {
-    FOREACH_SUBVIEW_CALL( setApply );
+//    FOREACH_SUBVIEW_CALL( setApply );
+
+    foreach( mrqView *pSubView, mSubViews )
+    {
+        pSubView->setApply();
+        QThread::msleep( 100 );     //! \todo need by mrq overflow
+    }
 
     mrqView::setApply();
 
@@ -75,5 +81,5 @@ void MrqAxesPage::spyEdited()
     LINK_MODIFIED( ui->pageMotor );
     LINK_MODIFIED( ui->pageMotion );
     LINK_MODIFIED( ui->pageTrigger );
-    LINK_MODIFIED( ui->pagePlan );
+//    LINK_MODIFIED( ui->pagePlan );
 }

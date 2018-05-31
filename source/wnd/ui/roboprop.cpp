@@ -146,13 +146,12 @@ void roboProp::setupUi( int id )
     else if ( VRobot::robot_h2 == id )
     {
         m_pH2Pref = new_widget( H2Pref, ":/res/image/icon2/settings_light.png", tr("Zero") );
+        m_pH2Config = new_widget( H2Config, ":/res/image/icon2/settings_light.png", tr("Pref") );
     }
     else if ( VRobot::robot_sinanju == id )
     {
         m_pSinanjuPref  = new_widget( SinanjuPref, ":/res/image/icon2/settings_light.png", tr("Zero") );
         m_pSinanjuConfig = new_widget( SinanjuConfig, ":/res/image/icon2/settings_light.png", tr("Pref") );
-
-//        m_pHandPage  = new_widget( RoboHand, ":/res/image/icon2/activity.png", tr("Action") );
     }
     else if ( VRobot::robot_h2 == id
               || VRobot::robot_slide == id
@@ -290,6 +289,8 @@ void roboProp::slot_page_changed( int index )
     ui->btnCancel->setEnabled( pView->isCanceAble() );
     ui->btnOK->setEnabled( pView->isOkAble() );
     ui->btnApply->setEnabled( pView->isApplyAble() );
+
+    ui->btnCancel->setFocus();
 }
 
 void roboProp::on_btnOK_clicked()

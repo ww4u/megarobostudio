@@ -3,7 +3,11 @@
 MegatronMotionGroup::MegatronMotionGroup( const QString &className, const QString &name )
                                          : MegaTableModel( className, name)
 {
+    mExportOptList.clear();
+    mExportOptList<<"t-joints";
 
+    mSectionAble.clear();
+    mSectionAble<<true;
 }
 
 MegatronMotionGroup::~MegatronMotionGroup()
@@ -225,4 +229,29 @@ int MegatronMotionGroup::load( const QString &fileName )
                       index(mItems.count(), MegatronMotionItem::columns() - 1) );
     logDbg()<<mItems.size();
     return 0;
+}
+
+void MegatronMotionGroup::reverse()
+{
+    int count;
+
+    count = mItems.size();
+
+    //! reorder the item
+    for ( int i = 0; i <  count/2; i++ )
+    {
+        mItems.swap( i, count-1-i );
+    }
+
+    //! reverse the time
+    tpvType t;
+    for ( int i = 0; i <count/2; i++ )
+    {
+        t = mItems[i]->mT;
+        mItems[i]->mT = mItems[ count - i - 1 ]->mT;
+        mItems[ count - i - 1 ]->mT = t;
+    }
+
+    emit dataChanged( index(0,0),
+                      index(mItems.count(), MegatronMotionItem::columns() - 1) );
 }

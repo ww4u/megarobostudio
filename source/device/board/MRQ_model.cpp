@@ -151,12 +151,20 @@ int MRQ_model::serialOut( QXmlStreamWriter &writer )
         saveISOi( writer );
         writer.writeEndElement();
 
+        writer.writeStartElement("ai");
+        saveAi( writer );
+        writer.writeEndElement();
+
         writer.writeStartElement("anglealarm");
         saveAngleAlarm( writer );
         writer.writeEndElement();
 
         writer.writeStartElement("distancealarm");
         saveDistanceAlarm( writer );
+        writer.writeEndElement();
+
+        writer.writeStartElement("otp");
+        saveOtp( writer );
         writer.writeEndElement();
 
     writer.writeEndElement();
@@ -207,10 +215,14 @@ int MRQ_model::serialIn( QXmlStreamReader &reader )
                 { loadSensorUART( reader); }
                 else if ( reader.name() == "isoi" )
                 { loadISOi( reader); }
+                else if ( reader.name() == "ai" )
+                { loadAi( reader ); }
                 else if ( reader.name() == "anglealarm" )
                 { loadAngleAlarm( reader); }
                 else if ( reader.name() == "distancealarm" )
                 { loadDistanceAlarm( reader); }
+                else if ( reader.name() == "otp" )
+                { loadOtp( reader ); }
                 else
                 { reader.skipCurrentElement(); }
             }
@@ -246,5 +258,8 @@ QString MRQ_model::getFwVer()
 { return mFwVer; }
 QString MRQ_model::getBtVer()
 { return mBtVer; }
+
+QString MRQ_model::getSeqVer()
+{ return mSeqVer; }
 
 }

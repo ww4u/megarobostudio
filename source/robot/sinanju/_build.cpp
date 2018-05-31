@@ -4,7 +4,8 @@
 int robotSinanju::build( MegaTableModel *pModel,
                          xxxGroup<tracePoint> &tracePlan,
                          xxxGroup<jointsTrace> &jointsPlan,
-                         QList< tpvGroup *> &tpvGroups
+                         QList< tpvGroup *> &tpvGroups,
+                         QList< int > &sectionList
                          )
 {
     Q_ASSERT( NULL != pModel );
@@ -41,7 +42,7 @@ int robotSinanju::build( MegaTableModel *pModel,
     { return ret; }
 logDbg();
     //! convert
-    ret = convertTrace( curve, jointsPlan, tpvGroups );
+    ret = convertTrace( curve, jointsPlan, tpvGroups, sectionList );
     if ( ret != 0 )
     { return ret; }
 logDbg();

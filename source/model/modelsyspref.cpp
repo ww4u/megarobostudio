@@ -16,12 +16,12 @@ void modelSysPref::rst()
     mRecvTmo = 1;                   //! ms
     mInterval = time_us(100);       //! by port
     mTpvInterval = time_ms( 1 );
-    mFailTryCnt = 2;
+    mFailTryCnt = 1;
     mbAutoAssignId = false;
     mDeviceId = 0;
     mDeviceCount = 1;
 
-    mVisaTmo = 20000;
+    mVisaTmo = 2000;                //! 2s
     mVisaAddr = "TCPIP::172.16.0.1::INSTR";
 
     mRecvIdFrom = receive_id_from;  //! id range
@@ -59,7 +59,8 @@ void modelSysPref::rst()
     mMisaSocket = 1234;
 
     //! motion
-    mSpaceResolution = 5;
+    mGeometryResolution = 0.1;
+    mAngleResolution = 0.001;
 
     mLangIndex = 0;
     mStyleIndex = 0;
@@ -173,7 +174,8 @@ int modelSysPref::save( const QString &str )
     //! motion
     writer.writeStartElement("motion");
 
-    writer.writeTextElement( "space_resolution", QString::number( mSpaceResolution ) );
+    writer.writeTextElement( "geomerty_resolution", QString::number( mGeometryResolution ) );
+    writer.writeTextElement( "angle_resolution", QString::number( mAngleResolution ) );
 
     writer.writeEndElement();
 
@@ -303,7 +305,7 @@ int modelSysPref::load( const QString &str )
                         else if ( reader.name() == "auto_status" )
                         { mbAutoStatusView = reader.readElementText().toInt() > 0; }
                         else if ( reader.name() == "language_id" )
-                        { mLangIndex = reader.readElementText().toInt() > 0 ; }
+                        { mLangIndex = reader.readElementText().toInt(); }
                         else if ( reader.name() == "style_id" )
                         { mStyleIndex = reader.readElementText().toInt() > 0 ; }
                         else if ( reader.name() == "latest_prj_path" )
@@ -339,8 +341,10 @@ int modelSysPref::load( const QString &str )
                 {
                     while( reader.readNextStartElement() )
                     {
-                        if ( reader.name() == "space_resolution" )
-                        { mSpaceResolution = reader.readElementText().toInt(); }
+                        if ( reader.name() == "geometry_resolution" )
+                        { mGeometryResolution = reader.readElementText().toDouble(); }
+                        else if ( reader.name() == "angle_resolution" )
+                        { mAngleResolution = reader.readElementText().toDouble(); }
                         else
                         { reader.skipCurrentElement(); }
                     }

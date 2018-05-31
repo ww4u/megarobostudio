@@ -22,6 +22,9 @@ public:
     explicit deviceMgr(QWidget *parent = 0);
     ~deviceMgr();
 
+protected:
+    virtual QSize sizeHint() const;
+
 public:
     virtual void setMcModel( mcModel *pMcModel );
 

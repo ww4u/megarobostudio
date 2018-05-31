@@ -15,7 +15,9 @@ SOURCES = \
     _movement.cpp \
     _download.cpp \
     _state.cpp \
-    _calibration.cpp
+    _calibration.cpp \
+    _build.cpp \
+    h2_task.cpp
 
 HEADERS = \
     h2.h

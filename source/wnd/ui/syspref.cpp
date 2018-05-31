@@ -17,6 +17,8 @@ sysPref::sysPref(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    ui->label_43->setText( tr("Angle") + "(" + QChar(0x00B0) + ")" );
+
     //! db changed
     connect( ui->edtHost, SIGNAL(textChanged(const QString &)),
              this, SLOT(slot_updateValidateEn()) );
@@ -33,6 +35,11 @@ sysPref::sysPref(QWidget *parent) :
              this, SLOT(slot_styleLang_changed(int) ));
     connect( ui->cmbStyle, SIGNAL(activated(int)),
              this, SLOT(slot_styleLang_changed(int) ));
+
+    m_pCANSetting = ui->tabWidget_2->widget(0);
+    m_pMRHTSetting = ui->tabWidget_2->widget(1);
+    ui->tabWidget_2->removeTab(1);
+    ui->tabWidget_2->removeTab(0);
 
     slot_updateValidateEn();
     slot_validate_listmrt();
@@ -119,6 +126,10 @@ void sysPref::updateUi()
     ui->edtRemotePath->setText( mPref.mRemoteDirPath );
 logDbg()<<mPref.mMisaEn<<mPref.mMisaSocket;
     ui->tempPath->setText( mPref.mDumpPath );
+
+    //! space
+    ui->spinDistanceError->setValue( mPref.mGeometryResolution );
+    ui->spinAngleError->setValue( mPref.mAngleResolution );
 }
 
 void sysPref::updateData()
@@ -181,6 +192,10 @@ void sysPref::updateData()
     mPref.mMisaEn = ui->chkMisaEn->isChecked();
     mPref.mMisaSocket = ui->spinMisaSocket->value();
     mPref.mRemoteDirPath = ui->edtRemotePath->text();
+
+    //! space
+    mPref.mGeometryResolution = ui->spinDistanceError->value();
+    mPref.mAngleResolution = ui->spinAngleError->value();
 }
 
 bool sysPref::validateDb()
@@ -291,6 +306,12 @@ void sysPref::on_buttonBox_clicked(QAbstractButton *button)
 {
     if ( ui->buttonBox->buttonRole( button ) == QDialogButtonBox::ResetRole )
     {
+        if ( QMessageBox::Ok !=
+             MegaMessageBox::question( this, QString(tr("Confirm") ),
+                                       QString( tr("Confirm to reset") ),
+                                       QMessageBox::Ok, QMessageBox::Cancel ) )
+        { return; }
+
         mPref.rst();
         updateUi();
     }
@@ -302,37 +323,58 @@ void sysPref::on_buttonBox_clicked(QAbstractButton *button)
 
 void sysPref::on_cmbPort_currentIndexChanged(int index)
 {
+    //! remove tab
+    for (int i = ui->tabWidget_2->count() - 1; i >= 0 ; i-- )
+    { ui->tabWidget_2->removeTab( i ); }
+
     if ( index == 0 )
     {
          ui->labelCanPic->setPixmap( QPixmap(QString::fromUtf8(":/res/image/megacan.png")) );
 
-         ui->tabWidget_2->setTabEnabled( 0, true );
-         ui->tabWidget_2->setTabEnabled( 1, false );
-         ui->tabWidget_2->setCurrentIndex( 0 );
+//         ui->tabWidget_2->setTabEnabled( 0, true );
+//         ui->tabWidget_2->setTabEnabled( 1, false );
+//         ui->tabWidget_2->setCurrentIndex( 0 );
+
+         ui->tabWidget_2->insertTab( 0, m_pCANSetting, QString( tr("Setting") ) );
     }
     else if ( index == 1 )
     {
         ui->labelCanPic->setPixmap( QPixmap(QString::fromUtf8(":/res/image/can2.png")) );
 
-        ui->tabWidget_2->setTabEnabled( 0, true );
-        ui->tabWidget_2->setTabEnabled( 1, false );
-        ui->tabWidget_2->setCurrentIndex( 0 );
+//        ui->tabWidget_2->setTabEnabled( 0, true );
+//        ui->tabWidget_2->setTabEnabled( 1, false );
+//        ui->tabWidget_2->setCurrentIndex( 0 );
+
+//        ui->tabWidget_2->widget(0)->setVisible( true );
+//        ui->tabWidget_2->widget(1)->setVisible( false );
+
+        ui->tabWidget_2->insertTab( 0, m_pCANSetting, QString( tr("Setting") ) );
     }
     else if ( index == 2 )
     {
         ui->labelCanPic->setPixmap( QPixmap(QString::fromUtf8(":/res/image/mrh-t.png")) );
 
-        ui->tabWidget_2->setTabEnabled( 0, false );
-        ui->tabWidget_2->setTabEnabled( 1, true );
-        ui->tabWidget_2->setCurrentIndex( 1 );
+//        ui->tabWidget_2->setTabEnabled( 0, false );
+//        ui->tabWidget_2->setTabEnabled( 1, true );
+//        ui->tabWidget_2->setCurrentIndex( 1 );
+
+//        ui->tabWidget_2->widget(0)->setVisible( false );
+//        ui->tabWidget_2->widget(1)->setVisible( true );
+
+        ui->tabWidget_2->insertTab( 0, m_pMRHTSetting, QString( tr("Setting") ) );
     }
     else if ( index == 3 )
     {
         ui->labelCanPic->setPixmap( QPixmap(QString::fromUtf8(":/res/image/miniusbcan.png")) );
 
-        ui->tabWidget_2->setTabEnabled( 0, true );
-        ui->tabWidget_2->setTabEnabled( 1, false );
-        ui->tabWidget_2->setCurrentIndex( 0 );
+//        ui->tabWidget_2->setTabEnabled( 0, true );
+//        ui->tabWidget_2->setTabEnabled( 1, false );
+//        ui->tabWidget_2->setCurrentIndex( 0 );
+
+//        ui->tabWidget_2->widget(0)->setVisible( true );
+//        ui->tabWidget_2->widget(1)->setVisible( false );
+
+        ui->tabWidget_2->insertTab( 0, m_pCANSetting, QString( tr("Setting") ) );
     }
     else
     {}

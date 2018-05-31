@@ -6,6 +6,7 @@
 
 #include "../../include/mccfg.h"
 #include "../sys/sysapi.h"
+#include "../../source/para/syspara.h"
 
 #include "vdevice.h"
 #include "roboworker.h"
@@ -30,8 +31,30 @@ class deviceMRQ;
 
 }
 
+class RoboTask;
+
 #define robot_is_mrq( id )          ( ( (id) >= VRobot::robot_raw ) && ( (id) < VRobot::robot_complex ) )
 #define robot_is_robot( id )        ( ( (id) >= VRobot::robot_complex ) && ( (id) < VRobot::robot_user ) )
+
+enum eRoboPlanMode
+{
+    plan_linear = 0,
+    plan_3rd,
+    plan_5rd,
+};
+
+struct PlanAttr
+{
+    eRoboPlanMode mMode;
+    float mStep;
+
+    PlanAttr( eRoboPlanMode mode = plan_linear,
+              float step = 5.0f )
+    {
+        mMode = mode;
+        mStep = step;
+    }
+};
 
 class VRobot : public MegaDevice::VDevice, public ISerial
 {
@@ -60,15 +83,25 @@ public:
         robot_user = 65536,
     };
 
+public:
+    typedef int (VRobot::*apiTaskRequest)( void *pArg );
+
 protected:
     static double _mTBase, _mPBase, _mVBase;      //! tune info
     static QString _tempPath;
+
+    static SysPara *_mSysPara;
+
 public:
     static void setTpvBase( double tBase,
                     double pBase,
                     double vBase );
     static void setTempPath( const QString &tempPath );
     static QString tempPath();
+
+    static void attachSysPara( SysPara *pSysPara );
+    static bool motionPredict( float t, float angle );
+
 public:
     VRobot();
     virtual ~VRobot();
@@ -113,8 +146,9 @@ public:
 
                        xxxGroup< tracePoint > &tracePlan,
                        xxxGroup< jointsTrace > &jointsPlan,
-                       QList< tpvGroup *> &gp );
-
+                       QList< tpvGroup *> &gp,
+                       QList< int > &sectionList );     //! section
+                                                        //! from,len,from,len
     //! action
     virtual int transform( int axes = 0 );
 
@@ -182,6 +216,12 @@ public:
     void setDcAxes( int n );
     int dcAxes();
 
+    void setOutputs( int n );
+    int outputs();
+
+    void setInputs( int n );
+    int inputs();
+
     void setDOs( int n );
     int dos();
 
@@ -212,6 +252,8 @@ public:
     void setUartSensors( int n );
     int uartSensors();
 
+    QStringList uartSensorList();
+
     void setAbsEncAlarms( int n );
     int absEncAlarms();
 
@@ -221,13 +263,27 @@ public:
     void setAlarms( int n);
     int alarms();
 
+    void setTrigSrcs( int srcs );
+    int trigSrcs();
+
+    virtual QString trigSrcAlias( int ax, int iTrig );
+
+    QList<bool> jointZeroCcwList();
+
     void setPoseCount( int pos );
     int poseCount();
 
-    void setZeroSpeed( double spd );
-    double zeroSpeed();
+    bool interpAble();
+
+    void microStepAttr( QStringList &stepList, int &base );
+
+    void setZeroPref( double spd, int tmo, int tick );
+    void zeroPref( double &spd, int &tmo, int &tick );
 
     QImage & getImage();
+
+    void setPlanAttr( const PlanAttr &attr );
+    PlanAttr planAttr();
 
     RoboWorker *lpc( int ax );      //! local post call
     RoboWorker *lpc();              //! robo lpc
@@ -270,16 +326,31 @@ protected:
     //! assist
     VRobot * subRobot( int index, int *pAxes );
 
+    int checkRoboTask();
+
 protected:
     int mAxes, mRegions;                //! configs
     int mDCAxes;
 
     int mDOs, mDIs, mISOs, mISIs, mAINs, mMosos;
+    int mOutputs, mInputs;
+
     int mEncoders, mTemperatures, mUARTs, mUART_Sensors;
     int mAbsEncoderAlarms, mDistanceAlarms;
     int mAlarms;
 
-    int mPoseCount;                      //! 0,3..
+    QStringList mSensorNameList;
+
+    int mTrigSrcs;                      //! 5,2
+
+    int mPoseCount;                     //! 0,3..
+
+    bool mbInterpAble;
+
+    QStringList mMicrostepsList;
+    int mMicrostepBase;
+
+    PlanAttr mPlanAttr;
 
 public:
     QString mClass;                     //! robot class
@@ -295,11 +366,14 @@ public:
     int mSubGroup;
     int mSubGroupId;
     double mZeroSpeed;
+    int mZeroTmo, mZeroTick;
 
     QStringList mAxesConnectionName;    //! connected to device
     QStringList mJointName;             //! by config
 
     QList<bool> mJointAngleMask;        //! angles for each joint
+    QList<bool> mJointCcwMask;          //! ccw for each angle
+    QList<bool> mJointZeroCcw;          //! zero ccw for each joint
 
     QList<bool> mAngleDir;              //! true: +
 
@@ -317,9 +391,63 @@ public:
 
     RoboWorker* m_pAxesWorkers;         //! worker
     RoboWorker* m_pRoboWoker;
+
+                                        //! task
+    RoboTask *m_pRoboTask;
 };
 
 Q_DECLARE_METATYPE( VRobot )
 Q_DECLARE_METATYPE( VRobot * )
+
+class RoboTaskArgument
+{
+public:
+    int mTmo;       //! us
+    int mTick;      //! us
+public:
+    RoboTaskArgument();
+    virtual ~RoboTaskArgument();
+};
+
+//! request
+class RoboTaskRequest
+{
+public:
+    VRobot *m_pRobo;
+    VRobot::apiTaskRequest m_pApi;
+//    void *m_pApi;
+    RoboTaskArgument *m_pArg;       //! need to be deleted
+
+public:
+    RoboTaskRequest();
+    virtual ~RoboTaskRequest();
+
+public:
+    void request( VRobot *pRobo,
+                  VRobot::apiTaskRequest api,
+//                  void *pApi,
+                  RoboTaskArgument *pArg );
+};
+
+class RoboTask : public QThread
+{
+    Q_OBJECT
+public:
+    RoboTask( QObject *pObj = NULL );
+
+protected:
+    virtual void run();
+
+public:
+    void setRequest( RoboTaskRequest * pReq );
+
+protected:
+    int checkRequest( const RoboTaskRequest *pReq );
+    void gc();
+
+
+protected:
+    RoboTaskRequest *m_pReq;
+};
 
 #endif // VROBOT_H

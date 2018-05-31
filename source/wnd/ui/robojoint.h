@@ -20,7 +20,8 @@ public:
     void setAngle( float angle );
 
     void setAngleVisible( bool b );
-
+    void setCcwVisible( bool b );
+    void setCcwChecked( bool b );
 protected:
     void actionChanged( const QDateTime &time, int valEnd  );
 

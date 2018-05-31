@@ -14,13 +14,18 @@ roboGeo51::roboGeo51()
     setAxesDefName( 5 );
     setJointName( 5 );
 
-    setDcAxes( 1 );
+//    setDcAxes( 1 );
+
+    mOutputs = 0;
+    mInputs = 0;
 
     mDOs = 0;
     mDIs = 0;
     mISOs = 0;
     mAINs = 0;
-//    mUARTs = 0;
+
+    mMicrostepBase = 2;
+
     setUarts( 2 );
     setUartSensors( 4 );
 

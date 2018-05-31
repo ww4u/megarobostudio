@@ -761,6 +761,34 @@ static scpi_result_t _scpi_jointRad( scpi_t * context )
     return SCPI_RES_OK;
 }
 
+//! sub joint, page, dRad, dt
+static scpi_result_t _scpi_jointMove( scpi_t * context )
+{
+    DEF_LOCAL_VAR();
+    DEF_ROBO();
+
+    CHECK_LINK();
+
+    int subJoint, subPage;
+
+    if ( SCPI_ParamInt32(context, &subJoint, true) != true )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    if ( SCPI_ParamInt32(context, &subPage, true) != true )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    float vals[2];
+    for ( int i = 0; i < sizeof_array(vals); i++ )
+    {
+        if ( SCPI_RES_OK != SCPI_ParamFloat( context, vals+i, true ) )
+        { scpi_ret( SCPI_RES_ERR ); }
+    }
+
+    LOCAL_ROBO()->jointMove( subJoint, subPage, comAssist::radToDeg( vals[0] ), vals[1] );
+
+    return SCPI_RES_OK;
+}
+
 static scpi_command_t _scpi_cmds[]=
 {
 
@@ -791,6 +819,7 @@ static scpi_command_t _scpi_cmds[]=
     CMD_ITEM( "ZERO", _scpi_gozero ),
 
     CMD_ITEM( "JOINT:RAD?", _scpi_jointRad ),
+    CMD_ITEM( "JOINT:MOVE", _scpi_jointMove ),
 
     CMD_ITEM( "TEST1", _scpi_test1 ),
     CMD_ITEM( "TEST2", _scpi_test2 ),

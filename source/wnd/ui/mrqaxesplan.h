@@ -26,7 +26,6 @@ protected:
     int updateUi();
     int updateData();
 
-
 private:
     Ui::MrqAxesPlan *ui;
 };

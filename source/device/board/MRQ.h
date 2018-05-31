@@ -125,6 +125,7 @@ int getMOTION_ABCOUNT( byte val0, int32 * val1, bool bQuery=true );
 int setMOTION_REVMOTION( byte val0
 ,MRQ_CAN_NETMANAGELED val1 );
 int getMOTION_REVMOTION( byte val0, MRQ_CAN_NETMANAGELED * val1, bool bQuery=true );
+int setMOTION_ABCOUNTRESET( byte val0 );
 int setIDENTITY_GROUP( byte val0
 ,MRQ_IDENTITY_GROUP val1
 ,byte val2 );
@@ -523,6 +524,25 @@ int getDISTANCEALARM_ALARM2DIST( MRQ_IDENTITY_LABEL_1 val0, uint16 * val1, bool 
 int setDISTANCEALARM_ALARM3DIST( MRQ_IDENTITY_LABEL_1 val0
 ,uint16 val1 );
 int getDISTANCEALARM_ALARM3DIST( MRQ_IDENTITY_LABEL_1 val0, uint16 * val1, bool bQuery=true );
+int setOTP_STATE( MRQ_CAN_NETMANAGELED val0 );
+int getOTP_STATE(  MRQ_CAN_NETMANAGELED * val0, bool bQuery=true );
+int setOTP_THRESHOLD( uint16 val0 );
+int getOTP_THRESHOLD(  uint16 * val0, bool bQuery=true );
+int setOTP_RESPONSE( MRQ_MOTIONPLAN_OOSLINERESPONSE_1 val0 );
+int getOTP_RESPONSE(  MRQ_MOTIONPLAN_OOSLINERESPONSE_1 * val0, bool bQuery=true );
+int setOTP_PERIOD( uint32 val0 );
+int getOTP_PERIOD(  uint32 * val0, bool bQuery=true );
+int getOTP_DATA(  uint32 * val0, bool bQuery=true );
+int setANALOGIN_STATE( MRQ_CAN_NETMANAGELED val0 );
+int getANALOGIN_STATE(  MRQ_CAN_NETMANAGELED * val0, bool bQuery=true );
+int setANALOGIN_THRESHOLDH( f32 val0 );
+int getANALOGIN_THRESHOLDH(  f32 * val0, bool bQuery=true );
+int setANALOGIN_THRESHOLDL( f32 val0 );
+int getANALOGIN_THRESHOLDL(  f32 * val0, bool bQuery=true );
+int setANALOGIN_RESPONSEH( MRQ_MOTIONPLAN_OOSLINERESPONSE_1 val0 );
+int getANALOGIN_RESPONSEH(  MRQ_MOTIONPLAN_OOSLINERESPONSE_1 * val0, bool bQuery=true );
+int setANALOGIN_RESPONSEL( MRQ_MOTIONPLAN_OOSLINERESPONSE_1 val0 );
+int getANALOGIN_RESPONSEL(  MRQ_MOTIONPLAN_OOSLINERESPONSE_1 * val0, bool bQuery=true );
 };
 }
 #endif

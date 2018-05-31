@@ -9,6 +9,8 @@ int robotDelta::serialIn( QXmlStreamReader &reader )
         { ret = serialInRaw( reader ); }
         else if ( reader.name() == "zero" )
         { ret = serialInZero(reader); }
+        else if ( reader.name() == "init" )
+        { ret = serialInInit(reader); }
         else if ( reader.name() == "angle" )
         { ret = serialInAngle(reader); }
         else if ( reader.name() == "arm" )
@@ -35,6 +37,10 @@ int robotDelta::serialOut( QXmlStreamWriter &writer )
 
     writer.writeStartElement("zero");
     ret = serialOutZero(writer);
+    writer.writeEndElement();
+
+    writer.writeStartElement("init");
+    ret = serialOutInit(writer);
     writer.writeEndElement();
 
     writer.writeStartElement("angle");
@@ -64,20 +70,77 @@ int robotDelta::serialOutZero( QXmlStreamWriter &writer)
 {
     writer.writeTextElement( "time", QString::number(mZeroTime) );
     writer.writeTextElement( "angle", QString::number(mZeroAngle) );
-    writer.writeTextElement( "speed", QString::number(mZeroSpeed) );
+//    writer.writeTextElement( "speed", QString::number(mZeroSpeed) );
 
     return 0;
 }
 int robotDelta::serialInZero( QXmlStreamReader &reader )
 {
+    QString str;
     while(reader.readNextStartElement())
     {
         if ( reader.name() == "time" )
         { mZeroTime = reader.readElementText().toDouble(); }
         else if ( reader.name() == "angle" )
         { mZeroAngle = reader.readElementText().toDouble(); }
-        if ( reader.name() == "speed" )
-        { mZeroSpeed = reader.readElementText().toDouble(); }
+//        else if ( reader.name() == "speed" )
+//        { mZeroSpeed = reader.readElementText().toDouble(); }
+        else
+        { reader.skipCurrentElement(); }
+
+//        if ( reader.name() == "time" )
+//        {
+//            str = reader.readElementText();
+//            mZeroTime = str.toDouble();
+//            logDbg()<<str;
+//        }
+//        else if ( reader.name() == "angle" )
+//        {
+//            str = reader.readElementText();
+//            mZeroAngle = str.toDouble();
+//            logDbg()<<str;
+
+////            mZeroAngle = reader.readElementText().toDouble();
+//        }
+//        else if ( reader.name() == "speed" )
+//        {
+//            str = reader.readElementText();
+//            mZeroSpeed = str.toDouble();
+//            logDbg()<<str;
+////            mZeroSpeed = reader.readElementText().toDouble();
+//        }
+//        else
+//        { reader.skipCurrentElement(); }
+    }
+
+    return 0;
+}
+
+int robotDelta::serialOutInit( QXmlStreamWriter &writer)
+{
+    writer.writeTextElement( "t", QString::number(mInitT) );
+    writer.writeTextElement( "l", QString::number(mInitL) );
+    writer.writeTextElement( "r", QString::number(mInitR) );
+    writer.writeTextElement( "y", QString::number(mInitY) );
+    writer.writeTextElement( "h", QString::number(mInitH) );
+
+
+    return 0;
+}
+int robotDelta::serialInInit( QXmlStreamReader &reader )
+{
+    while(reader.readNextStartElement())
+    {
+        if ( reader.name() == "t" )
+        { mInitT = reader.readElementText().toDouble(); }
+        else if ( reader.name() == "l" )
+        { mInitL = reader.readElementText().toDouble(); }
+        else if ( reader.name() == "r" )
+        { mInitR = reader.readElementText().toDouble(); }
+        else if ( reader.name() == "y" )
+        { mInitY = reader.readElementText().toDouble(); }
+        else if ( reader.name() == "h" )
+        { mInitH = reader.readElementText().toDouble(); }
         else
         { reader.skipCurrentElement(); }
     }

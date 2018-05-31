@@ -94,6 +94,8 @@ protected Q_SLOTS:
     void slot_download_cancel();
 
     void on_spinLoop_valueChanged(int arg1);
+    void on_comboBox_currentIndexChanged(int index);
+
     void on_btnPref_clicked();
 
     void slot_data_changed();

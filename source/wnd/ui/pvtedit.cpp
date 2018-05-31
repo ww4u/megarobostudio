@@ -225,7 +225,9 @@ int pvtEdit::postDownload( appMsg msg, void *pPara )
 
     //! set loop count
     int ret;
-    ret = pMrq->setMOTIONPLAN_CYCLENUM( axesId, MRQ_MOTION_SWITCH_1_MAIN, ui->spinLoop->value() );
+    ret = pMrq->setMOTIONPLAN_CYCLENUM( axesId,
+                                        MRQ_MOTION_SWITCH_1_MAIN,
+                                        ui->spinLoop->value() );
     if ( ret != 0 )
     { return ret; }
 
@@ -630,6 +632,25 @@ void pvtEdit::on_spinLoop_valueChanged(int arg1)
     pMrq->setMOTIONPLAN_CYCLENUM( axesId, MRQ_MOTION_SWITCH_1_MAIN, arg1 );
 }
 
+void pvtEdit::on_comboBox_currentIndexChanged(int index)
+{
+    if ( !checkChan() )
+    { return; }
+
+    QString str;
+    int axesId;
+    str = m_pmcModel->getConnection().getDeviceName();
+    axesId = m_pmcModel->getConnection().getDeviceCH();
+
+    MegaDevice::deviceMRQ *pMrq = m_pmcModel->m_pInstMgr->findDevice( str,
+                                                                      axesId );
+    Q_ASSERT( NULL != pMrq );
+
+    pMrq->setMOTIONPLAN_CYCLENUM( axesId,
+                                  MRQ_MOTION_SWITCH_1_MAIN,
+                                  (MRQ_MOTIONPLAN_ENDSTATE_1)index );
+}
+
 void pvtEdit::on_btnPref_clicked()
 {
     PvtPref dlgPref(this);
@@ -678,5 +699,7 @@ void pvtEdit::slot_line_changed()
         ui->btnGraph->setEnabled( false );
     }
 }
+
+
 
 

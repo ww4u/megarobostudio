@@ -7,6 +7,7 @@ MrqAlarm::MrqAlarm(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    //! \todo only for the T4
     for ( int i = 0; i < 4; i++ )
     {
         mAnglePages.append( new EncoderAlarmPage() );
@@ -81,7 +82,7 @@ void MrqAlarm::updateUi()
         encAlarmConfig.mZero = m_pMrqModel->mABSENCALARM_ZEROVALUE[i];
 
         encAlarmConfig.mZeroPos = m_pMrqModel->mABSENCALARM_ZEROPOSITION[i];
-
+logDbg()<<encAlarmConfig.mUpLimit<<encAlarmConfig.mDownLimit<<encAlarmConfig.mZero;
         mAnglePages.at(i)->setData( encAlarmConfig );
     }
 

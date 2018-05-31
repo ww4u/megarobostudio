@@ -4,7 +4,14 @@
 SinanjuMotionGroup::SinanjuMotionGroup( const QString &className,
                                         const QString &name ): MegaTableModel( className, name)
 {
+    mExportOptList.clear();
+    mExportOptList<<"t-joints"<<"t-hand"<<"t-geometry";
 
+    mSectionAble.clear();
+    mSectionAble<<true<<true<<true;
+
+    mbStepAble = true;
+    mbPrefAble = true;
 }
 
 SinanjuMotionGroup::~SinanjuMotionGroup()

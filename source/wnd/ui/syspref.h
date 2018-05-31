@@ -63,6 +63,8 @@ private:
     Ui::sysPref *ui;
 
     modelSysPref mPref;
+
+    QWidget *m_pCANSetting, *m_pMRHTSetting;
 };
 
 #endif // SYSPREF_H

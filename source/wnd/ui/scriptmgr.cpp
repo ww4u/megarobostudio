@@ -9,6 +9,7 @@
 
 
 #include "../model/sinanjumotiongroup.h"
+#include "../model/deltamotiongroup.h"
 #include "../model/megatronmotiongroup.h"
 #include "../model/h2motiongroup.h"
 
@@ -21,7 +22,7 @@ MegaTableModel *scriptMgr::newMotion( const QString &clsName )
     else if ( clsName.compare("MRX-AS", Qt::CaseInsensitive) == 0 )
     { pNewModelObj = new MegatronMotionGroup( clsName ); }
     else if ( clsName.compare("MRX-DT", Qt::CaseInsensitive) == 0 )
-    { pNewModelObj = new SinanjuMotionGroup( clsName ); }
+    { pNewModelObj = new DeltaMotionGroup( clsName ); }
     else if ( clsName.compare("MRX-H2", Qt::CaseInsensitive) == 0 )
     { pNewModelObj = new H2MotionGroup( clsName ); }
     else
@@ -79,6 +80,9 @@ void scriptMgr::contextMenuEvent(QContextMenuEvent *event)
     else
     {}
 }
+
+QSize scriptMgr::sizeHint() const
+{ return QSize(180,0);}
 
 void scriptMgr::setExpand( bool b )
 {
@@ -575,10 +579,18 @@ void scriptMgr::slot_context_newgroup()
                                          QLineEdit::Normal,
                                          defaultName(), &ok);
     if (ok && !text.isEmpty())
-    { newGroup( text ); }
+    {
+        newGroup( text );
+
+        emit signal_prj_edited();
+    }
 }
 void scriptMgr::slot_context_delete()
-{ deleteCurrent( ); }
+{
+    deleteCurrent( );
+
+    emit signal_prj_edited();
+}
 
 void scriptMgr::slot_context_import()
 {
@@ -588,8 +600,8 @@ void scriptMgr::slot_context_import()
     QStringList nameFilters;
     nameFilters<<tr("pvt (*.pvt)")
                <<tr("motion (*.mc)")
-               <<tr("setup (*.stp)")
                <<tr("scene (*.sce)")
+               <<tr("setup (*.stp)")
                <<tr("python (*.py)");
     fDlg.setNameFilters( nameFilters );
     if ( QDialog::Accepted != fDlg.exec() )
@@ -609,6 +621,8 @@ void scriptMgr::slot_context_import()
     pFile->setPath( refPath );
 
     m_pRootModel->appendNode( ui->scriptView->currentIndex(), pFile );
+
+    emit signal_prj_edited();
 }
 
 

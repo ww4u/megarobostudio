@@ -210,7 +210,7 @@ void MainWindow::on_actionNewMotion_triggered()
     pNewModelObj = scriptMgr::newMotion( motionWizard.motionName() );
     if ( NULL == pNewModelObj )
     {
-        sysError( tr("fali"), motionWizard.motionName() );
+        sysError( tr("fail"), motionWizard.motionName() );
         return;
     }
 
@@ -297,13 +297,26 @@ void MainWindow::on_actionPackage_triggered()
 {
     QStringList args;
     QString str;
-    str = QCoreApplication::applicationDirPath() + QDir::separator() + QStringLiteral("package");
+    str = QCoreApplication::applicationDirPath() + QDir::separator() + QStringLiteral("package") + QDir::separator() + QStringLiteral("mrq");
     str.replace("/", QDir::separator() );
     args<<str;
     //! \todo linux
     logDbg()<<args;
     QProcess::execute( "explorer.exe", args );
 }
+
+void MainWindow::on_actionExample_triggered()
+{
+    QStringList args;
+    QString str;
+    str = QCoreApplication::applicationDirPath() + QDir::separator() + QStringLiteral("package") + QDir::separator() + QStringLiteral("example");
+    str.replace("/", QDir::separator() );
+    args<<str;
+    //! \todo linux
+    logDbg()<<args;
+    QProcess::execute( "explorer.exe", args );
+}
+
 
 //! pref
 void MainWindow::on_actionpref_triggered( )

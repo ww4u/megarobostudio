@@ -6,7 +6,7 @@
 
 void motionEdit::on_btnGraph_clicked()
 {
-    if ( mJointsPlan.size() > 0 )
+    if ( mJointsTpvGroup.size() > 0 )
     {}
     else
     { return; }
@@ -36,45 +36,122 @@ void motionEdit::on_btnReverse_clicked()
 
 void motionEdit::updatePlot()
 {
-    //! now for the joints
-    int skipUnit;
-    skipUnit = sizeof(jointsTrace)/sizeof(double);
-    for ( int i = 0; i < 4; i++ )
-    {
-        m_pPlot->setCurve( QString("t-p%1").arg( i + 1 ), &mJointsPlan.data()->t, skipUnit,
-                         &mJointsPlan.data()->p[i], skipUnit,
-                         mJointsPlan.size() );
+//    //! now for the joints
+//    int skipUnit;
+//    skipUnit = sizeof(jointsTrace)/sizeof(double);
+//    for ( int i = 0; i < 4; i++ )
+//    {
+//        m_pPlot->setCurve( QString("t-p%1").arg( i + 1 ), &mJointsPlan.data()->t, skipUnit,
+//                         &mJointsPlan.data()->p[i], skipUnit,
+//                         mJointsPlan.size() );
 
-        m_pPlot->setCurve( QString("t-v%1").arg( i + 1 ), &mJointsPlan.data()->t, skipUnit,
-                         &mJointsPlan.data()->v[i], skipUnit,
-                         mJointsPlan.size() );
+//        m_pPlot->setCurve( QString("t-v%1").arg( i + 1 ), &mJointsPlan.data()->t, skipUnit,
+//                         &mJointsPlan.data()->v[i], skipUnit,
+//                         mJointsPlan.size() );
+//    }
+
+    for ( int i = 0; i < mJointsTpvGroup.size(); i++ )
+    {
+        tpvGroupPlot( mJointsTpvGroup.at(i), i+1 );
     }
 
+    //! trace plan
+    if ( mTracePlan.size() > 0 )
+    {
+        int skipUnit = sizeof(tracePoint)/sizeof(double);
 
-    skipUnit = sizeof(tracePoint)/sizeof(double);
+        m_pPlot->setCurve( "t-x", &mTracePlan.data()->t, skipUnit,
+                                &mTracePlan.data()->x, skipUnit,
+                                mTracePlan.size() );
+        m_pPlot->setCurve( "t-y", &mTracePlan.data()->t, skipUnit,
+                                &mTracePlan.data()->y, skipUnit,
+                                mTracePlan.size() );
+        m_pPlot->setCurve( "t-z", &mTracePlan.data()->t, skipUnit,
+                                &mTracePlan.data()->z, skipUnit,
+                                mTracePlan.size() );
 
-    m_pPlot->setCurve( "t-x", &mTracePlan.data()->t, skipUnit,
-                            &mTracePlan.data()->x, skipUnit,
-                            mTracePlan.size() );
-    m_pPlot->setCurve( "t-y", &mTracePlan.data()->t, skipUnit,
-                            &mTracePlan.data()->y, skipUnit,
-                            mTracePlan.size() );
-    m_pPlot->setCurve( "t-z", &mTracePlan.data()->t, skipUnit,
-                            &mTracePlan.data()->z, skipUnit,
-                            mTracePlan.size() );
+        //! xyz
+        double *xyz[]={ &mTracePlan.data()->x,
+                        &mTracePlan.data()->y,
+                        &mTracePlan.data()->z };
+        int skipYs[ ] = { skipUnit,skipUnit,skipUnit } ;
 
-    //! xyz
-    double *xyz[]={ &mTracePlan.data()->x,
-                    &mTracePlan.data()->y,
-                    &mTracePlan.data()->z };
-    int skipYs[ ] = { skipUnit,skipUnit,skipUnit } ;
+        QStringList names;
+        names<<"x"<<"y"<<"z";
+        m_pPlot->setCurves( "t-xyz",
+                            names,
+                           &mTracePlan.data()->t, skipUnit,
+                           xyz, skipYs,
+                           sizeof_array(skipYs),
+                           mTracePlan.size() );
+    }
 
-    QStringList names;
-    names<<"x"<<"y"<<"z";
-    m_pPlot->setCurves( "t-xyz",
-                        names,
-                       &mTracePlan.data()->t, skipUnit,
-                       xyz, skipYs,
-                       sizeof_array(skipYs),
-                       mTracePlan.size() );
+}
+
+void motionEdit::tpvGroupPlot( tpvGroup *pGroup, int id )
+{
+    Q_ASSERT( NULL != pGroup );
+
+    if ( pGroup->mItems.size() > 0 )
+    {}
+    else
+    { return; }
+
+    //! trans data
+    xxxGroup< double > ts, ps, vs;
+    if ( 0!= ts.alloc( pGroup->mItems.size() ) )
+    { return; }
+    if ( 0!= ps.alloc( pGroup->mItems.size() ) )
+    { return; }
+    if ( 0!= vs.alloc( pGroup->mItems.size() ) )
+    { return; }
+
+    for ( int i = 0; i < pGroup->mItems.size(); i++ )
+    {
+        ts.data()[i] = pGroup->mItems.at(i)->getT();
+        ps.data()[i] = pGroup->mItems.at(i)->getP();
+        vs.data()[i] = pGroup->mItems.at(i)->getV();
+    }
+
+    m_pPlot->setCurve( QString("t-p%1").arg( id ),
+                       ts.data(),1,
+                       ps.data(),1,
+                       pGroup->mItems.size() );
+
+    m_pPlot->setCurve( QString("t-v%1").arg( id ),
+                       ts.data(),1,
+                       vs.data(),1,
+                       pGroup->mItems.size() );
+
+    ts.clear();
+    ps.clear();
+    vs.clear();
+}
+
+
+bool motionEdit::checkRobotLive( VRobot **ppRobot )
+{
+    Q_ASSERT( NULL != ppRobot );
+
+    VRobot *pRobo;
+
+    //! check robo
+    pRobo = currentRobot();
+    if ( NULL == pRobo )
+    {
+        sysError( tr("invalid robot name"),  m_pmcModel->mConn.getRoboName() );
+        return ERR_INVALID_ROBOT_NAME;
+    }
+
+    if ( pRobo->checkLink() )
+    {}
+    else
+    {
+        sysError( tr("Invalid robot link") );
+        return false;
+    }
+
+    *ppRobot = pRobo;
+
+    return true;
 }

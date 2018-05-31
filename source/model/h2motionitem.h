@@ -16,7 +16,7 @@ public:
 public:
     H2MotionItem();
 
-    H2MotionItem &operator=( const H2MotionItem &item );
+//    H2MotionItem &operator=( const H2MotionItem &item );
 public:
     virtual int serialOut( ImcStream &stream );
     virtual int serialIn( ImcStream &stream );

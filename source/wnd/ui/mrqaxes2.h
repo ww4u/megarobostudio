@@ -32,6 +32,13 @@ protected:
     int apply();
     int updateUi();
 
+private slots:
+    void on_cmbStopMode_currentIndexChanged(int index);
+
+    void on_cmbTuneMode_currentIndexChanged(int index);
+
+    void on_cmbPlanMode_currentIndexChanged(int index);
+
 private:
     Ui::mrqaxes2 *ui;
 };

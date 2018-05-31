@@ -115,7 +115,8 @@ int robotDelta::program( QList<TraceKeyPoint> &curve,
     { return ret; }
 
     //! 2.convert
-    ret = convertTrace( curve, jointsPlan );
+    QList<int> secList;
+    ret = convertTrace( curve, jointsPlan, mJointsGroup, secList );
     if ( ret != 0 )
     { return ret; }
 
@@ -137,6 +138,18 @@ int robotDelta::move( QList<TraceKeyPoint> &curve,
 
     //! request run
     run( region );
+
+    ret = preMove( curve, region );
+
+    return ret;
+}
+
+int robotDelta::preMove( QList<TraceKeyPoint> &curve,
+                        const tpvRegion &region )
+{
+    int ret;
+
+    setLoop( 1, region );
 
     //! program
     ret = program( curve, region );

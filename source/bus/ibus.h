@@ -106,6 +106,8 @@ public :
     virtual int flush( DeviceId &id );
     virtual int clear();
 
+    virtual int doSend( const QString &buf );
+
     //! write to bus
     virtual int doWrite( DeviceId &id, byte *pBuf, int len );
     virtual int doWrite( QList<frameData> &canFrames );
@@ -233,6 +235,9 @@ public :
                     UInt16 v0,
                     float v1);
 
+        int write( DeviceId &id, byte mainCode, byte subCode,
+                   byte ary[], int len );
+
         //! 3 para
         int write( DeviceId &id, byte mainCode,
                     byte subCode,
@@ -312,6 +317,14 @@ public :
                     byte * v0,
                     byte * v1,
                     byte * v2,
+                    bool bQuery = true );
+
+        int read( DeviceId &id, byte mainCode,
+                    byte subCode,
+                    byte * v0,
+                    byte * v1,
+                    byte * v2,
+                    byte * v3,
                     bool bQuery = true );
 
         int read( DeviceId &id, byte mainCode,
@@ -505,6 +518,14 @@ public :
                     byte * v0,
                     byte * v1,
                     byte * v2,
+                    bool bQuery = true );
+
+        int _read( DeviceId &id, byte mainCode,
+                    byte subCode,
+                    byte * v0,
+                    byte * v1,
+                    byte * v2,
+                    byte * v3,
                     bool bQuery = true );
 
         int _read( DeviceId &id, byte mainCode,

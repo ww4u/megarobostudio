@@ -3,11 +3,12 @@
 
 #include <QtWidgets>
 #include "mrqview.h"
+#include "mrqtrigchan.h"
 namespace Ui {
 class MrqTrigPage;
 }
 
-class MrqTrigChan;
+//class MrqTrigChan;
 
 class MrqTrigPage : public mrqView
 {

@@ -8,7 +8,9 @@
 #include "robocompref.h"
 
 #include "megatronpref.h"
+
 #include "h2pref.h"
+#include "h2config.h"
 
 #include "deltapref.h"
 #include "deltaconfig.h"
@@ -78,6 +80,7 @@ private:
     MegatronPref *m_pMegatronPref;
 
     H2Pref *m_pH2Pref;
+    H2Config *m_pH2Config;
 
     DeltaPref *m_pDeltaPref;
     DeltaConfig *m_pDeltaConfig;

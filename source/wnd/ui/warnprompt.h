@@ -23,6 +23,8 @@ protected:
 
 private:
     Ui::WarnPrompt *ui;
+
+    int mCapcity;
 };
 
 #endif // WARNPROMPT_H

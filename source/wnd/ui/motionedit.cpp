@@ -57,6 +57,18 @@ void motionEdit::setModelObj( mcModelObj *pObj )
     Q_ASSERT( NULL != m_pMotionGroup );
     logDbg()<<m_pMotionGroup->getName();
     ui->tableView->setModel( m_pMotionGroup );
+
+    //! update ui
+
+    //! step
+    ui->labelStep->setVisible( m_pMotionGroup->stepAble() );
+    ui->spinStep->setVisible( m_pMotionGroup->stepAble() );
+    ui->labelInterp->setVisible( m_pMotionGroup->stepAble() );
+    ui->cmbInterp->setVisible( m_pMotionGroup->stepAble() );
+
+    ui->btnPref->setVisible( m_pMotionGroup->prefAble() );
+
+    setExportOpt( m_pMotionGroup->exportOptList() );
 }
 
 int motionEdit::save( QString &outFileName )
@@ -189,6 +201,14 @@ void motionEdit::onMotionStatus( int axes,
 VRobot *motionEdit::currentRobot()
 {
     return m_pmcModel->m_pInstMgr->findRobot( m_pmcModel->mConn.getRoboName() );
+}
+
+void motionEdit::setExportOpt( const QStringList &optList )
+{
+    for ( int i = 0; i < optList.size(); i++ )
+    {
+        ui->cmbExport->addItem( optList.at(i) );
+    }
 }
 
 void motionEdit::testDownload()

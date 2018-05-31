@@ -18,28 +18,38 @@
     <widget class="MrqUart" name="widget" native="true"/>
    </item>
    <item>
+    <widget class="QCheckBox" name="chkAllEn">
+     <property name="layoutDirection">
+      <enum>Qt::LeftToRight</enum>
+     </property>
+     <property name="text">
+      <string>All SEN</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
       <number>0</number>
      </property>
      <widget class="MrqSubUart" name="tab">
       <attribute name="title">
-       <string>S1</string>
+       <string>SEN1</string>
       </attribute>
      </widget>
      <widget class="MrqSubUart" name="tab_2">
       <attribute name="title">
-       <string>S2</string>
+       <string>SEN2</string>
       </attribute>
      </widget>
      <widget class="MrqSubUart" name="tab_3">
       <attribute name="title">
-       <string>S3</string>
+       <string>SEN3</string>
       </attribute>
      </widget>
      <widget class="MrqSubUart" name="tab_4">
       <attribute name="title">
-       <string>S4</string>
+       <string>SEN4</string>
       </attribute>
      </widget>
     </widget>

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>414</width>
-    <height>536</height>
+    <height>588</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -50,6 +50,9 @@
       </item>
       <item row="2" column="3">
        <widget class="QComboBox" name="cmbGroup">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <item>
          <property name="text">
           <string>Group1</string>
@@ -89,7 +92,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QGroupBox" name="groupBox_4">
+    <widget class="QGroupBox" name="gpTrace">
      <property name="title">
       <string>Trace</string>
      </property>
@@ -119,6 +122,12 @@
         <property name="decimals">
          <number>3</number>
         </property>
+        <property name="minimum">
+         <double>0.010000000000000</double>
+        </property>
+        <property name="maximum">
+         <double>20.000000000000000</double>
+        </property>
        </widget>
       </item>
       <item row="0" column="2">
@@ -130,6 +139,9 @@
       </item>
       <item row="0" column="3">
        <widget class="QComboBox" name="cmbInterpMode">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <item>
          <property name="text">
           <string>Line</string>
@@ -268,20 +280,54 @@
       <item row="0" column="0">
        <widget class="QLabel" name="label">
         <property name="text">
-         <string>Zero Speed</string>
+         <string>Zero Speed(/s)</string>
         </property>
        </widget>
       </item>
       <item row="0" column="1">
        <widget class="QDoubleSpinBox" name="spinZeroSpeed">
         <property name="minimum">
-         <double>1.000000000000000</double>
+         <double>0.000000000000000</double>
         </property>
         <property name="maximum">
          <double>100.000000000000000</double>
         </property>
         <property name="value">
          <double>5.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_11">
+        <property name="text">
+         <string>Zero Timeout(us)</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_18">
+        <property name="text">
+         <string>Zero Tick(us)</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QSpinBox" name="spinZeroTmo">
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="maximum">
+         <number>1000000000</number>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QSpinBox" name="spinZeroTick">
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="maximum">
+         <number>1000000000</number>
         </property>
        </widget>
       </item>

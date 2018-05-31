@@ -20,6 +20,9 @@
 #define checked_call( call )            ret = call;\
                                         if ( ret != 0 ){ return ret; }
 
+#define checked_call_x( call, n, r )            ret = call;\
+                                        if ( ret != n ){ return r; }
+
 #define gc_array( ary )                 if ( NULL != ary ){ delete []ary; ary = NULL; }
 #define gc_array2( ary1, ary2 )         gc_array( ary1 );gc_array( ary2 );
 #define gc_array3( ary1, ary2, ary3 )   gc_array2( ary1, ary2 ); gc_array( ary3 );

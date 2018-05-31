@@ -9,6 +9,9 @@ class roboQuebeley : public MegaDevice::deviceMRQ
 public:
     roboQuebeley( robotEnum id );
 
+public:
+    virtual QString trigSrcAlias( int ax, int iTrig );
+
 protected:
     virtual int serialIn( QXmlStreamReader &reader );
     virtual int serialOut( QXmlStreamWriter &writer );

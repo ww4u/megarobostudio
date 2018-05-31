@@ -137,7 +137,6 @@ void MotorMonitor::motorStateChanged( const QString &name,
     }
 }
 
-
 void MotorMonitor::slot_net_event(
                      const QString &name,       //! device name
                      int axes,                  //! device ax

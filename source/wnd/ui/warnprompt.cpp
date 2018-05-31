@@ -6,6 +6,7 @@ WarnPrompt::WarnPrompt(QWidget *parent) :
     ui(new Ui::WarnPrompt)
 {
     ui->setupUi(this);
+    mCapcity = 128;
 }
 
 WarnPrompt::~WarnPrompt()
@@ -15,12 +16,18 @@ WarnPrompt::~WarnPrompt()
 
 void WarnPrompt::setInfo( const QString &str )
 {
+    while ( ui->listWidget->count() >= mCapcity )
+    { delete ui->listWidget->takeItem(0); }
+
     ui->listWidget->addItem( str );
     ui->listWidget->setCurrentRow( ui->listWidget->count() - 1 );
 }
 
 void WarnPrompt::addInfo( const QString &str )
 {
+    while ( ui->listWidget->count() >= mCapcity )
+    { delete ui->listWidget->takeItem(0); }
+
     ui->listWidget->addItem( str );
     ui->listWidget->setCurrentRow( ui->listWidget->count() - 1 );
 }

@@ -3,6 +3,7 @@
 #include "ui_mainwindow.h"
 
 void MainWindow::exceptionProc( const QString &name,
+                                int ax,
                                 int exceptionId,
                                 RoboMsg &msg )
 {
@@ -37,7 +38,7 @@ void MainWindow::exceptionProc( const QString &name,
 
                 Q_ASSERT( NULL != m_pWarnPrompt );
 
-                m_pWarnPrompt->addInfo( name + ":" + pAction->event() );
+                m_pWarnPrompt->addInfo( QString("%1 CH%2:%3").arg( name ).arg( ax + 1).arg( pAction->event() ) );
                 m_pWarnPrompt->show();
                 m_pWarnPrompt->activateWindow();
             }

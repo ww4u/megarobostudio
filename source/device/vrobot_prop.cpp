@@ -24,7 +24,10 @@ int VRobot::setAxes(int n)
 
     //! init the angle
     for ( int i = 0; i <n; i++ )
-    { mJointAngleMask.append( false ); }
+    {
+        mJointAngleMask.append( false );
+        mJointCcwMask.append( true );
+    }
 
     return 0;
 }
@@ -32,6 +35,15 @@ int VRobot::axes()
 { return mAxes; }
 QImage & VRobot::getImage()
 { return mImage; }
+
+void VRobot::setPlanAttr( const PlanAttr &attr )
+{
+    mPlanAttr = attr;
+}
+PlanAttr VRobot::planAttr()
+{
+    return mPlanAttr;
+}
 
 void VRobot::setRegions( int regions )
 { mRegions = regions; }
@@ -42,6 +54,16 @@ void VRobot::setDcAxes( int n )
 { mDCAxes = n; }
 int VRobot::dcAxes()
 { return mDCAxes; }
+
+void VRobot::setOutputs( int n )
+{ mOutputs = n; }
+int VRobot::outputs()
+{ return mOutputs; }
+
+void VRobot::setInputs( int n )
+{ mInputs = n; }
+int VRobot::inputs()
+{ return mInputs; }
 
 void VRobot::setDOs( int n )
 { mDOs = n; }
@@ -93,6 +115,9 @@ void VRobot::setUartSensors( int n )
 int VRobot::uartSensors()
 { return mUART_Sensors; }
 
+QStringList VRobot::uartSensorList()
+{ return mSensorNameList; }
+
 void VRobot::setAbsEncAlarms( int n )
 { mAbsEncoderAlarms = n; }
 int VRobot::absEncAlarms()
@@ -108,18 +133,56 @@ void VRobot::setAlarms( int n)
 int VRobot::alarms()
 { return mAlarms; }
 
+void VRobot::setTrigSrcs( int srcs )
+{
+    mTrigSrcs = srcs;
+
+}
+int VRobot::trigSrcs()
+{ return mTrigSrcs; }
+
+QString VRobot::trigSrcAlias( int ax, int iTrig )
+{
+    return QString("TRIG%1").arg( iTrig + 1 );
+}
+
+QList<bool> VRobot::jointZeroCcwList()
+{ return mJointZeroCcw; }
+
 void VRobot::setPoseCount( int pos )
 { mPoseCount = pos; }
 int VRobot::poseCount()
 { return mPoseCount; }
 
-void VRobot::setZeroSpeed( double spd )
+bool VRobot::interpAble()
+{ return mbInterpAble; }
+
+void VRobot::microStepAttr( QStringList &stepList, int &base )
+{
+    stepList = mMicrostepsList;
+    base = mMicrostepBase;
+}
+
+//void VRobot::setZeroSpeed( double spd )
+//{
+//    mZeroSpeed = spd;
+//}
+//double VRobot::zeroSpeed()
+//{
+//    return mZeroSpeed;
+//}
+
+void VRobot::setZeroPref( double spd, int tmo, int tick )
 {
     mZeroSpeed = spd;
+    mZeroTmo = tmo;
+    mZeroTick = tick;
 }
-double VRobot::zeroSpeed()
+void VRobot::zeroPref( double &spd, int &tmo, int &tick )
 {
-    return mZeroSpeed;
+    spd = mZeroSpeed;
+    tmo = mZeroTmo;
+    tick = mZeroTick;
 }
 
 RoboWorker *VRobot::lpc( int ax )

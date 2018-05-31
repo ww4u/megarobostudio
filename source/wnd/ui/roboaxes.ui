@@ -140,16 +140,6 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButton">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="text">
-         <string>Reset</string>
-        </property>
-       </widget>
-      </item>
-      <item>
        <spacer name="horizontalSpacer_2">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
@@ -193,22 +183,22 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="RoboJoint" name="jointTab5" native="true"/>
-      </item>
-      <item>
-       <widget class="RoboJoint" name="jointTab4" native="true"/>
-      </item>
-      <item>
-       <widget class="RoboJoint" name="jointTab3" native="true"/>
-      </item>
-      <item>
-       <widget class="RoboJoint" name="jointTab2" native="true"/>
+       <widget class="RoboJoint" name="jointTab0" native="true"/>
       </item>
       <item>
        <widget class="RoboJoint" name="jointTab1" native="true"/>
       </item>
       <item>
-       <widget class="RoboJoint" name="jointTab0" native="true"/>
+       <widget class="RoboJoint" name="jointTab2" native="true"/>
+      </item>
+      <item>
+       <widget class="RoboJoint" name="jointTab3" native="true"/>
+      </item>
+      <item>
+       <widget class="RoboJoint" name="jointTab4" native="true"/>
+      </item>
+      <item>
+       <widget class="RoboJoint" name="jointTab5" native="true"/>
       </item>
      </layout>
     </widget>
@@ -268,7 +258,6 @@
  </customwidgets>
  <tabstops>
   <tabstop>btnZero</tabstop>
-  <tabstop>pushButton</tabstop>
  </tabstops>
  <resources>
   <include location="../res/res.qrc"/>

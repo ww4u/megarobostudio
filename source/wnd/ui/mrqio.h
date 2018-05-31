@@ -29,14 +29,7 @@ protected:
     int apply();
     int updateUi();
 
-    int isoApply();
-    int doApply();
-    int aiApply();
-
-private slots:
-    void on_btnIsoApply_clicked();
-    void on_btnDoApply_clicked();
-    void on_btnAiApply_clicked();
+    void adaptUi();
 
 private:
     Ui::mrqIo *ui;

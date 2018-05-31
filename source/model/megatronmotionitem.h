@@ -21,8 +21,6 @@ public:
     virtual ~MegatronMotionItem()
     {}
 
-    MegatronMotionItem &operator=( const MegatronMotionItem &item );
-
 public:
     virtual int serialOut( ImcStream &stream );
     virtual int serialIn( ImcStream &stream );

@@ -31,12 +31,7 @@
      </widget>
      <widget class="MrqTrigPage" name="pageTrigger">
       <attribute name="title">
-       <string>Trigger</string>
-      </attribute>
-     </widget>
-     <widget class="MrqAxesPlan" name="pagePlan">
-      <attribute name="title">
-       <string>Plan</string>
+       <string>POS</string>
       </attribute>
      </widget>
     </widget>
@@ -60,12 +55,6 @@
    <class>MrqTrigPage</class>
    <extends>QWidget</extends>
    <header>mrqtrigpage.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>MrqAxesPlan</class>
-   <extends>QWidget</extends>
-   <header>mrqaxesplan.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

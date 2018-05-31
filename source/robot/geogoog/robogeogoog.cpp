@@ -14,6 +14,9 @@ roboGeogoog::roboGeogoog()
     setAxesDefName( 4 );
     setJointName( 4 );
 
+    mOutputs = 1;
+    mInputs = 1;
+
     mDOs = 4;
     mDIs = 0;
     mISOs = 2;
@@ -22,7 +25,14 @@ roboGeogoog::roboGeogoog()
     setUarts( 2 );
     setUartSensors( 4 );
 
+    mMicrostepBase = 2;
+
     mImage = QImage::fromData( _megaimage, sizeof(_megaimage) );
+}
+
+QString roboGeogoog::trigSrcAlias( int ax, int iTrig )
+{
+    return QString("POS%1").arg( ax * 4 + iTrig + 1 );
 }
 
 int roboGeogoog::serialIn( QXmlStreamReader &reader )

@@ -9,12 +9,10 @@ DeltaPref::DeltaPref(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    ui->groupBox_4->setVisible( false );
-
     mCcwChecks.append( ui->chkLSCcw );
     mCcwChecks.append( ui->chkRSCcw );
-    mCcwChecks.append( ui->chkHandCcw );
     mCcwChecks.append( ui->chkPlateCcw );
+    mCcwChecks.append( ui->chkHandCcw );
 
     mBodyChecks.append( ui->chkLSBody );
     mBodyChecks.append( ui->chkRSBody );
@@ -87,10 +85,15 @@ void DeltaPref::spyEdited()
     QDoubleSpinBox *doubleSpinBoxes[]={
         ui->spinZeroTime,
         ui->spinZeroAngle,
-        ui->spinZeroSpeed,
 
-        ui->spinAngleRS,
-        ui->spinAngleLS,
+//        ui->spinAngleRS,
+//        ui->spinAngleLS,
+
+        ui->spinInitT,
+        ui->spinInitL,
+        ui->spinInitR,
+        ui->spinInitY,
+        ui->spinInitH,
     };
 
     QComboBox *comboxes[]={
@@ -109,12 +112,14 @@ void DeltaPref::updateData()
     robotDelta *pRobo = (robotDelta*)pBase;
     Q_ASSERT( NULL != pRobo );
     pRobo->setZeroAttr( ui->spinZeroTime->value(),
-                        ui->spinZeroAngle->value(),
-                        ui->spinZeroSpeed->value() );
+                        ui->spinZeroAngle->value() );
 
     //! init
-//    pRobo->mInitAngles[0] = ui->spinAngleLS->value();
-//    pRobo->mInitAngles[1] = ui->spinAngleRS->value();
+    pRobo->setInitAttr( ui->spinInitT->value(),
+                        ui->spinInitL->value(),
+                        ui->spinInitR->value(),
+                        ui->spinInitY->value(),
+                        ui->spinInitH->value() );
 }
 
 void DeltaPref::updateUi()
@@ -126,13 +131,31 @@ void DeltaPref::updateUi()
     robotDelta *pRobo = (robotDelta*)pBase;
     Q_ASSERT( NULL != pRobo );
 
-    double time, angle, speed;
-    pRobo->zeroAttr( time, angle, speed );
+    //! zero
+    double time, angle;
+    pRobo->zeroAttr( time, angle );
 
     ui->spinZeroTime->setValue( time );
     ui->spinZeroAngle->setValue( angle );
-    ui->spinZeroSpeed->setValue( speed );
 
+
+    //! init
+    double initT, initL, initR, initY, initH;
+    pRobo->initAttr( initT, initL, initR, initY, initH );
+    ui->spinInitT->setValue( initT );
+
+    ui->spinInitL->setValue( initL );
+    ui->spinInitR->setValue( initR );
+    ui->spinInitY->setValue( initY );
+    ui->spinInitH->setValue( initH );
+
+    //! zero ccw
+    QList<bool> zeroCcw = pRobo->jointZeroCcwList();
+    for ( int i = 0; i < mCcwChecks.size(); i++ )
+    {
+        mCcwChecks.at(i)->setChecked( zeroCcw.at(i) );
+    }
+    slot_ccw_changed();
 }
 
 void DeltaPref::zeroJoint( int jointId, bool bCcw )
@@ -244,8 +267,6 @@ void DeltaPref::on_btnZeroBody_clicked()
 
     pBase->goZero( jointList, ccwList );
 }
-
-
 
 void DeltaPref::on_chkAllCcw_clicked(bool checked)
 {

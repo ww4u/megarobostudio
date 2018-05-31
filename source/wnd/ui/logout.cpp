@@ -10,12 +10,16 @@ logOut::logOut(QWidget *parent) :
     connect( this, SIGNAL(sig_log_item( const QString &)),
              this, SLOT(slot_log_item( const QString &)));
 
+    setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
 }
 
 logOut::~logOut()
 {
     delete ui;
 }
+
+QSize logOut::sizeHint() const
+{ return QSize(0,50); }
 
 void logOut::on_btnExport_clicked()
 {
@@ -36,7 +40,7 @@ void logOut::on_btnExport_clicked()
     {
         str = ui->listWidget->item(i)->data(Qt::DisplayRole).toString();
 
-        file.write( str.toLatin1() );
+        file.write( str.toLocal8Bit() );
     }
 }
 

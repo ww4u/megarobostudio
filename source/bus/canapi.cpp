@@ -17,6 +17,8 @@ CANApi::CANApi()
 
     transmit = NULL;
     receive = NULL;
+
+    mPortId = 0;
 }
 
 CANApi::~CANApi()
@@ -25,7 +27,7 @@ CANApi::~CANApi()
 
 }
 
-bool CANApi::load( QString str )
+bool CANApi::load( QString str, int portId )
 {
     mDll.setFileName( str );
 
@@ -34,11 +36,13 @@ bool CANApi::load( QString str )
         return false;
     }
 
-    if ( !loadApi() )
+    if ( !loadApi( portId ) )
     {
         unload();
         return false;
     }
+
+    mPortId = portId;
 
     return true;
 }
@@ -50,7 +54,7 @@ void CANApi::unload()
     }
 }
 
-bool CANApi::loadApi()
+bool CANApi::loadApi( int portId )
 {
     //! usb can-ii do not have find device
     find = (p_VCI_FindDevice)mDll.resolve("VCI_FindDevice");
@@ -88,6 +92,13 @@ bool CANApi::loadApi()
     receive = (p_VCI_Receive)mDll.resolve("VCI_Receive");
     if ( !receive )
     { logDbg();return false; }
+
+    if ( portId == 0 )
+    {
+        write = (p_VCI_Write)mDll.resolve("VCI_Write");
+        if ( !write )
+        { logDbg();return false; }
+    }
 
     return true;
 }

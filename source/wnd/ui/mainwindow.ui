@@ -157,6 +157,7 @@
     <addaction name="actionAbout"/>
     <addaction name="actionDocs"/>
     <addaction name="actionPackage"/>
+    <addaction name="actionExample"/>
    </widget>
    <widget class="QMenu" name="menuView_V">
     <property name="title">
@@ -502,6 +503,15 @@
    </property>
    <property name="text">
     <string>Close All</string>
+   </property>
+  </action>
+  <action name="actionExample">
+   <property name="icon">
+    <iconset resource="../res/res.qrc">
+     <normaloff>:/res/image/icon/22.png</normaloff>:/res/image/icon/22.png</iconset>
+   </property>
+   <property name="text">
+    <string>Example...</string>
    </property>
   </action>
  </widget>

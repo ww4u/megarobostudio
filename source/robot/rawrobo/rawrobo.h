@@ -10,12 +10,7 @@
 
 #include "../../arith/pathplan/pathplan.h"
 
-enum eRoboPlanMode
-{
-    plan_linear = 0,
-    plan_3rd,
-    plan_5rd,
-};
+
 
 #define BIT_INTERP  0
 
@@ -60,15 +55,15 @@ struct MegatronKeyPoint
         struct
         {
             float t;
-            float x1, y1, z1;
-            float x2, y2, z2;
+            float fx, ly, fz;   //! x1, y1, z1
+            float bx, ry, bz;   //! x2, y2, z2
         };
         float datas[7];
     };
 
     MegatronKeyPoint( float pt = 0,
-                      float px1=0, float py1=0, float pz1=0,
-                      float px2=0, float py2=0, float pz2=0 );
+                      float fx=0, float ly=0, float fz=0,
+                      float bx=0, float ry=0, float bz=0 );
 };
 typedef QList<MegatronKeyPoint>    MegatronKeyPointList;
 
@@ -79,13 +74,13 @@ struct H2KeyPoint
         struct
         {
             float t;
-            float x, y, z;
+            float x, y, v;
         };
         float datas[4];
     };
 
     H2KeyPoint( float pt = 0,
-                      float px=0, float py=0, float pz=0 );
+                      float px=0, float py=0, float pv = 0 );
 };
 typedef QList<H2KeyPoint>    H2KeyPointList;
 
@@ -166,7 +161,7 @@ public:
     virtual void queryState( const tpvRegion &region=0 );
 
     virtual void toState( const tpvRegion &region, int stat );
-    int state( const tpvRegion &region=0 );
+    int state( const tpvRegion &region=0, int inTask = 0 );
 
     virtual void onTimer( void *pContext, int id );
 
@@ -194,12 +189,6 @@ protected:
     int serialOutRaw( QXmlStreamWriter &writer );
     int serialInRaw( QXmlStreamReader &reader );
 public:
-    void setPlanStep( float step );
-    float planStep();
-
-    void setPlanMode( eRoboPlanMode mode );
-    eRoboPlanMode planMode();
-
     RawRoboFsm * fsm( const tpvRegion &region );
 
 protected:
@@ -207,9 +196,6 @@ protected:
     QMap< tpvRegion, RawRoboFsm*> mFsms;
 
                                 //! pref
-    float mPlanStep;
-    eRoboPlanMode mPlanMode;
-
     QList< tpvGroup *> mJointsGroup;
     xxxGroup<tracePoint> mTracePlan;
 

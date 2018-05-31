@@ -12,6 +12,7 @@
 
 
 #include "mrqio.h"
+#include "mrqin.h"
 #include "mrqsensor.h"
 #include "mrqsys.h"
 
@@ -81,6 +82,7 @@ public:
     QList< MrqDcAxes *> mDcAxesPages;
 
     mrqIo *m_pIoPage;
+    MrqIn *m_pInPage;
     mrqSensor *m_pSensorPage;
     mrqSys *m_pSysPage;
     MrqAlarm *m_pAlarmPage;

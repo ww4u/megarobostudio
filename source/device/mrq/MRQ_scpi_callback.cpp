@@ -76,6 +76,8 @@ static scpi_result_t _scpi_lrn( scpi_t * context )
     if ( ret != 0 )
     { scpi_ret( SCPI_RES_ERR ); }
 
+    sysLog( QObject::tr("Setting Down") );
+
     return SCPI_RES_OK;
 }
 
@@ -86,6 +88,39 @@ static scpi_result_t _scpi_hrst( scpi_t * context )
     DEF_MRQ();
 
     LOCALMRQ()->hRst();
+
+    return SCPI_RES_OK;
+}
+
+static scpi_result_t _scpi_sn( scpi_t * context )
+{
+    DEF_LOCAL_VAR();
+
+    DEF_MRQ();
+
+    if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
+    { scpi_ret( SCPI_RES_ERR ); }logDbg()<<strLen<<pLocalStr;
+    if (strLen < 1)
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    QByteArray rawSn( pLocalStr, strLen );
+    QString sn( rawSn );
+
+    LOCALMRQ()->setSN( sn );
+
+    return SCPI_RES_OK;
+}
+
+static scpi_result_t _scpi_qSn( scpi_t * context )
+{
+    DEF_LOCAL_VAR();
+
+    DEF_MRQ();
+
+    QString str;
+    str = LOCALMRQ()->loadSN();
+
+    SCPI_ResultText( context, str.toLatin1().data() );
 
     return SCPI_RES_OK;
 }
@@ -317,6 +352,41 @@ static scpi_result_t _scpi_lightZero( _scpi_t * context )
     return SCPI_RES_OK;
 }
 
+//! ax, page, t, angle, endV, invt, invangle, tmos, ticks
+static scpi_result_t _scpi_task( _scpi_t * context )
+{
+    DEF_LOCAL_VAR();
+
+    int ax, page;
+    float vals[ 2 + 1 + 2 + 2 ];
+
+
+    if ( SCPI_RES_OK != SCPI_ParamInt32( context, &ax, true ) )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    if ( SCPI_RES_OK != SCPI_ParamInt32( context, &page, true ) )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    //! deload para
+    for ( int i = 0; i < sizeof_array(vals); i++ )
+    {
+        if ( SCPI_RES_OK != SCPI_ParamFloat( context, &vals[i], true ) )
+        { scpi_ret( SCPI_RES_ERR ); }
+    }
+
+    DEF_MRQ();
+
+    CHECK_LINK( ax, page );
+
+    LOCALMRQ()->lightCouplingZero( tpvRegion(ax,page),
+                                   vals[0], vals[1], vals[2],
+                                   vals[3], vals[4],
+                                   vals[5]*time_s(1),vals[6]*time_s(1)
+                                    );
+
+    return SCPI_RES_OK;
+}
+
 //! TPV ax,page,e:/ddd.csv
 static scpi_result_t _scpi_program( scpi_t * context )
 {logDbg();
@@ -451,6 +521,7 @@ static scpi_result_t _scpi_absangle( scpi_t * context )
     return SCPI_RES_OK;
 }
 
+//! ax
 static scpi_result_t _scpi_distance( scpi_t * context )
 {
     // read
@@ -558,6 +629,43 @@ static scpi_result_t _scpi_encoderZero( scpi_t * context )
     return SCPI_RES_OK;
 }
 
+static scpi_result_t _scpi_busFrames( scpi_t * context )
+{
+    // read
+    DEF_LOCAL_VAR();
+
+
+    DEF_MRQ();
+
+    qint64 frames = LOCALMRQ()->busFrames();
+
+    SCPI_ResultInt64( context, frames );
+
+    return SCPI_RES_OK;
+}
+
+//! id,val
+static scpi_result_t _scpi_ioOut( scpi_t * context )
+{
+    // read
+    DEF_LOCAL_VAR();
+
+    int vals[2];
+
+    for ( int i = 0; i < sizeof_array(vals); i++ )
+    {
+        if ( SCPI_RES_OK != SCPI_ParamInt32( context, vals+i, true ) )
+        { scpi_ret( SCPI_RES_ERR ); }
+    }
+
+    DEF_MRQ();
+
+    if( 0 != LOCALMRQ()->ioOut( vals[0], vals[1]) )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    return SCPI_RES_OK;
+}
+
 static scpi_command_t _mrq_scpi_cmds[]=
 {
     #include "../board/_MRQ_scpi_cmd.h"
@@ -565,6 +673,9 @@ static scpi_command_t _mrq_scpi_cmds[]=
     CMD_ITEM( "*IDN?", _scpi_idn ),
     CMD_ITEM( "*LRN", _scpi_lrn ),      //! setupfile
     CMD_ITEM( "HRST", _scpi_hrst ),
+
+    CMD_ITEM( "SN", _scpi_sn ),
+    CMD_ITEM( "SN?", _scpi_qSn ),
 
     CMD_ITEM( "TEST:ADD", _scpi_testAdd ),
 
@@ -592,11 +703,17 @@ static scpi_command_t _mrq_scpi_cmds[]=
     CMD_ITEM( "LZERO", _scpi_lightZero ),             //! light zero
     CMD_ITEM( "PEZERO", _scpi_lightZero ),
 
+    CMD_ITEM( "TASK", _scpi_task ),
+
     CMD_ITEM( "FANDUTY", _scpi_fanduty ),
     CMD_ITEM( "LEDDUTY", _scpi_ledduty ),
 
     CMD_ITEM( "ENCODER:ZEROVALID?", _scpi_encoderZeroValid ),
     CMD_ITEM( "ENCODER:ZERO?", _scpi_encoderZero ),
+
+    CMD_ITEM( "FRAMES?", _scpi_busFrames ),
+
+    CMD_ITEM( "IO:OUT", _scpi_ioOut ),
 
     SCPI_CMD_LIST_END
 };

@@ -20,6 +20,10 @@ public:
     explicit roboMgr(QWidget *parent = 0);
     ~roboMgr();
 
+protected:
+    virtual QSize sizeHint() const;
+
+public:
     void setModel( const modelRobotMgr &mgr );
 
     void setupData();

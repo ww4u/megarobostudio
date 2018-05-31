@@ -41,6 +41,9 @@ RoboComPref::RoboComPref(QWidget *parent) :
         pLabel->setVisible( false );
     }
 
+    ui->label_10->setVisible(false);
+    ui->cmbGroup->setVisible(false);
+
     spyEdited();
 }
 
@@ -52,6 +55,8 @@ RoboComPref::~RoboComPref()
 void RoboComPref::setModelObj( mcModelObj *pObj )
 {
     modelView::setModelObj( pObj );
+
+    adaptUi();
 
     updateUi();
 }
@@ -83,6 +88,9 @@ void RoboComPref::spyEdited()
     QSpinBox *spinBoxes[]={
         ui->spinBox,
         ui->spinBox_2,
+
+        ui->spinZeroTmo,
+        ui->spinZeroTick,
     };
 
     QDoubleSpinBox *doubleSpinBoxes[]={
@@ -117,7 +125,12 @@ void RoboComPref::updateUi()
     ui->cmbGroup->setCurrentIndex( pBase->subGroup() );
 //    ui->cmbGpSubId->setCurrentText( QString::number( pBase->subGroupId() ) );
 
-    ui->spinZeroSpeed->setValue( pBase->zeroSpeed() );
+    double spd;
+    int zeroTmo, zeroTick;
+    pBase->zeroPref( spd, zeroTmo, zeroTick );
+    ui->spinZeroSpeed->setValue( spd );
+    ui->spinZeroTmo->setValue( zeroTmo );
+    ui->spinZeroTick->setValue( zeroTick );
 
     //! connection name
     for ( int i = 0; i < pBase->axes(); i++ )
@@ -135,8 +148,8 @@ void RoboComPref::updateUi()
 
     //! interp
     RawRobo *pRawRobo = (RawRobo*)pBase;
-    ui->spinInterpStep->setValue( pRawRobo->planStep() );
-    ui->cmbInterpMode->setCurrentIndex( pRawRobo->planMode());
+    ui->spinInterpStep->setValue( pRawRobo->planAttr().mStep );
+    ui->cmbInterpMode->setCurrentIndex( (int)pRawRobo->planAttr().mMode );
 }
 
 void RoboComPref::updateData()
@@ -151,17 +164,35 @@ void RoboComPref::updateData()
     pRobo->setCanGroupId( ui->spinBox->value() );
 
     //! interp
-    RawRobo *pRawRobo = (RawRobo*)pRobo;
-    pRawRobo->setPlanStep( ui->spinInterpStep->value() );
-    pRawRobo->setPlanMode( (eRoboPlanMode)ui->cmbInterpMode->currentIndex() );
+//    RawRobo *pRawRobo = (RawRobo*)pRobo;
+//    pRawRobo->setPlanStep( ui->spinInterpStep->value() );
+//    pRawRobo->setPlanMode( (eRoboPlanMode)ui->cmbInterpMode->currentIndex() );
+
+    pRobo->setPlanAttr( PlanAttr( (eRoboPlanMode)ui->cmbInterpMode->currentIndex(),
+                                  ui->spinInterpStep->value()) );
 
     //! zero speed
-    pRawRobo->setZeroSpeed( ui->spinZeroSpeed->value() );
+    pRobo->setZeroPref( ui->spinZeroSpeed->value(),
+                        ui->spinZeroTmo->value(),
+                        ui->spinZeroTick->value()
+                        );
 
     //! set connection
     pRobo->mAxesConnectionName.clear();
     for ( int i = 0; i < pRobo->axes(); i++ )
     { pRobo->mAxesConnectionName<<mAxesEdits.at(i)->text(); }
+}
+
+void RoboComPref::adaptUi()
+{
+    VRobot *pRobo;
+
+    //! set to self
+    pRobo = (VRobot*)m_pModelObj;
+    if ( NULL == pRobo )
+    { return; }
+
+    ui->gpTrace->setVisible( pRobo->interpAble() );
 }
 
 int RoboComPref::applyGroupId()

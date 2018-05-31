@@ -14,10 +14,6 @@ public:
     void clean();
 
 public:
-//    double *m_pPX, *m_pPY, *m_pPZ;
-//    double *m_pVX, *m_pVY, *m_pVZ;
-//    double *m_pAX, *m_pAY, *m_pAZ;
-
     double *m_pPXYZ;
     double *m_pT;
 
@@ -26,6 +22,23 @@ public:
     double *m_pOutput;
     int mSize;
 };
+
+class DeltaPhaseCache
+{
+public:
+    DeltaPhaseCache();
+    ~DeltaPhaseCache();
+
+public:
+    int alloc( int size );
+    void clean();
+
+public:
+    double *m_pPhase;
+
+    int mSize;
+};
+
 
 }
 

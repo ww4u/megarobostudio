@@ -13,6 +13,16 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QScrollArea" name="scrollArea">
+     <property name="widgetResizable">
+      <bool>true</bool>
+     </property>
+
+    </widget>
+   </item>
+  </layout>
  </widget>
  <resources/>
  <connections/>

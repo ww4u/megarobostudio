@@ -2,8 +2,8 @@
 
 int RawRobo::serialOutRaw( QXmlStreamWriter &writer )
 {
-    writer.writeTextElement( "step", QString::number(mPlanStep) );
-    writer.writeTextElement( "mode", QString::number((int)mPlanMode) );
+    writer.writeTextElement( "step", QString::number(mPlanAttr.mStep) );
+    writer.writeTextElement( "mode", QString::number((int)mPlanAttr.mMode) );
 
     return 0;
 }
@@ -13,11 +13,11 @@ int RawRobo::serialInRaw( QXmlStreamReader &reader )
     {
         if ( reader.name() == "step" )
         {
-            mPlanStep = reader.readElementText().toFloat();
+            mPlanAttr.mStep = reader.readElementText().toFloat();
         }
         else if ( reader.name() == "mode" )
         {
-            mPlanMode = (eRoboPlanMode)reader.readElementText().toInt();
+            mPlanAttr.mMode = (eRoboPlanMode)reader.readElementText().toInt();
         }
         else
         { reader.skipCurrentElement(); }

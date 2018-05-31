@@ -26,7 +26,7 @@ public:
 
 protected:
     virtual void contextMenuEvent(QContextMenuEvent *event);
-
+    virtual QSize sizeHint() const;
 public:
     void setExpand( bool b );
 
@@ -81,6 +81,7 @@ protected:
 Q_SIGNALS:
     void itemXActivated( mcModelObj* );
     void signal_scriptmgr_changed();
+    void signal_prj_edited();
 
 private Q_SLOTS:
     void on_scriptView_activated(const QModelIndex &index);

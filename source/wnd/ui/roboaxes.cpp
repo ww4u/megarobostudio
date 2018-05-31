@@ -93,7 +93,7 @@ void roboAxes::slot_timeout()
         pMrq = pRobo->jointDevice( jointId, &subAx );
         if ( NULL == pMrq )
         {
-            sysError( tr("Invalid device") );
+            sysError( tr("Invalid device"), __FUNCTION__,QString::number(__LINE__) );
             return;
         }
 
@@ -196,6 +196,15 @@ void roboAxes::adapteUiToRobot( VRobot *pRobo )
         mJoints[jointId]->setAngleVisible( pRobo->mJointAngleMask[jointId] );
         if ( pRobo->mJointAngleMask[jointId] )
         { angleCnt++; }
+
+        mJoints[jointId]->setCcwVisible( pRobo->mJointCcwMask[jointId] );
+    }
+
+    //! ccw checked
+    QList<bool> ccwList = pRobo->jointZeroCcwList();
+    for ( int i = 0; i < ccwList.size(); i++ )
+    {
+        mJoints[i]->setCcwChecked( ccwList.at(i) );
     }
 
     ui->groupBox_3->setVisible( angleCnt > 0 );
@@ -228,7 +237,7 @@ void roboAxes::rotate( int jointId,
     MegaDevice::deviceMRQ *pMrq = pRobo->jointDevice( jointId, &subAx );
     if ( NULL == pMrq )
     {
-        sysError( tr("Invalid device") );
+        sysError( tr("Invalid device"), __FUNCTION__,QString::number(__LINE__) );
         return;
     }
 

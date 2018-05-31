@@ -27,6 +27,8 @@ public:
     static float   normalizeDegreeN180_180( float degree );
     static float   normalizeDegreeN180_180( float degree[], int n );
 
+    static float   diffAngle( float a, float b, bool bCcw );
+
     static float   radToDeg( float rad );
     static float   radToDeg( float rad[], int n );
 

@@ -118,8 +118,8 @@ int robotSinanju::planTrace( QList<TraceKeyPoint> &curve,
     int xyzResLen;
     int ret = ns_pathplan::GetPointLen( &endPoints.data()->datas,
                                       curve.size(),
-                                      mPlanStep,
-                                      mPlanMode,
+                                      mPlanAttr.mStep,
+                                      mPlanAttr.mMode,
                                       &xyzResLen );
     if ( ret != 0 )
     { return ERR_PLAN_FAIL; }

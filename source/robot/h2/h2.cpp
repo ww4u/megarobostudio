@@ -19,7 +19,7 @@ robotH2::robotH2()
     mId = robot_h2;
 
     //! default gpid
-    mCanGroupId = group_id_from + mId - robot_complex;
+    mCanGroupId = group_id_from + (mId - robot_complex)*group_segment;
 
     setAxes( 2 );
     setAxesDefName( 2 );
@@ -29,19 +29,43 @@ robotH2::robotH2()
 
     //! joint name
     mJointName.clear();
-    mJointName<<QObject::tr("X")
-              <<QObject::tr("Y");
+    mJointName<<QObject::tr("Left")
+              <<QObject::tr("Right");
 
     mImage = QImage::fromData( _megaimage, sizeof(_megaimage) );
+
+    mArmLengths.clear();
+    mArmLengths<<13.4<<13.4<<802<<494<<52<<38;
+
+    mJointCcwMask[0] = false;
+    mJointCcwMask[1] = false;
+
+    mZeroX = 32.7;
+    mZeroY = 0;
+
+    mAngleDir.clear();
+    mAngleDir<<true<<true;                 //! x: invert, y:
+
+    mAxesDirs.clear();
+    mAxesDirs<<1<<-1;
 
     //! debug used
     //! alter the axes name
     mAxesConnectionName[0] = "CH1@device1"; //! x
-    mAxesConnectionName[1] = "CH1@device2"; //! y
+    mAxesConnectionName[1] = "CH2@device1"; //! y
 
-    mZeroTime = 5;
+    mZeroTime = 10;
+    mZeroDistance = 800;
     mZeroSpeed = 5;
-    mZeroAngle = 100;
+
+    mGapTime = 1;
+    mGapDistance = 10;        //! dist
+
+    m_pRoboTask = new H2Task();
+    Q_ASSERT( NULL != m_pRoboTask );
+
+    mLines = 1000;
+    mEncoderDirs<<1<<1;
 }
 
 robotH2::~robotH2()
@@ -57,6 +81,8 @@ int robotH2::serialIn( QXmlStreamReader &reader )
         { serialInRaw(reader); }
         else if ( reader.name() == "zero" )
         { serialInZero(reader); }
+        else if ( reader.name() == "arm" )
+        { serialInArm(reader); }
         else
         { reader.skipCurrentElement(); }
     }
@@ -73,14 +99,23 @@ int robotH2::serialOut( QXmlStreamWriter &writer )
     serialOutZero(writer);
     writer.writeEndElement();
 
+    writer.writeStartElement("arm");
+    serialOutArm( writer );
+    writer.writeEndElement();
+
     return 0;
 }
 
 int robotH2::serialOutZero( QXmlStreamWriter &writer)
 {
     writer.writeTextElement( "time", QString::number(mZeroTime) );
-    writer.writeTextElement( "angle", QString::number(mZeroAngle) );
-    writer.writeTextElement( "speed", QString::number(mZeroSpeed) );
+    writer.writeTextElement( "distance", QString::number(mZeroDistance) );
+
+    writer.writeTextElement( "gap_time", QString::number(mGapTime) );
+    writer.writeTextElement( "gap_distance", QString::number(mGapDistance) );
+
+    writer.writeTextElement( "x", QString::number(mZeroX) );
+    writer.writeTextElement( "y", QString::number(mZeroY) );
 
     return 0;
 }
@@ -90,10 +125,41 @@ int robotH2::serialInZero( QXmlStreamReader &reader )
     {
         if ( reader.name() == "time" )
         { mZeroTime = reader.readElementText().toDouble(); }
-        else if ( reader.name() == "angle" )
-        { mZeroAngle = reader.readElementText().toDouble(); }
-        else if ( reader.name() == "speed" )
-        { mZeroSpeed = reader.readElementText().toDouble(); }
+        else if ( reader.name() == "distance" )
+        { mZeroDistance = reader.readElementText().toDouble(); }
+        else if ( reader.name() == "gap_time" )
+        { mGapTime = reader.readElementText().toDouble(); }
+        else if ( reader.name() == "gap_distance" )
+        { mGapDistance = reader.readElementText().toDouble(); }
+        else if ( reader.name() == "x" )
+        { mZeroX = reader.readElementText().toDouble(); }
+        else if ( reader.name() == "y" )
+        { mZeroY = reader.readElementText().toDouble(); }
+        else
+        { reader.skipCurrentElement(); }
+    }
+
+    return 0;
+}
+
+int robotH2::serialOutArm( QXmlStreamWriter &writer)
+{
+    for ( int i = 0; i < mArmLengths.size(); i++ )
+    {
+        writer.writeTextElement( "value", QString::number( mArmLengths.at(i) ) );
+    }
+
+    return 0;
+}
+int robotH2::serialInArm( QXmlStreamReader &reader )
+{
+    int id = 0;
+    while(reader.readNextStartElement())
+    {
+        if ( reader.name() == "value" )
+        {
+            mArmLengths[id++] = reader.readElementText().toDouble();
+        }
         else
         { reader.skipCurrentElement(); }
     }

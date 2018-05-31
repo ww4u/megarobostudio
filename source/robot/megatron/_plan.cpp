@@ -1,8 +1,9 @@
 #include "megatron.h"
 
 
-int robotMegatron::buildTrace( QList<MegatronKeyPoint> &curve
-                )
+int robotMegatron::buildTrace( QList<MegatronKeyPoint> &curve,
+                               QList<tpvGroup *> &jointGroup,
+                               QList<int> &secList )
 {
     megatron_split::endPoint *pPoints = new megatron_split::endPoint[ curve.size() ];
     if ( NULL == pPoints )
@@ -30,7 +31,7 @@ int robotMegatron::buildTrace( QList<MegatronKeyPoint> &curve
     }
 
     //! to tpv group
-    delete_all( mJointsGroup );
+    delete_all( jointGroup );
     ret = 0;
     tpvGroup *pGroup;
     for ( int i = 0; i < splitDataSet.size(); i++ )
@@ -42,7 +43,7 @@ int robotMegatron::buildTrace( QList<MegatronKeyPoint> &curve
             break;
         }
 
-        mJointsGroup.append( pGroup );
+        jointGroup.append( pGroup );
 
         //! for each item
         for ( int j = 0; j < splitDataSet.at(i)->size(); j++ )
@@ -55,7 +56,7 @@ int robotMegatron::buildTrace( QList<MegatronKeyPoint> &curve
             if ( ret != 0 )
             { break; }
 
-//            logDbg()<<splitDataSet.at(i)->at(j)->mT<<splitDataSet.at(i)->at(j)->mP;
+            logDbg()<<i<<splitDataSet.at(i)->at(j)->mT<<splitDataSet.at(i)->at(j)->mP;
         }
     }
 
@@ -64,9 +65,12 @@ int robotMegatron::buildTrace( QList<MegatronKeyPoint> &curve
 
     if ( ret != 0 )
     {
-        delete_all( mJointsGroup );
+        delete_all( jointGroup );
         return ret;
     }
+
+    //! add section
+    secList<<0<<6;
 
     return 0;
 }

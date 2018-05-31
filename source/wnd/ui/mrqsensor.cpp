@@ -36,13 +36,16 @@ int mrqSensor::setApply()
 }
 
 void mrqSensor::modelChanged()
-{ updateUi(); }
+{
+    adaptUi();
+
+    updateUi();
+}
 
 void mrqSensor::spyEdited()
 {
     LINK_MODIFIED(ui->tab);
     LINK_MODIFIED(ui->tab_2)
-
 }
 
 void mrqSensor::setupUi()
@@ -62,7 +65,8 @@ int mrqSensor::apply()
     int ret;
     uartConfig uCfg;
     subUartConfig suCfg;
-    for ( int i = 0; i < 2; i++ )
+    Q_ASSERT( NULL != m_pMrqModel );
+    for ( int i = 0; i < m_pMrqModel->uarts(); i++ )
     {
         ((MrqSensorPage*)ui->tabWidget->widget( i ))->getUartConfig( uCfg );
 
@@ -82,7 +86,7 @@ int mrqSensor::apply()
         checked_call( pDevice->setSENSORUART_FLOWCTL( sensPort,
                                         (MRQ_RS232_FLOWCTL)uCfg.mFlowInd ) );
 
-        for ( int j = 0; j < 4; j++ )
+        for ( int j = 0; j < m_pMrqModel->uartSensors(); j++ )
         {
             ((MrqSensorPage*)ui->tabWidget->widget( i ))->getSubUartConfig( j, suCfg );
 
@@ -117,7 +121,9 @@ int mrqSensor::updateUi()
 
     uartConfig uCfg;
     subUartConfig suCfg;
-    for ( int i = 0; i < 2; i++ )
+
+    Q_ASSERT( NULL != m_pMrqModel );
+    for ( int i = 0; i < m_pMrqModel->uarts(); i++ )
     {
         //! uart
         uCfg.mBaudInd = pModel->mSENSORUART_BAUD[i];
@@ -130,7 +136,7 @@ int mrqSensor::updateUi()
         ((MrqSensorPage*)ui->tabWidget->widget( i ))->setUartConfig( uCfg );
 
         //! sub uart
-        for ( int j = 0; j < 4; j++ )
+        for ( int j = 0; j < m_pMrqModel->uartSensors(); j++ )
         {
             suCfg.mbOnOff = pModel->mSENSORUART_STATE[i][j];
             suCfg.mSof = pModel->mSENSORUART_SOF[i][j];
@@ -144,5 +150,45 @@ int mrqSensor::updateUi()
     }
 
     return 0;
+}
+
+void mrqSensor::adaptUi()
+{
+    //! adapt tab
+    Q_ASSERT( NULL != m_pMrqModel );
+    Q_ASSERT( m_pMrqModel->uarts() <= 2 );
+
+    //! remove the more tab
+    int cnt = ui->tabWidget->count();
+    for( int i = m_pMrqModel->uarts(); i < cnt; i++ )
+    {
+        ui->tabWidget->removeTab( m_pMrqModel->uarts() );
+    }
+
+    //! remove the sens
+    for ( int i = 0; i < m_pMrqModel->uarts(); i++ )
+    {
+        cnt = ((MrqSensorPage*)ui->tabWidget->widget(i))->sensCount();
+        for ( int j = m_pMrqModel->uartSensors(); j < cnt; j++ )
+        {
+            ((MrqSensorPage*)ui->tabWidget->widget(i))->removeSens( m_pMrqModel->uartSensors() );
+        }
+    }
+
+    //! set the tab text
+    if ( m_pMrqModel->uartSensorList().size() > 0 )
+    {
+        QStringList nameList = m_pMrqModel->uartSensorList();
+        int k = 0;
+        for ( int i = 0; i < m_pMrqModel->uarts(); i++ )
+        {
+            cnt = ((MrqSensorPage*)ui->tabWidget->widget(i))->sensCount();
+            for ( int j = 0; j < cnt; j++ )
+            {
+                ((MrqSensorPage*)ui->tabWidget->widget(i))->setSensText( j, nameList.at(k) );
+                k++;
+            }
+        }
+    }
 }
 

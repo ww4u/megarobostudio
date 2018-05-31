@@ -22,34 +22,32 @@ TraceKeyPoint::TraceKeyPoint( float pt, float px, float py, float pz, float phan
 }
 
 MegatronKeyPoint::MegatronKeyPoint( float pt,
-                  float px1, float py1, float pz1,
-                  float px2, float py2, float pz2 )
+                  float tfx, float tly, float tfz,
+                  float tbx, float tRy, float tbz )
 {
     t = pt;
 
-    x1 = px1;
-    y1 = py1;
-    z1 = pz1;
+    fx = tfx;
+    ly = tly;
+    fz = tfz;
 
-    x1 = px2;
-    y2 = py2;
-    z2 = pz2;
+    bx = tbx;
+    ry = tRy;
+    bz = tbz;
 }
 
 H2KeyPoint::H2KeyPoint( float pt,
-                  float px, float py, float pz )
+                  float px, float py, float pv )
 {
     t = pt;
 
     x = px;
     y = py;
-    z = pz;
+    v = pv;
 }
 
 RawRobo::RawRobo()
 {
-    mPlanStep = 5.0;  //! mm
-    mPlanMode = plan_linear;
 }
 
 RawRobo::~RawRobo()
@@ -109,9 +107,22 @@ void RawRobo::queryState( const tpvRegion &region )
 
 void RawRobo::toState( const tpvRegion &region, int stat )
 {}
-int RawRobo::state( const tpvRegion &region )
+int RawRobo::state( const tpvRegion &region, int inTask )
 {
-    return fsm( region )->state();
+    if ( inTask != 0 )
+    { return fsm( region )->state();}
+    else
+    {
+        //! robo task valid
+        if ( m_pRoboTask != NULL  )
+        {
+            if ( m_pRoboTask->isRunning() )
+            { return 1; }
+        }
+
+        return fsm( region )->state();
+    }
+
 }
 
 void RawRobo::onTimer( void *pContext, int id )
@@ -143,16 +154,6 @@ bool RawRobo::waitCondition(
 {
     return fsm( region )->waitCondition( pCond, tmoms );
 }
-
-void RawRobo::setPlanStep( float step )
-{ mPlanStep = step; }
-float RawRobo::planStep()
-{ return mPlanStep; }
-
-void RawRobo::setPlanMode( eRoboPlanMode mode )
-{ mPlanMode = mode; }
-eRoboPlanMode RawRobo::planMode()
-{ return mPlanMode; }
 
 RawRoboFsm * RawRobo::fsm( const tpvRegion &region )
 {logDbg()<<region.axes()<<region.page()<<mFsms.size();

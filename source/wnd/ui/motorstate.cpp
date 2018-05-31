@@ -100,11 +100,15 @@ QString MotorState::state( int page )
 
 void MotorState::setProgress( int page, int mi, int ma, int n )
 {
-    ui->progressBar->setRange( mi, ma );
-    ui->progressBar->setValue( n );
+    if ( ui->progressBar->maximum() != ma || ui->progressBar->minimum() != mi )
+    { ui->progressBar->setRange( mi, ma ); }
+    if ( ui->progressBar->value() != n )
+    { ui->progressBar->setValue( n ); }
 
-    //! guess the end time
-    ui->labelRunning->setVisible( true );
+    if ( ui->labelRunning->isHidden() )
+    {   //! guess the end time
+        ui->labelRunning->setVisible( true );
+    }
     if ( mTimerRunnings.at(page) )
     {
         if ( n > mLastProg )
@@ -126,9 +130,9 @@ void MotorState::setProgress( int page, int mi, int ma, int n )
         mLastProg = n;
         mRunningTimes.at(page)->restart();
         mTimerRunnings[page] = true;
-        ui->labelRunning->clear();
+        if ( ui->labelRunning->text().length() > 0 )
+        { ui->labelRunning->clear(); }
     }
-
 }
 void MotorState::setProgress( int page, bool b )
 {

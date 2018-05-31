@@ -10,7 +10,7 @@
 #define expand_dw( dw ) lw_lb( dw ), lw_hb( dw ), hw_lb( dw ), hw_hb( dw )
 #define expand_w( w )   lw_lb( w ),  lw_hb( w )
 
-#define FAIL_TRY        failTry()
+#define READ_LOOP_TRY        ( failTry() + 1 )
 
 #define LOCK_QUERY()        lockQuery();
 #define UNLOCK_QUERY()      unlockQuery();
@@ -80,6 +80,8 @@ int IBus::size()
 int IBus::flush( DeviceId &id )
 { return 0; }
 int IBus::clear()
+{ return 0; }
+int IBus::doSend( const QString &buf )
 { return 0; }
 int IBus::doWrite( DeviceId &nodeId, byte *pBuf, int len )
 { return -1; }
@@ -267,6 +269,22 @@ int IBus::write( DeviceId &nodeId, byte mainCode,
     return doWrite( nodeId, buf, sizeof( buf ) );
 }
 
+int IBus::write( DeviceId &nodeId,
+           byte mainCode,
+           byte subCode,
+           byte ary[],
+           int len )
+{
+    byte buf[8] = { mainCode, subCode };
+
+    Q_ASSERT( len <= 6 );
+
+    //! attach data
+    memcpy( buf + 2, ary, len );
+
+    return doWrite( nodeId, buf, len + 2 );
+}
+
 //! 3 para
 int IBus::write( DeviceId &nodeId, byte mainCode,
             byte subCode,
@@ -413,7 +431,7 @@ int IBus::read( DeviceId &nodeId, byte mainCode,
 {
     int ret;
     LOCK_QUERY();
-    for ( int i = 0; i < FAIL_TRY; i++ )
+    for ( int i = 0; i < READ_LOOP_TRY; i++ )
     {
         ret = _read( nodeId, mainCode, subCode, v0, bQuery );
         if ( 0 == ret )
@@ -431,7 +449,7 @@ int IBus::read( DeviceId &nodeId, byte mainCode,
 {
     int ret;
     LOCK_QUERY();
-    for ( int i = 0; i < FAIL_TRY; i++ )
+    for ( int i = 0; i < READ_LOOP_TRY; i++ )
     {
         ret = _read( nodeId, mainCode, subCode, v0, v1, bQuery );
         if ( 0 == ret )
@@ -449,7 +467,7 @@ int IBus::read( DeviceId &id, byte mainCode,
 {
     int ret;
     LOCK_QUERY();
-    for ( int i = 0; i < FAIL_TRY; i++ )
+    for ( int i = 0; i < READ_LOOP_TRY; i++ )
     {
         ret = _read( id, mainCode, subCode, v0, v1, bQuery );
         if ( 0 == ret )
@@ -468,9 +486,29 @@ int IBus::read( DeviceId &nodeId, byte mainCode,
 {
     int ret;
     LOCK_QUERY();
-    for ( int i = 0; i < FAIL_TRY; i++ )
+    for ( int i = 0; i < READ_LOOP_TRY; i++ )
     {
         ret = _read( nodeId, mainCode, subCode, v0, v1, v2, bQuery );
+        if ( 0 == ret )
+        { break; }
+    }
+    UNLOCK_QUERY();
+    return ret;
+}
+
+int IBus::read( DeviceId &nodeId, byte mainCode,
+            byte subCode,
+            byte * v0,
+            byte * v1,
+            byte * v2,
+            byte * v3,
+            bool bQuery)
+{
+    int ret;
+    LOCK_QUERY();
+    for ( int i = 0; i < READ_LOOP_TRY; i++ )
+    {
+        ret = _read( nodeId, mainCode, subCode, v0, v1, v2, v3, bQuery );
         if ( 0 == ret )
         { break; }
     }
@@ -487,7 +525,7 @@ int IBus::read( DeviceId &nodeId, byte mainCode,
 {
     int ret;
     LOCK_QUERY();
-    for ( int i = 0; i < FAIL_TRY; i++ )
+    for ( int i = 0; i < READ_LOOP_TRY; i++ )
     {
         ret = _read( nodeId, mainCode, subCode, v0, v1, v2, bQuery );
         if ( 0 == ret )
@@ -509,7 +547,7 @@ int IBus::read( DeviceId &nodeId, byte mainCode,
 {
     int ret;
     LOCK_QUERY();
-    for ( int i = 0; i < FAIL_TRY; i++ )
+    for ( int i = 0; i < READ_LOOP_TRY; i++ )
     {
         ret = _read( nodeId, mainCode, subCode, v0, v1, v2, v3, v4, v5, bQuery );
         if ( 0 == ret )
@@ -526,7 +564,7 @@ int IBus::read( DeviceId &nodeId, byte mainCode,
 {
     int ret;
     LOCK_QUERY();
-    for ( int i = 0; i < FAIL_TRY; i++ )
+    for ( int i = 0; i < READ_LOOP_TRY; i++ )
     {
         ret = _read( nodeId, mainCode, subCode, v0, bQuery );
         if ( 0 == ret )
@@ -543,7 +581,7 @@ int IBus::read( DeviceId &nodeId, byte mainCode,
 {
     int ret;
     LOCK_QUERY();
-    for ( int i = 0; i < FAIL_TRY; i++ )
+    for ( int i = 0; i < READ_LOOP_TRY; i++ )
     {
         ret = _read( nodeId, mainCode, subCode, v0, bQuery );
         if ( 0 == ret )
@@ -560,7 +598,7 @@ int IBus::read( DeviceId &nodeId, byte mainCode,
 {
     int ret;
     LOCK_QUERY();
-    for ( int i = 0; i < FAIL_TRY; i++ )
+    for ( int i = 0; i < READ_LOOP_TRY; i++ )
     {
         ret = _read( nodeId, mainCode, subCode, v0, bQuery );
         if ( 0 == ret )
@@ -579,7 +617,7 @@ int IBus::read( DeviceId &nodeId, byte mainCode,
 {
     int ret;
     LOCK_QUERY();
-    for ( int i = 0; i < FAIL_TRY; i++ )
+    for ( int i = 0; i < READ_LOOP_TRY; i++ )
     {
         ret = _read( nodeId, mainCode, subCode, v0, v1, bQuery );
         if ( 0 == ret )
@@ -598,7 +636,7 @@ int IBus::read( DeviceId &nodeId, byte mainCode,
 {
     int ret;
     LOCK_QUERY();
-    for ( int i = 0; i < FAIL_TRY; i++ )
+    for ( int i = 0; i < READ_LOOP_TRY; i++ )
     {
         ret = _read( nodeId, mainCode, subCode, v0, v1, v2, bQuery );
         if ( 0 == ret )
@@ -617,7 +655,7 @@ int IBus::read( DeviceId &nodeId, byte mainCode,
 {
     int ret;
     LOCK_QUERY();
-    for ( int i = 0; i < FAIL_TRY; i++ )
+    for ( int i = 0; i < READ_LOOP_TRY; i++ )
     {
         ret = _read( nodeId, mainCode, subCode, v0, v1, v2, bQuery );
         if ( 0 == ret )
@@ -636,7 +674,7 @@ int IBus::read( DeviceId &nodeId, byte mainCode,
 {
     int ret;
     LOCK_QUERY();
-    for ( int i = 0; i < FAIL_TRY; i++ )
+    for ( int i = 0; i < READ_LOOP_TRY; i++ )
     {
         ret = _read( nodeId, mainCode, subCode, v0, v1, v2, bQuery );
         if ( 0 == ret )
@@ -655,7 +693,7 @@ int IBus::read( DeviceId &id, byte mainCode,
 {
     int ret;
     LOCK_QUERY();
-    for ( int i = 0; i < FAIL_TRY; i++ )
+    for ( int i = 0; i < READ_LOOP_TRY; i++ )
     {
         ret = _read( id, mainCode, subCode, v0, v1, v2, bQuery );
         if ( 0 == ret )
@@ -678,7 +716,7 @@ int IBus::read( DeviceId &nodeId, byte mainCode,
 {
     int ret;
     LOCK_QUERY();
-    for ( int i = 0; i < FAIL_TRY; i++ )
+    for ( int i = 0; i < READ_LOOP_TRY; i++ )
     {
         ret = _read( nodeId, mainCode, subCode, v0, v1, v2, v3, v4, v5, bQuery );
         if ( 0 == ret )
@@ -696,7 +734,7 @@ int IBus::read( DeviceId &nodeId, byte mainCode,
 {
     int ret;
     LOCK_QUERY();
-    for ( int i = 0; i < FAIL_TRY; i++ )
+    for ( int i = 0; i < READ_LOOP_TRY; i++ )
     {
         ret = _read( nodeId, mainCode, subCode, v0, v1, bQuery );
         if ( 0 == ret )
@@ -714,7 +752,7 @@ int IBus::read( DeviceId &nodeId, byte mainCode,
 {
     int ret;
     LOCK_QUERY();
-    for ( int i = 0; i < FAIL_TRY; i++ )
+    for ( int i = 0; i < READ_LOOP_TRY; i++ )
     {
         ret = _read( nodeId, mainCode, subCode, v0, v1, bQuery );
         if ( 0 == ret )
@@ -732,7 +770,7 @@ int IBus::read( DeviceId &nodeId, byte mainCode,
 {
     int ret;
     LOCK_QUERY();
-    for ( int i = 0; i < FAIL_TRY; i++ )
+    for ( int i = 0; i < READ_LOOP_TRY; i++ )
     {
         ret = _read( nodeId, mainCode, subCode, v0, v1, bQuery );
         if ( 0 == ret )
@@ -750,7 +788,7 @@ int IBus::read( DeviceId &nodeId, byte mainCode,
 {
     int ret;
     LOCK_QUERY();
-    for ( int i = 0; i < FAIL_TRY; i++ )
+    for ( int i = 0; i < READ_LOOP_TRY; i++ )
     {
         ret = _read( nodeId, mainCode, subCode, v0, v1, bQuery );
         if ( 0 == ret )
@@ -768,7 +806,7 @@ int IBus::read( DeviceId &nodeId, byte mainCode,
 {
     int ret;
     LOCK_QUERY();
-    for ( int i = 0; i < FAIL_TRY; i++ )
+    for ( int i = 0; i < READ_LOOP_TRY; i++ )
     {
         ret = _read( nodeId, mainCode, subCode, v0, v1, bQuery );
         if ( 0 == ret )
@@ -786,7 +824,7 @@ int IBus::read( DeviceId &nodeId, byte mainCode,
 {
     int ret;
     LOCK_QUERY();
-    for ( int i = 0; i < FAIL_TRY; i++ )
+    for ( int i = 0; i < READ_LOOP_TRY; i++ )
     {
         ret = _read( nodeId, mainCode, subCode, v0, v1, bQuery );
         if ( 0 == ret )
@@ -806,7 +844,7 @@ int IBus::read( DeviceId &nodeId, byte mainCode,
 {
     int ret;
     LOCK_QUERY();
-    for ( int i = 0; i < FAIL_TRY; i++ )
+    for ( int i = 0; i < READ_LOOP_TRY; i++ )
     {
         ret = _read( nodeId, mainCode, subCode, v0, v1, v2, bQuery );
         if ( 0 == ret )
@@ -829,7 +867,7 @@ int IBus::read( DeviceId &nodeId, byte mainCode,
 {
     int ret;
     LOCK_QUERY();
-    for ( int i = 0; i < FAIL_TRY; i++ )
+    for ( int i = 0; i < READ_LOOP_TRY; i++ )
     {
         ret = _read( nodeId, mainCode, subCode, v0, v1, v2, v3, v4, v5, bQuery );
         if ( 0 == ret )
@@ -848,7 +886,7 @@ int IBus::read( DeviceId &nodeId, byte mainCode,
 {
     int ret;
     LOCK_QUERY();
-    for ( int i = 0; i < FAIL_TRY; i++ )
+    for ( int i = 0; i < READ_LOOP_TRY; i++ )
     {
         ret = _read( nodeId, mainCode, subCode, v0, v1, v2, bQuery );
         if ( 0 == ret )
@@ -867,7 +905,7 @@ int IBus::read( DeviceId &nodeId, byte mainCode,
 {
     int ret;
     LOCK_QUERY();
-    for ( int i = 0; i < FAIL_TRY; i++ )
+    for ( int i = 0; i < READ_LOOP_TRY; i++ )
     {
         ret = _read( nodeId, mainCode, subCode, v0, v1, v2, bQuery );
         if ( 0 == ret )
@@ -886,7 +924,7 @@ int IBus::read( DeviceId &nodeId, byte mainCode,
 {
     int ret;
     LOCK_QUERY();
-    for ( int i = 0; i < FAIL_TRY; i++ )
+    for ( int i = 0; i < READ_LOOP_TRY; i++ )
     {
         ret = _read( nodeId, mainCode, subCode, v0, v1, v2, bQuery );
         if ( 0 == ret )
@@ -905,7 +943,7 @@ int IBus::read( DeviceId &nodeId, byte mainCode,
 {
     int ret;
     LOCK_QUERY();
-    for ( int i = 0; i < FAIL_TRY; i++ )
+    for ( int i = 0; i < READ_LOOP_TRY; i++ )
     {
         ret = _read( nodeId, mainCode, subCode, v0, v1, v2, bQuery );
         if ( 0 == ret )
@@ -924,7 +962,7 @@ int IBus::read( DeviceId &nodeId, byte mainCode,
 {
     int ret;
     LOCK_QUERY();
-    for ( int i = 0; i < FAIL_TRY; i++ )
+    for ( int i = 0; i < READ_LOOP_TRY; i++ )
     {
         ret = _read( nodeId, mainCode, subCode, v0, v1, v2, bQuery );
         if ( 0 == ret )
@@ -1043,6 +1081,37 @@ int IBus::_read( DeviceId &nodeId, byte mainCode,
     *v0 = readBuf[2];
     *v1 = readBuf[3];
     *v2 = readBuf[4];
+    return 0;
+}
+
+int IBus::_read( DeviceId &nodeId, byte mainCode,
+            byte subCode,
+            byte * v0,
+            byte * v1,
+            byte * v2,
+            byte * v3,
+            bool bQuery)
+{
+    int ret;
+
+    if( bQuery )
+    {
+        flush( nodeId );
+        ret = write( nodeId, mainCode, subCode );
+        if ( ret != 0 )
+        { return ret; }
+    }
+
+    int retLen;
+    byte readBuf[2+4];
+    ret = doRead( nodeId, readBuf, sizeof(readBuf), &retLen );
+    if ( ret != 0 )
+    { return ret; }
+
+    *v0 = readBuf[2];
+    *v1 = readBuf[3];
+    *v2 = readBuf[4];
+    *v3 = readBuf[5];
     return 0;
 }
 

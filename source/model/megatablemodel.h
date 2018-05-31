@@ -21,11 +21,30 @@ public:
 public:
     QString className();
 
+    void setStepAble( bool b );
+    bool stepAble();
+
+    void setPrefAble( bool b );
+    bool prefAble();
+
+    int sectionSize();
+    bool sectionAble( int iSec );
+    void setSectionAble( int iSec, bool b );
+    QList<bool> &sectionAbleList();
+
+    QStringList exportOptList();
+
 Q_SIGNALS:
     void signal_data_changed();
 
 protected:
     QString mClassName;
+
+    bool mbStepAble;
+    bool mbPrefAble;
+
+    QList <bool> mSectionAble;       //! 0,1,2
+    QStringList mExportOptList;
 };
 
 #endif // MEGATABLEMODEL_H

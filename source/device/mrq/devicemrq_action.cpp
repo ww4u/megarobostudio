@@ -24,6 +24,13 @@ int deviceMRQ::stop( const tpvRegion &region )
     return 0;
 }
 
+int deviceMRQ::setLoop( int n, const tpvRegion &region )
+{
+    return setMOTIONPLAN_CYCLENUM( region.axes(),
+                                   (MRQ_MOTION_SWITCH_1)region.page(),
+                                   n  );
+}
+
 //MRQ_MOTION_STATE_POWERON,
 //MRQ_MOTION_STATE_IDLE,
 //MRQ_MOTION_STATE_CALCING,

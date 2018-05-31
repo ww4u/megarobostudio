@@ -37,7 +37,7 @@ void axesKnob::actionChanged( const QDateTime &endTime, int valEnd  )
     QString strInfo;
 
     mStopAngle = valEnd;
-    strInfo = QString( "%1ms %2%3" ).arg( dt ).arg( mStopAngle-mStartAngle ).arg(QChar(0x00B0));
+    strInfo = QString( "%2%3 %1ms" ).arg( dt ).arg( mStopAngle-mStartAngle ).arg(QChar(0x00B0));
     ui->label->setText( strInfo );
 }
 
@@ -104,7 +104,7 @@ void axesKnob::on_sliderValue_sliderReleased()
     { return; }
 
     //! view connection
-    ui->label->setText( QString("%1ms %2%3").arg( mStartTime.msecsTo( mStopTime ) )
+    ui->label->setText( QString("%2%3 %1ms").arg( mStartTime.msecsTo( mStopTime ) )
                                           .arg( mStopAngle - mStartAngle ).arg(QChar(0x00B0)) );
 }
 

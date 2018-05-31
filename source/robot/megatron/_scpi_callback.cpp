@@ -9,6 +9,10 @@
                         pRobo = ((robotMegatron*)context->user_context);\
                         Q_ASSERT( NULL != pRobo );
 
+#define CHECK_LINK()    if ( pRobo->checkLink() ) \
+                        {}\
+                        else\
+                        { scpi_ret( SCPI_RES_ERR ); }
 
 static scpi_result_t _scpi_idn( scpi_t * context )
 {
@@ -32,13 +36,16 @@ static scpi_result_t _scpi_run( scpi_t * context )
     DEF_LOCAL_VAR();
     DEF_ROBO();
 
+    CHECK_LINK();
+
     pRobo->run();logDbg();
 
     return SCPI_RES_OK;
 }
 
-//! move x1,y1,z1, x2,y2,z2,
-//! x1,y1,z1, x2,y2,z2,
+//! move ax, page
+//! ( fx, ly, fz, bx, ry, bz )
+//! ( fx, ly, fz, bx, ry, bz )
 //! t
 static scpi_result_t _scpi_move( scpi_t * context )
 {
@@ -64,6 +71,8 @@ static scpi_result_t _scpi_move( scpi_t * context )
     //! robo op
     DEF_ROBO();
 
+    CHECK_LINK();
+
     MegatronKeyPoint pt1( 0,
                           vals[0], vals[1], vals[2], vals[3], vals[4], vals[5]
                             );
@@ -76,6 +85,86 @@ static scpi_result_t _scpi_move( scpi_t * context )
     curve.append( pt2 );
 
     pRobo->move( curve, tpvRegion(ax,page) );
+
+    return SCPI_RES_OK;
+}
+
+//! premove ax, page
+//! ( fx, ly, fz, bx, ry, bz )
+//! ( fx, ly, fz, bx, ry, bz )
+//! t
+static scpi_result_t _scpi_preMove( scpi_t * context )
+{
+    DEF_LOCAL_VAR();
+
+    int ax,page;
+    float vals[6+6+1];
+
+    if ( SCPI_ParamInt32(context, &ax, true) != true )
+    { scpi_ret( SCPI_RES_ERR ); }
+    if ( SCPI_ParamInt32(context, &page, true) != true )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    for ( int i = 0; i < sizeof_array(vals); i++ )
+    {
+        if ( SCPI_RES_OK != SCPI_ParamFloat( context, vals+i, true ) )
+        { scpi_ret( SCPI_RES_ERR ); }
+    }
+
+    for ( int i = 0; i < sizeof_array(vals); i++ )
+    { logDbg()<<vals[i]; }
+
+    //! robo op
+    DEF_ROBO();
+
+    CHECK_LINK();
+
+    MegatronKeyPoint pt1( 0,
+                          vals[0], vals[1], vals[2], vals[3], vals[4], vals[5]
+                            );
+    MegatronKeyPoint pt2( vals[12],
+                          vals[6], vals[7], vals[8], vals[9], vals[10], vals[11]
+                        );
+
+    MegatronKeyPointList curve;
+    curve.append( pt1 );
+    curve.append( pt2 );
+
+    pRobo->preMove( curve, tpvRegion(ax,page) );
+
+    return SCPI_RES_OK;
+}
+
+//! int ccw, int jid
+//!
+//!
+static scpi_result_t _scpi_gozero( scpi_t * context )
+{
+    DEF_LOCAL_VAR();
+    DEF_ROBO();
+
+    CHECK_LINK();
+
+    int joint, ccw;
+
+    //! ccw
+    if ( SCPI_ParamInt32(context, &ccw, true) != true )
+    {
+        pRobo->goZero();
+
+        return SCPI_RES_OK;
+    }
+
+    //! robo
+    if ( SCPI_ParamInt32(context, &joint, true) != true )
+    {
+        scpi_ret( SCPI_RES_ERR );
+    }
+    //! some joint
+    else
+    {
+        pRobo->goZero( joint, ccw > 0 );
+    }
 
     return SCPI_RES_OK;
 }
@@ -99,7 +188,6 @@ static scpi_result_t _scpi_program( scpi_t * context )
     if (strLen < 1)
     { scpi_ret( SCPI_RES_ERR ); }
 
-    //! x1,y1,z1,x2,y2,z2,t
     QList<float> dataset;
     int col = 7;
     if ( 0 != comAssist::loadDataset( pLocalStr, strLen, col, dataset ) )
@@ -113,15 +201,14 @@ static scpi_result_t _scpi_program( scpi_t * context )
     MegatronKeyPoint tp;
     for ( int i = 0; i < dataset.size()/col; i++ )
     {
-        //! 0  1  2  3  4  5  6
-        //! x1 y1 z1 x2 y2 z2 t
-        tp.x1 = dataset.at( i * col + 0 );
-        tp.y1 = dataset.at( i * col + 1 );
-        tp.z1 = dataset.at( i * col + 2 );
+        //! fx ly fz bx ry bz t
+        tp.fx = dataset.at( i * col + 0 );
+        tp.ly = dataset.at( i * col + 1 );
+        tp.fz = dataset.at( i * col + 2 );
 
-        tp.x2 = dataset.at( i * col + 3 );
-        tp.y2 = dataset.at( i * col + 4 );
-        tp.z2 = dataset.at( i * col + 5 );
+        tp.bx = dataset.at( i * col + 3 );
+        tp.ry = dataset.at( i * col + 4 );
+        tp.bz = dataset.at( i * col + 5 );
 
         tp.t = dataset.at( i * col + 6 );
 
@@ -130,6 +217,9 @@ static scpi_result_t _scpi_program( scpi_t * context )
 
     //! robo op
     DEF_ROBO();
+
+    CHECK_LINK();
+
     pRobo->program( curve, tpvRegion(ax,page) );
 
     return SCPI_RES_OK;
@@ -151,6 +241,9 @@ static scpi_result_t _scpi_call( scpi_t * context )
 
     //! robo op
     DEF_ROBO();
+
+    CHECK_LINK();
+
     pRobo->call( tpvRegion( ax, page) );
 
     return SCPI_RES_OK;
@@ -161,6 +254,8 @@ static scpi_result_t _scpi_fsmState( scpi_t * context )
 {
     DEF_LOCAL_VAR();
     DEF_ROBO();
+
+    CHECK_LINK();
 
     int page, ax;
 
@@ -180,6 +275,7 @@ static scpi_result_t _scpi_fsmState( scpi_t * context )
 static scpi_result_t _scpi_test1( scpi_t * context )
 {
     DEF_LOCAL_VAR();
+
     DEF_ROBO();
 
     pRobo->moveTest1();
@@ -203,6 +299,10 @@ static scpi_command_t _scpi_cmds[]=
     CMD_ITEM( "*IDN?", _scpi_idn ),
     CMD_ITEM( "RUN",  _scpi_run ),
     CMD_ITEM( "MOVE", _scpi_move ),
+    CMD_ITEM( "PREMOVE", _scpi_preMove ),   //! only calc, no move
+
+    CMD_ITEM( "ZERO", _scpi_gozero ),       //! jid
+                                            //! or no para
 
     CMD_ITEM( "STATE?", _scpi_fsmState ),
 

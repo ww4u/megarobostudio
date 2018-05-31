@@ -1654,6 +1654,20 @@ static scpi_result_t _scpi_getMOTION_REVMOTION( scpi_t * context )
 
 	return SCPI_RES_OK;
 }
+static scpi_result_t _scpi_setMOTION_ABCOUNTRESET( scpi_t * context )
+{
+	// write
+	CHECK_CONTEXT();
+	DEF_LOCAL_VAR();
+
+	byte val0;
+	if ( SCPI_ParamInt32(context, &localIntVal, true) != SCPI_RES_OK ) 
+        { return SCPI_RES_ERR; }
+	val0 = (byte)localIntVal;
+
+	(SET_OBJ(context))->setMOTION_ABCOUNTRESET( val0 );
+	return SCPI_RES_OK;
+}
 static scpi_result_t _scpi_setIDENTITY_GROUP( scpi_t * context )
 {
 	// write
@@ -6645,6 +6659,280 @@ static scpi_result_t _scpi_getDISTANCEALARM_ALARM3DIST( scpi_t * context )
 
 	(GET_OBJ(context))->getDISTANCEALARM_ALARM3DIST( val0, &oval0 );
 	SCPI_ResultInt32(context, oval0);
+
+	return SCPI_RES_OK;
+}
+static scpi_result_t _scpi_setOTP_STATE( scpi_t * context )
+{
+	// write
+	CHECK_CONTEXT();
+	DEF_LOCAL_VAR();
+
+	MRQ_CAN_NETMANAGELED val0;
+	if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
+        { return SCPI_RES_ERR; }
+	if (strLen < 1)
+        { return SCPI_RES_ERR; }
+	if ( MRQ_CAN_NETMANAGELED_toValue( pLocalStr, &val0) != 0 ) 
+        { return SCPI_RES_ERR; }
+
+	(SET_OBJ(context))->setOTP_STATE( val0 );
+	return SCPI_RES_OK;
+}
+static scpi_result_t _scpi_getOTP_STATE( scpi_t * context )
+{
+	// read
+	DEF_LOCAL_VAR();
+
+	MRQ_CAN_NETMANAGELED oval0;
+
+	(GET_OBJ(context))->getOTP_STATE( &oval0 );
+	pLocalStr = MRQ_CAN_NETMANAGELED_toString( oval0);
+	if ( pLocalStr == NULL ) 
+        { return SCPI_RES_ERR; } 
+	SCPI_ResultText(context, pLocalStr);
+
+	return SCPI_RES_OK;
+}
+static scpi_result_t _scpi_setOTP_THRESHOLD( scpi_t * context )
+{
+	// write
+	CHECK_CONTEXT();
+	DEF_LOCAL_VAR();
+
+	uint16 val0;
+	if ( SCPI_ParamInt32(context, &localIntVal, true) != SCPI_RES_OK ) 
+        { return SCPI_RES_ERR; }
+	val0 = (uint16)localIntVal;
+
+	(SET_OBJ(context))->setOTP_THRESHOLD( val0 );
+	return SCPI_RES_OK;
+}
+static scpi_result_t _scpi_getOTP_THRESHOLD( scpi_t * context )
+{
+	// read
+	DEF_LOCAL_VAR();
+
+	uint16 oval0;
+
+	(GET_OBJ(context))->getOTP_THRESHOLD( &oval0 );
+	SCPI_ResultInt32(context, oval0);
+
+	return SCPI_RES_OK;
+}
+static scpi_result_t _scpi_setOTP_RESPONSE( scpi_t * context )
+{
+	// write
+	CHECK_CONTEXT();
+	DEF_LOCAL_VAR();
+
+	MRQ_MOTIONPLAN_OOSLINERESPONSE_1 val0;
+	if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
+        { return SCPI_RES_ERR; }
+	if (strLen < 1)
+        { return SCPI_RES_ERR; }
+	if ( MRQ_MOTIONPLAN_OOSLINERESPONSE_1_toValue( pLocalStr, &val0) != 0 ) 
+        { return SCPI_RES_ERR; }
+
+	(SET_OBJ(context))->setOTP_RESPONSE( val0 );
+	return SCPI_RES_OK;
+}
+static scpi_result_t _scpi_getOTP_RESPONSE( scpi_t * context )
+{
+	// read
+	DEF_LOCAL_VAR();
+
+	MRQ_MOTIONPLAN_OOSLINERESPONSE_1 oval0;
+
+	(GET_OBJ(context))->getOTP_RESPONSE( &oval0 );
+	pLocalStr = MRQ_MOTIONPLAN_OOSLINERESPONSE_1_toString( oval0);
+	if ( pLocalStr == NULL ) 
+        { return SCPI_RES_ERR; } 
+	SCPI_ResultText(context, pLocalStr);
+
+	return SCPI_RES_OK;
+}
+static scpi_result_t _scpi_setOTP_PERIOD( scpi_t * context )
+{
+	// write
+	CHECK_CONTEXT();
+	DEF_LOCAL_VAR();
+
+	uint32 val0;
+	if ( SCPI_ParamInt32(context, &localIntVal, true) != SCPI_RES_OK ) 
+        { return SCPI_RES_ERR; }
+	val0 = (uint32)localIntVal;
+
+	(SET_OBJ(context))->setOTP_PERIOD( val0 );
+	return SCPI_RES_OK;
+}
+static scpi_result_t _scpi_getOTP_PERIOD( scpi_t * context )
+{
+	// read
+	DEF_LOCAL_VAR();
+
+	uint32 oval0;
+
+	(GET_OBJ(context))->getOTP_PERIOD( &oval0 );
+	SCPI_ResultInt32(context, oval0);
+
+	return SCPI_RES_OK;
+}
+static scpi_result_t _scpi_getOTP_DATA( scpi_t * context )
+{
+	// read
+	DEF_LOCAL_VAR();
+
+	uint32 oval0;
+
+	(GET_OBJ(context))->getOTP_DATA( &oval0 );
+	SCPI_ResultInt32(context, oval0);
+
+	return SCPI_RES_OK;
+}
+static scpi_result_t _scpi_setANALOGIN_STATE( scpi_t * context )
+{
+	// write
+	CHECK_CONTEXT();
+	DEF_LOCAL_VAR();
+
+	MRQ_CAN_NETMANAGELED val0;
+	if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
+        { return SCPI_RES_ERR; }
+	if (strLen < 1)
+        { return SCPI_RES_ERR; }
+	if ( MRQ_CAN_NETMANAGELED_toValue( pLocalStr, &val0) != 0 ) 
+        { return SCPI_RES_ERR; }
+
+	(SET_OBJ(context))->setANALOGIN_STATE( val0 );
+	return SCPI_RES_OK;
+}
+static scpi_result_t _scpi_getANALOGIN_STATE( scpi_t * context )
+{
+	// read
+	DEF_LOCAL_VAR();
+
+	MRQ_CAN_NETMANAGELED oval0;
+
+	(GET_OBJ(context))->getANALOGIN_STATE( &oval0 );
+	pLocalStr = MRQ_CAN_NETMANAGELED_toString( oval0);
+	if ( pLocalStr == NULL ) 
+        { return SCPI_RES_ERR; } 
+	SCPI_ResultText(context, pLocalStr);
+
+	return SCPI_RES_OK;
+}
+static scpi_result_t _scpi_setANALOGIN_THRESHOLDH( scpi_t * context )
+{
+	// write
+	CHECK_CONTEXT();
+	DEF_LOCAL_VAR();
+
+	f32 val0;
+	if ( SCPI_ParamFloat(context, &val0, true) != SCPI_RES_OK )
+        { return SCPI_RES_ERR; }
+
+	(SET_OBJ(context))->setANALOGIN_THRESHOLDH( val0 );
+	return SCPI_RES_OK;
+}
+static scpi_result_t _scpi_getANALOGIN_THRESHOLDH( scpi_t * context )
+{
+	// read
+	DEF_LOCAL_VAR();
+
+	f32 oval0;
+
+	(GET_OBJ(context))->getANALOGIN_THRESHOLDH( &oval0 );
+	SCPI_ResultFloat(context, oval0);
+
+	return SCPI_RES_OK;
+}
+static scpi_result_t _scpi_setANALOGIN_THRESHOLDL( scpi_t * context )
+{
+	// write
+	CHECK_CONTEXT();
+	DEF_LOCAL_VAR();
+
+	f32 val0;
+	if ( SCPI_ParamFloat(context, &val0, true) != SCPI_RES_OK )
+        { return SCPI_RES_ERR; }
+
+	(SET_OBJ(context))->setANALOGIN_THRESHOLDL( val0 );
+	return SCPI_RES_OK;
+}
+static scpi_result_t _scpi_getANALOGIN_THRESHOLDL( scpi_t * context )
+{
+	// read
+	DEF_LOCAL_VAR();
+
+	f32 oval0;
+
+	(GET_OBJ(context))->getANALOGIN_THRESHOLDL( &oval0 );
+	SCPI_ResultFloat(context, oval0);
+
+	return SCPI_RES_OK;
+}
+static scpi_result_t _scpi_setANALOGIN_RESPONSEH( scpi_t * context )
+{
+	// write
+	CHECK_CONTEXT();
+	DEF_LOCAL_VAR();
+
+	MRQ_MOTIONPLAN_OOSLINERESPONSE_1 val0;
+	if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
+        { return SCPI_RES_ERR; }
+	if (strLen < 1)
+        { return SCPI_RES_ERR; }
+	if ( MRQ_MOTIONPLAN_OOSLINERESPONSE_1_toValue( pLocalStr, &val0) != 0 ) 
+        { return SCPI_RES_ERR; }
+
+	(SET_OBJ(context))->setANALOGIN_RESPONSEH( val0 );
+	return SCPI_RES_OK;
+}
+static scpi_result_t _scpi_getANALOGIN_RESPONSEH( scpi_t * context )
+{
+	// read
+	DEF_LOCAL_VAR();
+
+	MRQ_MOTIONPLAN_OOSLINERESPONSE_1 oval0;
+
+	(GET_OBJ(context))->getANALOGIN_RESPONSEH( &oval0 );
+	pLocalStr = MRQ_MOTIONPLAN_OOSLINERESPONSE_1_toString( oval0);
+	if ( pLocalStr == NULL ) 
+        { return SCPI_RES_ERR; } 
+	SCPI_ResultText(context, pLocalStr);
+
+	return SCPI_RES_OK;
+}
+static scpi_result_t _scpi_setANALOGIN_RESPONSEL( scpi_t * context )
+{
+	// write
+	CHECK_CONTEXT();
+	DEF_LOCAL_VAR();
+
+	MRQ_MOTIONPLAN_OOSLINERESPONSE_1 val0;
+	if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
+        { return SCPI_RES_ERR; }
+	if (strLen < 1)
+        { return SCPI_RES_ERR; }
+	if ( MRQ_MOTIONPLAN_OOSLINERESPONSE_1_toValue( pLocalStr, &val0) != 0 ) 
+        { return SCPI_RES_ERR; }
+
+	(SET_OBJ(context))->setANALOGIN_RESPONSEL( val0 );
+	return SCPI_RES_OK;
+}
+static scpi_result_t _scpi_getANALOGIN_RESPONSEL( scpi_t * context )
+{
+	// read
+	DEF_LOCAL_VAR();
+
+	MRQ_MOTIONPLAN_OOSLINERESPONSE_1 oval0;
+
+	(GET_OBJ(context))->getANALOGIN_RESPONSEL( &oval0 );
+	pLocalStr = MRQ_MOTIONPLAN_OOSLINERESPONSE_1_toString( oval0);
+	if ( pLocalStr == NULL ) 
+        { return SCPI_RES_ERR; } 
+	SCPI_ResultText(context, pLocalStr);
 
 	return SCPI_RES_OK;
 }

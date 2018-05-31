@@ -125,6 +125,22 @@ float comAssist::normalizeDegreeN180_180( float degree[], int n )
     return 0;
 }
 
+float comAssist::diffAngle( float a, float b, bool bCw )
+{
+    float distab, distba;
+
+    distab = normalizeDegree360( b - a );
+    distba = normalizeDegreeN360( b - a );
+
+    int dir = bCw ? 1 : -1;
+
+    //! select min
+    if ( qAbs(distab) < qAbs(distba) )
+    { return distab * dir; }
+    else
+    { return distba * dir; }
+}
+
 float comAssist::radToDeg( float rad )
 { return RAD_TO_DEG(rad); }
 float comAssist::radToDeg( float rad[], int n )

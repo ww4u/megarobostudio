@@ -14,6 +14,8 @@ double VRobot::_mVBase = 1.0;
 
 QString VRobot::_tempPath;
 
+SysPara * VRobot::_mSysPara = NULL;
+
 void VRobot::setTpvBase( double tBase,
                 double pBase,
                 double vBase )
@@ -27,6 +29,28 @@ void VRobot::setTempPath( const QString &tempPath )
 { _tempPath = tempPath; }
 QString VRobot::tempPath()
 { return _tempPath; }
+
+void VRobot::attachSysPara( SysPara *pSysPara )
+{
+    Q_ASSERT( NULL != pSysPara );
+    VRobot::_mSysPara = pSysPara;
+}
+
+//! true -- need move
+bool VRobot::motionPredict( float t, float angle )
+{
+    Q_ASSERT( NULL != _mSysPara );
+
+    do
+    {
+        //! no need to rotate
+        if ( qAbs(angle) <= _mSysPara->mAngleResolution )
+        { return false; }
+    }while( 0 );
+
+    return true;
+}
+
 VRobot::VRobot()
 {
     mClass = "Unk robot";
@@ -44,6 +68,9 @@ VRobot::VRobot()
     mAINs = 0;
     mMosos = 0;
 
+    mOutputs = 0;
+    mInputs = 0;
+
     mEncoders = 0;
     mTemperatures = 0;
     mUARTs = 0;
@@ -53,7 +80,14 @@ VRobot::VRobot()
     mDistanceAlarms = 0;
     mAlarms = 0;
 
+    mTrigSrcs = 2;
+
     mPoseCount = 0;
+
+    mbInterpAble = false;
+
+    mMicrostepsList<<"256"<<"128"<<"64"<<"32"<<"16"<<"8"<<"4"<<"2"<<"1";
+    mMicrostepBase = 0;
 
     m_pInstMgr = NULL;
 
@@ -61,7 +95,10 @@ VRobot::VRobot()
 
     mSubGroup = 0;
     mSubGroupId = sub_group_id_from;
+
     mZeroSpeed = 5;
+    mZeroTmo = time_s( 60 );
+    mZeroTick = time_ms( 500 );
 
     mBaseCompensation = 0;
     mLengthUnit = 1;
@@ -69,6 +106,10 @@ VRobot::VRobot()
     m_pAxesWorkers = NULL;              //! \note if override the thread , delete the default at first
     m_pRoboWoker = new RoboWorker( this );
     Q_ASSERT( NULL != m_pRoboWoker );
+
+//    m_pRoboTask = new RoboTask();
+//    Q_ASSERT( NULL != m_pRoboTask );
+    m_pRoboTask = NULL;
 }
 
 VRobot::~VRobot()
@@ -223,4 +264,13 @@ VRobot * VRobot::subRobot( int index, int *pAxes )
     *pAxes = 0;
 
     return m_pInstMgr->findRobot( mAxesConnectionName.at(index) );
+}
+
+int VRobot::checkRoboTask()
+{
+    Q_ASSERT( NULL != m_pRoboTask );
+    if ( m_pRoboTask->isRunning() )
+    { return -1; }
+    else
+    { return 0; }
 }

@@ -3,7 +3,14 @@
 H2MotionGroup::H2MotionGroup( const QString &className, const QString &fileName )
                              : MegaTableModel( className, fileName)
 {
+    mExportOptList.clear();
+    mExportOptList<<"t-joints";
 
+    setStepAble( false );
+    setPrefAble( false );
+
+    mSectionAble.clear();
+    mSectionAble<<true;
 }
 
 H2MotionGroup::~H2MotionGroup()
@@ -40,9 +47,6 @@ QVariant H2MotionGroup::data(const QModelIndex &index, int role) const
     if ( col == 4 )
     { return QVariant( (double)mItems[row]->Y() ); }
     if ( col == 5 )
-    { return QVariant( (double)mItems[row]->Z() ); }
-
-    if ( col == 6 )
     { return QVariant( mItems[row]->comment() ); }
 
     return QVariant();
@@ -69,9 +73,6 @@ bool H2MotionGroup::setData(const QModelIndex &index, const QVariant &value, int
     else if ( index.column() == 4 )
     { mItems[ row ]->setY( value.toFloat() ); }
     else if ( index.column() == 5 )
-    { mItems[ row ]->setZ( value.toFloat() ); }
-
-    else if ( index.column() == 6 )
     { mItems[ row ]->setComment( value.toString() ); }
     else
     {}
@@ -155,7 +156,6 @@ int H2MotionGroup::save( const QString &fileName )
         <<"t"<<COL_SEP
         <<"x"<<COL_SEP
         <<"y"<<COL_SEP
-        <<"z"<<COL_SEP
         <<"comment"<<ROW_SEP;
     foreach( H2MotionItem *pItem, mItems )
     {
@@ -210,4 +210,29 @@ int H2MotionGroup::load( const QString &fileName )
                       index(mItems.count(), H2MotionItem::columns() - 1) );
     logDbg()<<mItems.size();
     return 0;
+}
+
+void H2MotionGroup::reverse()
+{
+    int count;
+
+    count = mItems.size();
+
+    //! reorder the item
+    for ( int i = 0; i <  count/2; i++ )
+    {
+        mItems.swap( i, count-1-i );
+    }
+
+    //! reverse the time
+    tpvType t;
+    for ( int i = 0; i <count/2; i++ )
+    {
+        t = mItems[i]->mT;
+        mItems[i]->mT = mItems[ count - i - 1 ]->mT;
+        mItems[ count - i - 1 ]->mT = t;
+    }
+
+    emit dataChanged( index(0,0),
+                      index(mItems.count(), H2MotionItem::columns() - 1) );
 }

@@ -23,12 +23,22 @@ public:
     virtual int serialOut( QXmlStreamWriter &writer );
 
 public:
+    virtual int build( MegaTableModel *pModel,
+                       xxxGroup<tracePoint> &tracePlan,
+                       xxxGroup<jointsTrace> &jointsPlan,
+                       QList< tpvGroup *> &tpvGroups,
+                       QList< int> &sectionList );
+
+public:
+    virtual int goZero();
     virtual int goZero( int jTabId, bool bCcw );
     virtual int goZero( const QList<int> &jointList,
-                        const QList<bool> &ccwList );
+                        const QList<bool> &ccwList );  
 
     //! plan
 public:
+    int verifyTrace( QList<TraceKeyPoint> &curve );
+
     int buildTrace( QList<TraceKeyPoint> &curve,
                     QList<arith_delta::deltaPoint> &jointsPlan );
 
@@ -39,9 +49,12 @@ public:
                     QList<arith_delta::deltaPoint> &traceJoints );
 
     int convertTrace(   QList<TraceKeyPoint> &curve,
-                        QList<arith_delta::deltaPoint> &jointsPlan );
+                        QList<arith_delta::deltaPoint> &jointsPlan,
+                        QList< tpvGroup *> &gp,
+                        QList< int > &sectionList );
 
-    int buildTpvGroup( QList<arith_delta::deltaPoint> &jointsPlan,
+    int buildTpvGroup( QList<TraceKeyPoint> &curve,
+                       QList<arith_delta::deltaPoint> &jointsPlan,
                        QList< tpvGroup *> &gp );
     //! download
 protected:
@@ -57,15 +70,24 @@ public:
     int move( QList<TraceKeyPoint> &curve,
               const tpvRegion &region );
 
+    int preMove( QList<TraceKeyPoint> &curve,
+              const tpvRegion &region );
+
     int moveTest1( const tpvRegion &region=0 );
     int moveTest2( const tpvRegion &region=0 );
 
 public:
-    void setZeroAttr( double zeroTime, double zeroAngle, double zeroSpeed );
-    void zeroAttr( double &zeroTime, double &zeroAngle, double &zeroSpeed );
+    void setZeroAttr( double zeroTime, double zeroAngle );
+    void zeroAttr( double &zeroTime, double &zeroAngle );
+
+    void setInitAttr( double t, double x, double y, double z, double h );
+    void initAttr( double &t, double &x, double &y, double &z, double &h );
 
     int serialOutZero( QXmlStreamWriter &writer);
     int serialInZero( QXmlStreamReader &reader );
+
+    int serialOutInit( QXmlStreamWriter &writer);
+    int serialInInit( QXmlStreamReader &reader );
 
     int serialOutAngle( QXmlStreamWriter &writer);
     int serialInAngle( QXmlStreamReader &reader );
@@ -87,6 +109,7 @@ public:
     QList<double> mP0, mA0;
 
     double mZeroTime, mZeroAngle;
+    double mInitT, mInitL, mInitR, mInitY, mInitH;
 };
 
 #endif

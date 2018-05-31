@@ -8,7 +8,6 @@ static QString _headers[]=
     QStringLiteral("t(s)"),
     QStringLiteral("x(mm)"),
     QStringLiteral("y(mm)"),
-    QStringLiteral("z(mm)"),
 
     QStringLiteral("Comment"),
 };
@@ -33,8 +32,6 @@ QString H2MotionItem::header( int col )
     { return QObject::tr("x(mm)"); }
     else if ( col == 4 )
     { return QObject::tr("y(mm)"); }
-    else if ( col == 5 )
-    { return QObject::tr("z(mm)"); }
 
     else
     { return QObject::tr("Comment"); }
@@ -45,11 +42,11 @@ H2MotionItem::H2MotionItem()
 
 }
 
-H2MotionItem &H2MotionItem::operator=( const H2MotionItem &item )
-{
-    //! \todo
-    return *this;
-}
+//H2MotionItem &H2MotionItem::operator=( const H2MotionItem &item )
+//{
+//    //! \todo
+//    return *this;
+//}
 
 int H2MotionItem::serialOut( ImcStream &stream )
 {
@@ -58,7 +55,6 @@ int H2MotionItem::serialOut( ImcStream &stream )
           <<mT<<COL_SEP
           <<mX<<COL_SEP
           <<mY<<COL_SEP
-          <<mZ<<COL_SEP
           <<mComment<<ROW_SEP;
     return 0;
 
@@ -67,7 +63,7 @@ int H2MotionItem::serialIn( ImcStream &stream )
 {
     QString str = stream.readLine();
 
-    QStringList strList = str.split( COL_SEP, QString::SkipEmptyParts );
+    QStringList strList = str.split( COL_SEP);
 
     if ( strList.size() > 0 )
     { mbEnable = strList.at(0).toInt() > 0; }
@@ -85,10 +81,7 @@ int H2MotionItem::serialIn( ImcStream &stream )
     { mY = strList[4].toFloat(); }
 
     if ( strList.size() > 5 )
-    { mZ = strList[5].toFloat(); }
-
-    if ( strList.size() > 9 )
-    { mComment = strList[9]; }
+    { mComment = strList[5]; }
 
     return 0;
 }

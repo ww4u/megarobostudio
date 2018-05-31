@@ -45,7 +45,7 @@ protected Q_SLOTS:
 public:
     virtual void setModelObj( mcModelObj *pObj );
     virtual int save( QString &outFileName );
-    virtual int saveAs( const QString &name );
+    virtual int saveAs( QString &name );
 
     sceneWidget * addRobot( mcModelObj *pBase );
     sceneWidget * addRobot( mcModelObj *pBase, sceneModel *pModel );

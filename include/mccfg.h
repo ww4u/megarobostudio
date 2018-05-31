@@ -57,4 +57,7 @@
 
 #define all_desc                         "All file"
 
+
+#define CSV_LINE_SEP                    "\n"
+#define CSV_COL_SEP                     ","
 #endif

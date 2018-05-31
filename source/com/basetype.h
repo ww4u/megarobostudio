@@ -93,13 +93,12 @@ public:
 class H2Row : public MotionRow
 {
 public:
-    tpvType mX,mY,mZ;
+    tpvType mX,mY;
 public:
     H2Row()
     {
         mX = 0;
         mY = 0;
-        mZ = 0;
     }
     virtual ~H2Row()
     {}
@@ -114,11 +113,6 @@ public:
     { mY = v; }
     tpvType Y()
     { return mY; }
-
-    void setZ( tpvType v )
-    { mZ = v; }
-    tpvType Z()
-    { return mZ; }
 };
 
 //! t,x,y,z,h
@@ -126,11 +120,13 @@ class SinanjuRow : public H2Row
 {
 public:
     tpvType mH;
+    tpvType mZ;
 
 public:
     SinanjuRow()
     {
         mH = 0;
+        mZ = 0;
     }
 
     virtual ~SinanjuRow()
@@ -141,6 +137,11 @@ public:
     { mH = h; }
     tpvType H()
     { return mH; }
+
+    void setZ( tpvType z )
+    { mZ = z; }
+    tpvType Z()
+    { return mZ; }
 };
 
 //! t,fx,fz,bx,bz,ly,ry

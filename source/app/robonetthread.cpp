@@ -43,7 +43,7 @@ void RoboNetThread::onMsg( RoboMsg &msg )
             //! signal
             QByteArray ary = msg.at(3).toByteArray();
 
-            emit signal_net( name, ary.at(2), msg );
+            emit signal_net( name, ary.at(2), msg );        //! 0,1--maincode,subcode
         }
 
         //! name, region

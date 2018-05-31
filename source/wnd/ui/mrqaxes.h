@@ -28,13 +28,21 @@ protected:
     void setupUi();
     void desetupUi();
 
+    void adaptUi();
+
     int apply();
     int updateUi();
+
+private slots:
+    void on_cmbMotionType_currentIndexChanged(int index);
 
 private:
     Ui::mrqAxes *ui;
 
     QDoubleValidator dValidator;
+
+    QList <QWidget*> mRotateDependList;
+    QList <QWidget*> mLineDependList;
 
 };
 

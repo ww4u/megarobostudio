@@ -47,8 +47,13 @@
 namespace MegaDevice
 {
 
+class MrqTaskThread;
+
 class deviceMRQ : public MRQ
 {
+public:
+    typedef int (deviceMRQ::*apiMrqRequest)( void *pArg );
+
 public:
     static float absAngleToValue( quint32 angle );
     static quint32 valueToAbsAngle( float val );
@@ -105,6 +110,8 @@ public:
     QString loadFwVer();
     QString loadBtVer();
 
+    QString loadSeqVer();
+
     int loadPwms();
     int loadFanPwm();
     int loadLedPwm();
@@ -112,6 +119,8 @@ public:
     int loadEncoderZero();
 
     QString loadName();
+
+    int setSN( const QString &sn );
 
     //! overwrite
 public:
@@ -125,6 +134,9 @@ public:
     ,MRQ_REPORT_STATE val1, quint32 * val2, bool bQuery=true );
 
     QMetaType::Type getREPORT_TYPE( MRQ_REPORT_STATE stat );
+
+    //! ca 02
+    int getSeqVer( quint8 *p1, quint8 *p2, quint8 *p3, quint8 *p4, bool bQuery = true );
 
     //! 1~100
     int setFanDuty( int duty );
@@ -217,18 +229,37 @@ public:
     int call( pvt_region );
     int rotate( pvt_region, float t, float ang, float endV = 0 );
     int preRotate( pvt_region, float t, float ang, float endV = 0 );
+    int syncRotate( pvt_region, float t, float ang, float endV, int tmo, int tick );
 
     int movej( pvt_region, float ang, float t, float angJ, float tj, float endV = 0 );
     int preMovej( pvt_region, float ang, float t, float angJ, float tj, float endV = 0 );
 
     int lightCouplingZero( pvt_region,
-                           float t, float angle, float endV = 1 );
+                           float t, float angle, float endV = 0 );
 
-    int fsmState( pvt_region );
+    int lightCouplingZero( pvt_region,
+                           float t, float angle, float endV,
+                           float invT, float invAngle,
+                           int tmous, int tickus );
+
+    int taskLightCouplingZero( void *pArg );
+
+    int fsmState( pvt_region, int iTask = 0 );
+    int waitFsm( pvt_region,
+                 int dstState,
+                 int tmo,
+                 int tick
+                 );
+
+    qint64 busFrames();
+
+    int ioOut( int id, int val );
 
 public:
     virtual int run( const tpvRegion &reg=tpvRegion() );
     virtual int stop( const tpvRegion &reg=tpvRegion() );
+
+    virtual int setLoop( int n, const tpvRegion &region=0 );
 
     virtual void setStatus( int stat, const tpvRegion &reg, frameData &data );
     //! p1:ax, p2:page
@@ -265,13 +296,35 @@ protected:
     QMap< tpvRegion, MrqFsm* > mMrqFsms;
 
     QMap< tpvRegion, deviceProxyMotor * > mProxyMotors;
+
+    QList< MrqTaskThread *> mTaskThread;      //! for each axes
+};
+
+struct ArgLightCoupZero : public RoboTaskArgument
+{
+    int mAx, mPage;
+    float mT, mAngle, mEndV;
+    float mInvT, mInvAngle;
+
+    ArgLightCoupZero();
+};
+
+class MrqTaskThread : public RoboTask
+{
+public:
+    MrqTaskThread(  QObject *parent = NULL );
+
+protected:
+    virtual void run();
+
 };
 
 #define MRQ_PROGRESS( prog, info )      sysProgress( prog, info ); \
                                     sysProgress( true );
+
+
 #define MRQ_PROGRESS_HIDE()             \
                                     sysProgress( false );
-
 }
 
 #endif

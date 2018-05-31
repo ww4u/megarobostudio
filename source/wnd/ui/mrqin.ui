@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MrqIn</class>
+ <widget class="QWidget" name="MrqIn">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>419</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QGroupBox" name="groupBox_6">
+     <property name="title">
+      <string>Input</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_5">
+      <item row="0" column="0">
+       <widget class="QGroupBox" name="groupBox_7">
+        <property name="title">
+         <string>Isolated Input</string>
+        </property>
+        <layout class="QGridLayout" name="gridLayout_6">
+         <item row="0" column="0">
+          <widget class="QTabWidget" name="tabWidget">
+           <property name="currentIndex">
+            <number>0</number>
+           </property>
+           <widget class="MrqXI" name="tab">
+            <attribute name="title">
+             <string>X1</string>
+            </attribute>
+           </widget>
+           <widget class="MrqXI" name="tab_2">
+            <attribute name="title">
+             <string>X2</string>
+            </attribute>
+           </widget>
+           <widget class="MrqXI" name="tab_3">
+            <attribute name="title">
+             <string>X3</string>
+            </attribute>
+           </widget>
+           <widget class="MrqXI" name="tab_4">
+            <attribute name="title">
+             <string>X4</string>
+            </attribute>
+           </widget>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QGroupBox" name="groupBox">
+        <property name="title">
+         <string>Analog Input</string>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <widget class="QTabWidget" name="tabWidget_2">
+           <property name="currentIndex">
+            <number>0</number>
+           </property>
+           <widget class="MrqAi" name="tab_5">
+            <attribute name="title">
+             <string>AI</string>
+            </attribute>
+           </widget>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>MrqXI</class>
+   <extends>QWidget</extends>
+   <header>mrqxi.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>MrqAi</class>
+   <extends>QWidget</extends>
+   <header>mrqai.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

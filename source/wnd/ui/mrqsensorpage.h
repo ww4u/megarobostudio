@@ -31,10 +31,22 @@ public:
                     int index,
                     subUartConfig &cfg
                      );
+
+    int sensCount();
+    void removeSens( int id );
+
+    void setSensText( int id, const QString &tabTxt );
+
 protected:
     void spyEdited();
+private slots:
+    void on_chkAllEn_clicked(bool checked);
+    void slot_sub_live_changed( );
+
 private:
     Ui::MrqSensorPage *ui;
+
+    QList< MrqSubUart * > mSubList;
 
 
 };

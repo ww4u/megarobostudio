@@ -27,17 +27,24 @@ public:
 public:
     virtual void onMsg( int subAxes, RoboMsg &msg );
 
-//    virtual int download( tpvGroup *pGroup, int axes = 0 );
-//    virtual int download( motionGroup *pGroup, int axes = 0 );
-
     virtual int download( QList<tpvGroup*> &groups,
                           QList<int> &joints,       //! joint tab id
                           const tpvRegion &region );
 
     virtual int download( VRobot *pSetup );
 
+public:
+    virtual int build( MegaTableModel *pModel,
+                       xxxGroup<tracePoint> &tracePlan,
+                       xxxGroup<jointsTrace> &jointsPlan,
+                       QList< tpvGroup *> &tpvGroups,
+                       QList< int> &sectionList );
+
+
+public:
     virtual int run( const tpvRegion &region=0  );
     virtual int stop( const tpvRegion &region=0  );
+    virtual int goZero();
     virtual int goZero( int jTabId, bool bCcw );
     virtual int goZero( const QList<int> &jointList,
                         const QList<bool> &ccwList );
@@ -47,7 +54,6 @@ public:
 //    virtual int run( );
 //    virtual int stop( );
 
-    virtual int setLoop( int n, const tpvRegion &region=0 );
     virtual int loopNow();
 
 //    virtual void onLine();
@@ -65,23 +71,33 @@ public:
     int move( QList<MegatronKeyPoint> &curve,
               const tpvRegion &region );
 
+    int preMove( QList<MegatronKeyPoint> &curve,
+              const tpvRegion &region );
+
     int moveTest1();
     int moveTest2();
 
 public:
-    void setZeroAttr( double zeroTime, double zeroAngle, double zeroSpeed );
-    void zeroAttr( double &zeroTime, double &zeroAngle, double &zeroSpeed );
+    void setZeroAttr( double zeroTime, double zeroAngle );
+    void zeroAttr( double &zeroTime, double &zeroAngle );
+
+    void setGapAttr( double gapTime, double gapDist );
+    void gapAttr( double &gapTime, double &gapDist );
 
     int serialOutZero( QXmlStreamWriter &writer);
     int serialInZero( QXmlStreamReader &reader );
 
 protected:
-    int buildTrace( QList<MegatronKeyPoint> &curve );
+    int buildTrace( QList<MegatronKeyPoint> &curve,
+                    QList<tpvGroup *> &jointGroup,
+                    QList<int> &secList );
 
     int downloadTrace( const tpvRegion &region );
 
 protected:
     double mZeroTime, mZeroAngle;
+
+    double mGapTime, mGapDistance, mGapSpeed;
 };
 
 #endif

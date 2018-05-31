@@ -26,6 +26,8 @@ protected:
     void updateUi();
     void updateData();
 
+    void adaptUi();
+
     int applyGroupId();
 
 private:

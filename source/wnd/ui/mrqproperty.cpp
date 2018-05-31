@@ -43,6 +43,8 @@ void mrqProperty::slot_page_changed( int index )
     ui->btnCancel->setEnabled( pView->isCanceAble() );
     ui->btnOK->setEnabled( pView->isOkAble() );
     ui->btnApply->setEnabled( pView->isApplyAble() );
+
+    ui->btnCancel->setFocus();      //! focus on cancel
 }
 
 void mrqProperty::on_btnApply_clicked()
@@ -186,13 +188,26 @@ void mrqProperty::setupUi()
         mViewPages.append( mDcAxesPages.at(i) );
     }
 
-    m_pIoPage = new mrqIo();
-    Q_ASSERT( NULL != m_pIoPage );
-    mViewPages.append( m_pIoPage );
+    if ( m_pRefModel->outputs() > 0 )
+    {
+        m_pIoPage = new mrqIo();
+        Q_ASSERT( NULL != m_pIoPage );
+        mViewPages.append( m_pIoPage );
+    }
 
-    m_pSensorPage = new mrqSensor();
-    Q_ASSERT( NULL != m_pSensorPage );
-    mViewPages.append( m_pSensorPage );
+    if ( m_pRefModel->inputs() > 0 )
+    {
+        m_pInPage = new MrqIn();
+        Q_ASSERT( NULL != m_pInPage );
+        mViewPages.append( m_pInPage );
+    }
+
+    if ( m_pRefModel->uarts() > 0 )
+    {
+        m_pSensorPage = new mrqSensor();
+        Q_ASSERT( NULL != m_pSensorPage );
+        mViewPages.append( m_pSensorPage );
+    }
 
     if ( m_pRefModel->alarms() > 0 )
     {
@@ -218,8 +233,16 @@ void mrqProperty::setupUi()
         ui->stackedWidget->addWidget( mDcAxesPages[i] );
     }
 
-    ui->stackedWidget->addWidget( m_pIoPage );
-    ui->stackedWidget->addWidget( m_pSensorPage );
+    if ( m_pRefModel->outputs() > 0 )
+    { ui->stackedWidget->addWidget( m_pIoPage ); }
+
+    if ( m_pRefModel->inputs() > 0 )
+    { ui->stackedWidget->addWidget( m_pInPage ); }
+
+    if ( m_pRefModel->uarts() > 0 )
+    {
+        ui->stackedWidget->addWidget( m_pSensorPage );
+    }
 
     if ( m_pRefModel->alarms() > 0 )
     {
@@ -259,24 +282,39 @@ void mrqProperty::setupUi()
         ui->listWidget->addItem( pItem );
     }
 
-    pItem = new QListWidgetItem();
-    Q_ASSERT( NULL != pItem );
-    pItem->setText( tr("IO") );
-    pItem->setIcon( QIcon(":/res/image/icon2/link.png") );
-    ui->listWidget->addItem( pItem );
+    if ( m_pRefModel->outputs() > 0 )
+    {
+        pItem = new QListWidgetItem();
+        Q_ASSERT( NULL != pItem );
+        pItem->setText( tr("Output") );
+        pItem->setIcon( QIcon(":/res/image/icon2/link.png") );
+        ui->listWidget->addItem( pItem );
+    }
 
-    pItem = new QListWidgetItem();
-    Q_ASSERT( NULL != pItem );
-    pItem->setText( tr("Sensor") );
-    pItem->setIcon( QIcon(":/res/image/icon2/pick.png") );
-    ui->listWidget->addItem( pItem );
+    if ( m_pRefModel->inputs() > 0 )
+    {
+        pItem = new QListWidgetItem();
+        Q_ASSERT( NULL != pItem );
+        pItem->setText( tr("Input") );
+        pItem->setIcon( QIcon(":/res/image/icon2/link.png") );
+        ui->listWidget->addItem( pItem );
+    }
+
+    if ( m_pRefModel->uarts() > 0 )
+    {
+        pItem = new QListWidgetItem();
+        Q_ASSERT( NULL != pItem );
+        pItem->setText( ("SEN.") );         //! \note do not convert
+        pItem->setIcon( QIcon(":/res/image/icon2/pick.png") );
+        ui->listWidget->addItem( pItem );
+    }
 
     if ( m_pRefModel->alarms() > 0 )
     {
         pItem = new QListWidgetItem();
         Q_ASSERT( NULL != pItem );
         pItem->setText( tr("Alarm") );
-        pItem->setIcon( QIcon(":/res/image/icon2/settings_light.png") );
+        pItem->setIcon( QIcon(":/res/image/icon/remind.png") );
         ui->listWidget->addItem( pItem );
     }
 
@@ -332,6 +370,9 @@ int mrqProperty::postApply( appMsg msg, void *pPara )
         sysProgress( id++, pView->name(), mViewPages.size(), 0 );
         sysProgress( true );
         pView->setApply();
+
+        QThread::msleep( 100 );
+
         sysProgress( id, pView->name(), mViewPages.size(), 0 );
     }
 

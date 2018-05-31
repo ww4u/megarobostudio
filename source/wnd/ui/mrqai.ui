@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MrqAi</class>
+ <widget class="QWidget" name="MrqAi">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>109</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <widget class="QCheckBox" name="checkBox">
+     <property name="text">
+      <string>ON/OFF</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Threashold Low</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0">
+    <widget class="QLabel" name="label_3">
+     <property name="text">
+      <string>Threashold High</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="1">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="1" column="2">
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>Response Low</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="3">
+    <widget class="QComboBox" name="cmbRespL">
+     <item>
+      <property name="text">
+       <string>NONE</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>ALARM</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>STOP</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>ALARM + STOP</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="4" column="2">
+    <widget class="QLabel" name="label_4">
+     <property name="text">
+      <string>Response High</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="3">
+    <widget class="QComboBox" name="cmbRespH">
+     <item>
+      <property name="text">
+       <string>NONE</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>ALARM</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>STOP</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>ALARM + STOP</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QDoubleSpinBox" name="spinThreL">
+     <property name="maximum">
+      <double>30.000000000000000</double>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1">
+    <widget class="QDoubleSpinBox" name="spinThreH">
+     <property name="maximum">
+      <double>30.000000000000000</double>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

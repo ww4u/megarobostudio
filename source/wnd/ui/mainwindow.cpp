@@ -257,6 +257,10 @@ void MainWindow::buildConnection()
 
     connect( m_pScriptMgr, SIGNAL(signal_scriptmgr_changed()),
              this, SLOT(slot_scriptmgr_changed()));
+    connect( m_pScriptMgr, SIGNAL(signal_prj_edited()),
+             this, SLOT(on_actionSave_Prj_triggered()));
+    connect( m_pScriptMgr, SIGNAL(signal_prj_edited()),
+                 this, SLOT(slot_scene_changed()));
 
     //! new
     connect( this,
@@ -359,6 +363,16 @@ void MainWindow::loadSetup()
     if ( NULL != pAction )
     {
         pAction->setEnable( true );
+        pAction->setEvent( QStringLiteral("Lose Step") );
+        pAction->setAction( QStringLiteral("Prompt") );
+        pAction->setComment( tr("Lose Step") );
+        mMcModel.mEventActionModel.items()->append( pAction );
+    }
+
+    pAction = new EventAction();
+    if ( NULL != pAction )
+    {
+        pAction->setEnable( true );
         pAction->setEvent( QStringLiteral("Over Distance") );
         pAction->setAction( QStringLiteral("Prompt+Stop") );
         pAction->setComment( tr("MRX-T4 Distance warning") );
@@ -374,8 +388,6 @@ void MainWindow::loadSetup()
         pAction->setComment( tr("MRX-T4 Angle warning") );
         mMcModel.mEventActionModel.items()->append( pAction );
     }
-//    Q_ASSERT( NULL != m_pEventViewer );
-//    m_pEventViewer->slot_exception_changed();
 
     m_pEventViewer = new eventViewer(
                                       &mMcModel.mEventActionModel,
@@ -389,6 +401,7 @@ void MainWindow::setupData()
     mMcModel.preload();
 
     mMcModel.m_pInstMgr->setMainModel( &mMcModel );
+    VRobot::attachSysPara( &mMcModel.mSysPref );
 
     Q_ASSERT( NULL != m_pDeviceMgr );
     m_pDeviceMgr->setInstMgr( mMcModel.m_pInstMgr );
@@ -788,24 +801,8 @@ void MainWindow::slot_net_event(
         if ( eId >= event_exception_min
              && eId < event_exception_max )
         {
-            exceptionProc( name, eId, msg );
+            exceptionProc( name, axes, eId, msg );
         }
-//        //! event id, send id, bytearray
-//        else if ( event_alarm == eId )
-//        {
-//            if( !msg.checkType( QMetaType::Int,
-//                               QMetaType::Int,
-//                               QMetaType::QByteArray ) )
-//            {
-//                sysError( tr("invalid alarm") );
-//                return;
-//            }
-
-//            QByteArray ary = msg.at(2).toByteArray();
-//            onExceptionAlarm( name,
-//                              msg,
-//                              ary );
-//        }
         else
         {
 
@@ -1325,5 +1322,4 @@ void MainWindow::on_actiontest_triggered()
     qApp->setStyleSheet(qss.readAll());
     qss.close();
 }
-
 

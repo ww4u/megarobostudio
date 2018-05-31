@@ -47,7 +47,6 @@ public:
 
     virtual int getPOSE( float pos[] );
 
-    virtual int setLoop( int n, const tpvRegion &region=0 );
     virtual int loopNow();
 
 //    virtual void onLine();
@@ -61,16 +60,22 @@ public:
     virtual int build( MegaTableModel *pModel,
                        xxxGroup<tracePoint> &tracePlan,
                        xxxGroup<jointsTrace> &jointsPlan,
-                       QList< tpvGroup *> &tpvGroups );
+                       QList< tpvGroup *> &tpvGroups,
+                       QList< int> &sectionList );
 
 public:
     int call( const tpvRegion &region=0 );  //! load + run
+
     int program( const QString &fileName,
-                             const tpvRegion &region );
+                 const tpvRegion &region );
     int loadProgram( const QString &fileName );
+//    int loadProgram2( const QString &fileName );
+//    int loadProgram3( const QString &fileName );
 
     int program( QList<TraceKeyPoint> &curve,
                  const tpvRegion &region );
+
+
     int move( QList<TraceKeyPoint> &curve,
               const tpvRegion &region );
 
@@ -81,6 +86,7 @@ public:
     int nowAngle( float angles[] );
     //! ref to the joint angle
     int nowJointAngle( float angles[4] );
+    int jointMove( int jointId, int subPage, float angle, float t );
 
     int angleToPos( float angles[4],
                      TraceKeyPoint &pos );
@@ -111,7 +117,8 @@ protected:
 
     int convertTrace(   QList<TraceKeyPoint> &curve,
                         xxxGroup<jointsTrace> &jointsPlan,
-                        QList< tpvGroup *> &groups );
+                        QList< tpvGroup *> &groups,
+                        QList< int> &sectionList );
 
     int downloadTrace( const tpvRegion &region,
                        QList< tpvGroup *> &groups );

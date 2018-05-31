@@ -12,7 +12,7 @@ robotSlide::robotSlide()
     mId = robot_slide;
 
     //! default gpid
-    mCanGroupId = group_id_from + mId - robot_complex;
+    mCanGroupId = group_id_from + (mId - robot_complex)*group_id_from;
 
     setAxes( 1 );
     setAxesDefName( 1 );

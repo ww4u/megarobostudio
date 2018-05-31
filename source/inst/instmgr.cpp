@@ -817,6 +817,7 @@ int InstMgr::probeCANBus( CANBus *pNewBus,
     pNewBus->setSpeed( m_pMainModel->mSysPref.mSpeed );
     pNewBus->setWtInterval( m_pMainModel->mSysPref.mInterval );
     pNewBus->setRdTmo( m_pMainModel->mSysPref.mTimeout );
+    pNewBus->setRecvTmo( m_pMainModel->mSysPref.mRecvTmo );
     pNewBus->setEnumTmo( m_pMainModel->mSysPref.mEnumerateTimeout );
     pNewBus->setFailTry( m_pMainModel->mSysPref.mFailTryCnt );
 

@@ -49,13 +49,15 @@ void roboScene::mousePressEvent(QMouseEvent *event)
 {
     selectAll( false );
 
-    sceneWidget *pWidget = (sceneWidget*)childAt( event->pos() );
+    //! dynamic cast
+    sceneWidget *pWidget = dynamic_cast<sceneWidget*>( childAt( event->pos() ) );
+
     if ( NULL != pWidget )
     {
         pWidget->setFocus();
 
         pWidget->setSelected(true);
-        pWidget->getSelected();
+
         pWidget->raise();
         pWidget->setFrameShape( QFrame::StyledPanel );
 
@@ -131,6 +133,7 @@ void roboScene::slot_editingFinished( sceneWidget *pWig, const QString &str )
     }
     else
     {
+        pWig->setName( tr("untitled") );
         MegaMessageBox::warning( this, tr("Warning"), tr("Name Inavlid") );
         pWig->focusOnName();
     }
@@ -159,7 +162,7 @@ int roboScene::save( QString &outFileName )
     return lSceneModel.save( outFileName );
 }
 
-int roboScene::saveAs( const QString &name )
+int roboScene::saveAs( QString &name )
 {
     roboSceneModel lSceneModel;
 
@@ -174,7 +177,7 @@ sceneWidget * roboScene::addRobot( mcModelObj *pBase )
 
     //! change type
     pBase->setType( mcModelObj::model_scene_variable );
-    sceneWidget *pItem = new sceneWidget( this );   //! has parent, no need to delete
+    sceneWidget *pItem = new sceneWidget( ui->scrollArea );   //! has parent, no need to delete
     Q_ASSERT( NULL != pItem );
 
 logDbg();
@@ -315,8 +318,11 @@ bool roboScene::checkName( const QString &name,
     if ( name.length() < 1 )
     { return false; }
 
+    //! check repeat name
     foreach( sceneWidget *pWig, mItemList )
     {
+        Q_ASSERT( NULL != pWig );
+
         if ( pWig == pSelf )
         { continue; }
 
@@ -356,6 +362,7 @@ void roboScene::selectAll( bool bSel )
 {
     foreach( sceneWidget*pItem, mItemList )
     {
+        Q_ASSERT( NULL != pItem );
         pItem->setSelected( bSel );
     }
 
@@ -366,6 +373,7 @@ void roboScene::updateSelecte()
 {
     foreach( sceneWidget*pItem, mItemList )
     {
+        Q_ASSERT( NULL != pItem );
         if ( pItem->getSelected() )
         {
             pItem->setFrameShape( QFrame::StyledPanel );

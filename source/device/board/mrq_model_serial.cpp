@@ -738,7 +738,7 @@ int MRQ_model::saveSubTrigger( int sub, QXmlStreamWriter &writer )
     writer.writeTextElement( "mTRIGGER_PATTSMODE", toString(mTRIGGER_PATTSMODE[sub]) );
     writer.writeTextElement( "mTRIGGER_PATTSPERIOD", DeviceModel::toString(mTRIGGER_PATTSPERIOD[sub]) );
 
-    for ( int j = 0; j < 2; j++ )
+    for ( int j = 0; j < mTrigSrcs; j++ )
     {
         writer.writeStartElement("channel");
 
@@ -1132,8 +1132,8 @@ int MRQ_model::saveISOi( QXmlStreamWriter &writer )
     writer.writeTextElement("mISOLATORIN_SPERIOD", DeviceModel::toString(mISOLATORIN_SPERIOD));
 
     return 0;
-
 }
+
 int MRQ_model::loadISOi( QXmlStreamReader &reader )
 {
     while( reader.readNextStartElement() )
@@ -1149,6 +1149,43 @@ int MRQ_model::loadISOi( QXmlStreamReader &reader )
         { toValue( reader.readElementText(), &mISOLATORIN_SMODE); }
         else if ( reader.name() == "mISOLATORIN_SPERIOD" )
         { DeviceModel::toValue( reader.readElementText(), &mISOLATORIN_SPERIOD); }
+
+        else
+        { reader.skipCurrentElement(); }
+    }
+
+    return 0;
+}
+
+int MRQ_model::saveAi( QXmlStreamWriter &writer )
+{
+    writer.writeTextElement("mANALOGIN_STATE", toString(mANALOGIN_STATE));
+
+    writer.writeTextElement("mANALOGIN_RESPONSEH", toString(mANALOGIN_RESPONSEH));
+    writer.writeTextElement("mANALOGIN_RESPONSEL", toString(mANALOGIN_RESPONSEL));
+
+    writer.writeTextElement("mANALOGIN_THRESHOLDH", DeviceModel::toString(mANALOGIN_THRESHOLDH));
+    writer.writeTextElement("mANALOGIN_THRESHOLDL", DeviceModel::toString(mANALOGIN_THRESHOLDL));
+
+    return 0;
+
+}
+int MRQ_model::loadAi( QXmlStreamReader &reader )
+{
+    while( reader.readNextStartElement() )
+    {
+        if (reader.name() == "mANALOGIN_STATE" )
+        { toValue( reader.readElementText(), &mISOLATORIN_STATE); }
+
+        else if ( reader.name() == "mANALOGIN_RESPONSEH" )
+        { toValue( reader.readElementText(), &mANALOGIN_RESPONSEH); }
+        else if ( reader.name() == "mANALOGIN_RESPONSEL" )
+        { toValue( reader.readElementText(), &mANALOGIN_RESPONSEL); }
+
+        else if ( reader.name() == "mANALOGIN_THRESHOLDH" )
+        { DeviceModel::toValue( reader.readElementText(), &mANALOGIN_THRESHOLDH); }
+        else if ( reader.name() == "mANALOGIN_THRESHOLDL" )
+        { DeviceModel::toValue( reader.readElementText(), &mANALOGIN_THRESHOLDL); }
 
         else
         { reader.skipCurrentElement(); }
@@ -1274,5 +1311,35 @@ int MRQ_model::loadSubDistanceAlarm( int sub, QXmlStreamReader &reader )
 
     return 0;
 }
+
+int MRQ_model::saveOtp( QXmlStreamWriter &writer )
+{
+    writer.writeTextElement("mOTP_STATE", toString(mOTP_STATE));
+    writer.writeTextElement("mOTP_THRESHOLD", DeviceModel::toString(mOTP_THRESHOLD));
+    writer.writeTextElement("mOTP_RESPONSE", toString(mOTP_RESPONSE));
+    writer.writeTextElement("mOTP_PERIOD", DeviceModel::toString(mOTP_PERIOD));
+    return 0;
+}
+
+int MRQ_model::loadOtp( QXmlStreamReader &reader )
+{
+    while( reader.readNextStartElement() )
+    {
+        if (reader.name() == "mOTP_STATE" )
+        { toValue( reader.readElementText(), &mOTP_STATE); }
+        else if (reader.name() == "mOTP_THRESHOLD" )
+        { DeviceModel::toValue( reader.readElementText(), &mOTP_THRESHOLD); }
+        else if (reader.name() == "mOTP_RESPONSE" )
+        { toValue( reader.readElementText(), &mOTP_RESPONSE); }
+        else if (reader.name() == "mOTP_PERIOD" )
+        { DeviceModel::toValue( reader.readElementText(), &mOTP_PERIOD); }
+
+        else
+        { reader.skipCurrentElement(); }
+    }
+
+    return 0;
+}
+
 
 }

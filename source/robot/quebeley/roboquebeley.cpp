@@ -24,11 +24,26 @@ roboQuebeley::roboQuebeley( robotEnum id )
     setAxesDefName( 1 );
     setJointName( 1 );
 
-    mDOs = 0;
-    mDIs = 0;
-    mISOs = 0;
-    mAINs = 0;
-    mUARTs = 0;
+    mOutputs = 1;
+    mInputs = 1;
+
+    mDOs = 2;
+    mDIs = 2;
+
+    mISOs = 2;
+    mISIs = 0;
+
+    mAINs = 1;
+
+    mUARTs = 2;
+    mUART_Sensors = 1;      //! \todo 1
+
+    mSensorNameList.clear();
+    mSensorNameList<<QObject::tr("SEN1")<<QObject::tr("SEN2");
+
+    mTemperatures = 1;      //! otp
+
+    setTrigSrcs( 5 );
 
     if ( id == robot_qubeley_d )
     { mImage = QImage::fromData( _megaimage, sizeof(_megaimage) ); }
@@ -36,6 +51,20 @@ roboQuebeley::roboQuebeley( robotEnum id )
     { mImage = QImage::fromData( _megaimage, sizeof(_megaimage_s) ); }
     else
     { Q_ASSERT(false); }
+}
+
+QString roboQuebeley::trigSrcAlias( int ax, int iTrig )
+{
+    Q_ASSERT( ax == 0 && iTrig >= 0 && iTrig < trigSrcs() );
+
+    if ( iTrig >= 0 && iTrig < 4 )
+    {
+        return QString("X%1").arg(iTrig+1);
+    }
+    else if ( iTrig == 4 )
+    { return QString(QObject::tr("SW_Z")); }
+    else
+    { return ""; }
 }
 
 int roboQuebeley::serialIn( QXmlStreamReader &reader )

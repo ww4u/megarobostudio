@@ -20,6 +20,8 @@ roboGeo10::roboGeo10()
     mAINs = 0;
     mUARTs = 0;
 
+    mMicrostepBase = 2;
+
     mImage = QImage::fromData( _megaimage, sizeof(_megaimage) );
 }
 

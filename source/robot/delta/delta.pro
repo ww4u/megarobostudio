@@ -16,7 +16,8 @@ SOURCES = \
     _scpi_callback.cpp \
     _download.cpp \
     _movement.cpp \
-    _setup.cpp
+    _setup.cpp \
+    _build.cpp
 
 HEADERS = \
     delta.h

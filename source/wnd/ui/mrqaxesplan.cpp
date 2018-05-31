@@ -32,27 +32,27 @@ void MrqAxesPlan::spyEdited()
 
 int MrqAxesPlan::apply()
 {
-    MegaDevice::deviceMRQ *pDevice;
-    pDevice = getDevice();
-    Q_ASSERT( NULL != pDevice );
+//    MegaDevice::deviceMRQ *pDevice;
+//    pDevice = getDevice();
+//    Q_ASSERT( NULL != pDevice );
 
-    int ret;
-    checked_call( pDevice->setMOTIONPLAN_ENDSTATE( mAxesId,
-                                                     mPage,
-                                           (MRQ_MOTIONPLAN_ENDSTATE_1)ui->cmbEndState->currentIndex()
-                                           ) );
+//    int ret;
+//    checked_call( pDevice->setMOTIONPLAN_ENDSTATE( mAxesId,
+//                                                     mPage,
+//                                           (MRQ_MOTIONPLAN_ENDSTATE_1)ui->cmbEndState->currentIndex()
+//                                           ) );
 
     return 0;
 }
 int MrqAxesPlan::updateUi()
 {
-    Q_ASSERT( NULL != m_pMrqModel );
+//    Q_ASSERT( NULL != m_pMrqModel );
 
-    if ( NULL == m_pMrqModel )
-    { return ERR_NULL_POINTER; }
+//    if ( NULL == m_pMrqModel )
+//    { return ERR_NULL_POINTER; }
 
-    //! only for page0
-    ui->cmbEndState->setCurrentIndex( m_pMrqModel->mMOTIONPLAN_ENDSTATE[mAxesId][0] );
+//    //! only for page0
+//    ui->cmbEndState->setCurrentIndex( m_pMrqModel->mMOTIONPLAN_ENDSTATE[mAxesId][0] );
 
     return 0;
 }

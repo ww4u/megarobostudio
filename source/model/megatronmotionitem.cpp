@@ -58,11 +58,6 @@ MegatronMotionItem::MegatronMotionItem( const MegatronMotionItem &item )
     *this = item;
 }
 
-MegatronMotionItem &MegatronMotionItem::operator=( const MegatronMotionItem &item )
-{
-    //! \todo
-    return *this;
-}
 
 int MegatronMotionItem::serialOut( ImcStream &stream )
 {
@@ -82,7 +77,7 @@ int MegatronMotionItem::serialIn( ImcStream &stream )
 {
     QString str = stream.readLine();
 
-    QStringList strList = str.split( COL_SEP, QString::SkipEmptyParts );
+    QStringList strList = str.split( COL_SEP );
 
     if ( strList.size() > 0 )
     { mbEnable = strList.at(0).toInt() > 0; }

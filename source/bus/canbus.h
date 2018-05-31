@@ -34,6 +34,8 @@ public:
     virtual int flush( DeviceId &nodeId );
     virtual int clear();
 
+    virtual int doSend( const QString &buf );
+
     virtual int doWrite( DeviceId &nodeId, byte *pBuf, int len );
     virtual int doWrite( QList<frameData> &canFrames );
 
@@ -57,6 +59,8 @@ public:
     int getDevType();
 //    int getDevId();
     int getCanId();
+
+    qint64 frames();
 
 protected:
     void beginEnumerate();
@@ -82,6 +86,7 @@ protected:
     int mCanId;
 
     CANApi mApi;
+    qint64 mFrames;
 
 };
 

@@ -28,17 +28,12 @@ protected:
     void zeroJoint( int jointId, bool bCcw );
 
 protected Q_SLOTS:
-    void slot_joint_zero( int jId, bool bccw );
-    void slot_ccw_changed();
-    void slot_body_changed();
+    void slot_joint_zero( int jId );
 
 Q_SIGNALS:
-    void signal_joint_zero( int jointid, bool bccw );
+    void signal_joint_zero( int jointid );
 
 private slots:
-    void on_chkAllCcw_clicked(bool checked);
-
-    void on_chkAllBody_clicked(bool checked);
 
     void on_btnZeroX_clicked();
 
@@ -49,8 +44,6 @@ private slots:
 private:
     Ui::H2Pref *ui;
 
-    QList<QCheckBox*> mBodyChecks;
-    QList<QCheckBox*> mCcwChecks;
 };
 
 #endif // H2PREF_H

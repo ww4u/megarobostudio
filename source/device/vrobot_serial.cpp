@@ -55,9 +55,11 @@ int VRobot::load( const QString &name )
                             while(reader.readNextStartElement())
                             {
                                 if ( reader.name() == "speed" )
-                                {
-                                    mZeroSpeed = reader.readElementText().toDouble();
-                                }
+                                { mZeroSpeed = reader.readElementText().toDouble(); }
+                                else if ( reader.name() == "tmo" )
+                                { mZeroTmo = reader.readElementText().toInt(); }
+                                else  if ( reader.name() == "tick" )
+                                { mZeroTick = reader.readElementText().toInt(); }
                                 else
                                 { reader.skipCurrentElement(); }
                             }
@@ -135,6 +137,8 @@ int VRobot::save( const QString &name )
 
             writer.writeStartElement("zero_about");
             writer.writeTextElement("speed", QString::number(mZeroSpeed) );
+            writer.writeTextElement("tmo", QString::number(mZeroTmo) );
+            writer.writeTextElement("tick", QString::number(mZeroTick) );
             writer.writeEndElement();
 
 //            writer.writeStartElement("init_angle");

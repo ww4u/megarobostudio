@@ -34,22 +34,22 @@
        </property>
        <item>
         <property name="text">
-         <string>Sinanju</string>
+         <string>MRX-T4</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>Megatron</string>
+         <string>MRX-AS</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>Delta</string>
+         <string>MRX-DT</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>H2</string>
+         <string>MRX-H2</string>
         </property>
        </item>
       </widget>

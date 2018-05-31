@@ -30,14 +30,46 @@ int robotSinanju::program( const QString &fileName,
     return 0;
 }
 
+//! 0   1   2   3   4    5
+//! J1  J2  J3  J4  End Time
+//!
+//! 0  1 2  3  4  5  6  7  8  9  10
+//! t J1 J2 J3 J4 J5 V1 V2 V3 V4 V5
 int robotSinanju::loadProgram( const QString &fileName )
 {
-    //!  0   1   2   3   4    5
-    //!  J1  J2  J3  J4  End Time
     QList<float> dataset;
-    int col = 6;logDbg();
-    if ( 0 != comAssist::loadDataset( fileName, col, dataset ) )
-    { return ERR_INVALID_INPUT; }logDbg()<<dataset.size();
+    int col;
+    int timeCol, pOffset, vOffset;
+    do
+    {
+        //! try first
+        col = 11;
+        dataset.clear();
+        if ( 0 == comAssist::loadDataset( fileName, col, dataset ) )
+        {logDbg()<<dataset.size();
+            timeCol = 0;
+            pOffset = 1;
+            vOffset = 6;
+            break;
+        }
+        else
+        {
+        }
+
+        //! try again
+        col = 6;
+        dataset.clear();
+        if ( 0 == comAssist::loadDataset( fileName, col, dataset ) )
+        {logDbg()<<dataset.size();
+            timeCol = 5;
+            pOffset = 0;
+            vOffset = -1;
+            break;
+        }
+        else
+        {  return ERR_INVALID_INPUT; }
+
+    }while( 0 );
 
     //! convert to tpvitem
     if ( dataset.size() < 2 * col )
@@ -57,10 +89,21 @@ int robotSinanju::loadProgram( const QString &fileName )
         int ret;
         for ( int j = 0; j < dataset.size() / col; j++ )
         {
-            ret = pGroup->addItem( dataset.at( j * col + 5),        //! time
-                                   dataset.at( j * col + i),        //! p
-                                   0
-                                   );
+            if ( vOffset < 0 )
+            {
+                ret = pGroup->addItem( dataset.at( j * col + timeCol),     //! time
+                                       dataset.at( j * col + pOffset + i ),//! p
+                                       0
+                                       );
+            }
+            else
+            {
+                ret = pGroup->addItem( dataset.at( j * col + timeCol),     //! time
+                                       dataset.at( j * col + pOffset + i ),//! p
+                                       dataset.at( j * col + vOffset + i ) //! v
+                                       );
+            }
+
             if ( ret != 0 )
             {
                 delete pGroup;
@@ -71,15 +114,15 @@ int robotSinanju::loadProgram( const QString &fileName )
         mJointsGroup.append( pGroup );
     }
 
-    //! log joint group
-    foreach ( tpvGroup *pGp, mJointsGroup )
-    {
-        logDbg()<<"*******";
-        foreach(  tpvItem *pItem, pGp->mItems )
-        {
-            logDbg()<<pItem->mT<<pItem->mP<<pItem->mV;
-        }
-    }
+//    //! log joint group
+//    foreach ( tpvGroup *pGp, mJointsGroup )
+//    {
+//        logDbg()<<"*******";
+//        foreach(  tpvItem *pItem, pGp->mItems )
+//        {
+//            logDbg()<<pItem->mT<<pItem->mP<<pItem->mV;
+//        }
+//    }
 
     return 0;
 }
@@ -88,6 +131,9 @@ int robotSinanju::program( QList<TraceKeyPoint> &curve,
              const tpvRegion &region )
 {
     int ret;
+
+    //! 0. loop
+    setLoop( 1, region );
 
     //! 1.build
     delete_all( mJointsGroup );
@@ -100,7 +146,8 @@ int robotSinanju::program( QList<TraceKeyPoint> &curve,
     { return ret; }
 
     //! 2.convert
-    ret = convertTrace( curve, jointsPlan, mJointsGroup );
+    QList<int> secList;
+    ret = convertTrace( curve, jointsPlan, mJointsGroup, secList );
     if ( ret != 0 )
     { return ret; }
 
@@ -244,6 +291,23 @@ int robotSinanju::nowJointAngle( float angles[4] )
     comAssist::normalizeDegreeN180_180( angles, 4 );
 
     return 0;
+}
+
+int robotSinanju::jointMove( int jointId, int subPage, float angle, float t )
+{
+    MegaDevice::deviceMRQ *pDev;
+    int ax;
+
+    pDev = jointDevice( jointId, &ax );
+    if ( NULL == pDev )
+    { return -1; }
+
+    if ( jointId < 0 || jointId > 3 )
+    { return -1; }
+
+    int dirs[]={ -1, 1, 1, -1 };        //! for rviz dir
+
+    return pDev->rotate( tpvRegion(ax, subPage), t, angle * dirs[ jointId ] );
 }
 
 #define ref_angle(id)   mRefAngles.at(id)

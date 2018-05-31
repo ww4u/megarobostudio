@@ -18,7 +18,8 @@ int robotMegatron::program( QList<MegatronKeyPoint> &curve,
     //!
 
     //! 1.build
-    ret = buildTrace( curve );
+    QList<int> secList;
+    ret = buildTrace( curve, mJointsGroup, secList );
     if ( ret != 0 )
     { return ret; }
 
@@ -41,6 +42,21 @@ int robotMegatron::move( QList<MegatronKeyPoint> &curve,
     //! request run
     run( region );
 
+    ret = preMove( curve, region );
+
+    return ret;
+}
+
+int robotMegatron::preMove( QList<MegatronKeyPoint> &curve,
+                         const tpvRegion &region )
+{
+    int ret;
+
+    //! request run
+    run( region );
+
+    setLoop( 1, region );
+
     //! program
     ret = program( curve, region );
 
@@ -51,20 +67,20 @@ int robotMegatron::moveTest1()
 {
     MegatronKeyPoint pt1,pt2;
     pt1.t = 0;
-    pt1.x1 = 0;
-    pt1.y1 = 0;
-    pt1.z1 = 0;
-    pt1.x2 = 0;
-    pt1.y2 = 0;
-    pt1.z2 = 0;
+    pt1.fx = 0;
+    pt1.ly = 0;
+    pt1.fz = 0;
+    pt1.bx = 0;
+    pt1.ry = 0;
+    pt1.bz = 0;
 
     pt2.t = 1;
-    pt2.x1 = 10;
-    pt2.y1 = 10;
-    pt2.z1 = 10;
-    pt2.x2 = 20;
-    pt2.y2 = 20;
-    pt2.z2 = 20;
+    pt2.fx = 10;
+    pt2.ly = 10;
+    pt2.fz = 10;
+    pt2.bx = 20;
+    pt2.ry = 20;
+    pt2.bz = 20;
 
     QList<MegatronKeyPoint> curve;
     curve.append( pt1 );
@@ -77,20 +93,20 @@ int robotMegatron::moveTest2()
 {
     MegatronKeyPoint pt1,pt2;
     pt1.t = 1;
-    pt1.x1 = 0;
-    pt1.y1 = 0;
-    pt1.z1 = 0;
-    pt1.x2 = 0;
-    pt1.y2 = 0;
-    pt1.z2 = 0;
+    pt1.fx = 0;
+    pt1.ly = 0;
+    pt1.fz = 0;
+    pt1.bx = 0;
+    pt1.ry = 0;
+    pt1.bz = 0;
 
     pt2.t = 0;
-    pt2.x1 = 10;
-    pt2.y1 = 10;
-    pt2.z1 = 10;
-    pt2.x2 = 20;
-    pt2.y2 = 20;
-    pt2.z2 = 20;
+    pt2.fx = 10;
+    pt2.ly = 10;
+    pt2.fz = 10;
+    pt2.bx = 20;
+    pt2.ry = 20;
+    pt2.bz = 20;
 
     QList<MegatronKeyPoint> curve;
     curve.append( pt2 );

@@ -2,7 +2,9 @@
 
 int robotSinanju::convertTrace( QList<TraceKeyPoint> &curve,
                                 xxxGroup<jointsTrace> &jointsPlan,
-                                QList< tpvGroup *> &groups )
+                                QList< tpvGroup *> &groups,
+                                QList< int > &sectionList
+                                )
 {
     //! 0.check
     if( jointsPlan.size() > 0 )
@@ -22,6 +24,7 @@ int robotSinanju::convertTrace( QList<TraceKeyPoint> &curve,
         sysError( QObject::tr("split joint") );
         return ret;
     }
+    sectionList<<0<<groups.size();
 
     //! tail
     //! for hand
@@ -39,8 +42,8 @@ int robotSinanju::convertTrace( QList<TraceKeyPoint> &curve,
             return ERR_FAIL_ADD_TPV;
         }
     }
-
     groups.append( pGroup );
+    sectionList<<4<<1;
 
 // MOVE 280,21.5,452.75,0,250,0,502,90,0.5
     return 0;

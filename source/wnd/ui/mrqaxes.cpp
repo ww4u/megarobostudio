@@ -34,6 +34,8 @@ int mrqAxes::setApply()
 
 void mrqAxes::modelChanged()
 {
+    adaptUi();
+
     updateUi();
 }
 
@@ -87,9 +89,37 @@ void mrqAxes::spyEdited()
 
 void mrqAxes::setupUi()
 {
+    mRotateDependList.append( ui->label_19 );
+    mRotateDependList.append( ui->spinSlowMotor );
+    mRotateDependList.append( ui->spinSlowGear );
+    mRotateDependList.append( ui->label_18 );
+    mRotateDependList.append( ui->label_5 );
+    mRotateDependList.append( ui->label_8 );
+
+    mLineDependList.append( ui->label_20 );
+    mLineDependList.append( ui->spinDistance );
 }
 void mrqAxes::desetupUi()
 {}
+
+void mrqAxes::adaptUi()
+{
+    if ( ui->cmbDrvVernier->count() > 0 )
+    {}
+    else
+    {
+        //! microstep
+        //! fill the micro step
+        QStringList microList;
+        int base;
+
+        m_pMrqModel->microStepAttr( microList, base );
+        for ( int i = base; i < microList.size(); i++ )
+        {
+            ui->cmbDrvVernier->addItem( microList.at(i), i );
+        }
+    }
+}
 
 //! view->model
 int mrqAxes::apply()
@@ -121,7 +151,7 @@ int mrqAxes::apply()
     pDevice->setDRIVER_SWITCHTIME( mAxesId, comAssist::align( ui->spinIdleTime->value(),driver_time_unit) );
 
     pDevice->setDRIVER_CURRENT( mAxesId, comAssist::align( ui->dblCurrent->value(),driver_current_unit) );
-    pDevice->setDRIVER_MICROSTEPS( mAxesId, (MRQ_DRIVER_MICROSTEPS)ui->cmbDrvVernier->currentIndex() );
+    pDevice->setDRIVER_MICROSTEPS( mAxesId, (MRQ_DRIVER_MICROSTEPS)ui->cmbDrvVernier->value() );
 
     //! encoder
     pDevice->setENCODER_STATE( mAxesId, (MRQ_ENCODER_STATE)ui->cmbEncState->currentIndex() );
@@ -155,7 +185,7 @@ logDbg();
     //! motor
     ui->cmbSize->setCurrentIndex( pModel->mMOTOR_SIZE[ mAxesId ] );
     ui->cmbStepAngle->setCurrentIndex( pModel->mMOTOR_STEPANGLE[mAxesId] );
-    ui->cmbMotionType->setCurrentIndex( pModel->mMOTOR_TYPE[mAxesId] );
+    ui->cmbMotionType->setCurrentIndex( pModel->mMOTOR_TYPE[mAxesId] ); on_cmbMotionType_currentIndexChanged( pModel->mMOTOR_TYPE[mAxesId] );
     ui->cmbPosUnit->setCurrentIndex( pModel->mMOTOR_POSITIONUNIT[mAxesId] );
 
     //! volt
@@ -172,7 +202,8 @@ logDbg();
     ui->spinIdleTime->setValue( pModel->mDRIVER_SWITCHTIME[mAxesId]*driver_time_unit );
 
     ui->dblCurrent->setValue( pModel->mDRIVER_CURRENT[mAxesId]*driver_current_unit );
-    ui->cmbDrvVernier->setCurrentIndex( pModel->mDRIVER_MICROSTEPS[mAxesId] );
+//    ui->cmbDrvVernier->setCurrentIndex( pModel->mDRIVER_MICROSTEPS[mAxesId] );
+    ui->cmbDrvVernier->setValue( pModel->mDRIVER_MICROSTEPS[mAxesId] );
 
     //! encoder
     ui->cmbEncState->setCurrentIndex( pModel->mENCODER_STATE[mAxesId] );
@@ -189,4 +220,25 @@ logDbg();
     ui->spinInvertGap->setValue( ( pModel->mMOTOR_BACKLASH[mAxesId]) );
 
     return 0;
+}
+
+void mrqAxes::on_cmbMotionType_currentIndexChanged(int index)
+{
+    bool bRotate;
+
+    if ( index == 0 )
+    { bRotate = true; }
+    else
+    { bRotate = false; }
+
+    //! iter
+    foreach( QWidget *pWig, mRotateDependList )
+    {
+        pWig->setVisible( bRotate );
+    }
+
+    foreach( QWidget *pWig, mLineDependList )
+    {
+        pWig->setVisible( !bRotate );
+    }
 }

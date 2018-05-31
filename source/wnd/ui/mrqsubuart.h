@@ -25,8 +25,16 @@ public:
     explicit MrqSubUart(QWidget *parent = 0);
     ~MrqSubUart();
 
+Q_SIGNALS:
+    void signal_live_changed();
+
+public:
+
     void setConfig( subUartConfig &cfg );
     void getConfig( subUartConfig &cfg );
+
+    void setLive( bool bEn );
+    bool isLive();
 
 protected:
     void spyEdited();

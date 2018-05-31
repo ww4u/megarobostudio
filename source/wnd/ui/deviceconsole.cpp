@@ -34,8 +34,7 @@ scpiShell *deviceConsole::getShell()
 
 void deviceConsole::setMrq( bool b )
 {
-    ui->btnCls->setVisible(b);
-    ui->btnRst->setVisible(b);
+
 }
 
 void deviceConsole::setClassName( const QString &cls )

@@ -38,3 +38,4 @@ _icon3/
 _board/
 *.Debug
 *.Release
+moc_*

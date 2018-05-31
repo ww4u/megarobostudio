@@ -1,5 +1,6 @@
 #include "mrqsys.h"
 #include "ui_mrqsys.h"
+#include "../../com/comassist.h"
 
 #define otp_temprature_unit (0.1f)
 
@@ -23,13 +24,17 @@ int mrqSys::setApply()
 }
 
 void mrqSys::modelChanged()
-{ updateUi(); }
+{
+    adaptUi();
+
+    updateUi();
+}
 
 void mrqSys::spyEdited()
 {
     QCheckBox *checkBoxes[]=
     {
-
+        ui->chkOtp,
     };
 
     QLineEdit *edits[]={
@@ -39,11 +44,11 @@ void mrqSys::spyEdited()
     QSpinBox *spinBoxes[]={
     };
     QDoubleSpinBox *doubleSpinBoxes[]={
-
+        ui->spinHighT
     };
 
     QComboBox *comboxes[]={
-
+        ui->cmbTResp,
     };
 
     install_spy();
@@ -60,11 +65,14 @@ int mrqSys::apply()
     Q_ASSERT( NULL != pDevice );
 
     //! otp
-//    pDevice->setOTP_STATE( (MRQ_SYSTEM_REPORTSWITCH)ui->chkOtp->isChecked() );
-//    pDevice->setOTP_THRESHOLD( ui->spinOtpTemperature->value()/otp_temprature_unit );
-//    pDevice->setOTP_RESPONSE(
-//                (MRQ_OUTOFSTEP_LINERESPONSE)ui->cmbAction->currentIndex()
-//                );
+    if ( m_pMrqModel->temperatures() > 0 )
+    {
+        pDevice->setOTP_STATE( (MRQ_CAN_NETMANAGELED)ui->chkOtp->isChecked() );
+        pDevice->setOTP_THRESHOLD( comAssist::align(  ui->spinHighT->value(),otp_temprature_unit) );
+        pDevice->setOTP_RESPONSE(
+                    (MRQ_MOTIONPLAN_OOSLINERESPONSE_1)ui->cmbTResp->currentIndex()
+                    );
+    }
 
     //! name
     pDevice->setName(
@@ -76,24 +84,48 @@ int mrqSys::apply()
 
 int mrqSys::updateUi()
 {
-    //! otp
-//    ui->chkOtp->setChecked( (bool)m_pMrqModel->mOTP_STATE );
-//    ui->spinOtpTemperature->setValue( ( m_pMrqModel->mOTP_THRESHOLD)*otp_temprature_unit );
-//    ui->cmbAction->setCurrentIndex( m_pMrqModel->mOTP_RESPONSE );
-
     Q_ASSERT( NULL != m_pMrqModel );
+
+    //! otp
+    if ( m_pMrqModel->temperatures() > 0 )
+    {
+        ui->chkOtp->setChecked( (bool)m_pMrqModel->mOTP_STATE );
+        ui->spinHighT->setValue( ( m_pMrqModel->mOTP_THRESHOLD)*otp_temprature_unit );
+        ui->cmbTResp->setCurrentIndex( m_pMrqModel->mOTP_RESPONSE );
+    }
 
     //! name
     ui->edtAlias->setText( m_pMrqModel->getName() );
 
-    //! \todo warning
-
     return 0;
+}
+
+void mrqSys::adaptUi()
+{
+    Q_ASSERT( NULL != m_pMrqModel );
+
+    if ( m_pMrqModel->temperatures() > 0 )
+    { ui->groupBox_2->setVisible( true ); }
+    else
+    { ui->groupBox_2->setVisible( false ); }
 }
 
 void mrqSys::on_chkLed_clicked(bool checked)
 {
-    Q_ASSERT( getDevice() != NULL );
+    if ( NULL==getDevice() )
+    {
+        sysPrompt( tr("Invalid device") );
+        return;
+    }
 
     getDevice()->setCAN_NETMANAGELED( (MRQ_CAN_NETMANAGELED)checked );
+}
+
+void mrqSys::on_edtAlias_textEdited(const QString &arg1)
+{
+    if ( arg1.length() < 1 )
+    {
+        sysPrompt( tr("Invalid name") );
+        ui->edtAlias->setText( m_pMrqModel->getName() );
+    }
 }

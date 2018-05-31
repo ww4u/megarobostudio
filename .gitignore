@@ -39,3 +39,5 @@ _board/
 *.Debug
 *.Release
 moc_*
+source/arith/delta/arith/_AddPointParam*
+source/arith/delta/arith/_function*

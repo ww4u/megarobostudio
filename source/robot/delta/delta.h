@@ -10,6 +10,27 @@
 #include "../../arith/pathplan/pathplan.h"
 #include "../../arith/delta/arith_delta.h"
 
+struct DeltaZeroArg : public RoboTaskArgument
+{
+    QList<int> mJList;
+    QList<bool > mCcwList;
+
+    QList<float> mZDistList;
+    QList<float> mZVList;
+    QList<float> mGapDistList;
+
+    DeltaZeroArg();
+};
+
+class DeltaTask : public RoboTask
+{
+    Q_OBJECT
+public:
+    DeltaTask( QObject *pParent = NULL );
+protected:
+    virtual void run();
+};
+
 class robotDelta : public RawRobo
 {
 public:
@@ -30,10 +51,16 @@ public:
                        QList< int> &sectionList );
 
 public:
-    virtual int goZero();
-    virtual int goZero( int jTabId, bool bCcw );
-    virtual int goZero( const QList<int> &jointList,
+    virtual int goZero( const tpvRegion &region=0 );
+    virtual int goZero( const tpvRegion &region, int jTabId, bool bCcw );
+    virtual int goZero( const tpvRegion &region,
+                        const QList<int> &jointList,
                         const QList<bool> &ccwList );  
+    int zMove( const tpvRegion &region,
+               int jId,
+               float t, float p, float ev );
+
+    int zeroAxesTask( void *pArg );
 
     //! plan
 public:

@@ -131,6 +131,7 @@ protected Q_SLOTS:
 
     void slot_logout( const QString &str );
     void slot_prompt( const QString &str );
+//    void slot_request( const RpcRequest &rpc );
 
     //! connection
     void slot_robo_name_changed( const QString& );

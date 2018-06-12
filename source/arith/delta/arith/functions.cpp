@@ -136,16 +136,17 @@ extern "C" __declspec(dllexport) int  GetDeltArmPosition(double* res)
 			resInfo[m].P1 = 0;
 		}
 		res[m * 5 + 1] = deltAngleArray[1] - resInfo[m].P1 * 180 / PI;
+
 		if (fabs(resInfo[m].V2) < ERROR)
 		{
 			resInfo[m].V2 = 0;
 		}
-		res[m * 5 + 2] = resInfo[m].V2 * 180 / PI;
+                res[m * 5 + 2] = -resInfo[m].V2 * 180 / PI;     //! \note invert by coord
 		if (fabs(resInfo[m].V1) < ERROR)
 		{
 			resInfo[m].V1 = 0;
 		}
-		res[m * 5 + 3] = resInfo[m].V1 * 180 / PI;
+                res[m * 5 + 3] = -resInfo[m].V1 * 180 / PI;
 		res[m * 5+ 4] = resInfo[m].T;
 	}
 	return 0;

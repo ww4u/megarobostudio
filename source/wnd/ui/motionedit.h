@@ -45,6 +45,8 @@ protected:
 
     void onMotionStatus( int axes, MRQ_MOTION_STATE_2 stat );
 
+    virtual void onRequest( RpcRequest &req );
+
 protected:
     //! dpc proc
     int postDownload( appMsg msg, void *pPara );
@@ -98,14 +100,22 @@ protected Q_SLOTS:
 
     void on_spinLoop_valueChanged(int arg1);
 
+    void on_btnSmartEdit_toggled(bool checked);
+
     void on_btnGraph_clicked();
 
     void on_btnReverse_clicked();
+
 protected:
     void updatePlot();
     void tpvGroupPlot( tpvGroup *pGroup, int id );
 
     bool checkRobotLive( VRobot **ppRobot );
+
+    //! post start
+    int postStart( appMsg msg, void *pPara );
+    void beginStart( void *pPara );
+    void endStart( int ret, void *pPara );
 
 protected:
     virtual void context_remove();

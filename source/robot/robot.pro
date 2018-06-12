@@ -14,4 +14,6 @@ SUBDIRS = \
     geo51/geo51.pro \
     rawrobo/rawrobo.pro \
     sinanju/sinanju.pro \
-    h2/h2.pro
+    h2/h2.pro \
+    h2z/h2z.pro \
+    injectpump/injectpump.pro

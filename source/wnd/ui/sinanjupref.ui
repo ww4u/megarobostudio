@@ -232,15 +232,22 @@
            <property name="title">
             <string>Hand</string>
            </property>
-           <layout class="QFormLayout" name="formLayout">
-            <item row="1" column="0">
+           <layout class="QGridLayout" name="gridLayout_2">
+            <item row="0" column="0">
              <widget class="QLabel" name="label_3">
               <property name="text">
-               <string>Zero Time</string>
+               <string>Zero Time(s)</string>
               </property>
              </widget>
             </item>
-            <item row="1" column="1">
+            <item row="0" column="3">
+             <widget class="QLabel" name="label_10">
+              <property name="text">
+               <string>Gap Time(s)</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
              <widget class="QDoubleSpinBox" name="spinZeroTime">
               <property name="decimals">
                <number>3</number>
@@ -251,36 +258,33 @@
               <property name="maximum">
                <double>1000.000000000000000</double>
               </property>
+              <property name="value">
+               <double>1.000000000000000</double>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="2" rowspan="3">
+             <widget class="Line" name="line">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_9">
+              <property name="text">
+               <string>Zero Angle(deg)</string>
+              </property>
              </widget>
             </item>
             <item row="3" column="0">
-             <widget class="QLabel" name="label_8">
+             <widget class="QCheckBox" name="chkHandZeroCcw">
               <property name="text">
-               <string>Zero Speed</string>
+               <string>CCW</string>
               </property>
              </widget>
             </item>
-            <item row="3" column="1">
-             <widget class="QDoubleSpinBox" name="spinZeroSpeed">
-              <property name="decimals">
-               <number>3</number>
-              </property>
-              <property name="minimum">
-               <double>0.001000000000000</double>
-              </property>
-              <property name="maximum">
-               <double>1000.000000000000000</double>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="0">
-             <widget class="QLabel" name="label_9">
-              <property name="text">
-               <string>Zero Angle</string>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="1">
+            <item row="1" column="1">
              <widget class="QDoubleSpinBox" name="spinZeroAngle">
               <property name="decimals">
                <number>3</number>
@@ -291,12 +295,44 @@
               <property name="maximum">
                <double>1000.000000000000000</double>
               </property>
+              <property name="value">
+               <double>10.000000000000000</double>
+              </property>
              </widget>
             </item>
-            <item row="4" column="0">
-             <widget class="QCheckBox" name="chkHandZeroCcw">
+            <item row="1" column="3">
+             <widget class="QLabel" name="label_11">
               <property name="text">
-               <string>CCW</string>
+               <string>Gap Angle(deg)</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="4">
+             <widget class="QDoubleSpinBox" name="spinGapTime">
+              <property name="decimals">
+               <number>3</number>
+              </property>
+              <property name="minimum">
+               <double>0.001000000000000</double>
+              </property>
+              <property name="value">
+               <double>1.000000000000000</double>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="4">
+             <widget class="QDoubleSpinBox" name="spinGapAngle">
+              <property name="decimals">
+               <number>3</number>
+              </property>
+              <property name="minimum">
+               <double>0.001000000000000</double>
+              </property>
+              <property name="maximum">
+               <double>1000.000000000000000</double>
+              </property>
+              <property name="value">
+               <double>1.000000000000000</double>
               </property>
              </widget>
             </item>

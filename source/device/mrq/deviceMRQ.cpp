@@ -25,6 +25,42 @@ float deviceMRQ::incAngleToValue( quint32 angle )
 quint32 deviceMRQ::valueToIncAngle( float val )
 { return VALUE_TO_INC_ANGLE(val); }
 
+//mrq_state_idle,
+//mrq_state_run_reqed,
+//mrq_state_program,
+
+//mrq_state_calcing,
+//mrq_state_calcend,
+//mrq_state_standby,
+
+//mrq_state_prerun,
+//mrq_state_running,
+//mrq_state_prestop,
+QStringList deviceMRQ::_mrqStateList;
+QString deviceMRQ::toString( mrqState sta )
+{
+    //! init at first
+    if (_mrqStateList.size() < 1 )
+    {
+        deviceMRQ::_mrqStateList<<"IDLE"
+                                <<"RUN_REQED"
+                                <<"PROGRAM"
+                                <<"CALCING"
+                                <<"CALCEND"
+                                <<"STANDBY"
+                                <<"PRE_RUN"
+                                <<"RUNNING"
+                                <<"PRE_STOP";
+    }
+
+    Q_ASSERT( _mrqStateList.size() >= (int)sta );
+
+    if ( (int)sta < 0 )
+    { return "NONE"; }
+
+    return _mrqStateList.at( (int)sta );
+}
+
 deviceMRQ::deviceMRQ()
 {
     //! downloader in ctor
@@ -329,7 +365,7 @@ float deviceMRQ::getAbsAngle( int ax )
     if ( ret != 0 )
     { return -1; }
     else
-    {logDbg()<<QString::number(xangle,16);
+    {/*logDbg()<<QString::number(xangle,16);*/
         return ABS_ANGLE_TO_DEG( (xangle&0x0ffffff) );  //! only 24 bit
     }
 }

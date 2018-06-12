@@ -24,7 +24,7 @@
 
 #define group_id_from                   0x80
 #define group_id_to                     0xff
-#define group_segment                   0x10
+#define group_segment                   0x4
 
 #define sub_group_id_from               130
 #define sub_group_id_to                 255
@@ -57,7 +57,17 @@
 
 #define all_desc                         "All file"
 
-
 #define CSV_LINE_SEP                    "\n"
 #define CSV_COL_SEP                     ","
+
+
+//! robo name
+#define robo_t4     "MRX-T4"
+#define robo_dt     "MRX-DT"
+#define robo_as     "MRX-AS"
+#define robo_h2     "MRX-H2"
+
+#define robo_h2z    "MRX-H2Z"
+#define robo_ip     "MRX-INJ2"
+
 #endif

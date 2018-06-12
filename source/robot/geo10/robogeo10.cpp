@@ -8,19 +8,26 @@ static quint8 _megaimage[]=
 
 roboGeo10::roboGeo10()
 {
-    mClass = "MRQ_MC_1710";
+    mClass = "MRQ-M1710";
     mId = robot_geogoog_10;
     setAxes( 10 );
     setAxesDefName( 10 );
     setJointName( 10 );
 
-    mDOs = 0;
-    mDIs = 0;
-    mISOs = 0;
-    mAINs = 0;
-    mUARTs = 0;
+    mOutputs = 1;
+    mInputs = 1;
 
-    mMicrostepBase = 2;
+    mDOs = 4;
+    mDIs = 0;
+    mISOs = 2;
+    mISIs = 1;
+    mAINs = 0;
+    setUarts( 1 );
+    setUartSensors( 4 );
+
+    mMicrostepBase = 3;     //! 32
+    mbEncoderAble = false;
+    mDriverId = 1;
 
     mImage = QImage::fromData( _megaimage, sizeof(_megaimage) );
 }

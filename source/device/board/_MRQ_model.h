@@ -75,6 +75,8 @@ QString toString( MRQ_ISOLATOROUTPUT_RESPONSE_1 eType );
 QString toString( MRQ_SENSORUART_BAUD eType );
 QString toString( MRQ_SENSORUART_BAUD_1 eType );
 QString toString( MRQ_ABSENCALARM_ZEROPOSITION_1 eType );
+QString toString( MRQ_NEWDRIVER_TYPE eType );
+QString toString( MRQ_NEWDRIVER_MICROSTEPS eType );
 int toValue( const QString &str, MRQ_LINK_INTFC *pEVal );
 int toValue( const QString &str, MRQ_LINK_DEVICEINFO *pEVal );
 int toValue( const QString &str, MRQ_LINK_DEVICEINFO_1 *pEVal );
@@ -141,6 +143,8 @@ int toValue( const QString &str, MRQ_ISOLATOROUTPUT_RESPONSE_1 *pEVal );
 int toValue( const QString &str, MRQ_SENSORUART_BAUD *pEVal );
 int toValue( const QString &str, MRQ_SENSORUART_BAUD_1 *pEVal );
 int toValue( const QString &str, MRQ_ABSENCALARM_ZEROPOSITION_1 *pEVal );
+int toValue( const QString &str, MRQ_NEWDRIVER_TYPE *pEVal );
+int toValue( const QString &str, MRQ_NEWDRIVER_MICROSTEPS *pEVal );
 _MRQ_model();
 int setLINK_INTFC( MRQ_LINK_INTFC val0 );
 int getLINK_INTFC(  MRQ_LINK_INTFC * val0, bool bQuery=true );
@@ -677,6 +681,14 @@ int setANALOGIN_RESPONSEH( MRQ_MOTIONPLAN_OOSLINERESPONSE_1 val0 );
 int getANALOGIN_RESPONSEH(  MRQ_MOTIONPLAN_OOSLINERESPONSE_1 * val0, bool bQuery=true );
 int setANALOGIN_RESPONSEL( MRQ_MOTIONPLAN_OOSLINERESPONSE_1 val0 );
 int getANALOGIN_RESPONSEL(  MRQ_MOTIONPLAN_OOSLINERESPONSE_1 * val0, bool bQuery=true );
+int getNEWDRIVER_TYPE( byte val0, MRQ_NEWDRIVER_TYPE * val1, bool bQuery=true );
+int setNEWDRIVER_CURRENT( byte val0 );
+int getNEWDRIVER_CURRENT(  byte * val0, bool bQuery=true );
+int setNEWDRIVER_MICROSTEPS( MRQ_NEWDRIVER_MICROSTEPS val0 );
+int getNEWDRIVER_MICROSTEPS(  MRQ_NEWDRIVER_MICROSTEPS * val0, bool bQuery=true );
+int setNEWDRIVER_STATE( byte val0
+,MRQ_CAN_NETMANAGELED val1 );
+int getNEWDRIVER_STATE( byte val0, MRQ_CAN_NETMANAGELED * val1, bool bQuery=true );
 void loadOtp();
 public:
 	MRQ_LINK_INTFC mLINK_INTFC;
@@ -923,6 +935,11 @@ public:
 	f32 mANALOGIN_THRESHOLDL;
 	MRQ_MOTIONPLAN_OOSLINERESPONSE_1 mANALOGIN_RESPONSEH;
 	MRQ_MOTIONPLAN_OOSLINERESPONSE_1 mANALOGIN_RESPONSEL;
+
+	MRQ_NEWDRIVER_TYPE mNEWDRIVER_TYPE[10];
+	byte mNEWDRIVER_CURRENT;
+	MRQ_NEWDRIVER_MICROSTEPS mNEWDRIVER_MICROSTEPS;
+	MRQ_CAN_NETMANAGELED mNEWDRIVER_STATE[10];
 
 };
 }

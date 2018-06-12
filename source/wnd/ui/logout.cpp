@@ -19,7 +19,7 @@ logOut::~logOut()
 }
 
 QSize logOut::sizeHint() const
-{ return QSize(0,50); }
+{ return QSize(0,60); }
 
 void logOut::on_btnExport_clicked()
 {

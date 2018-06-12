@@ -4,6 +4,8 @@ int RawRobo::call( const tpvRegion &region )
 {
     onLine();
 
+    fsm( region )->setState( MegaDevice::mrq_state_calcend );
+
     lpc()->postMsg( (eRoboMsg)(MegaDevice::mrq_msg_call), region );
 
     return 0;

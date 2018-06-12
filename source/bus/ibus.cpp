@@ -269,6 +269,22 @@ int IBus::write( DeviceId &nodeId, byte mainCode,
     return doWrite( nodeId, buf, sizeof( buf ) );
 }
 
+int IBus:: write( DeviceId &id, byte mainCode,
+            byte subCode,
+            UInt16 v0,
+            UInt32 v1)
+{
+    uint32 byts;
+    memcpy( &byts, &v1, 4 );
+
+    byte buf[] = { mainCode, subCode,
+                   expand_w(v0),
+                   expand_dw(byts),
+                 };
+
+    return doWrite( id, buf, sizeof( buf ) );
+}
+
 int IBus::write( DeviceId &nodeId,
            byte mainCode,
            byte subCode,

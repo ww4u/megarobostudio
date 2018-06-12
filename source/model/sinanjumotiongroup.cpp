@@ -12,6 +12,12 @@ SinanjuMotionGroup::SinanjuMotionGroup( const QString &className,
 
     mbStepAble = true;
     mbPrefAble = true;
+
+    mbSmartEditable = true;
+    mSmartEditColumns.clear();
+    mSmartEditColumns<<3<<4<<5;
+    mRpcReq = RpcRequest::e_req_add_t4_key_point;
+    mRpcType = RpcRequest::e_type_f_f_f;
 }
 
 SinanjuMotionGroup::~SinanjuMotionGroup()
@@ -180,6 +186,18 @@ QVariant SinanjuMotionGroup::headerData(int section, Qt::Orientation orientation
     { return QVariant( SinanjuMotionItem::header(section)); }
     else
     { return QVariant(section);}
+}
+
+void SinanjuMotionGroup::setRpc( int row, RpcRequest &req)
+{
+    Q_ASSERT( row < mItems.size() );
+    mItems[row]->mX = req.popFloat();
+    mItems[row]->mY = req.popFloat();
+    mItems[row]->mZ = req.popFloat();
+
+    QModelIndex editIndex = index( row, 0 );
+
+    emit dataChanged(editIndex, editIndex);
 }
 
 SinanjuMotionItem *SinanjuMotionGroup::operator[]( int index )

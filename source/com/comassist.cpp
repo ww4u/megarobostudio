@@ -169,7 +169,8 @@ float comAssist::eulcidenDistance( float x1, float y1, float z1,
 
 bool comAssist::convertDataset( const QStringList &line,
                                float *pData,
-                               int cols )
+                               int cols,
+                               QList<int> &dataCols )
 {
     Q_ASSERT( NULL != pData );
 
@@ -177,9 +178,18 @@ bool comAssist::convertDataset( const QStringList &line,
     { return false; }
 
     bool bOk;
-    for ( int i = 0; i < cols; i++ )
+//    for ( int i = 0; i < cols; i++ )
+//    {
+//        pData[i] = line.at(i).toFloat( &bOk );
+//        if ( !bOk )
+//        { logDbg()<<line;return false; }
+//    }
+
+    int aCol;
+    for ( int i = 0; i < dataCols.size(); i++ )
     {
-        pData[i] = line.at(i).toFloat( &bOk );
+        aCol = dataCols.at( i );
+        pData[ aCol ] = line.at( aCol ).toFloat( &bOk );
         if ( !bOk )
         { logDbg()<<line;return false; }
     }
@@ -232,19 +242,23 @@ bool    comAssist::ammendFileName( QString &fileName )
 int comAssist::loadDataset( const char *pFileName,
                             int nameLen,
                             int col,
+                            QList<int> &dataCols,
                             QList<float> &dataset,
+
                             const char &colSep,
                             const char &lineSep )
 {
     Q_ASSERT( pFileName != NULL  );
     QByteArray fileName( pFileName, nameLen );
 
-    return loadDataset( fileName, col, dataset, colSep, lineSep );
+    return loadDataset( fileName, col, dataCols, dataset, colSep, lineSep );
 }
 
 int comAssist::loadDataset( const QString &fileName,
                             int col,
+                            QList<int> &dataCols,
                             QList<float> &dataset,
+
                             const char &colSep,
                             const char &lineSep )
 {
@@ -274,10 +288,16 @@ logDbg()<<realFileName;
     {
         lineStr.clear();
         lineStr.append( lines[i] );
-        lineArgs = lineStr.split( colSep, QString::SkipEmptyParts );
+
+        //! comment
+        lineStr = lineStr.trimmed();
+        if ( lineStr.startsWith("#") )
+        { continue; }
+
+        lineArgs = lineStr.split( colSep );
         if ( lineArgs.size() >= col )
         {
-            if ( convertDataset( lineArgs, lineDatas, col ) )
+            if ( convertDataset( lineArgs, lineDatas, col, dataCols ) )
             {
                 for ( int j = 0; j < col; j++ )
                 {

@@ -7,7 +7,7 @@
 #include <QLCDNumber>
 #include "../../device/vrobot.h"
 #include "dlgview.h"
-//#include "robojoint.h"
+
 namespace Ui {
 class roboAxes;
 }
@@ -56,15 +56,15 @@ private slots:
 
     void on_btnZero_clicked();
 
+    void on_spinStepTime_valueChanged(double arg1);
+
+    void on_comboBox_currentIndexChanged(int index);
+
+    void on_toolButton_clicked();
+
 private:
     Ui::roboAxes *ui;
     QTimer mTimer;
-
-//    QDateTime mFromTime, mEndTime;
-//    float mAngleFrom, mAngleTo;
-
-//    QLabel *mJointLabels[ 5 ];
-//    QList< QLCDNumber *> mAngleNumbers;
 
     QList< RoboJoint* > mJoints;
 };

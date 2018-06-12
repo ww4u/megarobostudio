@@ -89,6 +89,9 @@ robotDelta::robotDelta()
     mInitY = 5;
     mInitH = 0.5;
     mInitT = 1;
+
+    m_pRoboTask = new DeltaTask();
+    Q_ASSERT( NULL != m_pRoboTask );
 }
 
 

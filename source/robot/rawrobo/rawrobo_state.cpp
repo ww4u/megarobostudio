@@ -149,7 +149,7 @@ void RawRoboUnit::setMemberState( int subAx,
                                   const tpvRegion &region,
                                   int stat,
                                   RoboMsg &detail )
-{logDbg()<<stat<<subAx;
+{/*logDbg()<<stat<<subAx;*/
     mMemberStates[ subAx ] = stat;
 
     int preVal = mMemberStates[0];
@@ -159,7 +159,7 @@ void RawRoboUnit::setMemberState( int subAx,
         if ( val == preVal )
         {}
         else
-        { logDbg()<<mMemberStates; return; }
+        { /*logDbg()<<mMemberStates;*/ return; }
     }
 logDbg()<<preVal;
 logDbg()<<mMemberStates;

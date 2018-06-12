@@ -39,7 +39,7 @@ protected Q_SLOTS:
     void on_btnApply_clicked();
     void on_btnOK_clicked();
     void on_btnCancel_clicked();
-
+    void on_btnReset_clicked();
 protected:
     virtual void showEvent(QShowEvent *event);
 
@@ -49,8 +49,6 @@ public:
     virtual int  saveAs( QString &outFileName );
 
     virtual void setMcModel( mcModel *pMcModel );
-
-    virtual int setApply();
 
     virtual void updateScreen();
 protected:
@@ -73,7 +71,6 @@ private:
     Ui::mrqProperty *ui;
 
 public:
-//    int mAxes;
     VRobot *m_pRefModel;
 
     mrqInfo *m_pInfoPage;
@@ -89,6 +86,8 @@ public:
 
     QList<modelView *> mViewPages;
     QList< bool > mbtnEnableSnap;
+private slots:
+
 };
 
 #endif // MRQPROPERTY_H

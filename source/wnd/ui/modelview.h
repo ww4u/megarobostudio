@@ -45,6 +45,8 @@ protected Q_SLOTS:
     void slot_modified();
     void slotModified( bool b );
 
+    void slot_request( const RpcRequest &req );
+
     //! ui attr
 public:
     bool isCanceAble();
@@ -52,6 +54,9 @@ public:
     bool isApplyAble();
 
     QString name();
+
+    void setReqSpy( bool b );
+    bool reqSpy();
 
 public:
     virtual void setModelObj( mcModelObj *pObj );
@@ -75,6 +80,9 @@ public:
     virtual void updateModel();
 
 protected:
+    virtual void onRequest( RpcRequest &req );
+
+protected:
     mcModelObj *m_pModelObj;
     bool mbGc;
 
@@ -85,6 +93,8 @@ protected:
     bool mbModified;
     quint32 mAttributes;
     QString mName;
+
+    bool mbReqSpy;
 
 };
 

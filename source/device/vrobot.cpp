@@ -71,7 +71,6 @@ VRobot::VRobot()
     mOutputs = 0;
     mInputs = 0;
 
-    mEncoders = 0;
     mTemperatures = 0;
     mUARTs = 0;
     mUART_Sensors = 0;
@@ -85,6 +84,8 @@ VRobot::VRobot()
     mPoseCount = 0;
 
     mbInterpAble = false;
+    mbEncoderAble = true;
+    mDriverId = 0;
 
     mMicrostepsList<<"256"<<"128"<<"64"<<"32"<<"16"<<"8"<<"4"<<"2"<<"1";
     mMicrostepBase = 0;
@@ -117,6 +118,17 @@ VRobot::~VRobot()
     gcWorker();
 
     delete m_pRoboWoker;
+
+    if ( NULL != m_pRoboTask )
+    {
+        if ( m_pRoboTask->isRunning() )
+        {
+            m_pRoboTask->terminate();
+            m_pRoboTask->wait();
+        }
+
+        delete m_pRoboTask;
+    }
 }
 
 void VRobot::postCtor()
@@ -167,6 +179,9 @@ int VRobot::status( const tpvRegion &region )
     else
     { return MRQ_MOTION_STATE_2_POWERON; }
 }
+
+int VRobot::state( const tpvRegion &region, int inTask )
+{ return 0; }
 
 void VRobot::setInstMgr( MegaDevice::InstMgr *pMgr )
 {

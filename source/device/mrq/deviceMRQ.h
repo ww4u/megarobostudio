@@ -61,6 +61,8 @@ public:
     static float incAngleToValue( quint32 angle );
     static quint32 valueToIncAngle( float val );
 
+    static QString toString( mrqState sta );
+    static QStringList _mrqStateList;
 public:
     deviceMRQ();
     ~deviceMRQ();

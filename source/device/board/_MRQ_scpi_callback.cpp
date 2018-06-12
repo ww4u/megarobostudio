@@ -6936,3 +6936,123 @@ static scpi_result_t _scpi_getANALOGIN_RESPONSEL( scpi_t * context )
 
 	return SCPI_RES_OK;
 }
+static scpi_result_t _scpi_getNEWDRIVER_TYPE( scpi_t * context )
+{
+	// read
+	DEF_LOCAL_VAR();
+
+	byte val0;
+	if ( SCPI_ParamInt32(context, &localIntVal, true) != SCPI_RES_OK ) 
+        { return SCPI_RES_ERR; }
+	val0 = (byte)localIntVal;
+
+	MRQ_NEWDRIVER_TYPE oval0;
+
+	(GET_OBJ(context))->getNEWDRIVER_TYPE( val0, &oval0 );
+	pLocalStr = MRQ_NEWDRIVER_TYPE_toString( oval0);
+	if ( pLocalStr == NULL ) 
+        { return SCPI_RES_ERR; } 
+	SCPI_ResultText(context, pLocalStr);
+
+	return SCPI_RES_OK;
+}
+static scpi_result_t _scpi_setNEWDRIVER_CURRENT( scpi_t * context )
+{
+	// write
+	CHECK_CONTEXT();
+	DEF_LOCAL_VAR();
+
+	byte val0;
+	if ( SCPI_ParamInt32(context, &localIntVal, true) != SCPI_RES_OK ) 
+        { return SCPI_RES_ERR; }
+	val0 = (byte)localIntVal;
+
+	(SET_OBJ(context))->setNEWDRIVER_CURRENT( val0 );
+	return SCPI_RES_OK;
+}
+static scpi_result_t _scpi_getNEWDRIVER_CURRENT( scpi_t * context )
+{
+	// read
+	DEF_LOCAL_VAR();
+
+	byte oval0;
+
+	(GET_OBJ(context))->getNEWDRIVER_CURRENT( &oval0 );
+	SCPI_ResultInt32(context, oval0);
+
+	return SCPI_RES_OK;
+}
+static scpi_result_t _scpi_setNEWDRIVER_MICROSTEPS( scpi_t * context )
+{
+	// write
+	CHECK_CONTEXT();
+	DEF_LOCAL_VAR();
+
+	MRQ_NEWDRIVER_MICROSTEPS val0;
+	if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
+        { return SCPI_RES_ERR; }
+	if (strLen < 1)
+        { return SCPI_RES_ERR; }
+	if ( MRQ_NEWDRIVER_MICROSTEPS_toValue( pLocalStr, &val0) != 0 ) 
+        { return SCPI_RES_ERR; }
+
+	(SET_OBJ(context))->setNEWDRIVER_MICROSTEPS( val0 );
+	return SCPI_RES_OK;
+}
+static scpi_result_t _scpi_getNEWDRIVER_MICROSTEPS( scpi_t * context )
+{
+	// read
+	DEF_LOCAL_VAR();
+
+	MRQ_NEWDRIVER_MICROSTEPS oval0;
+
+	(GET_OBJ(context))->getNEWDRIVER_MICROSTEPS( &oval0 );
+	pLocalStr = MRQ_NEWDRIVER_MICROSTEPS_toString( oval0);
+	if ( pLocalStr == NULL ) 
+        { return SCPI_RES_ERR; } 
+	SCPI_ResultText(context, pLocalStr);
+
+	return SCPI_RES_OK;
+}
+static scpi_result_t _scpi_setNEWDRIVER_STATE( scpi_t * context )
+{
+	// write
+	CHECK_CONTEXT();
+	DEF_LOCAL_VAR();
+
+	byte val0;
+	if ( SCPI_ParamInt32(context, &localIntVal, true) != SCPI_RES_OK ) 
+        { return SCPI_RES_ERR; }
+	val0 = (byte)localIntVal;
+
+	MRQ_CAN_NETMANAGELED val1;
+	if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
+        { return SCPI_RES_ERR; }
+	if (strLen < 1)
+        { return SCPI_RES_ERR; }
+	if ( MRQ_CAN_NETMANAGELED_toValue( pLocalStr, &val1) != 0 ) 
+        { return SCPI_RES_ERR; }
+
+	(SET_OBJ(context))->setNEWDRIVER_STATE( val0, val1 );
+	return SCPI_RES_OK;
+}
+static scpi_result_t _scpi_getNEWDRIVER_STATE( scpi_t * context )
+{
+	// read
+	DEF_LOCAL_VAR();
+
+	byte val0;
+	if ( SCPI_ParamInt32(context, &localIntVal, true) != SCPI_RES_OK ) 
+        { return SCPI_RES_ERR; }
+	val0 = (byte)localIntVal;
+
+	MRQ_CAN_NETMANAGELED oval0;
+
+	(GET_OBJ(context))->getNEWDRIVER_STATE( val0, &oval0 );
+	pLocalStr = MRQ_CAN_NETMANAGELED_toString( oval0);
+	if ( pLocalStr == NULL ) 
+        { return SCPI_RES_ERR; } 
+	SCPI_ResultText(context, pLocalStr);
+
+	return SCPI_RES_OK;
+}

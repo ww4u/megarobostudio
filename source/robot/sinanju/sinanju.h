@@ -7,8 +7,6 @@
 #include "../../device/mrq/deviceMRQ.h"
 #include "../../device/_scpi_xxx_device.h"
 
-//#include "../../model/handactionmodel.h"
-
 //! arith
 #include "../../arith/pathplan/pathplan.h"
 #include "../../arith/sinanju_split/sinanju_split.h"
@@ -38,8 +36,9 @@ public:
 
     virtual int run( const tpvRegion &region=0  );  //! just run
     virtual int stop( const tpvRegion &region=0 );  //! stop
-    virtual int goZero();
-    virtual int goZero( int jointId, bool bCcw );
+    virtual int goZero( const tpvRegion &region=0 );
+    virtual int goZero( const tpvRegion &region,
+                        int jointId, bool bCcw );
 
     virtual bool checkZeroValid();
     virtual float getZero( int jointTabId );
@@ -49,14 +48,9 @@ public:
 
     virtual int loopNow();
 
-//    virtual void onLine();
-//    virtual void offLine();
-
     virtual void toState(int stat);
 
 public:
-//    virtual QAbstractTableModel *handActions();
-
     virtual int build( MegaTableModel *pModel,
                        xxxGroup<tracePoint> &tracePlan,
                        xxxGroup<jointsTrace> &jointsPlan,
@@ -96,8 +90,6 @@ public:
                     double anglesOut[4] );
 
     int nowDist( QList<float> &dists );
-
-
 
 protected:
     int buildTrace( QList<TraceKeyPoint> &curve,
@@ -143,14 +135,17 @@ protected:
     void exportJoints( const QString &fileName, xxxGroup<jointsTrace> &jointsPlan );
 
 public:
-    void setHandZeroAttr( double zeroTime, double zeroAngle, double zeroSpeed );
-    void handZeroAttr( double &zeroTime, double &zeroAngle, double &zeroSpeed );
+    void setHandZeroAttr( double zeroTime, double zeroAngle );
+    void handZeroAttr( double &zeroTime, double &zeroAngle );
+
+    void setGapAttr( double gapTime, double gapAngle );
+    void gapAttr( double &gapTime, double &gapAngle );
 
 protected:
 //    handActionModel mHandActionModel;
 
-    double mHandZeroTime, mHandZeroAngle, mHandZeroSpeed;
-
+    double mHandZeroTime, mHandZeroAngle;
+    double mGapTime, mGapAngle;
 };
 
 #endif

@@ -7,29 +7,34 @@
     <x>0</x>
     <y>0</y>
     <width>477</width>
-    <height>91</height>
+    <height>87</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="spacing">
+    <number>0</number>
+   </property>
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
    <item>
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
       <string/>
      </property>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="1" column="0">
-       <widget class="QDoubleSpinBox" name="doubleSpinBox">
-        <property name="maximum">
-         <double>360.000000000000000</double>
-        </property>
-        <property name="value">
-         <double>180.000000000000000</double>
-        </property>
-       </widget>
-      </item>
       <item row="0" column="3" colspan="2">
        <widget class="QLabel" name="label_2">
         <property name="sizePolicy">
@@ -49,10 +54,13 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="5">
-       <widget class="QLCDNumber" name="lcdNumber">
-        <property name="digitCount">
-         <number>6</number>
+      <item row="1" column="0">
+       <widget class="QDoubleSpinBox" name="doubleSpinBox">
+        <property name="maximum">
+         <double>360.000000000000000</double>
+        </property>
+        <property name="value">
+         <double>180.000000000000000</double>
         </property>
        </widget>
       </item>
@@ -66,6 +74,13 @@
         </property>
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QCheckBox" name="chkInvert">
+        <property name="text">
+         <string>CCW</string>
         </property>
        </widget>
       </item>
@@ -85,10 +100,13 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="1">
-       <widget class="QCheckBox" name="chkInvert">
-        <property name="text">
-         <string>CCW</string>
+      <item row="1" column="6">
+       <widget class="LRButton" name="btnLr01" native="true"/>
+      </item>
+      <item row="0" column="6">
+       <widget class="QLCDNumber" name="lcdNumber">
+        <property name="digitCount">
+         <number>6</number>
         </property>
        </widget>
       </item>
@@ -97,6 +115,14 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>LRButton</class>
+   <extends>QWidget</extends>
+   <header>lrbutton.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

@@ -144,9 +144,13 @@ int robotSinanju::serialInHandZero( QXmlStreamReader &reader )
         {
             mHandZeroAngle = reader.readElementText().toDouble();
         }
-        else if ( reader.name() == "speed" )
+        else if ( reader.name() == "gap_time" )
         {
-            mHandZeroSpeed = reader.readElementText().toDouble();
+            mGapTime = reader.readElementText().toDouble();
+        }
+        else if ( reader.name() == "gap_angle" )
+        {
+            mGapAngle = reader.readElementText().toDouble();
         }
         else
         { reader.skipCurrentElement(); }
@@ -159,7 +163,10 @@ int robotSinanju::serialOutHandZero( QXmlStreamWriter &writer )
 {
     writer.writeTextElement( "time", QString::number( mHandZeroTime));
     writer.writeTextElement( "angle", QString::number( mHandZeroAngle));
-    writer.writeTextElement( "speed", QString::number( mHandZeroSpeed));
+
+    writer.writeTextElement( "gap_time", QString::number( mGapTime));
+    writer.writeTextElement( "gap_angle", QString::number( mGapAngle));
+
     return 0;
 }
 

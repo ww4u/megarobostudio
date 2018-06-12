@@ -6,14 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>600</width>
-    <height>506</height>
+    <width>500</width>
+    <height>348</height>
    </rect>
   </property>
   <property name="maximumSize">
    <size>
-    <width>700</width>
-    <height>16777215</height>
+    <width>625</width>
+    <height>545</height>
    </size>
   </property>
   <property name="font">
@@ -155,6 +155,13 @@
       <property name="bottomMargin">
        <number>0</number>
       </property>
+      <item>
+       <widget class="QPushButton" name="btnReset">
+        <property name="text">
+         <string>Reset</string>
+        </property>
+       </widget>
+      </item>
       <item>
        <spacer name="space">
         <property name="orientation">

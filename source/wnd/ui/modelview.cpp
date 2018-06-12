@@ -16,6 +16,8 @@ modelView::modelView( QWidget *parent ) : appWidget( parent )
     m_pmcModel = NULL;
     mbModified = false;
 
+    mbReqSpy = false;
+
     mAttributes = 0;
     set_bit( mAttributes, OK_ABLE_BIT );
     set_bit( mAttributes, CANCEL_ABLE_BIT );
@@ -73,6 +75,18 @@ void modelView::slotModified( bool b )
     emit sigModified( this, b );
 }
 
+void modelView::slot_request( const RpcRequest &req )
+{
+    if ( !isVisible() )
+    { return; }
+
+    if ( !mbReqSpy )
+    { return; }
+
+    RpcRequest lreq = req;
+    onRequest( lreq );
+}
+
 bool modelView::isCanceAble()
 { return is_bit1(mAttributes,CANCEL_ABLE_BIT); }
 bool modelView::isOkAble()
@@ -82,6 +96,11 @@ bool modelView::isApplyAble()
 
 QString modelView::name()
 { return mName; }
+
+void modelView::setReqSpy( bool b )
+{ mbReqSpy = b; }
+bool modelView::reqSpy()
+{ return mbReqSpy; }
 
 void modelView::setModelObj( mcModelObj *pObj )
 {
@@ -109,7 +128,23 @@ bool modelView::matchModelObj( mcModelObj *pObj )
         { return false; }
 
         //! path match
-        if ( QString::compare( m_pModelObj->getPath(), pObj->getPath(),Qt::CaseInsensitive ) != 0 )
+        QString natPath1, natPath2;
+        natPath1 = QDir::fromNativeSeparators( m_pModelObj->getPath() );
+        natPath2 = QDir::fromNativeSeparators( pObj->getPath() );
+
+        //! remove the last seperator
+        if ( natPath1.size() > 0 && natPath2.size() > 0 )
+        {}
+        else
+        { return false; }
+
+        if ( natPath1.back() == '/' )
+        { natPath1.remove( natPath1.size()-1, 1 ); }
+
+        if ( natPath2.back() == '/' )
+        { natPath2.remove( natPath2.size()-1, 1 ); }
+
+        if ( QString::compare( natPath1, natPath2,Qt::CaseInsensitive ) != 0 )
         { return false; }
 
         return true;
@@ -155,3 +190,8 @@ void modelView::updateScreen()
 {}
 void modelView::updateModel()
 {}
+
+void modelView::onRequest( RpcRequest &req )
+{
+
+}

@@ -64,6 +64,7 @@
 
 <file>image/icon/activity.png</file>
 <file>image/icon/add.png</file>
+<file>image/icon/subtract.png</file>
 <file>image/icon/addition.png</file>
 <file>image/icon/browse.png</file>
 <file>image/icon/commodity.png</file>
@@ -87,6 +88,18 @@
 <file>image/icon/closeall.png</file>
 <file>image/icon/beauty.png</file>
 <file>image/icon/remind.png</file>
+<file>image/icon/arrow-left.png</file>
+<file>image/icon/arrow-right.png</file>
+<file>image/icon/arrow-up.png</file>
+<file>image/icon/arrow-down.png</file>
+<file>image/icon/skip.png</file>
+
+<file>image/icon/c_add.png</file>
+<file>image/icon/c_more_unfold.png</file>
+<file>image/icon/c_less.png</file>
+<file>image/icon/c_back.png</file>
+<file>image/icon/c_more.png</file>
+<file>image/icon/c_subtract.png</file>
 
 <file>image/icon2/activity.png</file>
 <file>image/icon2/circle.png</file>
@@ -113,13 +126,18 @@
 
 <file>image/joint/mrx-t4.png</file>
 <file>image/joint/mrx-h2.png</file>
+<file>image/joint/mrx-h2z.png</file>
 <file>image/joint/mrx-as.png</file>
 <file>image/joint/mrx-dt.png</file>
 
+<file>image/joint/mrx-inj2.png</file>
+
 <file>image/joint/mrx-h2_geo.png</file>
+<file>image/joint/mrx-h2z_geo.png</file>
 
 <file>image/joint/mrx-dt_geo.png</file>
 <file>image/joint/mrx-t4_geo.png</file>
+<file>image/joint/t4geo.png</file>
 
 <file>image/slice/down_arrow.png</file>
 <file>image/slice/down_arrow_disabled.png</file>

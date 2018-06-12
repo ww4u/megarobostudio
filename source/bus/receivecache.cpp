@@ -218,6 +218,8 @@ quint64 receiveCache::_timeStamp = 0;
 QList< frameEvent* > receiveCache::_frameEvents;
 QMutex receiveCache::_frameEventsMutex;
 
+QSemaphore receiveCache::_eventSema;
+
 void receiveCache::lock()
 { _threadMutex.lock(); }
 void receiveCache::unlock()
@@ -227,6 +229,14 @@ void receiveCache::lockFrameEvents()
 { receiveCache::_frameEventsMutex.lock(); }
 void receiveCache::unlockFrameEvents()
 { receiveCache::_frameEventsMutex.unlock(); }
+
+void receiveCache::accEvent()
+{ receiveCache::_eventSema.release(); }
+void receiveCache::decEvent()
+{ receiveCache::_eventSema.acquire(); }
+
+int receiveCache::availableEvent()
+{ return receiveCache::_eventSema.available(); }
 
 quint64 receiveCache::timeStamp()
 { return receiveCache::_timeStamp; }
@@ -333,7 +343,9 @@ void receiveCache::append( frameData &ary )
 {
     //! signal on some event
     if ( detectEvent( ary ) )
-    { logDbg()<<ary.frameId()<<ary.size(); }
+    {
+//        logDbg()<<ary.frameId()<<ary.size();
+    }
     else
     {
         lockWarehouse();
@@ -381,7 +393,7 @@ int receiveCache::readAFrame( MegaDevice::DeviceId &nodeId,
     int ret = -1;
     frameHouse *pHouse;
     Q_ASSERT( NULL != m_pBus );
-    logDbg()<<tmous<<m_pBus->rdTick()<<nodeId.sendId()<<tmous;
+//    logDbg()<<tmous<<m_pBus->rdTick()<<nodeId.sendId()<<tmous;
 
     QThread::usleep( 100 );     //! wait a little
     int loopCount = 0;
@@ -403,7 +415,7 @@ int receiveCache::readAFrame( MegaDevice::DeviceId &nodeId,
                 frameData ary;
                 ary = pHouse->dequeue();
                 pHouse->unlock();
-logDbg()<<loopCount;
+//logDbg()<<loopCount;
                 *pFrameId = ary.frameId();
                 memcpy( pBuf, ary.data(), ary.length() );
 
@@ -449,7 +461,7 @@ void receiveCache::flush( MegaDevice::DeviceId &nodeId )
     frameHouse *pHouse = mFrameWarehouse.findHouseBySendId( nodeId.sendId() );
     if ( NULL == pHouse )
     { return; }
-logDbg()<<nodeId.sendId()<<nodeId.recvId()<<pHouse->size();
+//logDbg()<<nodeId.sendId()<<nodeId.recvId()<<pHouse->size();
     pHouse->clear();
 }
 
@@ -534,7 +546,7 @@ void receiveCache::run()
                 {
 //                    append( frameCache.at(i) );
                     frameCache[i].setTimeStamp( receiveCache::_timeStamp );
-                    logDbg()<<frameCache[i].timeStamp();
+//                    logDbg()<<frameCache[i].timeStamp();
                     append( frameCache[i] );
 //                    logDbg()<< frameCache.at(i).length() << QString::number( frameCache.at(i).getFrameId(), 16 );
                 }
@@ -564,13 +576,16 @@ bool receiveCache::detectEvent( frameData &ary )
         if ( pEvt->getEnable() && pEvt->match(ary) )
         {
             emit sig_event( pEvt->getId(), ary );
-            logDbg()<<QString::number( ary.frameId(), 16)<<ary.toHex(' ')<<ary.timeStamp();
+
+            receiveCache::accEvent();
+
+//            logDbg()<<QString::number( ary.frameId(), 16)<<ary.toHex(' ')<<ary.timeStamp();
             bEvent = true;
         }
     }
 
     receiveCache::unlockFrameEvents();
 
-logDbg()<<receiveCache::_frameEvents;
+//logDbg()<<receiveCache::_frameEvents;
     return bEvent;
 }

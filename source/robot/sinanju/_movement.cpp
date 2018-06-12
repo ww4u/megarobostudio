@@ -38,6 +38,7 @@ int robotSinanju::program( const QString &fileName,
 int robotSinanju::loadProgram( const QString &fileName )
 {
     QList<float> dataset;
+    QList<int> dataCols;
     int col;
     int timeCol, pOffset, vOffset;
     do
@@ -45,7 +46,9 @@ int robotSinanju::loadProgram( const QString &fileName )
         //! try first
         col = 11;
         dataset.clear();
-        if ( 0 == comAssist::loadDataset( fileName, col, dataset ) )
+        dataCols.clear();
+        dataCols<<0<<1<<2<<3<<4<<5<<6<<7<<8<<9<<10;
+        if ( 0 == comAssist::loadDataset( fileName, col, dataCols, dataset ) )
         {logDbg()<<dataset.size();
             timeCol = 0;
             pOffset = 1;
@@ -59,7 +62,9 @@ int robotSinanju::loadProgram( const QString &fileName )
         //! try again
         col = 6;
         dataset.clear();
-        if ( 0 == comAssist::loadDataset( fileName, col, dataset ) )
+        dataCols.clear();;
+        dataCols<<0<<1<<2<<3<<4<<5;
+        if ( 0 == comAssist::loadDataset( fileName, col, dataCols, dataset ) )
         {logDbg()<<dataset.size();
             timeCol = 5;
             pOffset = 0;
@@ -345,9 +350,9 @@ int robotSinanju::angleToPos( float angles[4],
 
     //! ref the the zero
     diffAngle( angles, dAngles );
-logDbg()<<dAngles[0]<<dAngles[1]<<dAngles[2]<<dAngles[3];
-logDbg()<<angles[0]<<angles[1]<<angles[2]<<angles[3];
-logDbg()<<mInitAngles[0]<<mInitAngles[1]<<mInitAngles[2]<<mInitAngles[3];
+//logDbg()<<dAngles[0]<<dAngles[1]<<dAngles[2]<<dAngles[3];
+//logDbg()<<angles[0]<<angles[1]<<angles[2]<<angles[3];
+//logDbg()<<mInitAngles[0]<<mInitAngles[1]<<mInitAngles[2]<<mInitAngles[3];
     ret = ns_sinanju::GetEndPosition( armLength,sizeof_array(armLength),
                                         rotAngles.angles,
                                         archAngles.angles,

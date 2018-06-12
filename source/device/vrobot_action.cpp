@@ -50,14 +50,17 @@ int VRobot::stop( const tpvRegion &region  )
 {
     return 0;
 }
-int VRobot::goZero()
+int VRobot::goZero( const tpvRegion &region )
 { return 0; }
-int VRobot::goZero( int jointTabId )
+int VRobot::goZero( const tpvRegion &region,
+                    int jointTabId )
 { return 0; }
-int VRobot::goZero( int jointTabId, bool bCcw )
+int VRobot::goZero( const tpvRegion &region,
+                    int jointTabId, bool bCcw )
 { return 0; }
 
-int VRobot::goZero( const QList<int> &jointList,
+int VRobot::goZero( const tpvRegion &region,
+                    const QList<int> &jointList,
                     const QList<bool> &ccwList )
 { return 0; }
 

@@ -16,7 +16,7 @@ INTRThread::~INTRThread()
 
 void INTRThread::slot_event( eventId id, frameData dat )
 {
-//    logDbg()<<id<<dat;
+    receiveCache::decEvent();       //! dec
     emit sig_event( id, dat );
 }
 
@@ -186,11 +186,12 @@ int InstMgr::probeCanBus()
                 mDeviceTree.append( pRoboList );
 
                 //! each robot
+                //!
                 mDevices.append( *pRoboList );
 
                 //! connect
                 connect( pNewBus->receiveProxy(), SIGNAL(sig_event(eventId,frameData)),
-                         m_pINTR, SIGNAL(sig_event(eventId,frameData)) );
+                         m_pINTR, SLOT(slot_event(eventId,frameData)) );
 
             }
         }while( 0 );
@@ -592,7 +593,7 @@ VRobot * InstMgr::findRobot( const QString &fullname )
     QStringList strList = fullname.split( "@", QString::SkipEmptyParts );
     if ( strList.size() == 0 )
     { return NULL; }
-    logDbg()<<strList;
+//    logDbg()<<strList;
     Q_ASSERT( strList.size() >  1 );
     return findRobot( strList[0], strList[1] );
 }

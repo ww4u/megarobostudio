@@ -71,7 +71,7 @@ void roboTimer::stop()
 SysTimerThread * SysTimerThread::_sys_timer_ =  NULL;
 QMutex SysTimerThread::mTimerMutex;
 
-#define tick_ms     5
+#define tick_ms     100
 
 void SysTimerThread::sysStartTimer( VRobot *pRobot,
                                void *pContext,
@@ -191,13 +191,21 @@ void SysTimerThread::slotTimeout()
 //    logDbg();
     SysTimerThread::mTimerMutex.lock();
 
-    foreach( roboTimer *theTimer, mTimers )
+    //! slow down the interrupt buffer
+    if ( receiveCache::availableEvent() > 64 )
     {
-        Q_ASSERT( NULL != theTimer );
-
-        theTimer->tick( m_pTickTimer->interval() );
+        sysLog( "pending many events " + QString::number(receiveCache::availableEvent()) );
     }
-//logDbg();
+    else
+    {
+        foreach( roboTimer *theTimer, mTimers )
+        {
+            Q_ASSERT( NULL != theTimer );
+
+            theTimer->tick( m_pTickTimer->interval() );
+        }
+    }
+
     SysTimerThread::mTimerMutex.unlock();
 }
 

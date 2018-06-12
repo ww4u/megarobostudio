@@ -42,7 +42,7 @@ int robotH2::move( QList<H2KeyPoint> &curve,
     return ret;
 }
 
-int robotH2::move( float dx, float dy, float dt, float endV,
+int robotH2::move( float dx, float dy, float dt, float endVx, float endVy,
                    const tpvRegion &region )
 {
     QList<H2KeyPoint> curve;
@@ -53,7 +53,8 @@ int robotH2::move( float dx, float dy, float dt, float endV,
     kp.t = 0;
     kp.x = 0;
     kp.y = 0;
-    kp.v = 0;
+    kp.vx = 0;
+    kp.vy = 0;
 
     curve.append( kp );
 
@@ -61,7 +62,8 @@ int robotH2::move( float dx, float dy, float dt, float endV,
     kp.t = dt;
     kp.x = dx;
     kp.y = dy;
-    kp.v = endV;
+    kp.vx = endVx;
+    kp.vy = endVy;
     curve.append( kp );
 
     return move( curve, region );
@@ -80,7 +82,8 @@ int robotH2::preMove( QList<H2KeyPoint> &curve,
     return ret;
 }
 
-int robotH2::goZero( int jointId, bool bCcw )
+int robotH2::goZero( const tpvRegion &region,
+                     int jointId, bool bCcw )
 {
     if ( 0 != checkRoboTask() )
     {
@@ -97,6 +100,7 @@ int robotH2::goZero( int jointId, bool bCcw )
 
     H2ZeroArg *pArg;
     pArg = new H2ZeroArg();
+    pArg->mRegion = region;
 
     RoboTaskRequest *pReq;
     pReq = new RoboTaskRequest();
@@ -151,7 +155,7 @@ int robotH2::goZero( int jointId, bool bCcw )
     return 0;
 }
 
-int robotH2::goZero()
+int robotH2::goZero( const tpvRegion &region )
 {
     if ( 0 != checkRoboTask() )
     {
@@ -163,6 +167,7 @@ int robotH2::goZero()
 
     H2ZeroArg *pArg;
     pArg = new H2ZeroArg();
+    pArg->mRegion = region;
 
     RoboTaskRequest *pReq;
     pReq = new RoboTaskRequest();
@@ -192,10 +197,11 @@ int robotH2::zeroAxesTask( void *pArg )
 {
     Q_ASSERT( NULL != pArg );
 
-    tpvRegion region( 0, 0 );
+    tpvRegion region;
     int ret;
 
     H2ZeroArg *pZArg = (H2ZeroArg*)pArg;
+    region = pZArg->mRegion;
 
     MegaDevice::deviceMRQ *pMrq;
     int ax;
@@ -204,7 +210,7 @@ int robotH2::zeroAxesTask( void *pArg )
     if ( pZArg->mAx == 0 )
     {
         //! m
-        move( pZArg->mZeroDist, 0, pZArg->mZeroTime, pZArg->mZeroEndV, region );
+        move( pZArg->mZeroDist, 0, pZArg->mZeroTime, pZArg->mZeroEndV, 0, region );
 
         //! wait
         //! \todo wait idle
@@ -213,7 +219,7 @@ int robotH2::zeroAxesTask( void *pArg )
         { return ret; }
 
         //! gap
-        move( pZArg->mZeroGapDist, 0, pZArg->mZeroGapTime, 0, tpvRegion(0,0) );
+        move( pZArg->mZeroGapDist, 0, pZArg->mZeroGapTime, 0, 0, region );
 
         ret = waitFsm( region, MegaDevice::mrq_state_idle, pZArg->mTmo, pZArg->mTick );
         if ( ret != 0 )
@@ -232,14 +238,14 @@ int robotH2::zeroAxesTask( void *pArg )
     //! y
     else if ( pZArg->mAx == 1 )
     {
-        move( 0, pZArg->mZeroDist, pZArg->mZeroTime, pZArg->mZeroEndV, tpvRegion(0,0) );
+        move( 0, pZArg->mZeroDist, pZArg->mZeroTime, 0, pZArg->mZeroEndV, region );
 
         //! \todo
         ret = waitFsm( region, MegaDevice::mrq_state_idle, pZArg->mTmo, pZArg->mTick );
         if ( ret != 0 )
         { return ret; }
 
-        move( 0, pZArg->mZeroGapDist, pZArg->mZeroGapTime, 0, tpvRegion(0,0) );
+        move( 0, pZArg->mZeroGapDist, pZArg->mZeroGapTime, 0, 0, region );
 
         ret = waitFsm( region, MegaDevice::mrq_state_idle, pZArg->mTmo, pZArg->mTick );
         if ( ret != 0 )
@@ -326,7 +332,12 @@ int robotH2::pose( float &x, float &y )
     zeroXy.append( mZeroY );
     ret = h2_split::h2Pose( mArmLengths, zeroXy,
                               angleL, angleR,
-                              y, x );           //! \note invert
+                              x, y );           //! \note invert
+
+    //! invert x
+    x = -x;
+    y = -y;
+
     return ret;
 }
 

@@ -386,6 +386,18 @@ void RoboMsgQueue::postMsg( eRoboMsg msg,
     postMsg( lMsg, t );
 }
 
+void RoboMsgQueue::postMsg( eRoboMsg msg,
+                            const RpcRequest &rpc,
+                            quint64 t )
+{
+    RoboMsg lMsg;
+
+    lMsg.setMsg( msg );
+    lMsg.append( QVariant::fromValue(rpc) );
+
+    postMsg( lMsg, t );
+}
+
 void RoboMsgQueue::process( int intervalus,
                        RoboMsgThread *pThread )
 {

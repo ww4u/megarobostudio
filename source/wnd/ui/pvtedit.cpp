@@ -17,7 +17,6 @@ pvtEdit::pvtEdit(QWidget *parent) :
 
     mFilePattern<<pvt_desc<<pvt_ext;
 
-//    m_pWndKnob = NULL;
     m_pProgress = NULL;
 
     mTStep = 1;
@@ -76,7 +75,7 @@ void pvtEdit::onNetEvent(const QString &name,
                         int axes,
                         RoboMsg &msg)
 {
-    logDbg()<<msg.getMsg();
+//    logDbg()<<msg.getMsg();
 
     //! event id, frame id, byte array
     if ( msg.getMsg() == e_interrupt_occuring )
@@ -577,31 +576,6 @@ void pvtEdit::on_btnGraph_clicked()
 
     m_pPlot->show();
 }
-
-//void pvtEdit::on_btnKnob_clicked()
-//{
-//    if ( !checkChan() )
-//    { return; }
-
-//    if ( m_pWndKnob == NULL )
-//    {
-//        m_pWndKnob = new axesKnob( m_pmcModel, this);
-//        Q_ASSERT( NULL != m_pWndKnob );
-//    }
-
-////    //! set model && axesid
-////    QString str;
-////    int id;
-////    str = m_pmcModel->getConnection().getDeviceName();
-////    id = m_pmcModel->getConnection().getDeviceCH();
-
-//////    MegaDevice::deviceMRQ *pMrq = m_pmcModel->m_pInstMgr->findDevice( str,
-//////                                                                      id );
-////////    m_pWndKnob->setDevice( pMrq, id );
-////////    m_pWndKnob->setConnection( QString("CH%1@%2").arg(id + 1 ).arg( str ) );
-
-//    m_pWndKnob->show();
-//}
 
 void pvtEdit::slot_download_cancel()
 {

@@ -42,17 +42,24 @@ public:
 
     static bool    convertDataset( const QStringList &line,
                                    float *pData,
-                                   int cols );
+                                   int cols,
+                                   QList<int> &dataCols );
 
     static int     loadDataset( const char *pFileName,
                                 int nameLen,
                                 int col,
+                                QList<int> &dataCols,
+
                                 QList<float> &dataset,
+
                                 const char &colSep=',',
                                 const char &lineSep='\n' );
     static int     loadDataset( const QString &fileName,
                                 int col,
+                                QList<int> &dataCols,
+
                                 QList<float> &dataset,
+
                                 const char &colSep=',',
                                 const char &lineSep='\n' );
 public:

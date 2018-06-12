@@ -74,15 +74,53 @@ struct H2KeyPoint
         struct
         {
             float t;
-            float x, y, v;
+            float x, y, vx, vy;
         };
-        float datas[4];
+
+        float datas[5];
     };
 
     H2KeyPoint( float pt = 0,
-                      float px=0, float py=0, float pv = 0 );
+                float px=0, float py=0, float pvx = 0, float pvy=0 );
 };
 typedef QList<H2KeyPoint>    H2KeyPointList;
+
+struct H2ZKeyPoint
+{
+    union
+    {
+        struct
+        {
+            float t;
+            float x, y, z, vx, vy, vz;
+        };
+        float datas[7];
+    };
+
+    H2ZKeyPoint( float pt = 0,
+                 float px=0, float py=0, float pz = 0,
+                 float pvx = 0, float pvy = 0, float pvz=0 );
+};
+typedef QList<H2ZKeyPoint>    H2ZKeyPointList;
+
+//! ip
+struct IPKeyPoint
+{
+    union
+    {
+        struct
+        {
+            float t;
+            float x, y, vx,vy;
+        };
+
+        float datas[5];
+    };
+
+    IPKeyPoint( float pt = 0,
+                float px=0, float py=0, float pvx = 0, float pvy=0 );
+};
+typedef QList<IPKeyPoint>    IPKeyPointList;
 
 class RawRoboStateCondition : public MegaDevice::RoboStateCondition
 {
@@ -161,7 +199,7 @@ public:
     virtual void queryState( const tpvRegion &region=0 );
 
     virtual void toState( const tpvRegion &region, int stat );
-    int state( const tpvRegion &region=0, int inTask = 0 );
+    virtual int state( const tpvRegion &region=0, int inTask = 0 );
 
     virtual void onTimer( void *pContext, int id );
 
@@ -186,8 +224,20 @@ public:
                                 int tmoms=-1 );
 
 protected:
+    int jMove( const tpvRegion &region,
+                             int jTabId, bool bCcw,
+                             float t, float p, float ev );
+
+    int waitFsm( pvt_region,
+                     int dstState,
+                     int tmous,
+                     int tick );
+
+protected:
     int serialOutRaw( QXmlStreamWriter &writer );
     int serialInRaw( QXmlStreamReader &reader );
+
+
 public:
     RawRoboFsm * fsm( const tpvRegion &region );
 

@@ -29,6 +29,8 @@ void H2Pref::setModelObj( mcModelObj *pObj )
 {
     modelView::setModelObj( pObj );
 
+    adaptUi();
+
     updateUi();
 }
 
@@ -108,6 +110,34 @@ void H2Pref::updateUi()
     ui->spinGapDist->setValue( gapDistance );
 }
 
+void H2Pref::adaptUi()
+{
+    Q_ASSERT( m_pModelObj != NULL );
+    VRobot *pBase = ( VRobot *)m_pModelObj;
+    Q_ASSERT( NULL != pBase );
+
+    bool bZ = false;
+    QString strPixmapGeo;
+    if ( pBase->getId() == VRobot::robot_h2 )
+    {
+        bZ = false;
+        strPixmapGeo = ":/res/image/joint/mrx-h2_geo.png";
+    }
+    else if ( pBase->getId() == VRobot::robot_h2z )
+    {
+        bZ = true;
+        strPixmapGeo = ":/res/image/joint/mrx-h2z_geo.png";
+    }
+    else
+    {}
+
+    //! z enable
+    ui->labelZ->setVisible( bZ );
+    ui->btnZeroZ->setVisible( bZ );
+
+    ui->label_3->setPixmap( QPixmap(strPixmapGeo) );
+}
+
 void H2Pref::zeroJoint( int jointId, bool bCcw )
 {
     Q_ASSERT( m_pModelObj != NULL );
@@ -120,7 +150,7 @@ void H2Pref::zeroJoint( int jointId, bool bCcw )
         return;
     }
 
-    pBase->goZero( jointId, bCcw );
+    pBase->goZero( tpvRegion(0,0), jointId, bCcw );
 }
 
 void H2Pref::slot_joint_zero( int jId )
@@ -157,5 +187,10 @@ void H2Pref::on_btnZeroBody_clicked()
 
     //! body zero
     //! x + y
-    pBase->goZero( );
+    pBase->goZero( tpvRegion(0,0) );
+}
+
+void H2Pref::on_btnZeroZ_clicked()
+{
+    sig_joint( 2 );
 }

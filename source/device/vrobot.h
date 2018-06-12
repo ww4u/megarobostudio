@@ -76,11 +76,20 @@ public:
         robot_delta,
         robot_megatron,
         robot_h2,
+        robot_h2z,
+
+        robot_ip,
 
         robot_motor,
         robot_slide,
 
         robot_user = 65536,
+    };
+
+    enum EMotorDriverType
+    {
+        motor_driver_262,
+        motor_driver_820,
     };
 
 public:
@@ -164,10 +173,13 @@ public:
 
     virtual int run( const tpvRegion &region=0  );
     virtual int stop( const tpvRegion &region=0  );
-    virtual int goZero( );
-    virtual int goZero( int jointTabId );
-    virtual int goZero( int jointTabId, bool bCcw );
-    virtual int goZero( const QList<int> &jointList,
+    virtual int goZero( const tpvRegion &region=0 );
+    virtual int goZero( const tpvRegion &region,
+                        int jointTabId );
+    virtual int goZero( const tpvRegion &region,
+                        int jointTabId, bool bCcw );
+    virtual int goZero( const tpvRegion &region,
+                        const QList<int> &jointList,
                         const QList<bool> &ccwList );
 
     virtual bool checkZeroValid();
@@ -240,8 +252,11 @@ public:
     void setMosos( int n );
     int mosos();
 
-    void setEncoders( int n );
-    int encoders();
+    void setEncoderAble( bool );
+    bool encoderAble();
+
+    void setDriverId( int id );
+    int driverId();
 
     void setTemperatures( int n);
     int temperatures();
@@ -293,6 +308,7 @@ public:
     //! MOTION_STAUS
     virtual void setStatus( int stat, const tpvRegion &region, frameData &data );
     int status( const tpvRegion &region );
+    virtual int state( const tpvRegion &region, int inTask = 0 );
 
     void setInstMgr( MegaDevice::InstMgr *pMgr );
     MegaDevice::InstMgr *getInstMgr();
@@ -335,7 +351,7 @@ protected:
     int mDOs, mDIs, mISOs, mISIs, mAINs, mMosos;
     int mOutputs, mInputs;
 
-    int mEncoders, mTemperatures, mUARTs, mUART_Sensors;
+    int mTemperatures, mUARTs, mUART_Sensors;
     int mAbsEncoderAlarms, mDistanceAlarms;
     int mAlarms;
 
@@ -346,6 +362,8 @@ protected:
     int mPoseCount;                     //! 0,3..
 
     bool mbInterpAble;
+    bool mbEncoderAble;
+    int  mDriverId;
 
     QStringList mMicrostepsList;
     int mMicrostepBase;
@@ -404,6 +422,8 @@ class RoboTaskArgument
 public:
     int mTmo;       //! us
     int mTick;      //! us
+
+    tpvRegion mRegion;
 public:
     RoboTaskArgument();
     virtual ~RoboTaskArgument();

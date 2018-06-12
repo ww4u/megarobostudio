@@ -19,6 +19,9 @@
 #include "sinanjuconfig.h"
 #include "axnpref.h"
 
+#include "ippref.h"
+#include "ipconfig.h"
+
 
 //! use mrq property
 namespace Ui {
@@ -35,7 +38,6 @@ public:
 
     virtual void setModelObj( mcModelObj *pObj );
     virtual void setMcModel( mcModel *pMcModel );
-    virtual int setApply();
 
     virtual int  save( QString &outFileName );
     virtual int  saveAs( QString &outFileName );
@@ -87,6 +89,9 @@ private:
 
     SinanjuPref *m_pSinanjuPref;
     SinanjuConfig *m_pSinanjuConfig;
+
+    IPPref *m_pIpPref;
+    IPConfig *m_pIpConfig;
 
     AxnPref *m_pAxnPref;
 

@@ -818,7 +818,14 @@ int MRQ_model::saveDriver( QXmlStreamWriter &writer )
     for ( int i = 0; i < axes(); i++ )
     {
         writer.writeStartElement("axes");
-        saveSubDriver( i, writer );
+
+        if ( mDriverId == VRobot::motor_driver_262 )
+        { saveSubDriver( i, writer ); }
+        else if ( mDriverId == VRobot::motor_driver_820 )
+        { saveSubDriver820( i, writer); }
+        else
+        { Q_ASSERT(false); }
+
         writer.writeEndElement();
     }
 
@@ -830,7 +837,14 @@ int MRQ_model::loadDriver( QXmlStreamReader &reader )
     while( reader.readNextStartElement() )
     {
         if (reader.name() == "axes" )
-        { loadSubDriver( ax++, reader ); }
+        {
+            if ( mDriverId == VRobot::motor_driver_262 )
+            { loadSubDriver( ax++, reader ); }
+            else if ( mDriverId == VRobot::motor_driver_820 )
+            { loadSubDriver820( ax++, reader ); }
+            else
+            { Q_ASSERT(false); }
+        }
         else
         { reader.skipCurrentElement(); }
     }
@@ -840,6 +854,7 @@ int MRQ_model::loadDriver( QXmlStreamReader &reader )
 
 int MRQ_model::saveSubDriver( int sub, QXmlStreamWriter &writer )
 {
+    //! driver
     writer.writeTextElement( "mDRIVER_TYPE", toString(mDRIVER_TYPE[sub]) );
 
     writer.writeTextElement( "mDRIVER_CURRENT", DeviceModel::toString(mDRIVER_CURRENT[sub]) );
@@ -848,11 +863,12 @@ int MRQ_model::saveSubDriver( int sub, QXmlStreamWriter &writer )
 
 //    writer.writeTextElement( "mDRIVER_SGLIMIT", toString(mDRIVER_SGLIMIT[sub]) );
 //    writer.writeTextElement( "mDRIVER_SGLIMIT1", toString(mDRIVER_TYPE[sub]) );
-    writer.writeTextElement( "mDRIVER_TYPE", toString(mDRIVER_TYPE[sub]) );
+//    writer.writeTextElement( "mDRIVER_TYPE", toString(mDRIVER_TYPE[sub]) );
     writer.writeTextElement( "mDRIVER_IDLECURRENT", DeviceModel::toString(mDRIVER_IDLECURRENT[sub]) );
 
     writer.writeTextElement( "mDRIVER_SWITCHTIME", DeviceModel::toString(mDRIVER_SWITCHTIME[sub]) );
     writer.writeTextElement( "mDRIVER_MINICURRRATIO", toString(mDRIVER_MINICURRRATIO[sub]) );
+
     return 0;
 }
 int MRQ_model::loadSubDriver( int sub, QXmlStreamReader &reader )
@@ -869,8 +885,8 @@ int MRQ_model::loadSubDriver( int sub, QXmlStreamReader &reader )
         else if ( reader.name() == "mDRIVER_STATE" )
         { toValue( reader.readElementText(), &mDRIVER_STATE[sub]); }
 
-        else if ( reader.name() == "mDRIVER_TYPE" )
-        { toValue( reader.readElementText(), &mDRIVER_TYPE[sub]); }
+//        else if ( reader.name() == "mDRIVER_TYPE" )
+//        { toValue( reader.readElementText(), &mDRIVER_TYPE[sub]); }
         else if ( reader.name() == "mDRIVER_IDLECURRENT" )
         { DeviceModel::toValue( reader.readElementText(), &mDRIVER_IDLECURRENT[sub]); }
 
@@ -878,6 +894,38 @@ int MRQ_model::loadSubDriver( int sub, QXmlStreamReader &reader )
         { DeviceModel::toValue( reader.readElementText(), &mDRIVER_SWITCHTIME[sub]); }
         else if ( reader.name() == "mDRIVER_MINICURRRATIO" )
         { toValue( reader.readElementText(), &mDRIVER_MINICURRRATIO[sub]); }
+
+        else
+        { reader.skipCurrentElement(); }
+    }
+
+    return 0;
+}
+
+int MRQ_model::saveSubDriver820( int sub, QXmlStreamWriter &writer )
+{
+    //! driver
+    writer.writeTextElement( "mNEWDRIVER_TYPE", toString(mNEWDRIVER_TYPE[sub]) );
+
+    writer.writeTextElement( "mNEWDRIVER_CURRENT", DeviceModel::toString(mNEWDRIVER_CURRENT) );
+    writer.writeTextElement( "mNEWDRIVER_MICROSTEPS", toString(mNEWDRIVER_MICROSTEPS) );
+    writer.writeTextElement( "mNEWDRIVER_STATE", toString(mNEWDRIVER_STATE[sub]) );
+
+    return 0;
+}
+int MRQ_model::loadSubDriver820( int sub, QXmlStreamReader &reader )
+{
+    while( reader.readNextStartElement() )
+    {
+        if (reader.name() == "mNEWDRIVER_TYPE" )
+        { toValue( reader.readElementText(), &mNEWDRIVER_TYPE[sub]); }
+
+        else if ( reader.name() == "mNEWDRIVER_CURRENT" )
+        { DeviceModel::toValue( reader.readElementText(), &mNEWDRIVER_CURRENT); }
+        else if ( reader.name() == "mNEWDRIVER_MICROSTEPS" )
+        { toValue( reader.readElementText(), &mNEWDRIVER_MICROSTEPS); }
+        else if ( reader.name() == "mNEWDRIVER_STATE" )
+        { toValue( reader.readElementText(), &mNEWDRIVER_STATE[sub]); }
 
         else
         { reader.skipCurrentElement(); }

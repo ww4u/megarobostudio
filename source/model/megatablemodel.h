@@ -27,12 +27,19 @@ public:
     void setPrefAble( bool b );
     bool prefAble();
 
+    bool smartEditable();
+
+    RpcRequest::EnumRequest rpcRequest();
+    RpcRequest::EnumParaType rpcParaType();
+
     int sectionSize();
     bool sectionAble( int iSec );
     void setSectionAble( int iSec, bool b );
     QList<bool> &sectionAbleList();
 
     QStringList exportOptList();
+
+    virtual void setRpc( int row, RpcRequest &req );
 
 Q_SIGNALS:
     void signal_data_changed();
@@ -43,8 +50,15 @@ protected:
     bool mbStepAble;
     bool mbPrefAble;
 
-    QList <bool> mSectionAble;       //! 0,1,2
+    QList <bool> mSectionAble;              //! 0,1,2
     QStringList mExportOptList;
+
+    bool mbSmartEditable;
+    QList< int > mSmartEditColumns;         //! 3,4,5
+    RpcRequest::EnumRequest mRpcReq;
+    RpcRequest::EnumParaType mRpcType;
+
+    QStringList mHeaderList, mTitleList;
 };
 
 #endif // MEGATABLEMODEL_H

@@ -110,7 +110,10 @@ logDbg();
             close();
         }
         else
-        { mDevId = id; }
+        {
+            mDevId = id;
+            sysLog( desc, QString::number(mDevId) );
+        }
 
     }
     else if ( busType == VCI_MR_USBCAN )
@@ -435,10 +438,10 @@ IBus::lock();
         tFrame.append( (const char*)canObj[i].Data, canObj[i].DataLen );
         canFrames.append( tFrame );
     }
-    if ( ret >= 1 )
+    if ( ret > 1 )
     {/*sysLog( QString::number(ret), QString::number(__LINE__));*/
-        for ( int i = 0; i < ret; i++  )
-        { logDbg()<<canFrames.at(i)<<ret<<canFrames.at(i).size(); }
+//        for ( int i = 0; i < ret; i++  )
+//        { logDbg()<<canFrames.at(i)<<ret<<canFrames.at(i).size(); }
     }
 
     return 0;

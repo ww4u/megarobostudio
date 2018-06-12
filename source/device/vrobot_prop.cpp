@@ -11,8 +11,6 @@ VRobot::robotEnum VRobot::robotId()
 
 int VRobot::setAxes(int n)
 {
-    mAxes = n;
-
     //! gc
     gcWorker();
 
@@ -23,11 +21,15 @@ int VRobot::setAxes(int n)
     { m_pAxesWorkers[i].attachRobot( this, i ); }
 
     //! init the angle
+    mJointAngleMask.clear();
+    mJointCcwMask.clear();
     for ( int i = 0; i <n; i++ )
     {
         mJointAngleMask.append( false );
         mJointCcwMask.append( true );
     }
+
+    mAxes = n;
 
     return 0;
 }
@@ -95,10 +97,15 @@ void VRobot::setMosos( int n )
 int VRobot::mosos()
 { return mMosos; }
 
-void VRobot::setEncoders( int n )
-{ mEncoders = n; }
-int VRobot::encoders()
-{ return mEncoders; }
+void VRobot::setEncoderAble( bool b )
+{ mbEncoderAble = b; }
+bool VRobot::encoderAble( )
+{ return mbEncoderAble; }
+
+void VRobot::setDriverId( int id )
+{ mDriverId = id; }
+int VRobot::driverId()
+{ return mDriverId; }
 
 void VRobot::setTemperatures( int n)
 { mTemperatures = n; }

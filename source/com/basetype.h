@@ -1,6 +1,52 @@
 #ifndef _BASE_TYPE_H_
 #define _BASE_TYPE_H_
 
+#include <QtCore>
+
+class RpcRequest : public QByteArray
+{
+//    Q_OBJECT
+public:
+    enum EnumRequest
+    {
+        e_req_none = 0,
+        e_req_add_t4_key_point,
+    };
+
+    enum EnumParaType
+    {
+        e_type_none = 0,
+        e_type_f_f_f,       //! float,float,float
+    };
+
+public:
+    RpcRequest( EnumRequest eReq = e_req_add_t4_key_point,
+                EnumParaType pType = e_type_f_f_f );
+
+public:
+    void setRequest( EnumRequest eReq );
+    EnumRequest request();
+
+    void setParaType( EnumParaType pType );
+    EnumParaType paraType();
+
+    bool checkRequest( EnumRequest eReq,
+                       EnumParaType eType ) const ;
+
+public:
+    int push( float v );
+    int push( int v );
+
+    float popFloat();
+    int   popInt();
+
+protected:
+    EnumRequest mReq;
+    EnumParaType mParaType;
+};
+
+Q_DECLARE_METATYPE(RpcRequest)
+
 #define tpvType float
 #define time_eq( a, b )     ( fabs( (a)-(b) ) <= 1e-6f )
 class tpvRow{
@@ -113,6 +159,27 @@ public:
     { mY = v; }
     tpvType Y()
     { return mY; }
+};
+
+class H2ZRow : public H2Row
+{
+public:
+    tpvType mZ;
+public:
+    H2ZRow()
+    {
+        mX = 0;
+        mY = 0;
+        mZ = 0;
+    }
+    virtual ~H2ZRow()
+    {}
+
+public:
+    void setZ( tpvType v )
+    { mZ = v; }
+    tpvType Z()
+    { return mZ; }
 };
 
 //! t,x,y,z,h
@@ -304,7 +371,6 @@ inline bool operator<( const tpvRegion &region1,
 //    return false;
 //}
 
-#include <QtCore>
 Q_DECLARE_METATYPE(tpvRegion)
 
 #define TPV_REGEION_TYPE_ID      (QMetaType::Type)(QMetaType::User )

@@ -62,9 +62,12 @@ protected Q_SLOTS:
 
     void context_mrq_console();
     void context_mrq_panel();
+    void context_mrq_prop();
 
     void context_robo_console();
+    void context_robo_axes();
     void context_robo_panel();
+    void context_robo_prop();
 
 protected:
     virtual void contextMenuEvent(QContextMenuEvent *event);
@@ -120,6 +123,7 @@ public:
     QMenu *m_pAxesMenu;
 
     QMenu *m_pRoboMenu;
+    QAction *m_pT4PanelAction;
 
     MegaDevice::InstMgr *m_pMgr;
     deviceDb *m_pDeviceDb;

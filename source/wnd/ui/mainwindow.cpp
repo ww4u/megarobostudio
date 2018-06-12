@@ -185,11 +185,15 @@ void MainWindow::setupUi_docks()
     Q_ASSERT( NULL != m_pMotorMonitor );
 }
 
+#include "quicktool.h"
 void MainWindow::setupToolbar()
 {
     //! file tool
     ui->mainToolBar->addAction( ui->actionOpen_Prj );
     ui->mainToolBar->addAction( ui->actionSave_Prj );
+    ui->mainToolBar->addSeparator();
+    ui->mainToolBar->addAction( ui->actionNewMotion );
+    ui->mainToolBar->addAction( ui->actionNewPVT );
     ui->mainToolBar->addSeparator();
     ui->mainToolBar->addAction( ui->actionOpen );
     ui->mainToolBar->addAction( ui->actionSave );
@@ -209,10 +213,12 @@ void MainWindow::setupToolbar()
     addToolBar( m_pToolbarRoboConn );
 
     //! op tool
-    m_pToolbarQuickOp = new QToolBar();
+    m_pToolbarQuickOp = new QToolBar();    
     m_pToolbarQuickOp->addAction( ui->actionEvent_E );
+    m_pToolbarQuickOp->addWidget( new QuickTool() );        //! for the spacer
     m_pToolbarQuickOp->addAction( ui->actionReset );
     m_pToolbarQuickOp->addAction( ui->actionForceStop );
+
     addToolBar( m_pToolbarQuickOp );
 
     m_pToolbarAxesConn->setVisible( false );
@@ -324,6 +330,9 @@ void MainWindow::buildConnection()
              this, SLOT(slot_logout( const QString &)) );
     connect( m_pRoboNetThread, SIGNAL(signal_prompt( const QString &)),
              this, SLOT(slot_prompt( const QString &)));
+
+//    connect( m_pRoboNetThread, SIGNAL(signal_request( const RpcRequest &)),
+//             this, SLOT(slot_request( const RpcRequest &)));
 
     //! robo conn
     connect( m_pRoboConnTool->getCombName(),
@@ -845,6 +854,7 @@ void MainWindow::slot_progress_visible( bool b )
 
     m_pStateBar->progressBar()->setVisible( b );
     m_pStateBar->progressInfo()->setVisible( b );
+
 }
 
 void MainWindow::slot_status( const QString &str )
@@ -871,6 +881,11 @@ void MainWindow::slot_prompt( const QString &str )
     m_pWarnPrompt->show();
     m_pWarnPrompt->activateWindow();
 }
+
+//void MainWindow::slot_request( const RpcRequest &rpc )
+//{
+
+//}
 
 void MainWindow::slot_robo_name_changed( const QString &name )
 {
@@ -1000,6 +1015,11 @@ modelView *MainWindow::createModelView( modelView *pView,
              SIGNAL(signal_net(const QString &,int,RoboMsg)),
              pView,
              SLOT(slot_net_event(const QString &,int,RoboMsg)));logDbg();
+
+    connect( m_pRoboNetThread,
+             SIGNAL(signal_request( const RpcRequest&)),
+             pView,
+             SLOT(slot_request( const RpcRequest &)));
 
     mModelViews.append( pView );logDbg();
 

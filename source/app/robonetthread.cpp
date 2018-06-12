@@ -129,6 +129,20 @@ void RoboNetThread::onMsg( RoboMsg &msg )
             emit signal_prompt( msg.at(0).toString() );
         }
 
+        else if ( msg.mMsg == e_rpc )
+        {
+//            if ( !msg.checkType( QMetaType::QString ) )
+//            { return; }
+
+//            emit signal_prompt( msg.at(0).toString() );
+
+            //! \note no check
+
+            RpcRequest rpc = msg.at(0).value<RpcRequest>();
+
+            emit signal_request( rpc );
+        }
+
         //! name, status
         else if ( msg.mMsg == e_robot_status )
         {

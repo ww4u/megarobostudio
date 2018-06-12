@@ -99,6 +99,9 @@ protected:
     int saveSubDriver( int sub, QXmlStreamWriter &writer );
     int loadSubDriver( int sub, QXmlStreamReader &reader );
 
+    int saveSubDriver820( int sub, QXmlStreamWriter &writer );
+    int loadSubDriver820( int sub, QXmlStreamReader &reader );
+
     int saveDo( QXmlStreamWriter &writer );
     int loadDo( QXmlStreamReader &reader );
 

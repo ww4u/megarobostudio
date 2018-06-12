@@ -19,6 +19,7 @@ enum eRoboMsg
     e_status,               //! string
     e_logout,               //! string
     e_prompt,               //! string
+    e_rpc,                  //! rpc request
 
     e_interrupt_occuring,       //! event id, frame id, byte array
 //    e_axes_status,              //! name, region, status

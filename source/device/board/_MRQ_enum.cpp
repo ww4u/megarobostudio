@@ -11,7 +11,8 @@ static value_desc _value_desc_MRQ_LINK_DEVICEINFO_1[] = {
 	{0,"C23D",},
 	{1,"C23S",},
 	{2,"M2304",},
-	{3,"M2305",},
+	{3,"MV",},
+	{4,"M1710",},
 };
 static value_desc _value_desc_MRQ_SYSTEM_WORKMODE[] = {
 	{0,"NORMAL",},
@@ -374,6 +375,22 @@ static value_desc _value_desc_MRQ_ABSENCALARM_ZEROPOSITION_1[] = {
 	{0,"NONE",},
 	{1,"EXIS",},
 };
+static value_desc _value_desc_MRQ_NEWDRIVER_TYPE[] = {
+	{0,"RESERVE",},
+	{1,"RESERVE",},
+	{2,"ST820",},
+};
+static value_desc _value_desc_MRQ_NEWDRIVER_MICROSTEPS[] = {
+	{0,"RESERVE",},
+	{1,"RESERVE",},
+	{2,"RESERVE",},
+	{3,"32",},
+	{4,"16",},
+	{5,"8",},
+	{6,"4",},
+	{7,"2",},
+	{8,"1",},
+};
 const char* MRQ_LINK_INTFC_toString( MRQ_LINK_INTFC eType )
 {
 	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_LINK_INTFC ) ); 
@@ -637,6 +654,14 @@ const char* MRQ_SENSORUART_BAUD_1_toString( MRQ_SENSORUART_BAUD_1 eType )
 const char* MRQ_ABSENCALARM_ZEROPOSITION_1_toString( MRQ_ABSENCALARM_ZEROPOSITION_1 eType )
 {
 	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_ABSENCALARM_ZEROPOSITION_1 ) ); 
+}
+const char* MRQ_NEWDRIVER_TYPE_toString( MRQ_NEWDRIVER_TYPE eType )
+{
+	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_NEWDRIVER_TYPE ) ); 
+}
+const char* MRQ_NEWDRIVER_MICROSTEPS_toString( MRQ_NEWDRIVER_MICROSTEPS eType )
+{
+	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_NEWDRIVER_MICROSTEPS ) ); 
 }
 int MRQ_LINK_INTFC_toValue( const char *pStr, MRQ_LINK_INTFC *pEVal )
 {
@@ -1164,5 +1189,21 @@ int MRQ_ABSENCALARM_ZEROPOSITION_1_toValue( const char *pStr, MRQ_ABSENCALARM_ZE
 	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_ABSENCALARM_ZEROPOSITION_1 ), &lval );
 	if ( ret != 0 ) return ret; 
 	*pEVal=(MRQ_ABSENCALARM_ZEROPOSITION_1)lval;
+	return 0;
+}
+int MRQ_NEWDRIVER_TYPE_toValue( const char *pStr, MRQ_NEWDRIVER_TYPE *pEVal )
+{
+	int ret, lval;
+	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_NEWDRIVER_TYPE ), &lval );
+	if ( ret != 0 ) return ret; 
+	*pEVal=(MRQ_NEWDRIVER_TYPE)lval;
+	return 0;
+}
+int MRQ_NEWDRIVER_MICROSTEPS_toValue( const char *pStr, MRQ_NEWDRIVER_MICROSTEPS *pEVal )
+{
+	int ret, lval;
+	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_NEWDRIVER_MICROSTEPS ), &lval );
+	if ( ret != 0 ) return ret; 
+	*pEVal=(MRQ_NEWDRIVER_MICROSTEPS)lval;
 	return 0;
 }

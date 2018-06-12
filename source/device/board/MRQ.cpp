@@ -5038,4 +5038,106 @@ int MRQ::getANALOGIN_RESPONSEL(  MRQ_MOTIONPLAN_OOSLINERESPONSE_1 * val0, bool b
 	*val0 = (MRQ_MOTIONPLAN_OOSLINERESPONSE_1)lval0;
 	return 0;
 }
+//! U8
+//! [CHANNUM]
+int MRQ::getNEWDRIVER_TYPE( byte val0, MRQ_NEWDRIVER_TYPE * val1, bool bQuery )
+{
+	//! 75 0
+	int ret = 0;
+
+	byte lval0 = 0;
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, (byte)75, (byte)0 , val0, &lval0, bQuery);
+	if ( ret != 0){ log_device(); } 
+	if ( ret != 0) return ret;
+	*val1 = (MRQ_NEWDRIVER_TYPE)lval0;
+	return 0;
+}
+//! U8
+//! 
+int MRQ::setNEWDRIVER_CURRENT( byte val0 )
+{
+	//! 75 1
+	int ret; 
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)75, (byte)1 , val0 );
+
+	if ( ret == 0) 
+	{
+		MRQ_model::setNEWDRIVER_CURRENT( val0 );
+	}
+	if ( ret != 0){ log_device(); } 
+	return ret;
+}
+//! 
+//! 
+int MRQ::getNEWDRIVER_CURRENT(  byte * val0, bool bQuery )
+{
+	//! 75 2
+	int ret = 0;
+
+	byte lval0 = 0;
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, (byte)75, (byte)2 , &lval0, bQuery);
+	if ( ret != 0){ log_device(); } 
+	if ( ret != 0) return ret;
+	*val0 = lval0;
+	return 0;
+}
+//! ENUM
+//! RESERVE|RESERVE|RESERVE|32|16|8|4|2|1
+int MRQ::setNEWDRIVER_MICROSTEPS( MRQ_NEWDRIVER_MICROSTEPS val0 )
+{
+	//! 75 3
+	int ret; 
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)75, (byte)3 , (unsigned char)val0 );
+
+	if ( ret == 0) 
+	{
+		MRQ_model::setNEWDRIVER_MICROSTEPS( val0 );
+	}
+	if ( ret != 0){ log_device(); } 
+	return ret;
+}
+//! 
+//! 
+int MRQ::getNEWDRIVER_MICROSTEPS(  MRQ_NEWDRIVER_MICROSTEPS * val0, bool bQuery )
+{
+	//! 75 4
+	int ret = 0;
+
+	byte lval0 = 0;
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, (byte)75, (byte)4 , &lval0, bQuery);
+	if ( ret != 0){ log_device(); } 
+	if ( ret != 0) return ret;
+	*val0 = (MRQ_NEWDRIVER_MICROSTEPS)lval0;
+	return 0;
+}
+//! U8,ENUM
+//! [CHANNUM],OFF|ON
+int MRQ::setNEWDRIVER_STATE( byte val0
+,MRQ_CAN_NETMANAGELED val1 )
+{
+	//! 75 5
+	int ret; 
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)75, (byte)5 , val0, (unsigned char)val1 );
+
+	if ( ret == 0) 
+	{
+		MRQ_model::setNEWDRIVER_STATE( val0, val1 );
+	}
+	if ( ret != 0){ log_device(); } 
+	return ret;
+}
+//! U8
+//! [CHANNUM]
+int MRQ::getNEWDRIVER_STATE( byte val0, MRQ_CAN_NETMANAGELED * val1, bool bQuery )
+{
+	//! 75 6
+	int ret = 0;
+
+	byte lval0 = 0;
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, (byte)75, (byte)6 , val0, &lval0, bQuery);
+	if ( ret != 0){ log_device(); } 
+	if ( ret != 0) return ret;
+	*val1 = (MRQ_CAN_NETMANAGELED)lval0;
+	return 0;
+}
 }

@@ -51,12 +51,16 @@ robotMegatron::robotMegatron()
     mAxesConnectionName[4] = "CH3@device1"; //! ly
     mAxesConnectionName[5] = "CH4@device1"; //! ry
 
+
+    m_pRoboTask = new MegatronTask();
+    Q_ASSERT( NULL != m_pRoboTask );
+
     mZeroTime = 5;
     mZeroSpeed = 5;
     mZeroAngle = 100;
 
     mGapTime = 1;
-    mGapDistance = 10;
+    mGapDistance = 2;
     mGapSpeed = 1;
 }
 
@@ -163,52 +167,6 @@ int robotMegatron::stop( const tpvRegion &region  )
 int robotMegatron::loopNow()
 { return 0; }
 
-//void robotMegatron::onLine()
-//{
-//    MegaDevice::deviceMRQ *pMrq;
-//    int ax;
-
-//    //! each ax
-//    for ( int i = 0; i < axes(); i++ )
-//    {
-//        pMrq = jointDevice( i, &ax );
-
-//        Q_ASSERT( NULL != pMrq );
-
-//        Q_ASSERT( regions() == pMrq->regions() );
-
-//        //! each region
-//        for ( int j = 0; j < regions(); j++ )
-//        {
-//            Q_ASSERT( pMrq->Fsm( tpvRegion(ax,j) ) != NULL );
-//            pMrq->Fsm( tpvRegion(ax,j) )->setLeader( mFsms[ tpvRegion(0,j) ],
-//                                                    (void*)i );
-//        }
-
-//        //! use phy bus
-//        attachBus( pMrq->Bus() );
-//    }
-//}
-//void robotMegatron::offLine()
-//{
-//    MegaDevice::deviceMRQ *pMrq;
-//    int ax;
-
-//    //! each ax
-//    for ( int i = 0; i < axes(); i++ )
-//    {
-//        pMrq = jointDevice( i, &ax );
-
-//        //! each region
-//        for ( int j = 0; j < regions(); j++ )
-//        {
-//            Q_ASSERT( pMrq->Fsm( tpvRegion(ax,j) ) != NULL );
-//            pMrq->Fsm( tpvRegion(ax,j) )->setLeader( NULL, NULL );
-//        }
-//    }
-
-//    detachBus();
-//}
 
 
 

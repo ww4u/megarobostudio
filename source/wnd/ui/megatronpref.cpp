@@ -140,7 +140,7 @@ void MegatronPref::zeroJoint( int jointId, bool bCcw )
     VRobot *pBase = ( VRobot *)m_pModelObj;
     Q_ASSERT( NULL != pBase );
 
-    pBase->goZero( jointId, bCcw );
+    pBase->goZero( tpvRegion(0,0), jointId, bCcw );
 }
 
 void MegatronPref::slot_joint_zero( int jId, bool bccw )
@@ -238,7 +238,7 @@ void MegatronPref::on_btnZeroBody_clicked()
     VRobot *pBase = ( VRobot *)m_pModelObj;
     Q_ASSERT( NULL != pBase );
 
-    pBase->goZero( jointList, ccwList );
+    pBase->goZero( tpvRegion(0,0), jointList, ccwList );
 }
 
 void MegatronPref::on_chkAllCcw_clicked(bool checked)

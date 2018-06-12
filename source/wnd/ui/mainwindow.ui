@@ -213,6 +213,9 @@
    <property name="toolTip">
     <string>Reset</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+D</string>
+   </property>
   </action>
   <action name="actionForceStop">
    <property name="icon">
@@ -224,6 +227,9 @@
    </property>
    <property name="toolTip">
     <string>Force Stop</string>
+   </property>
+   <property name="shortcut">
+    <string>Shift+F5</string>
    </property>
   </action>
   <action name="actionOpen">
@@ -345,9 +351,6 @@
    <property name="toolTip">
     <string>Save All</string>
    </property>
-   <property name="shortcut">
-    <string>Ctrl+Shift+S</string>
-   </property>
   </action>
   <action name="actionSpy">
    <property name="checkable">
@@ -401,6 +404,9 @@
    </property>
    <property name="text">
     <string>Motion...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+N</string>
    </property>
   </action>
   <action name="actionNewPVT">

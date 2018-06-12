@@ -399,19 +399,28 @@ void scriptModel::appendNode( const QModelIndex &index,
 
 void scriptModel::removeNode( const QModelIndex &index )
 {
-    if ( !index.isValid() )
+    if ( index.isValid() )
+    { }
+    else
     { return; }
 
     scriptNode *pNode = getItem( index );
-    if ( pNode->getParent() == m_pRootNode && pNode->getNodeType() == scriptNode::node_group )
+    if ( pNode == NULL )
     { return; }
 
-    beginResetModel();
+    //! root
+//    if ( pNode->getParent() == m_pRootNode && pNode->getNodeType() == scriptNode::node_group )
+//    { return; }
+
+//    beginResetModel();
+
+    beginRemoveRows( parent(index), index.row(), index.row() );
 
     pNode->remove();
     delete pNode;
 
-    endResetModel();
+    endRemoveRows();
+//    endResetModel();
 }
 
 scriptNode *scriptModel::getItem( const QModelIndex &index ) const
@@ -419,8 +428,10 @@ scriptNode *scriptModel::getItem( const QModelIndex &index ) const
     if (index.isValid())
     {
         scriptNode *item = static_cast<scriptNode *>(index.internalPointer());
-        if (item)
-        { return item; }
+//        if (item)
+//        { return item; }
+
+        return item;
     }
 
     //! root node must be valid

@@ -80,9 +80,21 @@ int deviceMRQ::loadMotorBasic()
         if ( ret != 0 )
         { return ret; }
 
-        ret = getDRIVER_MICROSTEPS( i, &mDRIVER_MICROSTEPS[i] );
-        if ( ret != 0 )
-        { return ret; }
+        //! driver
+        if ( mDriverId == VRobot::motor_driver_262 )
+        {
+            ret = getDRIVER_MICROSTEPS( i, &mDRIVER_MICROSTEPS[i] );
+            if ( ret != 0 )
+            { return ret; }
+        }
+        else if ( mDriverId == VRobot::motor_driver_820 )
+        {
+            ret = getNEWDRIVER_MICROSTEPS( &mNEWDRIVER_MICROSTEPS );
+            if ( ret != 0 )
+            { return ret; }
+        }
+        else
+        {}
     }
 
     return 0;

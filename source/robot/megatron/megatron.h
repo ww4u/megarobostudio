@@ -7,10 +7,25 @@
 #include "../../device/mrq/deviceMRQ.h"
 #include "../../device/_scpi_xxx_device.h"
 
-//#include "../../model/handactionmodel.h"
-
 //! arith
 #include "../../arith/megatron_split/megatron_split.h"
+
+struct MegatronZeroArg : public RoboTaskArgument
+{
+    QList<int> mJList;
+    QList<bool > mCcwList;
+
+    MegatronZeroArg();
+};
+
+class MegatronTask : public RoboTask
+{
+    Q_OBJECT
+public:
+    MegatronTask( QObject *pParent = NULL );
+protected:
+    virtual void run();
+};
 
 class robotMegatron : public RawRobo
 {
@@ -44,24 +59,17 @@ public:
 public:
     virtual int run( const tpvRegion &region=0  );
     virtual int stop( const tpvRegion &region=0  );
-    virtual int goZero();
-    virtual int goZero( int jTabId, bool bCcw );
-    virtual int goZero( const QList<int> &jointList,
-                        const QList<bool> &ccwList );
-//    virtual int run( int axes );
-//    virtual int stop( int axes );
 
-//    virtual int run( );
-//    virtual int stop( );
+    virtual int goZero( const tpvRegion &region=0 );
+    virtual int goZero( const tpvRegion &region,
+                        int jTabId, bool bCcw );
+    virtual int goZero( const tpvRegion &region,
+                        const QList<int> &jointList,
+                        const QList<bool> &ccwList );
 
     virtual int loopNow();
 
-//    virtual void onLine();
-//    virtual void offLine();
-
     virtual void toState(int stat);
-
-public:    
 
 public:
     virtual int call( const tpvRegion &region=0 );  //! load + run
@@ -76,6 +84,9 @@ public:
 
     int moveTest1();
     int moveTest2();
+
+public:
+    int zeroAxesTask( void *pArg );
 
 public:
     void setZeroAttr( double zeroTime, double zeroAngle );

@@ -9,6 +9,11 @@ EncoderAlarmPage::EncoderAlarmPage(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    //! set name
+    ui->label_2->setText( tr("Upper") + "(" + QChar(0x00B0) + ")" );
+    ui->label_3->setText( tr("Lower") + "(" + QChar(0x00B0) + ")" );
+    ui->label_4->setText( tr("Zero") + "(" + QChar(0x00B0) + ")" );
+
     spyEdited();
 }
 

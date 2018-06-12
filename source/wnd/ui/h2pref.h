@@ -25,6 +25,8 @@ protected:
     void updateData();
     void updateUi();
 
+    void adaptUi();
+
     void zeroJoint( int jointId, bool bCcw );
 
 protected Q_SLOTS:
@@ -40,6 +42,8 @@ private slots:
     void on_btnZeroY_clicked();
 
     void on_btnZeroBody_clicked();
+
+    void on_btnZeroZ_clicked();
 
 private:
     Ui::H2Pref *ui;

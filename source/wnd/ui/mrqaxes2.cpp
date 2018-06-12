@@ -86,10 +86,8 @@ void mrqAxes2::setupUi()
 {
     //! varialbes
     ui->cmbPlanMode->addItem( tr("Cubic"), ( (int)0 ) );
-    ui->cmbPlanMode->addItem( tr("Linear"), ( (int)1 ) );
-    ui->cmbPlanMode->addItem( tr("Uniform"), ( (int)2 ) );
-    ui->cmbPlanMode->addItem( tr("Trapezoid"), ( (int)3 ) );
-
+    ui->cmbPlanMode->addItem( tr("Trapezoid"), ( (int)1 ) );
+    ui->cmbPlanMode->addItem( tr("S"), ( (int)2 ) );
 }
 void mrqAxes2::desetupUi()
 {}

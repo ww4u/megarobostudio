@@ -2,6 +2,7 @@
 #include "ui_mrqproperty.h"
 
 #include "../../robot/robotfact.h"
+#include "../../widget/megamessagebox.h"
 
 mrqProperty::mrqProperty( VRobot *pMrqRobo,
                           QWidget *parent) :
@@ -49,9 +50,7 @@ void mrqProperty::slot_page_changed( int index )
 
 void mrqProperty::on_btnApply_clicked()
 {
-    setApply();
-
-    slotModified( false );
+    post_request( msg_mrq_property_apply, mrqProperty, Apply );
 }
 void mrqProperty::on_btnOK_clicked()
 {
@@ -61,6 +60,27 @@ void mrqProperty::on_btnOK_clicked()
 void mrqProperty::on_btnCancel_clicked()
 {
     emit sigClose( this );
+}
+
+void mrqProperty::on_btnReset_clicked()
+{
+    //! prompt to reset
+    if ( QMessageBox::Ok !=
+         MegaMessageBox::question( this, QString(tr("Confirm") ),
+                                   QString( tr("Confirm to reset") ),
+                                   QMessageBox::Ok, QMessageBox::Cancel ) )
+    { return; }
+
+    //! check device
+    MegaDevice::deviceMRQ *pDevice;
+    pDevice = getDevice();
+    if ( NULL == pDevice )
+    {
+        sysPrompt( tr("Invalid device") );
+        return;
+    }
+
+    pDevice->hRst();
 }
 
 void mrqProperty::showEvent(QShowEvent *event)
@@ -123,34 +143,6 @@ void mrqProperty::setMcModel( mcModel *pMcModel )
         Q_ASSERT( NULL != pView );
         pView->setMcModel(pMcModel);
     }
-}
-
-int mrqProperty::setApply()
-{
-//    //! check device
-//    MegaDevice::deviceMRQ *pDevice;
-//    pDevice = getDevice();
-//    if ( NULL == pDevice )
-//    {
-//        return ERR_INVALID_DEVICE_NAME;
-//    }
-
-//    //! foreach apply
-//    int id = 0;
-//    foreach( modelView *pView, mViewPages )
-//    {
-//        Q_ASSERT( NULL != pView );
-//        sysProgress( id++, pView->name(), mViewPages.size(), 0 );
-//        sysProgress( true );
-//        pView->setApply();
-//        sysProgress( id, pView->name(), mViewPages.size(), 0 );
-//    }
-
-//    sysProgress( false );
-
-    post_request( msg_mrq_property_apply, mrqProperty, Apply );
-
-    return 0;
 }
 
 void mrqProperty::updateScreen()
@@ -389,13 +381,15 @@ void mrqProperty::endApply( int ret, void *pPara )
 {
     sysProgress( false );
 
+    slotModified( false );
+
     restoreBtnSnap();
 }
 
 int mrqProperty::postOk( appMsg msg, void *pPara )
 {
-//    return postApply( msg_mrq_property_apply, pPara );
-    return 0;
+    return postApply( msg_mrq_property_apply, pPara );
+//    return 0;
 }
 void mrqProperty::beginOk( void *pPara)
 {
@@ -429,3 +423,4 @@ void mrqProperty::restoreBtnSnap()
     ui->btnOK->setEnabled( mbtnEnableSnap[1] );
     ui->btnCancel->setEnabled( mbtnEnableSnap[2] );
 }
+

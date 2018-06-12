@@ -1,0 +1,176 @@
+#ifndef _MRV_MODEL_H_
+#define _MRV_MODEL_H_
+#include "../../../include/mcstd.h"
+#include "../vrobot.h"
+
+#include "../../intf/iserial.h"
+
+#include "_MRV_model.h"
+
+namespace MegaDevice
+{
+
+
+class MRV_model : public VRobot, public _MRV_model
+{
+public:
+    MRV_model();
+
+public:
+//    virtual int save( const QString &str );
+//    virtual int load( const QString &str );
+
+//    virtual int _serialOut( QXmlStreamWriter &writer );
+    virtual int serialOut( QXmlStreamWriter &writer );
+    virtual int serialIn( QXmlStreamReader &reader );
+
+protected:
+    int saveLink( QXmlStreamWriter &writer );
+    int loadLink( QXmlStreamReader &reader );
+
+    int saveSystem( QXmlStreamWriter &writer );
+    int loadSystem( QXmlStreamReader &reader );
+
+    int saveRs232( QXmlStreamWriter &writer );
+    int loadRs232( QXmlStreamReader &reader );
+
+    int saveCan( QXmlStreamWriter &writer );
+    int loadCan( QXmlStreamReader &reader );
+
+    int saveClock( QXmlStreamWriter &writer );
+    int loadClock( QXmlStreamReader &reader );
+
+    int saveMotion( QXmlStreamWriter &writer );
+    int loadMotion( QXmlStreamReader &reader );
+
+    int saveSubMotion( int ax, QXmlStreamWriter &writer );
+    int loadSubMotion( int ax, QXmlStreamReader &reader );
+
+    int saveIdentity( QXmlStreamWriter &writer );
+    int loadIdentity( QXmlStreamReader &reader );
+
+    int saveSubIdentity( int sub, QXmlStreamWriter &writer );
+    int loadSubIdentity( int sub, QXmlStreamReader &reader );
+
+    int saveMotor( QXmlStreamWriter &writer );
+    int loadMotor( QXmlStreamReader &reader );
+
+    int saveSubMotor( int id, QXmlStreamWriter &writer );
+    int loadSubMotor( int id, QXmlStreamReader &reader );
+
+    int saveEncoder( QXmlStreamWriter &writer );
+    int loadEncoder( QXmlStreamReader &reader );
+
+    int saveSubEncoder( int sub, QXmlStreamWriter &writer );
+    int loadSubEncoder( int sub, QXmlStreamReader &reader );
+
+    int saveMotionPlan( QXmlStreamWriter &writer );
+    int loadMotionPlan( QXmlStreamReader &reader );
+
+    int saveSubMotionPlan( int ax, QXmlStreamWriter &writer );
+    int loadSubMotionPlan( int ax, QXmlStreamReader &reader );
+
+    int saveSubMotionPlanPage( int ax, int page, QXmlStreamWriter &writer );
+    int loadSubMotionPlanPage( int ax, int page, QXmlStreamReader &reader );
+
+    int saveReport( QXmlStreamWriter &writer );
+    int loadReport( QXmlStreamReader &reader );
+
+    int saveSubReport( int ax, QXmlStreamWriter &writer );
+    int loadSubReport( int ax, QXmlStreamReader &reader );
+
+    int saveTrigger( QXmlStreamWriter &writer );
+    int loadTrigger( QXmlStreamReader &reader );
+
+    int saveSubTrigger( int ax, QXmlStreamWriter &writer );
+    int loadSubTrigger( int ax, QXmlStreamReader &reader );
+
+    int saveSubTriggerChannel( int ax, int ch, QXmlStreamWriter &writer );
+    int loadSubTriggerChannel( int ax, int ch, QXmlStreamReader &reader );
+
+    int saveDriver( QXmlStreamWriter &writer );
+    int loadDriver( QXmlStreamReader &reader );
+
+    int saveSubDriver( int sub, QXmlStreamWriter &writer );
+    int loadSubDriver( int sub, QXmlStreamReader &reader );
+
+    int saveSubDriver820( int sub, QXmlStreamWriter &writer );
+    int loadSubDriver820( int sub, QXmlStreamReader &reader );
+
+    int saveDo( QXmlStreamWriter &writer );
+    int loadDo( QXmlStreamReader &reader );
+
+    int saveSubDo( int sub, QXmlStreamWriter &writer );
+    int loadSubDo( int sub, QXmlStreamReader &reader );
+
+    int saveISOo( QXmlStreamWriter &writer );
+    int loadISOo( QXmlStreamReader &reader );
+
+    int saveSubISOo( int sub, QXmlStreamWriter &writer );
+    int loadSubISOo( int sub, QXmlStreamReader &reader );
+
+    int saveSensorUART( QXmlStreamWriter &writer );
+    int loadSensorUART( QXmlStreamReader &reader );
+
+    int saveSubUART( int sub, QXmlStreamWriter &writer );
+    int loadSubUART( int sub, QXmlStreamReader &reader );
+
+    int saveSubUARTSensor( int sub, int subSens, QXmlStreamWriter &writer );
+    int loadSubUARTSensor( int sub, int subSens, QXmlStreamReader &reader );
+
+    int saveISOi( QXmlStreamWriter &writer );
+    int loadISOi( QXmlStreamReader &reader );
+
+    int saveAi( QXmlStreamWriter &writer );
+    int loadAi( QXmlStreamReader &reader );
+
+    int saveAngleAlarm( QXmlStreamWriter &writer );
+    int loadAngleAlarm( QXmlStreamReader &reader );
+
+    int saveSubAngleAlarm( int sub, QXmlStreamWriter &writer );
+    int loadSubAngleAlarm( int sub, QXmlStreamReader &reader );
+
+    int saveDistanceAlarm( QXmlStreamWriter &writer );
+    int loadDistanceAlarm( QXmlStreamReader &reader );
+
+    int saveSubDistanceAlarm( int sub, QXmlStreamWriter &writer );
+    int loadSubDistanceAlarm( int sub, QXmlStreamReader &reader );
+
+    int saveOtp( QXmlStreamWriter &writer );
+    int loadOtp( QXmlStreamReader &reader );
+
+public:
+    void setSignature( quint32 hash );
+    quint32 getSignature();
+
+    //! desc + alias
+    QString getFullDesc( int axesId = -1 );
+
+    QString getDesc();
+    QString getSN();
+    QString getSwVer();
+    QString getHwVer();
+    QString getFwVer();
+    QString getBtVer();
+
+    QString getSeqVer();
+
+protected:
+    QString mDesc;
+
+    QString mSn;
+    QString mSwVer;
+    QString mHwVer;
+    QString mFwVer;
+    QString mBtVer;
+    QString mSeqVer;    //! from ca 02
+
+    quint32 mSignature;
+};
+
+}
+
+Q_DECLARE_METATYPE( MegaDevice::MRV_model )
+Q_DECLARE_METATYPE( MegaDevice::MRV_model *)
+
+#endif

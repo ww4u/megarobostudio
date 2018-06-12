@@ -7,24 +7,33 @@
 
 #include "../../robot/robotfact.h"
 
-
 #include "../model/sinanjumotiongroup.h"
 #include "../model/deltamotiongroup.h"
 #include "../model/megatronmotiongroup.h"
 #include "../model/h2motiongroup.h"
-
+#include "../model/h2zmotiongroup.h"
+#include "../model/ipmotiongroup.h"
 
 MegaTableModel *scriptMgr::newMotion( const QString &clsName )
 {
     MegaTableModel *pNewModelObj;
-    if ( clsName.compare("MRX-T4", Qt::CaseInsensitive) == 0 )
+    if ( clsName.compare( robo_t4, Qt::CaseInsensitive) == 0 )
     { pNewModelObj = new SinanjuMotionGroup( clsName ); }
-    else if ( clsName.compare("MRX-AS", Qt::CaseInsensitive) == 0 )
+
+    else if ( clsName.compare(robo_as, Qt::CaseInsensitive) == 0 )
     { pNewModelObj = new MegatronMotionGroup( clsName ); }
-    else if ( clsName.compare("MRX-DT", Qt::CaseInsensitive) == 0 )
+
+    else if ( clsName.compare( robo_dt, Qt::CaseInsensitive) == 0 )
     { pNewModelObj = new DeltaMotionGroup( clsName ); }
-    else if ( clsName.compare("MRX-H2", Qt::CaseInsensitive) == 0 )
+
+    else if ( clsName.compare( robo_h2, Qt::CaseInsensitive) == 0 )
     { pNewModelObj = new H2MotionGroup( clsName ); }
+
+    else if ( clsName.compare( robo_h2z, Qt::CaseInsensitive) == 0 )
+    { pNewModelObj = new H2ZMotionGroup( clsName ); }
+
+    else if ( clsName.compare( robo_ip, Qt::CaseInsensitive) == 0 )
+    { pNewModelObj = new IPMotionGroup( clsName ); }
     else
     { return NULL; }
 
@@ -40,6 +49,7 @@ scriptMgr::scriptMgr(QWidget *parent) :
 
     m_pRootModel = NULL;
     m_pRootModel = new scriptModel();
+    Q_ASSERT( NULL != m_pRootModel );
 
     //! file system
     m_pFileSysModel = new QFileSystemModel(this);
@@ -66,15 +76,32 @@ void scriptMgr::contextMenuEvent(QContextMenuEvent *event)
     //! script mgr
     if ( ui->tabWidget->currentWidget()->objectName() == "scriptView" )
     {
-        m_pContextMenu->popup( mapToGlobal( event->pos() ) );
-
         QModelIndex index = ui->scriptView->indexAt( event->pos() );
 
-        //! action_delete
-        m_pRemoveAction->setEnabled( index.isValid() );
-        m_pImportAction->setEnabled( getPath().length() > 1 );
+        if ( index.isValid() )
+        {}
+        else
+        { return; }
 
-        m_pNewGroupAction->setEnabled( getPath().length() > 1 );
+        //! check root
+        if ( index.internalPointer() == NULL )
+        { return; }
+
+        //! is root?
+//        if ( )
+//             == m_pRootModel->rootNode() )
+//        { m_pRemoveAction->setEnabled( false ); }
+//        else
+
+        scriptNode *pNode = static_cast<scriptNode*>(index.internalPointer());
+        Q_ASSERT( NULL != pNode );
+        m_pRemoveAction->setVisible( pNode->getParent() != 0 );
+
+        m_pImportAction->setEnabled( getPath().length() > 0 );
+        m_pNewGroupAction->setEnabled( getPath().length() > 0 );
+
+        //! popup
+        m_pContextMenu->popup( mapToGlobal( event->pos() ) );
     }
     //! file mgr
     else
@@ -87,13 +114,9 @@ QSize scriptMgr::sizeHint() const
 void scriptMgr::setExpand( bool b )
 {
     if ( b )
-    {
-        ui->scriptView->expandAll();
-    }
+    { ui->scriptView->expandAll(); }
     else
-    {
-        ui->scriptView->collapseAll();
-    }
+    { ui->scriptView->collapseAll(); }
 }
 
 void scriptMgr::setName( const QString &name )
@@ -110,9 +133,10 @@ QString scriptMgr::getPath()
     return m_pRootModel->getPath();
 }
 
+//! full name
 QString scriptMgr::getFullName()
 {
-    return QDir::toNativeSeparators( m_pRootModel->getPath() + QDir::separator() + m_pRootModel->getName() );
+    return QDir::fromNativeSeparators( m_pRootModel->getPath() + QDir::separator() + m_pRootModel->getName() );
 }
 
 int scriptMgr::save( const QString &path, const QString &name )
@@ -157,6 +181,7 @@ int scriptMgr::saveActiveFile( const QString &file )
     if ( NULL == pNode || pNode->getNodeType() != scriptNode::node_file )
     { return ERR_INVALID_SCRIPT_FILE_NODE; }
 
+    //! \todo
     SinanjuMotionGroup *pGroup = dynamic_cast<SinanjuMotionGroup*>( pNode );
     if ( NULL == pGroup )
     { return ERR_INVALID_SCRIPT_FILE_NODE; }
@@ -172,23 +197,23 @@ int scriptMgr::openFile( const QString &path,
     if ( ext.length() < 1 )
     { return ERR_FILE_DO_NOT_SUPPORT; }
 
-    if ( comAssist::fileSuffixMatch( ext, "mc") )
+    if ( comAssist::fileSuffixMatch( ext, motion_ext) )
     {
         return openMotionGroup( path, file );
     }
-    else if ( comAssist::fileSuffixMatch( ext, "pvt") )
+    else if ( comAssist::fileSuffixMatch( ext, pvt_ext) )
     {
         return openTpv( path, file );
     }
-    else if ( comAssist::fileSuffixMatch( ext, "stp") )
+    else if ( comAssist::fileSuffixMatch( ext, setup_ext) )
     {
         return openSetup( path, file );
     }
-    else if ( comAssist::fileSuffixMatch( ext, "sce") )
+    else if ( comAssist::fileSuffixMatch( ext, scene_ext) )
     {
         return openScene( path, file );
     }
-    else if ( comAssist::fileSuffixMatch( ext, "py") )
+    else if ( comAssist::fileSuffixMatch( ext, script_ext) )
     {
         return openPy( path, file );
     }
@@ -207,6 +232,7 @@ int scriptMgr::openMotionGroup( const QString &path, const QString &file )
     else
     { return ERR_FILE_OPEN_FAIL; }
 
+    //! read model
     QByteArray ary;
     ary = fileRaw.readLine( 128 );
     fileRaw.close();
@@ -232,7 +258,6 @@ int scriptMgr::openMotionGroup( const QString &path, const QString &file )
     }
 
 //    logDbg()<<pModel->mItems.size();
-
     pModel->setPath( path );
     pModel->setName( comAssist::pureFileName(file) );
     pModel->setFile( true );
@@ -290,6 +315,7 @@ int scriptMgr::openScene( const QString &path, const QString &file )
     return ERR_NONE;
 }
 
+//! \todo
 int scriptMgr::openSetup( const QString &path, const QString &file )
 {
     //! 1.load the class
@@ -368,7 +394,7 @@ int scriptMgr::saveActiveFile()
     { return ERR_INVALID_SCRIPT_FILE_NODE; }
 
     QString fullName = getPath() + QDir::separator() + pGroup->getPath() + QDir::separator() + pGroup->getName();
-    fullName = QDir::toNativeSeparators( fullName );
+    fullName = QDir::fromNativeSeparators( fullName );
     return saveActiveFile( fullName );
 }
 
@@ -387,7 +413,7 @@ void scriptMgr::newGroup( const QString &name )
     m_pRootModel->appendNode( ui->scriptView->currentIndex(), pGroup );
 }
 
-void scriptMgr::deleteCurrent()
+void scriptMgr::removeCurrent()
 {
     m_pRootModel->removeNode( ui->scriptView->currentIndex() );
 }
@@ -421,7 +447,7 @@ QStringList scriptMgr::sceneList( QStringList &pathList )
 }
 
 QStringList scriptMgr::sceneList( QStringList &pathList,
-                       scriptGroup *pGroup )
+                                  scriptGroup *pGroup )
 {
     Q_ASSERT( NULL != pGroup );
 
@@ -444,13 +470,75 @@ QStringList scriptMgr::sceneList( QStringList &pathList,
         //! a file
         if ( pGroup->child(i)->getNodeType() == scriptNode::node_file )
         {
-            if ( pGroup->child(i)->getName().contains(".sce") )
+            if ( pGroup->child(i)->getName().contains( scene_d_ext ) )
             {
                 fileNameList<<pGroup->child(i)->getName();
                 pathList<<pGroup->child(i)->getPath();
             }
             else
             {}
+        }
+    }
+
+    return fileNameList;
+}
+
+//! full name list
+QStringList scriptMgr::fileList()
+{
+    //! get all file
+    QStringList nameList;
+    QStringList pathList;
+    nameList = fileList( pathList,
+                         (scriptGroup*)m_pRootModel->getItem( QModelIndex() ) );
+
+    //! to abs path
+    QStringList absFullList;
+    QString absPath;
+    Q_ASSERT( pathList.size() == nameList.size() );
+
+    QDir prjDir( getPath() );
+    QString refFile;
+    for ( int i = 0; i < pathList.size(); i++ )
+    {
+        refFile = pathList[i] + nameList[i];
+
+        absPath = prjDir.absoluteFilePath( refFile );
+        absPath = QDir::fromNativeSeparators( absPath );
+
+        absFullList<<absPath;
+    }
+
+    return absFullList;
+}
+
+QStringList scriptMgr::fileList( QStringList &pathList, scriptGroup *pGroup )
+{
+    Q_ASSERT( NULL != pGroup );
+
+    QStringList fileNameList;
+    for ( int i = 0; i < pGroup->childCount(); i++ )
+    {
+        Q_ASSERT( pGroup->child(i) != NULL );
+
+        //! a group
+        if ( pGroup->child(i)->getNodeType() == scriptNode::node_group )
+        {
+            QStringList subFileList;
+            QStringList subPathList;
+
+            subFileList = fileList( subPathList, (scriptGroup*)pGroup->child(i) );
+
+            fileNameList<<subFileList;
+            pathList<<subPathList;
+        }
+
+        //! a file
+        if ( pGroup->child(i)->getNodeType() == scriptNode::node_file )
+        {
+            //! path contains seperator
+            fileNameList<<pGroup->child(i)->getName();
+            pathList<<pGroup->child(i)->getPath();
         }
     }
 
@@ -509,7 +597,7 @@ void scriptMgr::setupUi()
     m_pNewGroupAction = m_pContextMenu->addAction( tr("New Group"), this,  SLOT(slot_context_newgroup()) );
     m_pImportAction = m_pContextMenu->addAction( tr("Import..."), this,  SLOT(slot_context_import()) );
     m_pContextMenu->addSeparator();
-    m_pRemoveAction = m_pContextMenu->addAction( tr("Remove"), this, SLOT(slot_context_delete()) );
+    m_pRemoveAction = m_pContextMenu->addAction( tr("Remove"), this, SLOT(slot_context_remove()) );
 
     //! model
     ui->scriptView->setModel( m_pRootModel );
@@ -521,6 +609,16 @@ void scriptMgr::setupUi()
 void scriptMgr::buildConnection()
 {
 //    connect( ui->scriptView, SIGNAL())
+}
+
+bool scriptMgr::isExist( const QString &fullName )
+{
+    QStringList fullFileList = fileList();
+logDbg()<<fullFileList;
+    if( fullFileList.contains( fullName, Qt::CaseInsensitive ) )
+    { return true; }
+    else
+    { return false; }
 }
 
 void scriptMgr::on_scriptView_activated(const QModelIndex &index)
@@ -549,8 +647,8 @@ void scriptMgr::on_scriptView_activated(const QModelIndex &index)
 
     fullName = path + QDir::separator() + pFile->getName();
 
-    path = QDir::toNativeSeparators( path );
-    fullName = QDir::toNativeSeparators( fullName );
+    path = QDir::fromNativeSeparators( path );
+    fullName = QDir::fromNativeSeparators( fullName );
 
     int ret = openFile( path, fullName );
     if ( ret != 0 )
@@ -585,9 +683,9 @@ void scriptMgr::slot_context_newgroup()
         emit signal_prj_edited();
     }
 }
-void scriptMgr::slot_context_delete()
+void scriptMgr::slot_context_remove()
 {
-    deleteCurrent( );
+    removeCurrent( );logDbg();
 
     emit signal_prj_edited();
 }
@@ -597,6 +695,7 @@ void scriptMgr::slot_context_import()
     QFileDialog fDlg;
 
     fDlg.setAcceptMode( QFileDialog::AcceptOpen );
+    fDlg.setFileMode( QFileDialog::ExistingFiles );
     QStringList nameFilters;
     nameFilters<<tr("pvt (*.pvt)")
                <<tr("motion (*.mc)")
@@ -604,23 +703,41 @@ void scriptMgr::slot_context_import()
                <<tr("setup (*.stp)")
                <<tr("python (*.py)");
     fDlg.setNameFilters( nameFilters );
+
     if ( QDialog::Accepted != fDlg.exec() )
     { return; }
 
-    QString fileName = fDlg.selectedFiles().first();
-    scriptFile *pFile = new scriptFile( comAssist::pureFileName( fileName ) );
+    //! save filter
+    mSelectedNameFilter = fDlg.selectedNameFilter();
 
-    //! extract filename
-    QString pureFileName = comAssist::pureFileName( fileName );
+    foreach ( QString fileName, fDlg.selectedFiles() )
+    {
+        //! check repeat
+        if ( isExist( QDir::fromNativeSeparators(fileName) ) )
+        {
+            sysPrompt( tr("File is alreay in project, ") + fileName );
+            continue;
+        }
+        else
+        { }
 
-    //! base path
-    QDir dir( m_pRootModel->getPath() );
-    QString refPath = dir.relativeFilePath( fileName ).remove( pureFileName);
-    //! remove the last
-    refPath.remove( refPath.size() - 1, 1);
-    pFile->setPath( refPath );
+        //! new one
+        scriptFile *pFile = new scriptFile( comAssist::pureFileName( fileName ) );
 
-    m_pRootModel->appendNode( ui->scriptView->currentIndex(), pFile );
+        //! extract filename
+        QString pureFileName = comAssist::pureFileName( fileName );
+
+        //! find repeat
+
+        //! base path
+        QDir dir( m_pRootModel->getPath() );
+        QString refPath = dir.relativeFilePath( fileName ).remove( pureFileName);
+        //! remove the last
+        refPath.remove( refPath.size() - 1, 1);
+        pFile->setPath( refPath );
+
+        m_pRootModel->appendNode( ui->scriptView->currentIndex(), pFile );
+    }
 
     emit signal_prj_edited();
 }

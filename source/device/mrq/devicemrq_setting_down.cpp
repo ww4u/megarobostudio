@@ -122,13 +122,16 @@ MRQ_PROGRESS( 10, ("MOTION") );
         checked_call( setMOTOR_BACKLASH( i, mMOTOR_BACKLASH[i]) );
 
         //! encoder
-        checked_call( setENCODER_LINENUM( i, mENCODER_LINENUM[i]) );
-        checked_call( setENCODER_CHANNELNUM( i, mENCODER_CHANNELNUM[i]) );
+        if ( encoderAble() )
+        {
+            checked_call( setENCODER_LINENUM( i, mENCODER_LINENUM[i]) );
+            checked_call( setENCODER_CHANNELNUM( i, mENCODER_CHANNELNUM[i]) );
 
-        checked_call( setENCODER_TYPE( i, mENCODER_TYPE[i]) );
-        checked_call( setENCODER_MULTIPLE( i, mENCODER_MULTIPLE[i]) );
-        checked_call( setENCODER_STATE( i, mENCODER_STATE[i]) );
-        checked_call( setENCODER_FEEDBACKRATIO( i, mENCODER_FEEDBACKRATIO[i]) );
+            checked_call( setENCODER_TYPE( i, mENCODER_TYPE[i]) );
+            checked_call( setENCODER_MULTIPLE( i, mENCODER_MULTIPLE[i]) );
+            checked_call( setENCODER_STATE( i, mENCODER_STATE[i]) );
+            checked_call( setENCODER_FEEDBACKRATIO( i, mENCODER_FEEDBACKRATIO[i]) );
+        }
 
         MRQ_PROGRESS_DOWN( 30, ("MOTORPLAN") );
     }
@@ -206,21 +209,32 @@ MRQ_PROGRESS( 10, ("MOTION") );
 
         MRQ_PROGRESS_DOWN( 50, ("TRIGGER") );
 
-//        checked_call( setDRIVER_TYPE( i, mDRIVER_TYPE[i]) );
-        for( int j = 0; j < 3; j++ )
+        if ( mDriverId == VRobot::motor_driver_262 )
         {
-            Q_ASSERT( j < sizeof_array(mDRIVER_STATEREG[0]) );
-//            checked_call( setDRIVER_STATEREG( i, (MRQ_DRIVER_STATEREG)j, mDRIVER_STATEREG[i][j]) );
+    //        checked_call( setDRIVER_TYPE( i, mDRIVER_TYPE[i]) );
+            for( int j = 0; j < 3; j++ )
+            {
+                Q_ASSERT( j < sizeof_array(mDRIVER_STATEREG[0]) );
+    //            checked_call( setDRIVER_STATEREG( i, (MRQ_DRIVER_STATEREG)j, mDRIVER_STATEREG[i][j]) );
+            }
+            checked_call( setDRIVER_CURRENT( i, mDRIVER_CURRENT[i]) );
+
+            checked_call( setDRIVER_MICROSTEPS( i, mDRIVER_MICROSTEPS[i]) );
+            checked_call( setDRIVER_STATE( i, mDRIVER_STATE[i]) );
+
+
+            checked_call( setDRIVER_IDLECURRENT( i, mDRIVER_IDLECURRENT[i]) );
+            checked_call( setDRIVER_SWITCHTIME( i, mDRIVER_SWITCHTIME[i]) );
+            checked_call( setDRIVER_MINICURRRATIO( i, mDRIVER_MINICURRRATIO[i]) );
         }
-        checked_call( setDRIVER_CURRENT( i, mDRIVER_CURRENT[i]) );
-
-        checked_call( setDRIVER_MICROSTEPS( i, mDRIVER_MICROSTEPS[i]) );
-        checked_call( setDRIVER_STATE( i, mDRIVER_STATE[i]) );
-
-
-        checked_call( setDRIVER_IDLECURRENT( i, mDRIVER_IDLECURRENT[i]) );
-        checked_call( setDRIVER_SWITCHTIME( i, mDRIVER_SWITCHTIME[i]) );
-        checked_call( setDRIVER_MINICURRRATIO( i, mDRIVER_MINICURRRATIO[i]) );
+        else if ( mDriverId == VRobot::motor_driver_820 )
+        {
+            checked_call( setNEWDRIVER_CURRENT( mNEWDRIVER_CURRENT ) );
+            checked_call( setNEWDRIVER_MICROSTEPS( mNEWDRIVER_MICROSTEPS ) );
+            checked_call( setNEWDRIVER_STATE( i, mNEWDRIVER_STATE[i] ) );
+        }
+        else
+        { Q_ASSERT(false); }
 
         MRQ_PROGRESS_DOWN( 55, ("DRIVER") );
     }

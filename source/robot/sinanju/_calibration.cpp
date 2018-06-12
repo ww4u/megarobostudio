@@ -4,7 +4,7 @@
 #define SPACE_RESOLUTION    2     //! mm
 #define SPACE_VELOCITY      5     //! mm/s
 
-int robotSinanju::goZero()
+int robotSinanju::goZero( const tpvRegion &region )
 {
     //! get
     float angles[4];
@@ -60,7 +60,6 @@ int robotSinanju::goZero()
     mJointsGroup.append( pGroup );
 
     //! for download
-    tpvRegion region( 0, 0 );
     run( region );
 
     setLoop( 1 );
@@ -78,7 +77,8 @@ int robotSinanju::goZero()
     return 0;
 }
 
-int robotSinanju::goZero( int jointId, bool bCcw )
+int robotSinanju::goZero( const tpvRegion &region,
+                          int jointId, bool bCcw )
 {
     Q_ASSERT( jointId >= 0 && jointId < axes() );
 
@@ -117,7 +117,7 @@ int robotSinanju::goZero( int jointId, bool bCcw )
 
         sysLog( QString::number(deltaAngle) );
         Q_ASSERT( mZeroSpeed > 0 );
-        pMrq->rotate( tpvRegion(subAx,0),
+        pMrq->rotate( tpvRegion(subAx,region.page()),
                       qAbs(deltaAngle) / mZeroSpeed,
                       deltaAngle
                       );
@@ -126,11 +126,13 @@ int robotSinanju::goZero( int jointId, bool bCcw )
     else
     {
         //! to stop mode
-        pMrq->lightCouplingZero( tpvRegion(subAx,0),
+        pMrq->lightCouplingZero( tpvRegion(subAx,region.page()),
                                  mHandZeroTime,
                                  bCcw ? (-mHandZeroAngle) : ( mHandZeroAngle ),
-                                 bCcw ? (-mZeroSpeed) : ( mZeroSpeed )
-                                  );
+                                 bCcw ? (-mZeroSpeed) : ( mZeroSpeed ),
+                                 mGapTime,
+                                 bCcw ? (mGapAngle) : (-mGapAngle),
+                                 mZeroTmo, mZeroTick );
 
         sysLog( QString::number( bCcw ? (-mHandZeroAngle) : ( mHandZeroAngle ) ) );
     }

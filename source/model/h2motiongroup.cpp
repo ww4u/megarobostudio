@@ -1,5 +1,14 @@
 #include "h2motiongroup.h"
 
+//QStringLiteral("Enable"),
+//QStringLiteral("Name"),
+
+//QStringLiteral("t(s)"),
+//QStringLiteral("x(mm)"),
+//QStringLiteral("y(mm)"),
+
+//QStringLiteral("Comment"),
+
 H2MotionGroup::H2MotionGroup( const QString &className, const QString &fileName )
                              : MegaTableModel( className, fileName)
 {
@@ -11,6 +20,24 @@ H2MotionGroup::H2MotionGroup( const QString &className, const QString &fileName 
 
     mSectionAble.clear();
     mSectionAble<<true;
+
+    //! header list
+    mHeaderList.clear();
+    mHeaderList<<QObject::tr("Enable")
+               <<QObject::tr("Name")
+               <<QObject::tr("t(s)")
+               <<QObject::tr("x(mm)")
+               <<QObject::tr("y(mm)")
+               <<QObject::tr("Comment");
+
+    //! title list
+    mTitleList.clear();
+    mTitleList<<"enable"
+              <<"name"
+              <<"t"
+              <<"x"
+              <<"y"
+              <<"comment";
 }
 
 H2MotionGroup::~H2MotionGroup()
@@ -21,7 +48,7 @@ H2MotionGroup::~H2MotionGroup()
 int H2MotionGroup::rowCount(const QModelIndex &parent) const
 { return mItems.size(); }
 int H2MotionGroup::columnCount(const QModelIndex &parent) const
-{ return H2MotionItem::columns(); }
+{ return mHeaderList.size(); }
 
 QVariant H2MotionGroup::data(const QModelIndex &index, int role) const
 {
@@ -129,7 +156,7 @@ QVariant H2MotionGroup::headerData(int section, Qt::Orientation orientation, int
     { return QVariant(); }
 
     if ( orientation == Qt::Horizontal )
-    { return QVariant( H2MotionItem::header(section)); }
+    { return QVariant( mHeaderList.at(section) ); }
     else
     { return QVariant(section);}
 }
@@ -149,14 +176,19 @@ int H2MotionGroup::save( const QString &fileName )
     { return ERR_FILE_OPEN_FAIL; }
 
     ImcStream text( &file );
+    QString colSep;
+
     text<<HEAD_SEP<<className()<<ROW_SEP;
-    text<<HEAD_SEP
-        <<"enable"<<COL_SEP
-        <<"name"<<COL_SEP
-        <<"t"<<COL_SEP
-        <<"x"<<COL_SEP
-        <<"y"<<COL_SEP
-        <<"comment"<<ROW_SEP;
+    text<<HEAD_SEP;
+
+    colSep.clear();
+    foreach( QString colTitle, mTitleList )
+    {
+        text<<colSep<<colTitle;
+        colSep = COL_SEP;
+    }
+    text<<ROW_SEP;
+
     foreach( H2MotionItem *pItem, mItems )
     {
         if ( 0 != pItem->serialOut( text ) )
@@ -207,7 +239,9 @@ int H2MotionGroup::load( const QString &fileName )
     }while( !text.atEnd() );
 
     emit dataChanged( index(0,0),
-                      index(mItems.count(), H2MotionItem::columns() - 1) );
+                      index(mItems.count(),
+                      mHeaderList.size() - 1
+                       ) );
     logDbg()<<mItems.size();
     return 0;
 }
@@ -234,5 +268,6 @@ void H2MotionGroup::reverse()
     }
 
     emit dataChanged( index(0,0),
-                      index(mItems.count(), H2MotionItem::columns() - 1) );
+                      index(mItems.count(),
+                      mHeaderList.size() - 1 ) );
 }

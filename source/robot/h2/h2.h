@@ -43,7 +43,6 @@ public:
 public:
     DECLARE_SCPI()
 
-
 public:
     virtual int serialIn( QXmlStreamReader &reader );
     virtual int serialOut( QXmlStreamWriter &writer );
@@ -63,15 +62,16 @@ public:
                  const tpvRegion &region );
     int move( QList<H2KeyPoint> &curve,
               const tpvRegion &region );
-    int move( float dx, float dy, float dt, float endV,
+    int move( float dx, float dy, float dt, float endVx, float endVy,
               const tpvRegion &region );
 
     int preMove( QList<H2KeyPoint> &curve,
               const tpvRegion &region );
 
     //! jId -- 0: x
-    virtual int goZero( int jointId, bool bCcw );
-    virtual int goZero( );      //! 1.x, 2.y
+    virtual int goZero( const tpvRegion &region,
+                        int jointId, bool bCcw );
+    virtual int goZero( const tpvRegion &region=0 );      //! 1.x, 2.y
 
     int zeroAxesTask( void *pArg );
 
@@ -106,10 +106,10 @@ protected:
     int downloadTrace( const tpvRegion &region,
                        QList< tpvGroup *> &jointsGroup );
 
-    int waitFsm( pvt_region,
-                 int dstState,
-                 int tmous,
-                 int tick );
+//    int waitFsm( pvt_region,
+//                 int dstState,
+//                 int tmous,
+//                 int tick );
 
 protected:
     double mZeroTime, mZeroDistance;

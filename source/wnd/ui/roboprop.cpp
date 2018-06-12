@@ -20,6 +20,8 @@ roboProp::roboProp( int id , QWidget *parent) :
     mbtnEnableSnap.append( false );
     mbtnEnableSnap.append( false );
     mbtnEnableSnap.append( false );
+
+    ui->btnReset->setVisible( false );
 }
 
 roboProp::~roboProp()
@@ -57,31 +59,6 @@ void roboProp::setMcModel( mcModel *pMcModel )
         pView->setMcModel( pMcModel );
     }
 
-}
-
-int roboProp::setApply()
-{
-//    int ret,id;
-//    id = 0;
-//    foreach( modelView *pView, mPrefPages )
-//    {
-//        Q_ASSERT( NULL != pView );
-
-//        sysProgress( id++, pView->name(), mPrefPages.size(), 0 );
-//        sysProgress( true );
-//        ret = pView->setApply();
-//        sysProgress( id, pView->name(), mPrefPages.size(), 0 );
-//        if ( ret != 0 )
-//        { break; }
-//    }
-
-//    sysProgress( false );
-
-//    return ret;
-
-    post_request( msg_robo_property_apply, roboProp, Apply );
-
-    return 0;
 }
 
 int roboProp::save( QString &outFileName )
@@ -143,7 +120,10 @@ void roboProp::setupUi( int id )
     {
         m_pMegatronPref  = new_widget( MegatronPref, ":/res/image/icon2/settings_light.png", tr("Zero") );
     }
-    else if ( VRobot::robot_h2 == id )
+    //! h2 && h2z
+    else if ( VRobot::robot_h2 == id
+              || VRobot::robot_h2z == id
+              )
     {
         m_pH2Pref = new_widget( H2Pref, ":/res/image/icon2/settings_light.png", tr("Zero") );
         m_pH2Config = new_widget( H2Config, ":/res/image/icon2/settings_light.png", tr("Pref") );
@@ -159,6 +139,11 @@ void roboProp::setupUi( int id )
               )
     {
         m_pAxnPref = new_widget( AxnPref, ":/res/image/icon2/settings_light.png", tr("Pref") );
+    }
+    else if ( VRobot::robot_ip == id )
+    {
+        m_pIpPref = new_widget( IPPref, ":/res/image/icon2/settings_light.png", tr("Pref") );
+        m_pIpConfig = new_widget( IPConfig, ":/res/image/icon2/settings_light.png", tr("Config") );
     }
     else
     {}
@@ -189,10 +174,12 @@ void roboProp::setupUi( int id )
                  this,  SLOT(slotModified(bool)) );
     }
 
-    //! post
-//    slot_page_changed( ui->stackedWidget->currentIndex() );
+    //! to pref
+    if ( ui->stackedWidget->count() > 3 )
+    { ui->stackedWidget->setCurrentIndex( 3 ); }
+    else
+    { ui->stackedWidget->setCurrentWidget( m_pComPref ); }
 
-    ui->stackedWidget->setCurrentWidget( m_pComPref );
 }
 
 void roboProp::desetupUi()
@@ -212,6 +199,7 @@ void roboProp::buildConnection()
 int roboProp::postApply( appMsg msg, void *pPara )
 {
     int ret,id;
+    ret = 0;
     id = 0;
     foreach( modelView *pView, mPrefPages )
     {
@@ -239,6 +227,10 @@ void roboProp::endApply( int ret, void *pPara )
     sysProgress(false);
 
     restoreBtnSnap();
+
+    slotModified( false );
+
+    emit sigSaveRequest( this );
 }
 
 int roboProp::postOk( appMsg msg, void *pPara )
@@ -305,10 +297,5 @@ void roboProp::on_btnCancel_clicked()
 
 void roboProp::on_btnApply_clicked()
 {
-    //! apply
-    setApply();
-
-    slotModified( false );
-
-    emit sigSaveRequest( this );
+    post_request( msg_robo_property_apply, roboProp, Apply );
 }

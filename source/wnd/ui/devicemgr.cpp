@@ -9,6 +9,7 @@
 
 #include "axesknob.h"
 #include "roboaxes.h"
+#include "t4panel.h"
 
 deviceMgr::deviceMgr(QWidget *parent) :
     modelView(parent),
@@ -92,6 +93,11 @@ void deviceMgr::setupUi()
                               tr("Console..."),
                               this,
                               SLOT( context_mrq_console() ) );
+    m_pDeviceMenu->addSeparator();
+    m_pDeviceMenu->addAction( QIcon( ":/res/image/icon/205.png" ),
+                              tr("Prop..."),
+                              this,
+                              SLOT( context_mrq_prop() ) );
 
 
     //! axes menu
@@ -114,10 +120,19 @@ void deviceMgr::setupUi()
                               this,
                               SLOT( context_robo_console() ) );
     m_pRoboMenu->addSeparator();
-    m_pRoboMenu->addAction( QIcon( ":/res/image/icon2/mobile.png" ),
+    m_pRoboMenu->addAction( QIcon( ":/res/image/icon2/circle.png" ),
+                              tr("Joint..."),
+                              this,
+                              SLOT( context_robo_axes() ) );
+    m_pT4PanelAction = m_pRoboMenu->addAction( QIcon( ":/res/image/icon2/mobile.png" ),
                               tr("Panel..."),
                               this,
                               SLOT( context_robo_panel() ) );
+    m_pRoboMenu->addAction( QIcon( ":/res/image/icon/205.png" ),
+                              tr("Prop..."),
+                              this,
+                              SLOT( context_robo_prop() ) );
+
 }
 
 void deviceMgr::desetupUi()
@@ -318,12 +333,12 @@ void deviceMgr::endSearchDevice( int ret, void *pPara )
 
     updateUi();
 
-    //! debug
-//    if ( mAxesCount == 0 || mAxesCount == 15 )
-//    {}
-//    else
-//    { logDbg()<<mAxesCount; Q_ASSERT(false); }
-//    ui->pushButton->animateClick();
+//    //! debug
+////    if ( mAxesCount == 0 || mAxesCount == 15 )
+////    {}
+////    else
+////    { logDbg()<<mAxesCount; Q_ASSERT(false); }
+////    ui->pushButton->animateClick();
 }
 
 int deviceMgr::postLoadOn( appMsg msg, void *pPara )
@@ -585,6 +600,14 @@ void deviceMgr::context_mrq_panel()
     pKnob->show();
 }
 
+void deviceMgr::context_mrq_prop()
+{
+    Q_ASSERT( NULL != m_pMRQ );
+    Q_ASSERT( NULL != m_pmcModel );
+
+    emit itemXActivated( (mcModelObj*)m_pMRQ );
+}
+
 void deviceMgr::context_robo_console()
 {
     deviceConsole *pConsole;
@@ -608,7 +631,7 @@ void deviceMgr::context_robo_console()
     pConsole->show();
 }
 
-void deviceMgr::context_robo_panel()
+void deviceMgr::context_robo_axes()
 {
     Q_ASSERT( NULL != m_pmcModel );
     Q_ASSERT( NULL != m_pRobo );
@@ -624,6 +647,32 @@ void deviceMgr::context_robo_panel()
     connect( this, SIGNAL(signal_instmgr_changed(bool,MegaDevice::InstMgr*)),
              pRoboPanel, SLOT(slot_device_changed()) );
     pRoboPanel->show();
+}
+void deviceMgr::context_robo_panel()
+{
+    Q_ASSERT( NULL != m_pmcModel );
+    Q_ASSERT( NULL != m_pRobo );
+
+    T4Panel *pRoboPanel;
+
+    pRoboPanel = new T4Panel( m_pmcModel,
+                               QString("%1@%2").arg(m_pRobo->name()).arg( mCurrNodeName ),
+                               this );
+    if ( pRoboPanel == NULL )
+    { return; }
+
+    connect( this, SIGNAL(signal_instmgr_changed(bool,MegaDevice::InstMgr*)),
+             pRoboPanel, SLOT(slot_device_changed()) );
+    pRoboPanel->show();
+}
+
+
+void deviceMgr::context_robo_prop()
+{
+    Q_ASSERT( NULL != m_pmcModel );
+    Q_ASSERT( NULL != m_pRobo );
+
+    emit itemXActivated( (mcModelObj*)m_pRobo );
 }
 
 void deviceMgr::contextMenuEvent(QContextMenuEvent *event)
@@ -695,6 +744,13 @@ void deviceMgr::contextMenuEvent(QContextMenuEvent *event)
         {
             Q_ASSERT( NULL != pItem->parent() );
             mCurrNodeName = pItem->parent()->text(0);
+
+            //! panel for t4
+            if ( m_pRobo->getId() == VRobot::robot_sinanju )
+            { m_pT4PanelAction->setVisible(true); }
+            else
+            { m_pT4PanelAction->setVisible(false); }
+
             m_pRoboMenu->popup( mapToGlobal( event->pos() ) );
             event->accept();
         }

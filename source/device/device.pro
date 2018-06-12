@@ -12,35 +12,46 @@ INCLUDEPATH += ../scpi-parser/libscpi/inc
 OBJECTS_DIR = ./obj
 MOC_DIR = ./obj
 
-SOURCES = vdevice.cpp \
-          devicemodel.cpp \
-          ./board/mrq.cpp \
-          ./board/_mrq_model.cpp \
+SOURCES = \
+          ./board/MRQ.cpp \
           ./board/MRQ_enum.cpp \
           ./board/mrq_model.cpp \
-          ./mrq/deviceMRQ.cpp \
-          ./mrq/MRQ_scpi_callback.cpp \
-          ./mrq/tpvdownloader.cpp \
-    vrobot.cpp \
-    roboworker.cpp \
+          ./board/mrq_model_serial.cpp \
+          ./board/_mrq_model.cpp \
+          \
+    \
+        ./mrv_board/MRV_enum.cpp \
+        ./mrv_board/MRV.cpp \
+        ./mrv_board/MRV_model.cpp \
+        ./mrv_board/_mrv_model.cpp \
+        \
     vrobot_serial.cpp \
     vrobot_msg.cpp \
     vrobot_action.cpp \
     vrobot_prop.cpp \
-    mrq/devicemrq_transaction.cpp \
-    mrq/devicemrq_action.cpp \
-    motor/motor.cpp \
+    vrobot_task.cpp \
+    vdevice.cpp \
+    devicemodel.cpp \
     robostate.cpp \
-    mrq/devicemrq_state.cpp \
-    mrq/devicemrq_addr.cpp \
-    mrq/devicemrq_setting.cpp \
-    mrq/devicemrq_tpv.cpp \
-    board/mrq_model_serial.cpp \
-    mrq/devicemrq_setting_up.cpp \
-    mrq/devicemrq_setting_down.cpp \
-    mrq/devicemrq_assist.cpp \
-    mrq/devicemrq_task.cpp \
-    vrobot_task.cpp
+    vrobot.cpp \
+    roboworker.cpp \
+    motor/motor.cpp \
+    ./mrq/devicemrq_transaction.cpp \
+    ./mrq/devicemrq_action.cpp \
+    ./mrq/deviceMRQ.cpp \
+    ./mrq/MRQ_scpi_callback.cpp \
+    ./mrq/tpvdownloader.cpp \
+    ./mrq/devicemrq_state.cpp \
+    ./mrq/devicemrq_addr.cpp \
+    ./mrq/devicemrq_setting.cpp \
+    ./mrq/devicemrq_tpv.cpp \
+    ./mrq/devicemrq_setting_up.cpp \
+    ./mrq/devicemrq_setting_down.cpp \
+    ./mrq/devicemrq_assist.cpp \
+    ./mrq/devicemrq_task.cpp
+
+
+
 
 HEADERS = vdevice.h \
           devicemodel.h \

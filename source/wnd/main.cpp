@@ -202,7 +202,7 @@ int main(int argc, char *argv[])
     qRegisterMetaType<appWidget::servContext>();
     qRegisterMetaType<eventId>();
     qRegisterMetaType<frameData>();
-
+    qRegisterMetaType<RpcRequest>();
 
 //    qRegisterMetaType<appWidget::servContext>("appWidget::servContext");
 //    qRegisterMetaType<eventId>("eventId");

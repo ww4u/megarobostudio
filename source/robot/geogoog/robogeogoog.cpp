@@ -22,10 +22,10 @@ roboGeogoog::roboGeogoog()
     mISOs = 2;
     mISIs = 1;
     mAINs = 0;
-    setUarts( 2 );
+    setUarts( 1 );
     setUartSensors( 4 );
 
-    mMicrostepBase = 2;
+    mMicrostepBase = 2;     //! 64
 
     mImage = QImage::fromData( _megaimage, sizeof(_megaimage) );
 }

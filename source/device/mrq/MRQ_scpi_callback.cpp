@@ -409,7 +409,9 @@ static scpi_result_t _scpi_program( scpi_t * context )
     //! load
     QList<float> dataSets;
     int col = 3;
-    if ( 0 != comAssist::loadDataset( pLocalStr, strLen, col, dataSets ) )
+    QList<int> dataCols;
+    dataCols<<0<<1<<2;
+    if ( 0 != comAssist::loadDataset( pLocalStr, strLen, col, dataCols, dataSets ) )
     { scpi_ret( SCPI_RES_ERR ); }
 
     int dotSize = dataSets.size()/col;

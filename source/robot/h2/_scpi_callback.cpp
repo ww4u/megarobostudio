@@ -156,11 +156,41 @@ static scpi_result_t _scpi_program( scpi_t * context )
     if (strLen < 1)
     { scpi_ret( SCPI_RES_ERR ); }
 
-    //! t, x1,y1,v
     QList<float> dataset;
-    int col = 4;
-    if ( 0 != comAssist::loadDataset( pLocalStr, strLen, col, dataset ) )
-    {  scpi_ret( SCPI_RES_ERR ); }
+    int ret;
+    int col = 6;
+    QList<int> dataCols;
+    do
+    {
+        //! enable,name,t,x,y,comment
+        col = 6;
+        dataCols.clear();
+        dataCols<<2<<3<<4;
+        dataset.clear();
+        ret = comAssist::loadDataset( pLocalStr, strLen, col, dataCols, dataset );
+        if ( 0 == ret && ( dataset.size() / col ) > 1  )
+        { break; }
+
+        //! t, x1,y1,v
+        col = 4;
+        dataCols.clear();
+        dataCols<<0<<1<<2;
+        dataset.clear();
+        ret = comAssist::loadDataset( pLocalStr, strLen, col, dataCols, dataset );
+        if ( 0 == ret && ( dataset.size() / col ) > 1  )
+        { break; }
+
+
+        //! t, x, y
+        col = 3;
+        dataCols.clear();
+        dataCols<<0<<1<<2;
+        dataset.clear();
+        ret = comAssist::loadDataset( pLocalStr, strLen, col, dataCols, dataset );
+        if ( 0 == ret && ( dataset.size() / col ) > 1  )
+        { break; }
+
+    }while( 0 );
 
     //! point
     if ( dataset.size() / col < 2 )
@@ -171,13 +201,10 @@ static scpi_result_t _scpi_program( scpi_t * context )
     for ( int i = 0; i < dataset.size()/col; i++ )
     {
         //! t
-        tp.datas[0] = dataset.at( i * col );
+        tp.datas[0] = dataset.at( i * col + dataCols[0] );
 
-        //! xyv
-        for ( int j = 1; j < col; j++ )
-        {
-            tp.datas[j] = dataset.at( i * col + j );
-        }
+        tp.datas[1] = dataset.at( i * col + dataCols[1] );
+        tp.datas[2] = dataset.at( i * col + dataCols[2] );
 
         curve.append( tp );
     }
@@ -187,7 +214,9 @@ static scpi_result_t _scpi_program( scpi_t * context )
 
     CHECK_LINK();
 
-    int ret = LOCAL_ROBO()->program( curve, tpvRegion(ax,page) );
+    ret = LOCAL_ROBO()->program( curve, tpvRegion(ax,page) );
+    if ( ret != 0 )
+    { scpi_ret( SCPI_RES_ERR ); }
 
     return SCPI_RES_OK;
 }
@@ -223,7 +252,6 @@ static scpi_result_t _scpi_fsmState( scpi_t * context )
     DEF_ROBO();
 
     int ax, page;
-
     if ( SCPI_ParamInt32(context, &ax, true) != true )
     { scpi_ret( SCPI_RES_ERR ); }
 
@@ -237,7 +265,7 @@ static scpi_result_t _scpi_fsmState( scpi_t * context )
     return SCPI_RES_OK;
 }
 
-//! int jointid
+//! int ax, page, jointid
 static scpi_result_t _scpi_gozero( scpi_t * context )
 {
     DEF_LOCAL_VAR();
@@ -245,17 +273,24 @@ static scpi_result_t _scpi_gozero( scpi_t * context )
 
     CHECK_LINK();
 
-    int joint;
-logDbg();
+    //! ax, page
+    int ax, page;
+    if ( SCPI_ParamInt32(context, &ax, true) != true )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    if ( SCPI_ParamInt32(context, &page, true) != true )
+    { scpi_ret( SCPI_RES_ERR ); }
+
     //! robo
+    int joint;
     if ( SCPI_ParamInt32(context, &joint, true) != true )
     {logDbg();
-        pRobo->goZero();
+        pRobo->goZero( tpvRegion(ax,page) );
     }
     //! some joint
     else
     {logDbg();
-        pRobo->goZero( joint, true );
+        pRobo->goZero( tpvRegion(ax,page), joint, true );
     }
 
     return SCPI_RES_OK;

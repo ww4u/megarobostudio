@@ -8,7 +8,12 @@ MegaTableModel::MegaTableModel( const QString &className,
     mbStepAble = false;
     mbPrefAble = false;
 
+
     mSectionAble<<true;     //! joint,hand,geometry
+
+    mbSmartEditable = false;
+    mRpcReq = RpcRequest::e_req_none;
+    mRpcType = RpcRequest::e_type_none;
 
     connect( this, SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)),
              this, SIGNAL(signal_data_changed()));
@@ -39,6 +44,14 @@ void MegaTableModel::setPrefAble( bool b )
 bool MegaTableModel::prefAble()
 { return mbPrefAble; }
 
+bool MegaTableModel::smartEditable()
+{ return mbSmartEditable; }
+
+RpcRequest::EnumRequest MegaTableModel::rpcRequest()
+{ return mRpcReq; }
+RpcRequest::EnumParaType MegaTableModel::rpcParaType()
+{ return mRpcType; }
+
 int MegaTableModel::sectionSize()
 { return mSectionAble.size(); }
 bool MegaTableModel::sectionAble( int iSec )
@@ -54,6 +67,9 @@ QList<bool> &MegaTableModel::sectionAbleList()
 
 QStringList MegaTableModel::exportOptList()
 { return mExportOptList; }
+
+void MegaTableModel::setRpc( int row, RpcRequest &req )
+{}
 
 //bool MegaTableModel::verify()
 //{ return false; }

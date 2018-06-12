@@ -114,6 +114,8 @@ protected:
     static QList< frameEvent* > _frameEvents;
     static QMutex _frameEventsMutex;
 
+    static QSemaphore _eventSema;
+
 public:
     //! thread
     static void lock();
@@ -121,6 +123,10 @@ public:
 
     static void lockFrameEvents();
     static void unlockFrameEvents();
+
+    static void accEvent();
+    static void decEvent();
+    static int availableEvent();
 
     static quint64 timeStamp();
 

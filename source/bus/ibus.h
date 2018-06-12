@@ -235,6 +235,11 @@ public :
                     UInt16 v0,
                     float v1);
 
+        int write( DeviceId &id, byte mainCode,
+                    byte subCode,
+                    UInt16 v0,
+                    UInt32 v1);
+
         int write( DeviceId &id, byte mainCode, byte subCode,
                    byte ary[], int len );
 

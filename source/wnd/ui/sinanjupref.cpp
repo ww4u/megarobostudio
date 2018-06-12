@@ -94,8 +94,10 @@ void SinanjuPref::updateData()
 
     //! hand zero
     pRobo->setHandZeroAttr( ui->spinZeroTime->value(),
-                            ui->spinZeroAngle->value(),
-                            ui->spinZeroSpeed->value() );
+                            ui->spinZeroAngle->value() );
+
+    pRobo->setGapAttr( ui->spinGapTime->value(),
+                       ui->spinGapAngle->value() );
 }
 
 void SinanjuPref::updateUi()
@@ -124,11 +126,16 @@ void SinanjuPref::updateUi()
         return;
     }
 
-    double zeroTime, zeroSpeed, zeroAngle;
-    pRobo->handZeroAttr( zeroTime, zeroAngle, zeroSpeed );
+    double zeroTime, zeroAngle;
+
+    pRobo->handZeroAttr( zeroTime, zeroAngle );
     ui->spinZeroTime->setValue( zeroTime );
     ui->spinZeroAngle->setValue( zeroAngle );
-    ui->spinZeroSpeed->setValue( zeroSpeed );
+
+    double gapTime, gapAngle;
+    pRobo->gapAttr( gapTime, gapAngle );
+    ui->spinGapTime->setValue( gapTime );
+    ui->spinGapAngle->setValue( gapAngle );
 }
 
 void SinanjuPref::initModel()
@@ -166,7 +173,9 @@ void SinanjuPref::spyEdited()
 
         ui->spinZeroTime,
         ui->spinZeroAngle,
-        ui->spinZeroSpeed,
+
+        ui->spinGapAngle,
+        ui->spinGapTime,
     };
 
     QComboBox *comboxes[]={
@@ -192,7 +201,7 @@ void SinanjuPref::on_btnGoZero_clicked()
     int ret = msgBox.exec();
     if ( ret == QMessageBox::Ok )
     {
-        pBase->goZero();
+        pBase->goZero( tpvRegion(0,0) );
     }
 }
 
@@ -212,7 +221,8 @@ void SinanjuPref::on_btnZeroHand_clicked()
     int ret = msgBox.exec();
     if ( ret == QMessageBox::Ok )
     {
-        pBase->goZero( 4, ui->chkHandZeroCcw->isChecked() );
+        pBase->goZero( tpvRegion(0,0),
+                       4, ui->chkHandZeroCcw->isChecked() );
     }
 }
 

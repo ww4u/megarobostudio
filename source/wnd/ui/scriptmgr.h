@@ -60,16 +60,19 @@ public:
     //! prompt
     void newFile( const QString &path, const QString &name );
     void newGroup( const QString &name );
-    void deleteCurrent();
+    void removeCurrent();
 
     QString defaultName();
 
     QStringList sceneList( QStringList &pathList );
     QStringList sceneList( QStringList &pathList,
                            scriptGroup *pGroup );
+    
+    QStringList fileList( );
+    QStringList fileList( QStringList &pathList, scriptGroup *pGroup );
 
     roboSceneModel *createScene( const QString &path,
-                               const QString &file
+                                 const QString &file
                                 );
 
     void iterAllItems();
@@ -77,6 +80,8 @@ public:
 protected:
     void setupUi();
     void buildConnection();
+
+    bool isExist( const QString &fullName );
 
 Q_SIGNALS:
     void itemXActivated( mcModelObj* );
@@ -88,7 +93,7 @@ private Q_SLOTS:
 
 //    void slot_context_newfile();
     void slot_context_newgroup();
-    void slot_context_delete();
+    void slot_context_remove();
 public Q_SLOTS:
     void slot_context_import();
 
@@ -106,7 +111,7 @@ private:
     int mUntitleId;
 
     QFileSystemModel *m_pFileSysModel;
-
+    QString mSelectedNameFilter;
 };
 
 #endif // SCRIPTMGR_H

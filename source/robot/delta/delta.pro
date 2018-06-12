@@ -17,7 +17,8 @@ SOURCES = \
     _download.cpp \
     _movement.cpp \
     _setup.cpp \
-    _build.cpp
+    _build.cpp \
+    delta_task.cpp
 
 HEADERS = \
     delta.h

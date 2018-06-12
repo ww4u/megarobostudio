@@ -134,44 +134,44 @@ static scpi_result_t _scpi_preMove( scpi_t * context )
     return SCPI_RES_OK;
 }
 
-#define server_path1     QCoreApplication::applicationDirPath() + QString( QDir::separator() )
-#define server_path2     "G:\\work\\mc\\develope\\installer" + QString( QDir::separator() )
-static int _sloveFile( const QString &fileIn,
-                        const QString &fileOut )
-{
-    QStringList args;
-    QString program;
-    QString serverPath;
+//#define server_path1     QCoreApplication::applicationDirPath() + QString( QDir::separator() )
+//#define server_path2     "G:\\work\\mc\\develope\\installer" + QString( QDir::separator() )
+//static int _sloveFile( const QString &fileIn,
+//                        const QString &fileOut )
+//{
+//    QStringList args;
+//    QString program;
+//    QString serverPath;
 
-    //! try path
-//    program = server_path1 + QStringLiteral("sinanjuslove.exe");
-    program = server_path1 + QStringLiteral("deltaslove.exe");
-    if ( QFile::exists(program) )
-    { serverPath = server_path1; }
-    else
-    { serverPath = server_path2; }
+//    //! try path
+////    program = server_path1 + QStringLiteral("sinanjuslove.exe");
+//    program = server_path1 + QStringLiteral("deltaslove.exe");
+//    if ( QFile::exists(program) )
+//    { serverPath = server_path1; }
+//    else
+//    { serverPath = server_path2; }
 
-    QString cfgFile;
-//    cfgFile = serverPath + QStringLiteral("sinanjuslove_config.txt");
-    cfgFile = serverPath + QStringLiteral("deltaslove_config.txt");
+//    QString cfgFile;
+////    cfgFile = serverPath + QStringLiteral("sinanjuslove_config.txt");
+//    cfgFile = serverPath + QStringLiteral("deltaslove_config.txt");
 
-    QString inFile,outFile,configFile;
-    inFile = fileIn;
-    outFile = fileOut;
-    configFile = cfgFile;
-    args<<inFile<<outFile<<configFile;
+//    QString inFile,outFile,configFile;
+//    inFile = fileIn;
+//    outFile = fileOut;
+//    configFile = cfgFile;
+//    args<<inFile<<outFile<<configFile;
 
-    logDbg()<<program<<args;
+//    logDbg()<<program<<args;
 
-    QProcess process;
+//    QProcess process;
 
-    process.start( program, args );
+//    process.start( program, args );
 
-    if ( process.waitForFinished( 120000 ) )
-    { return 0; }
-    else
-    { return -1; }
-}
+//    if ( process.waitForFinished( 120000 ) )
+//    { return 0; }
+//    else
+//    { return -1; }
+//}
 
 ////! ax, page, file
 //static scpi_result_t _scpi_program( scpi_t * context )
@@ -255,7 +255,9 @@ static scpi_result_t _scpi_program( scpi_t * context )
     //! get the file
     QList<float> dataset;
     int col = 6;
-    if ( 0 != comAssist::loadDataset( pLocalStr, strLen, col, dataset ) )
+    QList<int> dataCols;
+    dataCols<<0<<1<<2<<3<<4<<5;
+    if ( 0 != comAssist::loadDataset( pLocalStr, strLen, col, dataCols, dataset ) )
     { scpi_ret( SCPI_RES_ERR ); }
 
     //! point
@@ -366,6 +368,7 @@ static scpi_result_t _scpi_call( scpi_t * context )
     return SCPI_RES_OK;
 }
 
+//! ax, page
 static scpi_result_t _scpi_zero( scpi_t * context )
 {
     DEF_LOCAL_VAR();
@@ -375,9 +378,17 @@ static scpi_result_t _scpi_zero( scpi_t * context )
 
     CHECK_LINK();
 
+    int ax, page;
+    if ( SCPI_ParamInt32(context, &ax, true) != true )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    if ( SCPI_ParamInt32(context, &page, true) != true )
+    { scpi_ret( SCPI_RES_ERR ); }
+
     QList<int> jList;
     jList<<0<<1<<2<<3;
-    LOCAL_ROBO()->goZero( jList, LOCAL_ROBO()->jointZeroCcwList() );
+    LOCAL_ROBO()->goZero( tpvRegion( ax, page ),
+                          jList, LOCAL_ROBO()->jointZeroCcwList() );
 
     return SCPI_RES_OK;
 }

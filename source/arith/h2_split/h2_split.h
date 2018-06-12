@@ -27,10 +27,10 @@ struct endPoint
         struct {
             double t;
             double x,y;
-            double v;
+            double vx,vy;
         };
 
-        double datas[4];
+        double datas[5];
     };
 };
 

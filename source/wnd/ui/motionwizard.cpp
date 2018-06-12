@@ -24,3 +24,8 @@ void MotionWizard::on_listWidget_currentTextChanged(const QString &currentText)
 {
     ui->label->setPixmap( QPixmap( QString(":/res/image/joint/%1.png").arg(currentText.toLower())) );
 }
+
+void MotionWizard::on_listWidget_itemDoubleClicked(QListWidgetItem *item)
+{
+    accept();
+}

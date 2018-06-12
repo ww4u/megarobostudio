@@ -221,7 +221,7 @@ int handActionModel::load( const QString &fileName )
 
     QXmlStreamReader reader( &fileIn );
 
-    int ret;
+    int ret = 0;
     while( reader.readNextStartElement() )
     {
         if ( reader.name() == "hand_action" )

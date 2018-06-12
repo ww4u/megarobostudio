@@ -28,10 +28,8 @@ protected:
     MegaDevice::deviceMRQ * currentDevice( int &ax );
 
     void actionChanged( const QDateTime &time, int valEnd  );
-//public:
-//    void setDevice( MegaDevice::VDevice *pDevice,
-//                    int axesId );
-//    void setConnection( const QString &conn );
+
+    void rotate( float angle, float t );
 
 private slots:
     void slot_device_changed();
@@ -44,8 +42,9 @@ private slots:
 
     void on_sliderValue_sliderReleased();
 
-
     void on_sliderValue_sliderMoved(int position);
+
+    void slot_step( float step );
 
 private:
     Ui::axesKnob *ui;

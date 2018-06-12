@@ -159,7 +159,6 @@ void roboAxes::slot_device_changed()
 VRobot *roboAxes::Robot()
 {
     Q_ASSERT( NULL != m_pMcModel );
-//    return m_pMcModel->m_pInstMgr->findRobot( m_pMcModel->mConn.getRoboName() );
     return m_pMcModel->m_pInstMgr->findRobot( windowTitle() );
 }
 
@@ -247,8 +246,8 @@ void roboAxes::rotate( int jointId,
     pMrq->setMOTIONPLAN_CYCLENUM( subAx, MRQ_MOTION_SWITCH_1_MAIN, 1 );
 
     pMrq->pvtWrite( tpvRegion(subAx,0),
-                    time_to_s(t1), a1,
-                    time_to_s(t2), a2
+                    (t1), a1,
+                    (t2), a2
                     );
     pMrq->run( tpvRegion(subAx,0) );
 }
@@ -265,7 +264,7 @@ void roboAxes::zero( int jointId,
 
     Q_ASSERT( NULL != pRobo );
 
-    pRobo->goZero( jointId, bCcw );
+    pRobo->goZero( tpvRegion(0,0), jointId, bCcw );
 }
 
 void roboAxes::on_btnZero_clicked()
@@ -281,6 +280,36 @@ void roboAxes::on_btnZero_clicked()
     int ret = msgBox.exec();
     if ( ret == QMessageBox::Ok )
     {
-        pRobo->goZero();
+        pRobo->goZero( tpvRegion(0,0) );
     }
+}
+
+void roboAxes::on_spinStepTime_valueChanged(double arg1)
+{
+    foreach (RoboJoint*pJ, mJoints)
+    {
+        Q_ASSERT( NULL != pJ );
+        pJ->setStepTime( arg1 );
+    }
+}
+
+void roboAxes::on_comboBox_currentIndexChanged(int index)
+{
+    VRobot *pRobo = Robot();
+    if ( NULL == pRobo )
+    {
+        sysError( tr("Invalid robot") );
+        return;
+    }
+
+    int status = pRobo->state( tpvRegion( 0, index), 0 );
+
+    ui->labelStat->clear();
+
+    ui->labelStat->setText( MegaDevice::deviceMRQ::toString( (MegaDevice::mrqState)status ) );
+}
+
+void roboAxes::on_toolButton_clicked()
+{
+    on_comboBox_currentIndexChanged( ui->comboBox->currentIndex() );
 }

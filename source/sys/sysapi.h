@@ -49,6 +49,8 @@ void sysStatus( const QString &str );
 
 void sysPrompt( const QString &str );
 
+void sysRpc( const RpcRequest &rpc );
+
 //! sys queue
 void attachSysQueue( RoboMsgThread* pQueue );
 RoboMsgThread* sysQueue();

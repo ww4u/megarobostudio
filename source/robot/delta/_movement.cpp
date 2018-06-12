@@ -27,8 +27,10 @@ int robotDelta::loadProgram( const QString &fileName )
     //!  0  1  2   3  4  5  6   7
     //! LX LXV RX RXV Y YV END TIME
     QList<float> dataset;
-    int col = 8;logDbg();
-    if ( 0 != comAssist::loadDataset( fileName, col, dataset ) )
+    int col = 8;
+    QList<int> dataCols;
+    dataCols<<0<<1<<2<<3<<4<<5<<6<<7;
+    if ( 0 != comAssist::loadDataset( fileName, col, dataCols, dataset ) )
     { return ERR_INVALID_INPUT; }logDbg()<<dataset.size();
 
     //! convert to tpvitem

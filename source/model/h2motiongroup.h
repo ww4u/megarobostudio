@@ -5,7 +5,6 @@
 #include "megatablemodel.h"
 #include "h2motionitem.h"
 
-
 class H2MotionGroup : public MegaTableModel
 {
     Q_OBJECT

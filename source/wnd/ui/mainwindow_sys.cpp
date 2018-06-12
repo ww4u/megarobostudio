@@ -85,6 +85,11 @@ void sysPrompt( const QString &str )
     sysQueue()->postMsg( e_prompt, str );
 }
 
+void sysRpc( const RpcRequest &rpc )
+{
+    sysQueue()->postMsg( e_rpc, rpc );
+}
+
 void attachSysQueue( RoboMsgThread* pQueue )
 {
     Q_ASSERT( NULL != pQueue );

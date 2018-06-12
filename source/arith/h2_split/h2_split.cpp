@@ -28,13 +28,11 @@ int _h2Split( const QList<double> &armLengthes,
     for ( int i = 0; i < points.size(); i++ )
     {
         ts.data()[i] = points.at(i)->t;
-        xys.data()[i*2] = points.at(i)->x /*+ zeroXy.at(0)*/;
-        xys.data()[i*2+1] = points.at(i)->y /*+ zeroXy.at(1)*/;
-//        xys.data()[i*2] = points.at(i)->x ;
-//        xys.data()[i*2+1] = points.at(i)->y ;
+        xys.data()[i*2] = points.at(i)->x;
+        xys.data()[i*2+1] = points.at(i)->y;
 
-        vs.data()[i*2] = points.at(i)->v;       //! \note for xv,yv
-        vs.data()[i*2+1] = points.at(i)->v;
+        vs.data()[i*2] = points.at(i)->vx;       //! \note for xv,yv
+        vs.data()[i*2+1] = points.at(i)->vy;
     }
 
     Q_ASSERT( armLengthes.size() == 6 );

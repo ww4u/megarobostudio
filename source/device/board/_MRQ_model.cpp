@@ -14,7 +14,8 @@ static value_desc _value_desc_MRQ_LINK_DEVICEINFO_1[] = {
 	{0,"C23D",},
 	{1,"C23S",},
 	{2,"M2304",},
-	{3,"M2305",},
+	{3,"MV",},
+	{4,"M1710",},
 };
 static value_desc _value_desc_MRQ_SYSTEM_WORKMODE[] = {
 	{0,"NORMAL",},
@@ -376,6 +377,22 @@ static value_desc _value_desc_MRQ_SENSORUART_BAUD_1[] = {
 static value_desc _value_desc_MRQ_ABSENCALARM_ZEROPOSITION_1[] = {
 	{0,"NONE",},
 	{1,"EXIS",},
+};
+static value_desc _value_desc_MRQ_NEWDRIVER_TYPE[] = {
+	{0,"RESERVE",},
+	{1,"RESERVE",},
+	{2,"ST820",},
+};
+static value_desc _value_desc_MRQ_NEWDRIVER_MICROSTEPS[] = {
+	{0,"RESERVE",},
+	{1,"RESERVE",},
+	{2,"RESERVE",},
+	{3,"32",},
+	{4,"16",},
+	{5,"8",},
+	{6,"4",},
+	{7,"2",},
+	{8,"1",},
 };
 _MRQ_model::_MRQ_model()
 {
@@ -1156,6 +1173,17 @@ mDISTANCEALARM_ALARM3DIST[i0] = (uint16)0;
 	mANALOGIN_RESPONSEH = (MRQ_MOTIONPLAN_OOSLINERESPONSE_1)0;
 	mANALOGIN_RESPONSEL = (MRQ_MOTIONPLAN_OOSLINERESPONSE_1)0;
 
+for ( int i0=0; i0 < 10; i0++ )
+{
+mNEWDRIVER_TYPE[i0] = (MRQ_NEWDRIVER_TYPE)0;
+}
+	mNEWDRIVER_CURRENT = (byte)0;
+	mNEWDRIVER_MICROSTEPS = (MRQ_NEWDRIVER_MICROSTEPS)0;
+for ( int i0=0; i0 < 10; i0++ )
+{
+mNEWDRIVER_STATE[i0] = (MRQ_CAN_NETMANAGELED)0;
+}
+
 }
 QString _MRQ_model::toString( MRQ_LINK_INTFC eType )
 {
@@ -1421,6 +1449,14 @@ QString _MRQ_model::toString( MRQ_ABSENCALARM_ZEROPOSITION_1 eType )
 {
 	return QString( MRQ_ABSENCALARM_ZEROPOSITION_1_toString( eType ) );
 }
+QString _MRQ_model::toString( MRQ_NEWDRIVER_TYPE eType )
+{
+	return QString( MRQ_NEWDRIVER_TYPE_toString( eType ) );
+}
+QString _MRQ_model::toString( MRQ_NEWDRIVER_MICROSTEPS eType )
+{
+	return QString( MRQ_NEWDRIVER_MICROSTEPS_toString( eType ) );
+}
 int _MRQ_model::toValue( const QString &str, MRQ_LINK_INTFC *pEVal )
 {
 	return ( MRQ_LINK_INTFC_toValue( str.toLatin1().data(), pEVal) );
@@ -1684,6 +1720,14 @@ int _MRQ_model::toValue( const QString &str, MRQ_SENSORUART_BAUD_1 *pEVal )
 int _MRQ_model::toValue( const QString &str, MRQ_ABSENCALARM_ZEROPOSITION_1 *pEVal )
 {
 	return ( MRQ_ABSENCALARM_ZEROPOSITION_1_toValue( str.toLatin1().data(), pEVal) );
+}
+int _MRQ_model::toValue( const QString &str, MRQ_NEWDRIVER_TYPE *pEVal )
+{
+	return ( MRQ_NEWDRIVER_TYPE_toValue( str.toLatin1().data(), pEVal) );
+}
+int _MRQ_model::toValue( const QString &str, MRQ_NEWDRIVER_MICROSTEPS *pEVal )
+{
+	return ( MRQ_NEWDRIVER_MICROSTEPS_toValue( str.toLatin1().data(), pEVal) );
 }
 //! ENUM
 //! NONE|CAN|RS232
@@ -5401,6 +5445,81 @@ int _MRQ_model::getANALOGIN_RESPONSEL(  MRQ_MOTIONPLAN_OOSLINERESPONSE_1 * val0,
 
 	byte lval0 = 0;
 	*val0 = mANALOGIN_RESPONSEL;
+	return 0;
+}
+//! U8
+//! [CHANNUM]
+int _MRQ_model::getNEWDRIVER_TYPE( byte val0, MRQ_NEWDRIVER_TYPE * val1, bool bQuery )
+{
+	//! 75 0
+	int ret = 0;
+
+	byte lval0 = 0;
+	*val1 = mNEWDRIVER_TYPE[ (int)val0 ];
+	return 0;
+}
+//! U8
+//! 
+int _MRQ_model::setNEWDRIVER_CURRENT( byte val0 )
+{
+	//! 75 1
+	int ret=0; 
+	mNEWDRIVER_CURRENT = val0;
+
+	return ret;
+}
+//! 
+//! 
+int _MRQ_model::getNEWDRIVER_CURRENT(  byte * val0, bool bQuery )
+{
+	//! 75 2
+	int ret = 0;
+
+	byte lval0 = 0;
+	*val0 = mNEWDRIVER_CURRENT;
+	return 0;
+}
+//! ENUM
+//! RESERVE|RESERVE|RESERVE|32|16|8|4|2|1
+int _MRQ_model::setNEWDRIVER_MICROSTEPS( MRQ_NEWDRIVER_MICROSTEPS val0 )
+{
+	//! 75 3
+	int ret=0; 
+	mNEWDRIVER_MICROSTEPS = val0;
+
+	return ret;
+}
+//! 
+//! 
+int _MRQ_model::getNEWDRIVER_MICROSTEPS(  MRQ_NEWDRIVER_MICROSTEPS * val0, bool bQuery )
+{
+	//! 75 4
+	int ret = 0;
+
+	byte lval0 = 0;
+	*val0 = mNEWDRIVER_MICROSTEPS;
+	return 0;
+}
+//! U8,ENUM
+//! [CHANNUM],OFF|ON
+int _MRQ_model::setNEWDRIVER_STATE( byte val0
+,MRQ_CAN_NETMANAGELED val1 )
+{
+	//! 75 5
+	int ret=0; 
+	mNEWDRIVER_STATE[ (int)val0 ] = val1;
+
+	return ret;
+}
+//! U8
+//! [CHANNUM]
+int _MRQ_model::getNEWDRIVER_STATE( byte val0, MRQ_CAN_NETMANAGELED * val1, bool bQuery )
+{
+	//! 75 6
+	int ret = 0;
+
+	byte lval0 = 0;
+	*val1 = mNEWDRIVER_STATE[ (int)val0 ];
 	return 0;
 }
 }

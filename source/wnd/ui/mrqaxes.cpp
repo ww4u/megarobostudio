@@ -5,7 +5,7 @@
 //! convert
 #define driver_current_unit (0.1f)
 
-#define motor_volt_unit     (0.1f)
+#define motor_volt_unit     (1.0f)
 #define motor_current_unit  (0.1f)
 #define driver_time_unit    (0.001f)
 
@@ -44,6 +44,7 @@ void mrqAxes::spyEdited()
     QCheckBox *checkBoxes[]=
     {
         ui->chkDriverState,
+        ui->chk820,
     };
 
     QLineEdit *edits[]={
@@ -119,6 +120,21 @@ void mrqAxes::adaptUi()
             ui->cmbDrvVernier->addItem( microList.at(i), i );
         }
     }
+
+    //! encoder able
+    ui->gb_encoder->setVisible( m_pMrqModel->encoderAble() );
+
+    //! driver type
+    if ( m_pMrqModel->driverId() == VRobot::motor_driver_262 )
+    {
+        ui->gb_driver->setVisible( true );
+        ui->gpSt820->setVisible( false );
+    }
+    else
+    {
+        ui->gb_driver->setVisible( false );
+        ui->gpSt820->setVisible( true );
+    }
 }
 
 //! view->model
@@ -146,23 +162,37 @@ int mrqAxes::apply()
     pDevice->setMOTOR_PEAKACCELERATION( mAxesId, ui->spinMaxAcc->value() );
 
     //! driver
-    pDevice->setDRIVER_STATE( mAxesId, (MRQ_CAN_NETMANAGELED)ui->chkDriverState->isChecked() );
-    pDevice->setDRIVER_IDLECURRENT( mAxesId, comAssist::align( ui->spinIdleCurrent->value(),motor_current_unit) );
-    pDevice->setDRIVER_SWITCHTIME( mAxesId, comAssist::align( ui->spinIdleTime->value(),driver_time_unit) );
+    if ( m_pMrqModel->driverId() == VRobot::motor_driver_262 )
+    {
+        pDevice->setDRIVER_STATE( mAxesId, (MRQ_CAN_NETMANAGELED)ui->chkDriverState->isChecked() );
+        pDevice->setDRIVER_IDLECURRENT( mAxesId, comAssist::align( ui->spinIdleCurrent->value(),motor_current_unit) );
+        pDevice->setDRIVER_SWITCHTIME( mAxesId, comAssist::align( ui->spinIdleTime->value(),driver_time_unit) );
 
-    pDevice->setDRIVER_CURRENT( mAxesId, comAssist::align( ui->dblCurrent->value(),driver_current_unit) );
-    pDevice->setDRIVER_MICROSTEPS( mAxesId, (MRQ_DRIVER_MICROSTEPS)ui->cmbDrvVernier->value() );
+        pDevice->setDRIVER_CURRENT( mAxesId, comAssist::align( ui->dblCurrent->value(),driver_current_unit) );
+        pDevice->setDRIVER_MICROSTEPS( mAxesId, (MRQ_DRIVER_MICROSTEPS)ui->cmbDrvVernier->value() );
+    }
+    else if ( m_pMrqModel->driverId() == VRobot::motor_driver_262 )
+    {
+        pDevice->setNEWDRIVER_STATE( mAxesId, (MRQ_CAN_NETMANAGELED)ui->chk820->isChecked() );
+    }
+    else
+    {}
 
     //! encoder
-    pDevice->setENCODER_STATE( mAxesId, (MRQ_ENCODER_STATE)ui->cmbEncState->currentIndex() );
-    pDevice->setENCODER_TYPE( mAxesId,
-                                  (MRQ_ENCODER_TYPE)ui->cmbEncType->currentIndex() );
-    pDevice->setENCODER_CHANNELNUM( mAxesId,
-                                        (MRQ_ENCODER_CHANNELNUM)ui->cmbEncChs->currentIndex() );
-    pDevice->setENCODER_MULTIPLE( mAxesId,
-                                      (MRQ_ENCODER_MULTIPLE)ui->cmbEncMul->currentIndex() );
-    pDevice->setENCODER_LINENUM( mAxesId,
-                                 ui->spinEncLine->value() );
+    if ( m_pMrqModel->encoderAble() )
+    {
+        pDevice->setENCODER_STATE( mAxesId, (MRQ_ENCODER_STATE)ui->cmbEncState->currentIndex() );
+        pDevice->setENCODER_TYPE( mAxesId,
+                                      (MRQ_ENCODER_TYPE)ui->cmbEncType->currentIndex() );
+        pDevice->setENCODER_CHANNELNUM( mAxesId,
+                                            (MRQ_ENCODER_CHANNELNUM)ui->cmbEncChs->currentIndex() );
+        pDevice->setENCODER_MULTIPLE( mAxesId,
+                                          (MRQ_ENCODER_MULTIPLE)ui->cmbEncMul->currentIndex() );
+        pDevice->setENCODER_LINENUM( mAxesId,
+                                     ui->spinEncLine->value() );
+
+        pDevice->setENCODER_FEEDBACKRATIO( mAxesId, ui->spinEncFb->value() );
+    }
 
     //! lead
     pDevice->setMOTOR_GEARRATIONUM( mAxesId, ui->spinSlowMotor->value() );
@@ -194,23 +224,35 @@ logDbg();
     ui->spinMaxVelocity->setValue( ( pModel->mMOTOR_PEAKSPEED[mAxesId] ) );
     ui->spinMaxAcc->setValue( ( pModel->mMOTOR_PEAKACCELERATION[mAxesId] ) );
 
-//    pDevice->setDRIVER_STATE( mAxesId, (MRQ_CAN_NETMANAGELED)ui->chkDriverState->isChecked() );
-
     //! driver
-    ui->chkDriverState->setChecked( pModel->mDRIVER_STATE[mAxesId] );
-    ui->spinIdleCurrent->setValue( pModel->mDRIVER_IDLECURRENT[mAxesId]*driver_current_unit );
-    ui->spinIdleTime->setValue( pModel->mDRIVER_SWITCHTIME[mAxesId]*driver_time_unit );
+    if ( m_pMrqModel->driverId() == VRobot::motor_driver_262 )
+    {
+        ui->chkDriverState->setChecked( pModel->mDRIVER_STATE[mAxesId] );
+        ui->spinIdleCurrent->setValue( pModel->mDRIVER_IDLECURRENT[mAxesId]*driver_current_unit );
+        ui->spinIdleTime->setValue( pModel->mDRIVER_SWITCHTIME[mAxesId]*driver_time_unit );
 
-    ui->dblCurrent->setValue( pModel->mDRIVER_CURRENT[mAxesId]*driver_current_unit );
-//    ui->cmbDrvVernier->setCurrentIndex( pModel->mDRIVER_MICROSTEPS[mAxesId] );
-    ui->cmbDrvVernier->setValue( pModel->mDRIVER_MICROSTEPS[mAxesId] );
+        ui->dblCurrent->setValue( pModel->mDRIVER_CURRENT[mAxesId]*driver_current_unit );
+        ui->cmbDrvVernier->setValue( pModel->mDRIVER_MICROSTEPS[mAxesId] );
+    }
+    else if ( m_pMrqModel->driverId() == VRobot::motor_driver_820 )
+    {
+        ui->chk820->setChecked( pModel->mNEWDRIVER_STATE[mAxesId] );
+//        ui->spin820Current->setValue( pModel->mNEWDRIVER_CURRENT * driver_current_unit );
+//        ui->cmb820MicroStep->setValue( pModel->mNEWDRIVER_MICROSTEPS );
+    }
+    else
+    {}
 
     //! encoder
-    ui->cmbEncState->setCurrentIndex( pModel->mENCODER_STATE[mAxesId] );
-    ui->cmbEncType->setCurrentIndex( pModel->mENCODER_TYPE[mAxesId] );
-    ui->cmbEncChs->setCurrentIndex( pModel->mENCODER_CHANNELNUM[mAxesId] );
-    ui->cmbEncMul->setCurrentIndex( pModel->mENCODER_MULTIPLE[mAxesId] );
-    ui->spinEncLine->setValue( pModel->mENCODER_LINENUM[mAxesId] );
+    if ( pModel->encoderAble() )
+    {
+        ui->cmbEncState->setCurrentIndex( pModel->mENCODER_STATE[mAxesId] );
+        ui->cmbEncType->setCurrentIndex( pModel->mENCODER_TYPE[mAxesId] );
+        ui->cmbEncChs->setCurrentIndex( pModel->mENCODER_CHANNELNUM[mAxesId] );
+        ui->cmbEncMul->setCurrentIndex( pModel->mENCODER_MULTIPLE[mAxesId] );
+        ui->spinEncLine->setValue( pModel->mENCODER_LINENUM[mAxesId] );
+        ui->spinEncFb->setValue( pModel->mENCODER_FEEDBACKRATIO[mAxesId] );
+    }
 
     //! transfer
     ui->spinSlowGear->setValue( ( pModel->mMOTOR_GEARRATIODEN[mAxesId]) );

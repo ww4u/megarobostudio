@@ -102,7 +102,9 @@ static scpi_result_t _scpi_program( scpi_t * context )
     //! t, p
     QList<float> dataset;
     int col = 2;
-    if ( 0 != comAssist::loadDataset( pLocalStr, strLen, col, dataset ) )
+    QList<int> dataCols;
+    dataCols<<0<<1;
+    if ( 0 != comAssist::loadDataset( pLocalStr, strLen, col, dataCols, dataset ) )
     {  scpi_ret( SCPI_RES_ERR ); }
 
     //! point

@@ -33,35 +33,7 @@ void motionEdit::context_clear()
 //! get the hand action options
 void motionEdit::slot_robo_changed( const QString &roboName )
 {
-//    emit sig_robo_changed( roboName );
 
-//    Q_ASSERT( m_pActionDelegate != NULL );
-//logDbg();
-//    do
-//    {
-//        VRobot *pRobot = m_pmcModel->m_pInstMgr->findRobot( roboName );
-//        if ( NULL == pRobot )
-//        { break; }
-//logDbg();
-//        if ( pRobot->handActions() == NULL )
-//        { break; }
-//logDbg();
-//        handActionModel *pModel = (handActionModel*)pRobot->handActions();
-//        if ( NULL == pModel )
-//        { break; }
-//logDbg();
-//        QMap<QString, double> actionMap = pModel->actionMap();
-//        if ( actionMap.size() < 1 )
-//        { break; }
-//logDbg();
-//        //! get item
-//        QList<QString> strList = actionMap.keys();logDbg()<<QStringList( strList );logDbg();
-//        m_pActionDelegate->setItems( QStringList( strList ) );
-//        return;
-//    }while( 0 );
-
-//    //! no item
-//    m_pActionDelegate->setItems( QStringList() );
 }
 
 //! update the status by
@@ -134,6 +106,9 @@ void motionEdit::on_btnStart_clicked()
     VRobot *pRobot = currentRobot();
     if ( NULL == pRobot )
     { return ; }
+
+    //! disable
+    ui->btnStart->setEnabled( false );
 
     //! download motion
     pRobot->run( );
@@ -283,4 +258,11 @@ void motionEdit::on_spinLoop_valueChanged(int arg1)
     }
 
     pRobot->setLoop( arg1 );
+}
+
+void motionEdit::on_btnSmartEdit_toggled(bool checked)
+{
+    setReqSpy( checked );
+
+    logDbg()<<checked;
 }

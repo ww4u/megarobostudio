@@ -105,6 +105,9 @@ public:
                   const QString &str,
                   quint64 t = 0 );
 
+    void postMsg( eRoboMsg msg,
+                  const RpcRequest &rpc,
+                  quint64 t = 0 );
 
     void process( int intervalus = 100,
                          RoboMsgThread *pThread = NULL );

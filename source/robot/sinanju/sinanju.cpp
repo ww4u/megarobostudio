@@ -48,6 +48,9 @@ robotSinanju::robotSinanju()
     mJointCcwMask.clear();
     mJointCcwMask<<false<<false<<false<<false<<true;
 
+    mJointZeroCcw.clear();
+    mJointZeroCcw<<false<<false<<false<<false<<true;
+
     //! angle dir
     mAngleDir.clear();
     mAngleDir<<true<<false<<true<<false;     //! big arm invert
@@ -107,9 +110,11 @@ robotSinanju::robotSinanju()
     mArmLengths.append( 0 );
 
     //! zero
-    mHandZeroSpeed = 5;
     mHandZeroTime = 5;
     mHandZeroAngle = 60;
+
+    mGapTime = 1;
+    mGapAngle = 1;
 }
 
 robotSinanju::~robotSinanju()
@@ -278,15 +283,24 @@ int robotSinanju::loopNow()
 //{ return &mHandActionModel; }
 
 
-void robotSinanju::setHandZeroAttr( double zeroTime, double zeroAngle, double zeroSpeed )
+void robotSinanju::setHandZeroAttr( double zeroTime, double zeroAngle )
 {
     mHandZeroTime = zeroTime;
     mHandZeroAngle = zeroAngle;
-    mHandZeroSpeed = zeroSpeed;
 }
-void robotSinanju::handZeroAttr( double &zeroTime, double &zeroAngle, double &zeroSpeed )
+void robotSinanju::handZeroAttr( double &zeroTime, double &zeroAngle )
 {
     zeroTime = mHandZeroTime;
     zeroAngle = mHandZeroAngle;
-    zeroSpeed = mHandZeroSpeed;
+}
+
+void robotSinanju::setGapAttr( double gapTime, double gapAngle )
+{
+    mGapTime = gapTime;
+    mGapAngle = gapAngle;
+}
+void robotSinanju::gapAttr( double &gapTime, double &gapAngle )
+{
+    gapTime = mGapTime;
+    gapAngle = mGapAngle;
 }

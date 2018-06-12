@@ -135,8 +135,8 @@ static scpi_result_t _scpi_preMove( scpi_t * context )
     return SCPI_RES_OK;
 }
 
+//! int ax, int page
 //! int ccw, int jid
-//!
 //!
 static scpi_result_t _scpi_gozero( scpi_t * context )
 {
@@ -145,12 +145,18 @@ static scpi_result_t _scpi_gozero( scpi_t * context )
 
     CHECK_LINK();
 
-    int joint, ccw;
+    //! ax, page
+    int ax, page;
+    if ( SCPI_ParamInt32(context, &ax, true) != true )
+    { scpi_ret( SCPI_RES_ERR ); }
+    if ( SCPI_ParamInt32(context, &page, true) != true )
+    { scpi_ret( SCPI_RES_ERR ); }
 
+    int joint, ccw;
     //! ccw
     if ( SCPI_ParamInt32(context, &ccw, true) != true )
     {
-        pRobo->goZero();
+        pRobo->goZero( tpvRegion(ax,page) );
 
         return SCPI_RES_OK;
     }
@@ -163,7 +169,7 @@ static scpi_result_t _scpi_gozero( scpi_t * context )
     //! some joint
     else
     {
-        pRobo->goZero( joint, ccw > 0 );
+        pRobo->goZero( tpvRegion(ax,page), joint, ccw > 0 );
     }
 
     return SCPI_RES_OK;
@@ -190,7 +196,9 @@ static scpi_result_t _scpi_program( scpi_t * context )
 
     QList<float> dataset;
     int col = 7;
-    if ( 0 != comAssist::loadDataset( pLocalStr, strLen, col, dataset ) )
+    QList<int> dataCols;
+    dataCols<<0<<1<<2<<3<<4<<5<<6;
+    if ( 0 != comAssist::loadDataset( pLocalStr, strLen, col, dataCols, dataset ) )
     { scpi_ret( SCPI_RES_ERR ); }
 
     //! point

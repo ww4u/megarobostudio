@@ -85,7 +85,7 @@ int robotDelta::planTrace( QList<TraceKeyPoint> &curve,
                                       &xyzResLen );
     if ( ret != 0 )
     { return ERR_PLAN_FAIL; }
-logDbg()<<curve.size()<<xyzResLen;
+logDbg()<<curve.size()<<xyzResLen<<mPlanAttr.mStep;
     int traceSize;
     traceSize = xyzResLen * sizeof(double) / sizeof(tracePoint);
     if ( traceSize > 1 )

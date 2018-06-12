@@ -17,7 +17,8 @@ SOURCES = \
     _state.cpp \
     _calibration.cpp \
     _setup.cpp \
-    _build.cpp
+    _build.cpp \
+    megatron_task.cpp
 
 HEADERS = \
     megatron.h

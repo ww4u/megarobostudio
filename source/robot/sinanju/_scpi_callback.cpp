@@ -479,9 +479,39 @@ static scpi_result_t _scpi_program( scpi_t * context )
     { scpi_ret( SCPI_RES_ERR ); }
 
     QList<float> dataset;
-    int col = 6;
-    if ( 0 != comAssist::loadDataset( pLocalStr, strLen, col, dataset ) )
-    { scpi_ret( SCPI_RES_ERR ); }
+    //! try .mc
+    int col = 0;
+    //! t,x,y,z,h,imask
+    QList<int> seqList;
+    QList<int> dataCols;
+    int ret;
+    do
+    {
+        //! en,name,t,x,y,z,h,mode,comment
+        col = 9;
+        dataset.clear();
+        dataCols.clear();
+        dataCols<<2<<3<<4<<5<<6<<7;     //! \note some string
+        ret = comAssist::loadDataset( pLocalStr, strLen, col, dataCols, dataset );
+        if ( 0 == ret && ( dataset.size() / col ) > 1  )
+        {
+            seqList<<2<<3<<4<<5<<6<<7;
+            break;
+        }
+
+        //! x,y,z,h,t,interp
+        col = 6;
+        dataset.clear();
+        dataCols.clear();
+        dataCols<<0<<1<<2<<3<<4<<5;
+        if ( 0 == comAssist::loadDataset( pLocalStr, strLen, col, dataCols, dataset ) )
+        {
+            seqList<<4<<0<<1<<2<<3<<5;
+            break;
+        }
+
+        scpi_ret( SCPI_RES_ERR );
+    }while ( 0 );
 
     //! point
     if ( dataset.size() / col < 2 )
@@ -489,22 +519,24 @@ static scpi_result_t _scpi_program( scpi_t * context )
 
     TraceKeyPointList curve;
     TraceKeyPoint tp;
+
+    Q_ASSERT( seqList.size() == 6 );
     for ( int i = 0; i < dataset.size()/col; i++ )
     {
         //! 0 1 2 3 4 5
         //! x,y,z,h,t,interp
-        tp.t = dataset.at( i * col + 4 );
+        tp.t = dataset.at( i * col + seqList.at(0) );
 
-        tp.x = dataset.at( i * col + 0 );
-        tp.y = dataset.at( i * col + 1 );
-        tp.z = dataset.at( i * col + 2 );
-        tp.hand = dataset.at( i * col + 3 );
+        tp.x = dataset.at( i * col + seqList.at(1) );
+        tp.y = dataset.at( i * col + seqList.at(2) );
+        tp.z = dataset.at( i * col + seqList.at(3) );
+        tp.hand = dataset.at( i * col + seqList.at(4) );
 
-        tp.iMask = dataset.at( i * col + 5 );
+        tp.iMask = dataset.at( i * col + seqList.at(5) );
 
         curve.append( tp );
 
-        logDbg()<<tp.t<<tp.x<<tp.y<<tp.z<<tp.hand<<tp.iMask;
+//        logDbg()<<tp.t<<tp.x<<tp.y<<tp.z<<tp.hand<<tp.iMask;
     }
 
     DEF_ROBO();
@@ -711,6 +743,7 @@ static scpi_result_t _scpi_test2( scpi_t * context )
     return SCPI_RES_OK;
 }
 
+//! int ax, page
 //! int jointid
 static scpi_result_t _scpi_gozero( scpi_t * context )
 {
@@ -719,18 +752,27 @@ static scpi_result_t _scpi_gozero( scpi_t * context )
 
     CHECK_LINK();
 
+    int ax, page;
+
+    if ( SCPI_ParamInt32(context, &ax, true) != true )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    if ( SCPI_ParamInt32(context, &page, true) != true )
+    { scpi_ret( SCPI_RES_ERR ); }
+
     int joint;
 
     //! robo
     if ( SCPI_ParamInt32(context, &joint, true) != true )
     {
-        pRobo->goZero();
+        pRobo->goZero( tpvRegion(ax,page) );
     }
     //! some joint
     //! \todo by change
     else
     {
-        pRobo->goZero( joint, true );
+        pRobo->goZero( tpvRegion(ax,page),
+                       joint, true );
     }
 
     return SCPI_RES_OK;

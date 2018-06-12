@@ -69,6 +69,9 @@ void motionEdit::setModelObj( mcModelObj *pObj )
     ui->btnPref->setVisible( m_pMotionGroup->prefAble() );
 
     setExportOpt( m_pMotionGroup->exportOptList() );
+
+    //! smart edit
+    ui->btnSmartEdit->setVisible( m_pMotionGroup->smartEditable() );
 }
 
 int motionEdit::save( QString &outFileName )
@@ -179,24 +182,31 @@ void motionEdit::onMotionStatus( int axes,
     { Q_ASSERT(false); }
 }
 
-//ProgressGroup *motionEdit::progress()
-//{
-//    if ( NULL != m_pProgress )
-//    { }
-//    else
-//    {
-//        m_pProgress = new ProgressGroup(this);
 
-//        connect( m_pProgress,
-//                 SIGNAL(sigCancel( const QString &, int)),
-//                 this,
-//                 SLOT(slot_download_cancel( const QString &, int)) );
-//    }
+void motionEdit::onRequest( RpcRequest &req )
+{
+    //! check type
+    if ( req.checkRequest( m_pMotionGroup->rpcRequest(),
+                           m_pMotionGroup->rpcParaType() ) )
+    {}
+    else
+    { return; }
 
-//    Q_ASSERT( NULL != m_pProgress );
+    //! get value
+//    logDbg()<<req.popFloat()<<req.popFloat()<<req.popFloat();
 
-//    return m_pProgress;
-//}
+    int curRow;
+
+    //! current
+    curRow = ui->tableView->currentIndex().row();
+
+    Q_ASSERT( NULL != m_pMotionGroup );
+    m_pMotionGroup->insertRow( curRow + 1  );
+
+    m_pMotionGroup->setRpc( curRow + 1, req );
+
+    ui->tableView->setCurrentIndex( m_pMotionGroup->index( curRow + 1, 0) );
+}
 
 VRobot *motionEdit::currentRobot()
 {
@@ -231,5 +241,6 @@ logDbg();
 
     doDownload( groups, joints );
 }
+
 
 

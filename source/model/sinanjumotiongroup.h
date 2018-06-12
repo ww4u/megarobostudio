@@ -29,6 +29,7 @@ public:
 
     virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
 
+    virtual void setRpc( int row, RpcRequest &req);
 public:
     SinanjuMotionItem *operator[]( int index );
 

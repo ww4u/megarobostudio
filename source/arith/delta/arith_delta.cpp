@@ -204,7 +204,7 @@ int ccwSlove( QList<D4Point> & points,
         deltaCache.m_pV[i*3+1] = points.at(i).vy;
         deltaCache.m_pV[i*3+2] = points.at(i).vz;
 
-//        qDebug()<<points.at(i).vx;
+//        qDebug()<<__LINE__<<points.at(i).t<<points.at(i).vx<<points.at(i).vz;
     }
     //! slove
     int ret;
@@ -256,7 +256,7 @@ int ccwSlove( QList<D4Point> & points,
 
         deltaPoints.append( pt );
 
-//        qDebug()<<pt.t<<pt.v[0]<<pt.v[1];
+//        qDebug()<<__LINE__<<pt.t<<pt.v[0]<<pt.v[1];
     }
 
     return 0;

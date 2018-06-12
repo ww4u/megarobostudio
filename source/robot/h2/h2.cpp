@@ -44,18 +44,20 @@ robotH2::robotH2()
     mZeroY = 0;
 
     mAngleDir.clear();
-    mAngleDir<<true<<true;                 //! x: invert, y:
+//    mAngleDir<<true<<true;                 //! x:  y:
+    mAngleDir<<false<<false;                 //! x:  y:
 
     mAxesDirs.clear();
-    mAxesDirs<<1<<-1;
+    mAxesDirs<<-1<<-1;
+//    mAxesDirs<<1<<1;
 
     //! debug used
     //! alter the axes name
-    mAxesConnectionName[0] = "CH1@device1"; //! x
-    mAxesConnectionName[1] = "CH2@device1"; //! y
+    mAxesConnectionName[0] = "CH1@device1"; //! Left
+    mAxesConnectionName[1] = "CH2@device1"; //! Right
 
-    mZeroTime = 10;
-    mZeroDistance = 800;
+    mZeroTime = 1;
+    mZeroDistance = 10;
     mZeroSpeed = 5;
 
     mGapTime = 1;

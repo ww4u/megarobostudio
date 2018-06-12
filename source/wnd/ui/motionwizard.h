@@ -22,6 +22,8 @@ public:
 private slots:
     void on_listWidget_currentTextChanged(const QString &currentText);
 
+    void on_listWidget_itemDoubleClicked(QListWidgetItem *item);
+
 private:
     Ui::MotionWizard *ui;
 };

@@ -7,13 +7,28 @@
     <x>0</x>
     <y>0</y>
     <width>414</width>
-    <height>588</height>
+    <height>536</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="spacing">
+    <number>3</number>
+   </property>
+   <property name="leftMargin">
+    <number>3</number>
+   </property>
+   <property name="topMargin">
+    <number>3</number>
+   </property>
+   <property name="rightMargin">
+    <number>3</number>
+   </property>
+   <property name="bottomMargin">
+    <number>3</number>
+   </property>
    <item>
     <widget class="QGroupBox" name="groupBox_3">
      <property name="title">
@@ -27,7 +42,7 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="3">
+      <item row="0" column="3" colspan="2">
        <widget class="QLineEdit" name="edtAlias">
         <property name="text">
          <string>robotname</string>
@@ -41,10 +56,22 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="1">
-       <widget class="QLabel" name="label_10">
-        <property name="text">
-         <string>Group</string>
+      <item row="1" column="4">
+       <widget class="QSpinBox" name="spinBox_2">
+        <property name="suffix">
+         <string/>
+        </property>
+        <property name="prefix">
+         <string>0x</string>
+        </property>
+        <property name="minimum">
+         <number>128</number>
+        </property>
+        <property name="maximum">
+         <number>255</number>
+        </property>
+        <property name="displayIntegerBase">
+         <number>16</number>
         </property>
        </widget>
       </item>
@@ -75,18 +102,25 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="4">
-       <widget class="QSpinBox" name="spinBox_2">
-        <property name="minimum">
-         <number>128</number>
-        </property>
-        <property name="maximum">
-         <number>255</number>
-        </property>
-        <property name="displayIntegerBase">
-         <number>16</number>
+      <item row="2" column="1">
+       <widget class="QLabel" name="label_10">
+        <property name="text">
+         <string>Group</string>
         </property>
        </widget>
+      </item>
+      <item row="1" column="5">
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
       </item>
      </layout>
     </widget>
@@ -168,6 +202,24 @@
       <string>Connection</string>
      </property>
      <layout class="QFormLayout" name="formLayout_2">
+      <property name="horizontalSpacing">
+       <number>3</number>
+      </property>
+      <property name="verticalSpacing">
+       <number>3</number>
+      </property>
+      <property name="leftMargin">
+       <number>3</number>
+      </property>
+      <property name="topMargin">
+       <number>3</number>
+      </property>
+      <property name="rightMargin">
+       <number>3</number>
+      </property>
+      <property name="bottomMargin">
+       <number>3</number>
+      </property>
       <item row="0" column="0">
        <widget class="QLabel" name="label_2">
         <property name="text">

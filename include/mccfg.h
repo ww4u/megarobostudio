@@ -30,7 +30,7 @@
 #define sub_group_id_to                 255
 
 #define x_channel                       128
-#define robo_channels(subGp)            ( subGp + 129 )
+#define robo_channels(subGpIndex)            ( subGpIndex + sub_group_id_from )
 
 //! file ext
 #define setup_ext                       "stp"

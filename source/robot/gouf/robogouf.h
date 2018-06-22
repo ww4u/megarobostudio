@@ -1,0 +1,22 @@
+#ifndef ROBOGOUF_H
+#define ROBOGOUF_H
+
+//#include "../../device/vrobot.h"
+#include "../../device/mrv/deviceMRV.h"
+
+//class MegaDevice::deviceMRV;
+
+class roboGouf : public MegaDevice::deviceMRV
+{
+public:
+    roboGouf();
+
+public:
+//    virtual QString trigSrcAlias( int ax, int iTrig );
+
+protected:
+//    virtual int serialIn( QXmlStreamReader &reader );
+//    virtual int serialOut( QXmlStreamWriter &writer );
+};
+
+#endif // ROBOQUEBELEY_H

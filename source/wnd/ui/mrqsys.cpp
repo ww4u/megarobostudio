@@ -37,7 +37,8 @@ void mrqSys::spyEdited()
     {
         ui->chkOtp,
     };
-
+    QRadioButton *radBoxes[] = {
+    };
     QLineEdit *edits[]={
         ui->edtAlias,
     };

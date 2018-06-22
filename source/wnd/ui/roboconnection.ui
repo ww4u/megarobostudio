@@ -62,6 +62,9 @@
        <height>0</height>
       </size>
      </property>
+     <property name="toolTip">
+      <string>Robot</string>
+     </property>
      <item>
       <property name="text">
        <string>c</string>

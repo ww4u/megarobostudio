@@ -1,0 +1,394 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MrvThreshold</class>
+ <widget class="QWidget" name="MrvThreshold">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>514</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
+      <string/>
+     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <property name="spacing">
+       <number>0</number>
+      </property>
+      <item row="2" column="0">
+       <widget class="QGroupBox" name="groupBox_8">
+        <property name="title">
+         <string>On Num</string>
+        </property>
+        <layout class="QGridLayout" name="gridLayout_8">
+         <property name="bottomMargin">
+          <number>3</number>
+         </property>
+         <item row="0" column="0">
+          <widget class="QGroupBox" name="groupBox_9">
+           <property name="title">
+            <string/>
+           </property>
+           <layout class="QGridLayout" name="gridLayout_9">
+            <property name="bottomMargin">
+             <number>3</number>
+            </property>
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_11">
+              <property name="text">
+               <string>Limit</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_12">
+              <property name="text">
+               <string>Action</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QComboBox" name="cmbOnNumAction">
+              <item>
+               <property name="text">
+                <string>NONE</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>WARN</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>STOP</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QSpinBox" name="spinOnNumLimit"/>
+            </item>
+           </layout>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QGroupBox" name="groupBox_3">
+        <property name="title">
+         <string>Current</string>
+        </property>
+        <layout class="QGridLayout" name="gridLayout_5">
+         <property name="bottomMargin">
+          <number>3</number>
+         </property>
+         <item row="0" column="0">
+          <widget class="QGroupBox" name="groupBox_6">
+           <property name="title">
+            <string>High</string>
+           </property>
+           <layout class="QGridLayout" name="gridLayout_6">
+            <property name="bottomMargin">
+             <number>3</number>
+            </property>
+            <item row="0" column="1">
+             <widget class="QDoubleSpinBox" name="spinHighCurrentLimit"/>
+            </item>
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_7">
+              <property name="text">
+               <string>Limit</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_8">
+              <property name="text">
+               <string>Action</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QComboBox" name="cmbHighCurrentAction">
+              <item>
+               <property name="text">
+                <string>NONE</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>WARN</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>STOP</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QGroupBox" name="groupBox_7">
+           <property name="title">
+            <string>Low</string>
+           </property>
+           <layout class="QGridLayout" name="gridLayout_7">
+            <property name="bottomMargin">
+             <number>3</number>
+            </property>
+            <item row="0" column="1">
+             <widget class="QDoubleSpinBox" name="spinLowCurrentLimit"/>
+            </item>
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_9">
+              <property name="text">
+               <string>Limit</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_10">
+              <property name="text">
+               <string>Action</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QComboBox" name="cmbLowCurrentAction">
+              <item>
+               <property name="text">
+                <string>NONE</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>WARN</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>STOP</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QGroupBox" name="groupBox_2">
+        <property name="title">
+         <string>Pressure</string>
+        </property>
+        <layout class="QGridLayout" name="gridLayout_4">
+         <property name="bottomMargin">
+          <number>3</number>
+         </property>
+         <item row="0" column="0">
+          <widget class="QGroupBox" name="groupBox_4">
+           <property name="title">
+            <string>High</string>
+           </property>
+           <layout class="QGridLayout" name="gridLayout_2">
+            <property name="bottomMargin">
+             <number>3</number>
+            </property>
+            <item row="0" column="1">
+             <widget class="QDoubleSpinBox" name="spinHighPLimit"/>
+            </item>
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_3">
+              <property name="text">
+               <string>Limit</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_4">
+              <property name="text">
+               <string>Action</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QComboBox" name="cmbHighPAction">
+              <item>
+               <property name="text">
+                <string>NONE</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>WARN</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>STOP</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QGroupBox" name="groupBox_5">
+           <property name="title">
+            <string>Low</string>
+           </property>
+           <layout class="QGridLayout" name="gridLayout_3">
+            <property name="bottomMargin">
+             <number>3</number>
+            </property>
+            <item row="0" column="1">
+             <widget class="QDoubleSpinBox" name="spinLowPLimit"/>
+            </item>
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_5">
+              <property name="text">
+               <string>Limit</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_6">
+              <property name="text">
+               <string>Action</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QComboBox" name="cmbLowPAction">
+              <item>
+               <property name="text">
+                <string>NONE</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>WARN</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>STOP</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QGroupBox" name="groupBox_11">
+        <property name="title">
+         <string>Time</string>
+        </property>
+        <layout class="QGridLayout" name="gridLayout_11">
+         <property name="bottomMargin">
+          <number>3</number>
+         </property>
+         <item row="0" column="0">
+          <widget class="QGroupBox" name="groupBox_12">
+           <property name="title">
+            <string/>
+           </property>
+           <layout class="QGridLayout" name="gridLayout_12">
+            <property name="bottomMargin">
+             <number>3</number>
+            </property>
+            <item row="0" column="1">
+             <widget class="QDoubleSpinBox" name="spinTimeLimit"/>
+            </item>
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_15">
+              <property name="text">
+               <string>Limit</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_16">
+              <property name="text">
+               <string>Action</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QComboBox" name="cmbTimeAction">
+              <item>
+               <property name="text">
+                <string>NONE</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>WARN</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>STOP</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

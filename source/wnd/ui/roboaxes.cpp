@@ -27,6 +27,11 @@ roboAxes::roboAxes(mcModel *pModel,
     mJoints.append( ui->jointTab4 );
     mJoints.append( ui->jointTab5 );
 
+    //! lcd
+    mPoseLcds.append( ui->lcdPosX );
+    mPoseLcds.append( ui->lcdPosY );
+    mPoseLcds.append( ui->lcdPosZ );
+
     //! joint id
     for ( int i = 0; i < mJoints.size(); i++ )
     {
@@ -88,7 +93,7 @@ void roboAxes::slot_timeout()
     //! sample the angle for joint 0~3
     int subAx;
     MegaDevice::deviceMRQ *pMrq;
-    for ( int jointId = 0; jointId < 4; jointId++ )
+    for ( int jointId = 0; jointId < pRobo->absCount(); jointId++ )
     {
         pMrq = pRobo->jointDevice( jointId, &subAx );
         if ( NULL == pMrq )
@@ -109,11 +114,11 @@ void roboAxes::slot_timeout()
     float pos[16];
     if ( pRobo->poseCount() > 0 )
     {
+        //! read success
         if ( pRobo->getPOSE( pos ) == 0 )
         {
-            ui->lcdPosX->display( pos[0] );
-            ui->lcdPosY->display( pos[1] );
-            ui->lcdPosZ->display( pos[2] );
+            for ( int i = 0; i < pRobo->poseCount(); i++ )
+            { mPoseLcds.at(i)->display( pos[i]); }
         }
         else
         {}
@@ -206,9 +211,18 @@ void roboAxes::adapteUiToRobot( VRobot *pRobo )
         mJoints[i]->setCcwChecked( ccwList.at(i) );
     }
 
-    ui->groupBox_3->setVisible( angleCnt > 0 );
+    ui->groupBox_3->setVisible( angleCnt > 0 || pRobo->poseCount() > 0 );
 
-    ui->gpLcdPos->setVisible( pRobo->poseCount() > 0 );
+    //! lcd
+    {
+        ui->gpLcdPos->setVisible( pRobo->poseCount() > 0 );
+        ui->gpLcdPos->setTitle( pRobo->poseTitles().join(",") );
+
+        for ( int i = 0; i < pRobo->poseCount(); i++ )
+        { mPoseLcds.at(i)->setVisible( true ); }
+        for ( int i = pRobo->poseCount(); i < mPoseLcds.size(); i++ )
+        { mPoseLcds.at(i)->setVisible( false ); }
+    }
 }
 
 void roboAxes::buildConnection()
@@ -280,6 +294,15 @@ void roboAxes::on_btnZero_clicked()
     int ret = msgBox.exec();
     if ( ret == QMessageBox::Ok )
     {
+        //! foreach joint ccw
+        for ( int jointId = 0; jointId < pRobo->axes(); jointId++ )
+        {
+            Q_ASSERT( jointId < mJoints.size() );
+            if ( mJoints[jointId]->isCcwVisible() )
+            { pRobo->setJointZeroCcw( jointId, mJoints[jointId]->isCcwChecked()); }
+        }
+
+        //! zero
         pRobo->goZero( tpvRegion(0,0) );
     }
 }

@@ -3,8 +3,6 @@
 
 #include <QtCore>
 
-
-
 #include "../../model/tpvitem.h"
 
 //! delcare

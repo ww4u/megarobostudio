@@ -2,18 +2,18 @@
 #include "../../robot/robotfact.h"
 #include "../../../sys/sysapi.h"
 
-mrqView::mrqView( QWidget *parent ) : modelView( parent )
+mrqView::mrqView( QWidget *parent ) : mrxView( parent )
 {
-    mAxesId = 0;
+//    mAxesId = 0;
     mPage = MRQ_MOTION_SWITCH_1_MAIN;
     m_pMrqModel = NULL;
     m_pModelObj = NULL;
 }
 
-void mrqView::setAxesId( int id )
-{ mAxesId = id; }
-int mrqView::getAxesId()
-{ return mAxesId; }
+//void mrqView::setAxesId( int id )
+//{ mAxesId = id; }
+//int mrqView::getAxesId()
+//{ return mAxesId; }
 
 void mrqView::setPage( MRQ_AX_PAGE pg )
 { mPage  = pg; }
@@ -22,7 +22,7 @@ MRQ_AX_PAGE mrqView::page()
 
 void mrqView::setModelObj( mcModelObj *pObj )
 {
-    modelView::setModelObj( pObj );
+    mrxView::setModelObj( pObj );
 
     //! get mrq from device
     setModel( (MegaDevice::deviceMRQ*)( pObj ) );
@@ -63,5 +63,4 @@ MegaDevice::deviceMRQ *mrqView::getDevice()
     return pDevice;
 }
 
-void mrqView::modelChanged()
-{}
+

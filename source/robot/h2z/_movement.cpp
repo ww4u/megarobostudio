@@ -89,7 +89,8 @@ int robotH2Z::preMove( QList<H2ZKeyPoint> &curve,
 }
 
 int robotH2Z::goZero( const tpvRegion &region,
-                      int jointId, bool bCcw )
+                      int jointId,
+                      bool bCcw )
 {
     if ( 0 != checkRoboTask() )
     {
@@ -156,13 +157,16 @@ int robotH2Z::goZero( const tpvRegion &region,
     else if ( jointId == 2 )
     {
         //! arg
-        pArg->mAx = 2;
-        pArg->mZeroDist = mZeroDistance;       //! \todo zero speed
-        pArg->mZeroTime = mZeroTime;
-        pArg->mZeroEndV = mZeroSpeed;
+        //! same as x,y
+        int zDir = bCcw ? (-1) : (1);
 
-        pArg->mZeroGapDist = -mGapDistance;
-        pArg->mZeroGapTime = mGapTime;
+        pArg->mAx = 2;
+        pArg->mZeroZDist = -1 * zDir * mZeroDistance;
+        pArg->mZeroZTime = mZeroTime;
+        pArg->mZeroZEndV = -1 * zDir * mZeroSpeed;
+
+        pArg->mZeroGapZDist = zDir * mGapZDistance;
+        pArg->mZeroGapZTime = mGapZTime;
 
         //! time
         pArg->mTick = mZeroTick;
@@ -182,6 +186,16 @@ int robotH2Z::goZero( const tpvRegion &region,
 }
 
 int robotH2Z::goZero( const tpvRegion &region )
+{
+    QList<int> jList;
+    jList<<0<<1<<2;
+
+    return goZero( region, jList, mJointZeroCcw );
+}
+
+int robotH2Z::goZero( const tpvRegion &region,
+                      const QList<int> &jointList,
+                      const QList<bool> &ccwList )
 {
     if ( 0 != checkRoboTask() )
     {
@@ -211,12 +225,26 @@ int robotH2Z::goZero( const tpvRegion &region )
     pArg->mZeroGapDist = mGapDistance;
     pArg->mZeroGapTime = mGapTime;
 
+                            //! special for z
+    int zDir = ccwList.at(2) ? (-1) : (1);
+    pArg->mZeroZDist = -1 * zDir * mZeroDistance ;
+    pArg->mZeroZTime = mZeroTime;
+    pArg->mZeroZEndV = -1 * zDir * mZeroSpeed;
+
+    pArg->mZeroGapZDist = zDir * mGapZDistance;
+    pArg->mZeroGapZTime = mGapZTime;
+
     pReq->request( this, (VRobot::apiTaskRequest)(this->zeroAxesTask), pArg );
 
     m_pRoboTask->setRequest( pReq );
     m_pRoboTask->start();
 
     return 0;
+}
+
+int robotH2Z::getPOSE(float pos[])
+{
+    return pose( pos[0], pos[1] );
 }
 
 int robotH2Z::zeroAxesTask( void *pArg )
@@ -272,13 +300,14 @@ int robotH2Z::zeroAxesTask( void *pArg )
     //! z
     else if ( pZArg->mAx == 2 )
     {
-        move( 0, 0, pZArg->mZeroDist, pZArg->mZeroTime, 0,0,pZArg->mZeroEndV, region );
+        move( 0, 0, pZArg->mZeroZDist, pZArg->mZeroTime, 0,0,pZArg->mZeroZEndV, region );
 
         ret = waitFsm( region, MegaDevice::mrq_state_idle, pZArg->mTmo, pZArg->mTick );
         if ( ret != 0 )
         { return ret; }
 
-        move( 0, 0, pZArg->mZeroGapDist, pZArg->mZeroGapTime, 0,0,0, region );
+        //! invert z
+        move( 0, 0, pZArg->mZeroGapZDist, pZArg->mZeroGapZTime, 0,0,0, region );
 
         ret = waitFsm( region, MegaDevice::mrq_state_idle, pZArg->mTmo, pZArg->mTick );
         if ( ret != 0 )
@@ -307,7 +336,6 @@ int robotH2Z::zeroAxesTask( void *pArg )
         if ( ret != 0 )
         { return ret; }
 
-
         return ret;
     }
 
@@ -331,27 +359,6 @@ int robotH2Z::rstZeroAngle()
 
     return 0;
 }
-
-//int robotH2Z::angle( int jId, float &fAng )
-//{
-//    Q_ASSERT( jId >=0 && jId < axes() );
-
-//    MegaDevice::deviceMRQ *pMrq;
-//    int ax;
-
-//    pMrq = jointDevice( jId, &ax );
-//    Q_ASSERT( NULL != pMrq );
-
-//    int abcCount;
-//    int ret = pMrq->getMOTION_ABCOUNT( ax, &abcCount );
-//    if ( ret != 0 )
-//    { return -1; }
-
-//    //! line -> angle
-//    fAng = abcCount * 360.0f/mLines * mEncoderDirs.at( jId );
-
-//    return 0;
-//}
 
 int robotH2Z::pose( float &x, float &y )
 {

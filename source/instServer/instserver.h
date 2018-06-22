@@ -4,6 +4,7 @@
 #include <QTcpServer>
 #include <QTcpSocket>
 #include <QSignalMapper>
+#include <QMutex>
 
 #define LISTEN_PORT     1234
 
@@ -29,6 +30,7 @@ public:
 protected Q_SLOTS:
     void slot_newConnection();
     void slot_readyRead( QObject *pObj );
+    void slot_destroyConnection( QObject *pObj );
 
 public:
     void start( quint32 port = LISTEN_PORT );
@@ -38,6 +40,9 @@ public:
 protected:
     QTcpServer mServer;
     QSignalMapper mSignalMap;
+
+    QList<QTcpSocket *> mServiceSockets;
+    QMutex mServiceMutex;
 };
 
 }

@@ -135,7 +135,7 @@ int MRV::getSYSTEM_SN(  byte * val0, char * val1, char * val2, char * val3, char
 }
 //! 
 //! 
-int MRV::getSYSTEM_TYPE(  MRV_SYSTEM_TYPE * val0, MRV_SYSTEM_TYPE_1 * val1, bool bQuery )
+int MRV::getSYSTEM_TYPE(  MRV_SYSTEM_TYPE * val0, MRV_LINK_DEVICEINFO_1 * val1, bool bQuery )
 {
 	//! 2 5
 	int ret = 0;
@@ -146,7 +146,7 @@ int MRV::getSYSTEM_TYPE(  MRV_SYSTEM_TYPE * val0, MRV_SYSTEM_TYPE_1 * val1, bool
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
 	*val0 = (MRV_SYSTEM_TYPE)lval0;
-	*val1 = (MRV_SYSTEM_TYPE_1)lval1;
+	*val1 = (MRV_LINK_DEVICEINFO_1)lval1;
 	return 0;
 }
 //! 
@@ -931,7 +931,7 @@ int MRV::getVALVECTRL_DEVICE( byte val0, MRV_VALVECTRL_DEVICE * val1, bool bQuer
 	return 0;
 }
 //! U32
-//! [CHANNUM]
+//! 
 int MRV::setVALVECTRL_PWMFREQ( uint32 val0 )
 {
 	//! 51 2
@@ -1452,20 +1452,18 @@ int MRV::setTHRESHOLD_HICURRENTACTION( byte val0
 	if ( ret != 0){ log_device(); } 
 	return ret;
 }
-//! 
+//! U8
 //! [CHANNUM]
-int MRV::getTHRESHOLD_HICURRENTACTION(  byte * val0, MRV_THRESHOLD_HIPRESSUREACTION * val1, bool bQuery )
+int MRV::getTHRESHOLD_HICURRENTACTION( byte val0, MRV_THRESHOLD_HIPRESSUREACTION * val1, bool bQuery )
 {
 	//! 52 11
 	int ret = 0;
 
 	byte lval0 = 0;
-	byte lval1 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, (byte)52, (byte)11 , &lval0, &lval1, bQuery);
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, (byte)52, (byte)11 , val0, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
-	*val0 = lval0;
-	*val1 = (MRV_THRESHOLD_HIPRESSUREACTION)lval1;
+	*val1 = (MRV_THRESHOLD_HIPRESSUREACTION)lval0;
 	return 0;
 }
 //! U8,U32
@@ -1514,20 +1512,18 @@ int MRV::setTHRESHOLD_LOWCURRENTACTION( byte val0
 	if ( ret != 0){ log_device(); } 
 	return ret;
 }
-//! 
+//! U8
 //! [CHANNUM]
-int MRV::getTHRESHOLD_LOWCURRENTACTION(  byte * val0, MRV_THRESHOLD_HIPRESSUREACTION * val1, bool bQuery )
+int MRV::getTHRESHOLD_LOWCURRENTACTION( byte val0, MRV_THRESHOLD_HIPRESSUREACTION * val1, bool bQuery )
 {
 	//! 52 15
 	int ret = 0;
 
 	byte lval0 = 0;
-	byte lval1 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, (byte)52, (byte)15 , &lval0, &lval1, bQuery);
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, (byte)52, (byte)15 , val0, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
-	*val0 = lval0;
-	*val1 = (MRV_THRESHOLD_HIPRESSUREACTION)lval1;
+	*val1 = (MRV_THRESHOLD_HIPRESSUREACTION)lval0;
 	return 0;
 }
 //! U8,U32
@@ -2540,20 +2536,18 @@ int MRV::setIOCONFIG_STOPBIT( byte val0
 	if ( ret != 0){ log_device(); } 
 	return ret;
 }
-//! 
+//! U8
 //! [CHANNUM]
-int MRV::getIOCONFIG_STOPBIT(  byte * val0, MRV_RS232_STOPBIT * val1, bool bQuery )
+int MRV::getIOCONFIG_STOPBIT( byte val0, MRV_RS232_STOPBIT * val1, bool bQuery )
 {
 	//! 56 17
 	int ret = 0;
 
 	byte lval0 = 0;
-	byte lval1 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, (byte)56, (byte)17 , &lval0, &lval1, bQuery);
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, (byte)56, (byte)17 , val0, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
-	*val0 = lval0;
-	*val1 = (MRV_RS232_STOPBIT)lval1;
+	*val1 = (MRV_RS232_STOPBIT)lval0;
 	return 0;
 }
 //! U8

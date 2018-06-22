@@ -46,7 +46,8 @@ void MrqAi::spyEdited()
     {
         ui->checkBox,
     };
-
+    QRadioButton *radBoxes[] = {
+    };
     QLineEdit *edits[]={
 
     };

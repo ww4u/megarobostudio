@@ -60,11 +60,11 @@ void queryView::on_btnExport_clicked()
     {
         //! time
         var = pModel->data( pModel->index(i,0) );
-        fileStream<<var.toString()<<",";
+        fileStream<<var.toString()<<CSV_COL_SEP;
 
         //! value
         var = pModel->data( pModel->index(i,1) );
-        fileStream<<var.toString()<<"\n";
+        fileStream<<var.toString()<<CSV_LINE_SEP;
     }
 
     file.close();

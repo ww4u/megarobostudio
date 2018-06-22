@@ -159,7 +159,7 @@ static scpi_result_t _scpi_getSYSTEM_TYPE( scpi_t * context )
 
 	MRV_SYSTEM_TYPE oval0;
 
-	MRV_SYSTEM_TYPE_1 oval1;
+	MRV_LINK_DEVICEINFO_1 oval1;
 
 	(GET_OBJ(context))->getSYSTEM_TYPE( &oval0, &oval1 );
 	pLocalStr = MRV_SYSTEM_TYPE_toString( oval0);
@@ -167,7 +167,7 @@ static scpi_result_t _scpi_getSYSTEM_TYPE( scpi_t * context )
         { return SCPI_RES_ERR; } 
 	SCPI_ResultText(context, pLocalStr);
 
-	pLocalStr = MRV_SYSTEM_TYPE_1_toString( oval1);
+	pLocalStr = MRV_LINK_DEVICEINFO_1_toString( oval1);
 	if ( pLocalStr == NULL ) 
         { return SCPI_RES_ERR; } 
 	SCPI_ResultText(context, pLocalStr);
@@ -1667,14 +1667,15 @@ static scpi_result_t _scpi_getTHRESHOLD_HICURRENTACTION( scpi_t * context )
 	// read
 	DEF_LOCAL_VAR();
 
-	byte oval0;
+	byte val0;
+	if ( SCPI_ParamInt32(context, &localIntVal, true) != SCPI_RES_OK ) 
+        { return SCPI_RES_ERR; }
+	val0 = (byte)localIntVal;
 
-	MRV_THRESHOLD_HIPRESSUREACTION oval1;
+	MRV_THRESHOLD_HIPRESSUREACTION oval0;
 
-	(GET_OBJ(context))->getTHRESHOLD_HICURRENTACTION( &oval0, &oval1 );
-	SCPI_ResultInt32(context, oval0);
-
-	pLocalStr = MRV_THRESHOLD_HIPRESSUREACTION_toString( oval1);
+	(GET_OBJ(context))->getTHRESHOLD_HICURRENTACTION( val0, &oval0 );
+	pLocalStr = MRV_THRESHOLD_HIPRESSUREACTION_toString( oval0);
 	if ( pLocalStr == NULL ) 
         { return SCPI_RES_ERR; } 
 	SCPI_ResultText(context, pLocalStr);
@@ -1744,14 +1745,15 @@ static scpi_result_t _scpi_getTHRESHOLD_LOWCURRENTACTION( scpi_t * context )
 	// read
 	DEF_LOCAL_VAR();
 
-	byte oval0;
+	byte val0;
+	if ( SCPI_ParamInt32(context, &localIntVal, true) != SCPI_RES_OK ) 
+        { return SCPI_RES_ERR; }
+	val0 = (byte)localIntVal;
 
-	MRV_THRESHOLD_HIPRESSUREACTION oval1;
+	MRV_THRESHOLD_HIPRESSUREACTION oval0;
 
-	(GET_OBJ(context))->getTHRESHOLD_LOWCURRENTACTION( &oval0, &oval1 );
-	SCPI_ResultInt32(context, oval0);
-
-	pLocalStr = MRV_THRESHOLD_HIPRESSUREACTION_toString( oval1);
+	(GET_OBJ(context))->getTHRESHOLD_LOWCURRENTACTION( val0, &oval0 );
+	pLocalStr = MRV_THRESHOLD_HIPRESSUREACTION_toString( oval0);
 	if ( pLocalStr == NULL ) 
         { return SCPI_RES_ERR; } 
 	SCPI_ResultText(context, pLocalStr);
@@ -3074,14 +3076,15 @@ static scpi_result_t _scpi_getIOCONFIG_STOPBIT( scpi_t * context )
 	// read
 	DEF_LOCAL_VAR();
 
-	byte oval0;
+	byte val0;
+	if ( SCPI_ParamInt32(context, &localIntVal, true) != SCPI_RES_OK ) 
+        { return SCPI_RES_ERR; }
+	val0 = (byte)localIntVal;
 
-	MRV_RS232_STOPBIT oval1;
+	MRV_RS232_STOPBIT oval0;
 
-	(GET_OBJ(context))->getIOCONFIG_STOPBIT( &oval0, &oval1 );
-	SCPI_ResultInt32(context, oval0);
-
-	pLocalStr = MRV_RS232_STOPBIT_toString( oval1);
+	(GET_OBJ(context))->getIOCONFIG_STOPBIT( val0, &oval0 );
+	pLocalStr = MRV_RS232_STOPBIT_toString( oval0);
 	if ( pLocalStr == NULL ) 
         { return SCPI_RES_ERR; } 
 	SCPI_ResultText(context, pLocalStr);

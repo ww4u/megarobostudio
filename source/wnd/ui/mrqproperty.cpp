@@ -363,7 +363,7 @@ int mrqProperty::postApply( appMsg msg, void *pPara )
         sysProgress( true );
         pView->setApply();
 
-        QThread::msleep( 100 );
+//        QThread::msleep( 100 );
 
         sysProgress( id, pView->name(), mViewPages.size(), 0 );
     }

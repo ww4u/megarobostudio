@@ -75,6 +75,11 @@ public:
     virtual int goZero( const tpvRegion &region,
                         int jointId, bool bCcw );
     virtual int goZero( const tpvRegion &region=0 );      //! 1.x, 2.y, 3.z
+    virtual int goZero( const tpvRegion &region,
+                        const QList<int> &jointList,
+                        const QList<bool> &ccwList );
+
+    virtual int getPOSE(float pos[]);
 
     int zeroAxesTask( void *pArg );
 
@@ -96,11 +101,11 @@ public:
     void setCenter( float x, float y );
     void center( float &x, float &y );
 
-    int serialOutZero( QXmlStreamWriter &writer);
-    int serialInZero( QXmlStreamReader &reader );
+//    int serialOutZero( QXmlStreamWriter &writer);
+//    int serialInZero( QXmlStreamReader &reader );
 
-    int serialOutArm( QXmlStreamWriter &writer);
-    int serialInArm( QXmlStreamReader &reader);
+//    int serialOutArm( QXmlStreamWriter &writer);
+//    int serialInArm( QXmlStreamReader &reader);
 
 protected:
     int verifyTrace( QList<H2ZKeyPoint> &curve );
@@ -116,14 +121,14 @@ protected:
 //                 int tick );
 
 protected:
-    double mZeroTime, mZeroDistance;
-    double mZeroX, mZeroY;
-    double mGapTime, mGapDistance;
+//    double mZeroTime, mZeroDistance;
+//    double mZeroX, mZeroY;
+//    double mGapTime, mGapDistance;
 
-    QList <int> mAxesDirs;      //! realX = dir * x + zeroX
+//    QList <int> mAxesDirs;      //! realX = dir * x + zeroX
 
-    QList<int> mEncoderDirs;    //! 1 or -1
-    int mLines;
+//    QList<int> mEncoderDirs;    //! 1 or -1
+//    int mLines;
 };
 
 #endif

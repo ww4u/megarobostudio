@@ -9,6 +9,16 @@ VRobot::robotEnum VRobot::getId()
 VRobot::robotEnum VRobot::robotId()
 { return mId; }
 
+QList<int> VRobot::deviceIds()
+{
+    QList<int> ids;
+    ids<<0<<0<<0;
+    return ids;
+}
+
+QString VRobot::deviceFullDesc()
+{ return ""; }
+
 int VRobot::setAxes(int n)
 {
     //! gc
@@ -28,6 +38,11 @@ int VRobot::setAxes(int n)
         mJointAngleMask.append( false );
         mJointCcwMask.append( true );
     }
+
+    //! init lvtable
+    mLvtAble.clear();
+    for ( int i = 0 ; i < n; i++ )
+    { mLvtAble<<false; }
 
     mAxes = n;
 
@@ -153,6 +168,13 @@ QString VRobot::trigSrcAlias( int ax, int iTrig )
     return QString("TRIG%1").arg( iTrig + 1 );
 }
 
+void VRobot::setJointZeroCcw( int jId, bool b )
+{
+    Q_ASSERT( jId >=0 && jId < mJointZeroCcw.size() );
+
+    mJointZeroCcw[jId] = b;
+}
+
 QList<bool> VRobot::jointZeroCcwList()
 { return mJointZeroCcw; }
 
@@ -160,6 +182,14 @@ void VRobot::setPoseCount( int pos )
 { mPoseCount = pos; }
 int VRobot::poseCount()
 { return mPoseCount; }
+
+QStringList & VRobot::poseTitles()
+{ return mPoseTitles; }
+
+void VRobot::setAbsCount( int cnt )
+{ mAbsCount = cnt; }
+int VRobot::absCount()
+{ return mAbsCount; }
 
 bool VRobot::interpAble()
 { return mbInterpAble; }

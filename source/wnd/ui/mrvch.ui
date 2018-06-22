@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MrvCh</class>
+ <widget class="QWidget" name="MrvCh">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
+      <string/>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
+       <widget class="QTabWidget" name="tabWidget">
+        <property name="currentIndex">
+         <number>0</number>
+        </property>
+        <widget class="MrvVertical" name="pageValve">
+         <attribute name="title">
+          <string>Valve</string>
+         </attribute>
+        </widget>
+        <widget class="MrvThreshold" name="pageThreshold">
+         <attribute name="title">
+          <string>Threshold</string>
+         </attribute>
+        </widget>
+        <widget class="MrvIo" name="pageIo">
+         <attribute name="title">
+          <string>IO</string>
+         </attribute>
+        </widget>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>MrvVertical</class>
+   <extends>QWidget</extends>
+   <header>mrvvertical.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>MrvThreshold</class>
+   <extends>QWidget</extends>
+   <header>mrvthreshold.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>MrvIo</class>
+   <extends>QWidget</extends>
+   <header>mrvio.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

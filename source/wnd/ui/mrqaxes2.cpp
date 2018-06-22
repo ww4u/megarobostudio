@@ -47,7 +47,8 @@ void mrqAxes2::spyEdited()
     {
         ui->chkOutOfLineState,
     };
-
+    QRadioButton *radBoxes[] = {
+    };
     QLineEdit *edits[]={
 
     };
@@ -63,6 +64,9 @@ void mrqAxes2::spyEdited()
 
         ui->spinSAcc,
         ui->spinSDec,
+
+        ui->spinCompP,
+        ui->spinCompT,
     };
 
     QComboBox *comboxes[]={

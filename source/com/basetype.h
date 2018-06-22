@@ -11,12 +11,15 @@ public:
     {
         e_req_none = 0,
         e_req_add_t4_key_point,
+        e_req_add_h2_key_point,
+        e_req_add_h2z_key_point,
     };
 
     enum EnumParaType
     {
         e_type_none = 0,
         e_type_f_f_f,       //! float,float,float
+        e_type_f_f,
     };
 
 public:
@@ -270,24 +273,29 @@ public:
     //! member
     int mAx;
     int mPage;
+    int mMotionMode;        //! -1, pvt,lvt1,lvt2
 
     //! prop
     int axes() const
     { return mAx; }
     int page() const
     { return mPage; }
+    int motionMode() const
+    { return mMotionMode; }
 
     //! ctor
-    tpvRegion( int ax = 0, int page = 0 )
+    tpvRegion( int ax = 0, int page = 0, int motion = -1 )
     {
         mAx = ax;
         mPage = page;
+        mMotionMode = motion;
     }
 
     tpvRegion &operator=( const tpvRegion &region )
     {
         mAx = region.axes();
         mPage = region.page();
+        mMotionMode = region.motionMode();
 
         return *this;
     }
@@ -296,31 +304,17 @@ public:
     {
         mAx = region.mAx;
         mPage = region.mPage;
+        mMotionMode = region.mMotionMode;
     }
 
     tpvRegion &operator=( int ax )
     {
         mAx = ax;
         mPage = 0;
+        mMotionMode = -1;
 
         return *this;
     }
-
-//    bool operator==( const tpvRegion &region ) const
-//    {
-//        if ( mAx != region.axes() )
-//        { return false; }
-//        if ( mPage != region.page() )
-//        { return false; }
-
-//        return true;
-//    }
-
-//    void set( int ax, int page )
-//    {
-//        mAx = ax;
-//        mPage = page;
-//    }
 
     void setRegion( int ax, int page )
     {
@@ -332,44 +326,19 @@ public:
     { mAx = ax; }
     void setPage( int page )
     { mPage = page; }
+
+    void setMotionMode( int motion )
+    { mMotionMode = motion; }
 };
 
 inline bool operator<( const tpvRegion &region1,
                 const tpvRegion &region2 )
 {
-//    if ( region1.axes() < region2.axes() )
-//    { return true; }
-//    if ( region1.page() < region2.page() )
-//    { return true; }
-//    return false;
-
     if ( region1.axes() != region2.axes() )
     { return region1.axes() < region2.axes(); }
     else
     { return region1.page() < region2.page(); }
 }
-
-//inline bool operator==( const tpvRegion &region1,
-//                const tpvRegion &region2 )
-//{
-//    if ( region1.axes() != region2.axes() )
-//    { return false; }
-//    if ( region1.page() != region2.page() )
-//    { return false; }
-
-//    return true;
-//}
-
-//inline bool operator>( const tpvRegion &region1,
-//                const tpvRegion &region2 )
-//{
-//    if ( region1.axes() > region2.axes() )
-//    { return true; }
-//    if ( region1.page() > region2.page() )
-//    { return true; }
-
-//    return false;
-//}
 
 Q_DECLARE_METATYPE(tpvRegion)
 

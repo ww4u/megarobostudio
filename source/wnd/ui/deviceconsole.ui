@@ -63,6 +63,9 @@
      </item>
      <item>
       <widget class="QPushButton" name="btnWrite">
+       <property name="toolTip">
+        <string>Send to device</string>
+       </property>
        <property name="text">
         <string>Write</string>
        </property>
@@ -74,6 +77,9 @@
      </item>
      <item>
       <widget class="QPushButton" name="btnRead">
+       <property name="toolTip">
+        <string>Read from device</string>
+       </property>
        <property name="text">
         <string>Read</string>
        </property>
@@ -102,6 +108,9 @@
        <property name="enabled">
         <bool>false</bool>
        </property>
+       <property name="toolTip">
+        <string>Open commandset</string>
+       </property>
        <property name="text">
         <string>Commandset.</string>
        </property>
@@ -122,6 +131,9 @@
      </item>
      <item>
       <widget class="QPushButton" name="btnClr">
+       <property name="toolTip">
+        <string>Clear</string>
+       </property>
        <property name="text">
         <string>Clear</string>
        </property>

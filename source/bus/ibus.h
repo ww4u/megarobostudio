@@ -271,6 +271,12 @@ public :
         int write( DeviceId &id, byte mainCode,
                    byte subCode,
                    byte v0,
+                   UInt16 v1,
+                   UInt16 v2);
+
+        int write( DeviceId &id, byte mainCode,
+                   byte subCode,
+                   byte v0,
                    byte v1,
                    UInt32 v2);
 
@@ -500,6 +506,15 @@ public :
                    f32 * v2,
                    bool bQuery = true );
 
+        //! 3 para
+        int read( DeviceId &id, byte mainCode,
+                    byte subCode,
+                    byte v0,
+                    UInt16 v1,
+                    UInt16 v2,
+                    byte * v3,
+                    bool bQuery = true );
+
         //! ******** sub apis ********
         int _read( DeviceId &id, byte mainCode,
                     byte subCode,
@@ -699,6 +714,14 @@ public :
                    byte v0,
                    byte v1,
                    f32 * v2,
+                   bool bQuery = true );
+
+        int _read( DeviceId &id, byte mainCode,
+                   byte subCode,
+                   byte v0,
+                   UInt16 v1,
+                   UInt16 v2,
+                   byte * v3,
                    bool bQuery = true );
 
 };

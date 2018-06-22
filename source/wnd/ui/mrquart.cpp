@@ -46,7 +46,8 @@ void MrqUart::spyEdited()
     QCheckBox *checkBoxes[]=
     {
     };
-
+    QRadioButton *radBoxes[] = {
+    };
     QLineEdit *edits[]={
 
     };

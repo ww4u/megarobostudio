@@ -35,7 +35,8 @@ void H2Config::spyEdited()
     QCheckBox *checkBoxes[]=
     {
     };
-
+    QRadioButton *radBoxes[] = {
+    };
     QLineEdit *edits[]={
 
     };

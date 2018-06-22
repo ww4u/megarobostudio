@@ -160,7 +160,8 @@ logDbg();
         return -3;
     }logDbg();
     m_pRecvCache->attachBus( this );
-    m_pRecvCache->start( QThread::TimeCriticalPriority );
+    m_pRecvCache->start();
+//    m_pRecvCache->start( QThread::TimeCriticalPriority );
 logDbg();
     return 0;
 }
@@ -404,7 +405,7 @@ IBus::unlock();
 
 int CANBus::doReceive( QList<frameData> &canFrames )
 {
-    CAN_OBJ canObj[50];
+    CAN_OBJ canObj[128];
 //    CAN_OBJ canObj[1];
     int ret;
 IBus::lock();
@@ -642,7 +643,7 @@ int CANBus::rawEnumerate( const modelSysPref &pref )
 
 int CANBus::collectHash( )
 {
-    byte buf[] = { mc_CAN, sc_CAN_NETMANAGEHASH_Q };
+    byte buf[] = { MRQ_mc_CAN, MRQ_sc_CAN_NETMANAGEHASH_Q };
     int ret;
 
     m_pRecvCache->clear();
@@ -707,13 +708,13 @@ int CANBus::collectHash( QMap< int, quint32 > &sendHashMap )
 
     //! 0. can intf
     DeviceId broadId( CAN_BROAD_ID );
-    byte buf0[] = { mc_LINK, sc_LINK_INTFC, MRQ_LINK_INTFC_CAN };
+    byte buf0[] = { MRQ_mc_LINK, MRQ_sc_LINK_INTFC, MRQ_LINK_INTFC_CAN };
     ret = doWrite( broadId, buf0, sizeof(buf0) );
     if ( ret != 0 )
     { return ret; }
 
     //! 1. broadcast
-    byte buf[] = { mc_CAN, sc_CAN_NETMANAGEHASH_Q };
+    byte buf[] = { MRQ_mc_CAN, MRQ_sc_CAN_NETMANAGEHASH_Q };
     ret = doWrite( broadId, buf, sizeof(buf) );
     if ( ret != 0 )
     { return ret; }
@@ -749,7 +750,7 @@ int CANBus::collectHash( QMap< int, quint32 > &sendHashMap )
 
 int CANBus::collectRecvId( QMap< int, quint32 > &sendRecvMap )
 {
-    byte buf[] = { mc_CAN, sc_CAN_RECEIVEID_Q };
+    byte buf[] = { MRQ_mc_CAN, MRQ_sc_CAN_RECEIVEID_Q };
     int ret;
 
     m_pRecvCache->clear();

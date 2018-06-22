@@ -82,6 +82,9 @@ QString &mcModelObj::getName()
 QString &mcModelObj::name()
 { return mName; }
 
+QString mcModelObj::getFullDesc( int axesId )
+{ return "unk"; }
+
 void mcModelObj::setPath( const QString &path )
 { mPath = path; }
 QString mcModelObj::getPath( )

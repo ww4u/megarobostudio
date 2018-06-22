@@ -8,6 +8,8 @@
 #include "../../../model/eventactionmodel.h"
 #include "../../../model/comboxdelegate.h"
 
+#include "../../model/mcmodel.h"
+
 namespace Ui {
 class eventViewer;
 }
@@ -30,6 +32,8 @@ public:
                           EventActionModel *pModel,
                           QWidget *parent = 0);
     ~eventViewer();
+
+    void setMcModel( mcModel *pObj );
 
 protected Q_SLOTS:
     void slot_event( eventId id, frameData );
@@ -55,13 +59,14 @@ private slots:
 private:
     Ui::eventViewer *ui;
 
+    mcModel *m_pMcModel;
+
     QStringList mEventStringList;
     comboxDelegate mEventDelegate;
 
     QStringList mActionStringList;
     comboxDelegate mActionDelegate;
 
-//    receiveCache * m_pInterruptSrc;
 };
 
 #endif // EVENTVIEWER_H

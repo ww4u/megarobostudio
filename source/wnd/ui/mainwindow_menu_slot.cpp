@@ -4,7 +4,6 @@
 #include "../../com/comassist.h"
 #include "motionwizard.h"
 
-
 //! file
 //void MainWindow::on_actionNew_triggered()
 //{
@@ -334,6 +333,8 @@ void MainWindow::on_actionpref_triggered( )
         applyConfigs();
 
         mMcModel.postload();
+
+        slot_pref_changed();
     }
 }
 

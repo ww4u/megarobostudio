@@ -110,6 +110,19 @@ frameHouse::frameHouse()
 {
     mSendId = 0;
     mRecvId = 0;
+
+    mBytes = 0;
+}
+
+void frameHouse::append(const frameData &t)
+{
+    QQueue< frameData >::append( t );
+    mBytes += t.length();
+}
+
+void frameHouse::append(const frameHouse &t)
+{
+    QQueue< frameData >::append( t );
 }
 
 void frameHouse::setId( int sendId, int recvId )
@@ -144,8 +157,14 @@ void frameHouse::clear()
     frameHouse::lock();
 
     QQueue<frameData>::clear();
+    mBytes = 0;
 
     frameHouse::unlock();
+}
+
+int frameHouse::bytes()
+{
+    return mBytes;
 }
 
 //! -- frame warehouse
@@ -179,8 +198,6 @@ void frameWarehouse::inFrame( frameData & data )
         pHouse->append( data );
         pHouse->unlock();
     }
-
-//    logDbg()<<pHouse->sendId()<<data.getFrameId()<<pHouse->size()<<QThread::currentThreadId();
 }
 
 frameHouse *frameWarehouse::findHouseByRecvId( int recvId )
@@ -484,19 +501,31 @@ void receiveCache::clear()
 //! all houses count
 int receiveCache::frameCount()
 {
-//    return mRecvCache.size();
-
     int sum = 0;
     foreach( frameHouse *pHouse, *mFrameWarehouse.houses() )
     {
         Q_ASSERT( NULL != pHouse );
 
         sum += pHouse->size();
-        logDbg()<<sum;
     }
 
     return sum;
 }
+
+//! data bytes
+int receiveCache::frameBytes()
+{
+    int sum = 0;
+    foreach( frameHouse *pHouse, *mFrameWarehouse.houses() )
+    {
+        Q_ASSERT( NULL != pHouse );
+
+        sum += pHouse->bytes();
+    }
+
+    return sum;
+}
+
 #include "../../source/sys/sysapi.h"
 void receiveCache::lockWarehouse()
 { mCacheMutex.lock(); }
@@ -508,7 +537,7 @@ void receiveCache::run()
     Q_ASSERT( NULL!=m_pBus );
 
     //! highest
-    QThread::setPriority( QThread::TimeCriticalPriority );
+//    QThread::setPriority( QThread::TimeCriticalPriority );
 
     int ret;
     QList< frameData > frameCache;

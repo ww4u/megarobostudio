@@ -210,9 +210,8 @@ static value_desc _value_desc_MRQ_MOTIONPLAN_EXECUTEMODE_1[] = {
 };
 static value_desc _value_desc_MRQ_MOTIONPLAN_PLANMODE_1[] = {
 	{0,"CUBICPOLY",},
-	{1,"LINEAR",},
-	{2,"UNIFORM",},
-	{3,"TRAPEZOID",},
+	{1,"TRAPEZOID",},
+	{2,"SCURVE",},
 };
 static value_desc _value_desc_MRQ_MOTIONPLAN_MOTIONMODE_1[] = {
 	{0,"PVT",},
@@ -242,19 +241,10 @@ static value_desc _value_desc_MRQ_MOTIONPLAN_OOSLINERESPONSE_1[] = {
 static value_desc _value_desc_MRQ_REPORT_STATE[] = {
 	{0,"TORQUE",},
 	{1,"CYCLE",},
-	{2,"XANGLE",},
-	{3,"YANGLE",},
-	{4,"ZANGLE",},
-	{5,"XVEL",},
-	{6,"YVEL",},
-	{7,"ZVEL",},
-	{8,"XACC",},
-	{9,"YACC",},
-	{10,"ZACC",},
-	{11,"SGALL",},
-	{12,"SGSE",},
-	{13,"DIST",},
-	{14,"ABSENC",},
+	{2,"SGALL",},
+	{3,"SGSE",},
+	{4,"DIST",},
+	{5,"ABSENC",},
 };
 static value_desc _value_desc_MRQ_TRIGGER_MODE[] = {
 	{0,"PATTERN",},
@@ -380,13 +370,13 @@ static value_desc _value_desc_MRQ_ABSENCALARM_ZEROPOSITION_1[] = {
 };
 static value_desc _value_desc_MRQ_NEWDRIVER_TYPE[] = {
 	{0,"RESERVE",},
-	{1,"RESERVE",},
+	{1,"RESERVE1",},
 	{2,"ST820",},
 };
 static value_desc _value_desc_MRQ_NEWDRIVER_MICROSTEPS[] = {
 	{0,"RESERVE",},
-	{1,"RESERVE",},
-	{2,"RESERVE",},
+	{1,"RESERVE1",},
+	{2,"RESERVE2",},
 	{3,"32",},
 	{4,"16",},
 	{5,"8",},
@@ -618,9 +608,13 @@ mMOTOR_BACKLASH[i0] = (f32)0;
 }
 for ( int i0=0; i0 < 10; i0++ )
 {
-mENCODER_LINENUM[i0] = (uint32)0;
+mMOTOR_BACKLASHTEST[i0] = (uint16)0;
 }
 
+for ( int i0=0; i0 < 10; i0++ )
+{
+mENCODER_LINENUM[i0] = (uint32)0;
+}
 for ( int i0=0; i0 < 10; i0++ )
 {
 mENCODER_CHANNELNUM[i0] = (MRQ_ENCODER_CHANNELNUM)0;
@@ -633,11 +627,11 @@ for ( int i0=0; i0 < 10; i0++ )
 {
 mENCODER_MULTIPLE[i0] = (MRQ_ENCODER_MULTIPLE)0;
 }
+
 for ( int i0=0; i0 < 10; i0++ )
 {
 mENCODER_STATE[i0] = (MRQ_ENCODER_STATE)0;
 }
-
 for ( int i0=0; i0 < 10; i0++ )
 {
 mENCODER_FEEDBACKRATIO[i0] = (byte)0;
@@ -656,6 +650,7 @@ for ( int i1=0; i1 < 10; i1++ )
 mMOTIONPLAN_PRESETSTATE[i0][i1] = (MRQ_MOTIONPLAN_PRESETSTATE_1)0;
 }
 }
+
 for ( int i0=0; i0 < 10; i0++ )
 {
 for ( int i1=0; i1 < 10; i1++ )
@@ -663,7 +658,6 @@ for ( int i1=0; i1 < 10; i1++ )
 mMOTIONPLAN_EXECUTEMODE[i0][i1] = (MRQ_MOTIONPLAN_EXECUTEMODE_1)0;
 }
 }
-
 for ( int i0=0; i0 < 10; i0++ )
 {
 for ( int i1=0; i1 < 10; i1++ )
@@ -685,6 +679,7 @@ for ( int i1=0; i1 < 10; i1++ )
 mMOTIONPLAN_MODIFYDUTY[i0][i1] = (MRQ_MOTIONPLAN_MODIFYDUTY_1)0;
 }
 }
+
 for ( int i0=0; i0 < 10; i0++ )
 {
 for ( int i1=0; i1 < 10; i1++ )
@@ -692,7 +687,6 @@ for ( int i1=0; i1 < 10; i1++ )
 mMOTIONPLAN_REMAINPOINT[i0][i1] = (uint16)0;
 }
 }
-
 for ( int i0=0; i0 < 10; i0++ )
 {
 for ( int i1=0; i1 < 10; i1++ )
@@ -714,6 +708,7 @@ for ( int i1=0; i1 < 10; i1++ )
 mMOTIONPLAN_ENDSTATE[i0][i1] = (MRQ_MOTIONPLAN_ENDSTATE_1)0;
 }
 }
+
 for ( int i0=0; i0 < 10; i0++ )
 {
 for ( int i1=0; i1 < 10; i1++ )
@@ -721,7 +716,6 @@ for ( int i1=0; i1 < 10; i1++ )
 mMOTIONPLAN_BUFFERSIZE[i0][i1] = (uint32)0;
 }
 }
-
 for ( int i0=0; i0 < 10; i0++ )
 {
 for ( int i1=0; i1 < 10; i1++ )
@@ -743,6 +737,7 @@ for ( int i1=0; i1 < 10; i1++ )
 mMOTIONPLAN_STOPMODE[i0][i1] = (MRQ_MOTIONPLAN_STOPMODE_1)0;
 }
 }
+
 for ( int i0=0; i0 < 10; i0++ )
 {
 for ( int i1=0; i1 < 10; i1++ )
@@ -750,7 +745,6 @@ for ( int i1=0; i1 < 10; i1++ )
 mMOTIONPLAN_STOPDISTANCE[i0][i1] = (f32)0;
 }
 }
-
 for ( int i0=0; i0 < 10; i0++ )
 {
 for ( int i1=0; i1 < 10; i1++ )
@@ -772,6 +766,7 @@ for ( int i1=0; i1 < 10; i1++ )
 mMOTIONPLAN_OOSLINEOUTNUM[i0][i1] = (uint16)0;
 }
 }
+
 for ( int i0=0; i0 < 10; i0++ )
 {
 for ( int i1=0; i1 < 10; i1++ )
@@ -779,7 +774,6 @@ for ( int i1=0; i1 < 10; i1++ )
 mMOTIONPLAN_OOSLINERESPONSE[i0][i1] = (MRQ_MOTIONPLAN_OOSLINERESPONSE_1)0;
 }
 }
-
 for ( int i0=0; i0 < 10; i0++ )
 {
 for ( int i1=0; i1 < 10; i1++ )
@@ -801,6 +795,7 @@ for ( int i1=0; i1 < 10; i1++ )
 mMOTIONPLAN_OOSTOTALRESPONSE[i0][i1] = (MRQ_MOTIONPLAN_OOSLINERESPONSE_1)0;
 }
 }
+
 for ( int i0=0; i0 < 10; i0++ )
 {
 for ( int i1=0; i1 < 10; i1++ )
@@ -811,7 +806,6 @@ mPOSITION[i0][i1][i2] = (f32)0;
 }
 }
 }
-
 for ( int i0=0; i0 < 10; i0++ )
 {
 for ( int i1=0; i1 < 10; i1++ )
@@ -834,22 +828,22 @@ mTIME[i0][i1][i2] = (f32)0;
 }
 for ( int i0=0; i0 < 10; i0++ )
 {
-for ( int i1=0; i1 < 15; i1++ )
+for ( int i1=0; i1 < 6; i1++ )
 {
 mREPORT_STATE[i0][i1] = (MRQ_CAN_NETMANAGELED)0;
-}
-}
-for ( int i0=0; i0 < 10; i0++ )
-{
-for ( int i1=0; i1 < 15; i1++ )
-{
-mREPORT_PERIOD[i0][i1] = (uint32)0;
 }
 }
 
 for ( int i0=0; i0 < 10; i0++ )
 {
-for ( int i1=0; i1 < 15; i1++ )
+for ( int i1=0; i1 < 6; i1++ )
+{
+mREPORT_PERIOD[i0][i1] = (uint32)0;
+}
+}
+for ( int i0=0; i0 < 10; i0++ )
+{
+for ( int i1=0; i1 < 6; i1++ )
 {
 mREPORT_DATA[i0][i1] = (uint32)0;
 }
@@ -862,11 +856,11 @@ for ( int i0=0; i0 < 10; i0++ )
 {
 mTRIGGER_PATTSTATE[i0] = (MRQ_CAN_NETMANAGELED)0;
 }
+
 for ( int i0=0; i0 < 10; i0++ )
 {
 mTRIGGER_PATTERN[i0] = (MRQ_TRIGGER_PATTERN)0;
 }
-
 for ( int i0=0; i0 < 10; i0++ )
 {
 mTRIGGER_PATTERN1[i0] = (MRQ_TRIGGER_PATTERN)0;
@@ -879,11 +873,11 @@ for ( int i0=0; i0 < 10; i0++ )
 {
 mTRIGGER_PATTSMODE[i0] = (MRQ_TRIGGER_PATTSMODE)0;
 }
+
 for ( int i0=0; i0 < 10; i0++ )
 {
 mTRIGGER_PATTSPERIOD[i0] = (uint32)0;
 }
-
 for ( int i0=0; i0 < 10; i0++ )
 {
 for ( int i1=0; i1 < 5; i1++ )
@@ -905,6 +899,7 @@ for ( int i1=0; i1 < 5; i1++ )
 mTRIGGER_LEVELRESP[i0][i1] = (MRQ_MOTIONPLAN_OOSLINERESPONSE_1)0;
 }
 }
+
 for ( int i0=0; i0 < 10; i0++ )
 {
 for ( int i1=0; i1 < 5; i1++ )
@@ -912,7 +907,6 @@ for ( int i1=0; i1 < 5; i1++ )
 mTRIGGER_LEVELSMODE[i0][i1] = (MRQ_TRIGGER_PATTSMODE)0;
 }
 }
-
 for ( int i0=0; i0 < 10; i0++ )
 {
 for ( int i1=0; i1 < 5; i1++ )
@@ -931,11 +925,11 @@ for ( int i1=0; i1 < 3; i1++ )
 mDRIVER_STATEREG[i0][i1] = (uint32)0;
 }
 }
+
 for ( int i0=0; i0 < 10; i0++ )
 {
 mDRIVER_CURRENT[i0] = (byte)0;
 }
-
 for ( int i0=0; i0 < 10; i0++ )
 {
 mDRIVER_MICROSTEPS[i0] = (MRQ_DRIVER_MICROSTEPS)0;
@@ -948,11 +942,11 @@ for ( int i0=0; i0 < 10; i0++ )
 {
 mDRIVER_SGLIMIT[i0] = (MRQ_DRIVER_SGLIMIT)0;
 }
+
 for ( int i0=0; i0 < 10; i0++ )
 {
 mDRIVER_SGLIMIT1[i0] = (int8)0;
 }
-
 for ( int i0=0; i0 < 10; i0++ )
 {
 for ( int i1=0; i1 < 4; i1++ )
@@ -968,11 +962,11 @@ for ( int i0=0; i0 < 10; i0++ )
 {
 mDRIVER_SWITCHTIME[i0] = (uint32)0;
 }
+
 for ( int i0=0; i0 < 10; i0++ )
 {
 mDRIVER_MINICURRRATIO[i0] = (MRQ_DRIVER_MINICURRRATIO)0;
 }
-
 for ( int i0=0; i0 < 10; i0++ )
 {
 for ( int i1=0; i1 < 5; i1++ )
@@ -988,11 +982,11 @@ for ( int i0=0; i0 < 4; i0++ )
 {
 mDIGITALOUTPUT_SIGNAL[i0] = (MRQ_DIGITALOUTPUT_SIGNAL_1)0;
 }
+
 for ( int i0=0; i0 < 4; i0++ )
 {
 mDIGITALOUTPUT_POLARITY[i0] = (MRQ_DIGITALOUTPUT_POLARITY_1)0;
 }
-
 for ( int i0=0; i0 < 4; i0++ )
 {
 mDIGITALOUTPUT_SOURCE[i0] = (byte)0;
@@ -1005,11 +999,11 @@ for ( int i0=0; i0 < 4; i0++ )
 {
 mDIGITALOUTPUT_PERIOD[i0] = (uint32)0;
 }
+
 for ( int i0=0; i0 < 4; i0++ )
 {
 mDIGITALOUTPUT_DUTY[i0] = (uint16)0;
 }
-
 for ( int i0=0; i0 < 2; i0++ )
 {
 mISOLATOROUTPUT_STATE[i0] = (MRQ_DIGITALOUTPUT_STATE_1)0;
@@ -1022,11 +1016,11 @@ for ( int i0=0; i0 < 2; i0++ )
 {
 mISOLATOROUTPUT_CONDITION[i0] = (MRQ_DIGITALOUTPUT_CONDITION_1)0;
 }
+
 for ( int i0=0; i0 < 2; i0++ )
 {
 mISOLATOROUTPUT_RESPONSE[i0] = (MRQ_ISOLATOROUTPUT_RESPONSE_1)0;
 }
-
 for ( int i0=0; i0 < 2; i0++ )
 {
 mSENSORUART_BAUD[i0] = (MRQ_SENSORUART_BAUD_1)0;
@@ -1039,11 +1033,11 @@ for ( int i0=0; i0 < 2; i0++ )
 {
 mSENSORUART_FLOWCTL[i0] = (MRQ_RS232_FLOWCTL)0;
 }
+
 for ( int i0=0; i0 < 2; i0++ )
 {
 mSENSORUART_PARITY[i0] = (MRQ_RS232_PARITY)0;
 }
-
 for ( int i0=0; i0 < 2; i0++ )
 {
 mSENSORUART_STOPBIT[i0] = (MRQ_RS232_STOPBIT)0;
@@ -1062,6 +1056,7 @@ for ( int i1=0; i1 < 4; i1++ )
 mSENSORUART_SOF[i0][i1] = (byte)0;
 }
 }
+
 for ( int i0=0; i0 < 2; i0++ )
 {
 for ( int i1=0; i1 < 4; i1++ )
@@ -1069,7 +1064,6 @@ for ( int i1=0; i1 < 4; i1++ )
 mSENSORUART_FRAMELEN[i0][i1] = (byte)0;
 }
 }
-
 for ( int i0=0; i0 < 2; i0++ )
 {
 for ( int i1=0; i1 < 4; i1++ )
@@ -1091,6 +1085,7 @@ for ( int i1=0; i1 < 4; i1++ )
 mSENSORUART_DATA[i0][i1] = (byte)0;
 }
 }
+
 for ( int i0=0; i0 < 2; i0++ )
 {
 for ( int i1=0; i1 < 4; i1++ )
@@ -1098,7 +1093,6 @@ for ( int i1=0; i1 < 4; i1++ )
 mSENSORUART_DATA1[i0][i1] = (char)0;
 }
 }
-
 for ( int i0=0; i0 < 2; i0++ )
 {
 for ( int i1=0; i1 < 4; i1++ )
@@ -1114,13 +1108,13 @@ mSENSORUART_DATA3[i0][i1] = (char)0;
 }
 }
 	mISOLATORIN_STATE = (MRQ_CAN_NETMANAGELED)0;
-	mISOLATORIN_TYPE = (MRQ_TRIGGER_LEVELTYPE_1)0;
 
+	mISOLATORIN_TYPE = (MRQ_TRIGGER_LEVELTYPE_1)0;
 	mISOLATORIN_RESPONSE = (MRQ_MOTIONPLAN_OOSLINERESPONSE_1)0;
 	mISOLATORIN_RESPCHAN = (byte)0;
 	mISOLATORIN_SMODE = (MRQ_TRIGGER_PATTSMODE)0;
-	mISOLATORIN_SPERIOD = (uint32)0;
 
+	mISOLATORIN_SPERIOD = (uint32)0;
 for ( int i0=0; i0 < 4; i0++ )
 {
 mABSENCALARM_STATE[i0] = (MRQ_CAN_NETMANAGELED)0;
@@ -1133,11 +1127,11 @@ for ( int i0=0; i0 < 4; i0++ )
 {
 mABSENCALARM_DOWNLIMIT[i0] = (uint32)0;
 }
+
 for ( int i0=0; i0 < 4; i0++ )
 {
 mABSENCALARM_ZEROVALUE[i0] = (uint32)0;
 }
-
 for ( int i0=0; i0 < 4; i0++ )
 {
 mABSENCALARM_ZEROPOSITION[i0] = (MRQ_ABSENCALARM_ZEROPOSITION_1)0;
@@ -1147,11 +1141,11 @@ for ( int i0=0; i0 < 4; i0++ )
 {
 mDISTANCEALARM_STATE[i0] = (MRQ_CAN_NETMANAGELED)0;
 }
+
 for ( int i0=0; i0 < 4; i0++ )
 {
 mDISTANCEALARM_ALARM1DIST[i0] = (uint16)0;
 }
-
 for ( int i0=0; i0 < 4; i0++ )
 {
 mDISTANCEALARM_ALARM2DIST[i0] = (uint16)0;
@@ -1161,29 +1155,52 @@ for ( int i0=0; i0 < 4; i0++ )
 mDISTANCEALARM_ALARM3DIST[i0] = (uint16)0;
 }
 	mOTP_STATE = (MRQ_CAN_NETMANAGELED)0;
-	mOTP_THRESHOLD = (uint16)0;
 
+	mOTP_THRESHOLD = (uint16)0;
 	mOTP_RESPONSE = (MRQ_MOTIONPLAN_OOSLINERESPONSE_1)0;
 	mOTP_PERIOD = (uint32)0;
 	mOTP_DATA = (uint32)0;
-	mANALOGIN_STATE = (MRQ_CAN_NETMANAGELED)0;
 
+	mANALOGIN_STATE = (MRQ_CAN_NETMANAGELED)0;
 	mANALOGIN_THRESHOLDH = (f32)0;
 	mANALOGIN_THRESHOLDL = (f32)0;
 	mANALOGIN_RESPONSEH = (MRQ_MOTIONPLAN_OOSLINERESPONSE_1)0;
-	mANALOGIN_RESPONSEL = (MRQ_MOTIONPLAN_OOSLINERESPONSE_1)0;
 
+	mANALOGIN_RESPONSEL = (MRQ_MOTIONPLAN_OOSLINERESPONSE_1)0;
 for ( int i0=0; i0 < 10; i0++ )
 {
 mNEWDRIVER_TYPE[i0] = (MRQ_NEWDRIVER_TYPE)0;
 }
 	mNEWDRIVER_CURRENT = (byte)0;
 	mNEWDRIVER_MICROSTEPS = (MRQ_NEWDRIVER_MICROSTEPS)0;
+
 for ( int i0=0; i0 < 10; i0++ )
 {
 mNEWDRIVER_STATE[i0] = (MRQ_CAN_NETMANAGELED)0;
 }
+for ( int i0=0; i0 < 10; i0++ )
+{
+mPDM_SAMPLESTATE[i0] = (MRQ_CLOCK_SYNCSTATE)0;
+}
+for ( int i0=0; i0 < 10; i0++ )
+{
+mPDM_ENCDIV[i0] = (byte)0;
+}
+for ( int i0=0; i0 < 10; i0++ )
+{
+mPDM_MICSTEPCOUNT[i0] = (uint16)0;
+}
 
+for ( int i0=0; i0 < 10; i0++ )
+{
+for ( int i1=0; i1 < 10; i1++ )
+{
+for ( int i2=0; i2 < 10; i2++ )
+{
+mPDM_MICSTEPDATA[i0][i1][i2] = (byte)0;
+}
+}
+}
 }
 QString _MRQ_model::toString( MRQ_LINK_INTFC eType )
 {
@@ -3147,6 +3164,28 @@ int _MRQ_model::getMOTOR_BACKLASH( byte val0, f32 * val1, bool bQuery )
 	*val1 = mMOTOR_BACKLASH[ (int)val0 ];
 	return 0;
 }
+//! U8,U16
+//! [CHANNUM]
+int _MRQ_model::setMOTOR_BACKLASHTEST( byte val0
+,uint16 val1 )
+{
+	//! 51 24
+	int ret=0; 
+	mMOTOR_BACKLASHTEST[ (int)val0 ] = val1;
+
+	return ret;
+}
+//! U8
+//! [CHANNUM]
+int _MRQ_model::getMOTOR_BACKLASHTEST( byte val0, uint16 * val1, bool bQuery )
+{
+	//! 51 25
+	int ret = 0;
+
+	uint16 lval0 = 0;
+	*val1 = mMOTOR_BACKLASHTEST[ (int)val0 ];
+	return 0;
+}
 //! U8,U32
 //! [CHANNUM]
 int _MRQ_model::setENCODER_LINENUM( byte val0
@@ -3352,7 +3391,7 @@ int _MRQ_model::getMOTIONPLAN_EXECUTEMODE( byte val0
 	return 0;
 }
 //! U8,ENUM,ENUM
-//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8,CUBICPOLY|LINEAR|UNIFORM|TRAPEZOID
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8,CUBICPOLY|TRAPEZOID|SCURVE
 int _MRQ_model::setMOTIONPLAN_PLANMODE( byte val0
 ,MRQ_MOTION_SWITCH_1 val1
 ,MRQ_MOTIONPLAN_PLANMODE_1 val2 )
@@ -3859,7 +3898,7 @@ int _MRQ_model::getTIME( byte val0
 	return 0;
 }
 //! U8,ENUM,ENUM
-//! [CHANNUM],TORQUE|CYCLE|XANGLE|YANGLE|ZANGLE|XVEL|YVEL|ZVEL|XACC|YACC|ZACC|SGALL|SGSE|DIST|ABSENC,OFF|ON
+//! [CHANNUM],TORQUE|CYCLE|SGALL|SGSE|DIST|ABSENC,OFF|ON
 int _MRQ_model::setREPORT_STATE( byte val0
 ,MRQ_REPORT_STATE val1
 ,MRQ_CAN_NETMANAGELED val2 )
@@ -3871,7 +3910,7 @@ int _MRQ_model::setREPORT_STATE( byte val0
 	return ret;
 }
 //! U8,ENUM
-//! [CHANNUM],TORQUE|CYCLE|XANGLE|YANGLE|ZANGLE|XVEL|YVEL|ZVEL|XACC|YACC|ZACC|SGALL|SGSE|DIST|ABSENC
+//! [CHANNUM],TORQUE|CYCLE|SGALL|SGSE|DIST|ABSENC
 int _MRQ_model::getREPORT_STATE( byte val0
 ,MRQ_REPORT_STATE val1, MRQ_CAN_NETMANAGELED * val2, bool bQuery )
 {
@@ -3883,7 +3922,7 @@ int _MRQ_model::getREPORT_STATE( byte val0
 	return 0;
 }
 //! U8,ENUM,U32
-//! [CHANNUM],TORQUE|CYCLE|XANGLE|YANGLE|ZANGLE|XVEL|YVEL|ZVEL|XACC|YACC|ZACC|SGALL|SGSE|DIST|ABSENC
+//! [CHANNUM],TORQUE|CYCLE|SGALL|SGSE|DIST|ABSENC
 int _MRQ_model::setREPORT_PERIOD( byte val0
 ,MRQ_REPORT_STATE val1
 ,uint32 val2 )
@@ -3895,7 +3934,7 @@ int _MRQ_model::setREPORT_PERIOD( byte val0
 	return ret;
 }
 //! U8,ENUM
-//! [CHANNUM],TORQUE|CYCLE|XANGLE|YANGLE|ZANGLE|XVEL|YVEL|ZVEL|XACC|YACC|ZACC|SGALL|SGSE|DIST|ABSENC
+//! [CHANNUM],TORQUE|CYCLE|SGALL|SGSE|DIST|ABSENC
 int _MRQ_model::getREPORT_PERIOD( byte val0
 ,MRQ_REPORT_STATE val1, uint32 * val2, bool bQuery )
 {
@@ -3907,7 +3946,7 @@ int _MRQ_model::getREPORT_PERIOD( byte val0
 	return 0;
 }
 //! U8,ENUM
-//! [CHANNUM],TORQUE|CYCLE|XANGLE|YANGLE|ZANGLE|XVEL|YVEL|ZVEL|XACC|YACC|ZACC|SGALL|SGSE|DIST|ABSENC
+//! [CHANNUM],TORQUE|CYCLE|SGALL|SGSE|DIST|ABSENC
 int _MRQ_model::getREPORT_DATA( byte val0
 ,MRQ_REPORT_STATE val1, uint32 * val2, bool bQuery )
 {
@@ -5480,7 +5519,7 @@ int _MRQ_model::getNEWDRIVER_CURRENT(  byte * val0, bool bQuery )
 	return 0;
 }
 //! ENUM
-//! RESERVE|RESERVE|RESERVE|32|16|8|4|2|1
+//! RESERVE|RESERVE1|RESERVE2|32|16|8|4|2|1
 int _MRQ_model::setNEWDRIVER_MICROSTEPS( MRQ_NEWDRIVER_MICROSTEPS val0 )
 {
 	//! 75 3
@@ -5520,6 +5559,74 @@ int _MRQ_model::getNEWDRIVER_STATE( byte val0, MRQ_CAN_NETMANAGELED * val1, bool
 
 	byte lval0 = 0;
 	*val1 = mNEWDRIVER_STATE[ (int)val0 ];
+	return 0;
+}
+//! U8,ENUM
+//! [CHANNUM],END|START
+int _MRQ_model::setPDM_SAMPLESTATE( byte val0
+,MRQ_CLOCK_SYNCSTATE val1 )
+{
+	//! 76 0
+	int ret=0; 
+	mPDM_SAMPLESTATE[ (int)val0 ] = val1;
+
+	return ret;
+}
+//! U8
+//! [CHANNUM]
+int _MRQ_model::getPDM_SAMPLESTATE( byte val0, MRQ_CLOCK_SYNCSTATE * val1, bool bQuery )
+{
+	//! 76 1
+	int ret = 0;
+
+	byte lval0 = 0;
+	*val1 = mPDM_SAMPLESTATE[ (int)val0 ];
+	return 0;
+}
+//! U8,U8
+//! [CHANNUM]
+int _MRQ_model::setPDM_ENCDIV( byte val0
+,byte val1 )
+{
+	//! 76 2
+	int ret=0; 
+	mPDM_ENCDIV[ (int)val0 ] = val1;
+
+	return ret;
+}
+//! U8
+//! [CHANNUM]
+int _MRQ_model::getPDM_ENCDIV( byte val0, byte * val1, bool bQuery )
+{
+	//! 76 3
+	int ret = 0;
+
+	byte lval0 = 0;
+	*val1 = mPDM_ENCDIV[ (int)val0 ];
+	return 0;
+}
+//! U8
+//! [CHANNUM]
+int _MRQ_model::getPDM_MICSTEPCOUNT( byte val0, uint16 * val1, bool bQuery )
+{
+	//! 76 4
+	int ret = 0;
+
+	uint16 lval0 = 0;
+	*val1 = mPDM_MICSTEPCOUNT[ (int)val0 ];
+	return 0;
+}
+//! U8,U16,U16
+//! 
+int _MRQ_model::getPDM_MICSTEPDATA( byte val0
+,uint16 val1
+,uint16 val2, byte * val3, bool bQuery )
+{
+	//! 76 5
+	int ret = 0;
+
+	byte lval0 = 0;
+	*val3 = mPDM_MICSTEPDATA[ (int)val0 ][ (int)val1 ][ (int)val2 ];
 	return 0;
 }
 }

@@ -45,6 +45,7 @@ void modelSysPref::rst()
     mbAutoStatusView = true;
 
     mDumpPath = QCoreApplication::applicationDirPath() + "/temp";
+    mEventLogFile = "eventlog.dat";
 
     //! database
     mDbMeta.mbUpload = false;
@@ -57,6 +58,11 @@ void modelSysPref::rst()
     //! misa
     mMisaEn = true;
     mMisaSocket = 1234;
+
+    mComEn = true;
+    mComName = "COM6";
+
+    mRemoteDirPath.clear();
 
     //! motion
     mGeometryResolution = 0.1;
@@ -147,6 +153,9 @@ int modelSysPref::save( const QString &str )
     writer.writeTextElement( "latest_prj_path", mLatestPrjPath );
     writer.writeTextElement( "latest_prj_name", mLatestPrjName );
 
+    writer.writeTextElement( "dump", mDumpPath );
+    writer.writeTextElement( "event_log", mEventLogFile );
+
     writer.writeEndElement();
 
     //! data base
@@ -167,6 +176,10 @@ int modelSysPref::save( const QString &str )
 
     writer.writeTextElement( "enable", QString::number( mMisaEn ) );
     writer.writeTextElement( "socket", QString::number( mMisaSocket ) );
+
+    writer.writeTextElement( "com_enable", QString::number( mComEn ) );
+    writer.writeTextElement( "com_port", ( mComName ) );
+
     writer.writeTextElement( "path", mRemoteDirPath );
 
     writer.writeEndElement();
@@ -312,6 +325,10 @@ int modelSysPref::load( const QString &str )
                         { mLatestPrjPath = reader.readElementText(); }
                         else if ( reader.name() == "latest_prj_name" )
                         { mLatestPrjName = reader.readElementText(); }
+                        else if ( reader.name() == "dump" )
+                        { mDumpPath = reader.readElementText(); }
+                        else if ( reader.name() == "event_log" )
+                        { mEventLogFile = reader.readElementText(); }
                         else
                         { reader.skipCurrentElement(); }
                     }
@@ -330,6 +347,12 @@ int modelSysPref::load( const QString &str )
                         { mMisaEn = reader.readElementText().toInt() > 0; }
                         else if ( reader.name() == "socket" )
                         { mMisaSocket = reader.readElementText().toInt(); }
+
+                        else if ( reader.name() == "com_enable" )
+                        { mComEn = reader.readElementText().toInt() > 0; }
+                        else if ( reader.name() == "com_port" )
+                        { mComName = reader.readElementText(); }
+
                         else if ( reader.name() == "path" )
                         { mRemoteDirPath = reader.readElementText(); }
                         else

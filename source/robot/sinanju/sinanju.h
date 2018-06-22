@@ -58,7 +58,7 @@ public:
                        QList< int> &sectionList );
 
 public:
-    int call( const tpvRegion &region=0 );  //! load + run
+    int call( int n, const tpvRegion &region=0 );  //! load + run
 
     int program( const QString &fileName,
                  const tpvRegion &region );

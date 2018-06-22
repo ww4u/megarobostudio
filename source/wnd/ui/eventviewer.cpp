@@ -19,20 +19,20 @@ static struExceptionDesc _exceptions_[]=
 {
     { QStringLiteral("Lose Step"),
       event_over_step,
-      mc_SYSTEM, sc_SYSTEM_EVENTCODE_Q,
+      MRQ_mc_SYSTEM, MRQ_sc_SYSTEM_EVENTCODE_Q,
       6,
       { -1, 4, 0, -1, -1, -1,}
     },
 
     { QStringLiteral("Over Distance"),
       event_over_distance,
-      mc_SYSTEM, sc_SYSTEM_EVENTCODE_Q,
+      MRQ_mc_SYSTEM, MRQ_sc_SYSTEM_EVENTCODE_Q,
       6,
       { -1, 2, 0, -1, -1, -1,}
     },
     { QStringLiteral("Over Angle"),
       event_over_angle,
-      mc_SYSTEM, sc_SYSTEM_EVENTCODE_Q,
+      MRQ_mc_SYSTEM, MRQ_sc_SYSTEM_EVENTCODE_Q,
       6,
       { -1, 2, 1, -1, -1, -1,}
     },
@@ -94,6 +94,8 @@ eventViewer::eventViewer(
 
     ui->setupUi(this);
 
+    m_pMcModel = NULL;
+
     //! set model
     ui->eventView->setModel( pModel );
     connect( pModel, SIGNAL(signal_data_changed()),
@@ -128,8 +130,18 @@ eventViewer::~eventViewer()
     delete ui;
 }
 
+void eventViewer::setMcModel( mcModel *pObj )
+{
+    Q_ASSERT( NULL != pObj );
+    m_pMcModel = pObj;
+}
+
 void eventViewer::slot_event( eventId id, frameData data )
 {
+    //! bypass status event
+    if ( id == event_status )
+    { return; }
+
     if ( ui->chkView->isChecked() )
     {
         //! remove the first item
@@ -139,12 +151,38 @@ void eventViewer::slot_event( eventId id, frameData data )
         }
 
         QString str;
-
         str = QString("ID:%1,Time:%2,FrameId:%3,Data:").arg( id ).arg( QDateTime::currentDateTime().toString("hh:mm:ss.zzz") ).arg( data.frameId(), 0, 16 );
         str.append( data.toHex(' ') );
 
         ui->listWidget->addItem(str);
         ui->listWidget->setCurrentRow( ui->listWidget->count() - 1 );
+    }
+
+    //! log the file
+    if ( ui->chkLog->isChecked() )
+    {
+        do
+        {
+            Q_ASSERT( NULL != m_pMcModel );
+            QFile file( m_pMcModel->mSysPref.mEventLogFile );
+            if ( !file.open( QIODevice::Append) )
+            {
+                sysError( tr("Fail on file"), m_pMcModel->mSysPref.mEventLogFile );
+                break;
+            }
+
+            //! log the file
+            QString str;
+            str = QString("ID:%1,Time:%2,FrameId:%3,Data:").arg( id ).arg( QDateTime::currentDateTime().toString("hh:mm:ss.zzz") ).arg( data.frameId(), 0, 16 );
+            str.append( data.toHex(' ') );
+
+            if ( str.length() != file.write( str.toUtf8().data(), str.length() ) )
+            {
+                sysError( tr("Fail on file"), m_pMcModel->mSysPref.mEventLogFile );
+            }
+
+        }while( 0 );
+
     }
 }
 
@@ -171,7 +209,6 @@ void eventViewer::slot_exception_changed()
     Q_ASSERT( NULL != pEventActionModel );
 
     Q_ASSERT( NULL != pEventActionModel->items() );
-logDbg();
 
     int eIndex;
     foreach( EventAction *pAction, *pEventActionModel->items() )
@@ -188,7 +225,7 @@ logDbg();
                               _exceptions_[eIndex].len );
 
         receiveCache::setFrameEventEnable( event, pAction->enable() );
-    }logDbg();
+    }
 }
 
 void eventViewer::on_btnExport_clicked()

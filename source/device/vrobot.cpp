@@ -82,6 +82,7 @@ VRobot::VRobot()
     mTrigSrcs = 2;
 
     mPoseCount = 0;
+    mAbsCount = 0;
 
     mbInterpAble = false;
     mbEncoderAble = true;
@@ -132,7 +133,9 @@ VRobot::~VRobot()
 }
 
 void VRobot::postCtor()
-{}
+{
+
+}
 
 void VRobot::gcWorker()
 {

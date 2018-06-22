@@ -1,8 +1,10 @@
 #include "megatron.h"
 
-int robotMegatron::call( const tpvRegion &region )
+int robotMegatron::call( int n, const tpvRegion &region )
 {
     onLine();
+
+    setLoop( n, region );
 
     lpc()->postMsg( (eRoboMsg)(MegaDevice::mrq_msg_call), region );
 

@@ -41,6 +41,7 @@ public:
 
     bool mAutoExpand;
     QString mDumpPath;      //! absolute path
+    QString mEventLogFile;
 
     bool mbSearchOnOpen;
     bool mbAutoLoadSetup;
@@ -53,6 +54,10 @@ public:
                             //! misa
     bool mMisaEn;
     quint32 mMisaSocket;
+
+    bool mComEn;
+    QString mComName;
+
     QString mRemoteDirPath;
 
                                     //! motion

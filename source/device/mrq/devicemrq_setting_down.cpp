@@ -9,8 +9,9 @@ namespace MegaDevice
 {
 
 
-#define MRQ_PROGRESS_DOWN( prog, info )      MRQ_PROGRESS( prog, info );\
-                                    QThread::msleep( 50 );
+#define MRQ_PROGRESS_DOWN( prog, info )      MRQ_PROGRESS( prog, info );
+
+//                                    QThread::msleep( 50 );
 
 int deviceMRQ::_applySetting()
 {

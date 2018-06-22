@@ -39,7 +39,8 @@ void SinanjuConfig::spyEdited()
     QCheckBox *checkBoxes[]=
     {
     };
-
+    QRadioButton *radBoxes[] = {
+    };
     QLineEdit *edits[]={
 
     };

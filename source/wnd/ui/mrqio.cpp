@@ -41,7 +41,8 @@ void mrqIo::spyEdited()
 //    {
 //        ui->chkLevel,
 //    };
-
+//    QRadioButton *radBoxes[] = {
+//    };
 //    QLineEdit *edits[]={
 //    };
 

@@ -52,6 +52,13 @@ void instServer::slot_newConnection()
     connect( &mSignalMap, SIGNAL(mapped(QObject*)),
              SLOT(slot_readyRead(QObject*)));
 
+    //! destroy
+    mServiceMutex.lock();
+        mServiceSockets.append( pSocket );
+        connect( pSocket, SIGNAL(destroyed(QObject*)),
+                 this, SLOT(slot_destroyConnection(QObject *)));
+    mServiceMutex.unlock();
+
     //! disconnect
     connect( pSocket, SIGNAL(disconnected()),
              pSocket, SLOT(deleteLater()));
@@ -63,7 +70,7 @@ void instServer::slot_readyRead( QObject *pObj )
     Q_ASSERT( NULL != pObj );
 
     QTcpSocket *pSocket = (QTcpSocket *)pObj;
-qDebug()<<__FUNCTION__<<__LINE__<<pSocket->size();
+//qDebug()<<__FUNCTION__<<__LINE__<<pSocket->size();
     //! set obj name
     //! do not set name
     if ( pSocket->objectName().length() < 1 )
@@ -72,21 +79,43 @@ qDebug()<<__FUNCTION__<<__LINE__<<pSocket->size();
         {
             QByteArray ary = pSocket->readLine();
             pSocket->setObjectName( ary.trimmed() );
-            qDebug()<<__FUNCTION__<<__LINE__<<ary;
+//            qDebug()<<__FUNCTION__<<__LINE__<<ary;
         }
     }
 
     //! have set name
     if ( pSocket->objectName().length() > 0 )
     {
-        //! according the name
-        QByteArray ary = pSocket->readAll();
-        if ( ary.length() >  0 )
+//        //! according the name
+//        QByteArray ary = pSocket->readAll();
+//        if ( ary.length() >  0 )
+//        {
+//            qDebug()<<__FUNCTION__<<__LINE__<<ary;
+//            dataIn( pSocket, pObj->objectName(), ary );
+//        }
+
+        QByteArray ary;
+//        while( pSocket->objectName().length() > 0 )
+        while( pSocket->canReadLine() )
         {
-            qDebug()<<__FUNCTION__<<__LINE__<<ary;
-            dataIn( pSocket, pObj->objectName(), ary );
+            ary = pSocket->readLine();
+            if ( ary.length() > 0 )
+            {
+                qDebug()<<__FUNCTION__<<__LINE__<<ary;
+                dataIn( pSocket, pObj->objectName(), ary );
+            }
         }
     }
+}
+
+void instServer::slot_destroyConnection( QObject *pObj )
+{
+    Q_ASSERT( NULL != pObj );
+
+    mServiceMutex.lock();
+        QTcpSocket *pSocket = (QTcpSocket*)pObj;
+        mServiceSockets.removeAll( pSocket );
+    mServiceMutex.unlock();
 }
 
 void instServer::start( quint32 port )
@@ -101,6 +130,17 @@ void instServer::start( quint32 port )
 }
 void instServer::stop()
 {
+    //! for the sockets
+    mServiceMutex.lock();
+        foreach( QTcpSocket *pSock, mServiceSockets )
+        {
+            Q_ASSERT( NULL != pSock );
+            pSock->close();
+        }
+        mServiceSockets.clear();
+    mServiceMutex.unlock();
+
+    //! server
     mServer.close();
 }
 bool instServer::isListening()

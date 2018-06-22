@@ -1,9 +1,9 @@
 
 #include "deviceMRQ.h"
 
-//#ifdef DEVICE_EMIT_SIGNAL
-//#include "../../app/dpcobj.h"
-//#endif
+
+//! for desc
+#include "../mrv_board/MRV_model.h"
 
 namespace MegaDevice
 {
@@ -77,6 +77,17 @@ int deviceMRQ::upload()
     return 0;
 }
 
+QList<int> deviceMRQ::deviceIds()
+{
+    QList<int> ids;
+
+    ids<<mCAN_RECEIVEID<<mCAN_SENDID<<mCAN_GROUPID1;
+    return ids;
+}
+
+QString deviceMRQ::deviceFullDesc()
+{ return getFullDesc(0); }
+
 int deviceMRQ::testAdd( int a, int b )
 { return a + b; }
 
@@ -90,9 +101,23 @@ QString deviceMRQ::loadDesc()
     { logDbg();return mDesc; }
 
     //! format the type
-    mDesc = QString("%1-%2").arg( MRQ_model::toString( type ),
-                                  MRQ_model::toString( type2 ) );
-    logDbg()<<mDesc;
+    //! mrq
+    if ( type == MRQ_LINK_DEVICEINFO_MRQ )
+    {
+        mDesc = QString("%1-%2").arg( MRQ_model::toString( type ),
+                                      MRQ_model::toString( type2 ) );
+        logDbg()<<mDesc;
+    }
+    //! mrv
+    else if ( type == MRQ_LINK_DEVICEINFO_MRV )
+    {
+        MRV_model mrvModel;
+        mDesc = QString("%1-%2").arg( mrvModel.toString( (MRV_LINK_DEVICEINFO)type ),
+                                      mrvModel.toString( (MRV_LINK_DEVICEINFO_1)type2 ) );
+        logDbg()<<mDesc;
+    }
+    else
+    {}
 
     return mDesc;
 }
@@ -102,7 +127,7 @@ QString deviceMRQ::loadSN()
     int ret;
 
     //! write
-    ret = m_pBus->write(DEVICE_RECEIVE_ID, (byte)mc_SYSTEM, (byte)sc_SYSTEM_SN_Q);
+    ret = m_pBus->write(DEVICE_RECEIVE_ID, (byte)MRQ_mc_SYSTEM, (byte)MRQ_sc_SYSTEM_SN_Q);
     if (ret != 0)
     { return mSn; }
 
@@ -209,8 +234,8 @@ int deviceMRQ::loadFanPwm()
 {logDbg()<<mFanInfo.mDuty<<mFanInfo.mFreq;
     int ret;
     ret = m_pBus->read(DEVICE_RECEIVE_ID,
-                        (byte)mc_SYSTEM,
-                        (byte)(sc_SYSTEM_FANPARA_Q),
+                        (byte)MRQ_mc_SYSTEM,
+                        (byte)(MRQ_sc_SYSTEM_FANPARA_Q),
                         &mFanInfo.mDuty,
                         &mFanInfo.mFreq );
     if (ret != 0)
@@ -226,8 +251,8 @@ int deviceMRQ::loadLedPwm()
     for ( int i = 0; i < 4; i++ )
     {logDbg()<<mLedInfo[i].mDuty<<mLedInfo[i].mFreq;
         ret = m_pBus->read(DEVICE_RECEIVE_ID,
-                            (byte)mc_SYSTEM,
-                            (byte)(sc_SYSTEM_ARMLEDPARA_Q),
+                            (byte)MRQ_mc_SYSTEM,
+                            (byte)(MRQ_sc_SYSTEM_ARMLEDPARA_Q),
                             (byte)(i),
                             &mLedInfo[i].mDuty,
                             &mLedInfo[i].mFreq );

@@ -55,6 +55,9 @@
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
       <widget class="QDoubleSpinBox" name="spinNow">
+       <property name="toolTip">
+        <string>Indicator</string>
+       </property>
        <property name="decimals">
         <number>3</number>
        </property>

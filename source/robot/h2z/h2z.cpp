@@ -25,6 +25,10 @@ robotH2Z::robotH2Z()
     setAxesDefName( 3 );
     setJointName( 3 );
 
+    setPoseCount( 2 );
+    mPoseTitles.clear();
+    mPoseTitles<<"X"<<"Y";
+
     mDetail = QString::fromLocal8Bit( (char*)_detail, sizeof_array(_detail) );
 
     //! joint name
@@ -36,12 +40,14 @@ robotH2Z::robotH2Z()
     mImage = QImage::fromData( _megaimage, sizeof(_megaimage) );
 
     mArmLengths.clear();
-//    mArmLengths<<13.4<<13.4<<802<<494<<52<<38;
     mArmLengths<<13.4<<13.4<<580<<494<<52<<38;
 
     mJointCcwMask[0] = false;
     mJointCcwMask[1] = false;
-    mJointCcwMask[2] = false;
+    mJointCcwMask[2] = true;
+
+    mJointZeroCcw.clear();
+    mJointZeroCcw<<false<<false<<true;
 
     mZeroX = 32.7;
     mZeroY = 0;

@@ -49,7 +49,8 @@ void H2Pref::spyEdited()
     QCheckBox *checkBoxes[]=
     {
     };
-
+    QRadioButton *radBoxes[] = {
+    };
     QLineEdit *edits[]={
 
     };
@@ -86,7 +87,9 @@ void H2Pref::updateData()
                         ui->spinZeroAngle->value() );
 
     pRobo->setGap( ui->spinGapTime->value(),
-                   ui->spinGapDist->value() );
+                   ui->spinGapDist->value(),
+                   ui->spinGapZTime->value(),
+                   ui->spinGapZDist->value() );
 }
 
 void H2Pref::updateUi()
@@ -104,10 +107,13 @@ void H2Pref::updateUi()
     ui->spinZeroTime->setValue( time );
     ui->spinZeroAngle->setValue( dist );
 
-    double gapTime, gapDistance;
-    pRobo->gap( gapTime, gapDistance );
+    double gapTime, gapDistance, gapZTime, gapZDistance;
+    pRobo->gap( gapTime, gapDistance, gapZTime, gapZDistance );
     ui->spinGapTime->setValue( gapTime );
     ui->spinGapDist->setValue( gapDistance );
+
+    ui->spinGapZTime->setValue( gapZTime );
+    ui->spinGapZDist->setValue( gapZDistance );
 }
 
 void H2Pref::adaptUi()
@@ -134,6 +140,14 @@ void H2Pref::adaptUi()
     //! z enable
     ui->labelZ->setVisible( bZ );
     ui->btnZeroZ->setVisible( bZ );
+    ui->chkCcw->setVisible( bZ );
+    ui->gpZGap->setVisible( bZ );
+
+    //! ccw list
+    if ( bZ )
+    {
+        ui->chkCcw->setChecked( pBase->jointZeroCcwList().at(2) );
+    }
 
     ui->label_3->setPixmap( QPixmap(strPixmapGeo) );
 }
@@ -161,15 +175,15 @@ void H2Pref::slot_joint_zero( int jId )
     { zeroJoint( jId, false ); }    //! \note no use for joint
 }
 
-#define sig_joint( id )    emit signal_joint_zero( id );
+#define sig_joint( id, bccw )    emit signal_joint_zero( id, bccw );
 void H2Pref::on_btnZeroX_clicked()
 {
-    sig_joint( 0 );
+    sig_joint( 0, false );
 }
 
 void H2Pref::on_btnZeroY_clicked()
 {
-    sig_joint(1 );
+    sig_joint( 1, false );
 }
 
 void H2Pref::on_btnZeroBody_clicked()
@@ -187,10 +201,25 @@ void H2Pref::on_btnZeroBody_clicked()
 
     //! body zero
     //! x + y
-    pBase->goZero( tpvRegion(0,0) );
+    QList<int> jList;
+    QList<bool> ccwList;
+    if ( ui->chkCcw->isVisible() )
+    {
+        jList<<0<<1<<2;
+        ccwList<<false<<false<<ui->chkCcw->isChecked();
+    }
+    else
+    {
+        jList<<0<<1;
+        ccwList<<false<<false;
+    }
+    pBase->goZero( tpvRegion(0,0),
+                   jList,
+                   ccwList
+                   );
 }
 
 void H2Pref::on_btnZeroZ_clicked()
 {
-    sig_joint( 2 );
+    sig_joint( 2, ui->chkCcw->isChecked() );
 }

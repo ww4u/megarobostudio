@@ -10,6 +10,7 @@
 #include "../../com/basetype.h"
 
 #include "./tpvdownloader.h"
+#include "./datauploader.h"
 
 #include "devicemrq_state.h"
 
@@ -63,6 +64,8 @@ public:
 
     static QString toString( mrqState sta );
     static QStringList _mrqStateList;
+
+    static DataUploader *_pUploader;
 public:
     deviceMRQ();
     ~deviceMRQ();
@@ -99,6 +102,9 @@ public:
     virtual int uploadBaseInfo();
     virtual int uploadIDs();
     virtual int upload();
+
+    virtual QList<int> deviceIds(); //! receive/send/group
+    virtual QString deviceFullDesc();
 
 public:
     int testAdd( int a, int b );
@@ -151,6 +157,14 @@ public:
     int setLed( int ax, int duty, int freq );
 
     int hRst();
+
+    //! request
+    int requestPDM_MICSTEPDATA( byte val0
+    ,uint16 val1
+    ,uint16 val2 );
+
+    int micUpload( int ch,
+                   const QString &fileName );
 
 public:
     float getIncAngle( int ax );
@@ -228,7 +242,7 @@ public:
     void releaseDownloader();
 
 public:
-    int call( pvt_region );
+    int call( int n, pvt_region );
     int rotate( pvt_region, float t, float ang, float endV = 0 );
     int preRotate( pvt_region, float t, float ang, float endV = 0 );
     int syncRotate( pvt_region, float t, float ang, float endV, int tmo, int tick );

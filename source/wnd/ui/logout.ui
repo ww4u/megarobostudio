@@ -88,6 +88,9 @@
      </item>
      <item>
       <widget class="QSpinBox" name="spinBox">
+       <property name="toolTip">
+        <string>Count</string>
+       </property>
        <property name="minimum">
         <number>100</number>
        </property>

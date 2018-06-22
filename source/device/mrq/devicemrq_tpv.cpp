@@ -152,7 +152,7 @@ int deviceMRQ::tpvDownload(
     //! p
     framePackage.clear();
     framePackage.setFrameId( mDeviceId.mRecvId );
-    framePackage.append( (byte)mc_POSITION );
+    framePackage.append( (byte)MRQ_mc_POSITION );
     framePackage.append( (byte)ax );
     framePackage.append( (byte)page );
     framePackage.append( (byte)index );
@@ -163,7 +163,7 @@ int deviceMRQ::tpvDownload(
     //! v
     framePackage.clear();
     framePackage.setFrameId( mDeviceId.mRecvId );
-    framePackage.append( (byte)mc_VELOCITY );
+    framePackage.append( (byte)MRQ_mc_VELOCITY );
     framePackage.append( (byte)ax );
     framePackage.append( (byte)page );
     framePackage.append( (byte)index );
@@ -174,7 +174,7 @@ int deviceMRQ::tpvDownload(
     //! t
     framePackage.clear();
     framePackage.setFrameId( mDeviceId.mRecvId );
-    framePackage.append( (byte)mc_TIME );
+    framePackage.append( (byte)MRQ_mc_TIME );
     framePackage.append( (byte)ax );
     framePackage.append( (byte)page );
     framePackage.append( (byte)index );
@@ -312,7 +312,6 @@ int deviceMRQ::pvtWrite( pvt_region,
             { sysError( QObject::tr("end speed keeped fail") ); }
             else
             {
-//                sysLog( QString::number( from), QString::number( len ), QString::number( list.size() ) );
                 sysLog( QString::number( list.at(lastIndex)->mV) );
                 sysLog( QObject::tr("end speed keeped") );
             }
@@ -326,6 +325,17 @@ int deviceMRQ::pvtWrite( pvt_region,
             { sysError( QObject::tr("end speed stoped fail") ); }
             else
             {  }
+        }
+
+        //! motion mode: pvt, lvt1, lvt2
+        //! valid motion mode
+        if ( region.motionMode() >= 0 )
+        {
+            ret = setMOTIONPLAN_MOTIONMODE( region.axes(),
+                                          (MRQ_MOTION_SWITCH_1)region.page(),
+                                          (MRQ_MOTIONPLAN_MOTIONMODE_1)region.motionMode() );
+            if ( ret != 0 )
+            { sysError( QObject::tr("motion mode fail") ); }
         }
 
         pLoader->append( list, from, len );
@@ -344,7 +354,7 @@ int deviceMRQ::pvtWrite( pvt_region,
 {
     DELOAD_REGION();
 
-    logDbg()<<t1<<p1<<t2<<p2;
+//    logDbg()<<t1<<p1<<t2<<p2;
     //! point 1
     tpvRow *pRow1 = new tpvRow();
     if ( NULL == pRow1 )

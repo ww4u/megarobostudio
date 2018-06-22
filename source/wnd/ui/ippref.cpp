@@ -40,7 +40,8 @@ void IPPref::spyEdited()
     QCheckBox *checkBoxes[]=
     {
     };
-
+    QRadioButton *radBoxes[] = {
+    };
     QLineEdit *edits[]={
 
     };
@@ -105,6 +106,9 @@ void IPPref::updateUi()
 
     ui->spinIGapTime->setValue( iGapT );
     ui->spinIGapDist->setValue( iGapD );
+
+    ui->chkCcwValve->setChecked( pRobo->jointZeroCcwList().at(0) );
+    ui->chkCcwInj->setChecked( pRobo->jointZeroCcwList().at(1) );
 }
 
 void IPPref::adaptUi()

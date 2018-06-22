@@ -85,6 +85,8 @@ void EncoderAlarmPage::spyEdited()
     {
         ui->checkBox,
     };
+    QRadioButton *radBoxes[] = {
+    };
 
     QLineEdit *edits[]={
 

@@ -3,8 +3,8 @@
 #include "./deviceMRQ.h"
 
 #define state_timer_id      1
-//#define state_timer_tmo     time_s(1)    //! us
-#define state_timer_tmo     time_ms(500)
+#define state_timer_tmo     time_s(1)
+//#define state_timer_tmo     time_ms(500)
 #define prefetch_timer_tmo  time_ms(100)
 
 #define prepare_timer_id    2
@@ -489,7 +489,6 @@ void CalcendMrqUnit::onEnter( RoboMsg &detail )
         int ret;
         ret = selfFsm()->Mrq()->setMOTION_SWITCH(
                                             selfFsm()->axes(),
-
                                             MRQ_MOTION_SWITCH_PREPARE,
                                             (MRQ_MOTION_SWITCH_1)selfFsm()->page()
                                         );

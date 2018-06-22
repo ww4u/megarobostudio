@@ -221,13 +221,13 @@ static scpi_result_t _scpi_program( scpi_t * context )
     return SCPI_RES_OK;
 }
 
-//! ax, page
+//! ax, page, cycle, motionMode
 static scpi_result_t _scpi_call( scpi_t * context )
 {
     // read
     DEF_LOCAL_VAR();
 
-    int ax, page;
+    int ax, page, cycle, motionMode;
 
     if ( SCPI_ParamInt32(context, &ax, true) != true )
     { scpi_ret( SCPI_RES_ERR ); }
@@ -235,12 +235,24 @@ static scpi_result_t _scpi_call( scpi_t * context )
     if ( SCPI_ParamInt32(context, &page, true) != true )
     { scpi_ret( SCPI_RES_ERR ); }
 
+    cycle = 1;
+    motionMode = -1;
+    do
+    {
+        if ( SCPI_ParamInt32(context, &cycle, true) != true )
+        { break; }
+
+        if ( SCPI_ParamInt32(context, &motionMode, true) != true )
+        { break; }
+    }while( 0 );
+
+
     //! robo op
     DEF_ROBO();
 
     CHECK_LINK();
 
-    pRobo->call( tpvRegion( ax, page) );
+    pRobo->call( cycle, tpvRegion( ax, page, motionMode ) );
 
     return SCPI_RES_OK;
 }

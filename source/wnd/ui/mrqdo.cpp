@@ -70,7 +70,8 @@ void MrqDO::spyEdited()
     {
         ui->chkDo,
     };
-
+    QRadioButton *radBoxes[] = {
+    };
     QLineEdit *edits[]={
 
     };

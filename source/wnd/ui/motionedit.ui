@@ -84,6 +84,9 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <property name="toolTip">
+        <string>Cycle</string>
+       </property>
        <property name="minimum">
         <number>1</number>
        </property>
@@ -96,6 +99,9 @@
       <widget class="QToolButton" name="btnStart">
        <property name="enabled">
         <bool>false</bool>
+       </property>
+       <property name="toolTip">
+        <string>Run</string>
        </property>
        <property name="text">
         <string>...</string>
@@ -116,6 +122,9 @@
       <widget class="QToolButton" name="btnStop">
        <property name="enabled">
         <bool>false</bool>
+       </property>
+       <property name="toolTip">
+        <string>Stop</string>
        </property>
        <property name="text">
         <string>...</string>
@@ -141,6 +150,9 @@
      </item>
      <item>
       <widget class="QToolButton" name="toolButton">
+       <property name="toolTip">
+        <string>Compile</string>
+       </property>
        <property name="text">
         <string>Build</string>
        </property>
@@ -193,12 +205,18 @@
          <height>24</height>
         </size>
        </property>
+       <property name="toolTip">
+        <string>Format</string>
+       </property>
       </widget>
      </item>
      <item>
       <widget class="QToolButton" name="btnExport">
        <property name="enabled">
         <bool>false</bool>
+       </property>
+       <property name="toolTip">
+        <string>Export</string>
        </property>
        <property name="text">
         <string>...</string>
@@ -316,6 +334,9 @@
      </item>
      <item>
       <widget class="QToolButton" name="btnSmartEdit">
+       <property name="toolTip">
+        <string>Smart Add</string>
+       </property>
        <property name="text">
         <string>...</string>
        </property>
@@ -366,6 +387,9 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <property name="toolTip">
+        <string>Step</string>
+       </property>
        <property name="decimals">
         <number>3</number>
        </property>
@@ -398,6 +422,9 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <property name="toolTip">
+        <string>Interplate</string>
+       </property>
        <item>
         <property name="text">
          <string>Line</string>
@@ -424,6 +451,9 @@
      </item>
      <item>
       <widget class="QToolButton" name="btnPref">
+       <property name="toolTip">
+        <string>Config</string>
+       </property>
        <property name="text">
         <string>...</string>
        </property>

@@ -146,6 +146,11 @@ void MotorMonitor::slot_net_event(
     if ( msg.getMsg() != e_interrupt_occuring )
     { return; }
 
+    if ( isVisible() )
+    {}
+    else
+    { return; }
+
     //! status
     int eId;
     eId = msg.at(0).toInt();

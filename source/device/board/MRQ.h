@@ -173,6 +173,9 @@ int getMOTOR_CURRENT( byte val0, byte * val1, bool bQuery=true );
 int setMOTOR_BACKLASH( byte val0
 ,f32 val1 );
 int getMOTOR_BACKLASH( byte val0, f32 * val1, bool bQuery=true );
+int setMOTOR_BACKLASHTEST( byte val0
+,uint16 val1 );
+int getMOTOR_BACKLASHTEST( byte val0, uint16 * val1, bool bQuery=true );
 int setENCODER_LINENUM( byte val0
 ,uint32 val1 );
 int getENCODER_LINENUM( byte val0, uint32 * val1, bool bQuery=true );
@@ -551,6 +554,16 @@ int getNEWDRIVER_MICROSTEPS(  MRQ_NEWDRIVER_MICROSTEPS * val0, bool bQuery=true 
 int setNEWDRIVER_STATE( byte val0
 ,MRQ_CAN_NETMANAGELED val1 );
 int getNEWDRIVER_STATE( byte val0, MRQ_CAN_NETMANAGELED * val1, bool bQuery=true );
+int setPDM_SAMPLESTATE( byte val0
+,MRQ_CLOCK_SYNCSTATE val1 );
+int getPDM_SAMPLESTATE( byte val0, MRQ_CLOCK_SYNCSTATE * val1, bool bQuery=true );
+int setPDM_ENCDIV( byte val0
+,byte val1 );
+int getPDM_ENCDIV( byte val0, byte * val1, bool bQuery=true );
+int getPDM_MICSTEPCOUNT( byte val0, uint16 * val1, bool bQuery=true );
+int getPDM_MICSTEPDATA( byte val0
+,uint16 val1
+,uint16 val2, byte * val3, bool bQuery=true );
 };
 }
 #endif

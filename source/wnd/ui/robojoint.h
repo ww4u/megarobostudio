@@ -21,7 +21,10 @@ public:
 
     void setAngleVisible( bool b );
     void setCcwVisible( bool b );
+    bool isCcwVisible();
+
     void setCcwChecked( bool b );
+    bool isCcwChecked();
 
     void setStepTime( float );
     float stepTime();

@@ -37,8 +37,8 @@ protected Q_SLOTS:
 private slots:
     void on_comboBox_editTextChanged(const QString &arg1);
 
-    void on_btnRst_clicked();
-    void on_btnCls_clicked();
+//    void on_btnRst_clicked();
+//    void on_btnCls_clicked();
 
     void on_comboBox_currentTextChanged(const QString &arg1);
 

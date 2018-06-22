@@ -90,6 +90,9 @@ public:
     //! name@bus
     VRobot * findRobot( const QString &fullname );
 
+    //! only name
+    VRobot * findAbbRobot( const QString &abbName );
+
     VRoboList *findBus( const QString &busName );
 
     VRobot * findRobotBySendId( int sendId, int devId, int axesId = 0 );

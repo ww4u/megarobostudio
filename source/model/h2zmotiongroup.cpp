@@ -11,6 +11,12 @@ H2ZMotionGroup::H2ZMotionGroup( const QString &className,
 
     mbStepAble = false;
     mbPrefAble = false;
+
+    mbSmartEditable = true;
+    mSmartEditColumns.clear();
+    mSmartEditColumns<<3<<4<<5;
+    mRpcReq = RpcRequest::e_req_add_h2z_key_point;
+    mRpcType = RpcRequest::e_type_f_f_f;
 }
 
 H2ZMotionGroup::~H2ZMotionGroup()
@@ -138,6 +144,18 @@ QVariant H2ZMotionGroup::headerData(int section, Qt::Orientation orientation, in
     { return QVariant( H2ZMotionItem::header(section)); }
     else
     { return QVariant(section);}
+}
+
+void H2ZMotionGroup::setRpc( int row, RpcRequest &req)
+{
+    Q_ASSERT( row < mItems.size() );
+    mItems[row]->mX = req.popFloat();
+    mItems[row]->mY = req.popFloat();
+    mItems[row]->mZ = req.popFloat();
+
+    QModelIndex editIndex = index( row, 0 );
+
+    emit dataChanged(editIndex, editIndex);
 }
 
 H2ZMotionItem *H2ZMotionGroup::operator[]( int index )

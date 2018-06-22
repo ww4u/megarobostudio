@@ -9,7 +9,7 @@
 //! ticks
 static RoboMsgTick _robo_msg_ticks[]=
 {
-    { e_download_processing, tick_ms(500) },
+    { e_download_processing, tick_ms(1000) },
 };
 
 QSemaphore RoboMsgQueue::_msgSema;

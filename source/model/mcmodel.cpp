@@ -19,19 +19,7 @@ void mcModel::preload()
 
 void mcModel::postload()
 {
-    if ( m_pInstMgr->isListening() )
-    {
-        m_pInstMgr->stop();
-        sysLog( QObject::tr("port closed") );
-    }
-
-    if ( mSysPref.mMisaEn )
-    {
-        Q_ASSERT( NULL != m_pInstMgr );
-        m_pInstMgr->start( mSysPref.mMisaSocket );
-        sysLog( QObject::tr("port"), QString::number( mSysPref.mMisaSocket ), QObject::tr("opened") );
-    }
-
+    resetCommunicate();
 }
 
 mcConnection& mcModel::getConnection()
@@ -50,4 +38,27 @@ void mcModel::init()
 void mcModel::deinit()
 {
     MegaDevice::InstMgr::free();
+}
+
+void mcModel::stopCommunicate()
+{
+    if ( m_pInstMgr->isListening() )
+    {
+        m_pInstMgr->stop();
+        sysLog( QObject::tr("port closed") );
+    }
+}
+
+void mcModel::resetCommunicate()
+{
+    //! stop
+    stopCommunicate();
+
+    //! reset again
+    if ( mSysPref.mMisaEn )
+    {
+        Q_ASSERT( NULL != m_pInstMgr );
+        m_pInstMgr->start( mSysPref.mMisaSocket );
+        sysLog( QObject::tr("port"), QString::number( mSysPref.mMisaSocket ), QObject::tr("opened") );
+    }
 }

@@ -1,8 +1,10 @@
 #include "sinanju.h"
 #include "../../com/comassist.h"
-int robotSinanju::call( const tpvRegion &region )
+int robotSinanju::call( int n, const tpvRegion &region )
 {
     onLine();
+
+    setLoop( n, region );
 
     lpc()->postMsg( (eRoboMsg)(MegaDevice::mrq_msg_call), region );
 
@@ -162,11 +164,11 @@ int robotSinanju::program( QList<TraceKeyPoint> &curve,
     { return ret; }
 
     //! 4.export
-    int lastPt = curve.size() - 1;
-    QString fileName = QString( "%1_%2_%3-%4_%5_%6.csv" ).arg( curve.at(0).x ).arg( curve.at(0).y ).arg( curve.at(0).z )
-                                                     .arg( curve.at(lastPt).x ).arg( curve.at(lastPt).y ).arg( curve.at(lastPt).z );
-    exportPlan( QCoreApplication::applicationDirPath() + "/dump/" + "plan_" + fileName, tracePlan );
-    exportJoints( QCoreApplication::applicationDirPath() + "/dump/" + "joints_" + fileName, jointsPlan );
+//    int lastPt = curve.size() - 1;
+//    QString fileName = QString( "%1_%2_%3-%4_%5_%6.csv" ).arg( curve.at(0).x ).arg( curve.at(0).y ).arg( curve.at(0).z )
+//                                                     .arg( curve.at(lastPt).x ).arg( curve.at(lastPt).y ).arg( curve.at(lastPt).z );
+//    exportPlan( QCoreApplication::applicationDirPath() + "/dump/" + "plan_" + fileName, tracePlan );
+//    exportJoints( QCoreApplication::applicationDirPath() + "/dump/" + "joints_" + fileName, jointsPlan );
 
     return 0;
 }

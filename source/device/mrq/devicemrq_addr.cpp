@@ -70,7 +70,7 @@ int deviceMRQ::applyIds( )
         //! clear all bus
         m_pBus->clear( );
 
-        m_pBus->write( DEVICE_RECEIVE_ID, mc_CAN, sc_CAN_NETMANAGESTATE_Q );
+        m_pBus->write( DEVICE_RECEIVE_ID, MRQ_mc_CAN, MRQ_sc_CAN_NETMANAGESTATE_Q );
 
         m_pBus->wait_us( m_pBus->enumTmo() );
 

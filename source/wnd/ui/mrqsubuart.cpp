@@ -54,7 +54,8 @@ void MrqSubUart::spyEdited()
     {
         ui->chkSensor,
     };
-
+    QRadioButton *radBoxes[] = {
+    };
     QLineEdit *edits[]={
 
     };

@@ -205,18 +205,18 @@ void motionEdit::on_btnExport_clicked()
         for ( int i = 0; i < itemCount; i++ )
         {
             //! t
-            outStream<<mJointsTpvGroup[from]->mItems[i]->getT()<<CSV_COL_SEP;
+            outStream<<mJointsTpvGroup[from]->mItems[i]->getT();
 
             //! p
             for ( int j = from; j < (from+len); j++ )
             {
-                outStream<<mJointsTpvGroup[j]->mItems[i]->getP()<<CSV_COL_SEP;
+                outStream<<CSV_COL_SEP<<mJointsTpvGroup[j]->mItems[i]->getP();
             }
 
             //! v
             for ( int j = from; j < (from+len); j++ )
             {
-                outStream<<mJointsTpvGroup[j]->mItems[i]->getV()<<CSV_COL_SEP;
+                outStream<<CSV_COL_SEP<<mJointsTpvGroup[j]->mItems[i]->getV();
             }
 
             outStream<<CSV_LINE_SEP;
@@ -231,11 +231,11 @@ void motionEdit::on_btnExport_clicked()
         for ( int i = 0; i < mTracePlan.size(); i++ )
         {
             //! t
-            outStream<<QString::number( mTracePlan.data()[i].t )<<CSV_COL_SEP;
+            outStream<<QString::number( mTracePlan.data()[i].t );
 
-            outStream<<QString::number( mTracePlan.data()[i].x )<<CSV_COL_SEP;
-            outStream<<QString::number( mTracePlan.data()[i].y )<<CSV_COL_SEP;
-            outStream<<QString::number( mTracePlan.data()[i].z )<<CSV_COL_SEP;
+            outStream<<CSV_COL_SEP<<QString::number( mTracePlan.data()[i].x );
+            outStream<<CSV_COL_SEP<<QString::number( mTracePlan.data()[i].y );
+            outStream<<CSV_COL_SEP<<QString::number( mTracePlan.data()[i].z );
 
             outStream<<CSV_LINE_SEP;
         }

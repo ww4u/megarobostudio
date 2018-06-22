@@ -68,6 +68,10 @@ public:
     frameHouse();
 
 public:
+    void append(const frameData &t);
+    void append(const frameHouse &t);
+
+public:
     void setId( int sendId, int recvId );
     void setSendId( int sendId );
     void setRecvId( int recvId );
@@ -79,9 +83,12 @@ public:
 
     void clear();
 
+    int bytes();
+
 public:
     int mSendId, mRecvId;       //! in device view
     QMutex mMutex;
+    int mBytes;
 };
 
 class frameWarehouse
@@ -157,6 +164,7 @@ public:
     void clear();
 
     int frameCount();
+    int frameBytes();
 
     void lockWarehouse();
     void unlockWarehouse();

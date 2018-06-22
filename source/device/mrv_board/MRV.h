@@ -16,7 +16,7 @@ int getSYSTEM_WORKMODE(  MRV_SYSTEM_WORKMODE * val0, bool bQuery=true );
 int setSYSTEM_POWERON( MRV_SYSTEM_POWERON val0 );
 int getSYSTEM_POWERON(  MRV_SYSTEM_POWERON * val0, bool bQuery=true );
 int getSYSTEM_SN(  byte * val0, char * val1, char * val2, char * val3, char * val4, char * val5, bool bQuery=true );
-int getSYSTEM_TYPE(  MRV_SYSTEM_TYPE * val0, MRV_SYSTEM_TYPE_1 * val1, bool bQuery=true );
+int getSYSTEM_TYPE(  MRV_SYSTEM_TYPE * val0, MRV_LINK_DEVICEINFO_1 * val1, bool bQuery=true );
 int getSYSTEM_SOFTVER(  char * val0, char * val1, char * val2, bool bQuery=true );
 int getSYSTEM_HARDVER(  char * val0, char * val1, bool bQuery=true );
 int getSYSTEM_BOOTVER(  char * val0, char * val1, bool bQuery=true );
@@ -127,13 +127,13 @@ int setTHRESHOLD_HIGHCURRENT( byte val0
 int getTHRESHOLD_HIGHCURRENT( byte val0, uint32 * val1, bool bQuery=true );
 int setTHRESHOLD_HICURRENTACTION( byte val0
 ,MRV_THRESHOLD_HIPRESSUREACTION val1 );
-int getTHRESHOLD_HICURRENTACTION(  byte * val0, MRV_THRESHOLD_HIPRESSUREACTION * val1, bool bQuery=true );
+int getTHRESHOLD_HICURRENTACTION( byte val0, MRV_THRESHOLD_HIPRESSUREACTION * val1, bool bQuery=true );
 int setTHRESHOLD_LOWCURRENT( byte val0
 ,uint32 val1 );
 int getTHRESHOLD_LOWCURRENT( byte val0, uint32 * val1, bool bQuery=true );
 int setTHRESHOLD_LOWCURRENTACTION( byte val0
 ,MRV_THRESHOLD_HIPRESSUREACTION val1 );
-int getTHRESHOLD_LOWCURRENTACTION(  byte * val0, MRV_THRESHOLD_HIPRESSUREACTION * val1, bool bQuery=true );
+int getTHRESHOLD_LOWCURRENTACTION( byte val0, MRV_THRESHOLD_HIPRESSUREACTION * val1, bool bQuery=true );
 int setTHRESHOLD_ONNUMS( byte val0
 ,uint32 val1 );
 int getTHRESHOLD_ONNUMS( byte val0, uint32 * val1, bool bQuery=true );
@@ -239,7 +239,7 @@ int setIOCONFIG_PARITY( byte val0
 int getIOCONFIG_PARITY( byte val0, MRV_RS232_PARITY * val1, bool bQuery=true );
 int setIOCONFIG_STOPBIT( byte val0
 ,MRV_RS232_STOPBIT val1 );
-int getIOCONFIG_STOPBIT(  byte * val0, MRV_RS232_STOPBIT * val1, bool bQuery=true );
+int getIOCONFIG_STOPBIT( byte val0, MRV_RS232_STOPBIT * val1, bool bQuery=true );
 int setIOCONFIG_APPLYPARA( byte val0 );
 };
 }

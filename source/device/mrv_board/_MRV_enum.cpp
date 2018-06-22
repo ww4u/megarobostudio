@@ -23,13 +23,6 @@ static value_desc _value_desc_MRV_SYSTEM_TYPE[] = {
 	{0,"MRQ",},
 	{1,"MRV",},
 };
-static value_desc _value_desc_MRV_SYSTEM_TYPE_1[] = {
-	{0,"C23D",},
-	{1,"C23S",},
-	{2,"M2304",},
-	{3,"MV",},
-	{4,"M2310",},
-};
 static value_desc _value_desc_MRV_RS232_BAUD[] = {
 	{0,"4800",},
 	{1,"7200",},
@@ -195,10 +188,6 @@ const char* MRV_SYSTEM_TYPE_toString( MRV_SYSTEM_TYPE eType )
 {
 	return enum_toString( (int)eType, desc_table( _value_desc_MRV_SYSTEM_TYPE ) ); 
 }
-const char* MRV_SYSTEM_TYPE_1_toString( MRV_SYSTEM_TYPE_1 eType )
-{
-	return enum_toString( (int)eType, desc_table( _value_desc_MRV_SYSTEM_TYPE_1 ) ); 
-}
 const char* MRV_RS232_BAUD_toString( MRV_RS232_BAUD eType )
 {
 	return enum_toString( (int)eType, desc_table( _value_desc_MRV_RS232_BAUD ) ); 
@@ -349,14 +338,6 @@ int MRV_SYSTEM_TYPE_toValue( const char *pStr, MRV_SYSTEM_TYPE *pEVal )
 	ret = enum_toValue( pStr, desc_table( _value_desc_MRV_SYSTEM_TYPE ), &lval );
 	if ( ret != 0 ) return ret; 
 	*pEVal=(MRV_SYSTEM_TYPE)lval;
-	return 0;
-}
-int MRV_SYSTEM_TYPE_1_toValue( const char *pStr, MRV_SYSTEM_TYPE_1 *pEVal )
-{
-	int ret, lval;
-	ret = enum_toValue( pStr, desc_table( _value_desc_MRV_SYSTEM_TYPE_1 ), &lval );
-	if ( ret != 0 ) return ret; 
-	*pEVal=(MRV_SYSTEM_TYPE_1)lval;
 	return 0;
 }
 int MRV_RS232_BAUD_toValue( const char *pStr, MRV_RS232_BAUD *pEVal )

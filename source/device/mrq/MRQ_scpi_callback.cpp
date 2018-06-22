@@ -295,13 +295,13 @@ static scpi_result_t _scpi_preMovej( scpi_t * context )
     return SCPI_RES_OK;
 }
 
-//! CALL ax, page
+//! CALL ax, page, cycle, motionMode
 static scpi_result_t _scpi_call( _scpi_t * context )
 {
     // read
     DEF_LOCAL_VAR();
 
-    int ax, page;
+    int ax, page, cycle, motionMode;
 
     if ( SCPI_RES_OK != SCPI_ParamInt32( context, &ax, true ) )
     { scpi_ret( SCPI_RES_ERR ); }
@@ -309,11 +309,23 @@ static scpi_result_t _scpi_call( _scpi_t * context )
     if ( SCPI_RES_OK != SCPI_ParamInt32( context, &page, true ) )
     { scpi_ret( SCPI_RES_ERR ); }
 
+    cycle = 1;
+    motionMode = -1;
+    do
+    {
+        if ( SCPI_ParamInt32(context, &cycle, true) != true )
+        { break; }
+
+        if ( SCPI_ParamInt32(context, &motionMode, true) != true )
+        { break; }
+    }while( 0 );
+
+
     DEF_MRQ();
 
     CHECK_LINK( ax, page );
 
-    LOCALMRQ()->call( tpvRegion(ax, page) );
+    LOCALMRQ()->call( cycle, tpvRegion(ax, page, motionMode ) );
 
     return SCPI_RES_OK;
 }
@@ -667,6 +679,100 @@ static scpi_result_t _scpi_ioOut( scpi_t * context )
 
     return SCPI_RES_OK;
 }
+//! ch, start, len
+static scpi_result_t _scpi_requestPdmData( scpi_t * context )
+{
+    int vals[3];
+
+    for ( int i = 0; i < sizeof_array(vals); i++ )
+    {
+        if ( SCPI_RES_OK != SCPI_ParamInt32( context, vals+i, true ) )
+        { scpi_ret( SCPI_RES_ERR ); }
+    }
+
+    DEF_MRQ();
+
+    if( 0 != LOCALMRQ()->requestPDM_MICSTEPDATA( vals[0], vals[1], vals[2] ) )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    return SCPI_RES_OK;
+}
+
+//! ch, fileName
+static scpi_result_t _scpi_micUpload( scpi_t * context )
+{
+    DEF_LOCAL_VAR();
+
+    int vals[1];
+
+    for ( int i = 0; i < sizeof_array(vals); i++ )
+    {
+        if ( SCPI_RES_OK != SCPI_ParamInt32( context, vals+i, true ) )
+        { scpi_ret( SCPI_RES_ERR ); }
+    }
+
+    if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
+    { scpi_ret( SCPI_RES_ERR ); }logDbg()<<strLen<<pLocalStr;
+    if (strLen < 1)
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    DEF_MRQ();
+
+    QByteArray fileName( pLocalStr,strLen );
+    if( 0 != LOCALMRQ()->micUpload( vals[0], fileName ) )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    return SCPI_RES_OK;
+}
+
+//! state, code
+//! 0,0
+static scpi_result_t _scpi_qUploadState( scpi_t * context )
+{
+    DEF_MRQ();
+
+    SCPI_ResultInt32( context, LOCALMRQ()->_pUploader->state() );
+    SCPI_ResultInt32( context, LOCALMRQ()->_pUploader->callRet() );
+
+    return SCPI_RES_OK;
+}
+
+static scpi_result_t _scpi_arb_write( scpi_t * context )
+{
+    DEF_MRQ();
+    DEF_LOCAL_VAR();
+
+    if ( SCPI_ParamArbitraryBlock(context, &pLocalStr, &strLen, true) != true )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    QByteArray stream( pLocalStr, strLen );
+    logDbg()<<stream;
+
+    return SCPI_RES_OK;
+}
+
+static scpi_result_t _scpi_arb_read( scpi_t * context )
+{
+    DEF_MRQ();
+    DEF_LOCAL_VAR();
+
+    int fId, fLen, ret;
+    byte frameBuf[32];
+    MegaDevice::DeviceId lId = LOCALMRQ()->getDeviceId();
+    ret = LOCALMRQ()->Bus()->receiveProxy()->readAFrame(
+                lId,
+                &fId,
+                frameBuf,
+                &fLen,
+                10
+                );
+    if ( ret == 0 && fLen > 0 )
+    { SCPI_ResultArbitraryBlock( context, frameBuf, fLen ); }
+    else
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    return SCPI_RES_OK;
+}
 
 static scpi_command_t _mrq_scpi_cmds[]=
 {
@@ -716,6 +822,14 @@ static scpi_command_t _mrq_scpi_cmds[]=
     CMD_ITEM( "FRAMES?", _scpi_busFrames ),
 
     CMD_ITEM( "IO:OUT", _scpi_ioOut ),
+
+    //! PDM
+    CMD_ITEM( "PDM:REQDATA", _scpi_requestPdmData ),    //! ch,start,len
+    CMD_ITEM( "PDM:MICUPLOAD", _scpi_micUpload ),       //! ch, filename
+    CMD_ITEM( "PDM:UPLOADSTATE?", _scpi_qUploadState ),
+
+    CMD_ITEM( "WRITE", _scpi_arb_write ),
+    CMD_ITEM( "READ", _scpi_arb_read ),
 
     SCPI_CMD_LIST_END
 };

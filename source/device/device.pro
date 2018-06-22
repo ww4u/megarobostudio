@@ -48,7 +48,11 @@ SOURCES = \
     ./mrq/devicemrq_setting_up.cpp \
     ./mrq/devicemrq_setting_down.cpp \
     ./mrq/devicemrq_assist.cpp \
-    ./mrq/devicemrq_task.cpp
+    ./mrq/devicemrq_task.cpp \
+    mrv/devicemrv.cpp \
+    phydevice.cpp \
+    mrq/datauploader.cpp \
+    mrv_board/mrv_model_serial.cpp
 
 
 
@@ -65,5 +69,8 @@ HEADERS = vdevice.h \
     roboworker.h \
     mrq/devicemrq_state.h \
     robostate.h \
-    mrq/devicemrq_msg.h
+    mrq/devicemrq_msg.h \
+    mrv/devicemrv.h \
+    phydevice.h \
+    mrq/datauploader.h
 

@@ -22,6 +22,9 @@ public:
 protected:
     void init();
     void deinit();
+public:
+    void stopCommunicate();
+    void resetCommunicate();
 
 public:
     MegaDevice::InstMgr *m_pInstMgr;

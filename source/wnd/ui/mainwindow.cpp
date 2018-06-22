@@ -7,7 +7,6 @@
 #include "../../bus/filebus.h"
 
 
-
 MainWindow::MainWindow(dpcObj *pObj, QWidget *parent) :
     QMainWindow(parent),
      m_pDpcObj(pObj)
@@ -474,7 +473,7 @@ void MainWindow::setupService()
     frameEvent event;
     event.setEnable( true );
     event.setId( event_status );
-    event.setMainSubCode( mc_MOTION, sc_MOTION_STATE_Q );
+    event.setMainSubCode( MRQ_mc_MOTION, MRQ_sc_MOTION_STATE_Q );
     receiveCache::setFrameEventEnable( event, true );
 
     //! sample thread
@@ -496,6 +495,17 @@ void MainWindow::setupService()
     m_pSysTimerThread = new SysTimerThread();
     Q_ASSERT( NULL != m_pSysTimerThread );
     m_pSysTimerThread->start();
+
+    //! com thread
+    m_pComThread = new ComThread();
+    Q_ASSERT( NULL != m_pComThread );
+    connect( m_pComThread, SIGNAL(signal_receive(const QString &)),
+             this, SLOT(slot_com_receive(const QString &)) );
+    connect( this, SIGNAL(sig_com_send( const QByteArray &)),
+             m_pComThread, SLOT(slot_transmit( const QByteArray &)));
+
+
+    slot_pref_changed();
 }
 
 void MainWindow::stopService()
@@ -520,12 +530,18 @@ void MainWindow::stopService()
     m_pRoboNetThread = NULL;
 
     //! timer
-//    m_pSysTimerThread->quit();
-//    m_pSysTimerThread->wait();
     m_pSysTimerThread->sigExit();
     m_pSysTimerThread->wait();
     delete m_pSysTimerThread;
     m_pSysTimerThread = NULL;
+
+    //! com thread
+    if ( m_pComThread->isRunning() )
+    {
+        m_pComThread->requestInterruption();
+        m_pComThread->wait();
+    }
+    delete m_pComThread;
 }
 
 void MainWindow::regSysVar()
@@ -1039,19 +1055,26 @@ modelView *MainWindow::createRoboProp( mcModelObj *pObj )
     VRobot *pBase = (VRobot*)pObj;
     Q_ASSERT( NULL != pBase );
 
-    //! devices
+    //! mrq
     if ( robot_is_mrq( pBase->getId() ) )
     {
         mrqProperty *pProp;
-        pProp = new mrqProperty( pBase );logDbg();
-
-//        TestProp *pProp;
-//        pProp = new TestProp();
-
+        pProp = new mrqProperty( pBase );
         Q_ASSERT( NULL != pProp );
         createModelView( pProp, pBase );        //! device is a model
 
         return pProp;
+    }
+    //! mrv
+    else if ( robot_is_mrv( pBase->getId() ) )
+    {
+        MrvProp *pmrvProp;
+        pmrvProp = new MrvProp( pBase );
+
+        Q_ASSERT( NULL != pmrvProp );
+        createModelView( pmrvProp, pBase );
+
+        return pmrvProp;
     }
     //! robot
     else if ( robot_is_robot( pBase->getId() ) )
@@ -1239,6 +1262,9 @@ void MainWindow::on_actionForceStop_triggered()
     if ( NULL != m_pDeviceMgr->m_pMgr )
     { m_pDeviceMgr->m_pMgr->emergencyStop(); }
 
+    mMcModel.resetCommunicate();
+    slot_pref_changed();
+
     m_pSysTimerThread->stopAll();
 }
 
@@ -1263,7 +1289,7 @@ void MainWindow::on_actionAngle_A_triggered()
         m_pAngleMonitor->setWindowTitle( tr("Angle") );
 
         QMap<int, QString> subMap;
-        subMap[ MRQ_REPORT_STATE_XANGLE ] = tr("Increase Angle");
+//        subMap[ MRQ_REPORT_STATE_XANGLE ] = tr("Increase Angle");
         subMap[ MRQ_REPORT_STATE_ABSENC ] = tr("Absolute Angle");
         m_pAngleMonitor->setDataIds( subMap );
         m_pAngleMonitor->setDataId( MRQ_REPORT_STATE_ABSENC );
@@ -1343,3 +1369,68 @@ void MainWindow::on_actiontest_triggered()
     qss.close();
 }
 
+
+void MainWindow::slot_com_receive( const QString &str )
+{logDbg()<<str;
+    //! find device and do
+    if ( str.length() < 3 )
+    { sysError( tr("Invlid cmd"), str );
+        return;
+    }
+
+    //! get name
+    QStringList secList = str.split( " ", QString::SkipEmptyParts );
+    if ( secList.size() < 2 )
+    { sysError( tr("Invlid cmd"), str );
+        return;
+    }
+
+    //! \todo full name
+    VRobot * pRobo = mMcModel.m_pInstMgr->findAbbRobot( secList.at(0) );
+    if ( NULL == pRobo )
+    { sysError( tr("Invlid cmd"), str );
+        return;
+    }
+
+    //! remove the device name
+    QString strFullCmd = str;
+    strFullCmd = strFullCmd.remove( 0, secList.at(0).size() );
+    strFullCmd.append( "\r\n" );
+    logDbg()<<strFullCmd;
+    pRobo->write( strFullCmd.toUtf8().data(), strFullCmd.length() );
+    //! read
+    {
+        int retSize = pRobo->size();
+        if ( retSize > 0 )
+        {
+            char *pOut = new char[ retSize ];
+            Q_ASSERT( NULL != pOut );
+            if ( retSize == pRobo->read( pOut, retSize ) )
+            {
+                QByteArray ary( pOut, retSize );
+                emit sig_com_send( ary );
+            }
+            else
+            {}
+
+            delete []pOut;
+        }
+    }
+}
+
+void MainWindow::slot_pref_changed()
+{
+    Q_ASSERT( NULL != m_pComThread );
+
+    if ( m_pComThread->isRunning() )
+    {
+        m_pComThread->requestInterruption();
+        m_pComThread->wait();
+    }
+
+    if ( mMcModel.mSysPref.mComEn )
+    {
+        m_pComThread->setPort( mMcModel.mSysPref.mComName );
+        m_pComThread->start();
+    }
+}

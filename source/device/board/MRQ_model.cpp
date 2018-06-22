@@ -15,69 +15,6 @@ MRQ_model::MRQ_model()
     }
 }
 
-//int MRQ_model::_serialOut( QXmlStreamWriter &writer )
-//{
-//    writer.writeStartElement("mrq");
-
-//    //! link
-//    writer.writeTextElement( "mLINK_INTFC", toString(mLINK_INTFC) );
-//    writer.writeTextElement( "mSYSTEM_WORKMODE", toString(mSYSTEM_WORKMODE) );
-
-//    //! system
-//    writer.writeTextElement( "mSYSTEM_POWERON", toString(mSYSTEM_POWERON) );
-
-//    writer.writeTextElement( "desc", mDesc );
-//    writer.writeTextElement( "sn", mSn );
-//    writer.writeTextElement( "sw", mSwVer );
-//    writer.writeTextElement( "hw", mHwVer );
-
-//    writer.writeTextElement( "fw", mFwVer );
-//    writer.writeTextElement( "bw", mBtVer );
-
-//    //! 232
-//    writer.writeTextElement( "mRS232_BAUD", toString(mRS232_BAUD) );
-//    writer.writeTextElement( "mRS232_WORDLEN", toString(mRS232_WORDLEN) );
-//    writer.writeTextElement( "mRS232_FLOWCTL", toString(mRS232_FLOWCTL) );
-//    writer.writeTextElement( "mRS232_PARITY", toString(mRS232_PARITY) );
-
-//    writer.writeTextElement( "mRS232_STOPBIT", toString(mRS232_STOPBIT) );
-
-//    //! can
-//    writer.writeTextElement( "mCAN_TYPE", toString(mCAN_TYPE) );
-//    writer.writeTextElement( "mCAN_BAUD", toString(mCAN_BAUD) );
-//    writer.writeTextElement( "mCAN_GROUP", DeviceModel::toString(mCAN_GROUP) );
-//    writer.writeTextElement( "mCAN_SENDID", DeviceModel::toString(mCAN_SENDID) );
-
-//    writer.writeTextElement( "mCAN_RECEIVEID", DeviceModel::toString(mCAN_RECEIVEID) );
-//    writer.writeTextElement( "mCAN_GROUPID1", DeviceModel::toString(mCAN_GROUPID1) );
-//    writer.writeTextElement( "mCAN_GROUPID2", DeviceModel::toString(mCAN_GROUPID2) );
-//    writer.writeTextElement( "mCAN_BROADCASTID", DeviceModel::toString(mCAN_BROADCASTID) );
-
-//    writer.writeTextElement( "mCAN_NETMANAGESTATE", toString(mCAN_NETMANAGESTATE) );
-
-//    writer.writeTextElement( "mCAN_NETMANAGEID_0", DeviceModel::toString(mCAN_NETMANAGEID[0]) );
-//    writer.writeTextElement( "mCAN_NETMANAGEID_1", DeviceModel::toString(mCAN_NETMANAGEID[1]) );
-//    writer.writeTextElement( "mCAN_NETMANAGEID_2", DeviceModel::toString(mCAN_NETMANAGEID[2]) );
-
-//    writer.writeTextElement( "mCAN_NETMANAGEHASH", DeviceModel::toString(mCAN_NETMANAGEHASH) );
-////    writer.writeTextElement( "mCAN_NETMANAGESIGNATURESIZE", DeviceModel::toString(mCAN_NETMANAGESIGNATURESIZE) );
-//    writer.writeTextElement( "mCLOCK_FREQUENCY", DeviceModel::toString(mCLOCK_FREQUENCY) );
-
-//    writer.writeTextElement( "mCLOCK_SYNCREGISTER", toString(mCLOCK_SYNCREGISTER) );
-//    writer.writeTextElement( "mCLOCK_STARTTYPE", toString(mCLOCK_STARTTYPE) );
-//    writer.writeTextElement( "mCLOCK_SYNCSTATE", toString(mCLOCK_SYNCSTATE) );
-//    writer.writeTextElement( "mCLOCK_COUNT", DeviceModel::toString(mCLOCK_COUNT) );
-
-//    //! motors
-//    for ( int i = 0; i < axes(); i++ )
-//    {
-//        save_motor( i, writer );
-//    }
-
-//    writer.writeEndElement();
-
-//    return 0;
-//}
 
 int MRQ_model::serialOut( QXmlStreamWriter &writer )
 {

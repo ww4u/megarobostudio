@@ -39,14 +39,16 @@ void RoboJoint::setAngleVisible( bool b )
 }
 
 void RoboJoint::setCcwVisible( bool b )
-{
-    ui->chkInvert->setVisible( b );
-}
+{ ui->chkInvert->setVisible( b ); }
+
+bool RoboJoint::isCcwVisible()
+{ return ui->chkInvert->isVisible(); }
 
 void RoboJoint::setCcwChecked( bool b )
-{
-    ui->chkInvert->setChecked( b );
-}
+{ ui->chkInvert->setChecked( b ); }
+
+bool RoboJoint::isCcwChecked()
+{ return ui->chkInvert->isChecked(); }
 
 void RoboJoint::setStepTime( float t )
 { mStepTime = t; }

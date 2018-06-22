@@ -354,7 +354,7 @@ logDbg();
 //! broadcast
 int InstMgr::emergencyStop()
 {
-    byte buf[] = { mc_MOTION, sc_MOTION_SWITCH, CAN_BROAD_CHAN, MRQ_MOTION_SWITCH_EMERGSTOP, 0 };
+    byte buf[] = { MRQ_mc_MOTION, MRQ_sc_MOTION_SWITCH, CAN_BROAD_CHAN, MRQ_MOTION_SWITCH_EMERGSTOP, 0 };
     int ret;
 
     //! 1. broadcast
@@ -364,7 +364,6 @@ int InstMgr::emergencyStop()
         Q_ASSERT( NULL != pBus );
         ret = pBus->doWrite( broadId, buf, sizeof(buf) );
     }
-//    ret = mCanBus.doWrite( broadId, buf, sizeof(buf) );
 
     //! 2. request
     ret = requestStates();
@@ -374,7 +373,7 @@ int InstMgr::emergencyStop()
 
 int InstMgr::hardReset()
 {
-    byte buf[] = { mc_MOTION, sc_MOTION_SWITCH, CAN_BROAD_CHAN, MRQ_MOTION_SWITCH_RESET, 0 };
+    byte buf[] = { MRQ_mc_MOTION, MRQ_sc_MOTION_SWITCH, CAN_BROAD_CHAN, MRQ_MOTION_SWITCH_RESET, 0 };
     int ret;
 
     //! 1. broadcast
@@ -384,7 +383,6 @@ int InstMgr::hardReset()
         Q_ASSERT( NULL != pBus );
         ret = pBus->doWrite( broadId, buf, sizeof(buf) );
     }
-//    ret = mCanBus.doWrite( broadId, buf, sizeof(buf) );
 
     //! 2. request state
     ret = requestStates();
@@ -397,7 +395,7 @@ int InstMgr::requestStates()
     int ret = 0;
     DeviceId broadId( CAN_BROAD_ID );
     //! request state for each page
-    byte stateBuf[]= { mc_MOTION, sc_MOTION_STATE_Q, CAN_BROAD_CHAN, 0 };
+    byte stateBuf[]= { MRQ_mc_MOTION, MRQ_sc_MOTION_STATE_Q, CAN_BROAD_CHAN, 0 };
 
     //! for each page
     for ( byte i = 0; i < 10; i++ )
@@ -597,6 +595,30 @@ VRobot * InstMgr::findRobot( const QString &fullname )
     Q_ASSERT( strList.size() >  1 );
     return findRobot( strList[0], strList[1] );
 }
+
+VRobot * InstMgr::findAbbRobot( const QString &abbName )
+{
+    VRobot *lRobo;
+    foreach( VRoboList *pList, mDeviceTree )
+    {
+        Q_ASSERT( NULL != pList );
+
+        lRobo = findRobot( abbName, pList->bus()->name() );
+        if ( NULL != lRobo )
+        { return lRobo; }
+    }
+
+    foreach( VRoboList *pList, mFileDeviceTree )
+    {
+
+        lRobo = findRobot( abbName, pList->bus()->name() );
+        if ( NULL != lRobo )
+        { return lRobo; }
+    }
+
+    return NULL;
+}
+
 VRoboList *InstMgr::findBus( const QString &busName )
 {
     foreach( VRoboList *pList, mDeviceTree )
@@ -879,7 +901,7 @@ int InstMgr::probeCANBus( CANBus *pNewBus,
             }
 
             //! get info
-            pMRQ->rst();
+//            pMRQ->rst();
             pMRQ->uploadDesc();
 
 //            logDbg()<<QString::number( (uint32)pMRQ, 16 );

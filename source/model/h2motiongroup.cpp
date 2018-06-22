@@ -38,6 +38,12 @@ H2MotionGroup::H2MotionGroup( const QString &className, const QString &fileName 
               <<"x"
               <<"y"
               <<"comment";
+
+    mbSmartEditable = true;
+    mSmartEditColumns.clear();
+    mSmartEditColumns<<3<<4;
+    mRpcReq = RpcRequest::e_req_add_h2_key_point;
+    mRpcType = RpcRequest::e_type_f_f;
 }
 
 H2MotionGroup::~H2MotionGroup()
@@ -159,6 +165,17 @@ QVariant H2MotionGroup::headerData(int section, Qt::Orientation orientation, int
     { return QVariant( mHeaderList.at(section) ); }
     else
     { return QVariant(section);}
+}
+
+void H2MotionGroup::setRpc( int row, RpcRequest &req)
+{
+    Q_ASSERT( row < mItems.size() );
+    mItems[row]->mX = req.popFloat();
+    mItems[row]->mY = req.popFloat();
+
+    QModelIndex editIndex = index( row, 0 );
+
+    emit dataChanged(editIndex, editIndex);
 }
 
 H2MotionItem *H2MotionGroup::operator[]( int index )

@@ -9,7 +9,11 @@
 
 #include "axesknob.h"
 #include "roboaxes.h"
+
+//! panel createor
 #include "t4panel.h"
+#include "h2panel.h"
+#include "h2zpanel.h"
 
 deviceMgr::deviceMgr(QWidget *parent) :
     modelView(parent),
@@ -69,6 +73,7 @@ void deviceMgr::setupUi()
 {
     //! device menu
     m_pDeviceMenu = new QMenu( this );
+    Q_ASSERT( NULL != m_pDeviceMenu );
 
     m_pDeviceMenu->addAction( QIcon( ":/res/image/icon/219.png" ),
                               tr("Export setup..."),
@@ -99,6 +104,38 @@ void deviceMgr::setupUi()
                               this,
                               SLOT( context_mrq_prop() ) );
 
+    //! mrv menu
+    m_pMRVMenu = new QMenu( this );
+    Q_ASSERT( NULL != m_pMRVMenu );
+
+    m_pMRVMenu->addAction( QIcon( ":/res/image/icon/219.png" ),
+                              tr("Export setup..."),
+                              this,
+                              SLOT(context_mrv_export()) );
+    /*m_pDeviceImportAction =*/ m_pMRVMenu->addAction( QIcon( ":/res/image/icon/218.png" ),
+                              tr("Import setup..."),
+                              this,
+                              SLOT(context_mrv_import()) );
+    m_pMRVMenu->addSeparator();
+    m_pMRVMenu->addAction( QIcon( ":/res/image/icon/332.png" ),
+                              tr("Upload from device"),
+                              this,
+                              SLOT(context_mrv_upload()) );
+    m_pMRVMenu->addSeparator();
+    m_pMRVMenu->addAction( QIcon( ":/res/image/icon/54.png" ),
+                              tr("Alias..."),
+                              this,
+                              SLOT( context_mrv_alias() ) );
+    m_pMRVMenu->addSeparator();
+    m_pMRVMenu->addAction( QIcon( ":/res/image/icon/55.png" ),
+                              tr("Console..."),
+                              this,
+                              SLOT( context_mrv_console() ) );
+    m_pMRVMenu->addSeparator();
+    m_pMRVMenu->addAction( QIcon( ":/res/image/icon/205.png" ),
+                              tr("Prop..."),
+                              this,
+                              SLOT( context_mrv_prop() ) );
 
     //! axes menu
     m_pAxesMenu = new QMenu(this);
@@ -124,7 +161,7 @@ void deviceMgr::setupUi()
                               tr("Joint..."),
                               this,
                               SLOT( context_robo_axes() ) );
-    m_pT4PanelAction = m_pRoboMenu->addAction( QIcon( ":/res/image/icon2/mobile.png" ),
+    m_pRoboPanelAction = m_pRoboMenu->addAction( QIcon( ":/res/image/icon2/mobile.png" ),
                               tr("Panel..."),
                               this,
                               SLOT( context_robo_panel() ) );
@@ -163,7 +200,7 @@ void deviceMgr::updateData()
     logDbg()<<devTree.size();
 
     foreach( VRoboList *pList, devTree )
-    {logDbg();
+    {
         Q_ASSERT( NULL != pList );
         Q_ASSERT( NULL != pList->bus() );
 
@@ -172,7 +209,7 @@ void deviceMgr::updateData()
             updatePhyBusTree( pList );
         }
         else
-        {logDbg();
+        {
             updateVirBusTree( pList );logDbg();
         }
     }
@@ -215,9 +252,10 @@ void deviceMgr::updatePhyBusTree( VRoboList *pRoboList )
     //! device
     QTreeWidgetItem *pItemDev;
     QTreeWidgetItem *pItemAxes;
-    MegaDevice::MRQ_model *pMrqModel;
+//    MegaDevice::MRQ_model *pMrqModel;
 
     //! robot
+    QList<int> ids;
     foreach( VRobot *pDev, *pRoboList )
     {
         Q_ASSERT( NULL != pDev );
@@ -226,16 +264,28 @@ void deviceMgr::updatePhyBusTree( VRoboList *pRoboList )
         Q_ASSERT( NULL != pItemDev );
 
         //! model
-        pMrqModel = ((MegaDevice::deviceMRQ *)pDev)->getModel();
-        Q_ASSERT( NULL != pMrqModel );
+//        pMrqModel = ((MegaDevice::deviceMRQ *)pDev)->getModel();
+//        Q_ASSERT( NULL != pMrqModel );
 
-        pItemDev->setText( 0, pMrqModel->getFullDesc() );
+//        pItemDev->setText( 0, pMrqModel->getFullDesc() );
+
+//        toolTips= QString("0X%1/0X%2/0X%3")
+//                .arg( pMrqModel->mCAN_RECEIVEID, 0, 16 )
+//                .arg( pMrqModel->mCAN_SENDID, 0, 16 )
+//                .arg( pMrqModel->mCAN_GROUPID1, 0, 16 )
+//                .toUpper();
+
+        pItemDev->setText( 0, pDev->deviceFullDesc() );
+
+        ids = pDev->deviceIds();
+        Q_ASSERT(ids.size()>=3);
 
         toolTips= QString("0X%1/0X%2/0X%3")
-                .arg( pMrqModel->mCAN_RECEIVEID, 0, 16 )
-                .arg( pMrqModel->mCAN_SENDID, 0, 16 )
-                .arg( pMrqModel->mCAN_GROUPID1, 0, 16 )
+                .arg( ids[0], 0, 16 )
+                .arg( ids[1], 0, 16 )
+                .arg( ids[2], 0, 16 )
                 .toUpper();
+
         pItemDev->setToolTip( 0, toolTips );
 
         //! obj type
@@ -290,7 +340,8 @@ void deviceMgr::updateVirBusTree( VRoboList *pRoboList )
         Q_ASSERT( NULL != pItemDev );
 
         pItemDev->setText( 0, pDev->name() );
-        toolTip = QString("0X%1").arg( pDev->canGroupId(), 0, 16 ).toUpper();
+        toolTip = QString("0x%1/0x%2").arg( pDev->canGroupId(), 0, 16 ).arg( pDev->subGroupId(),0, 16 );
+        toolTip = toolTip.toUpper();
         pItemDev->setToolTip(0, toolTip);
 //        pItemDev->setToolTip( 0, pDev->name() + "-" + pDev->getClass() );
 
@@ -343,9 +394,9 @@ void deviceMgr::endSearchDevice( int ret, void *pPara )
 
 int deviceMgr::postLoadOn( appMsg msg, void *pPara )
 {
-    Q_ASSERT( m_pMRQ != NULL );
+    Q_ASSERT( m_pRobo != NULL );
 
-    int ret = m_pMRQ->uploadSetting();
+    int ret = m_pRobo->uploadSetting();
 
     return ret;
 }
@@ -374,21 +425,22 @@ void deviceMgr::endLoadOn( int ret, void *pPara )
         emit signalReport( ret, tr("success") );
         sysLog( tr("upload success") );
 
-        Q_ASSERT( NULL != m_pMRQ );
-        emit signalModelUpdated( m_pMRQ );
+        Q_ASSERT( NULL != m_pRobo );
+        emit signalModelUpdated( m_pRobo );
     }
 }
 
 int deviceMgr::postImport( appMsg msg, void *pPara )
 {
-    Q_ASSERT( m_pMRQ != NULL );
-    int ret = m_pMRQ->getModel()->load( mImportFileName );
+    Q_ASSERT( m_pRobo != NULL );
+//    int ret = m_pMRQ->getModel()->load( mImportFileName );
+    int ret = m_pRobo->load( mImportFileName );
     if ( ret != 0 )
     {
         sysError(tr("load fail"));
         return -1;
     }
-    emit signalModelUpdated( m_pMRQ );
+    emit signalModelUpdated( m_pRobo );
     sysLog( mImportFileName, tr("load success") );
 
     ret = m_pMRQ->applySetting();
@@ -398,7 +450,7 @@ int deviceMgr::postImport( appMsg msg, void *pPara )
         return -1;
     }
     sysLog( mImportFileName, tr("apply success") );
-    m_pMRQ->setFilled( true );
+    m_pRobo->setFilled( true );
 
     return 0;
 }
@@ -490,9 +542,31 @@ void deviceMgr::context_import()
 }
 void deviceMgr::context_export()
 {
-    Q_ASSERT( NULL != m_pMRQ );
+//    Q_ASSERT( NULL != m_pMRQ );
 
-    if ( !m_pMRQ->isFilled() &&
+//    if ( !m_pMRQ->isFilled() &&
+//         QMessageBox::Cancel == MegaMessageBox::question(this,
+//                                 tr("question"),
+//                                 tr("Device setting has not been updated, sure to export?"),
+//                                 QMessageBox::Ok, QMessageBox::Cancel) )
+//    { return; }
+
+//    QFileDialog fDlg;
+
+//    fDlg.setAcceptMode( QFileDialog::AcceptSave );
+//    fDlg.setNameFilter( tr("Device setup (*.stp)") );
+//    fDlg.selectFile( m_pMRQ->name() + ".stp" );
+//    if ( QDialog::Accepted != fDlg.exec() )
+//    { return; }
+
+//    Q_ASSERT( m_pMRQ != NULL );
+//    m_pMRQ->getModel()->save( fDlg.selectedFiles().first() );
+
+//    sysLog( fDlg.selectedFiles().first(), tr("save success") );
+
+    Q_ASSERT( NULL != m_pRobo );
+
+    if ( !m_pRobo->isFilled() &&
          QMessageBox::Cancel == MegaMessageBox::question(this,
                                  tr("question"),
                                  tr("Device setting has not been updated, sure to export?"),
@@ -503,12 +577,11 @@ void deviceMgr::context_export()
 
     fDlg.setAcceptMode( QFileDialog::AcceptSave );
     fDlg.setNameFilter( tr("Device setup (*.stp)") );
-    fDlg.selectFile( m_pMRQ->name() + ".stp" );
+    fDlg.selectFile( m_pRobo->name() + ".stp" );
     if ( QDialog::Accepted != fDlg.exec() )
     { return; }
 
-    Q_ASSERT( m_pMRQ != NULL );
-    m_pMRQ->getModel()->save( fDlg.selectedFiles().first() );
+    m_pRobo->save( fDlg.selectedFiles().first() );
 
     sysLog( fDlg.selectedFiles().first(), tr("save success") );
 }
@@ -519,28 +592,6 @@ void deviceMgr::context_upload()
 }
 
 void deviceMgr::context_mrq_alias()
-{
-    Q_ASSERT( NULL != m_pMRQ );
-    Q_ASSERT( NULL != m_pCurrTreeItem );
-
-    bool ok;
-    QString text = QInputDialog::getText(this,
-                                         tr("Alias"),
-                                         tr("Alias"),
-                                         QLineEdit::Normal,
-                                         m_pMRQ->name(),
-                                         &ok);
-    if (ok && !text.isEmpty())
-    {
-        m_pMRQ->setName( text );        //! must be override
-        m_pCurrTreeItem->setText( 0, m_pMRQ->getModel()->getFullDesc( ) );
-
-        Q_ASSERT( NULL != m_pMRQ );
-        emit signalModelUpdated( m_pMRQ );
-    }
-}
-
-void deviceMgr::context_robo_alias()
 {
     Q_ASSERT( NULL != m_pRobo );
     Q_ASSERT( NULL != m_pCurrTreeItem );
@@ -554,8 +605,8 @@ void deviceMgr::context_robo_alias()
                                          &ok);
     if (ok && !text.isEmpty())
     {
-        m_pRobo->setName( text );
-        m_pCurrTreeItem->setText( 0, text );
+        m_pMRQ->setName( text );        //! must be override
+        m_pCurrTreeItem->setText( 0, m_pRobo->getFullDesc( ) );
 
         Q_ASSERT( NULL != m_pRobo );
         emit signalModelUpdated( m_pRobo );
@@ -577,8 +628,8 @@ void deviceMgr::context_mrq_console()
     pConsole->setClassName( "mrq" );
 
     //! title name
-    pConsole->setWindowTitle( m_pMRQ->getModel()->getFullDesc( mCurrentAxes ) );
-    pConsole->setShell( m_pMRQ );
+    pConsole->setWindowTitle( m_pRobo->getFullDesc( mCurrentAxes ) );
+    pConsole->setShell( m_pRobo );
 
     pConsole->show();
 }
@@ -602,12 +653,50 @@ void deviceMgr::context_mrq_panel()
 
 void deviceMgr::context_mrq_prop()
 {
-    Q_ASSERT( NULL != m_pMRQ );
-    Q_ASSERT( NULL != m_pmcModel );
+    Q_ASSERT( NULL != m_pRobo );
 
-    emit itemXActivated( (mcModelObj*)m_pMRQ );
+    emit itemXActivated( (mcModelObj*)m_pRobo );
 }
 
+//! mrv
+void deviceMgr::context_mrv_import()
+{ }
+void deviceMgr::context_mrv_export()
+{ context_export(); }
+void deviceMgr::context_mrv_upload()
+{}
+void deviceMgr::context_mrv_alias()
+{ context_mrq_alias(); }
+
+void deviceMgr::context_mrv_console()
+{ context_mrq_console(); }
+void deviceMgr::context_mrv_panel()
+{}
+void deviceMgr::context_mrv_prop()
+{ context_mrq_prop(); }
+
+//! robo
+void deviceMgr::context_robo_alias()
+{
+    Q_ASSERT( NULL != m_pRobo );
+    Q_ASSERT( NULL != m_pCurrTreeItem );
+
+    bool ok;
+    QString text = QInputDialog::getText(this,
+                                         tr("Alias"),
+                                         tr("Alias"),
+                                         QLineEdit::Normal,
+                                         m_pRobo->name(),
+                                         &ok);
+    if (ok && !text.isEmpty())
+    {
+        m_pRobo->setName( text );
+        m_pCurrTreeItem->setText( 0, text );
+
+        Q_ASSERT( NULL != m_pRobo );
+        emit signalModelUpdated( m_pRobo );
+    }
+}
 void deviceMgr::context_robo_console()
 {
     deviceConsole *pConsole;
@@ -653,14 +742,39 @@ void deviceMgr::context_robo_panel()
     Q_ASSERT( NULL != m_pmcModel );
     Q_ASSERT( NULL != m_pRobo );
 
-    T4Panel *pRoboPanel;
+    //! creator
+    RoboPanel *pRoboPanel = NULL;
 
-    pRoboPanel = new T4Panel( m_pmcModel,
-                               QString("%1@%2").arg(m_pRobo->name()).arg( mCurrNodeName ),
-                               this );
+    VRobot::robotEnum rId;
+    rId = m_pRobo->getId();
+
+    QString roboName = QString("%1@%2").arg(m_pRobo->name()).arg( mCurrNodeName );
+    logDbg()<<roboName;
+    if ( rId == VRobot::robot_sinanju )
+    {
+        pRoboPanel = new T4Panel( m_pmcModel,
+                                   roboName,
+                                   this );
+    }
+    else if ( rId == VRobot::robot_h2 )
+    {
+        pRoboPanel = new H2Panel( m_pmcModel,
+                                   roboName,
+                                   this );
+    }
+    else if ( rId == VRobot::robot_h2z )
+    {
+        pRoboPanel = new H2ZPanel( m_pmcModel,
+                                   roboName,
+                                   this );
+    }
+    else
+    { return; }
+
     if ( pRoboPanel == NULL )
     { return; }
 
+    //! on changed
     connect( this, SIGNAL(signal_instmgr_changed(bool,MegaDevice::InstMgr*)),
              pRoboPanel, SLOT(slot_device_changed()) );
     pRoboPanel->show();
@@ -696,6 +810,7 @@ void deviceMgr::contextMenuEvent(QContextMenuEvent *event)
     if ( pItem->data(0,Qt::UserRole).type() == (QVariant::Type)QMetaType::User )
     {}
     //! mrq axes
+    //! \todo mrv axes?
     else if ( pItem->data(0,Qt::UserRole).type() == (QVariant::Type)QMetaType::Int )
     {
         Q_ASSERT( pItem->parent() != NULL );
@@ -727,15 +842,22 @@ void deviceMgr::contextMenuEvent(QContextMenuEvent *event)
          || pObj->Type() == mcModelObj::model_composite_device
          )
     {
+
         m_pRobo = ( pObj );
         m_pCurrTreeItem = pItem;
         mCurrentAxes = -1;
 
-        //! check robot or mrq
+        //! mrq
         if ( robot_is_mrq( m_pRobo->getId() ) )
         {
             m_pMRQ = (MegaDevice::deviceMRQ*)( m_pRobo );
 
+            m_pDeviceMenu->popup( mapToGlobal( event->pos() ) );
+            event->accept();
+        }
+        //! mrv
+        else if ( robot_is_mrv( m_pRobo->getId() ) )
+        {
             m_pDeviceMenu->popup( mapToGlobal( event->pos() ) );
             event->accept();
         }
@@ -745,11 +867,14 @@ void deviceMgr::contextMenuEvent(QContextMenuEvent *event)
             Q_ASSERT( NULL != pItem->parent() );
             mCurrNodeName = pItem->parent()->text(0);
 
-            //! panel for t4
-            if ( m_pRobo->getId() == VRobot::robot_sinanju )
-            { m_pT4PanelAction->setVisible(true); }
+            //! panel for some robo
+            if ( m_pRobo->getId() == VRobot::robot_sinanju
+                 || m_pRobo->getId() == VRobot::robot_h2
+                 || m_pRobo->getId() == VRobot::robot_h2z
+                                    )
+            { m_pRoboPanelAction->setVisible(true); }
             else
-            { m_pT4PanelAction->setVisible(false); }
+            { m_pRoboPanelAction->setVisible(false); }
 
             m_pRoboMenu->popup( mapToGlobal( event->pos() ) );
             event->accept();

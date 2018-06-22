@@ -61,6 +61,9 @@ QString deviceMRQ::toString( mrqState sta )
     return _mrqStateList.at( (int)sta );
 }
 
+DataUploader *deviceMRQ::_pUploader = NULL;
+
+
 deviceMRQ::deviceMRQ()
 {
     //! downloader in ctor
@@ -71,6 +74,13 @@ deviceMRQ::deviceMRQ()
 
     //! \note only a sema for one device
 //    mDownloaderSema.release( 1 );
+
+    //! uploader
+    if ( NULL == deviceMRQ::_pUploader )
+    {
+        deviceMRQ::_pUploader = new DataUploader();
+        Q_ASSERT( NULL != deviceMRQ::_pUploader );
+    }
 }
 
 deviceMRQ::~deviceMRQ()
@@ -184,7 +194,7 @@ int deviceMRQ::getREPORT_DATA_( byte val0
     int ret = 0;
 
     uint8 lval0 = 0;
-    ret = m_pBus->read( DEVICE_RECEIVE_ID, mc_REPORT, sc_REPORT_DATA_Q , val0, (byte)val1, &lval0, bQuery);
+    ret = m_pBus->read( DEVICE_RECEIVE_ID, MRQ_mc_REPORT, MRQ_sc_REPORT_DATA_Q , val0, (byte)val1, &lval0, bQuery);
     if ( ret != 0){ log_device(); }
     if ( ret != 0) return ret;
     *val2 = lval0;
@@ -198,7 +208,7 @@ int deviceMRQ::getREPORT_DATA_( byte val0
     int ret = 0;
 
     uint16 lval0 = 0;
-    ret = m_pBus->read( DEVICE_RECEIVE_ID, mc_REPORT, sc_REPORT_DATA_Q , val0, (byte)val1, &lval0, bQuery);
+    ret = m_pBus->read( DEVICE_RECEIVE_ID, MRQ_mc_REPORT, MRQ_sc_REPORT_DATA_Q , val0, (byte)val1, &lval0, bQuery);
     if ( ret != 0){ log_device(); }
     if ( ret != 0) return ret;
     *val2 = lval0;
@@ -212,7 +222,7 @@ int deviceMRQ::getREPORT_DATA_( byte val0
     int ret = 0;
 
     uint32 lval0 = 0;
-    ret = m_pBus->read( DEVICE_RECEIVE_ID, mc_REPORT, sc_REPORT_DATA_Q , val0, (byte)val1, &lval0, bQuery);
+    ret = m_pBus->read( DEVICE_RECEIVE_ID, MRQ_mc_REPORT, MRQ_sc_REPORT_DATA_Q , val0, (byte)val1, &lval0, bQuery);
     if ( ret != 0){ log_device(); }
     if ( ret != 0) return ret;
     *val2 = lval0;
@@ -262,8 +272,8 @@ int deviceMRQ::setFanDuty( int duty )
     mFanInfo.mDuty = duty;
 
     return m_pBus->write( DEVICE_RECEIVE_ID,
-                    (byte)mc_SYSTEM,
-                   (byte)sc_SYSTEM_FANPARA,
+                    (byte)MRQ_mc_SYSTEM,
+                   (byte)MRQ_sc_SYSTEM_FANPARA,
                    mFanInfo.mDuty,
                    mFanInfo.mFreq );
 }
@@ -274,8 +284,8 @@ int deviceMRQ::setLedDuty( int i, int duty )
     mLedInfo[i].mDuty = duty;
 
     return m_pBus->write( DEVICE_RECEIVE_ID,
-                          (byte)mc_SYSTEM,
-                           (byte)sc_SYSTEM_ARMLEDPARA,
+                          (byte)MRQ_mc_SYSTEM,
+                           (byte)MRQ_sc_SYSTEM_ARMLEDPARA,
                            (byte)i,
                            mLedInfo[i].mDuty,
                            mLedInfo[i].mFreq );
@@ -286,8 +296,8 @@ int deviceMRQ::setFanFreq( int freq )
     mFanInfo.mFreq = freq;
 
     return m_pBus->write( DEVICE_RECEIVE_ID,
-                          (byte)mc_SYSTEM,
-                           (byte)sc_SYSTEM_FANPARA,
+                          (byte)MRQ_mc_SYSTEM,
+                           (byte)MRQ_sc_SYSTEM_FANPARA,
                            mFanInfo.mDuty,
                            mFanInfo.mFreq );
 }
@@ -298,8 +308,8 @@ int deviceMRQ::setLedFreq( int ax, int freq )
     mLedInfo[ax].mFreq = freq;
 
     return m_pBus->write( DEVICE_RECEIVE_ID,
-                          (byte)mc_SYSTEM,
-                   (byte)sc_SYSTEM_ARMLEDPARA,
+                          (byte)MRQ_mc_SYSTEM,
+                   (byte)MRQ_sc_SYSTEM_ARMLEDPARA,
                    (byte)ax,
                    mFanInfo.mDuty,
                    mLedInfo[ax].mFreq );
@@ -311,8 +321,8 @@ int deviceMRQ::setFan( int duty, int freq )
     mFanInfo.mFreq = freq;
 
     return m_pBus->write( DEVICE_RECEIVE_ID,
-                          (byte)mc_SYSTEM,
-                   (byte)sc_SYSTEM_FANPARA,
+                          (byte)MRQ_mc_SYSTEM,
+                   (byte)MRQ_sc_SYSTEM_FANPARA,
                    mFanInfo.mDuty,
                    mFanInfo.mFreq );
 }
@@ -323,8 +333,8 @@ int deviceMRQ::setLed( int i, int duty, int freq )
     mLedInfo[i].mFreq = freq;
 
     return m_pBus->write( DEVICE_RECEIVE_ID,
-                          (byte)mc_SYSTEM,
-                   (byte)sc_SYSTEM_ARMLEDPARA,
+                          (byte)MRQ_mc_SYSTEM,
+                   (byte)MRQ_sc_SYSTEM_ARMLEDPARA,
                    (byte)i,
                    mLedInfo[i].mDuty,
                    mLedInfo[i].mFreq );
@@ -340,19 +350,60 @@ int deviceMRQ::hRst()
                           (byte)0XA5 );
 }
 
+//! ch, start, len
+int deviceMRQ::requestPDM_MICSTEPDATA( byte val0
+,uint16 val1
+,uint16 val2 )
+{
+    //! 76 5
+    int ret = 0;
+
+    ret = m_pBus->write( DEVICE_RECEIVE_ID,
+                         (byte)MRQ_mc_PDM,
+                         (byte)MRQ_sc_PDM_MICSTEPDATA_Q,
+                         val0,
+                         val1,
+                         val2 );
+    if ( ret != 0){ log_device(); }
+    if ( ret != 0) return ret;
+
+    return 0;
+}
+
+int deviceMRQ::micUpload( int ch, const QString &fileName )
+{
+    Q_ASSERT( NULL!=deviceMRQ::_pUploader );
+
+    if ( deviceMRQ::_pUploader->isRunning() )
+    {
+        sysError( QObject::tr("Can not upload") );
+        return -1;
+    }
+
+    deviceMRQ::_pUploader->requestLoad( m_pBus->receiveProxy(),
+                                        this,
+                                        ch,
+                                        fileName );
+
+    deviceMRQ::_pUploader->kickoff();
+
+    return 0;
+}
+
 //! [0~360)
 float deviceMRQ::getIncAngle( int ax )
 {
-    int ret;
-    quint32 xangle;
+//    int ret;
+//    quint32 xangle;
 
-    ret = MRQ::getREPORT_DATA( ax, MRQ_REPORT_STATE_XANGLE, &xangle );
-    if ( ret != 0 )
-    { return -1; }
-    else
-    {
-        return INC_ANGLE_TO_DEG( xangle );
-    }
+//    ret = MRQ::getREPORT_DATA( ax, MRQ_REPORT_STATE_XANGLE, &xangle );
+//    if ( ret != 0 )
+//    { return -1; }
+//    else
+//    {
+//        return INC_ANGLE_TO_DEG( xangle );
+//    }
+    return 0;
 }
 
 //! [0~360)
@@ -391,8 +442,8 @@ float deviceMRQ::getSensor( int ax, int dataId )
 {
     if ( dataId == MRQ_REPORT_STATE_DIST )
     { return getDist( ax); }
-    else if ( dataId == MRQ_REPORT_STATE_XANGLE )
-    { return getIncAngle( ax ); }
+//    else if ( dataId == MRQ_REPORT_STATE_XANGLE )
+//    { return getIncAngle( ax ); }
     else if ( dataId == MRQ_REPORT_STATE_ABSENC )
     { return getAbsAngle( ax ); }
     else
@@ -432,8 +483,8 @@ int deviceMRQ::requestMotionState( pvt_region )
     DELOAD_REGION();
 
     ret = m_pBus->write( DEVICE_RECEIVE_ID,
-                         mc_MOTION,
-                         sc_MOTION_STATE_Q,
+                         MRQ_mc_MOTION,
+                         MRQ_sc_MOTION_STATE_Q,
                          (byte)ax,
                          (byte)page );
 
@@ -464,13 +515,29 @@ void deviceMRQ::releaseDownloader()
 }
 
 //! assist api
-int deviceMRQ::call( const tpvRegion &region )
+int deviceMRQ::call( int n, const tpvRegion &region )
 {
+    //! set loop
+    setMOTIONPLAN_CYCLENUM( region.axes(),
+                            (MRQ_MOTION_SWITCH_1)region.page(),
+                             n );
+
+    //! valid
+    if ( region.motionMode() >= 0 )
+    {
+        //! set motion mode
+        setMOTIONPLAN_MOTIONMODE( region.axes(),
+                                  (MRQ_MOTION_SWITCH_1)region.page(),
+                                  (MRQ_MOTIONPLAN_MOTIONMODE_1)region.motionMode()
+                                  );
+    }
+
+    //! set mode
     lpc( region.axes() )->postMsg(
-                            (eRoboMsg)mrq_msg_call,
-                            region
-                        );
-    logDbg();
+                                 (eRoboMsg)mrq_msg_call,
+                                 region
+                                );
+
     return 0;
 }
 

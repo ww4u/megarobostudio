@@ -24,7 +24,7 @@ public:
     virtual bool removeRows(int position, int rows, const QModelIndex &parent);
 
     virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
-
+    virtual void setRpc( int row, RpcRequest &req);
 public:
     H2ZMotionItem *operator[]( int index );
 

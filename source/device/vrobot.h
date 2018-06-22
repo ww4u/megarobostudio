@@ -33,7 +33,8 @@ class deviceMRQ;
 
 class RoboTask;
 
-#define robot_is_mrq( id )          ( ( (id) >= VRobot::robot_raw ) && ( (id) < VRobot::robot_complex ) )
+#define robot_is_mrq( id )          ( ( (id) >= VRobot::robot_mrq ) && ( (id) < VRobot::robot_mrv ) )
+#define robot_is_mrv( id )          ( ( (id) >= VRobot::robot_mrv ) && ( (id) < VRobot::robot_complex ) )
 #define robot_is_robot( id )        ( ( (id) >= VRobot::robot_complex ) && ( (id) < VRobot::robot_user ) )
 
 enum eRoboPlanMode
@@ -64,12 +65,16 @@ public:
         robot_unk = 0,
 
         robot_raw = 256,
+        robot_mrq = 256,
         robot_qubeley_d = 256,
         robot_qubeley_s,
         robot_geogoog,
         robot_geogoog_8,
         robot_geogoog_10,
         robot_geogoog_5_1,
+
+        robot_mrv = 320,
+        robot_gouf,
 
         robot_complex = 1024,
         robot_sinanju = 1024,
@@ -128,6 +133,7 @@ public:
     virtual int serialIn( QXmlStreamReader &reader );
     virtual int serialOut( QXmlStreamWriter &writer );
 
+    virtual int uploadSetting();
     virtual int applySetting();
 
 public:
@@ -217,6 +223,8 @@ public:
     robotEnum getId();
     robotEnum robotId();
 
+    virtual QList<int> deviceIds(); //! receive/send/group
+    virtual QString deviceFullDesc();
 
     //! configs
     int setAxes(int n);
@@ -283,10 +291,16 @@ public:
 
     virtual QString trigSrcAlias( int ax, int iTrig );
 
+    void setJointZeroCcw( int jId, bool b );
     QList<bool> jointZeroCcwList();
 
     void setPoseCount( int pos );
     int poseCount();
+
+    QStringList & poseTitles();
+
+    void setAbsCount( int cnt );
+    int absCount();
 
     bool interpAble();
 
@@ -360,6 +374,9 @@ protected:
     int mTrigSrcs;                      //! 5,2
 
     int mPoseCount;                     //! 0,3..
+    QStringList mPoseTitles;
+
+    int mAbsCount;
 
     bool mbInterpAble;
     bool mbEncoderAble;
@@ -394,6 +411,7 @@ public:
     QList<bool> mJointZeroCcw;          //! zero ccw for each joint
 
     QList<bool> mAngleDir;              //! true: +
+    QList<bool> mLvtAble;
 
     QList <double> mRefAngles;          //! 'ref' angles for each joint by joint id
     QList <double> mRotateAngles;       //! rotate angle for the coordinate

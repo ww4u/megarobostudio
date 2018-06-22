@@ -45,7 +45,8 @@ void MrqTrigChan::spyEdited()
     {
         ui->chkLevel,
     };
-
+    QRadioButton *radBoxes[] = {
+    };
     QLineEdit *edits[]={
     };
 

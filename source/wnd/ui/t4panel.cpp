@@ -4,14 +4,13 @@
 T4Panel::T4Panel(mcModel *pModel,
                  const QString &roboName,
                  QWidget *parent) :
-    DlgView( pModel, parent),
+    RoboPanel( pModel, roboName, parent),
     ui(new Ui::T4Panel)
+
 {
     ui->setupUi(this);
 
     setWindowTitle( roboName );
-    setAttribute( Qt::WA_DeleteOnClose );
-    setModal( false );
 
     //! timer
     connect( &mTimer, SIGNAL(timeout()),
@@ -20,12 +19,8 @@ T4Panel::T4Panel(mcModel *pModel,
 
     //! icon
     if ( Robot() != NULL )
-    {
-        setWindowIcon( QIcon( QPixmap::fromImage( Robot()->mImage)) );
-    }
+    { setWindowIcon( QIcon( QPixmap::fromImage( Robot()->mImage)) ); }
 
-//    ui->btnMarkNow->setVisible( false );
-//    ui->btnMarkUser->setVisible( false );
 }
 
 T4Panel::~T4Panel()
@@ -58,9 +53,6 @@ void T4Panel::slot_timeout()
         {}
     }
 }
-
-void T4Panel::slot_device_changed()
-{ close(); }
 
 robotSinanju *T4Panel::Robot()
 {
@@ -110,8 +102,6 @@ void T4Panel::moveD( float dx, float dy, float dz )
 
 void T4Panel::moveA( float x, float y, float z, float dt )
 {
-    int ret;
-
     do
     {
         robotSinanju *pRobo = Robot();
@@ -119,6 +109,7 @@ void T4Panel::moveA( float x, float y, float z, float dt )
         { break; }
 
         float pos[16];
+        int ret;
         ret = pRobo->getPOSE( pos );
         if ( ret != 0 )
         { break; }
@@ -146,6 +137,14 @@ void T4Panel::moveA( float x, float y, float z, float dt )
 void T4Panel::on_spinBox_valueChanged(int arg1)
 {
     mTimer.setInterval( arg1 );
+}
+
+void T4Panel::on_chkOnOff_clicked(bool checked)
+{
+    if ( checked )
+    { mTimer.start(); }
+    else
+    { mTimer.stop(); }
 }
 
 void T4Panel::on_btnYP_clicked()
@@ -217,10 +216,4 @@ void T4Panel::on_btnMarkUser_clicked()
     sysRpc( t4Rpc );
 }
 
-void T4Panel::on_chkOnOff_clicked(bool checked)
-{
-    if ( checked )
-    { mTimer.start(); }
-    else
-    { mTimer.stop(); }
-}
+

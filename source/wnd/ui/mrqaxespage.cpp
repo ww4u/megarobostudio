@@ -59,7 +59,7 @@ int MrqAxesPage::setApply()
     foreach( mrqView *pSubView, mSubViews )
     {
         pSubView->setApply();
-        QThread::msleep( 100 );     //! \todo need by mrq overflow
+//        QThread::msleep( 100 );     //! \todo need by mrq overflow
     }
 
     mrqView::setApply();
@@ -73,8 +73,6 @@ void MrqAxesPage::modelChanged()
 
     mrqView::modelChanged();
 }
-
-
 
 void MrqAxesPage::spyEdited()
 {

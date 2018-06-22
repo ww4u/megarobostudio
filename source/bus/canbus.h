@@ -10,6 +10,7 @@
 //! def
 #define CAN_BROAD_ID    0X01
 #define CAN_BROAD_CHAN  128
+#define SUB_GROUP_BASE  129
 
 namespace MegaDevice {
 

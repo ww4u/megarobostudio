@@ -2,8 +2,8 @@
 #define T4PANEL_H
 
 #include <QtWidgets>
-#include "../../device/vrobot.h"
-#include "dlgview.h"
+
+#include "robopanel.h"
 
 #include "../../robot/sinanju/sinanju.h"
 
@@ -11,7 +11,7 @@ namespace Ui {
 class T4Panel;
 }
 
-class T4Panel : public DlgView
+class T4Panel : public RoboPanel
 {
     Q_OBJECT
 
@@ -23,7 +23,7 @@ public:
 
 protected Q_SLOTS:
     void slot_timeout();
-    void slot_device_changed();
+
 protected:
     robotSinanju *Robot();
 
@@ -34,7 +34,7 @@ protected:
 
 private slots:
     void on_spinBox_valueChanged(int arg1);
-
+    void on_chkOnOff_clicked(bool checked);
 
     void on_btnYP_clicked();
 
@@ -55,8 +55,6 @@ private slots:
     void on_btnMarkNow_clicked();
 
     void on_btnMarkUser_clicked();
-
-    void on_chkOnOff_clicked(bool checked);
 
 private:
     Ui::T4Panel *ui;

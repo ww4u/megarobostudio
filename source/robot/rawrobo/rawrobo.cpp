@@ -3,6 +3,7 @@
 #include "../../device/mrq/devicemrq_state.h"
 #include "../../device/board/_MRQ_enum.h"
 
+
 D1Point::D1Point( float pt, float pp )
 {
     t = pt;
@@ -121,9 +122,8 @@ void RawRobo::queryState( const tpvRegion &region )
 {
     Q_ASSERT( NULL != m_pBus );
     MegaDevice::DeviceId id( mCanGroupId );     //! \todo sub group
-    m_pBus->write( id, mc_MOTION, sc_MOTION_STATE_Q,
-                   (byte)x_channel,
-//                   (byte)MRQ_MOTION_SWITCH_1_MAIN
+    m_pBus->write( id, MRQ_mc_MOTION, MRQ_sc_MOTION_STATE_Q,
+                   (byte)robo_channels(mSubGroup),
                    (byte)region.page()
                     );
 }

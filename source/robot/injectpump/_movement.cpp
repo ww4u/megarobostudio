@@ -42,7 +42,8 @@ int robotInject::move( IPKeyPointList &curve,
     return ret;
 }
 
-int robotInject::move( float dx, float dy, float dt, float endVx, float endVy,
+int robotInject::move( float dx, float dy, float dt,
+                       float endVx, float endVy,
                        const tpvRegion &region )
 {
     IPKeyPointList curve;
@@ -221,18 +222,18 @@ int robotInject::goZero( const tpvRegion &region )
 
     //! arg
     pArg->mAx = 128;        //! full ax
-    pArg->mZeroDist = mZeroDistance;
+    pArg->mZeroDist = -mZeroDistance;
     pArg->mZeroTime = mZeroTime;
-    pArg->mZeroEndV = mZeroSpeed;
+    pArg->mZeroEndV = -mZeroSpeed;
 
                             //! us
     pArg->mTmo = mZeroTmo;
     pArg->mTick = mZeroTick;
 
-    pArg->mZeroVGapDist = -mVGapDistance;
+    pArg->mZeroVGapDist = mVGapDistance;
     pArg->mZeroVGapTime = mVGapTime;
 
-    pArg->mZeroIGapDist = -mIGapDistance;
+    pArg->mZeroIGapDist = mIGapDistance;
     pArg->mZeroIGapTime = mIGapTime;
 
     //! \todo x, y invert
@@ -253,12 +254,24 @@ int robotInject::zeroAxesTask( void *pArg )
 
     IJZeroArg *pZArg = (IJZeroArg*)pArg;
     region = pZArg->mRegion;
-logDbg()<<pZArg->mZeroEndV;
+
+    int subAx;
+    MegaDevice::deviceMRQ *pDev;
+
     //! x
     if ( pZArg->mAx == 0 )
     {
+        //! enable stop
+        pDev = jointDevice( 0, &subAx );
+        Q_ASSERT( NULL != pDev );
+        pDev->setTRIGGER_LEVELSTATE( subAx,
+                                     MRQ_TRIGGER_LEVELSTATE_TRIG1,
+                                     MRQ_CAN_NETMANAGELED_ON );
+
         //! m
-        move( pZArg->mZeroDist, 0, pZArg->mZeroTime, pZArg->mZeroEndV, 0, region );
+        move( pZArg->mZeroDist, 0, pZArg->mZeroTime,
+              pZArg->mZeroEndV, 0,
+              region );
 
         //! wait
         //! \todo wait idle
@@ -266,24 +279,36 @@ logDbg()<<pZArg->mZeroEndV;
         if ( ret != 0 )
         { return ret; }
 
+        //! disable stop
+        pDev->setTRIGGER_LEVELSTATE( subAx,
+                                     MRQ_TRIGGER_LEVELSTATE_TRIG1,
+                                     MRQ_CAN_NETMANAGELED_OFF );
+
         //! gap
-        move( pZArg->mZeroVGapDist, 0, pZArg->mZeroVGapTime, 0, 0, region );
+        move( pZArg->mZeroVGapDist, 0, pZArg->mZeroVGapTime,
+              0, 0,
+              region );
 
         ret = waitFsm( region, MegaDevice::mrq_state_idle, pZArg->mTmo, pZArg->mTick );
         if ( ret != 0 )
         { return ret; }
+
     }
     //! y
     else if ( pZArg->mAx == 1 )
     {
-        move( 0, pZArg->mZeroDist, pZArg->mZeroTime, 0, pZArg->mZeroEndV, region );
+        move( 0, pZArg->mZeroDist, pZArg->mZeroTime,
+              0, pZArg->mZeroEndV,
+              region );
 
         //! \todo
         ret = waitFsm( region, MegaDevice::mrq_state_idle, pZArg->mTmo, pZArg->mTick );
         if ( ret != 0 )
         { return ret; }
 
-        move( 0, pZArg->mZeroIGapDist, pZArg->mZeroIGapTime, 0, 0, region );
+        move( 0, pZArg->mZeroIGapDist, pZArg->mZeroIGapTime,
+              0, 0,
+              region );
 
         ret = waitFsm( region, MegaDevice::mrq_state_idle, pZArg->mTmo, pZArg->mTick );
         if ( ret != 0 )

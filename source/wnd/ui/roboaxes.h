@@ -67,6 +67,7 @@ private:
     QTimer mTimer;
 
     QList< RoboJoint* > mJoints;
+    QList< QLCDNumber *> mPoseLcds;
 };
 
 #endif // ROBOAXES_H

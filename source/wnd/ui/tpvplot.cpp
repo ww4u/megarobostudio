@@ -117,15 +117,15 @@ void tpvPlot::on_btnImage_clicked()
         for ( int i = 0; i < pCache->length(); i++ )
         {
             //! t
-            outStream<<QString::number( (*pCache)[0][i] )<<",";
+            outStream<<QString::number( (*pCache)[0][i] );
 
             //! y
             for( int j = 1; j < pCache->size(); j++ )
             {
-                outStream<<QString::number( (*pCache)[j][i] )<<",";
+                outStream<<CSV_COL_SEP<<QString::number( (*pCache)[j][i] );
             }
 
-            outStream<<"\n";
+            outStream<<CSV_LINE_SEP;
         }
 
         fileCsv.close();

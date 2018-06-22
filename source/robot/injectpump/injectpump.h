@@ -84,7 +84,8 @@ public:
                  const tpvRegion &region );
     int move( IPKeyPointList &curve,
               const tpvRegion &region );
-    int move( float dx, float dy, float dt, float endVx, float endVy,
+    int move( float dx, float dy, float dt,
+              float endVx, float endVy,
               const tpvRegion &region );
 
     int move ( float dx, float dxt,

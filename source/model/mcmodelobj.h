@@ -38,7 +38,7 @@ public:
 
 public:
     mcModelObj();
-    ~mcModelObj();
+    virtual ~mcModelObj();
 
 public:
     void setGc( bool b );
@@ -50,9 +50,11 @@ public:
     void setFile( bool b );
     bool getFile();
 
-    void setName( const QString &name );
+    virtual void setName( const QString &name );
     QString &getName();
     QString &name();
+
+    virtual QString getFullDesc( int axesId = -1 );
 
     void setPath( const QString &path );
     QString getPath();

@@ -16,7 +16,7 @@ SinanjuPref::SinanjuPref(QWidget *parent) :
     mLabels[i] = ui->label_4;i++;
     mLabels[i] = ui->label_3;i++;
 
-    i = 0;
+//    i = 0;
 //    mEdits[i] = ui->lineEdit_6;i++;
 //    mEdits[i] = ui->lineEdit_5;i++;
 //    mEdits[i] = ui->lineEdit_4;i++;
@@ -136,6 +136,8 @@ void SinanjuPref::updateUi()
     pRobo->gapAttr( gapTime, gapAngle );
     ui->spinGapTime->setValue( gapTime );
     ui->spinGapAngle->setValue( gapAngle );
+
+    ui->chkHandZeroCcw->setChecked( pRobo->jointZeroCcwList().at(4) );
 }
 
 void SinanjuPref::initModel()
@@ -156,7 +158,8 @@ void SinanjuPref::spyEdited()
     QCheckBox *checkBoxes[]=
     {
     };
-
+    QRadioButton *radBoxes[] = {
+    };
     QLineEdit *edits[]={
 
     };

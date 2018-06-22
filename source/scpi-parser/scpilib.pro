@@ -17,9 +17,9 @@ SOURCES = \
                 libscpi/src/ieee488.c \
                 libscpi/src/lexer.c \
                 libscpi/src/minimal.c \
-                libscpi/src/parser.c \
                 libscpi/src/utils.c \
-                libscpi/src/units.c
+                libscpi/src/units.c \
+    libscpi/src/parser.c
 
 
 HEADERS = \

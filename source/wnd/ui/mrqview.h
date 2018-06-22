@@ -5,9 +5,9 @@
 
 #include "../../device/mrq/deviceMRQ.h"
 
-#include "modelview.h"
+#include "mrxview.h"
 
-class mrqView : public modelView
+class mrqView : public mrxView
 {
     Q_OBJECT
 
@@ -16,8 +16,8 @@ public:
     virtual ~mrqView()
     {}
 public:
-    virtual void setAxesId( int id );
-    int getAxesId();
+//    virtual void setAxesId( int id );
+//    int getAxesId();
 
     virtual void setPage( MRQ_AX_PAGE pg );
     MRQ_AX_PAGE page();
@@ -30,14 +30,8 @@ protected:
 
     MegaDevice::deviceMRQ *getDevice();
 
-public:
-
-
-public:
-    virtual void modelChanged();
-
 protected:
-    byte mAxesId;
+//    byte mAxesId;
     MRQ_AX_PAGE mPage;
     MegaDevice::deviceMRQ *m_pMrqModel;
     MegaDevice::MRQ_model *m_pProxy;

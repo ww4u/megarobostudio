@@ -74,6 +74,9 @@ void DeltaPref::spyEdited()
     {
     };
 
+    QRadioButton *radBoxes[] = {
+    };
+
     QLineEdit *edits[]={
 
     };

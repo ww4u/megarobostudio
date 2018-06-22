@@ -1,16 +1,17 @@
 #include "rawrobo.h"
 
-int RawRobo::call( const tpvRegion &region )
+int RawRobo::call( int n, const tpvRegion &region )
 {
     onLine();
 
     fsm( region )->setState( MegaDevice::mrq_state_calcend );
 
+    setLoop( n, region );
+
     lpc()->postMsg( (eRoboMsg)(MegaDevice::mrq_msg_call), region );
 
     return 0;
 }
-
 
 int RawRobo::download( QList<tpvGroup*> &groups,
                       QList<int> &joints,       //! joint tab id

@@ -7,6 +7,8 @@
 
 #include "../widget/megamessagebox.h"
 
+#include <QSerialPortInfo>
+
 #ifdef NI_VISA
 #include "visa.h"
 #endif
@@ -40,6 +42,11 @@ sysPref::sysPref(QWidget *parent) :
     m_pMRHTSetting = ui->tabWidget_2->widget(1);
     ui->tabWidget_2->removeTab(1);
     ui->tabWidget_2->removeTab(0);
+
+    //! for com port
+    QList<QSerialPortInfo> portList = QSerialPortInfo::availablePorts();
+    foreach( QSerialPortInfo info, portList )
+    { ui->cmbComPort->addItem(info.portName()); }
 
     slot_updateValidateEn();
     slot_validate_listmrt();
@@ -123,8 +130,12 @@ void sysPref::updateUi()
     //! misa
     ui->chkMisaEn->setChecked( mPref.mMisaEn );
     ui->spinMisaSocket->setValue( mPref.mMisaSocket );
+
+    ui->chkComOnOff->setChecked( mPref.mComEn );
+    ui->cmbComPort->setCurrentText( mPref.mComName );
+
     ui->edtRemotePath->setText( mPref.mRemoteDirPath );
-logDbg()<<mPref.mMisaEn<<mPref.mMisaSocket;
+
     ui->tempPath->setText( mPref.mDumpPath );
 
     //! space
@@ -191,6 +202,10 @@ void sysPref::updateData()
     //! misa
     mPref.mMisaEn = ui->chkMisaEn->isChecked();
     mPref.mMisaSocket = ui->spinMisaSocket->value();
+
+    mPref.mComEn = ui->chkComOnOff->isChecked();
+    mPref.mComName = ui->cmbComPort->currentText();
+
     mPref.mRemoteDirPath = ui->edtRemotePath->text();
 
     //! space

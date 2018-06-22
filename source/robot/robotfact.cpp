@@ -46,17 +46,17 @@ VRobot *robotFact::createRobot( const QString &str )
             break;
         }
 
-        if ( QString::compare(str,"motor",Qt::CaseInsensitive) == 0 )
-        {
-            pRobo = new robotMotor();
-            break;
-        }
+//        if ( QString::compare(str,"motor",Qt::CaseInsensitive) == 0 )
+//        {
+//            pRobo = new robotMotor();
+//            break;
+//        }
 
-        if ( QString::compare(str,"slide",Qt::CaseInsensitive) == 0 )
-        {
-            pRobo = new robotSlide();
-            break;
-        }
+//        if ( QString::compare(str,"slide",Qt::CaseInsensitive) == 0 )
+//        {
+//            pRobo = new robotSlide();
+//            break;
+//        }
     //    if ( QString::compare(str,"slide2",Qt::CaseInsensitive) == 0 )
     //    {
     //        return new robotSlide2();
@@ -94,6 +94,13 @@ VRobot *robotFact::createRobot( const QString &str )
              || QString::compare(str,"MRQ-MV",Qt::CaseInsensitive) == 0 )
         {
             pRobo = new roboGeo51();
+            break;
+        }
+
+        //! gouf
+        if ( QString::compare(str,"MRV-M3604",Qt::CaseInsensitive) == 0 )
+        {
+            pRobo = new roboGouf();
             break;
         }
 

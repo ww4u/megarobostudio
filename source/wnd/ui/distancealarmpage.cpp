@@ -38,6 +38,9 @@ void DistanceAlarmPage::spyEdited()
         ui->checkBox,
     };
 
+    QRadioButton *radBoxes[] = {
+    };
+
     QLineEdit *edits[]={
 
     };

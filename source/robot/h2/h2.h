@@ -19,6 +19,9 @@ struct H2ZeroArg : public RoboTaskArgument
     float mZeroDist,mZeroTime, mZeroEndV;
     float mZeroGapDist, mZeroGapTime;
 
+    float mZeroZDist, mZeroZTime, mZeroZEndV;
+    float mZeroGapZDist, mZeroGapZTime;
+
     H2ZeroArg();
 };
 
@@ -72,6 +75,11 @@ public:
     virtual int goZero( const tpvRegion &region,
                         int jointId, bool bCcw );
     virtual int goZero( const tpvRegion &region=0 );      //! 1.x, 2.y
+    virtual int goZero( const tpvRegion &region,
+                        const QList<int> &jointList,
+                        const QList<bool> &ccwList );
+
+    virtual int getPOSE( float pos[] );
 
     int zeroAxesTask( void *pArg );
 
@@ -86,8 +94,10 @@ public:
                       double zeroDist );
     void zeroAttr( double &zeroTime, double &zeroDist );
 
-    void setGap( double time, double dist );
-    void gap( double &time, double &dist );
+    void setGap( double time, double dist,
+                 double zTime, double zDist );
+    void gap( double &time, double &dist,
+              double &zTime, double &zDist );
 
     void setCenter( float x, float y );
     void center( float &x, float &y );
@@ -113,8 +123,9 @@ protected:
 
 protected:
     double mZeroTime, mZeroDistance;
-    double mZeroX, mZeroY;
     double mGapTime, mGapDistance;
+    double mGapZTime, mGapZDistance;
+    double mZeroX, mZeroY;
 
     QList <int> mAxesDirs;      //! realX = dir * x + zeroX
 

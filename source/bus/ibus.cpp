@@ -356,13 +356,24 @@ int IBus::write( DeviceId &nodeId, byte mainCode,
            byte v1,
            UInt16 v2)
 {
-    UInt16 byts;
-
-    memcpy( &byts, &v2, 2 );
-
     byte buf[] = { mainCode, subCode,
                    v0, v1,
-                   expand_w(byts),
+                   expand_w(v2),
+                 };
+
+    return doWrite( nodeId, buf, sizeof( buf ) );
+}
+
+int IBus::write( DeviceId &nodeId, byte mainCode,
+           byte subCode,
+           byte v0,
+           UInt16 v1,
+           UInt16 v2)
+{
+    byte buf[] = { mainCode, subCode,
+                   v0,
+                   expand_w(v1),
+                   expand_w(v2),
                  };
 
     return doWrite( nodeId, buf, sizeof( buf ) );
@@ -981,6 +992,28 @@ int IBus::read( DeviceId &nodeId, byte mainCode,
     for ( int i = 0; i < READ_LOOP_TRY; i++ )
     {
         ret = _read( nodeId, mainCode, subCode, v0, v1, v2, bQuery );
+        if ( 0 == ret )
+        { break; }
+    }
+    UNLOCK_QUERY();
+
+    return ret;
+}
+
+//! 3 para
+int IBus::read( DeviceId &nodeId, byte mainCode,
+            byte subCode,
+            byte v0,
+            UInt16 v1,
+            UInt16 v2,
+            byte * v3,
+            bool bQuery )
+{
+    int ret;
+    LOCK_QUERY();
+    for ( int i = 0; i < READ_LOOP_TRY; i++ )
+    {
+        ret = _read( nodeId, mainCode, subCode, v0, v1, v2, v3, bQuery );
         if ( 0 == ret )
         { break; }
     }
@@ -1841,6 +1874,38 @@ int IBus::_read( DeviceId &nodeId, byte mainCode,
     //! \todo check main/sub code
 
     memcpy( v2, readBuf + 4, 4 );
+
+    return 0;
+}
+
+int IBus::_read( DeviceId &nodeId, byte mainCode,
+           byte subCode,
+           byte v0,
+           UInt16 v1,
+           UInt16 v2,
+           byte * v3,
+           bool bQuery )
+{
+    int ret;
+
+    if( bQuery )
+    {
+        flush( nodeId );
+
+        ret = write( nodeId, mainCode, subCode, v0, v1, v2 );
+        if ( ret != 0 )
+        { return ret; }
+    }
+
+    int retLen;
+    byte readBuf[2+1+2+2+1];
+    ret = doRead( nodeId, readBuf, sizeof(readBuf), &retLen );
+    if ( ret != 0 )
+    { return ret; }
+
+    //! \todo check main/sub code
+
+    memcpy( v3, readBuf + 7, 1 );
 
     return 0;
 }

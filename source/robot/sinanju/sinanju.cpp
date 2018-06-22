@@ -26,6 +26,10 @@ robotSinanju::robotSinanju()
     setJointName( 5 );
 
     setPoseCount( 3 );   //! x,y,z
+    mPoseTitles.clear();
+    mPoseTitles<<"X"<<"Y"<<"Z";
+
+    setAbsCount( 4 );
 
     mDetail = QString::fromLocal8Bit( (char*)_detail, sizeof_array(_detail) );
 
@@ -54,6 +58,10 @@ robotSinanju::robotSinanju()
     //! angle dir
     mAngleDir.clear();
     mAngleDir<<true<<false<<true<<false;     //! big arm invert
+
+    //! lvt able
+    mLvtAble.clear();
+    mLvtAble<<true<<true<<true<<true<<false;
 
     //! zero angle
     //! must be caled
@@ -199,6 +207,11 @@ logDbg();
         //! \note change to mrq ax
         mrqRegion = region;
         mrqRegion.setAx( axes );
+
+        //! hand can not lvt
+        Q_ASSERT( i < mLvtAble.size() && i >= 0 );
+        if ( !mLvtAble.at(i) )
+        { mrqRegion.setMotionMode( -1 ); }
 
         //! send
         ret = pMrq->pvtWrite( mrqRegion, rows );

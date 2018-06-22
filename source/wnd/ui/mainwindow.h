@@ -16,6 +16,7 @@
 #include "pvtedit.h"
 #include "motionedit.h"
 
+#include "mrvprop.h"
 #include "roboprop.h"
 
 #include "cfgtab.h"
@@ -57,6 +58,8 @@
 #include "../../app/samplethread.h"
 #include "../../app/robonetthread.h"
 #include "../../app/systimer.h"
+
+#include "../../app/comthread.h"
 
 namespace Ui {
 class MainWindow;
@@ -106,6 +109,7 @@ Q_SIGNALS:
     void sig_post_load_prj( );
     void sig_robo_name_changed( const QString &name );
 
+    void sig_com_send( const QByteArray &str );
 
 protected Q_SLOTS:
     void slot_post_load_prj();
@@ -144,6 +148,9 @@ protected Q_SLOTS:
 
     void slot_scene_changed();
     void slot_download_cancel( const QString &name, int id );
+
+    void slot_com_receive( const QString &str );
+    void slot_pref_changed();
 protected:
     modelView *findView( mcModelObj *pModel );
     modelView *createModelView( modelView *pView, mcModelObj *pModel );
@@ -178,6 +185,7 @@ Q_SIGNALS:
     void itemXActivated( mcModelObj* );
 
 private slots:
+
     void on_actionProject_triggered();
     void on_actionOpen_Prj_triggered();
     void on_actionSave_Prj_triggered();
@@ -231,6 +239,7 @@ private slots:
     void on_actionImport_I_triggered();
 
     void on_actiontest_triggered();
+
 
 private:
     //! uis
@@ -287,6 +296,7 @@ private:
     sampleThread *m_pSampleThread;
     RoboNetThread *m_pRoboNetThread;
     SysTimerThread *m_pSysTimerThread;
+    ComThread *m_pComThread;
 };
 
 #endif // MAINWINDOW_H

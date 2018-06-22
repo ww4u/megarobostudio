@@ -5,11 +5,6 @@
 
 #include "mrqinfo.h"
 #include "mrqaxespage.h"
-//#include "mrqaxes.h"
-//#include "mrqaxes2.h"
-//#include "mrqaxesplan.h"
-//#include "mrqtrigpage.h"
-
 
 #include "mrqio.h"
 #include "mrqin.h"

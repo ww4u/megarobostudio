@@ -33,7 +33,7 @@ protected Q_SLOTS:
     void slot_joint_zero( int jId );
 
 Q_SIGNALS:
-    void signal_joint_zero( int jointid );
+    void signal_joint_zero( int jointid, bool bCcw );
 
 private slots:
 

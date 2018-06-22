@@ -25,6 +25,10 @@ robotH2::robotH2()
     setAxesDefName( 2 );
     setJointName( 2 );
 
+    setPoseCount( 2 );
+    mPoseTitles.clear();
+    mPoseTitles<<"X"<<"Y";
+
     mDetail = QString::fromLocal8Bit( (char*)_detail, sizeof_array(_detail) );
 
     //! joint name
@@ -37,8 +41,12 @@ robotH2::robotH2()
     mArmLengths.clear();
     mArmLengths<<13.4<<13.4<<802<<494<<52<<38;
 
-    mJointCcwMask[0] = false;
-    mJointCcwMask[1] = false;
+    //! mask
+    mJointCcwMask.clear();
+    mJointCcwMask<<false<<false;
+
+    mJointZeroCcw.clear();
+    mJointZeroCcw<<false<<false;
 
     mZeroX = 32.7;
     mZeroY = 0;
@@ -49,7 +57,6 @@ robotH2::robotH2()
 
     mAxesDirs.clear();
     mAxesDirs<<-1<<-1;
-//    mAxesDirs<<1<<1;
 
     //! debug used
     //! alter the axes name
@@ -62,6 +69,9 @@ robotH2::robotH2()
 
     mGapTime = 1;
     mGapDistance = 10;        //! dist
+
+    mGapZTime = 1;
+    mGapZDistance = 10;
 
     m_pRoboTask = new H2Task();
     Q_ASSERT( NULL != m_pRoboTask );
@@ -116,6 +126,9 @@ int robotH2::serialOutZero( QXmlStreamWriter &writer)
     writer.writeTextElement( "gap_time", QString::number(mGapTime) );
     writer.writeTextElement( "gap_distance", QString::number(mGapDistance) );
 
+    writer.writeTextElement( "gap_z_time", QString::number(mGapZTime) );
+    writer.writeTextElement( "gap_z_distance", QString::number(mGapZDistance) );
+
     writer.writeTextElement( "x", QString::number(mZeroX) );
     writer.writeTextElement( "y", QString::number(mZeroY) );
 
@@ -133,6 +146,10 @@ int robotH2::serialInZero( QXmlStreamReader &reader )
         { mGapTime = reader.readElementText().toDouble(); }
         else if ( reader.name() == "gap_distance" )
         { mGapDistance = reader.readElementText().toDouble(); }
+        else if ( reader.name() == "gap_z_time" )
+        { mGapZTime = reader.readElementText().toDouble(); }
+        else if ( reader.name() == "gap_z_distance" )
+        { mGapZDistance = reader.readElementText().toDouble(); }
         else if ( reader.name() == "x" )
         { mZeroX = reader.readElementText().toDouble(); }
         else if ( reader.name() == "y" )

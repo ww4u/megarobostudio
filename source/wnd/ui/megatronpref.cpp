@@ -76,7 +76,8 @@ void MegatronPref::spyEdited()
     QCheckBox *checkBoxes[]=
     {
     };
-
+    QRadioButton *radBoxes[] = {
+    };
     QLineEdit *edits[]={
 
     };
@@ -131,7 +132,13 @@ void MegatronPref::updateUi()
     pRobo->gapAttr( time, angle );
     ui->spinGapTime->setValue( time );
     ui->spinGapDistance->setValue( angle );
-//    ui->spinGapSpeed->setValue( speed );
+
+    //! zero ccw
+    QList<bool> zeroCcw = pRobo->jointZeroCcwList();
+    for ( int i = 0; i < mCcwChecks.size(); i++ )
+    { mCcwChecks.at(i)->setChecked( zeroCcw.at(i) ); }
+
+    slot_ccw_changed();
 }
 
 void MegatronPref::zeroJoint( int jointId, bool bCcw )

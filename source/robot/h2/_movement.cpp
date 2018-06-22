@@ -157,6 +157,16 @@ int robotH2::goZero( const tpvRegion &region,
 
 int robotH2::goZero( const tpvRegion &region )
 {
+    QList<int> jList;
+    jList<<0<<1;
+
+    return goZero( region, jList, mJointZeroCcw );
+}
+
+int robotH2::goZero( const tpvRegion &region,
+                     const QList<int> &jointList,
+                     const QList<bool> &ccwList )
+{
     if ( 0 != checkRoboTask() )
     {
         sysError( QObject::tr("task not running") );
@@ -191,6 +201,11 @@ int robotH2::goZero( const tpvRegion &region )
     m_pRoboTask->start();
 
     return 0;
+}
+
+int robotH2::getPOSE( float pos[] )
+{
+    return pose( pos[0], pos[1] );
 }
 
 int robotH2::zeroAxesTask( void *pArg )
@@ -291,6 +306,7 @@ int robotH2::zeroAxesTask( void *pArg )
 
     return 0;
 }
+
 
 int robotH2::angle( int jId, float &fAng )
 {

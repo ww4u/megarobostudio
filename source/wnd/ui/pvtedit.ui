@@ -93,6 +93,9 @@
          <height>16777215</height>
         </size>
        </property>
+       <property name="toolTip">
+        <string>Cycle</string>
+       </property>
        <property name="minimum">
         <number>1</number>
        </property>
@@ -105,6 +108,9 @@
       <widget class="QToolButton" name="btnStart">
        <property name="enabled">
         <bool>false</bool>
+       </property>
+       <property name="toolTip">
+        <string>Run</string>
        </property>
        <property name="text">
         <string>...</string>
@@ -125,6 +131,9 @@
       <widget class="QToolButton" name="btnStop">
        <property name="enabled">
         <bool>false</bool>
+       </property>
+       <property name="toolTip">
+        <string>Stop</string>
        </property>
        <property name="text">
         <string>...</string>
@@ -152,6 +161,9 @@
       <widget class="QToolButton" name="btnBuild">
        <property name="enabled">
         <bool>false</bool>
+       </property>
+       <property name="toolTip">
+        <string>Compile</string>
        </property>
        <property name="text">
         <string>Build</string>
@@ -317,7 +329,11 @@
       </widget>
      </item>
      <item>
-      <widget class="ValueComboBox" name="cmbPlanMode"/>
+      <widget class="ValueComboBox" name="cmbPlanMode">
+       <property name="toolTip">
+        <string>Curve</string>
+       </property>
+      </widget>
      </item>
      <item>
       <widget class="QToolButton" name="btnPref">
@@ -326,6 +342,9 @@
          <width>16777215</width>
          <height>16777215</height>
         </size>
+       </property>
+       <property name="toolTip">
+        <string>Config</string>
        </property>
        <property name="text">
         <string>...</string>

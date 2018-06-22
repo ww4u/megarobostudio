@@ -196,13 +196,13 @@ static scpi_result_t _scpi_program( scpi_t * context )
     return SCPI_RES_OK;
 }
 
-//! ax, page
+//! ax, page, cycle, motionMode
 static scpi_result_t _scpi_call( scpi_t * context )
 {
     // read
     DEF_LOCAL_VAR();
 
-    int ax, page;
+    int ax, page, cycle, motionMode;
 
     if ( SCPI_ParamInt32(context, &ax, true) != true )
     { scpi_ret( SCPI_RES_ERR ); }
@@ -210,12 +210,24 @@ static scpi_result_t _scpi_call( scpi_t * context )
     if ( SCPI_ParamInt32(context, &page, true) != true )
     { scpi_ret( SCPI_RES_ERR ); }
 
+    cycle = 1;
+    motionMode = -1;
+    do
+    {
+        if ( SCPI_ParamInt32(context, &cycle, true) != true )
+        { break; }
+
+        if ( SCPI_ParamInt32(context, &motionMode, true) != true )
+        { break; }
+    }while( 0 );
+
+
     //! robo op
     DEF_ROBO();
 
     CHECK_LINK();
 
-    LOCAL_ROBO()->call( tpvRegion( ax, page) );
+    LOCAL_ROBO()->call( cycle, tpvRegion( ax, page, motionMode ) );
 
     return SCPI_RES_OK;
 }
@@ -332,7 +344,7 @@ static scpi_result_t _scpi_rotate( scpi_t * context )
 }
 
 //! int ax page
-//! float dh, dt
+//! float dx, dh, dt
 static scpi_result_t _scpi_purge( scpi_t * context )
 {
     DEF_LOCAL_VAR();
@@ -348,7 +360,7 @@ static scpi_result_t _scpi_purge( scpi_t * context )
     if ( SCPI_ParamInt32(context, &page, true) != true )
     { scpi_ret( SCPI_RES_ERR ); }
 
-    float vals[2];
+    float vals[3];
     for ( int i = 0; i < sizeof_array(vals); i++ )
     {
         if ( SCPI_RES_OK != SCPI_ParamFloat( context, vals+i, true ) )
@@ -367,13 +379,29 @@ static scpi_result_t _scpi_purge( scpi_t * context )
     curve.append( kp );
 
     //! p1
-    kp.t = 1 * vals[1];
+    //! suction
+    kp.t = 1 * vals[2] / 4;
     kp.x = 0;
-    kp.y = vals[0];
+    kp.y = vals[1];
     curve.append( kp );
 
     //! p2
-    kp.t = 2 * vals[1];
+    //! output
+    kp.t = 2 * vals[2] / 4;
+    kp.x = vals[0];
+    kp.y = vals[1];
+    curve.append( kp );
+
+    //! p3
+    //! injection
+    kp.t = 3 * vals[2] / 4;
+    kp.x = vals[0];
+    kp.y = 0;
+    curve.append( kp );
+
+    //! p4
+    //! input
+    kp.t = 4 * vals[2] / 4;
     kp.x = 0;
     kp.y = 0;
     curve.append( kp );

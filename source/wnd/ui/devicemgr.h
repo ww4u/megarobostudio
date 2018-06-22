@@ -53,17 +53,29 @@ protected Q_SLOTS:
 
     void on_treeWidget_itemActivated(QTreeWidgetItem *item, int column);
 
+    //! mrq
     void context_import();
     void context_export();
     void context_upload();
 
     void context_mrq_alias();
-    void context_robo_alias();
 
     void context_mrq_console();
     void context_mrq_panel();
     void context_mrq_prop();
 
+    //! mrv
+    void context_mrv_import();
+    void context_mrv_export();
+    void context_mrv_upload();
+    void context_mrv_alias();
+
+    void context_mrv_console();
+    void context_mrv_panel();
+    void context_mrv_prop();
+
+    //! robo
+    void context_robo_alias();
     void context_robo_console();
     void context_robo_axes();
     void context_robo_panel();
@@ -120,10 +132,12 @@ public:
     QMenu *m_pDeviceMenu;
     QAction *m_pDeviceImportAction;
 
+    QMenu *m_pMRVMenu;
+
     QMenu *m_pAxesMenu;
 
     QMenu *m_pRoboMenu;
-    QAction *m_pT4PanelAction;
+    QAction *m_pRoboPanelAction;
 
     MegaDevice::InstMgr *m_pMgr;
     deviceDb *m_pDeviceDb;

@@ -70,18 +70,21 @@ static scpi_result_t _scpi_stop( scpi_t * context )
     return SCPI_RES_OK;
 }
 
-//! move ch,page, x1,y1,z1,h1, x2,y2,z2,h2, t
+//! move ch,page, motionMode,
+//! x1,y1,z1,h1, x2,y2,z2,h2, t
 static scpi_result_t _scpi_move( scpi_t * context )
 {
     DEF_LOCAL_VAR();
 
-    int ax, page;
+    int ax, page, motionMode;
 
     float vals[9];
 
     if ( SCPI_ParamInt32(context, &ax, true) != true )
     { scpi_ret( SCPI_RES_ERR ); }
     if ( SCPI_ParamInt32(context, &page, true) != true )
+    { scpi_ret( SCPI_RES_ERR ); }
+    if ( SCPI_ParamInt32(context, &motionMode, true) != true )
     { scpi_ret( SCPI_RES_ERR ); }
 
     for ( int i = 0; i < sizeof_array(vals); i++ )
@@ -106,23 +109,26 @@ static scpi_result_t _scpi_move( scpi_t * context )
 
     CHECK_LINK();
 
-    pRobo->move( curve, tpvRegion(ax,page) );
+    pRobo->move( curve, tpvRegion(ax,page,motionMode) );
 
     return SCPI_RES_OK;
 }
 
-//! premove ch,page, x1,y1,z1,h1, x2,y2,z2,h2, t
+//! premove ch,page, motionMode,
+//! x1,y1,z1,h1, x2,y2,z2,h2, t
 static scpi_result_t _scpi_premove( scpi_t * context )
 {
     DEF_LOCAL_VAR();
 
-    int ax, page;
+    int ax, page, motionMode;
 
     float vals[9];
 
     if ( SCPI_ParamInt32(context, &ax, true) != true )
     { scpi_ret( SCPI_RES_ERR ); }
     if ( SCPI_ParamInt32(context, &page, true) != true )
+    { scpi_ret( SCPI_RES_ERR ); }
+    if ( SCPI_ParamInt32(context, &motionMode, true) != true )
     { scpi_ret( SCPI_RES_ERR ); }
 
     for ( int i = 0; i < sizeof_array(vals); i++ )
@@ -147,12 +153,13 @@ static scpi_result_t _scpi_premove( scpi_t * context )
 
     CHECK_LINK();
 
-    pRobo->program( curve, tpvRegion(ax,page) );
+    pRobo->program( curve, tpvRegion(ax,page,motionMode) );
 
     return SCPI_RES_OK;
 }
 
-//! movej ch,page, x1,y1,z1,h1, x2,y2,z2,h2, t, j, tj
+//! movej ch,page, motionMode,
+//! x1,y1,z1,h1, x2,y2,z2,h2, t, j, tj
 //! t : line time
 //! tj : jump time
 //! tj + t + tj
@@ -162,13 +169,15 @@ static scpi_result_t _scpi_movej( scpi_t * context )
 {
     DEF_LOCAL_VAR();
 
-    int ax, page;
+    int ax, page, motionMode;
 
     float vals[ 4 * 2 + 3 ];
 
     if ( SCPI_ParamInt32(context, &ax, true) != true )
     { scpi_ret( SCPI_RES_ERR ); }
     if ( SCPI_ParamInt32(context, &page, true) != true )
+    { scpi_ret( SCPI_RES_ERR ); }
+    if ( SCPI_ParamInt32(context, &motionMode, true) != true )
     { scpi_ret( SCPI_RES_ERR ); }
 
     for ( int i = 0; i < sizeof_array(vals); i++ )
@@ -197,23 +206,26 @@ static scpi_result_t _scpi_movej( scpi_t * context )
 
     CHECK_LINK();
 
-    pRobo->move( curve, tpvRegion(ax,page) );
+    pRobo->move( curve, tpvRegion(ax,page,motionMode) );
 
     return SCPI_RES_OK;
 }
 
-//! premovej ch,page, x1,y1,z1,h1, x2,y2,z2,h2, t, j
+//! premovej ch,page, motionMode
+//! x1,y1,z1,h1, x2,y2,z2,h2, t, j
 static scpi_result_t _scpi_premovej( scpi_t * context )
 {
     DEF_LOCAL_VAR();
 
-    int ax, page;
+    int ax, page, motionMode;
 
     float vals[ 4 * 2 + 3 ];
 
     if ( SCPI_ParamInt32(context, &ax, true) != true )
     { scpi_ret( SCPI_RES_ERR ); }
     if ( SCPI_ParamInt32(context, &page, true) != true )
+    { scpi_ret( SCPI_RES_ERR ); }
+    if ( SCPI_ParamInt32(context, &motionMode, true) != true )
     { scpi_ret( SCPI_RES_ERR ); }
 
     for ( int i = 0; i < sizeof_array(vals); i++ )
@@ -242,23 +254,26 @@ static scpi_result_t _scpi_premovej( scpi_t * context )
 
     CHECK_LINK();
 
-    pRobo->program( curve, tpvRegion(ax,page) );
+    pRobo->program( curve, tpvRegion(ax,page,motionMode) );
 
     return SCPI_RES_OK;
 }
 
-//! movej ch,page, x1,y1,z1,h1, x2,y2,z2,h2, xl,yl,zl,hl, t
+//! movej ch,page, motionMode
+//! x1,y1,z1,h1, x2,y2,z2,h2, xl,yl,zl,hl, t
 static scpi_result_t _scpi_movel( scpi_t * context )
 {
     DEF_LOCAL_VAR();
 
-    int ax, page;
+    int ax, page, motionMode;
 
     float vals[4*3+1];
 
     if ( SCPI_ParamInt32(context, &ax, true) != true )
     { scpi_ret( SCPI_RES_ERR ); }
     if ( SCPI_ParamInt32(context, &page, true) != true )
+    { scpi_ret( SCPI_RES_ERR ); }
+    if ( SCPI_ParamInt32(context, &motionMode, true) != true )
     { scpi_ret( SCPI_RES_ERR ); }
 
     for ( int i = 0; i < sizeof_array(vals); i++ )
@@ -285,23 +300,26 @@ static scpi_result_t _scpi_movel( scpi_t * context )
 
     CHECK_LINK();
 
-    pRobo->move( curve, tpvRegion(ax,page) );
+    pRobo->move( curve, tpvRegion(ax,page,motionMode) );
 
     return SCPI_RES_OK;
 }
 
-//! premovej ch,page, x1,y1,z1,h1, x2,y2,z2,h2, xl,yl,zl,hl, t
+//! premovej ch,page, motionMode
+//! x1,y1,z1,h1, x2,y2,z2,h2, xl,yl,zl,hl, t
 static scpi_result_t _scpi_premovel( scpi_t * context )
 {
     DEF_LOCAL_VAR();
 
-    int ax, page;
+    int ax, page, motionMode;
 
     float vals[4*3+1];
 
     if ( SCPI_ParamInt32(context, &ax, true) != true )
     { scpi_ret( SCPI_RES_ERR ); }
     if ( SCPI_ParamInt32(context, &page, true) != true )
+    { scpi_ret( SCPI_RES_ERR ); }
+    if ( SCPI_ParamInt32(context, &motionMode, true) != true )
     { scpi_ret( SCPI_RES_ERR ); }
 
     for ( int i = 0; i < sizeof_array(vals); i++ )
@@ -328,15 +346,25 @@ static scpi_result_t _scpi_premovel( scpi_t * context )
 
     CHECK_LINK();
 
-    pRobo->program( curve, tpvRegion(ax,page) );
+    pRobo->program( curve, tpvRegion(ax,page,motionMode) );
 
     return SCPI_RES_OK;
 }
 
-//! goto x1,y1,z1,t
+//! goto ax,page,motionMode,
+//! x1,y1,z1,t
 static scpi_result_t _scpi_goto( scpi_t * context )
 {
     DEF_LOCAL_VAR();
+
+    int ax, page, motionMode;
+
+    if ( SCPI_ParamInt32(context, &ax, true) != true )
+    { scpi_ret( SCPI_RES_ERR ); }
+    if ( SCPI_ParamInt32(context, &page, true) != true )
+    { scpi_ret( SCPI_RES_ERR ); }
+    if ( SCPI_ParamInt32(context, &motionMode, true) != true )
+    { scpi_ret( SCPI_RES_ERR ); }
 
     float vals[4];
 
@@ -368,15 +396,25 @@ static scpi_result_t _scpi_goto( scpi_t * context )
     curve.append( pt1 );
     curve.append( pt2 );
 
-    pRobo->move( curve, tpvRegion(0,0) );
+    pRobo->move( curve, tpvRegion(ax,page,motionMode) );
 
     return SCPI_RES_OK;
 }
 
-//! goto x1,y1,z1,t, j, tj
+//! goto ax,page,motionMode
+//! x1,y1,z1,t, j, tj
 static scpi_result_t _scpi_gotoj( scpi_t * context )
 {
     DEF_LOCAL_VAR();
+
+    int ax, page, motionMode;
+
+    if ( SCPI_ParamInt32(context, &ax, true) != true )
+    { scpi_ret( SCPI_RES_ERR ); }
+    if ( SCPI_ParamInt32(context, &page, true) != true )
+    { scpi_ret( SCPI_RES_ERR ); }
+    if ( SCPI_ParamInt32(context, &motionMode, true) != true )
+    { scpi_ret( SCPI_RES_ERR ); }
 
     float vals[4+2];
 
@@ -412,15 +450,25 @@ static scpi_result_t _scpi_gotoj( scpi_t * context )
     curve.append( pt2z );
     curve.append( pt2 );
 
-    pRobo->move( curve, tpvRegion(0,0) );
+    pRobo->move( curve, tpvRegion(ax,page,motionMode) );
 
     return SCPI_RES_OK;
 }
 
-//! goto x1,y1,z1,t, xl,yl,zl
+//! goto ax,page,motionMode
+//! x1,y1,z1,t, xl,yl,zl
 static scpi_result_t _scpi_gotol( scpi_t * context )
 {
     DEF_LOCAL_VAR();
+
+    int ax, page, motionMode;
+
+    if ( SCPI_ParamInt32(context, &ax, true) != true )
+    { scpi_ret( SCPI_RES_ERR ); }
+    if ( SCPI_ParamInt32(context, &page, true) != true )
+    { scpi_ret( SCPI_RES_ERR ); }
+    if ( SCPI_ParamInt32(context, &motionMode, true) != true )
+    { scpi_ret( SCPI_RES_ERR ); }
 
     float vals[4+3];
 
@@ -454,12 +502,208 @@ static scpi_result_t _scpi_gotol( scpi_t * context )
     curve.append( ptl );
     curve.append( pt2 );
 
-    pRobo->move( curve, tpvRegion(0,0) );
+    pRobo->move( curve, tpvRegion(ax,page,motionMode) );
 
     return SCPI_RES_OK;
 }
 
-//! ax, page, file
+//! ax, page, mode, dx, dt
+static scpi_result_t _scpi_stepx( scpi_t * context )
+{
+    DEF_LOCAL_VAR();
+
+    int ax, page, motionMode;
+
+    if ( SCPI_ParamInt32(context, &ax, true) != true )
+    { scpi_ret( SCPI_RES_ERR ); }
+    if ( SCPI_ParamInt32(context, &page, true) != true )
+    { scpi_ret( SCPI_RES_ERR ); }
+    if ( SCPI_ParamInt32(context, &motionMode, true) != true )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    float vals[2];
+
+    for ( int i = 0; i < sizeof_array(vals); i++ )
+    {
+        if ( SCPI_RES_OK != SCPI_ParamFloat( context, vals+i, true ) )
+        { scpi_ret( SCPI_RES_ERR ); }
+    }
+
+    for ( int i = 0; i < sizeof_array(vals); i++ )
+    { logDbg()<<vals[i]; }
+
+    //! robo op
+    DEF_ROBO();
+
+    CHECK_LINK();
+
+    //! current
+    TraceKeyPoint pose;
+    int ret = pRobo->nowPose( pose );
+    if ( ret != 0 )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    //! default interp
+    TraceKeyPoint pt1( 0, pose.x, pose.y, pose.z, 0 );
+    TraceKeyPoint pt2( vals[1], pose.x + vals[0], pose.y, pose.z );
+
+    TraceKeyPointList curve;
+    curve.append( pt1 );
+    curve.append( pt2 );
+
+    pRobo->move( curve, tpvRegion(ax,page,motionMode) );
+
+    return SCPI_RES_OK;
+}
+
+//! ax, page, mode, dy, dt
+static scpi_result_t _scpi_stepy( scpi_t * context )
+{
+    DEF_LOCAL_VAR();
+
+    int ax, page, motionMode;
+
+    if ( SCPI_ParamInt32(context, &ax, true) != true )
+    { scpi_ret( SCPI_RES_ERR ); }
+    if ( SCPI_ParamInt32(context, &page, true) != true )
+    { scpi_ret( SCPI_RES_ERR ); }
+    if ( SCPI_ParamInt32(context, &motionMode, true) != true )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    float vals[2];
+
+    for ( int i = 0; i < sizeof_array(vals); i++ )
+    {
+        if ( SCPI_RES_OK != SCPI_ParamFloat( context, vals+i, true ) )
+        { scpi_ret( SCPI_RES_ERR ); }
+    }
+
+    for ( int i = 0; i < sizeof_array(vals); i++ )
+    { logDbg()<<vals[i]; }
+
+    //! robo op
+    DEF_ROBO();
+
+    CHECK_LINK();
+
+    //! current
+    TraceKeyPoint pose;
+    int ret = pRobo->nowPose( pose );
+    if ( ret != 0 )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    //! default interp
+    TraceKeyPoint pt1( 0, pose.x, pose.y, pose.z, 0 );
+    TraceKeyPoint pt2( vals[1], pose.x, pose.y + vals[0], pose.z );
+
+    TraceKeyPointList curve;
+    curve.append( pt1 );
+    curve.append( pt2 );
+
+    pRobo->move( curve, tpvRegion(ax,page,motionMode) );
+
+    return SCPI_RES_OK;
+}
+
+//! ax, page, mode, dz, dt
+static scpi_result_t _scpi_stepz( scpi_t * context )
+{
+    DEF_LOCAL_VAR();
+
+    int ax, page, motionMode;
+
+    if ( SCPI_ParamInt32(context, &ax, true) != true )
+    { scpi_ret( SCPI_RES_ERR ); }
+    if ( SCPI_ParamInt32(context, &page, true) != true )
+    { scpi_ret( SCPI_RES_ERR ); }
+    if ( SCPI_ParamInt32(context, &motionMode, true) != true )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    float vals[2];
+
+    for ( int i = 0; i < sizeof_array(vals); i++ )
+    {
+        if ( SCPI_RES_OK != SCPI_ParamFloat( context, vals+i, true ) )
+        { scpi_ret( SCPI_RES_ERR ); }
+    }
+
+    for ( int i = 0; i < sizeof_array(vals); i++ )
+    { logDbg()<<vals[i]; }
+
+    //! robo op
+    DEF_ROBO();
+
+    CHECK_LINK();
+
+    //! current
+    TraceKeyPoint pose;
+    int ret = pRobo->nowPose( pose );
+    if ( ret != 0 )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    //! default interp
+    TraceKeyPoint pt1( 0, pose.x, pose.y, pose.z, 0 );
+    TraceKeyPoint pt2( vals[1], pose.x, pose.y, pose.z + vals[0] );
+
+    TraceKeyPointList curve;
+    curve.append( pt1 );
+    curve.append( pt2 );
+
+    pRobo->move( curve, tpvRegion(ax,page,motionMode) );
+
+    return SCPI_RES_OK;
+}
+
+//! ax, page, mode, dh, dt
+static scpi_result_t _scpi_steph( scpi_t * context )
+{
+    DEF_LOCAL_VAR();
+
+    int ax, page, motionMode;
+
+    if ( SCPI_ParamInt32(context, &ax, true) != true )
+    { scpi_ret( SCPI_RES_ERR ); }
+    if ( SCPI_ParamInt32(context, &page, true) != true )
+    { scpi_ret( SCPI_RES_ERR ); }
+    if ( SCPI_ParamInt32(context, &motionMode, true) != true )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    float vals[2];
+
+    for ( int i = 0; i < sizeof_array(vals); i++ )
+    {
+        if ( SCPI_RES_OK != SCPI_ParamFloat( context, vals+i, true ) )
+        { scpi_ret( SCPI_RES_ERR ); }
+    }
+
+    for ( int i = 0; i < sizeof_array(vals); i++ )
+    { logDbg()<<vals[i]; }
+
+    //! robo op
+    DEF_ROBO();
+
+    CHECK_LINK();
+
+    //! current
+    TraceKeyPoint pose;
+    int ret = pRobo->nowPose( pose );
+    if ( ret != 0 )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    //! default interp
+    TraceKeyPoint pt1( 0, pose.x, pose.y, pose.z, 0 );
+    TraceKeyPoint pt2( vals[1], pose.x, pose.y, pose.z, vals[0] );
+
+    TraceKeyPointList curve;
+    curve.append( pt1 );
+    curve.append( pt2 );
+
+    pRobo->move( curve, tpvRegion(ax,page,motionMode) );
+
+    return SCPI_RES_OK;
+}
+
+//! ax, page, file, motionMode = -1
 static scpi_result_t _scpi_program( scpi_t * context )
 {
     // read
@@ -477,6 +721,13 @@ static scpi_result_t _scpi_program( scpi_t * context )
     { scpi_ret( SCPI_RES_ERR ); }logDbg()<<strLen<<pLocalStr;
     if (strLen < 1)
     { scpi_ret( SCPI_RES_ERR ); }
+
+    //! check motion mode
+    int motionMode = -1;
+    if ( SCPI_ParamInt32(context, &motionMode, true) != true )
+    { motionMode = -1; }
+    else
+    {}
 
     QList<float> dataset;
     //! try .mc
@@ -543,7 +794,7 @@ static scpi_result_t _scpi_program( scpi_t * context )
 
     CHECK_LINK();
 
-    pRobo->program( curve, tpvRegion( ax, page) );
+    pRobo->program( curve, tpvRegion( ax, page, motionMode) );
 
     return SCPI_RES_OK;
 }
@@ -618,13 +869,13 @@ static scpi_result_t _scpi_download( scpi_t * context )
 }
 
 
-//! ax, page
+//! ax, page, cycle, motinMode
 static scpi_result_t _scpi_call( scpi_t * context )
 {
     // read
     DEF_LOCAL_VAR();
 
-    int ax, page;
+    int ax, page, cycle, motionMode;
 
     if ( SCPI_ParamInt32(context, &ax, true) != true )
     { scpi_ret( SCPI_RES_ERR ); }
@@ -632,12 +883,23 @@ static scpi_result_t _scpi_call( scpi_t * context )
     if ( SCPI_ParamInt32(context, &page, true) != true )
     { scpi_ret( SCPI_RES_ERR ); }
 
+    cycle = 1;
+    motionMode = -1;
+    do
+    {
+        if ( SCPI_ParamInt32(context, &cycle, true) != true )
+        { break; }
+
+        if ( SCPI_ParamInt32(context, &motionMode, true) != true )
+        { break; }
+    }while( 0 );
+
     //! robo op
     DEF_ROBO();
 
     CHECK_LINK();
 
-    pRobo->call( tpvRegion( ax, page) );
+    pRobo->call( cycle, tpvRegion( ax, page, motionMode ) );
 
     return SCPI_RES_OK;
 }
@@ -850,6 +1112,11 @@ static scpi_command_t _scpi_cmds[]=
     CMD_ITEM( "GOTO", _scpi_goto ),
     CMD_ITEM( "GOTOJ", _scpi_gotoj ),
     CMD_ITEM( "GOTOL", _scpi_gotol ),
+
+    CMD_ITEM( "STEP:X", _scpi_stepx ),
+    CMD_ITEM( "STEP:Y", _scpi_stepy ),
+    CMD_ITEM( "STEP:Z", _scpi_stepz ),
+    CMD_ITEM( "STEP:H", _scpi_steph ),
 
     CMD_ITEM( "STATE?", _scpi_fsmState ),
     CMD_ITEM( "POSE?", _scpi_pose ),

@@ -6,7 +6,8 @@
 //#define status_timer_tmo    time_s( 1 )    //! us
 //#define status_timer_prepare    time_s( 2 )
 
-#define status_timer_tmo    time_ms( 500 )    //! us
+//#define status_timer_tmo    time_ms( 500 )    //! us
+#define status_timer_tmo    time_s( 2 )    //! us
 #define status_timer_prepare    time_ms( 500 )
 
 //! state unit

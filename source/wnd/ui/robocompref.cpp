@@ -41,8 +41,8 @@ RoboComPref::RoboComPref(QWidget *parent) :
         pLabel->setVisible( false );
     }
 
-    ui->label_10->setVisible(false);
-    ui->cmbGroup->setVisible(false);
+//    ui->label_10->setVisible(false);
+//    ui->cmbGroup->setVisible(false);
 
     spyEdited();
 }
@@ -80,7 +80,8 @@ void RoboComPref::spyEdited()
     QCheckBox *checkBoxes[]=
     {
     };
-
+    QRadioButton *radBoxes[] = {
+    };
     QLineEdit *edits[]={
         ui->edtAlias,
     };
@@ -162,6 +163,8 @@ void RoboComPref::updateData()
     { return; }
 
     pRobo->setCanGroupId( ui->spinBox->value() );
+    pRobo->setSubGroup( ui->cmbGroup->currentIndex() );
+    pRobo->setSubGroupId( robo_channels( ui->cmbGroup->currentIndex() ) );
 
     //! interp
 //    RawRobo *pRawRobo = (RawRobo*)pRobo;
@@ -229,8 +232,9 @@ int RoboComPref::applyGroupId()
         }
 
         //! set sub group
-//        subGroup = ui->cmbGpSubId->currentText().toInt();
-//        pMRQ->setIDENTITY_GROUP( axesId, (MRQ_IDENTITY_GROUP)ui->cmbGroup->currentIndex(), subGroup );
+        pMRQ->setIDENTITY_GROUP( axesId,
+                                 (MRQ_IDENTITY_GROUP)ui->cmbGroup->currentIndex(),
+                                 ui->cmbGroup->currentIndex() + SUB_GROUP_BASE );
 
         pMRQ->setCAN_APPLYPARA();
     }

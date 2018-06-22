@@ -26,13 +26,6 @@ static value_desc _value_desc_MRV_SYSTEM_TYPE[] = {
 	{0,"MRQ",},
 	{1,"MRV",},
 };
-static value_desc _value_desc_MRV_SYSTEM_TYPE_1[] = {
-	{0,"C23D",},
-	{1,"C23S",},
-	{2,"M2304",},
-	{3,"MV",},
-	{4,"M2310",},
-};
 static value_desc _value_desc_MRV_RS232_BAUD[] = {
 	{0,"4800",},
 	{1,"7200",},
@@ -196,7 +189,7 @@ void _MRV_model::loadOtp()
 	mSYSTEM_SN5 = (char)0;
 
 	mSYSTEM_TYPE = (MRV_SYSTEM_TYPE)0;
-	mSYSTEM_TYPE1 = (MRV_SYSTEM_TYPE_1)0;
+	mSYSTEM_TYPE1 = (MRV_LINK_DEVICEINFO_1)0;
 	mSYSTEM_SOFTVER = (char)0;
 	mSYSTEM_SOFTVER1 = (char)0;
 
@@ -331,20 +324,23 @@ for ( int i0=0; i0 < 10; i0++ )
 {
 mTHRESHOLD_HIGHCURRENT[i0] = (uint32)0;
 }
-	mTHRESHOLD_HICURRENTACTION = (byte)0;
-	mTHRESHOLD_HICURRENTACTION1 = (MRV_THRESHOLD_HIPRESSUREACTION)0;
-
+for ( int i0=0; i0 < 10; i0++ )
+{
+mTHRESHOLD_HICURRENTACTION[i0] = (MRV_THRESHOLD_HIPRESSUREACTION)0;
+}
 for ( int i0=0; i0 < 10; i0++ )
 {
 mTHRESHOLD_LOWCURRENT[i0] = (uint32)0;
 }
-	mTHRESHOLD_LOWCURRENTACTION = (byte)0;
-	mTHRESHOLD_LOWCURRENTACTION1 = (MRV_THRESHOLD_HIPRESSUREACTION)0;
+
+for ( int i0=0; i0 < 10; i0++ )
+{
+mTHRESHOLD_LOWCURRENTACTION[i0] = (MRV_THRESHOLD_HIPRESSUREACTION)0;
+}
 for ( int i0=0; i0 < 10; i0++ )
 {
 mTHRESHOLD_ONNUMS[i0] = (uint32)0;
 }
-
 for ( int i0=0; i0 < 10; i0++ )
 {
 mTHRESHOLD_NUMSACTION[i0] = (MRV_THRESHOLD_HIPRESSUREACTION)0;
@@ -353,6 +349,7 @@ for ( int i0=0; i0 < 10; i0++ )
 {
 mTHRESHOLD_TIME[i0] = (uint32)0;
 }
+
 for ( int i0=0; i0 < 10; i0++ )
 {
 mTHRESHOLD_TIMEACTION[i0] = (MRV_THRESHOLD_HIPRESSUREACTION)0;
@@ -361,7 +358,6 @@ for ( int i0=0; i0 < 10; i0++ )
 {
 mPVT_EXECMODE[i0] = (MRV_PVT_EXECMODE)0;
 }
-
 for ( int i0=0; i0 < 10; i0++ )
 {
 mPVT_CYCLES[i0] = (uint32)0;
@@ -373,17 +369,18 @@ for ( int i1=0; i1 < 10; i1++ )
 mPVT_GRADE[i0][i1] = (uint32)0;
 }
 }
+
 for ( int i0=0; i0 < 10; i0++ )
 {
 mPVT_BUFFERCHECK[i0] = (uint32)0;
 }
 	mPVT_START = (byte)0;
-
 	mPVT_END = (byte)0;
 for ( int i0=0; i0 < 10; i0++ )
 {
 mPVT_PDATA[i0] = (uint32)0;
 }
+
 for ( int i0=0; i0 < 10; i0++ )
 {
 mPVT_TDATA[i0] = (uint32)0;
@@ -392,12 +389,12 @@ for ( int i0=0; i0 < 10; i0++ )
 {
 mPVT_HOLD[i0] = (MRV_PVT_HOLD)0;
 }
-
 	mPVT_SAVE = (byte)0;
 for ( int i0=0; i0 < 10; i0++ )
 {
 mCALIBRATION_TYPE[i0] = (MRV_CALIBRATION_TYPE)0;
 }
+
 for ( int i0=0; i0 < 10; i0++ )
 {
 mCALIBRATION_SAMPLERATE[i0] = (MRV_CALIBRATION_SAMPLERATE)0;
@@ -406,7 +403,6 @@ for ( int i0=0; i0 < 10; i0++ )
 {
 mCALIBRATION_OPENTIME[i0] = (uint16)0;
 }
-
 for ( int i0=0; i0 < 10; i0++ )
 {
 mCALIBRATION_HOLDTIME[i0] = (uint16)0;
@@ -415,6 +411,7 @@ for ( int i0=0; i0 < 10; i0++ )
 {
 mCALIBRATION_CLOSETIME[i0] = (uint16)0;
 }
+
 for ( int i0=0; i0 < 10; i0++ )
 {
 mCALIBRATION_OPENDUTY[i0] = (uint32)0;
@@ -423,7 +420,6 @@ for ( int i0=0; i0 < 10; i0++ )
 {
 mCALIBRATION_HOLDDUTY[i0] = (uint32)0;
 }
-
 for ( int i0=0; i0 < 10; i0++ )
 {
 mCALIBRATION_DATALENGTH[i0] = (uint16)0;
@@ -435,6 +431,7 @@ for ( int i1=0; i1 < 4; i1++ )
 mREPORT_STATE[i0][i1] = (MRV_CAN_NETMANAGELED)0;
 }
 }
+
 for ( int i0=0; i0 < 10; i0++ )
 {
 for ( int i1=0; i1 < 4; i1++ )
@@ -449,7 +446,6 @@ for ( int i1=0; i1 < 4; i1++ )
 mREPORT_DATA[i0][i1] = (uint32)0;
 }
 }
-
 for ( int i0=0; i0 < 10; i0++ )
 {
 mIOCONFIG_IOFUNCSEL[i0] = (MRV_IOCONFIG_IOFUNCSEL)0;
@@ -458,6 +454,7 @@ for ( int i0=0; i0 < 10; i0++ )
 {
 mIOCONFIG_SWFILTERDELAY[i0] = (uint16)0;
 }
+
 for ( int i0=0; i0 < 10; i0++ )
 {
 mIOCONFIG_SWFILTERCOUNTER[i0] = (uint16)0;
@@ -466,7 +463,6 @@ for ( int i0=0; i0 < 10; i0++ )
 {
 mIOCONFIG_TRIGEDGE[i0] = (MRV_IOCONFIG_TRIGEDGE)0;
 }
-
 for ( int i0=0; i0 < 10; i0++ )
 {
 mIOCONFIG_BAUD[i0] = (MRV_RS232_BAUD)0;
@@ -475,6 +471,7 @@ for ( int i0=0; i0 < 10; i0++ )
 {
 mIOCONFIG_WORDLEN[i0] = (MRV_RS232_WORDLEN)0;
 }
+
 for ( int i0=0; i0 < 10; i0++ )
 {
 mIOCONFIG_FLOWCTL[i0] = (MRV_IOCONFIG_FLOWCTL)0;
@@ -483,9 +480,10 @@ for ( int i0=0; i0 < 10; i0++ )
 {
 mIOCONFIG_PARITY[i0] = (MRV_RS232_PARITY)0;
 }
-
-	mIOCONFIG_STOPBIT = (byte)0;
-	mIOCONFIG_STOPBIT1 = (MRV_RS232_STOPBIT)0;
+for ( int i0=0; i0 < 10; i0++ )
+{
+mIOCONFIG_STOPBIT[i0] = (MRV_RS232_STOPBIT)0;
+}
 }
 QString _MRV_model::toString( MRV_LINK_INTFC eType )
 {
@@ -510,10 +508,6 @@ QString _MRV_model::toString( MRV_SYSTEM_POWERON eType )
 QString _MRV_model::toString( MRV_SYSTEM_TYPE eType )
 {
 	return QString( MRV_SYSTEM_TYPE_toString( eType ) );
-}
-QString _MRV_model::toString( MRV_SYSTEM_TYPE_1 eType )
-{
-	return QString( MRV_SYSTEM_TYPE_1_toString( eType ) );
 }
 QString _MRV_model::toString( MRV_RS232_BAUD eType )
 {
@@ -642,10 +636,6 @@ int _MRV_model::toValue( const QString &str, MRV_SYSTEM_POWERON *pEVal )
 int _MRV_model::toValue( const QString &str, MRV_SYSTEM_TYPE *pEVal )
 {
 	return ( MRV_SYSTEM_TYPE_toValue( str.toLatin1().data(), pEVal) );
-}
-int _MRV_model::toValue( const QString &str, MRV_SYSTEM_TYPE_1 *pEVal )
-{
-	return ( MRV_SYSTEM_TYPE_1_toValue( str.toLatin1().data(), pEVal) );
 }
 int _MRV_model::toValue( const QString &str, MRV_RS232_BAUD *pEVal )
 {
@@ -852,7 +842,7 @@ int _MRV_model::getSYSTEM_SN(  byte * val0, char * val1, char * val2, char * val
 }
 //! 
 //! 
-int _MRV_model::getSYSTEM_TYPE(  MRV_SYSTEM_TYPE * val0, MRV_SYSTEM_TYPE_1 * val1, bool bQuery )
+int _MRV_model::getSYSTEM_TYPE(  MRV_SYSTEM_TYPE * val0, MRV_LINK_DEVICEINFO_1 * val1, bool bQuery )
 {
 	//! 2 5
 	int ret = 0;
@@ -1432,7 +1422,7 @@ int _MRV_model::getVALVECTRL_DEVICE( byte val0, MRV_VALVECTRL_DEVICE * val1, boo
 	return 0;
 }
 //! U32
-//! [CHANNUM]
+//! 
 int _MRV_model::setVALVECTRL_PWMFREQ( uint32 val0 )
 {
 	//! 51 2
@@ -1805,22 +1795,19 @@ int _MRV_model::setTHRESHOLD_HICURRENTACTION( byte val0
 {
 	//! 52 10
 	int ret=0; 
-	mTHRESHOLD_HICURRENTACTION = val0;
-	mTHRESHOLD_HICURRENTACTION1 = val1;
+	mTHRESHOLD_HICURRENTACTION[ (int)val0 ] = val1;
 
 	return ret;
 }
-//! 
+//! U8
 //! [CHANNUM]
-int _MRV_model::getTHRESHOLD_HICURRENTACTION(  byte * val0, MRV_THRESHOLD_HIPRESSUREACTION * val1, bool bQuery )
+int _MRV_model::getTHRESHOLD_HICURRENTACTION( byte val0, MRV_THRESHOLD_HIPRESSUREACTION * val1, bool bQuery )
 {
 	//! 52 11
 	int ret = 0;
 
 	byte lval0 = 0;
-	byte lval1 = 0;
-	*val0 = mTHRESHOLD_HICURRENTACTION;
-	*val1 = mTHRESHOLD_HICURRENTACTION1;
+	*val1 = mTHRESHOLD_HICURRENTACTION[ (int)val0 ];
 	return 0;
 }
 //! U8,U32
@@ -1852,22 +1839,19 @@ int _MRV_model::setTHRESHOLD_LOWCURRENTACTION( byte val0
 {
 	//! 52 14
 	int ret=0; 
-	mTHRESHOLD_LOWCURRENTACTION = val0;
-	mTHRESHOLD_LOWCURRENTACTION1 = val1;
+	mTHRESHOLD_LOWCURRENTACTION[ (int)val0 ] = val1;
 
 	return ret;
 }
-//! 
+//! U8
 //! [CHANNUM]
-int _MRV_model::getTHRESHOLD_LOWCURRENTACTION(  byte * val0, MRV_THRESHOLD_HIPRESSUREACTION * val1, bool bQuery )
+int _MRV_model::getTHRESHOLD_LOWCURRENTACTION( byte val0, MRV_THRESHOLD_HIPRESSUREACTION * val1, bool bQuery )
 {
 	//! 52 15
 	int ret = 0;
 
 	byte lval0 = 0;
-	byte lval1 = 0;
-	*val0 = mTHRESHOLD_LOWCURRENTACTION;
-	*val1 = mTHRESHOLD_LOWCURRENTACTION1;
+	*val1 = mTHRESHOLD_LOWCURRENTACTION[ (int)val0 ];
 	return 0;
 }
 //! U8,U32
@@ -2604,22 +2588,19 @@ int _MRV_model::setIOCONFIG_STOPBIT( byte val0
 {
 	//! 56 16
 	int ret=0; 
-	mIOCONFIG_STOPBIT = val0;
-	mIOCONFIG_STOPBIT1 = val1;
+	mIOCONFIG_STOPBIT[ (int)val0 ] = val1;
 
 	return ret;
 }
-//! 
+//! U8
 //! [CHANNUM]
-int _MRV_model::getIOCONFIG_STOPBIT(  byte * val0, MRV_RS232_STOPBIT * val1, bool bQuery )
+int _MRV_model::getIOCONFIG_STOPBIT( byte val0, MRV_RS232_STOPBIT * val1, bool bQuery )
 {
 	//! 56 17
 	int ret = 0;
 
 	byte lval0 = 0;
-	byte lval1 = 0;
-	*val0 = mIOCONFIG_STOPBIT;
-	*val1 = mIOCONFIG_STOPBIT1;
+	*val1 = mIOCONFIG_STOPBIT[ (int)val0 ];
 	return 0;
 }
 //! U8

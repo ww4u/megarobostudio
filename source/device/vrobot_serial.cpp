@@ -141,16 +141,6 @@ int VRobot::save( const QString &name )
             writer.writeTextElement("tick", QString::number(mZeroTick) );
             writer.writeEndElement();
 
-//            writer.writeStartElement("init_angle");
-
-//            Q_ASSERT( mAxes  >= mInitAngles.size() );
-//            for ( int i = 0; i < mAxes && i < mInitAngles.size(); i++ )
-//            {
-//                writer.writeTextElement("angle", QString::number( mInitAngles.at(i) ) );
-//            }
-
-//            writer.writeEndElement();
-
             writer.writeStartElement("group");
 
                 writer.writeTextElement("can_id", QString::number(mCanGroupId) );
@@ -185,5 +175,7 @@ int VRobot::serialOut( QXmlStreamWriter &/*writer*/ )
     return 0;
 }
 
+int VRobot::uploadSetting()
+{ return 0; }
 int VRobot::applySetting()
 { return 0; }

@@ -207,9 +207,8 @@ static value_desc _value_desc_MRQ_MOTIONPLAN_EXECUTEMODE_1[] = {
 };
 static value_desc _value_desc_MRQ_MOTIONPLAN_PLANMODE_1[] = {
 	{0,"CUBICPOLY",},
-	{1,"LINEAR",},
-	{2,"UNIFORM",},
-	{3,"TRAPEZOID",},
+	{1,"TRAPEZOID",},
+	{2,"SCURVE",},
 };
 static value_desc _value_desc_MRQ_MOTIONPLAN_MOTIONMODE_1[] = {
 	{0,"PVT",},
@@ -217,10 +216,10 @@ static value_desc _value_desc_MRQ_MOTIONPLAN_MOTIONMODE_1[] = {
 	{2,"LVT_NOCORRECT",},
 };
 static value_desc _value_desc_MRQ_MOTIONPLAN_MODIFYDUTY_1[] = {
-	{0,"1/4",},
-	{1,"1/8",},
-	{2,"1/16",},
-	{3,"1/32",},
+        {0,"4",},
+        {1,"8",},
+        {2,"16",},
+        {3,"32",},
 };
 static value_desc _value_desc_MRQ_MOTIONPLAN_ENDSTATE_1[] = {
 	{0,"STOP",},
@@ -239,19 +238,10 @@ static value_desc _value_desc_MRQ_MOTIONPLAN_OOSLINERESPONSE_1[] = {
 static value_desc _value_desc_MRQ_REPORT_STATE[] = {
 	{0,"TORQUE",},
 	{1,"CYCLE",},
-	{2,"XANGLE",},
-	{3,"YANGLE",},
-	{4,"ZANGLE",},
-	{5,"XVEL",},
-	{6,"YVEL",},
-	{7,"ZVEL",},
-	{8,"XACC",},
-	{9,"YACC",},
-	{10,"ZACC",},
-	{11,"SGALL",},
-	{12,"SGSE",},
-	{13,"DIST",},
-	{14,"ABSENC",},
+	{2,"SGALL",},
+	{3,"SGSE",},
+	{4,"DIST",},
+	{5,"ABSENC",},
 };
 static value_desc _value_desc_MRQ_TRIGGER_MODE[] = {
 	{0,"PATTERN",},
@@ -377,13 +367,13 @@ static value_desc _value_desc_MRQ_ABSENCALARM_ZEROPOSITION_1[] = {
 };
 static value_desc _value_desc_MRQ_NEWDRIVER_TYPE[] = {
 	{0,"RESERVE",},
-	{1,"RESERVE",},
+	{1,"RESERVE1",},
 	{2,"ST820",},
 };
 static value_desc _value_desc_MRQ_NEWDRIVER_MICROSTEPS[] = {
 	{0,"RESERVE",},
-	{1,"RESERVE",},
-	{2,"RESERVE",},
+	{1,"RESERVE1",},
+	{2,"RESERVE2",},
 	{3,"32",},
 	{4,"16",},
 	{5,"8",},

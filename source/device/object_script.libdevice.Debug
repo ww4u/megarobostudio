@@ -32,7 +32,12 @@ ADDMOD obj\devicemrq_setting_up.o
 ADDMOD obj\devicemrq_setting_down.o
 ADDMOD obj\devicemrq_assist.o
 ADDMOD obj\devicemrq_task.o
+ADDMOD obj\devicemrv.o
+ADDMOD obj\phydevice.o
+ADDMOD obj\datauploader.o
+ADDMOD obj\mrv_model_serial.o
 ADDMOD obj\moc_tpvdownloader.o
 ADDMOD obj\moc_vrobot.o
 ADDMOD obj\moc_roboworker.o
+ADDMOD obj\moc_datauploader.o
 SAVE

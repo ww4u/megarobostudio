@@ -208,7 +208,7 @@ public:
     virtual void offLine( const tpvRegion &region );
     virtual bool checkLink( int p1 = 0, int p2 = 0 );
     //! interface
-    virtual int call( const tpvRegion &region=0 );  //! load + run
+    virtual int call( int n, const tpvRegion &region=0 );  //! load + run
 
     virtual int download( QList<tpvGroup*> &groups,
                           QList<int> &joints,       //! joint tab id

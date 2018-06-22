@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>708</width>
-    <height>650</height>
+    <height>725</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -58,14 +58,14 @@
      <property name="maximumSize">
       <size>
        <width>700</width>
-       <height>600</height>
+       <height>800</height>
       </size>
      </property>
      <property name="tabPosition">
       <enum>QTabWidget::North</enum>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab_2">
       <attribute name="title">
@@ -151,19 +151,6 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="0">
-           <widget class="QCheckBox" name="chkAutoExpand">
-            <property name="layoutDirection">
-             <enum>Qt::RightToLeft</enum>
-            </property>
-            <property name="text">
-             <string>Auto Expand</string>
-            </property>
-            <property name="checked">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
           <item row="2" column="0">
            <widget class="QCheckBox" name="chkSearch">
             <property name="layoutDirection">
@@ -171,6 +158,19 @@
             </property>
             <property name="text">
              <string>Search On Startup</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QCheckBox" name="chkAutoExpand">
+            <property name="layoutDirection">
+             <enum>Qt::RightToLeft</enum>
+            </property>
+            <property name="text">
+             <string>Auto Expand</string>
             </property>
             <property name="checked">
              <bool>true</bool>
@@ -187,27 +187,17 @@
             </property>
            </widget>
           </item>
-          <item row="5" column="0">
-           <widget class="QLabel" name="label_17">
-            <property name="text">
-             <string>Tempory Directory</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QCheckBox" name="chkAutoLoadSet">
-            <property name="layoutDirection">
-             <enum>Qt::RightToLeft</enum>
-            </property>
-            <property name="text">
-             <string>Load Setup On Startup</string>
-            </property>
-           </widget>
-          </item>
           <item row="4" column="0">
            <widget class="QLabel" name="label_23">
             <property name="text">
              <string>Sample Tick(us)</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="0">
+           <widget class="QLabel" name="label_17">
+            <property name="text">
+             <string>Tempory Directory</string>
             </property>
            </widget>
           </item>
@@ -224,13 +214,13 @@
             </property>
            </spacer>
           </item>
-          <item row="4" column="1" colspan="2">
-           <widget class="QSpinBox" name="spinSampleTick">
-            <property name="minimum">
-             <number>100</number>
+          <item row="1" column="0">
+           <widget class="QCheckBox" name="chkAutoLoadSet">
+            <property name="layoutDirection">
+             <enum>Qt::RightToLeft</enum>
             </property>
-            <property name="maximum">
-             <number>100000</number>
+            <property name="text">
+             <string>Load Setup On Startup</string>
             </property>
            </widget>
           </item>
@@ -261,6 +251,26 @@
             </property>
            </widget>
           </item>
+          <item row="4" column="1" colspan="2">
+           <widget class="QSpinBox" name="spinSampleTick">
+            <property name="minimum">
+             <number>100</number>
+            </property>
+            <property name="maximum">
+             <number>100000</number>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="0">
+           <widget class="QLabel" name="label_49">
+            <property name="text">
+             <string>Log</string>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="1" colspan="2">
+           <widget class="QLineEdit" name="edtEventLog"/>
+          </item>
          </layout>
         </widget>
        </item>
@@ -271,41 +281,106 @@
          </property>
          <layout class="QFormLayout" name="formLayout_5">
           <item row="1" column="0">
-           <widget class="QLabel" name="label_25">
-            <property name="text">
-             <string>Socket</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QSpinBox" name="spinMisaSocket">
-            <property name="maximum">
-             <number>65535</number>
-            </property>
-            <property name="value">
-             <number>1234</number>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QCheckBox" name="chkMisaEn">
-            <property name="layoutDirection">
-             <enum>Qt::RightToLeft</enum>
-            </property>
-            <property name="text">
-             <string>On/Off</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
            <widget class="QLabel" name="label_26">
             <property name="text">
              <string>Remote Path</string>
             </property>
            </widget>
           </item>
-          <item row="2" column="1">
+          <item row="1" column="1">
            <widget class="QLineEdit" name="edtRemotePath"/>
+          </item>
+          <item row="3" column="0" colspan="2">
+           <widget class="QGroupBox" name="groupBox_14">
+            <property name="title">
+             <string>COM</string>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_6">
+             <item row="1" column="0">
+              <widget class="QCheckBox" name="chkComOnOff">
+               <property name="text">
+                <string>On/Off</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="1">
+              <widget class="QComboBox" name="cmbComPort">
+               <property name="editable">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0">
+              <widget class="QLabel" name="label_48">
+               <property name="text">
+                <string>COM</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="2">
+              <spacer name="horizontalSpacer_6">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item row="2" column="0" colspan="2">
+           <widget class="QGroupBox" name="groupBox_6">
+            <property name="title">
+             <string>Socket</string>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_5">
+             <item row="1" column="0">
+              <widget class="QLabel" name="label_25">
+               <property name="text">
+                <string>Port</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="0">
+              <widget class="QCheckBox" name="chkMisaEn">
+               <property name="layoutDirection">
+                <enum>Qt::LeftToRight</enum>
+               </property>
+               <property name="text">
+                <string>On/Off</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QSpinBox" name="spinMisaSocket">
+               <property name="maximum">
+                <number>65535</number>
+               </property>
+               <property name="value">
+                <number>1234</number>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="2">
+              <spacer name="horizontalSpacer_3">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -1388,6 +1463,12 @@
        </item>
        <item>
         <widget class="QGroupBox" name="groupBox_5">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>1</verstretch>
+          </sizepolicy>
+         </property>
          <property name="title">
           <string>Aggrement</string>
          </property>

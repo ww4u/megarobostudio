@@ -116,15 +116,15 @@ void deviceConsole::slot_classname_changed()
     ui->btnCmdSet->setEnabled( QFile::exists( mCommandsetFullName ) );
 }
 
-void deviceConsole::on_btnRst_clicked()
-{
-    doWrite( "ROTATE 0,0,0.1,360" );
-}
+//void deviceConsole::on_btnRst_clicked()
+//{
+//    doWrite( "ROTATE 0,0,0.1,360" );
+//}
 
-void deviceConsole::on_btnCls_clicked()
-{
-    doWrite( "ROTATE 0,0,0.1,-360" );
-}
+//void deviceConsole::on_btnCls_clicked()
+//{
+//    doWrite( "ROTATE 0,0,0.1,-360" );
+//}
 
 void deviceConsole::on_comboBox_editTextChanged(const QString &arg1)
 {

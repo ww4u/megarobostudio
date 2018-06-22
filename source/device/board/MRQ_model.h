@@ -1,7 +1,7 @@
 #ifndef _MRQ_MODEL_H_
 #define _MRQ_MODEL_H_
 #include "../../../include/mcstd.h"
-#include "../vrobot.h"
+#include "../phydevice.h"
 
 #include "../../intf/iserial.h"
 
@@ -16,7 +16,7 @@ struct PwmInfo
     quint32 mFreq;
 };
 
-class MRQ_model : public VRobot, public _MRQ_model
+class MRQ_model : public PhyDevice, public _MRQ_model
 {
 public:
     MRQ_model();
@@ -149,7 +149,7 @@ public:
     quint32 getSignature();
 
     //! desc + alias
-    QString getFullDesc( int axesId = -1 );
+    virtual QString getFullDesc( int axesId = -1 );
 
     QString getDesc();
     QString getSN();

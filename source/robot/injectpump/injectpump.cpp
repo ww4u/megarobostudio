@@ -40,7 +40,7 @@ robotInject::robotInject()
     mJointCcwMask<<true<<true;
 
     mJointZeroCcw.clear();
-    mJointCcwMask<<true<<false;
+    mJointZeroCcw<<true<<true;
 
     mAngleDir.clear();
     mAngleDir<<true<<true;                 //! x:  y:

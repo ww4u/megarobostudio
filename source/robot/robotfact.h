@@ -24,6 +24,8 @@
 #include "./geo10/robogeo10.h"
 #include "./geo51/robogeo51.h"
 
+#include "./gouf/robogouf.h"
+
 class robotFact
 {
 public:

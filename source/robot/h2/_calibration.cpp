@@ -11,15 +11,28 @@ void robotH2::zeroAttr( double &zeroTime, double &zeroDist )
     zeroDist = mZeroDistance;
 }
 
-void robotH2::setGap( double time, double dist )
+void robotH2::setGap( double time,
+                      double dist,
+                      double zTime,
+                      double zDist
+                      )
 {
     mGapTime = time;
     mGapDistance = dist;
+
+    mGapZTime = zTime;
+    mGapZDistance = zDist;
 }
-void robotH2::gap( double &time, double &dist )
+void robotH2::gap( double &time,
+                   double &dist,
+                   double &zTime,
+                   double &zDist )
 {
     time = mGapTime;
     dist = mGapDistance;
+
+    zTime = mGapZTime;
+    zDist = mGapZDistance;
 }
 
 void robotH2::setCenter( float x, float y )

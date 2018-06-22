@@ -142,6 +142,8 @@ protected:
 #define install_spy()       \
 for ( int i = 0; i < sizeof_array(checkBoxes); i++ )\
 { spy_control_checkbox( checkBoxes[i] ); }\
+for ( int i = 0; i < sizeof_array(radBoxes); i++ )\
+{ spy_control_checkbox( radBoxes[i] ); }\
 for ( int i = 0; i < sizeof_array(edits); i++ )\
 { spy_control_edit( edits[i] ); }\
 \

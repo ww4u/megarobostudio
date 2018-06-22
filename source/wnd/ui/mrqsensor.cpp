@@ -62,7 +62,7 @@ int mrqSensor::apply()
     MRQ_SENSORUART_BAUD sensPort;
     MRQ_IDENTITY_LABEL_1 subSens;
 
-    int ret;
+    int ret=0;
     uartConfig uCfg;
     subUartConfig suCfg;
     Q_ASSERT( NULL != m_pMrqModel );

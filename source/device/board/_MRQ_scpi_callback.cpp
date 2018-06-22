@@ -2261,6 +2261,42 @@ static scpi_result_t _scpi_getMOTOR_BACKLASH( scpi_t * context )
 
 	return SCPI_RES_OK;
 }
+static scpi_result_t _scpi_setMOTOR_BACKLASHTEST( scpi_t * context )
+{
+	// write
+	CHECK_CONTEXT();
+	DEF_LOCAL_VAR();
+
+	byte val0;
+	if ( SCPI_ParamInt32(context, &localIntVal, true) != SCPI_RES_OK ) 
+        { return SCPI_RES_ERR; }
+	val0 = (byte)localIntVal;
+
+	uint16 val1;
+	if ( SCPI_ParamInt32(context, &localIntVal, true) != SCPI_RES_OK ) 
+        { return SCPI_RES_ERR; }
+	val1 = (uint16)localIntVal;
+
+	(SET_OBJ(context))->setMOTOR_BACKLASHTEST( val0, val1 );
+	return SCPI_RES_OK;
+}
+static scpi_result_t _scpi_getMOTOR_BACKLASHTEST( scpi_t * context )
+{
+	// read
+	DEF_LOCAL_VAR();
+
+	byte val0;
+	if ( SCPI_ParamInt32(context, &localIntVal, true) != SCPI_RES_OK ) 
+        { return SCPI_RES_ERR; }
+	val0 = (byte)localIntVal;
+
+	uint16 oval0;
+
+	(GET_OBJ(context))->getMOTOR_BACKLASHTEST( val0, &oval0 );
+	SCPI_ResultInt32(context, oval0);
+
+	return SCPI_RES_OK;
+}
 static scpi_result_t _scpi_setENCODER_LINENUM( scpi_t * context )
 {
 	// write
@@ -7053,6 +7089,128 @@ static scpi_result_t _scpi_getNEWDRIVER_STATE( scpi_t * context )
 	if ( pLocalStr == NULL ) 
         { return SCPI_RES_ERR; } 
 	SCPI_ResultText(context, pLocalStr);
+
+	return SCPI_RES_OK;
+}
+static scpi_result_t _scpi_setPDM_SAMPLESTATE( scpi_t * context )
+{
+	// write
+	CHECK_CONTEXT();
+	DEF_LOCAL_VAR();
+
+	byte val0;
+	if ( SCPI_ParamInt32(context, &localIntVal, true) != SCPI_RES_OK ) 
+        { return SCPI_RES_ERR; }
+	val0 = (byte)localIntVal;
+
+	MRQ_CLOCK_SYNCSTATE val1;
+	if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
+        { return SCPI_RES_ERR; }
+	if (strLen < 1)
+        { return SCPI_RES_ERR; }
+	if ( MRQ_CLOCK_SYNCSTATE_toValue( pLocalStr, &val1) != 0 ) 
+        { return SCPI_RES_ERR; }
+
+	(SET_OBJ(context))->setPDM_SAMPLESTATE( val0, val1 );
+	return SCPI_RES_OK;
+}
+static scpi_result_t _scpi_getPDM_SAMPLESTATE( scpi_t * context )
+{
+	// read
+	DEF_LOCAL_VAR();
+
+	byte val0;
+	if ( SCPI_ParamInt32(context, &localIntVal, true) != SCPI_RES_OK ) 
+        { return SCPI_RES_ERR; }
+	val0 = (byte)localIntVal;
+
+	MRQ_CLOCK_SYNCSTATE oval0;
+
+	(GET_OBJ(context))->getPDM_SAMPLESTATE( val0, &oval0 );
+	pLocalStr = MRQ_CLOCK_SYNCSTATE_toString( oval0);
+	if ( pLocalStr == NULL ) 
+        { return SCPI_RES_ERR; } 
+	SCPI_ResultText(context, pLocalStr);
+
+	return SCPI_RES_OK;
+}
+static scpi_result_t _scpi_setPDM_ENCDIV( scpi_t * context )
+{
+	// write
+	CHECK_CONTEXT();
+	DEF_LOCAL_VAR();
+
+	byte val0;
+	if ( SCPI_ParamInt32(context, &localIntVal, true) != SCPI_RES_OK ) 
+        { return SCPI_RES_ERR; }
+	val0 = (byte)localIntVal;
+
+	byte val1;
+	if ( SCPI_ParamInt32(context, &localIntVal, true) != SCPI_RES_OK ) 
+        { return SCPI_RES_ERR; }
+	val1 = (byte)localIntVal;
+
+	(SET_OBJ(context))->setPDM_ENCDIV( val0, val1 );
+	return SCPI_RES_OK;
+}
+static scpi_result_t _scpi_getPDM_ENCDIV( scpi_t * context )
+{
+	// read
+	DEF_LOCAL_VAR();
+
+	byte val0;
+	if ( SCPI_ParamInt32(context, &localIntVal, true) != SCPI_RES_OK ) 
+        { return SCPI_RES_ERR; }
+	val0 = (byte)localIntVal;
+
+	byte oval0;
+
+	(GET_OBJ(context))->getPDM_ENCDIV( val0, &oval0 );
+	SCPI_ResultInt32(context, oval0);
+
+	return SCPI_RES_OK;
+}
+static scpi_result_t _scpi_getPDM_MICSTEPCOUNT( scpi_t * context )
+{
+	// read
+	DEF_LOCAL_VAR();
+
+	byte val0;
+	if ( SCPI_ParamInt32(context, &localIntVal, true) != SCPI_RES_OK ) 
+        { return SCPI_RES_ERR; }
+	val0 = (byte)localIntVal;
+
+	uint16 oval0;
+
+	(GET_OBJ(context))->getPDM_MICSTEPCOUNT( val0, &oval0 );
+	SCPI_ResultInt32(context, oval0);
+
+	return SCPI_RES_OK;
+}
+static scpi_result_t _scpi_getPDM_MICSTEPDATA( scpi_t * context )
+{
+	// read
+	DEF_LOCAL_VAR();
+
+	byte val0;
+	if ( SCPI_ParamInt32(context, &localIntVal, true) != SCPI_RES_OK ) 
+        { return SCPI_RES_ERR; }
+	val0 = (byte)localIntVal;
+
+	uint16 val1;
+	if ( SCPI_ParamInt32(context, &localIntVal, true) != SCPI_RES_OK ) 
+        { return SCPI_RES_ERR; }
+	val1 = (uint16)localIntVal;
+
+	uint16 val2;
+	if ( SCPI_ParamInt32(context, &localIntVal, true) != SCPI_RES_OK ) 
+        { return SCPI_RES_ERR; }
+	val2 = (uint16)localIntVal;
+
+	byte oval0;
+
+	(GET_OBJ(context))->getPDM_MICSTEPDATA( val0, val1, val2, &oval0 );
+	SCPI_ResultInt32(context, oval0);
 
 	return SCPI_RES_OK;
 }

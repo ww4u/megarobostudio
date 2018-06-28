@@ -4,10 +4,11 @@
 #include "../../device/board/_MRQ_enum.h"
 
 
-D1Point::D1Point( float pt, float pp )
+D1Point::D1Point( float pt, float pp, float pv )
 {
     t = pt;
     p = pp;
+    v = pv;
 }
 
 TraceKeyPoint::TraceKeyPoint( float pt, float px, float py, float pz, float phand )

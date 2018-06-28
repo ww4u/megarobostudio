@@ -73,7 +73,6 @@ int VRobot::load( const QString &name )
                                 if ( reader.name() == "can_id" )
                                 {
                                     mCanGroupId  = reader.readElementText().toInt();
-                                    logDbg()<<mCanGroupId;
                                 }
                                 else if ( reader.name() == "sub_group" )
                                 {
@@ -82,7 +81,6 @@ int VRobot::load( const QString &name )
                                 else if ( reader.name() == "sub_groupid" )
                                 {
                                     mSubGroupId  = reader.readElementText().toInt();
-                                    logDbg()<<mSubGroupId;
                                 }
                                 else
                                 { reader.skipCurrentElement(); }
@@ -128,7 +126,7 @@ int VRobot::save( const QString &name )
             writer.writeStartElement("axes");
             writer.writeTextElement("count", QString::number(mAxes) );
 
-            for ( int i = 0; i < mAxes; i++ )
+            for ( int i = 0; i < axes(); i++ )
             {
                 writer.writeTextElement("name", mAxesConnectionName.at(i) );
             }

@@ -16,6 +16,13 @@ QList<int> VRobot::deviceIds()
     return ids;
 }
 
+QList<int> VRobot::subIDs( int ch )
+{
+    QList<int> ids;
+    ids<<0<<0;
+    return ids;
+}
+
 QString VRobot::deviceFullDesc()
 { return ""; }
 

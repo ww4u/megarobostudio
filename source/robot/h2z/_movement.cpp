@@ -161,11 +161,11 @@ int robotH2Z::goZero( const tpvRegion &region,
         int zDir = bCcw ? (-1) : (1);
 
         pArg->mAx = 2;
-        pArg->mZeroZDist = -1 * zDir * mZeroDistance;
+        pArg->mZeroZDist = zDir * mZeroDistance;
         pArg->mZeroZTime = mZeroTime;
-        pArg->mZeroZEndV = -1 * zDir * mZeroSpeed;
+        pArg->mZeroZEndV = zDir * mZeroSpeed;
 
-        pArg->mZeroGapZDist = zDir * mGapZDistance;
+        pArg->mZeroGapZDist = -1 * zDir * mGapZDistance;
         pArg->mZeroGapZTime = mGapZTime;
 
         //! time
@@ -227,11 +227,11 @@ int robotH2Z::goZero( const tpvRegion &region,
 
                             //! special for z
     int zDir = ccwList.at(2) ? (-1) : (1);
-    pArg->mZeroZDist = -1 * zDir * mZeroDistance ;
+    pArg->mZeroZDist = zDir * mZeroDistance ;
     pArg->mZeroZTime = mZeroTime;
-    pArg->mZeroZEndV = -1 * zDir * mZeroSpeed;
+    pArg->mZeroZEndV = zDir * mZeroSpeed;
 
-    pArg->mZeroGapZDist = zDir * mGapZDistance;
+    pArg->mZeroGapZDist = -1 * zDir * mGapZDistance;
     pArg->mZeroGapZTime = mGapZTime;
 
     pReq->request( this, (VRobot::apiTaskRequest)(this->zeroAxesTask), pArg );

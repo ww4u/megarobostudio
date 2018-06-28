@@ -36,8 +36,13 @@ ADDMOD obj\devicemrv.o
 ADDMOD obj\phydevice.o
 ADDMOD obj\datauploader.o
 ADDMOD obj\mrv_model_serial.o
+ADDMOD obj\mrv_scpi_callback.o
+ADDMOD obj\devicemrv_setting.o
+ADDMOD obj\tpdownloader.o
+ADDMOD obj\devicemrv_tp.o
 ADDMOD obj\moc_tpvdownloader.o
 ADDMOD obj\moc_vrobot.o
 ADDMOD obj\moc_roboworker.o
 ADDMOD obj\moc_datauploader.o
+ADDMOD obj\moc_tpdownloader.o
 SAVE

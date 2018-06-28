@@ -104,6 +104,7 @@ public:
     virtual int upload();
 
     virtual QList<int> deviceIds(); //! receive/send/group
+    virtual QList<int> subIDs( int ch );
     virtual QString deviceFullDesc();
 
 public:

@@ -3,6 +3,8 @@
 #include "../../com/comassist.h"
 
 #include "../../model/tpvgroup.h"
+#include "../../model/tpgroup.h"
+
 #include "../../model/roboscenemodel.h"
 
 #include "../../robot/robotfact.h"
@@ -205,6 +207,10 @@ int scriptMgr::openFile( const QString &path,
     {
         return openTpv( path, file );
     }
+    else if ( comAssist::fileSuffixMatch( ext, pt_ext) )
+    {logDbg();
+        return openTp( path, file );
+    }
     else if ( comAssist::fileSuffixMatch( ext, setup_ext) )
     {
         return openSetup( path, file );
@@ -294,6 +300,36 @@ int scriptMgr::openTpv( const QString &path, const QString &file )
     pGroup->setGc( true );
 
     pGroup->set( mcModelObj::model_tpv,
+                 pGroup );
+
+    emit itemXActivated( pGroup );
+
+    return ERR_NONE;
+}
+
+int scriptMgr::openTp( const QString &path, const QString &file )
+{
+    TpGroup *pGroup;
+
+    pGroup = new TpGroup();
+    Q_ASSERT( NULL != pGroup );
+    pGroup->setGc( true );
+logDbg()<<file;
+    int ret = pGroup->load( file );
+    if ( ret != 0 )
+    {
+        delete pGroup;
+        return ret;
+    }
+
+    logDbg()<<pGroup->mItems.size();
+
+    pGroup->setPath( path );
+    pGroup->setName( comAssist::pureFileName(file) );
+    pGroup->setFile( true );
+    pGroup->setGc( true );
+
+    pGroup->set( mcModelObj::model_tp,
                  pGroup );
 
     emit itemXActivated( pGroup );
@@ -698,6 +734,7 @@ void scriptMgr::slot_context_import()
     fDlg.setFileMode( QFileDialog::ExistingFiles );
     QStringList nameFilters;
     nameFilters<<tr("pvt (*.pvt)")
+               <<tr("pt (*.pt)")
                <<tr("motion (*.mc)")
                <<tr("scene (*.sce)")
                <<tr("setup (*.stp)")

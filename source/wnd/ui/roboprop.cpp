@@ -133,9 +133,13 @@ void roboProp::setupUi( int id )
         m_pSinanjuPref  = new_widget( SinanjuPref, ":/res/image/icon2/settings_light.png", tr("Zero") );
         m_pSinanjuConfig = new_widget( SinanjuConfig, ":/res/image/icon2/settings_light.png", tr("Pref") );
     }
-    else if ( VRobot::robot_h2 == id
-              || VRobot::robot_slide == id
-              || VRobot::robot_motor == id
+    else if ( VRobot::robot_motor == id )
+    {
+        m_pMotorPref = new_widget( MotorPref, ":/res/image/icon2/settings_light.png", tr("Zero") );
+    }
+    else if (
+              VRobot::robot_slide == id
+
               )
     {
         m_pAxnPref = new_widget( AxnPref, ":/res/image/icon2/settings_light.png", tr("Pref") );

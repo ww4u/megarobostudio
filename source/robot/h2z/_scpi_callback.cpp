@@ -143,7 +143,7 @@ static scpi_result_t _scpi_preMove( scpi_t * context )
     return SCPI_RES_OK;
 }
 
-//! page, file
+//! ax, page, file
 static scpi_result_t _scpi_program( scpi_t * context )
 {
     // read
@@ -205,9 +205,6 @@ static scpi_result_t _scpi_program( scpi_t * context )
         //! t
         tp.datas[0] = dataset.at( i * col + seqList[0] );
 
-//        tp.datas[1] = dataset.at( i * col + 0 );
-//        tp.datas[2] = dataset.at( i * col + 1 );
-//        tp.datas[3] = dataset.at( i * col + 2 );
         for ( int k = 1; k < 4; k++ )
         {
             tp.datas[k] = dataset.at( i * col + seqList[k]  );

@@ -50,7 +50,6 @@ public:
     virtual int serialIn( QXmlStreamReader &reader );
     virtual int serialOut( QXmlStreamWriter &writer );
 
-
     virtual int download( VRobot *pSetup );
 
 public:

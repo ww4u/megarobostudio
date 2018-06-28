@@ -646,7 +646,6 @@ void pvtEdit::slot_data_changed()
     {
         ui->btnBuild->setEnabled( true );
     }
-
                                                         //! ui en
     bool bHasItem = mTpvGroup->rowCount(QModelIndex()) > 0;
     ui->btnDel->setEnabled( bHasItem );

@@ -237,6 +237,8 @@ QMutex receiveCache::_frameEventsMutex;
 
 QSemaphore receiveCache::_eventSema;
 
+bool receiveCache::_eventEn = true;
+
 void receiveCache::lock()
 { _threadMutex.lock(); }
 void receiveCache::unlock()
@@ -257,6 +259,15 @@ int receiveCache::availableEvent()
 
 quint64 receiveCache::timeStamp()
 { return receiveCache::_timeStamp; }
+
+void receiveCache::cli()
+{
+    receiveCache::_eventEn = false;
+}
+void receiveCache::sti()
+{
+    receiveCache::_eventEn = true;
+}
 
 receiveCache::receiveCache( QObject *parent ) : QThread( parent )
 {
@@ -359,7 +370,7 @@ void receiveCache::clearFrameEvent()
 void receiveCache::append( frameData &ary )
 {
     //! signal on some event
-    if ( detectEvent( ary ) )
+    if ( receiveCache::_eventEn && detectEvent( ary ) )
     {
 //        logDbg()<<ary.frameId()<<ary.size();
     }
@@ -499,28 +510,30 @@ void receiveCache::clear()
 }
 
 //! all houses count
-int receiveCache::frameCount()
+int receiveCache::frameCount( int id )
 {
     int sum = 0;
     foreach( frameHouse *pHouse, *mFrameWarehouse.houses() )
     {
         Q_ASSERT( NULL != pHouse );
 
-        sum += pHouse->size();
+        if ( id == -1 || pHouse->mSendId == id )
+        { sum += pHouse->size(); }
     }
 
     return sum;
 }
 
 //! data bytes
-int receiveCache::frameBytes()
+int receiveCache::frameBytes( int id )
 {
     int sum = 0;
     foreach( frameHouse *pHouse, *mFrameWarehouse.houses() )
     {
         Q_ASSERT( NULL != pHouse );
 
-        sum += pHouse->bytes();
+        if ( id == -1 || pHouse->mSendId == id )
+        { sum += pHouse->bytes(); }
     }
 
     return sum;
@@ -615,6 +628,5 @@ bool receiveCache::detectEvent( frameData &ary )
 
     receiveCache::unlockFrameEvents();
 
-//logDbg()<<receiveCache::_frameEvents;
     return bEvent;
 }

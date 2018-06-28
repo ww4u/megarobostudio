@@ -14,7 +14,9 @@ SOURCES = \
     _movement.cpp \
     _download.cpp \
     _scpi_callback.cpp \
-    _plan.cpp
+    _plan.cpp \
+    _zero.cpp \
+    motor_task.cpp
 
 HEADERS = \
     motor.h

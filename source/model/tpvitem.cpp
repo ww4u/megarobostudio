@@ -27,7 +27,6 @@ QString tpvItem::header( int col )
     { return QObject::tr("v"); }
     else
     { return QObject::tr("Comment"); }
-
 }
 
 tpvItem::tpvItem( tpvType t, tpvType p, tpvType v )

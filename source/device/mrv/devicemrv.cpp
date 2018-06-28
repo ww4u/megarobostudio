@@ -2,12 +2,29 @@
 
 #include "../board/MRQ_model.h"
 
+#include "tpdownloader.h"
+
 namespace MegaDevice
 {
 
 deviceMRV::deviceMRV()
 {
+}
 
+void deviceMRV::postCtor()
+{
+    //! downloader
+    for ( int i = 0; i < axes(); i++ )
+    {
+        mTpIndexes<<0;
+
+        mDownloaders.append( new TpDownloader() );
+
+        Q_ASSERT( NULL != mDownloaders.at(i) );
+        mDownloaders.at(i)->attachDevice( this, i );
+    }
+
+    mDownloaderSema.release( 1 );
 }
 
 void deviceMRV::rst()

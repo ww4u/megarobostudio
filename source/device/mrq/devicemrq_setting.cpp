@@ -52,6 +52,13 @@ int deviceMRQ::uploadIDs()
     checked_call( getCAN_GROUPID2(&mCAN_GROUPID2) );
     checked_call( getCAN_BROADCASTID(&mCAN_BROADCASTID) );
 
+    //! foreach sub group
+    for ( int i = 0; i < axes(); i++ )
+    {
+        checked_call( getIDENTITY_GROUP( i, MRQ_IDENTITY_GROUP_GROUP1, &mIDENTITY_GROUP[i][0] ) );
+        checked_call( getIDENTITY_GROUP( i, MRQ_IDENTITY_GROUP_GROUP2, &mIDENTITY_GROUP[i][1] ) );
+    }
+
     return ret;
 }
 
@@ -82,6 +89,16 @@ QList<int> deviceMRQ::deviceIds()
     QList<int> ids;
 
     ids<<mCAN_RECEIVEID<<mCAN_SENDID<<mCAN_GROUPID1;
+    return ids;
+}
+
+QList<int> deviceMRQ::subIDs( int ch )
+{
+    Q_ASSERT( ch >= 0 && ch < axes() );
+
+    QList<int> ids;
+
+    ids<<mIDENTITY_GROUP[ch][0]<<mIDENTITY_GROUP[ch][1];
     return ids;
 }
 

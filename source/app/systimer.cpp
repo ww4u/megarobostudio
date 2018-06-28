@@ -69,7 +69,9 @@ void roboTimer::stop()
 }
 
 SysTimerThread * SysTimerThread::_sys_timer_ =  NULL;
+QTimer * SysTimerThread::_pTickTimer = NULL;
 QMutex SysTimerThread::mTimerMutex;
+QMutex SysTimerThread::mRunningMutex;
 
 #define tick_ms     100
 
@@ -117,6 +119,15 @@ void SysTimerThread::sysStopTimer( VRobot *pRobot,
     }
 }
 
+void SysTimerThread::sysPauseTimer()
+{
+    SysTimerThread::_pTickTimer->stop();
+}
+void SysTimerThread::sysRestartTimer()
+{
+    SysTimerThread::_pTickTimer->start( tick_ms );
+}
+
 roboTimer * SysTimerThread::sysFindTimer( VRobot *pRobot,
                                           void *pContext,
                                  int id )
@@ -149,10 +160,10 @@ roboTimer * SysTimerThread::sysFindTimer( VRobot *pRobot,
 SysTimerThread::SysTimerThread( QObject *obj ) : QThread( obj )
 {
 //    mTickTimer.moveToThread( this );
-    m_pTickTimer = new QTimer( );
-    Q_ASSERT( NULL != m_pTickTimer );
+    SysTimerThread::_pTickTimer = new QTimer( );
+    Q_ASSERT( NULL != SysTimerThread::_pTickTimer );
 
-    m_pTickTimer->moveToThread( this );
+    SysTimerThread::_pTickTimer->moveToThread( this );
 
     Q_ASSERT( NULL == SysTimerThread::_sys_timer_ );
     SysTimerThread::_sys_timer_ = this;
@@ -169,26 +180,31 @@ SysTimerThread::~SysTimerThread()
 
 void SysTimerThread::run()
 {
-    m_pTickTimer->connect( m_pTickTimer, SIGNAL(timeout()),
+    SysTimerThread::_pTickTimer->connect( SysTimerThread::_pTickTimer, SIGNAL(timeout()),
                         this, SLOT(slotTimeout()) );
 
     connect( this, SIGNAL(sigExit()),
              this, SLOT(slotExit()) );
 
-    m_pTickTimer->start( tick_ms );
+    SysTimerThread::_pTickTimer->start( tick_ms );
 
 //    QThread::run();
     QThread::exec();
 
-    m_pTickTimer->stop();
-    delete m_pTickTimer;
-    m_pTickTimer = NULL;
+    SysTimerThread::_pTickTimer->stop();
+    delete SysTimerThread::_pTickTimer;
+    SysTimerThread::_pTickTimer = NULL;
 //    logDbg();
 }
 
 void SysTimerThread::slotTimeout()
 {
-//    logDbg();
+    //! active?
+//    if ( SysTimerThread::_pTickTimer->isActive() )
+//    {}
+//    else
+//    { return; }
+
     SysTimerThread::mTimerMutex.lock();
 
     //! slow down the interrupt buffer
@@ -202,7 +218,7 @@ void SysTimerThread::slotTimeout()
         {
             Q_ASSERT( NULL != theTimer );
 
-            theTimer->tick( m_pTickTimer->interval() );
+            theTimer->tick( SysTimerThread::_pTickTimer->interval() );
         }
     }
 

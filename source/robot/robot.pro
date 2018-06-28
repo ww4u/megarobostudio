@@ -4,7 +4,7 @@ SUBDIRS = \
           ./robotfact.pro \
           ./megatron/megatron.pro \
           ./delta/delta.pro \
-#          ./motor/motor.pro \
+          ./motor/motor.pro \
 #          ./slide/slide.pro \
 #          ./slide2/slide2.pro \
     quebeley/quebeley.pro \

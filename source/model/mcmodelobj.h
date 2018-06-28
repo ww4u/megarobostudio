@@ -14,6 +14,7 @@ public:
         model_device,
         model_composite_device,
         model_tpv,
+        model_tp,
 
         model_robot,
         model_motion_file,

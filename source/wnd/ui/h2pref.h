@@ -30,7 +30,7 @@ protected:
     void zeroJoint( int jointId, bool bCcw );
 
 protected Q_SLOTS:
-    void slot_joint_zero( int jId );
+    void slot_joint_zero( int jId, bool bCcw );
 
 Q_SIGNALS:
     void signal_joint_zero( int jointid, bool bCcw );

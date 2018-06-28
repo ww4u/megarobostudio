@@ -21,7 +21,7 @@ int robotMotor::buildTrace( QList<D1Point> &curve
         {
             pGroup->addItem( curve.at(j).t,
                              curve.at(j).p,
-                             0 );
+                             curve.at(j).v );
         }
     }
 

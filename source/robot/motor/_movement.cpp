@@ -38,35 +38,39 @@ int robotMotor::move( QList<D1Point> &curve,
     return ret;
 }
 
-int robotMotor::moveTest1( const tpvRegion &region )
+int robotMotor::preMove( QList<D1Point> &curve,
+                         const tpvRegion &region )
 {
-    D1Point pt1,pt2;
-    pt1.t = 0;
-    pt1.p = 0;
+    int ret;
 
-    pt2.t = 1;
-    pt2.p = -360;
+    //! program
+    ret = program( curve, region );
 
-    QList<D1Point> curve;
-    curve.append( pt1 );
-    curve.append( pt2 );
+    return ret;
+}
+
+int robotMotor::move( float dd,
+          float dt,
+          float endV,
+          const tpvRegion &region )
+{
+    D1PointList curve;
+
+    D1Point kp;
+
+    //! p0
+    kp.t = 0;
+    kp.p = 0;
+    kp.v = 0;
+
+    curve.append( kp );
+
+    //! p1
+    kp.t = dt;
+    kp.p = dd;
+    kp.v = endV;
+    curve.append( kp );
 
     return move( curve, region );
 }
 
-int robotMotor::moveTest2( const tpvRegion &region )
-{
-    D1Point pt1,pt2;
-    pt1.t = 1;
-    pt1.p = 0;
-
-    pt2.t = 0;
-    pt2.p = 360;
-
-    //! p2 -> p1
-    QList<D1Point> curve;
-    curve.append( pt2 );
-    curve.append( pt1 );
-
-    return move( curve, region );
-}

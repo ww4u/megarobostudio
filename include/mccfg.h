@@ -30,12 +30,13 @@
 #define sub_group_id_to                 255
 
 #define x_channel                       128
-#define robo_channels(subGpIndex)            ( subGpIndex + sub_group_id_from )
+#define robo_channels(subGpIndex)            ( subGpIndex + sub_group_id_from + 10 )
 
 //! file ext
 #define setup_ext                       "stp"
 #define motion_ext                      "mc"
 #define pvt_ext                         "pvt"
+#define pt_ext                          "pt"
 #define scene_ext                       "sce"
 
 #define script_ext                      "py"
@@ -52,6 +53,7 @@
 #define setup_desc                       "Setup file"
 #define motion_desc                      "Motion filc"
 #define pvt_desc                         "PVT file"
+#define pt_desc                          "PT file"
 #define scene_desc                       "Scene file"
 
 #define script_desc                      "Python file"

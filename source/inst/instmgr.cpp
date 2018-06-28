@@ -284,7 +284,7 @@ logDbg();
 //            logDbg()<<seq<<pMRQ->getModel()->mCAN_SENDID;
 //            logDbg()<<seq<<pMRQ->getModel()->mCAN_RECEIVEID;
         }
-        sysProgress( uiProgBase + (uiStep++)*uiProgStep, tr("mrq") );
+        sysProgress( uiProgBase + (uiStep++)*uiProgStep, tr("device") );
 
         //! gen robo
         {
@@ -908,7 +908,7 @@ int InstMgr::probeCANBus( CANBus *pNewBus,
 //            logDbg()<<seq<<pMRQ->getModel()->mCAN_SENDID;
 //            logDbg()<<seq<<pMRQ->getModel()->mCAN_RECEIVEID;
         }
-        sysProgress( uiProgBase + (uiStep++)*uiProgStep, tr("mrq") );
+        sysProgress( uiProgBase + (uiStep++)*uiProgStep, tr("device") );
 
         //! gen robo
         {

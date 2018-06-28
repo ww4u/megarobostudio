@@ -19,7 +19,7 @@ robotMegatron::robotMegatron()
     mId = robot_megatron;
 
     //! default gpid
-    mCanGroupId = group_id_from + (mId - robot_complex)*group_id_from;
+    mCanGroupId = group_id_from + (mId - robot_complex)*group_segment;
 
     setAxes( 6 );
     setAxesDefName( 6 );

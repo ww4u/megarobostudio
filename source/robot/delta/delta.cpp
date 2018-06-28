@@ -17,7 +17,7 @@ robotDelta::robotDelta()
     mId = robot_delta;
 
     //! default gpid
-    mCanGroupId = group_id_from + (mId - robot_complex)*group_id_from;
+    mCanGroupId = group_id_from + (mId - robot_complex)*group_segment;
 
     setAxes( 4 );
     setAxesDefName( 4 );

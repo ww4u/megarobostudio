@@ -236,7 +236,7 @@ int scpiShell::SCPI_Write(void * context, const char * data, size_t len)
     if ( pContext == NULL || pContext->user_context == NULL )
     { return 0; }
 
-    if ( mOutWritePos + len > mOutputBufferSize )
+    if ( (int)(mOutWritePos + len) > mOutputBufferSize )
     { return 0; }
 
     memcpy( p_scpi_output_buffer + mOutWritePos, data, len );

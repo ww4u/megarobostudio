@@ -22,11 +22,12 @@ struct D1Point
         {
             float t;
             float p;
+            float v;
         };
-        float datas[2];
+        float datas[3];
     };
 
-    D1Point( float pt = 0, float pp = 0 );
+    D1Point( float pt = 0, float pp = 0, float pv=0 );
 };
 typedef QList<D1Point>    D1PointList;
 

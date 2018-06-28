@@ -1,6 +1,10 @@
 #include "robocompref.h"
 #include "ui_robocompref.h"
 
+#include "../../com/comassist.h"
+
+#define time_unit   (1.0e-6f)
+
 RoboComPref::RoboComPref(QWidget *parent) :
     modelView(parent),
     ui(new Ui::RoboComPref)
@@ -89,14 +93,14 @@ void RoboComPref::spyEdited()
     QSpinBox *spinBoxes[]={
         ui->spinBox,
         ui->spinBox_2,
-
-        ui->spinZeroTmo,
-        ui->spinZeroTick,
     };
 
     QDoubleSpinBox *doubleSpinBoxes[]={
         ui->spinInterpStep,
         ui->spinZeroSpeed,
+
+        ui->spinZeroTmo,
+        ui->spinZeroTick,
     };
 
     QComboBox *comboxes[]={
@@ -130,8 +134,8 @@ void RoboComPref::updateUi()
     int zeroTmo, zeroTick;
     pBase->zeroPref( spd, zeroTmo, zeroTick );
     ui->spinZeroSpeed->setValue( spd );
-    ui->spinZeroTmo->setValue( zeroTmo );
-    ui->spinZeroTick->setValue( zeroTick );
+    ui->spinZeroTmo->setValue( zeroTmo * time_unit );
+    ui->spinZeroTick->setValue( zeroTick * time_unit );
 
     //! connection name
     for ( int i = 0; i < pBase->axes(); i++ )
@@ -176,8 +180,8 @@ void RoboComPref::updateData()
 
     //! zero speed
     pRobo->setZeroPref( ui->spinZeroSpeed->value(),
-                        ui->spinZeroTmo->value(),
-                        ui->spinZeroTick->value()
+                        comAssist::align( ui->spinZeroTmo->value(), time_unit ),
+                        comAssist::align( ui->spinZeroTick->value(), time_unit )
                         );
 
     //! set connection
@@ -232,9 +236,21 @@ int RoboComPref::applyGroupId()
         }
 
         //! set sub group
+
+        //! disable the other group
+        for ( int i = 0; i < ui->cmbGroup->count(); i++ )
+        {
+            if ( i != (MRQ_IDENTITY_GROUP)ui->cmbGroup->currentIndex() )
+            {
+                pMRQ->setIDENTITY_GROUP( axesId,
+                                        (MRQ_IDENTITY_GROUP)( i ),
+                                         sub_group_id_from );
+            }
+        }
+
         pMRQ->setIDENTITY_GROUP( axesId,
                                  (MRQ_IDENTITY_GROUP)ui->cmbGroup->currentIndex(),
-                                 ui->cmbGroup->currentIndex() + SUB_GROUP_BASE );
+                                 robo_channels( ui->cmbGroup->currentIndex() ) );
 
         pMRQ->setCAN_APPLYPARA();
     }

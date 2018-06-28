@@ -9,8 +9,8 @@ H2Pref::H2Pref(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    connect( this, SIGNAL(signal_joint_zero(int)),
-             this, SLOT(slot_joint_zero(int)) );
+    connect( this, SIGNAL(signal_joint_zero(int, bool)),
+             this, SLOT(slot_joint_zero(int,bool)) );
 
 
     //! post change
@@ -114,6 +114,8 @@ void H2Pref::updateUi()
 
     ui->spinGapZTime->setValue( gapZTime );
     ui->spinGapZDist->setValue( gapZDistance );
+
+//    ui->chkCcw->setChecked( pRobo->jointZeroCcwList().at(2) );
 }
 
 void H2Pref::adaptUi()
@@ -167,12 +169,12 @@ void H2Pref::zeroJoint( int jointId, bool bCcw )
     pBase->goZero( tpvRegion(0,0), jointId, bCcw );
 }
 
-void H2Pref::slot_joint_zero( int jId )
+void H2Pref::slot_joint_zero( int jId, bool bCcw )
 {
     MegaZeroAffirmMessageBox msgBox;
     int ret = msgBox.exec();
     if ( ret == QMessageBox::Ok )
-    { zeroJoint( jId, false ); }    //! \note no use for joint
+    { zeroJoint( jId, bCcw ); }
 }
 
 #define sig_joint( id, bccw )    emit signal_joint_zero( id, bccw );

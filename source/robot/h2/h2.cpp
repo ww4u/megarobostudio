@@ -46,7 +46,7 @@ robotH2::robotH2()
     mJointCcwMask<<false<<false;
 
     mJointZeroCcw.clear();
-    mJointZeroCcw<<false<<false;
+    mJointZeroCcw<<true<<true;
 
     mZeroX = 32.7;
     mZeroY = 0;

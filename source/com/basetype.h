@@ -52,6 +52,36 @@ Q_DECLARE_METATYPE(RpcRequest)
 
 #define tpvType float
 #define time_eq( a, b )     ( fabs( (a)-(b) ) <= 1e-6f )
+
+class TpRow{
+public:
+        union
+        {
+            struct
+            {
+                tpvType mT;
+                tpvType mP;
+            };
+            tpvType datas[2];
+        };
+        bool mbGc;              //! gc on used
+public:
+        TpRow( )
+        {
+            mbGc = false;
+            mT = 0;
+            mP = 0;
+        }
+
+        void setGc( bool b )
+        { mbGc = b; }
+
+        bool gc()
+        { return mbGc; }
+
+};
+typedef QList< TpRow *>  TpList;
+
 class tpvRow{
 public:
         union

@@ -101,3 +101,12 @@ RoboMsgThread* sysQueue()
 
 quint64 sysTimeStamp()
 { return receiveCache::timeStamp(); }
+
+void sysPauseTimer()
+{
+    SysTimerThread::sysPauseTimer();
+}
+void sysRestartTimer()
+{
+    SysTimerThread::sysRestartTimer();
+}

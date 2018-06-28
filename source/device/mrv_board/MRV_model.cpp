@@ -11,43 +11,43 @@ int MRV_model::serialOut( QXmlStreamWriter &writer )
 {
     writer.writeStartElement("mrv");
 
-        writer.writeStartElement("link");
+        writer.writeStartElement("link");logDbg();
         saveLink( writer );
         writer.writeEndElement();
 
-        writer.writeStartElement("system");
+        writer.writeStartElement("system");logDbg();
         saveSystem( writer );
         writer.writeEndElement();
 
-        writer.writeStartElement("rs232");
+        writer.writeStartElement("rs232");logDbg();
         saveRs232( writer );
         writer.writeEndElement();
 
-        writer.writeStartElement("can");
+        writer.writeStartElement("can");logDbg();
         saveCan( writer );
         writer.writeEndElement();
 
-        writer.writeStartElement("motion");
+        writer.writeStartElement("motion");logDbg();
         saveMotion( writer );
         writer.writeEndElement();
 
-        writer.writeStartElement("global");
+        writer.writeStartElement("global");logDbg();
         saveGlobal( writer );
         writer.writeEndElement();
 
-        writer.writeStartElement("valve");
+        writer.writeStartElement("valve");logDbg();
         saveValve( writer );
         writer.writeEndElement();
 
-        writer.writeStartElement("threshold");
+        writer.writeStartElement("threshold");logDbg();
         saveThreshold( writer );
         writer.writeEndElement();
 
-        writer.writeStartElement("calibration");
+        writer.writeStartElement("calibration");logDbg();
         saveCalibration( writer );
         writer.writeEndElement();
 
-        writer.writeStartElement("ioconfig");
+        writer.writeStartElement("ioconfig");logDbg();
         saveIOConfig( writer );
         writer.writeEndElement();
 
@@ -66,26 +66,26 @@ int MRV_model::serialIn( QXmlStreamReader &reader )
             while( reader.readNextStartElement() )
             {
                 if ( reader.name() == "link" )
-                { loadLink( reader ); }
+                { loadLink( reader );logDbg(); }
                 else if ( reader.name() == "system" )
-                { loadSystem(reader); }
+                { loadSystem(reader);logDbg(); }
                 else if ( reader.name() == "rs232" )
-                { loadRs232( reader ); }
+                { loadRs232( reader );logDbg(); }
                 else if ( reader.name() == "can" )
-                { loadCan( reader); }
+                { loadCan( reader);logDbg(); }
 
                 else if ( reader.name() == "motion" )
-                { loadMotion( reader ); }
+                { loadMotion( reader );logDbg(); }
                 else if ( reader.name() == "global" )
-                { loadGlobal( reader ); }
+                { loadGlobal( reader );logDbg(); }
                 else if ( reader.name() == "valve" )
-                { loadValve( reader ); }
+                { loadValve( reader );logDbg(); }
                 else if ( reader.name() == "threshold" )
-                { loadThreshold( reader); }
+                { loadThreshold( reader);logDbg(); }
                 else if ( reader.name() == "calibration" )
-                { loadCalibration( reader); }
+                { loadCalibration( reader);logDbg(); }
                 else if ( reader.name() == "ioconfig" )
-                { loadIOConfig( reader); }
+                { loadIOConfig( reader);logDbg(); }
 
                 else
                 { reader.skipCurrentElement(); }

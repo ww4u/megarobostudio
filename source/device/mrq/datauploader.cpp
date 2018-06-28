@@ -4,6 +4,7 @@
 #include "deviceMRQ.h"
 #include "../bus/receivecache.h"
 
+
 DataUploader::DataUploader( QObject *pObj ) : QThread( pObj )
 {
     m_pCache = NULL;
@@ -38,8 +39,17 @@ void DataUploader::run()
     mState = 1;
 
     sysProgress( 0, "loading" );
+
     sysProgress( true );
+
+    //! stop timer
+//    sysPauseTimer();
+
     mCallRet = uploadProc();
+
+    //! restart timer
+//    sysRestartTimer();
+
     sysProgress( false );
 
     //! idle
@@ -85,6 +95,8 @@ int DataUploader::uploadProc()
     if ( ret != 0 )
     { return -2; }
 
+    m_pCache->cli();
+
     int tmo = mTmoms;
     int bytes = 0;
     int totalSize = stepCount * 2;
@@ -93,13 +105,15 @@ int DataUploader::uploadProc()
         QThread::usleep( mTickms );
 
         //! get frame len
-        bytes = m_pCache->frameBytes();
+        bytes = m_pCache->frameBytes( m_pDev->mCAN_SENDID );
         sysLog( __FUNCTION__, QString::number(__LINE__), QString::number(bytes) );
 //        emit sig_progress( bytes, 0, totalSize );
         sysProgress( bytes, "loading",  totalSize, 0 );
 
         tmo -= mTickms;
     }
+
+    m_pCache->sti();
 
     //! check tmo
     if ( tmo > 0 )
@@ -118,14 +132,21 @@ int DataUploader::uploadProc()
     m_pCache->readFrame( m_pDev->mDeviceId, bufHouse );
 
     int payloadLen;
-    for ( int i = 0; i < bufHouse.size(); i++ )
+    int i = 0;
+    while( totalSize > 0 )
     {
+        Q_ASSERT( i < bufHouse.size() );
+
         payloadLen = bufHouse.at(i).length();
+        payloadLen = payloadLen > totalSize ? totalSize :payloadLen;
         if ( payloadLen != file.write( bufHouse.at(i).data(), payloadLen ) )
         {
             file.close();
             return -5;
         }
+
+        totalSize -= payloadLen;
+        i++;
     }
 
     file.close();

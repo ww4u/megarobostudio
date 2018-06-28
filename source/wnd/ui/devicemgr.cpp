@@ -296,14 +296,26 @@ void deviceMgr::updatePhyBusTree( VRoboList *pRoboList )
 
         //! foreach axes
         QString strName;
+        QString strToolTip;
+
         for ( int i = 0; i < pDev->axes(); i++ )
         {
             pItemAxes = new QTreeWidgetItem( pItemDev );
             Q_ASSERT( NULL != pItemAxes );
 
+            QList<int> subIds  = pDev->subIDs( i );
+
             strName = QString("CH%1").arg( i + 1 );
             pItemAxes->setText( 0, strName );
-            pItemAxes->setToolTip( 0, strName );
+
+            strToolTip = "Unknown group";
+            if ( subIds.at(0) != sub_group_id_from && subIds.at(0) != 0 )
+            { strToolTip = tr("GROUP1"); }
+
+            if ( subIds.at(1) != sub_group_id_from && subIds.at(1) != 0 )
+            { strToolTip = tr("GROUP2"); }
+
+            pItemAxes->setToolTip( 0, strToolTip );
             pItemAxes->setData( 0, Qt::UserRole, QVariant(i) );     //! type is int,and axes
 
             pItemAxes->setIcon( 0, QIcon(":/res/image/icon2/focus.png") );
@@ -433,7 +445,6 @@ void deviceMgr::endLoadOn( int ret, void *pPara )
 int deviceMgr::postImport( appMsg msg, void *pPara )
 {
     Q_ASSERT( m_pRobo != NULL );
-//    int ret = m_pMRQ->getModel()->load( mImportFileName );
     int ret = m_pRobo->load( mImportFileName );
     if ( ret != 0 )
     {
@@ -443,7 +454,7 @@ int deviceMgr::postImport( appMsg msg, void *pPara )
     emit signalModelUpdated( m_pRobo );
     sysLog( mImportFileName, tr("load success") );
 
-    ret = m_pMRQ->applySetting();
+    ret = m_pRobo->applySetting();
     if ( ret != 0 )
     {
         sysError(tr("apply fail"));

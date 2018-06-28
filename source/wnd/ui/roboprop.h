@@ -22,6 +22,7 @@
 #include "ippref.h"
 #include "ipconfig.h"
 
+#include "motorpref.h"
 
 //! use mrq property
 namespace Ui {
@@ -92,6 +93,8 @@ private:
 
     IPPref *m_pIpPref;
     IPConfig *m_pIpConfig;
+
+    MotorPref *m_pMotorPref;
 
     AxnPref *m_pAxnPref;
 

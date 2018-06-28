@@ -40,7 +40,9 @@ class SysTimerThread : public QThread
 
 public:
     static SysTimerThread *_sys_timer_;
+    static QTimer *_pTickTimer;
     static QMutex mTimerMutex;
+    static QMutex mRunningMutex;
 
     static void sysStartTimer( VRobot *pRobot,
                           void *pContext,
@@ -49,6 +51,9 @@ public:
     static void sysStopTimer( VRobot *pRobot,
                          void *pContext,
                          int id );
+
+    static void sysPauseTimer();
+    static void sysRestartTimer();
 
 protected:
     static roboTimer * sysFindTimer( VRobot *pRobot,
@@ -72,8 +77,6 @@ public:
     void stopAll();
 
 private:
-    QTimer *m_pTickTimer;
-
     QList< roboTimer * > mTimers;
 
 };

@@ -11,6 +11,8 @@ roboGouf::roboGouf( )
     mId = robot_gouf;
 
     setAxes( 4 );
+    setAxesDefName( 4 );
+    setJointName( 4 );
 
     mImage = QImage::fromData( _megaimage, sizeof(_megaimage) );
 }

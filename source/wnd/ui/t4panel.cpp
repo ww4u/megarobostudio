@@ -149,12 +149,12 @@ void T4Panel::on_chkOnOff_clicked(bool checked)
 
 void T4Panel::on_btnYP_clicked()
 {
-    moveD( 0, -ui->spinStepV->value(), 0 );
+    moveD( 0, ui->spinStepV->value(), 0 );
 }
 
 void T4Panel::on_btnYN_clicked()
 {
-    moveD( 0, ui->spinStepV->value(), 0 );
+    moveD( 0, -ui->spinStepV->value(), 0 );
 }
 
 void T4Panel::on_btnZP_clicked()

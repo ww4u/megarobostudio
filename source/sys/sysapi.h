@@ -4,6 +4,7 @@
 #include <QtCore>
 
 #include "../com/robomsgthread.h"
+#include "../../app/systimer.h"
 
 //! sys log
 void _sysLog( const QString &preStr = "",
@@ -56,6 +57,9 @@ void attachSysQueue( RoboMsgThread* pQueue );
 RoboMsgThread* sysQueue();
 
 quint64 sysTimeStamp();
+
+void sysPauseTimer();
+void sysRestartTimer();
 
 class sysRunTime
 {

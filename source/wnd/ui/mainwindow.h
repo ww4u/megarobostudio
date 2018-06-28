@@ -14,6 +14,7 @@
 
 #include "mrqproperty.h"
 #include "pvtedit.h"
+#include "tpedit.h"
 #include "motionedit.h"
 
 #include "mrvprop.h"
@@ -199,6 +200,7 @@ private slots:
 
     void on_actionNewMotion_triggered();
     void on_actionNewPVT_triggered();
+    void on_actionPT_triggered();
     void on_actionScene_triggered();
 
     void on_actionAbout_triggered();
@@ -239,6 +241,8 @@ private slots:
     void on_actionImport_I_triggered();
 
     void on_actiontest_triggered();
+
+
 
 
 private:

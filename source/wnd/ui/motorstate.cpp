@@ -43,7 +43,7 @@ MotorState::~MotorState()
 }
 
 QSize MotorState::sizeHint() const
-{ return QSize(400,64); }
+{ return QSize(320,64); }
 
 void MotorState::setName( const QString &name )
 { ui->labelName->setText( name ); }

@@ -223,7 +223,8 @@ public:
     robotEnum getId();
     robotEnum robotId();
 
-    virtual QList<int> deviceIds(); //! receive/send/group
+    virtual QList<int> deviceIds();     //! receive/send/group
+    virtual QList<int> subIDs( int ch );
     virtual QString deviceFullDesc();
 
     //! configs

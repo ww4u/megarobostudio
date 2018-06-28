@@ -118,6 +118,7 @@
      </property>
      <addaction name="actionNewMotion"/>
      <addaction name="actionNewPVT"/>
+     <addaction name="actionPT"/>
      <addaction name="actionScene"/>
      <addaction name="separator"/>
      <addaction name="actionProject"/>
@@ -518,6 +519,15 @@
    </property>
    <property name="text">
     <string>Example...</string>
+   </property>
+  </action>
+  <action name="actionPT">
+   <property name="icon">
+    <iconset resource="../res/res.qrc">
+     <normaloff>:/res/image/icon/document.png</normaloff>:/res/image/icon/document.png</iconset>
+   </property>
+   <property name="text">
+    <string>PT</string>
    </property>
   </action>
  </widget>

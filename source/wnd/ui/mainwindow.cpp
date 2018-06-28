@@ -6,6 +6,7 @@
 #include "../../sys/sysapi.h"
 #include "../../bus/filebus.h"
 
+#include "tpedit.h"
 
 MainWindow::MainWindow(dpcObj *pObj, QWidget *parent) :
     QMainWindow(parent),
@@ -633,6 +634,15 @@ void MainWindow::on_itemXActivated( mcModelObj *pObj )
     {logDbg();
         pvtEdit *pEdit;
         pEdit = new pvtEdit();
+        Q_ASSERT( NULL != pEdit );
+
+        createModelView( pEdit, pObj );
+    }
+
+    else if ( pObj->getType() == mcModelObj::model_tp )
+    {logDbg();
+        TpEdit *pEdit;
+        pEdit = new TpEdit();
         Q_ASSERT( NULL != pEdit );
 
         createModelView( pEdit, pObj );
@@ -1434,3 +1444,4 @@ void MainWindow::slot_pref_changed()
         m_pComThread->start();
     }
 }
+

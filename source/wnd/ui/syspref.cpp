@@ -137,6 +137,7 @@ void sysPref::updateUi()
     ui->edtRemotePath->setText( mPref.mRemoteDirPath );
 
     ui->tempPath->setText( mPref.mDumpPath );
+    ui->edtEventLog->setText( mPref.mEventLogFile );
 
     //! space
     ui->spinDistanceError->setValue( mPref.mGeometryResolution );
@@ -207,6 +208,8 @@ void sysPref::updateData()
     mPref.mComName = ui->cmbComPort->currentText();
 
     mPref.mRemoteDirPath = ui->edtRemotePath->text();
+
+    mPref.mEventLogFile = ui->edtEventLog->text();
 
     //! space
     mPref.mGeometryResolution = ui->spinDistanceError->value();

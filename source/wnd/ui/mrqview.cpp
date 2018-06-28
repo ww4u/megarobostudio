@@ -58,6 +58,8 @@ MegaDevice::deviceMRQ *mrqView::getDevice()
     if ( NULL == pDevice )
     {
         sysLog( tr("Invalid Device"), m_pmcModel->mConn.mDeviceName );
+        logDbg()<<m_pmcModel->m_pInstMgr->roboResources();
+        logDbg()<<m_pmcModel->m_pInstMgr->getResources();
     }
 
     return pDevice;

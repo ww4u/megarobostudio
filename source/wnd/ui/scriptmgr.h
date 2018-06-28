@@ -49,6 +49,7 @@ public:
 
     int openMotionGroup( const QString &path, const QString &file );
     int openTpv( const QString &path, const QString &file );
+    int openTp( const QString &path, const QString &file );
     int openScene( const QString &path, const QString &file );
     int openSetup( const QString &path, const QString &file );
     int openPy( const QString &path, const QString &file );

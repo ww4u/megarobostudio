@@ -46,6 +46,13 @@ VRobot *robotFact::createRobot( const QString &str )
             break;
         }
 
+        if ( QString::compare(str,"mrx-motor",Qt::CaseInsensitive) == 0
+              )
+        {
+            pRobo = new robotMotor();
+            break;
+        }
+
 //        if ( QString::compare(str,"motor",Qt::CaseInsensitive) == 0 )
 //        {
 //            pRobo = new robotMotor();

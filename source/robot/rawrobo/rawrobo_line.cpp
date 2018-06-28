@@ -75,7 +75,7 @@ bool RawRobo::checkLink( int p1, int p2 )
         //! find fail
         if ( NULL == pMrq )
         {
-            sysError( QObject::tr("Invalid link") );
+            sysError( QObject::tr("Invalid link"), QString::number( i ), mAxesConnectionName[i] );
             return false;
         }
     }

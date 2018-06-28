@@ -41,7 +41,6 @@ tpvGroup* tpvGroup::createDemoGroup( float dT, float dP )
 
 tpvGroup::tpvGroup() : MegaTableModel("","")
 {
-
 }
 
 tpvGroup::~tpvGroup()

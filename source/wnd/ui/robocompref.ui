@@ -352,34 +352,34 @@
       <item row="1" column="0">
        <widget class="QLabel" name="label_11">
         <property name="text">
-         <string>Zero Timeout(us)</string>
+         <string>Zero Timeout(s)</string>
         </property>
        </widget>
       </item>
       <item row="2" column="0">
        <widget class="QLabel" name="label_18">
         <property name="text">
-         <string>Zero Tick(us)</string>
+         <string>Zero Tick(s)</string>
         </property>
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QSpinBox" name="spinZeroTmo">
+       <widget class="QDoubleSpinBox" name="spinZeroTmo">
         <property name="minimum">
-         <number>1</number>
+         <double>1.000000000000000</double>
         </property>
         <property name="maximum">
-         <number>1000000000</number>
+         <double>1000.000000000000000</double>
         </property>
        </widget>
       </item>
       <item row="2" column="1">
-       <widget class="QSpinBox" name="spinZeroTick">
+       <widget class="QDoubleSpinBox" name="spinZeroTick">
         <property name="minimum">
-         <number>1</number>
+         <double>0.100000000000000</double>
         </property>
         <property name="maximum">
-         <number>1000000000</number>
+         <double>10.000000000000000</double>
         </property>
        </widget>
       </item>

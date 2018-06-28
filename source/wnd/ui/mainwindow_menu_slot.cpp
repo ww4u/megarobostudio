@@ -180,7 +180,11 @@ void MainWindow::on_actionOpen_triggered()
     QFileDialog fDlg;
 
     fDlg.setAcceptMode( QFileDialog::AcceptOpen );
-    fDlg.setNameFilter( tr("motion file (*.mc);;pvt file (*.pvt);;setup file (*.stp);;scene file (*.sce)") );
+    fDlg.setNameFilter( tr("motion file (*.mc);"
+                           ";pvt file (*.pvt);"
+                           ";pt file (*.pt);"
+                           ";setup file (*.stp);"
+                           ";scene file (*.sce)") );
     if ( QDialog::Accepted != fDlg.exec() )
     { return; }
 
@@ -247,6 +251,27 @@ void MainWindow::on_actionNewPVT_triggered()
     on_itemXActivated( pNewModelObj );
 }
 
+void MainWindow::on_actionPT_triggered()
+{
+    QFileDialog fDlg;
+    fDlg.setAcceptMode( QFileDialog::AcceptSave );
+    fDlg.setNameFilter( tr("pt file (*.pt)") );
+    if ( fDlg.exec() != QDialog::Accepted )
+    { return; }
+
+    TpGroup * pNewModelObj = new TpGroup();
+    Q_ASSERT( NULL != pNewModelObj );
+
+    pNewModelObj->setName( comAssist::pureFileName( fDlg.selectedFiles().first() ) );
+    pNewModelObj->setPath( fDlg.directory().absolutePath() );
+
+    pNewModelObj->setGc( true );
+    pNewModelObj->setFile( true );
+
+    pNewModelObj->set( mcModelObj::model_tp, pNewModelObj );
+
+    on_itemXActivated( pNewModelObj );
+}
 
 void MainWindow::on_actionScene_triggered()
 {

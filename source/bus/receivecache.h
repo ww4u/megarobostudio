@@ -122,7 +122,7 @@ protected:
     static QMutex _frameEventsMutex;
 
     static QSemaphore _eventSema;
-
+    static bool _eventEn;
 public:
     //! thread
     static void lock();
@@ -136,6 +136,9 @@ public:
     static int availableEvent();
 
     static quint64 timeStamp();
+
+    static void cli();
+    static void sti();
 
 public:
     receiveCache( QObject *parent = 0 );
@@ -163,8 +166,8 @@ public:
     void flush( MegaDevice::DeviceId &nodeId );
     void clear();
 
-    int frameCount();
-    int frameBytes();
+    int frameCount( int id = -1 );
+    int frameBytes( int id = -1 );
 
     void lockWarehouse();
     void unlockWarehouse();

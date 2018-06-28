@@ -45,7 +45,7 @@ void MrvVertical::spyEdited()
     };
 
     QSpinBox *spinBoxes[]={
-
+        ui->spinLoop
     };
     QDoubleSpinBox *doubleSpinBoxes[]={
         ui->spinDelayTime,
@@ -59,7 +59,7 @@ void MrvVertical::spyEdited()
     QComboBox *comboxes[]={
         ui->cmbDevice,
         ui->cmbAction,
-
+        ui->cmbExec
     };
 
     install_spy();
@@ -68,9 +68,12 @@ void MrvVertical::spyEdited()
 //! view->model
 int MrvVertical::apply()
 {
-    m_pMRV->setVALVECTRL_DEVICE( mAxesId, (MRV_VALVECTRL_DEVICE)ui->cmbDevice->currentIndex() );
-
     m_pMRV->setGLOBAL_DISTINGUISH( mAxesId, (MRV_CAN_NETMANAGELED)ui->chkLed->isChecked() );
+
+    m_pMRV->setPVT_EXECMODE( mAxesId, (MRV_PVT_EXECMODE)ui->cmbExec->currentIndex() );
+    m_pMRV->setPVT_CYCLES( mAxesId, ui->spinLoop->value() );
+
+    m_pMRV->setVALVECTRL_DEVICE( mAxesId, (MRV_VALVECTRL_DEVICE)ui->cmbDevice->currentIndex() );
     m_pMRV->setVALVECTRL_ACTION( mAxesId, (MRV_VALVECTRL_ACTION)ui->cmbAction->currentIndex() );
 
     m_pMRV->setVALVECTRL_HOLDDUTY( mAxesId, comAssist::align( ui->spinHoldDuty->value(), duty_unit ) );
@@ -86,9 +89,13 @@ int MrvVertical::apply()
 //! model -> view
 int MrvVertical::updateUi()
 {
+    ui->chkLed->setChecked( m_pMRV->mGLOBAL_DISTINGUISH[mAxesId] );
+
+    ui->cmbExec->setCurrentIndex( m_pMRV->mPVT_EXECMODE[mAxesId] );
+    ui->spinLoop->setValue( m_pMRV->mPVT_CYCLES[mAxesId] );
+
     ui->cmbDevice->setCurrentIndex( m_pMRV->mVALVECTRL_DEVICE[mAxesId] );
 
-    ui->chkLed->setChecked( m_pMRV->mGLOBAL_DISTINGUISH[mAxesId] );
     ui->cmbAction->setCurrentIndex( m_pMRV->mVALVECTRL_ACTION[mAxesId] );
 
     ui->spinIdleDuty->setValue( m_pMRV->mVALVECTRL_IDLEDUTY[mAxesId] * duty_unit );

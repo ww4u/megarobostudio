@@ -1,13 +1,13 @@
 #include "params.h"
 #include "math.h"
 #include "string.h"
-#include "AddPointParams.h"
+#include "addpointparams.h"
 /*正解求末端位置*/
 /*入参：armLength 各轴长度(主动杆，从动杆，轮间距，平台间距)，deltAngles 外部关节角度转机构0角度的差值
 	p:机构0位对应的末端点位置，angles：输入的关节角度,len:输入需要求解点的个数
 */
 /*输出参数：res：正解求得的末端位置*/
-extern "C" __declspec(dllexport) int GetDeltEndPosition(double* armLength, double* deltAngles,double* p, double* angles,int len, double* result)
+int GetDeltEndPosition(double* armLength, double* deltAngles,double* p, double* angles,int len, double* result)
 {
 	posIn = (double*)malloc(len*2*sizeof(double));	
 	memset(posIn, 0, len * 2 * sizeof(double));
@@ -79,7 +79,7 @@ extern "C" __declspec(dllexport) int GetDeltEndPosition(double* armLength, doubl
 posLast:机构0位对应的关节角度，posIn：输入的末端点位置,vIn：输入的末端点速度，tIn：时间，len:输入需要求解点的个数
 */
 /*输出参数：res：逆解求得的关节角度集合*/
-extern "C" __declspec(dllexport) int  GetDeltArmLen(double* armLength, double* deltPosition, double*deltAngles, double* posLast, double* pIn, double* vIn, double* tIn, int len, int* resCount)
+int  GetDeltArmLen(double* armLength, double* deltPosition, double*deltAngles, double* posLast, double* pIn, double* vIn, double* tIn, int len, int* resCount)
 {
 	posIn = (double*)malloc(len * 3 * sizeof(double));
 	deltAngleArray = deltAngles;
@@ -113,7 +113,7 @@ extern "C" __declspec(dllexport) int  GetDeltArmLen(double* armLength, double* d
 	free(vTemp);
 	return 0;
 }
-extern "C" __declspec(dllexport) int  GetDeltArmPosition(double* res)
+int  GetDeltArmPosition(double* res)
 {	
 	int count = resInfo.size();
 	for (int m = 0; m < count; m++)

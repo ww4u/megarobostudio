@@ -655,8 +655,10 @@ int deviceMRQ::lightCouplingZero( pvt_region,
     RoboTaskRequest *pReq = new RoboTaskRequest();
     Q_ASSERT( NULL != pReq );
 
+    //! \todo
     pReq->request( this,
-                   (VRobot::apiTaskRequest)(this->taskLightCouplingZero),
+//                   (VRobot::apiTaskRequest)(this->taskLightCouplingZero),
+                   NULL,
                    pArg );
 
     //! start the thread

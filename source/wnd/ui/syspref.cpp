@@ -51,6 +51,11 @@ sysPref::sysPref(QWidget *parent) :
 
     slot_updateValidateEn();
     slot_validate_listmrt();
+
+#ifndef ARCH_32
+    ui->cmbPort->setCurrentIndex( 0 );
+    ui->cmbPort->setEnabled( false );
+#endif
 }
 
 sysPref::~sysPref()
@@ -72,7 +77,11 @@ modelSysPref sysPref::getPref()
 
 void sysPref::updateUi()
 {
-    ui->cmbPort->setCurrentIndex( mPref.mPort ); on_cmbPort_currentIndexChanged( mPref.mPort );
+#ifdef ARCH_32
+    ui->cmbPort->setCurrentIndex( mPref.mPort );
+    on_cmbPort_currentIndexChanged( mPref.mPort );
+#else
+#endif
     ui->cmbSpeed->setCurrentText( QString::number(mPref.mSpeed) );
 
     ui->edtVisa->setText( mPref.mVisaAddr );

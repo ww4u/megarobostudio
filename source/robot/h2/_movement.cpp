@@ -121,7 +121,7 @@ int robotH2::goZero( const tpvRegion &region,
         pArg->mTick = mZeroTick;
         pArg->mTmo = mZeroTmo;
 
-        pReq->request( this, (VRobot::apiTaskRequest)(this->zeroAxesTask), pArg );
+//        pReq->request( this, (VRobot::apiTaskRequest)(this->zeroAxesTask), pArg );
 
         m_pRoboTask->setRequest( pReq );
         m_pRoboTask->start();
@@ -142,7 +142,7 @@ int robotH2::goZero( const tpvRegion &region,
         pArg->mTick = mZeroTick;
         pArg->mTmo = mZeroTmo;
 
-        pReq->request( this, (VRobot::apiTaskRequest)(this->zeroAxesTask), pArg );
+//        pReq->request( this, (VRobot::apiTaskRequest)(this->zeroAxesTask), pArg );
 
         m_pRoboTask->setRequest( pReq );
         m_pRoboTask->start();
@@ -195,7 +195,7 @@ int robotH2::goZero( const tpvRegion &region,
     pArg->mZeroGapDist = mGapDistance;
     pArg->mZeroGapTime = mGapTime;
 
-    pReq->request( this, (VRobot::apiTaskRequest)(this->zeroAxesTask), pArg );
+//    pReq->request( this, (VRobot::apiTaskRequest)(this->zeroAxesTask), pArg );
 
     m_pRoboTask->setRequest( pReq );
     m_pRoboTask->start();

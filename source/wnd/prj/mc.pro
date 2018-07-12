@@ -51,7 +51,12 @@ DEFINES += STM32F427_437xx USE_STDPERIPH_DRIVER
 DEPENDPATH += $$PWD/../../../lib
 
 # link libs
+win32 {
 LIBS += -L$$PWD/../../../lib/
+}
+unix {
+LIBS += -L$$PWD/../../../../lib/
+}
 LIBS += -linst -lscpishell -lscpi
 LIBS += -linstserver
 LIBS += -linstclient
@@ -75,7 +80,9 @@ LIBS += -lvisa32
 DEFINES += NI_VISA
 DEFINES += ARCH_32
 }
-
+unix{
+LIBS += -lmrhe -lusb-1.0
+}
 
 # arith
 LIBS += -lsinanju_split -lmegatron_split -lh2_split -larith_delta

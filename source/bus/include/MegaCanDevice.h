@@ -118,7 +118,8 @@ typedef struct _tagChgDesIPAndPort
 }CHGDESIPANDPORT;
  
 //#define CALL  __stdcall 
-#define CALL  __cdecl 
+//#define CALL  __cdecl
+#define CALL
 MEGACANDEVICE_API unsigned int  CALL VCI_OpenDevice(unsigned int DeviceType, unsigned int DeviceInd, unsigned int Reserved);
 MEGACANDEVICE_API unsigned int  CALL VCI_CloseDevice(unsigned int DeviceType, unsigned int DeviceInd);
 

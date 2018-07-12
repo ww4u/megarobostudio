@@ -166,7 +166,7 @@ int robotInject::goZero( const tpvRegion &region,
         pArg->mTick = mZeroTick;
         pArg->mTmo = mZeroTmo;
 
-        pReq->request( this, (VRobot::apiTaskRequest)(this->zeroAxesTask), pArg );
+//        pReq->request( this, (VRobot::apiTaskRequest)(this->zeroAxesTask), pArg );
 
         m_pRoboTask->setRequest( pReq );
         m_pRoboTask->start();
@@ -190,7 +190,7 @@ int robotInject::goZero( const tpvRegion &region,
         pArg->mTick = mZeroTick;
         pArg->mTmo = mZeroTmo;
 
-        pReq->request( this, (VRobot::apiTaskRequest)(this->zeroAxesTask), pArg );
+//        pReq->request( this, (VRobot::apiTaskRequest)(this->zeroAxesTask), pArg );
 
         m_pRoboTask->setRequest( pReq );
         m_pRoboTask->start();
@@ -237,7 +237,7 @@ int robotInject::goZero( const tpvRegion &region )
     pArg->mZeroIGapTime = mIGapTime;
 
     //! \todo x, y invert
-    pReq->request( this, (VRobot::apiTaskRequest)(this->zeroAxesTask), pArg );
+//    pReq->request( this, (VRobot::apiTaskRequest)(this->zeroAxesTask), pArg );
 
     m_pRoboTask->setRequest( pReq );
     m_pRoboTask->start();

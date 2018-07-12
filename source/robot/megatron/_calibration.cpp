@@ -147,7 +147,8 @@ int robotMegatron::goZero( const tpvRegion &region,
     pArg->mCcwList = ccwList;
 
     //! request
-    pReq->request( this, (VRobot::apiTaskRequest)(this->zeroAxesTask), pArg );
+    //! \todo
+//    pReq->request( this, (VRobot::apiTaskRequest)(this->zeroAxesTask), pArg );
 
     //! start
     Q_ASSERT( NULL != m_pRoboTask );

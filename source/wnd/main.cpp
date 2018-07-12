@@ -215,7 +215,7 @@ int main(int argc, char *argv[])
     splash.show();
     splash.showMessage( a.applicationVersion() );
     a.processEvents();
-
+qDebug()<<a.applicationDirPath();
     //! load pref
     //! translator
     QTranslator translator;

@@ -13,9 +13,9 @@ struct ResInfo
 	double T;
 };
 std::vector<ResInfo> resInfo;
-extern "C" __declspec(dllexport) int GetDeltEndPosition(double* armLength, double* deltAngles, double* p, double* angles, int len, double* result);
-extern "C" __declspec(dllexport) int  GetDeltArmLen(double* armLength, double* deltPosition, double*deltAngles, double* posLast, double* pIn, double* vIn, double* tIn, int len, int* resCount);
-extern "C" __declspec(dllexport) int  GetDeltArmPosition(double* res);
+int GetDeltEndPosition(double* armLength, double* deltAngles, double* p, double* angles, int len, double* result);
+int GetDeltArmLen(double* armLength, double* deltPosition, double*deltAngles, double* posLast, double* pIn, double* vIn, double* tIn, int len, int* resCount);
+int GetDeltArmPosition(double* res);
 int CalPosition(double*armLength, int plen, double* res);
 int CalVelocity(double*armLength, double* pIn, double* vIn, int len, double* res);
 void MatrixMult(double* input1, double* input2,double* res);

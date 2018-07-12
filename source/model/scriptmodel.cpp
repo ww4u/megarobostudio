@@ -249,8 +249,10 @@ QMimeData *scriptModel::mimeData(const QModelIndexList &indexes) const
          if (index.isValid())
          {
              scriptNode *pNode = getItem( index );
-             encodedData = QByteArray::number( (quint32)pNode, 16 );
+             encodedData = QByteArray::number( (quintptr)pNode, 16 );
              logDbg()<<pNode->getName();
+
+
          }
     }
 

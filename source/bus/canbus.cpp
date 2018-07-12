@@ -125,7 +125,7 @@ logDbg();
 logDbg();
     //! open
     mHandle = mApi.open( mDevType, mDevId, mCanId );
-logDbg();
+logDbg()<<mDevType<<mDevId<<mCanId<<mHandle;
     if ( mHandle != 1 )
     {
         sysError( QObject::tr("CAN open fail") );

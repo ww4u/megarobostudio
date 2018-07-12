@@ -76,6 +76,8 @@ void MrvThreshold::spyEdited()
 //! view->model
 int MrvThreshold::apply()
 {
+    Q_ASSERT( NULL != m_pMRV );
+
     //! pressure
     m_pMRV->setTHRESHOLD_HIPRESSUREACTION( mAxesId, (MRV_THRESHOLD_HIPRESSUREACTION)ui->cmbHighPAction->currentIndex() );
     m_pMRV->setTHRESHOLD_HIGHPRESSURE( mAxesId, comAssist::align( ui->spinHighPLimit->value(), pressure_unit ) );
@@ -118,7 +120,13 @@ int MrvThreshold::updateUi()
     ui->spinLowCurrentLimit->setValue( m_pMRV->mTHRESHOLD_LOWCURRENT[mAxesId] * current_unit );
 
     //! on num
-    ui->spinOnNumLimit->setValue( m_pMRV->mTHRESHOLD_ONNUMS[mAxesId] );
+    int val = 0;
+    if ( m_pMRV->mTHRESHOLD_ONNUMS[mAxesId] > INT_MAX )
+    {  val = INT_MAX; }
+    else
+    { val = ( m_pMRV->mTHRESHOLD_ONNUMS[mAxesId] ); }
+    ui->spinOnNumLimit->setValue( val );
+
     ui->cmbOnNumAction->setCurrentIndex( m_pMRV->mTHRESHOLD_NUMSACTION[mAxesId] );
 
     //! time

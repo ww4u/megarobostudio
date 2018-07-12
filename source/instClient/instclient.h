@@ -22,6 +22,9 @@ public:
     int read( char *pData, int len );
     QByteArray readAll( int tmo = 2000 );
 
+public:
+    QString name();
+
 protected:
     QByteArray mRecvBuf;
     QTcpSocket mSocket;

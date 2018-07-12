@@ -9,6 +9,9 @@ class roboGeo10 : public MegaDevice::deviceMRQ
 public:
     roboGeo10();
 
+public:
+    virtual QString trigSrcAlias( int ax, int iTrig );
+
 protected:
     virtual int serialIn( QXmlStreamReader &reader );
     virtual int serialOut( QXmlStreamWriter &writer );

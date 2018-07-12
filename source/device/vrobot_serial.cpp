@@ -177,3 +177,11 @@ int VRobot::uploadSetting()
 { return 0; }
 int VRobot::applySetting()
 { return 0; }
+
+quint32 VRobot::getSignature()
+{ return 0; }
+
+void VRobot::setSeqId( int id )
+{ mSeqId = id; }
+int VRobot::getSeqId()
+{ return mSeqId; }

@@ -10,6 +10,8 @@ roboMgr::roboMgr(QWidget *parent) :
     ui(new Ui::roboMgr)
 {
     ui->setupUi(this);
+
+    mbOperable = false;
 }
 
 roboMgr::~roboMgr()
@@ -53,9 +55,19 @@ void roboMgr::setupData()
     }
 }
 
+void roboMgr::setOperable( bool b )
+{ mbOperable = b; }
+bool roboMgr::operAble()
+{ return mbOperable; }
+
 void roboMgr::on_listWidget_itemActivated(QListWidgetItem *item)
 {
     if ( NULL == item )
+    { return; }
+
+    if ( mbOperable )
+    {}
+    else
     { return; }
 
     QVariant var = item->data( Qt::UserRole );

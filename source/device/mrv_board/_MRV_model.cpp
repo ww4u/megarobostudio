@@ -279,12 +279,12 @@ mVALVECTRL_OPENDUTY[i0] = (uint32)0;
 }
 for ( int i0=0; i0 < 10; i0++ )
 {
-mVALVECTRL_OPENDLYTIME[i0] = (uint32)0;
+mVALVECTRL_OPENDLYTIME[i0] = (uint16)0;
 }
 
 for ( int i0=0; i0 < 10; i0++ )
 {
-mVALVECTRL_OPENTIME[i0] = (uint32)0;
+mVALVECTRL_OPENTIME[i0] = (uint16)0;
 }
 for ( int i0=0; i0 < 10; i0++ )
 {
@@ -305,7 +305,7 @@ mVALVECTRL_TIME[i0] = (uint32)0;
 }
 for ( int i0=0; i0 < 10; i0++ )
 {
-mTHRESHOLD_HIGHPRESSURE[i0] = (uint32)0;
+mTHRESHOLD_HIGHPRESSURE[i0] = (uint16)0;
 }
 for ( int i0=0; i0 < 10; i0++ )
 {
@@ -313,7 +313,7 @@ mTHRESHOLD_HIPRESSUREACTION[i0] = (MRV_THRESHOLD_HIPRESSUREACTION)0;
 }
 for ( int i0=0; i0 < 10; i0++ )
 {
-mTHRESHOLD_LOWPRESSURE[i0] = (uint32)0;
+mTHRESHOLD_LOWPRESSURE[i0] = (uint16)0;
 }
 
 for ( int i0=0; i0 < 10; i0++ )
@@ -322,7 +322,7 @@ mTHRESHOLD_LOWPRESSUREACTION[i0] = (MRV_THRESHOLD_HIPRESSUREACTION)0;
 }
 for ( int i0=0; i0 < 10; i0++ )
 {
-mTHRESHOLD_HIGHCURRENT[i0] = (uint32)0;
+mTHRESHOLD_HIGHCURRENT[i0] = (uint16)0;
 }
 for ( int i0=0; i0 < 10; i0++ )
 {
@@ -330,7 +330,7 @@ mTHRESHOLD_HICURRENTACTION[i0] = (MRV_THRESHOLD_HIPRESSUREACTION)0;
 }
 for ( int i0=0; i0 < 10; i0++ )
 {
-mTHRESHOLD_LOWCURRENT[i0] = (uint32)0;
+mTHRESHOLD_LOWCURRENT[i0] = (uint16)0;
 }
 
 for ( int i0=0; i0 < 10; i0++ )
@@ -383,7 +383,7 @@ mPVT_PDATA[i0] = (uint32)0;
 
 for ( int i0=0; i0 < 10; i0++ )
 {
-mPVT_TDATA[i0] = (uint32)0;
+mPVT_TDATA[i0] = (f32)0;
 }
 for ( int i0=0; i0 < 10; i0++ )
 {
@@ -1565,12 +1565,12 @@ int _MRV_model::setVALVECTRL_OPENDLYTIME( byte val0
 }
 //! U8
 //! [CHANNUM]
-int _MRV_model::getVALVECTRL_OPENDLYTIME( byte val0, uint32 * val1, bool bQuery )
+int _MRV_model::getVALVECTRL_OPENDLYTIME( byte val0, uint16 * val1, bool bQuery )
 {
 	//! 51 15
 	int ret = 0;
 
-	uint32 lval0 = 0;
+	uint16 lval0 = 0;
 	*val1 = mVALVECTRL_OPENDLYTIME[ (int)val0 ];
 	return 0;
 }
@@ -1587,12 +1587,12 @@ int _MRV_model::setVALVECTRL_OPENTIME( byte val0
 }
 //! U8
 //! [CHANNUM]
-int _MRV_model::getVALVECTRL_OPENTIME( byte val0, uint32 * val1, bool bQuery )
+int _MRV_model::getVALVECTRL_OPENTIME( byte val0, uint16 * val1, bool bQuery )
 {
 	//! 51 17
 	int ret = 0;
 
-	uint32 lval0 = 0;
+	uint16 lval0 = 0;
 	*val1 = mVALVECTRL_OPENTIME[ (int)val0 ];
 	return 0;
 }
@@ -1678,10 +1678,10 @@ int _MRV_model::setVALVECTRL_TIMECLEAR( byte val0 )
 
 	return ret;
 }
-//! U8,U32
+//! U8,U16
 //! [CHANNUM]
 int _MRV_model::setTHRESHOLD_HIGHPRESSURE( byte val0
-,uint32 val1 )
+,uint16 val1 )
 {
 	//! 52 0
 	int ret=0; 
@@ -1691,12 +1691,12 @@ int _MRV_model::setTHRESHOLD_HIGHPRESSURE( byte val0
 }
 //! U8
 //! [CHANNUM]
-int _MRV_model::getTHRESHOLD_HIGHPRESSURE( byte val0, uint32 * val1, bool bQuery )
+int _MRV_model::getTHRESHOLD_HIGHPRESSURE( byte val0, uint16 * val1, bool bQuery )
 {
 	//! 52 1
 	int ret = 0;
 
-	uint32 lval0 = 0;
+	uint16 lval0 = 0;
 	*val1 = mTHRESHOLD_HIGHPRESSURE[ (int)val0 ];
 	return 0;
 }
@@ -1722,10 +1722,10 @@ int _MRV_model::getTHRESHOLD_HIPRESSUREACTION( byte val0, MRV_THRESHOLD_HIPRESSU
 	*val1 = mTHRESHOLD_HIPRESSUREACTION[ (int)val0 ];
 	return 0;
 }
-//! U8,U32
+//! U8,U16
 //! [CHANNUM]
 int _MRV_model::setTHRESHOLD_LOWPRESSURE( byte val0
-,uint32 val1 )
+,uint16 val1 )
 {
 	//! 52 4
 	int ret=0; 
@@ -1735,12 +1735,12 @@ int _MRV_model::setTHRESHOLD_LOWPRESSURE( byte val0
 }
 //! U8
 //! [CHANNUM]
-int _MRV_model::getTHRESHOLD_LOWPRESSURE( byte val0, uint32 * val1, bool bQuery )
+int _MRV_model::getTHRESHOLD_LOWPRESSURE( byte val0, uint16 * val1, bool bQuery )
 {
 	//! 52 5
 	int ret = 0;
 
-	uint32 lval0 = 0;
+	uint16 lval0 = 0;
 	*val1 = mTHRESHOLD_LOWPRESSURE[ (int)val0 ];
 	return 0;
 }
@@ -1766,10 +1766,10 @@ int _MRV_model::getTHRESHOLD_LOWPRESSUREACTION( byte val0, MRV_THRESHOLD_HIPRESS
 	*val1 = mTHRESHOLD_LOWPRESSUREACTION[ (int)val0 ];
 	return 0;
 }
-//! U8,U32
+//! U8,U16
 //! [CHANNUM]
 int _MRV_model::setTHRESHOLD_HIGHCURRENT( byte val0
-,uint32 val1 )
+,uint16 val1 )
 {
 	//! 52 8
 	int ret=0; 
@@ -1779,12 +1779,12 @@ int _MRV_model::setTHRESHOLD_HIGHCURRENT( byte val0
 }
 //! U8
 //! [CHANNUM]
-int _MRV_model::getTHRESHOLD_HIGHCURRENT( byte val0, uint32 * val1, bool bQuery )
+int _MRV_model::getTHRESHOLD_HIGHCURRENT( byte val0, uint16 * val1, bool bQuery )
 {
 	//! 52 9
 	int ret = 0;
 
-	uint32 lval0 = 0;
+	uint16 lval0 = 0;
 	*val1 = mTHRESHOLD_HIGHCURRENT[ (int)val0 ];
 	return 0;
 }
@@ -1810,10 +1810,10 @@ int _MRV_model::getTHRESHOLD_HICURRENTACTION( byte val0, MRV_THRESHOLD_HIPRESSUR
 	*val1 = mTHRESHOLD_HICURRENTACTION[ (int)val0 ];
 	return 0;
 }
-//! U8,U32
+//! U8,U16
 //! [CHANNUM]
 int _MRV_model::setTHRESHOLD_LOWCURRENT( byte val0
-,uint32 val1 )
+,uint16 val1 )
 {
 	//! 52 12
 	int ret=0; 
@@ -1823,12 +1823,12 @@ int _MRV_model::setTHRESHOLD_LOWCURRENT( byte val0
 }
 //! U8
 //! [CHANNUM]
-int _MRV_model::getTHRESHOLD_LOWCURRENT( byte val0, uint32 * val1, bool bQuery )
+int _MRV_model::getTHRESHOLD_LOWCURRENT( byte val0, uint16 * val1, bool bQuery )
 {
 	//! 52 13
 	int ret = 0;
 
-	uint32 lval0 = 0;
+	uint16 lval0 = 0;
 	*val1 = mTHRESHOLD_LOWCURRENT[ (int)val0 ];
 	return 0;
 }
@@ -2094,10 +2094,10 @@ int _MRV_model::getPVT_PDATA( uint16 val0, uint32 * val1, bool bQuery )
 	*val1 = mPVT_PDATA[ (int)val0 ];
 	return 0;
 }
-//! U16,U32
+//! U16,F32
 //! 
 int _MRV_model::setPVT_TDATA( uint16 val0
-,uint32 val1 )
+,f32 val1 )
 {
 	//! 53 14
 	int ret=0; 
@@ -2107,12 +2107,12 @@ int _MRV_model::setPVT_TDATA( uint16 val0
 }
 //! U16
 //! 
-int _MRV_model::getPVT_TDATA( uint16 val0, uint32 * val1, bool bQuery )
+int _MRV_model::getPVT_TDATA( uint16 val0, f32 * val1, bool bQuery )
 {
 	//! 53 15
 	int ret = 0;
 
-	uint32 lval0 = 0;
+	f32 lval0 = 0;
 	*val1 = mPVT_TDATA[ (int)val0 ];
 	return 0;
 }

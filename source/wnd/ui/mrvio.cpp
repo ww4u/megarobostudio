@@ -58,6 +58,8 @@ void MrvIo::spyEdited()
 
 int MrvIo::apply()
 {
+    Q_ASSERT( NULL != m_pMRV );
+
     //! mode
     m_pMRV->setIOCONFIG_IOFUNCSEL( mAxesId, (MRV_IOCONFIG_IOFUNCSEL)ui->cmbMode->currentIndex() );
 
@@ -91,6 +93,8 @@ int MrvIo::updateUi()
     //! mode
     ui->cmbMode->setCurrentIndex( m_pMRV->mIOCONFIG_IOFUNCSEL[mAxesId] );
 
+    on_cmbMode_currentIndexChanged( m_pMRV->mIOCONFIG_IOFUNCSEL[mAxesId] );
+
     //! uart
     uartConfig uCfg;
     uCfg.mBaudInd = m_pMRV->mIOCONFIG_BAUD[ mAxesId ];
@@ -111,4 +115,14 @@ int MrvIo::updateUi()
     return 0;
 }
 
+void MrvIo::on_cmbMode_currentIndexChanged(int index)
+{
+    ui->tabWidget->setTabEnabled( index, true );
+    ui->tabWidget->setCurrentIndex( index );
 
+    for ( int i = 0; i < ui->tabWidget->count(); i++ )
+    {
+        if ( i != index )
+        { ui->tabWidget->setTabEnabled( index, false ); }
+    }
+}

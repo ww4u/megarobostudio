@@ -22,11 +22,11 @@ void interruptHandler::slot_event( eventId id,
     //! find device by event id
     Q_ASSERT( NULL != m_pInstMgr );
     VRobot *pRobo = m_pInstMgr->findRobotBySendId( data.frameId(), data.devId() );
-
+//logDbg()<<data.frameId()<<data.devId();
     //! proc the interrupt
     if ( NULL != pRobo )
     {
-        logDbg()<<pRobo->name();
+//        logDbg()<<pRobo->name();
         pRobo->interruptHandler( id, data );
     }
 

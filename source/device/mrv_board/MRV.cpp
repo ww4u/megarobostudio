@@ -1127,12 +1127,12 @@ int MRV::setVALVECTRL_OPENDLYTIME( byte val0
 }
 //! U8
 //! [CHANNUM]
-int MRV::getVALVECTRL_OPENDLYTIME( byte val0, uint32 * val1, bool bQuery )
+int MRV::getVALVECTRL_OPENDLYTIME( byte val0, uint16 * val1, bool bQuery )
 {
 	//! 51 15
 	int ret = 0;
 
-	uint32 lval0 = 0;
+	uint16 lval0 = 0;
 	ret = m_pBus->read( DEVICE_RECEIVE_ID, (byte)51, (byte)15 , val0, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
@@ -1157,12 +1157,12 @@ int MRV::setVALVECTRL_OPENTIME( byte val0
 }
 //! U8
 //! [CHANNUM]
-int MRV::getVALVECTRL_OPENTIME( byte val0, uint32 * val1, bool bQuery )
+int MRV::getVALVECTRL_OPENTIME( byte val0, uint16 * val1, bool bQuery )
 {
 	//! 51 17
 	int ret = 0;
 
-	uint32 lval0 = 0;
+	uint16 lval0 = 0;
 	ret = m_pBus->read( DEVICE_RECEIVE_ID, (byte)51, (byte)17 , val0, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
@@ -1286,10 +1286,10 @@ int MRV::setVALVECTRL_TIMECLEAR( byte val0 )
 	if ( ret != 0){ log_device(); } 
 	return ret;
 }
-//! U8,U32
+//! U8,U16
 //! [CHANNUM]
 int MRV::setTHRESHOLD_HIGHPRESSURE( byte val0
-,uint32 val1 )
+,uint16 val1 )
 {
 	//! 52 0
 	int ret; 
@@ -1304,12 +1304,12 @@ int MRV::setTHRESHOLD_HIGHPRESSURE( byte val0
 }
 //! U8
 //! [CHANNUM]
-int MRV::getTHRESHOLD_HIGHPRESSURE( byte val0, uint32 * val1, bool bQuery )
+int MRV::getTHRESHOLD_HIGHPRESSURE( byte val0, uint16 * val1, bool bQuery )
 {
 	//! 52 1
 	int ret = 0;
 
-	uint32 lval0 = 0;
+	uint16 lval0 = 0;
 	ret = m_pBus->read( DEVICE_RECEIVE_ID, (byte)52, (byte)1 , val0, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
@@ -1346,10 +1346,10 @@ int MRV::getTHRESHOLD_HIPRESSUREACTION( byte val0, MRV_THRESHOLD_HIPRESSUREACTIO
 	*val1 = (MRV_THRESHOLD_HIPRESSUREACTION)lval0;
 	return 0;
 }
-//! U8,U32
+//! U8,U16
 //! [CHANNUM]
 int MRV::setTHRESHOLD_LOWPRESSURE( byte val0
-,uint32 val1 )
+,uint16 val1 )
 {
 	//! 52 4
 	int ret; 
@@ -1364,12 +1364,12 @@ int MRV::setTHRESHOLD_LOWPRESSURE( byte val0
 }
 //! U8
 //! [CHANNUM]
-int MRV::getTHRESHOLD_LOWPRESSURE( byte val0, uint32 * val1, bool bQuery )
+int MRV::getTHRESHOLD_LOWPRESSURE( byte val0, uint16 * val1, bool bQuery )
 {
 	//! 52 5
 	int ret = 0;
 
-	uint32 lval0 = 0;
+	uint16 lval0 = 0;
 	ret = m_pBus->read( DEVICE_RECEIVE_ID, (byte)52, (byte)5 , val0, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
@@ -1406,10 +1406,10 @@ int MRV::getTHRESHOLD_LOWPRESSUREACTION( byte val0, MRV_THRESHOLD_HIPRESSUREACTI
 	*val1 = (MRV_THRESHOLD_HIPRESSUREACTION)lval0;
 	return 0;
 }
-//! U8,U32
+//! U8,U16
 //! [CHANNUM]
 int MRV::setTHRESHOLD_HIGHCURRENT( byte val0
-,uint32 val1 )
+,uint16 val1 )
 {
 	//! 52 8
 	int ret; 
@@ -1424,12 +1424,12 @@ int MRV::setTHRESHOLD_HIGHCURRENT( byte val0
 }
 //! U8
 //! [CHANNUM]
-int MRV::getTHRESHOLD_HIGHCURRENT( byte val0, uint32 * val1, bool bQuery )
+int MRV::getTHRESHOLD_HIGHCURRENT( byte val0, uint16 * val1, bool bQuery )
 {
 	//! 52 9
 	int ret = 0;
 
-	uint32 lval0 = 0;
+	uint16 lval0 = 0;
 	ret = m_pBus->read( DEVICE_RECEIVE_ID, (byte)52, (byte)9 , val0, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
@@ -1466,10 +1466,10 @@ int MRV::getTHRESHOLD_HICURRENTACTION( byte val0, MRV_THRESHOLD_HIPRESSUREACTION
 	*val1 = (MRV_THRESHOLD_HIPRESSUREACTION)lval0;
 	return 0;
 }
-//! U8,U32
+//! U8,U16
 //! [CHANNUM]
 int MRV::setTHRESHOLD_LOWCURRENT( byte val0
-,uint32 val1 )
+,uint16 val1 )
 {
 	//! 52 12
 	int ret; 
@@ -1484,12 +1484,12 @@ int MRV::setTHRESHOLD_LOWCURRENT( byte val0
 }
 //! U8
 //! [CHANNUM]
-int MRV::getTHRESHOLD_LOWCURRENT( byte val0, uint32 * val1, bool bQuery )
+int MRV::getTHRESHOLD_LOWCURRENT( byte val0, uint16 * val1, bool bQuery )
 {
 	//! 52 13
 	int ret = 0;
 
-	uint32 lval0 = 0;
+	uint16 lval0 = 0;
 	ret = m_pBus->read( DEVICE_RECEIVE_ID, (byte)52, (byte)13 , val0, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
@@ -1855,10 +1855,10 @@ int MRV::getPVT_PDATA( uint16 val0, uint32 * val1, bool bQuery )
 	*val1 = lval0;
 	return 0;
 }
-//! U16,U32
+//! U16,F32
 //! 
 int MRV::setPVT_TDATA( uint16 val0
-,uint32 val1 )
+,f32 val1 )
 {
 	//! 53 14
 	int ret; 
@@ -1873,12 +1873,12 @@ int MRV::setPVT_TDATA( uint16 val0
 }
 //! U16
 //! 
-int MRV::getPVT_TDATA( uint16 val0, uint32 * val1, bool bQuery )
+int MRV::getPVT_TDATA( uint16 val0, f32 * val1, bool bQuery )
 {
 	//! 53 15
 	int ret = 0;
 
-	uint32 lval0 = 0;
+	f32 lval0 = 0;
 	ret = m_pBus->read( DEVICE_RECEIVE_ID, (byte)53, (byte)15 , val0, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;

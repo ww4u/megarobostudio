@@ -17,14 +17,20 @@ enum appMsg
     msg_start_pvt,
     msg_stop_pvt,
 
+    msg_download_pt,
+    msg_start_pt,
+    msg_stop_pt,
+
     msg_download_motion,
     msg_start_motion,
     msg_stop_motion,
 
     msg_mrq_property_apply,
+    msg_mrv_property_apply,
     msg_robo_property_apply,
 
     msg_mrq_property_ok,
+    msg_mrv_property_ok,
     msg_robo_property_ok,
 
     msg_mgr_motor_test,

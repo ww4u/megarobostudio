@@ -97,10 +97,10 @@ int setVALVECTRL_OPENDUTY( byte val0
 int getVALVECTRL_OPENDUTY( byte val0, uint32 * val1, bool bQuery=true );
 int setVALVECTRL_OPENDLYTIME( byte val0
 ,uint16 val1 );
-int getVALVECTRL_OPENDLYTIME( byte val0, uint32 * val1, bool bQuery=true );
+int getVALVECTRL_OPENDLYTIME( byte val0, uint16 * val1, bool bQuery=true );
 int setVALVECTRL_OPENTIME( byte val0
 ,uint16 val1 );
-int getVALVECTRL_OPENTIME( byte val0, uint32 * val1, bool bQuery=true );
+int getVALVECTRL_OPENTIME( byte val0, uint16 * val1, bool bQuery=true );
 int setVALVECTRL_RECORDSTATE( byte val0
 ,MRV_CAN_NETMANAGELED val1 );
 int getVALVECTRL_RECORDSTATE( byte val0, MRV_CAN_NETMANAGELED * val1, bool bQuery=true );
@@ -111,26 +111,26 @@ int setVALVECTRL_OFFNUMSCLEAR( byte val0 );
 int getVALVECTRL_TIME( byte val0, uint32 * val1, bool bQuery=true );
 int setVALVECTRL_TIMECLEAR( byte val0 );
 int setTHRESHOLD_HIGHPRESSURE( byte val0
-,uint32 val1 );
-int getTHRESHOLD_HIGHPRESSURE( byte val0, uint32 * val1, bool bQuery=true );
+,uint16 val1 );
+int getTHRESHOLD_HIGHPRESSURE( byte val0, uint16 * val1, bool bQuery=true );
 int setTHRESHOLD_HIPRESSUREACTION( byte val0
 ,MRV_THRESHOLD_HIPRESSUREACTION val1 );
 int getTHRESHOLD_HIPRESSUREACTION( byte val0, MRV_THRESHOLD_HIPRESSUREACTION * val1, bool bQuery=true );
 int setTHRESHOLD_LOWPRESSURE( byte val0
-,uint32 val1 );
-int getTHRESHOLD_LOWPRESSURE( byte val0, uint32 * val1, bool bQuery=true );
+,uint16 val1 );
+int getTHRESHOLD_LOWPRESSURE( byte val0, uint16 * val1, bool bQuery=true );
 int setTHRESHOLD_LOWPRESSUREACTION( byte val0
 ,MRV_THRESHOLD_HIPRESSUREACTION val1 );
 int getTHRESHOLD_LOWPRESSUREACTION( byte val0, MRV_THRESHOLD_HIPRESSUREACTION * val1, bool bQuery=true );
 int setTHRESHOLD_HIGHCURRENT( byte val0
-,uint32 val1 );
-int getTHRESHOLD_HIGHCURRENT( byte val0, uint32 * val1, bool bQuery=true );
+,uint16 val1 );
+int getTHRESHOLD_HIGHCURRENT( byte val0, uint16 * val1, bool bQuery=true );
 int setTHRESHOLD_HICURRENTACTION( byte val0
 ,MRV_THRESHOLD_HIPRESSUREACTION val1 );
 int getTHRESHOLD_HICURRENTACTION( byte val0, MRV_THRESHOLD_HIPRESSUREACTION * val1, bool bQuery=true );
 int setTHRESHOLD_LOWCURRENT( byte val0
-,uint32 val1 );
-int getTHRESHOLD_LOWCURRENT( byte val0, uint32 * val1, bool bQuery=true );
+,uint16 val1 );
+int getTHRESHOLD_LOWCURRENT( byte val0, uint16 * val1, bool bQuery=true );
 int setTHRESHOLD_LOWCURRENTACTION( byte val0
 ,MRV_THRESHOLD_HIPRESSUREACTION val1 );
 int getTHRESHOLD_LOWCURRENTACTION( byte val0, MRV_THRESHOLD_HIPRESSUREACTION * val1, bool bQuery=true );
@@ -167,8 +167,8 @@ int setPVT_PDATA( uint16 val0
 ,uint32 val1 );
 int getPVT_PDATA( uint16 val0, uint32 * val1, bool bQuery=true );
 int setPVT_TDATA( uint16 val0
-,uint32 val1 );
-int getPVT_TDATA( uint16 val0, uint32 * val1, bool bQuery=true );
+,f32 val1 );
+int getPVT_TDATA( uint16 val0, f32 * val1, bool bQuery=true );
 int setPVT_HOLD( byte val0
 ,MRV_PVT_HOLD val1 );
 int getPVT_HOLD( byte val0, MRV_PVT_HOLD * val1, bool bQuery=true );

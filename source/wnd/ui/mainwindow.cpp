@@ -56,6 +56,12 @@ void MainWindow::closeEvent( QCloseEvent *event )
     }
 }
 
+deviceMgr *MainWindow::getDeviceMgr()
+{ return m_pDeviceMgr; }
+
+mcModel *  MainWindow::getMcModel()
+{ return &mMcModel; }
+
 void MainWindow::init()
 {
     m_pLogout = NULL;
@@ -100,6 +106,74 @@ void MainWindow::setupUi()
     setupUi_workarea();
 
     setupUi_docks();
+
+    loadPlugin();
+}
+
+void MainWindow::loadPlugin()
+{
+    //! find the plugin_xxx.bat
+    QString pluginPath = QCoreApplication::applicationDirPath() + QDir::separator() + QStringLiteral("package/mrq");
+    QStringList pluginDirs;
+
+    pluginDirs<<pluginPath
+              <<"G:/work/mc/develope/installer/package/mrq";        //! for debug used
+
+    foreach( QString subPath, pluginDirs )
+    {
+        loadPlugin( subPath, mPluginList );
+    }
+
+    //! add action
+    QString menuName;
+    QAction *pAction;
+    foreach ( QString subStr, mPluginList )
+    {
+        menuName = pluginName( subStr );
+        if ( menuName.size() > 0 )
+        {
+            pAction = ui->menuPlugin->addAction( QIcon(":/res/image/icon2/settings_light.png"),
+                                       menuName
+                                       );
+            Q_ASSERT( NULL != pAction );
+            pAction->setData( subStr );
+        }
+    }
+
+    connect( ui->menuPlugin, SIGNAL(triggered(QAction*)),
+             this, SLOT(slot_action_plugin(QAction*)));
+
+    if ( mPluginList.size() > 0 )
+    { ui->menuPlugin->setEnabled( true ); }
+    else
+    { ui->menuPlugin->setEnabled( false ); }
+}
+
+void MainWindow::loadPlugin( const QString &dirPath,
+                             QStringList &plugins )
+{
+    QDir dir( dirPath );
+    QStringList pluginFilterList;
+    QStringList pluginList;
+    pluginFilterList<<"plugin_*.bat";
+    pluginList = dir.entryList( pluginFilterList );
+
+    foreach( QString subStr, pluginList )
+    { plugins<<QDir::toNativeSeparators( dir.absolutePath() + QDir::separator() + subStr ); }
+}
+
+QString MainWindow::pluginName( const QString &fullName )
+{
+    QString pureName;
+
+    pureName = comAssist::pureFileName( fullName, false );
+
+    QStringList segList;
+    segList = pureName.split( '_', QString::SkipEmptyParts );
+    if ( segList.size() == 2 && segList[1].size() >0 )
+    { return segList[1]; }
+    else
+    { return ""; }
 }
 
 void MainWindow::setupUi_workarea()
@@ -331,8 +405,8 @@ void MainWindow::buildConnection()
     connect( m_pRoboNetThread, SIGNAL(signal_prompt( const QString &)),
              this, SLOT(slot_prompt( const QString &)));
 
-//    connect( m_pRoboNetThread, SIGNAL(signal_request( const RpcRequest &)),
-//             this, SLOT(slot_request( const RpcRequest &)));
+    connect( m_pRoboNetThread, SIGNAL(signal_emergeStop()),
+             this, SLOT(on_actionForceStop_triggered()));
 
     //! robo conn
     connect( m_pRoboConnTool->getCombName(),
@@ -402,6 +476,7 @@ void MainWindow::loadSetup()
                                       &mMcModel.mEventActionModel,
                                       this );
     Q_ASSERT( NULL != m_pEventViewer );
+    m_pEventViewer->setMcModel( &mMcModel );
 }
 
 void MainWindow::setupData()
@@ -410,6 +485,7 @@ void MainWindow::setupData()
     mMcModel.preload();
 
     mMcModel.m_pInstMgr->setMainModel( &mMcModel );
+    mMcModel.m_pInstMgr->setMainShell( this );
     VRobot::attachSysPara( &mMcModel.mSysPref );
 
     Q_ASSERT( NULL != m_pDeviceMgr );
@@ -742,6 +818,36 @@ void MainWindow::on_signalReport( int err, const QString &str )
     m_pStateBar->showState( QString("%1:%2").arg(err).arg(str) );
 }
 
+
+
+void MainWindow::slot_action_plugin( QAction *pAction )
+{
+//   logDbg()<<pAction->text()<<pAction->data().toString();
+
+   QStringList args;
+   QString str = pAction->data().toString();
+   str.replace("/", QDir::separator() );
+   args<<"/c";
+   args<<str;
+   //! \todo linux
+   logDbg()<<args;
+//   QProcess::execute( "cmd", args );
+
+   RpcThread *pThread = new RpcThread( "cmd", args );
+   if ( NULL != pThread )
+   {
+       connect( pThread, SIGNAL(signal_completed(RpcThread*)),
+                this, SLOT(slot_rpc_completed(RpcThread*)) );
+
+       pThread->start();
+   }
+}
+
+void MainWindow::slot_rpc_completed( RpcThread *pThread )
+{
+    delete pThread;
+}
+
 void MainWindow::modelview_destroyed( QObject *pObj )
 {
     Q_ASSERT( NULL != pObj );
@@ -908,11 +1014,6 @@ void MainWindow::slot_prompt( const QString &str )
     m_pWarnPrompt->activateWindow();
 }
 
-//void MainWindow::slot_request( const RpcRequest &rpc )
-//{
-
-//}
-
 void MainWindow::slot_robo_name_changed( const QString &name )
 {
     mMcModel.mConn.setRoboName( name );
@@ -938,7 +1039,7 @@ void MainWindow::slot_tabwidget_currentChanged(int index)
     m_pToolbarAxesConn->setVisible( false );
     m_pToolbarRoboConn->setVisible( false );
 
-    m_pRoboMgr->setEnabled( false );
+    m_pRoboMgr->setOperable( false );
 
     //! to enable
     modelView *pViewModel;
@@ -949,6 +1050,7 @@ void MainWindow::slot_tabwidget_currentChanged(int index)
     Q_ASSERT( pViewModel->getModelObj() != NULL );
     mcModelObj::obj_type objType = pViewModel->getModelObj()->getType();
     if (  objType == mcModelObj::model_tpv
+          || objType == mcModelObj::model_tp
           || objType == mcModelObj::model_device )
     {
         m_pToolbarAxesConn->setVisible( true );
@@ -963,7 +1065,7 @@ void MainWindow::slot_tabwidget_currentChanged(int index)
     }
     else if ( objType == mcModelObj::model_scene_file )
     {
-        m_pRoboMgr->setEnabled( true );
+        m_pRoboMgr->setOperable( true );
     }
     else
     {}
@@ -1040,7 +1142,7 @@ modelView *MainWindow::createModelView( modelView *pView,
     connect( m_pRoboNetThread,
              SIGNAL(signal_net(const QString &,int,RoboMsg)),
              pView,
-             SLOT(slot_net_event(const QString &,int,RoboMsg)));logDbg();
+             SLOT(slot_net_event(const QString &,int,RoboMsg)));
 
     connect( m_pRoboNetThread,
              SIGNAL(signal_request( const RpcRequest&)),

@@ -55,6 +55,8 @@ VRobot::VRobot()
 {
     mClass = "Unk robot";
     mId = robot_unk;
+
+    mSeqId = 0;
                                         //! configs
     mAxes = 0;                          //! axes count
     mRegions = 10;                      //! region count for each axes

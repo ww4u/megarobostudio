@@ -8,6 +8,13 @@
 class TpGroup : public MegaTableModel
 {
 public:
+    enum eViewMode
+    {
+        e_view_valve,
+        e_view_motor,
+    };
+
+public:
     TpGroup();
     virtual ~TpGroup();
 
@@ -26,6 +33,9 @@ public:
     virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
 
 public:
+    void setViewMode( eViewMode eView );
+    eViewMode viewMode();
+
     TpItem * operator[]( int id );
     QList< TpItem *> * getRows();
     QList< TpItem *> * getRows( QList<TpRow*> &rows );
@@ -46,6 +56,8 @@ protected:
 
 public:
     QList< TpItem *> mItems;
+
+    eViewMode mViewMode;
 };
 
 #endif // TPGROUP_H

@@ -107,7 +107,7 @@ int DataUploader::uploadProc()
         //! get frame len
         bytes = m_pCache->frameBytes( m_pDev->mCAN_SENDID );
         sysLog( __FUNCTION__, QString::number(__LINE__), QString::number(bytes) );
-//        emit sig_progress( bytes, 0, totalSize );
+
         sysProgress( bytes, "loading",  totalSize, 0 );
 
         tmo -= mTickms;

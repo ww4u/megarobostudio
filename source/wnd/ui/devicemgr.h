@@ -47,9 +47,11 @@ Q_SIGNALS:
 
     void signal_btnState_clicked();
 
+public Q_SLOTS:
+    void on_pushButton_clicked();
+
 protected Q_SLOTS:
     void on_btnTest_clicked();
-    void on_pushButton_clicked();
 
     void on_treeWidget_itemActivated(QTreeWidgetItem *item, int column);
 

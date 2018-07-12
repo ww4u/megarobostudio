@@ -94,7 +94,7 @@
          <number>1</number>
         </property>
         <property name="maximum">
-         <number>100000</number>
+         <number>1000000000</number>
         </property>
        </widget>
       </item>
@@ -126,32 +126,44 @@
          <item row="1" column="0">
           <widget class="QLabel" name="label_5">
            <property name="text">
-            <string>Hold</string>
+            <string>Hold(%)</string>
            </property>
           </widget>
          </item>
          <item row="0" column="1">
-          <widget class="QDoubleSpinBox" name="spinIdleDuty"/>
+          <widget class="QDoubleSpinBox" name="spinIdleDuty">
+           <property name="maximum">
+            <double>100.000000000000000</double>
+           </property>
+          </widget>
          </item>
          <item row="0" column="0">
           <widget class="QLabel" name="label_3">
            <property name="text">
-            <string>Idle</string>
+            <string>Idle(%)</string>
            </property>
           </widget>
          </item>
          <item row="2" column="0">
           <widget class="QLabel" name="label_6">
            <property name="text">
-            <string>Open</string>
+            <string>Open(%)</string>
            </property>
           </widget>
          </item>
          <item row="1" column="1">
-          <widget class="QDoubleSpinBox" name="spinHoldDuty"/>
+          <widget class="QDoubleSpinBox" name="spinHoldDuty">
+           <property name="maximum">
+            <double>100.000000000000000</double>
+           </property>
+          </widget>
          </item>
          <item row="2" column="1">
-          <widget class="QDoubleSpinBox" name="spinOpenDuty"/>
+          <widget class="QDoubleSpinBox" name="spinOpenDuty">
+           <property name="maximum">
+            <double>100.000000000000000</double>
+           </property>
+          </widget>
          </item>
         </layout>
        </widget>
@@ -165,14 +177,14 @@
          <item row="1" column="0">
           <widget class="QLabel" name="label_4">
            <property name="text">
-            <string>Open</string>
+            <string>Open(s)</string>
            </property>
           </widget>
          </item>
          <item row="2" column="0">
           <widget class="QLabel" name="label_8">
            <property name="text">
-            <string>Open Delay</string>
+            <string>Open Delay(s)</string>
            </property>
           </widget>
          </item>

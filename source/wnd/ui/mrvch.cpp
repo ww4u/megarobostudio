@@ -49,8 +49,10 @@ int MrvCh::setApply()
 {
     foreach( mrvView *pSubView, mSubViews )
     {
+        Q_ASSERT( NULL != pSubView );
         pSubView->setApply();
-//        QThread::msleep( 100 );     //! \todo need by mrq overflow
+
+        QThread::msleep( 100 );     //! \todo need by mrv overflow
     }
 
     mrvView::setApply();

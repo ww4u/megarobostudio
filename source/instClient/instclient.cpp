@@ -43,6 +43,9 @@ int instClient::open( const QString &name,
 //        mSocket.write( latName.toLatin1() );
 //        mSocket.flush();
 //        qDebug()<<latName;
+
+        mName = name;
+
         return 0;
     }
     else
@@ -54,6 +57,7 @@ int instClient::open( const QString &name,
 int instClient::close()
 {
     mSocket.close();
+    mName.clear();
     return 0;
 }
 
@@ -99,5 +103,8 @@ QByteArray instClient::readAll( int tmo )
 
     return mSocket.readAll();
 }
+
+QString instClient::name()
+{ return mName; }
 
 }

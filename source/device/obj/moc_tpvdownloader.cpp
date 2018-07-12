@@ -88,7 +88,7 @@ void tpvDownloader::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _i
 }
 
 const QMetaObject tpvDownloader::staticMetaObject = {
-    { &QThread::staticMetaObject, qt_meta_stringdata_tpvDownloader.data,
+    { &DeviceDownloader::staticMetaObject, qt_meta_stringdata_tpvDownloader.data,
       qt_meta_data_tpvDownloader,  qt_static_metacall, nullptr, nullptr}
 };
 
@@ -103,12 +103,12 @@ void *tpvDownloader::qt_metacast(const char *_clname)
     if (!_clname) return nullptr;
     if (!strcmp(_clname, qt_meta_stringdata_tpvDownloader.stringdata0))
         return static_cast<void*>(this);
-    return QThread::qt_metacast(_clname);
+    return DeviceDownloader::qt_metacast(_clname);
 }
 
 int tpvDownloader::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
 {
-    _id = QThread::qt_metacall(_c, _id, _a);
+    _id = DeviceDownloader::qt_metacall(_c, _id, _a);
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {

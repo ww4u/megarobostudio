@@ -39,6 +39,9 @@ public:
     virtual int goZero( const tpvRegion &region=0 );
     virtual int goZero( const tpvRegion &region,
                         int jointId, bool bCcw );
+    virtual int goZero( const tpvRegion &region,
+                        const QList<int> &jointList,
+                        const QList<bool> &ccwList );
 
     virtual bool checkZeroValid();
     virtual float getZero( int jointTabId );
@@ -49,6 +52,7 @@ public:
     virtual int loopNow();
 
     virtual void toState(int stat);
+    virtual int state(const tpvRegion &region, int inTask = 0);
 
 public:
     virtual int build( MegaTableModel *pModel,
@@ -129,6 +133,9 @@ protected:
 
     int serialInInitPos( QXmlStreamReader &reader );
     int serialOutInitPos( QXmlStreamWriter &writer );
+
+    int serialInJointCcw( QXmlStreamReader &reader );
+    int serialOutJointCcw( QXmlStreamWriter &writer );
 
 protected:
     void exportPlan( const QString &fileName, xxxGroup<tracePoint> &tracePlan );

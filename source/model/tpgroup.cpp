@@ -2,7 +2,7 @@
 
 TpGroup::TpGroup() :  MegaTableModel("","")
 {
-
+    mViewMode = e_view_motor;
 }
 
 TpGroup::~TpGroup()
@@ -37,7 +37,12 @@ QVariant TpGroup::data(const QModelIndex &index, int role) const
     if ( col == 0 )
     { return QVariant( (double)mItems[ row ]->getT() ); }
     else if ( col == 1 )
-    { return QVariant( (double)mItems[ row ]->getP() ); }
+    {
+        if ( mViewMode == e_view_motor )
+        { return QVariant( (double)mItems[ row ]->getP() ); }
+        else
+        { return mItems[ row ]->getP() > 0; }
+    }
     else
     { return QVariant(); }
 }
@@ -116,10 +121,20 @@ QVariant TpGroup::headerData(int section, Qt::Orientation orientation, int role 
     { return QVariant(); }
 
     if ( orientation == Qt::Horizontal )
-    { return QVariant( TpItem::header(section)); }
+    { return QVariant( TpItem::header((int)mViewMode, section)); }
     else
     { return QVariant(section);}
 }
+
+void TpGroup::setViewMode( eViewMode eView )
+{
+    mViewMode = eView;
+
+    emit dataChanged( index(0,0),
+                      index(mItems.count(), TpItem::columns() - 1) );
+}
+TpGroup::eViewMode TpGroup::viewMode()
+{ return mViewMode; }
 
 TpItem * TpGroup::operator[]( int id )
 {

@@ -72,8 +72,8 @@ int pvtEdit::saveAs( QString &outFileName )
 }
 
 void pvtEdit::onNetEvent(const QString &name,
-                        int axes,
-                        RoboMsg &msg)
+                         int axes,
+                         RoboMsg &msg)
 {
 //    logDbg()<<msg.getMsg();
 

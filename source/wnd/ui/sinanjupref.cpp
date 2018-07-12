@@ -10,10 +10,10 @@ SinanjuPref::SinanjuPref(QWidget *parent) :
 
     //! fill table
     int i = 0;
-    mLabels[i] = ui->label_7;i++;
-    mLabels[i] = ui->label_6;i++;
-    mLabels[i] = ui->label_5;i++;
-    mLabels[i] = ui->label_4;i++;
+    mLabels[i] = ui->labelBase;i++;
+    mLabels[i] = ui->labelBA;i++;
+    mLabels[i] = ui->labelSA;i++;
+    mLabels[i] = ui->labelWrist;i++;
     mLabels[i] = ui->label_3;i++;
 
 //    i = 0;
@@ -34,6 +34,11 @@ SinanjuPref::SinanjuPref(QWidget *parent) :
     mInvertAngles.append( ui->chkInvBA );
     mInvertAngles.append( ui->chkInvSA );
     mInvertAngles.append( ui->chkInvWrist );
+
+    ui->labelBase->setText( QString("%1(%2)").arg( tr("Base") ).arg( CHAR_DEGREE ) );
+    ui->labelBA->setText( QString("%1(%2)").arg( tr("Big Arm") ).arg( CHAR_DEGREE ) );
+    ui->labelSA->setText( QString("%1(%2)").arg( tr("Little Arm") ).arg( CHAR_DEGREE ) );
+    ui->labelWrist->setText( QString("%1(%2)").arg( tr("Wrist") ).arg( CHAR_DEGREE ) );
 
     spyEdited();
 }
@@ -98,6 +103,9 @@ void SinanjuPref::updateData()
 
     pRobo->setGapAttr( ui->spinGapTime->value(),
                        ui->spinGapAngle->value() );
+
+    //! ccw
+    pRobo->setJointZeroCcw( 4, ui->chkHandZeroCcw->isChecked() );
 }
 
 void SinanjuPref::updateUi()
@@ -146,11 +154,11 @@ void SinanjuPref::initModel()
     VRobot *pBase = ( VRobot *)m_pModelObj;
     Q_ASSERT( NULL != pBase );
 
-    int i;
-    for( i = 0; i < pBase->axes(); i++ )
-    {
-        mLabels[i]->setText( (pBase->mJointName.at(i)) );
-    }
+//    int i;
+//    for( i = 0; i < pBase->axes(); i++ )
+//    {
+//        mLabels[i]->setText( (pBase->mJointName.at(i)) );
+//    }
 }
 
 void SinanjuPref::spyEdited()
@@ -229,6 +237,34 @@ void SinanjuPref::on_btnZeroHand_clicked()
     }
 }
 
+void SinanjuPref::on_btnZero_clicked()
+{
+    Q_ASSERT( m_pModelObj != NULL );
+    VRobot *pBase = ( VRobot *)m_pModelObj;
+    Q_ASSERT( NULL != pBase );
+
+    if ( !pBase->checkLink() )
+    {
+        sysPrompt( tr("Invalid link") );
+        return ;
+    }
+
+    MegaZeroAffirmMessageBox msgBox;
+    int ret = msgBox.exec();
+    if ( ret == QMessageBox::Ok )
+    {
+        QList<int> jList;
+        QList<bool> ccwList;
+
+        jList<<0<<1<<2<<3<<4;
+        ccwList<<false<<false<<false<<false<<ui->chkHandZeroCcw->isChecked();
+
+        pBase->goZero( tpvRegion(0,0),
+                       jList,
+                       ccwList );
+    }
+}
+
 void SinanjuPref::on_btnUploadZero_clicked()
 {
     Q_ASSERT( m_pModelObj != NULL );
@@ -271,3 +307,4 @@ void SinanjuPref::on_btnUploadZero_clicked()
 
     emit sigModified( true );
 }
+

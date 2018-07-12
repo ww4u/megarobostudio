@@ -1270,7 +1270,7 @@ static scpi_result_t _scpi_getVALVECTRL_OPENDLYTIME( scpi_t * context )
         { return SCPI_RES_ERR; }
 	val0 = (byte)localIntVal;
 
-	uint32 oval0;
+	uint16 oval0;
 
 	(GET_OBJ(context))->getVALVECTRL_OPENDLYTIME( val0, &oval0 );
 	SCPI_ResultInt32(context, oval0);
@@ -1306,7 +1306,7 @@ static scpi_result_t _scpi_getVALVECTRL_OPENTIME( scpi_t * context )
         { return SCPI_RES_ERR; }
 	val0 = (byte)localIntVal;
 
-	uint32 oval0;
+	uint16 oval0;
 
 	(GET_OBJ(context))->getVALVECTRL_OPENTIME( val0, &oval0 );
 	SCPI_ResultInt32(context, oval0);
@@ -1459,10 +1459,10 @@ static scpi_result_t _scpi_setTHRESHOLD_HIGHPRESSURE( scpi_t * context )
         { return SCPI_RES_ERR; }
 	val0 = (byte)localIntVal;
 
-	uint32 val1;
+	uint16 val1;
 	if ( SCPI_ParamInt32(context, &localIntVal, true) != SCPI_RES_OK ) 
         { return SCPI_RES_ERR; }
-	val1 = (uint32)localIntVal;
+	val1 = (uint16)localIntVal;
 
 	(SET_OBJ(context))->setTHRESHOLD_HIGHPRESSURE( val0, val1 );
 	return SCPI_RES_OK;
@@ -1477,7 +1477,7 @@ static scpi_result_t _scpi_getTHRESHOLD_HIGHPRESSURE( scpi_t * context )
         { return SCPI_RES_ERR; }
 	val0 = (byte)localIntVal;
 
-	uint32 oval0;
+	uint16 oval0;
 
 	(GET_OBJ(context))->getTHRESHOLD_HIGHPRESSURE( val0, &oval0 );
 	SCPI_ResultInt32(context, oval0);
@@ -1537,10 +1537,10 @@ static scpi_result_t _scpi_setTHRESHOLD_LOWPRESSURE( scpi_t * context )
         { return SCPI_RES_ERR; }
 	val0 = (byte)localIntVal;
 
-	uint32 val1;
+	uint16 val1;
 	if ( SCPI_ParamInt32(context, &localIntVal, true) != SCPI_RES_OK ) 
         { return SCPI_RES_ERR; }
-	val1 = (uint32)localIntVal;
+	val1 = (uint16)localIntVal;
 
 	(SET_OBJ(context))->setTHRESHOLD_LOWPRESSURE( val0, val1 );
 	return SCPI_RES_OK;
@@ -1555,7 +1555,7 @@ static scpi_result_t _scpi_getTHRESHOLD_LOWPRESSURE( scpi_t * context )
         { return SCPI_RES_ERR; }
 	val0 = (byte)localIntVal;
 
-	uint32 oval0;
+	uint16 oval0;
 
 	(GET_OBJ(context))->getTHRESHOLD_LOWPRESSURE( val0, &oval0 );
 	SCPI_ResultInt32(context, oval0);
@@ -1615,10 +1615,10 @@ static scpi_result_t _scpi_setTHRESHOLD_HIGHCURRENT( scpi_t * context )
         { return SCPI_RES_ERR; }
 	val0 = (byte)localIntVal;
 
-	uint32 val1;
+	uint16 val1;
 	if ( SCPI_ParamInt32(context, &localIntVal, true) != SCPI_RES_OK ) 
         { return SCPI_RES_ERR; }
-	val1 = (uint32)localIntVal;
+	val1 = (uint16)localIntVal;
 
 	(SET_OBJ(context))->setTHRESHOLD_HIGHCURRENT( val0, val1 );
 	return SCPI_RES_OK;
@@ -1633,7 +1633,7 @@ static scpi_result_t _scpi_getTHRESHOLD_HIGHCURRENT( scpi_t * context )
         { return SCPI_RES_ERR; }
 	val0 = (byte)localIntVal;
 
-	uint32 oval0;
+	uint16 oval0;
 
 	(GET_OBJ(context))->getTHRESHOLD_HIGHCURRENT( val0, &oval0 );
 	SCPI_ResultInt32(context, oval0);
@@ -1693,10 +1693,10 @@ static scpi_result_t _scpi_setTHRESHOLD_LOWCURRENT( scpi_t * context )
         { return SCPI_RES_ERR; }
 	val0 = (byte)localIntVal;
 
-	uint32 val1;
+	uint16 val1;
 	if ( SCPI_ParamInt32(context, &localIntVal, true) != SCPI_RES_OK ) 
         { return SCPI_RES_ERR; }
-	val1 = (uint32)localIntVal;
+	val1 = (uint16)localIntVal;
 
 	(SET_OBJ(context))->setTHRESHOLD_LOWCURRENT( val0, val1 );
 	return SCPI_RES_OK;
@@ -1711,7 +1711,7 @@ static scpi_result_t _scpi_getTHRESHOLD_LOWCURRENT( scpi_t * context )
         { return SCPI_RES_ERR; }
 	val0 = (byte)localIntVal;
 
-	uint32 oval0;
+	uint16 oval0;
 
 	(GET_OBJ(context))->getTHRESHOLD_LOWCURRENT( val0, &oval0 );
 	SCPI_ResultInt32(context, oval0);
@@ -2170,10 +2170,9 @@ static scpi_result_t _scpi_setPVT_TDATA( scpi_t * context )
         { return SCPI_RES_ERR; }
 	val0 = (uint16)localIntVal;
 
-	uint32 val1;
-	if ( SCPI_ParamInt32(context, &localIntVal, true) != SCPI_RES_OK ) 
+	f32 val1;
+	if ( SCPI_ParamFloat(context, &val1, true) != SCPI_RES_OK )
         { return SCPI_RES_ERR; }
-	val1 = (uint32)localIntVal;
 
 	(SET_OBJ(context))->setPVT_TDATA( val0, val1 );
 	return SCPI_RES_OK;
@@ -2188,10 +2187,10 @@ static scpi_result_t _scpi_getPVT_TDATA( scpi_t * context )
         { return SCPI_RES_ERR; }
 	val0 = (uint16)localIntVal;
 
-	uint32 oval0;
+	f32 oval0;
 
 	(GET_OBJ(context))->getPVT_TDATA( val0, &oval0 );
-	SCPI_ResultInt32(context, oval0);
+	SCPI_ResultFloat(context, oval0);
 
 	return SCPI_RES_OK;
 }

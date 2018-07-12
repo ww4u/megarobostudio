@@ -75,8 +75,8 @@ public:
     void gc();
 
 public:
-//    void setName( const QString &name );
-//    QString getName();
+    void setOpc( int v );
+    int opc();
 
 public:
 //    scpi_interface_t scpi_interface;
@@ -98,9 +98,7 @@ protected:
     int mOutWritePos, mOutReadPos;
 
     void *m_pUserPara;
-
-//    QString mName;      //! device name
-
+    int mOpc;
 };
 
 #define scpi_ret( ret )         sysError( __FUNCTION__, QString::number(__LINE__)); \

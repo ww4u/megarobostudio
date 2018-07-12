@@ -115,11 +115,9 @@ void queryMgr::setupUi()
     m_pDelegate3 = new comboxDelegate(this);
     QStringList strList;
     strList.clear();
-    strList<<tr("Torque")<<tr("Cycle")
-           <<tr("X Angle")<<tr("Y Angle")<<tr("Z Angle")
-           <<tr("X Velocity")<<tr("Y Velocity")<<tr("Z Velocity")
-           <<tr("X Accelerate")<<tr("Y Accelearte")<<"Z Accelerate"
-           <<tr("SGall")<<tr("SGse")<<tr("Dist");
+    strList<<tr("TORQUE")<<tr("CYCLE")
+           <<tr("SGALL")<<tr("SGSE")
+           <<tr("DIST")<<tr("ABSENC");
     m_pDelegate3->setItems( strList );
 }
 void queryMgr::deleteUi()

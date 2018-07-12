@@ -178,10 +178,16 @@
     <property name="title">
      <string>Tool(&amp;T)</string>
     </property>
+    <widget class="QMenu" name="menuPlugin">
+     <property name="title">
+      <string>Plugin</string>
+     </property>
+    </widget>
     <addaction name="actionAngle_A"/>
     <addaction name="actionDistance_D"/>
     <addaction name="actionMotor_Panel"/>
     <addaction name="actionCamera"/>
+    <addaction name="menuPlugin"/>
     <addaction name="actiontest"/>
    </widget>
    <addaction name="menu_F"/>
@@ -528,6 +534,24 @@
    </property>
    <property name="text">
     <string>PT</string>
+   </property>
+  </action>
+  <action name="actionInverse_Gap_Scan">
+   <property name="icon">
+    <iconset resource="../res/res.qrc">
+     <normaloff>:/res/image/icon2/settings_light.png</normaloff>:/res/image/icon2/settings_light.png</iconset>
+   </property>
+   <property name="text">
+    <string>Inverse Gap Scan</string>
+   </property>
+  </action>
+  <action name="actionTorque_View">
+   <property name="icon">
+    <iconset resource="../res/res.qrc">
+     <normaloff>:/res/image/icon2/settings_light.png</normaloff>:/res/image/icon2/settings_light.png</iconset>
+   </property>
+   <property name="text">
+    <string>Torque View</string>
    </property>
   </action>
  </widget>

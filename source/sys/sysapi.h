@@ -52,6 +52,11 @@ void sysPrompt( const QString &str );
 
 void sysRpc( const RpcRequest &rpc );
 
+void sysOpc( int opc );
+int qOpc();
+
+void sysEmergeStop();
+
 //! sys queue
 void attachSysQueue( RoboMsgThread* pQueue );
 RoboMsgThread* sysQueue();
@@ -65,6 +70,14 @@ class sysRunTime
 {
 public:
     RoboMsgThread *m_pSysQueue;
+    int mOpc;
+
+public:
+    sysRunTime()
+    {
+        m_pSysQueue = NULL;
+        mOpc = 1;
+    }
 };
 
 #endif

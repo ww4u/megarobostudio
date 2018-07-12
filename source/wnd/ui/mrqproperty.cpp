@@ -54,13 +54,11 @@ void mrqProperty::on_btnApply_clicked()
 }
 void mrqProperty::on_btnOK_clicked()
 {
-     post_request( msg_mrq_property_ok, mrqProperty, Ok );
+    post_request( msg_mrq_property_ok, mrqProperty, Ok );
 }
 
 void mrqProperty::on_btnCancel_clicked()
-{
-    emit sigClose( this );
-}
+{ emit sigClose( this ); }
 
 void mrqProperty::on_btnReset_clicked()
 {
@@ -355,17 +353,26 @@ int mrqProperty::postApply( appMsg msg, void *pPara )
     }
 
     //! foreach apply
+
+    //! \note current view set last
+    QList<modelView *> cfgViews;
+    cfgViews = mViewPages;
+
+    modelView *pCur = cfgViews.at( ui->stackedWidget->currentIndex() );
+    cfgViews.removeAt( ui->stackedWidget->currentIndex() );
+    cfgViews.append( pCur );
+
     int id = 0;
-    foreach( modelView *pView, mViewPages )
+    foreach( modelView *pView, cfgViews )
     {
         Q_ASSERT( NULL != pView );
-        sysProgress( id++, pView->name(), mViewPages.size(), 0 );
+        sysProgress( id++, pView->name(), cfgViews.size(), 0 );
         sysProgress( true );
         pView->setApply();
 
 //        QThread::msleep( 100 );
 
-        sysProgress( id, pView->name(), mViewPages.size(), 0 );
+        sysProgress( id, pView->name(), cfgViews.size(), 0 );
     }
 
     return 0;
@@ -384,6 +391,8 @@ void mrqProperty::endApply( int ret, void *pPara )
     slotModified( false );
 
     restoreBtnSnap();
+
+    updateScreen();
 }
 
 int mrqProperty::postOk( appMsg msg, void *pPara )

@@ -11,16 +11,29 @@ int TpItem::columns()
     return sizeof_array( _headers );
 }
 
-QString TpItem::header( int col )
+QString TpItem::header( int viewIndex, int col )
 {
     Q_ASSERT( col >= 0 && col <= sizeof_array(_headers) );
 
-    if ( col == 0 )
-    { return QObject::tr("t(s)"); }
-    else if ( col == 1 )
-    { return QObject::tr("p(\%)"); }
+    //! motor
+    if ( viewIndex == 1 )
+    {
+        if ( col == 0 )
+        { return QObject::tr("t(s)"); }
+        else if ( col == 1 )
+        { return QObject::tr("p(\%)"); }
+        else
+        { return ""; }
+    }
     else
-    { return ""; }
+    {
+        if ( col == 0 )
+        { return QObject::tr("t(s)"); }
+        else if ( col == 1 )
+        { return QObject::tr("on/off)"); }
+        else
+        { return ""; }
+    }
 }
 
 TpItem::TpItem( tpvType t, tpvType p )

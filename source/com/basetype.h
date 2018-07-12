@@ -61,8 +61,9 @@ public:
             {
                 tpvType mT;
                 tpvType mP;
+                tpvType mTL;
             };
-            tpvType datas[2];
+            tpvType datas[3];
         };
         bool mbGc;              //! gc on used
 public:
@@ -71,6 +72,7 @@ public:
             mbGc = false;
             mT = 0;
             mP = 0;
+            mTL = 0;
         }
 
         void setGc( bool b )

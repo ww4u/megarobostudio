@@ -40,9 +40,15 @@ ADDMOD obj\mrv_scpi_callback.o
 ADDMOD obj\devicemrv_setting.o
 ADDMOD obj\tpdownloader.o
 ADDMOD obj\devicemrv_tp.o
+ADDMOD obj\devicemrv_setting_up.o
+ADDMOD obj\devicemrv_setting_down.o
+ADDMOD obj\devicemrv_transaction.o
+ADDMOD obj\mrvaxes.o
+ADDMOD obj\devicedownloader.o
 ADDMOD obj\moc_tpvdownloader.o
 ADDMOD obj\moc_vrobot.o
 ADDMOD obj\moc_roboworker.o
 ADDMOD obj\moc_datauploader.o
 ADDMOD obj\moc_tpdownloader.o
+ADDMOD obj\moc_devicedownloader.o
 SAVE

@@ -56,7 +56,12 @@ SOURCES = \
     mrv/mrv_scpi_callback.cpp \
     mrv/devicemrv_setting.cpp \
     mrv/tpdownloader.cpp \
-    mrv/devicemrv_tp.cpp
+    mrv/devicemrv_tp.cpp \
+    mrv/devicemrv_setting_up.cpp \
+    mrv/devicemrv_setting_down.cpp \
+    mrv/devicemrv_transaction.cpp \
+    mrv/mrvaxes.cpp \
+    devicedownloader.cpp
 
 
 
@@ -77,5 +82,7 @@ HEADERS = vdevice.h \
     mrv/devicemrv.h \
     phydevice.h \
     mrq/datauploader.h \
-    mrv/tpdownloader.h
+    mrv/tpdownloader.h \
+    mrv/mrvaxes.h \
+    devicedownloader.h
 

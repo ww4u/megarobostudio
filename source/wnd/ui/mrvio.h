@@ -26,6 +26,9 @@ protected:
     int apply();
     int updateUi();
 
+private slots:
+    void on_cmbMode_currentIndexChanged(int index);
+
 private:
     Ui::MrvIo *ui;
 };

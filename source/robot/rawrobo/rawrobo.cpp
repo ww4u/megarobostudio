@@ -185,7 +185,7 @@ void RawRobo::onTimer( void *pContext, int id )
 //    if ( pFsm == &mFsm )
 //    { mFsm.onTimer( id ); }
 
-    logDbg()<<id;
+//    logDbg()<<id;
 }
 
 void RawRobo::attachCondition(

@@ -6,9 +6,9 @@
 #include "../model/tpitem.h"
 #include "devicemrv.h"
 
-//class MegaDevice::deviceMRV;
+#include "../devicedownloader.h"
 
-class TpDownloader : public QThread
+class TpDownloader : public DeviceDownloader
 {
     Q_OBJECT
 public:
@@ -27,7 +27,8 @@ public:
 
 protected:
     int downloadProc();
-    int batchDownload( QList<TpRow*> &rows );
+    int batchDownload( QList<TpRow*> &rows, TpRow &refItem );
+    int diffT( QList<TpRow*> &rows );
 
 protected:
     MegaDevice::deviceMRV *m_pMRV;

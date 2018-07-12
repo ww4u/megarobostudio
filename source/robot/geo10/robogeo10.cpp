@@ -25,11 +25,18 @@ roboGeo10::roboGeo10()
     setUarts( 1 );
     setUartSensors( 4 );
 
+    setTrigSrcs( 1 );
+
     mMicrostepBase = 3;     //! 32
     mbEncoderAble = false;
     mDriverId = 1;
 
     mImage = QImage::fromData( _megaimage, sizeof(_megaimage) );
+}
+
+QString roboGeo10::trigSrcAlias( int ax, int iTrig )
+{
+    return QString("POS%1").arg( ax * 1 + iTrig + 1 );
 }
 
 int roboGeo10::serialIn( QXmlStreamReader &reader )

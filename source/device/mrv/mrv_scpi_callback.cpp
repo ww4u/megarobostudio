@@ -15,9 +15,7 @@
 #define DEF_MRV()   MegaDevice::deviceMRV* _localMrv = (GET_OBJ(context));
 #define LOCALMRV()  _localMrv
 
-
 #define CHECK_LINK( ax, page )
-
 
 static scpi_result_t _scpi_idn( scpi_t * context )
 {
@@ -34,30 +32,150 @@ static scpi_result_t _scpi_idn( scpi_t * context )
     return SCPI_RES_OK;
 }
 
+//! lrn setup.stp
+static scpi_result_t _scpi_lrn( scpi_t * context )
+{
+    DEF_LOCAL_VAR();
+
+    if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
+    { scpi_ret( SCPI_RES_ERR ); }logDbg()<<strLen<<pLocalStr;
+    if (strLen < 1)
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    DEF_MRV();
+    QByteArray rawFileName( pLocalStr, strLen );
+    QString fileName( rawFileName );
+    if ( comAssist::ammendFileName( fileName ) )
+    {}
+    else
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    Q_ASSERT( LOCALMRV() != NULL );
+    int ret = LOCALMRV()->getModel()->load( fileName );
+    if ( ret != 0 )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    ret = LOCALMRV()->applySetting();
+    if ( ret != 0 )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    sysLog( QObject::tr("Setting Down") );
+
+    return SCPI_RES_OK;
+}
+
+//! int ax
+static scpi_result_t _scpi_fsmState( scpi_t * context )
+{
+    // read
+    DEF_LOCAL_VAR();
+
+    int ax;
+
+    if ( SCPI_RES_OK != SCPI_ParamInt32( context, &ax, true ) )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    DEF_MRV();
+
+    int state = LOCALMRV()->status( tpvRegion(ax) );
+
+    SCPI_ResultInt32( context, state );
+
+    return SCPI_RES_OK;
+}
+
+//! int ax
+static scpi_result_t _scpi_run( scpi_t * context )
+{
+    // read
+    DEF_LOCAL_VAR();
+
+    int ax;
+
+    if ( SCPI_RES_OK != SCPI_ParamInt32( context, &ax, true ) )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    DEF_MRV();
+
+    int state = LOCALMRV()->switchRun( ax );
+
+    SCPI_ResultInt32( context, state );
+
+    return SCPI_RES_OK;
+}
+
+//! int ax
+static scpi_result_t _scpi_stop( scpi_t * context )
+{
+    // read
+    DEF_LOCAL_VAR();
+
+    int ax;
+
+    if ( SCPI_RES_OK != SCPI_ParamInt32( context, &ax, true ) )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    DEF_MRV();
+
+    int state = LOCALMRV()->switchStop( ax );
+
+    SCPI_ResultInt32( context, state );
+
+    return SCPI_RES_OK;
+}
+
+static scpi_result_t _scpi_arb_write( scpi_t * context )
+{
+    DEF_MRV();
+    DEF_LOCAL_VAR();
+
+    if ( SCPI_ParamArbitraryBlock(context, &pLocalStr, &strLen, true) != true )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    QByteArray stream( pLocalStr, strLen );
+    logDbg()<<stream;
+
+    return SCPI_RES_OK;
+}
+
+static scpi_result_t _scpi_arb_read( scpi_t * context )
+{
+    DEF_MRV();
+    DEF_LOCAL_VAR();
+
+    int fId, fLen, ret;
+    byte frameBuf[32];
+    MegaDevice::DeviceId lId = LOCALMRV()->getDeviceId();
+    ret = LOCALMRV()->Bus()->receiveProxy()->readAFrame(
+                lId,
+                &fId,
+                frameBuf,
+                &fLen,
+                10
+                );
+    if ( ret == 0 && fLen > 0 )
+    { SCPI_ResultArbitraryBlock( context, frameBuf, fLen ); }
+    else
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    return SCPI_RES_OK;
+}
+
+
 static scpi_command_t _scpi_cmds[]=
 {
     #include "../mrv_board/_MRV_scpi_cmd.h"
 
     CMD_ITEM( "*IDN?", _scpi_idn ),
-//    CMD_ITEM( "*LRN", _scpi_lrn ),      //! setupfile
+
+    CMD_ITEM( "*LRN", _scpi_lrn ),      //! setupfile
 //    CMD_ITEM( "HRST", _scpi_hrst ),
 
-//    CMD_ITEM( "SN", _scpi_sn ),
-//    CMD_ITEM( "SN?", _scpi_qSn ),
+    CMD_ITEM( "STATE?", _scpi_fsmState ),
 
-//    CMD_ITEM( "TEST:ADD", _scpi_testAdd ),
+    CMD_ITEM( "RUN", _scpi_run ),
+    CMD_ITEM( "STOP", _scpi_stop ),
 
-//    CMD_ITEM( "RUN", _scpi_run ),
-//    CMD_ITEM( "STOP", _scpi_stop ),
-
-//    CMD_ITEM( "ROTATE", _scpi_rotate ),
-//    CMD_ITEM( "MOVE", _scpi_rotate ),
-//    CMD_ITEM( "PREMOVE", _scpi_preRotate ),
-
-//    CMD_ITEM( "MOVEJ", _scpi_movej ),
-//    CMD_ITEM( "PREMOVEJ", _scpi_preMovej ),
-
-//    CMD_ITEM( "STATE?", _scpi_fsmState ),
 
 //    CMD_ITEM( "ANGLE:INCREASE?", _scpi_incangle ),
 //    CMD_ITEM( "ANGLE:ABSOLUTE?", _scpi_absangle ),
@@ -88,8 +206,8 @@ static scpi_command_t _scpi_cmds[]=
 //    CMD_ITEM( "PDM:MICUPLOAD", _scpi_micUpload ),       //! ch, filename
 //    CMD_ITEM( "PDM:UPLOADSTATE?", _scpi_qUploadState ),
 
-//    CMD_ITEM( "WRITE", _scpi_arb_write ),
-//    CMD_ITEM( "READ", _scpi_arb_read ),
+    CMD_ITEM( "WRITE", _scpi_arb_write ),
+    CMD_ITEM( "READ", _scpi_arb_read ),
 
     SCPI_CMD_LIST_END
 };

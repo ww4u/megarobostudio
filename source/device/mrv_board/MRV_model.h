@@ -75,7 +75,7 @@ protected:
 
 public:
     void setSignature( quint32 hash );
-    quint32 getSignature();
+    virtual quint32 getSignature();
 
     //! desc + alias
     QString getFullDesc( int axesId = -1 );

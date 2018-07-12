@@ -38,7 +38,7 @@ void RoboNetThread::onMsg( RoboMsg &msg )
             name = m_pModel->m_pInstMgr->sendIdToName( msg.at(1).toInt(),
                                                        msg.at(2).toInt() );
             if ( name.isEmpty() )
-            { logDbg()<<msg.at(1).toInt(); return; }
+            { logDbg()<<msg.at(1).toInt()<<msg.at(2).toInt(); return; }
 
             //! signal
             QByteArray ary = msg.at(3).toByteArray();
@@ -131,16 +131,18 @@ void RoboNetThread::onMsg( RoboMsg &msg )
 
         else if ( msg.mMsg == e_rpc )
         {
-//            if ( !msg.checkType( QMetaType::QString ) )
-//            { return; }
-
-//            emit signal_prompt( msg.at(0).toString() );
-
             //! \note no check
 
             RpcRequest rpc = msg.at(0).value<RpcRequest>();
 
             emit signal_request( rpc );
+        }
+
+        else if ( msg.mMsg == e_emerge_stop )
+        {
+            //! \note no para
+
+            emit signal_emergeStop();
         }
 
         //! name, status

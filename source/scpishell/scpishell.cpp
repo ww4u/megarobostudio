@@ -104,6 +104,8 @@ scpiShell::scpiShell()
     mOutReadPos = 0;
 
     m_pUserPara = NULL;
+
+    mOpc = 1;
 }
 
 scpiShell::~scpiShell()
@@ -300,7 +302,8 @@ void scpiShell::gc()
     }
 }
 
-//void scpiShell::setName( const QString &name )
-//{ mName = name; }
-//QString scpiShell::getName()
-//{ return mName; }
+void scpiShell::setOpc( int v )
+{ mOpc = v; }
+int scpiShell::opc()
+{ return mOpc; }
+

@@ -171,15 +171,23 @@ static scpi_result_t _scpi_stop( scpi_t * context )
     return SCPI_RES_OK;
 }
 
-//! int, float, float
-//! ax, page, t, angle
+//! force stop all
+static scpi_result_t _scpi_fstop( scpi_t * context )
+{
+    sysEmergeStop();
+
+    return SCPI_RES_OK;
+}
+
+//! int, float, float, float
+//! ax, page, t, angle, endV
 static scpi_result_t _scpi_rotate( scpi_t * context )
 {
     // read
     DEF_LOCAL_VAR();
 
     int ax, page;
-    float val2, val3;
+    float val2, val3, endV;
 
     if ( SCPI_RES_OK != SCPI_ParamInt32( context, &ax, true ) )
     { scpi_ret( SCPI_RES_ERR ); }
@@ -193,11 +201,18 @@ static scpi_result_t _scpi_rotate( scpi_t * context )
     if ( SCPI_RES_OK != SCPI_ParamFloat( context, &val3, true ) )
     { scpi_ret( SCPI_RES_ERR ); }
 
+    //! v
+    endV = 0;
+    if ( SCPI_RES_OK != SCPI_ParamFloat( context, &endV, true ) )
+    { endV = 0; }
+    else
+    { }
+
     DEF_MRQ();
 
     CHECK_LINK( ax, page );
 
-    LOCALMRQ()->rotate( tpvRegion(ax,page), val2, val3 );
+    LOCALMRQ()->rotate( tpvRegion(ax,page), val2, val3, endV );
 
     return SCPI_RES_OK;
 }
@@ -579,6 +594,58 @@ static scpi_result_t _scpi_fanduty( scpi_t * context )
     return SCPI_RES_OK;
 }
 
+//! i, duty, freq
+static scpi_result_t _scpi_fan( scpi_t * context )
+{
+    // read
+    DEF_LOCAL_VAR();
+
+    int val1, val2, val3;
+
+    if ( SCPI_RES_OK != SCPI_ParamInt32( context, &val1, true ) )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    if ( SCPI_RES_OK != SCPI_ParamInt32( context, &val2, true ) )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    if ( SCPI_RES_OK != SCPI_ParamInt32( context, &val3, true ) )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    DEF_MRQ();
+    int ret;
+    ret =  LOCALMRQ()->setFan( val2, val3 );
+    if ( ret != 0 )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    return SCPI_RES_OK;
+}
+
+//! i, duty, freq
+static scpi_result_t _scpi_led( scpi_t * context )
+{
+    // read
+    DEF_LOCAL_VAR();
+
+    int val1, val2, val3;
+
+    if ( SCPI_RES_OK != SCPI_ParamInt32( context, &val1, true ) )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    if ( SCPI_RES_OK != SCPI_ParamInt32( context, &val2, true ) )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    if ( SCPI_RES_OK != SCPI_ParamInt32( context, &val3, true ) )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    DEF_MRQ();
+    int ret;
+    ret =  LOCALMRQ()->setLed( val1, val2, val3 );
+    if ( ret != 0 )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    return SCPI_RES_OK;
+}
+
 //! ax,duty
 static scpi_result_t _scpi_ledduty( scpi_t * context )
 {
@@ -789,6 +856,7 @@ static scpi_command_t _mrq_scpi_cmds[]=
 
     CMD_ITEM( "RUN", _scpi_run ),
     CMD_ITEM( "STOP", _scpi_stop ),
+    CMD_ITEM( "FSTOP", _scpi_fstop ),
 
     CMD_ITEM( "ROTATE", _scpi_rotate ),
     CMD_ITEM( "MOVE", _scpi_rotate ),
@@ -815,6 +883,9 @@ static scpi_command_t _mrq_scpi_cmds[]=
 
     CMD_ITEM( "FANDUTY", _scpi_fanduty ),
     CMD_ITEM( "LEDDUTY", _scpi_ledduty ),
+
+    CMD_ITEM( "FAN", _scpi_fan ),
+    CMD_ITEM( "LED", _scpi_led ),
 
     CMD_ITEM( "ENCODER:ZEROVALID?", _scpi_encoderZeroValid ),
     CMD_ITEM( "ENCODER:ZERO?", _scpi_encoderZero ),

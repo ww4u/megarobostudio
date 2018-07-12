@@ -1,7 +1,8 @@
 
+#include <QHostInfo>
 #include "instmgr.h"
-
 #include "../../model/mcmodel.h"
+
 
 #define MRH_T_PORT  2
 
@@ -26,6 +27,7 @@ InstMgr *InstMgr::_mpMgr = NULL;
 InstMgr::InstMgr( QObject *parent ) : instServer( parent )
 {
     m_pMainModel = NULL;
+    m_pMainShell = NULL;
 
     m_pINTR = new INTRThread();
     Q_ASSERT( NULL != m_pINTR );
@@ -103,6 +105,15 @@ void InstMgr::setMainModel( mcModel *pModel )
     Q_ASSERT( NULL != pModel );
 
     m_pMainModel = pModel;
+}
+
+void InstMgr::setMainShell( scpiShell *pShell )
+{
+    Q_ASSERT( NULL != pShell );
+
+    m_pMainShell = pShell;
+
+    m_pMainShell->open();
 }
 
 //! \todo only one time
@@ -196,157 +207,6 @@ int InstMgr::probeCanBus()
             }
         }while( 0 );
     }
-
-    return 0;
-}
-
-int InstMgr::_probeCanBus()
-{
-    int ret;
-
-    int portDevType[]={VCI_MR_USBCAN,
-                       VCI_MR_USBCAN,
-                       VCI_MR_LANCAN,
-                       VCI_USBCAN2
-//                       VCI_MR_USBCAN,
-    };
-    Q_ASSERT( NULL != m_pMainModel );
-    //! bus prop.
-    mCanBus.setPId( m_pMainModel->mSysPref.mPort );
-    mCanBus.setSpeed( m_pMainModel->mSysPref.mSpeed );
-    mCanBus.setWtInterval( m_pMainModel->mSysPref.mInterval );
-    mCanBus.setRdTmo( m_pMainModel->mSysPref.mTimeout );
-    mCanBus.setRecvTmo( m_pMainModel->mSysPref.mRecvTmo );
-    mCanBus.setEnumTmo( m_pMainModel->mSysPref.mEnumerateTimeout );
-    mCanBus.setFailTry( m_pMainModel->mSysPref.mFailTryCnt );
-logDbg();
-    //! open
-    Q_ASSERT( m_pMainModel->mSysPref.mPort < sizeof_array(portDevType) );
-    ret = mCanBus.open( portDevType[m_pMainModel->mSysPref.mPort],
-                        0, 0, m_pMainModel->mSysPref.mVisaAddr );
-    if ( ret != 0 )
-    { logDbg()<<ret; return ret; }
-logDbg();
-    sysProgress( 5, tr("enumerate") );
-
-    //! enumerate
-    ret = mCanBus.enumerate( m_pMainModel->mSysPref );
-    logDbg()<<ret;
-    if ( ret != 0 )
-    { logDbg(); return ret; }
-    sysProgress( 30, tr("enumerate") );
-
-    //! create the device
-    int seq = 1;
-    deviceMRQ *pMRQ;
-    VRobot *pRobo;
-
-    //! a robo list
-    VRoboList *pRoboList = new VRoboList();
-    Q_ASSERT( NULL != pRoboList );
-    pRoboList->attachBus( &mCanBus );
-//    logDbg()<<QString::number( (quint32)pRoboList, 16 );
-
-    int uiProgBase = 30;
-    float uiProgStep = 0;
-    if ( mCanBus.mDevices.size() > 0 )
-    { uiProgStep = 60/(mCanBus.mDevices.size()*2); }
-    int uiStep = 1;
-
-    foreach( DeviceId * pId, mCanBus.mDevices )
-    {
-        //! detect device
-        {
-            pMRQ = new deviceMRQ();
-            Q_ASSERT( NULL != pMRQ );
-
-            //! bus config
-            pMRQ->setInterval( m_pMainModel->mSysPref.mInterval );
-            pMRQ->setTimeout( m_pMainModel->mSysPref.mTimeout );
-
-            pMRQ->attachBus( &mCanBus );
-            pMRQ->setInstMgr( this );
-
-            //! iter ref the sibling
-            ret = pMRQ->setDeviceId( *pId );
-            if ( ret != 0 )
-            {
-                logDbg()<<ret;
-                delete pMRQ;
-                return ret;
-            }
-
-            //! get info
-            pMRQ->rst();
-            pMRQ->uploadDesc();
-
-//            logDbg()<<QString::number( (uint32)pMRQ, 16 );
-//            logDbg()<<seq<<pMRQ->getModel()->mCAN_SENDID;
-//            logDbg()<<seq<<pMRQ->getModel()->mCAN_RECEIVEID;
-        }
-        sysProgress( uiProgBase + (uiStep++)*uiProgStep, tr("device") );
-
-        //! gen robo
-        {
-            //! get class
-            QString roboClass;
-
-            //! class
-            roboClass = m_pMainModel->mDeviceDbs.findClass( pMRQ->getDesc() );
-            delete pMRQ;
-
-            pRobo = robotFact::createRobot( roboClass );
-            if ( NULL == pRobo )
-            { return ERR_ALLOC_FAIL; }
-
-            //! delete the robo
-            //! bus config
-            pRobo->setInterval( m_pMainModel->mSysPref.mInterval );
-            pRobo->setTimeout( m_pMainModel->mSysPref.mTimeout );
-
-            pRobo->attachBus( &mCanBus );
-            pRobo->setInstMgr( this );
-
-            //! iter ref the sibling
-            ret = pRobo->setDeviceId( *pId );
-            if ( ret != 0 )
-            {
-                logDbg()<<ret;
-                delete pMRQ;
-                return ret;
-            }
-
-            //! get info
-            pRobo->rst();
-            pRobo->upload();
-
-            //! auto load setup
-            if ( m_pMainModel->mSysPref.mbAutoLoadSetup )
-            {
-                if ( 0!= pRobo->uploadSetting() )
-                { sysError( tr("load fail") ) ; }
-                else
-                { sysLog( tr("load success"), pRobo->name() );}
-            }
-
-            //! add robot
-            pRoboList->append( pRobo );
-
-            //! set def scpi name
-            //! default device name
-            pRobo->setName( QString("device%1").arg(seq) );
-            seq++;
-
-            //! open scpi
-            pRobo->open();
-        }
-        sysProgress( uiProgBase + (uiStep++)*uiProgStep, tr("robo") );
-    }
-
-    mDeviceTree.append( pRoboList );
-
-    //! plant devices
-    mDevices.append( *pRoboList );
 
     return 0;
 }
@@ -570,6 +430,34 @@ VRobot * InstMgr::findRobot( const QString &name, int axesId  )
     return NULL;
 }
 
+VRobot * InstMgr::findRobot( const QString &name, int *pAxes )    //! chx@name
+{
+    Q_ASSERT( NULL != pAxes );
+
+    QStringList strList = name.split("@", QString::SkipEmptyParts );
+
+    if ( strList.length() < 2 )
+    { logDbg()<<name; return NULL; }
+
+    //! try convert the ch id
+    if ( strList[0].startsWith( "CH" ) )
+    {}
+    else
+    { logDbg()<<name; return NULL; }
+
+    QString numStr = strList[0].right( strList[0].length() - 2 );/*logDbg()<<numStr;*/
+    bool bOk;
+    int axesId = numStr.toInt( &bOk );
+    if( !bOk )
+    { logDbg()<<name; return NULL; }
+
+    if ( axesId < 1 )
+    { logDbg()<<name; return NULL; }
+
+    *pAxes = axesId - 1;
+    return findRobot( strList[1], axesId - 1 );
+}
+
 VRobot * InstMgr::findRobot( const QString &name, const QString &bus )
 {
     VRoboList *pList = findBus( bus );
@@ -687,7 +575,7 @@ VRobot * InstMgr::findRobotByRecvId( int recvId, int devId, int axesId )
     return NULL;
 }
 
-deviceMRQ *InstMgr::findDevice( const QString &name, int axesId )
+MegaDevice::deviceMRQ  *InstMgr::findDevice( const QString &name, int axesId )
 {
     VRobot *pRobot;
 
@@ -695,41 +583,25 @@ deviceMRQ *InstMgr::findDevice( const QString &name, int axesId )
     if ( NULL == pRobot )
     { return NULL; }
     else
-    { return (deviceMRQ*)pRobot; }
+    { return (MegaDevice::deviceMRQ *)pRobot; }
 }
 
 //! chx@devicename
-deviceMRQ *InstMgr::findDevice( const QString &name, int *pAxes )
+MegaDevice::deviceMRQ *InstMgr::findDevice( const QString &name, int *pAxes )
 {
     Q_ASSERT( NULL != pAxes );
 
-    QStringList strList = name.split("@", QString::SkipEmptyParts );
+    VRobot *pRobot;
 
-    if ( strList.length() < 2 )
-    { logDbg()<<name; return NULL; }
-
-    //! try convert the ch id
-    if ( strList[0].startsWith( "CH" ) )
-    {}
+    pRobot = findRobot( name, pAxes );
+    if ( NULL == pRobot )
+    { return NULL; }
     else
-    { logDbg()<<name; return NULL; }
-
-    QString numStr = strList[0].right( strList[0].length() - 2 );/*logDbg()<<numStr;*/
-    bool bOk;
-    int axesId = numStr.toInt( &bOk );
-    if( !bOk )
-    { logDbg()<<name; return NULL; }
-
-    if ( axesId < 1 )
-    { logDbg()<<name; return NULL; }
-
-    *pAxes = axesId - 1;
-    return findDevice( strList[1], axesId - 1 );
+    { return (MegaDevice::deviceMRQ *)pRobot; }
 }
 
 QString InstMgr::sendIdToName( int devId, int sendId)
 {
-    deviceMRQ *pMrq;
 
     foreach( VRoboList *pRoboList, mDeviceTree )
     {
@@ -746,18 +618,35 @@ QString InstMgr::sendIdToName( int devId, int sendId)
             Q_ASSERT( NULL != pDev );
 
             if ( robot_is_mrq( pDev->robotId()) )
-            {}
+            {
+                deviceMRQ *pMrq;
+
+                //! convert
+                pMrq = (deviceMRQ*)pDev;
+                if ( NULL == pMrq )
+                { logDbg();return QString(); }
+
+                //! check axes
+                if ( pMrq->getModel()->mCAN_SENDID == (quint32)sendId )
+                { return pDev->name(); }
+            }
+            else if ( robot_is_mrv( pDev->robotId()) )
+            {
+                deviceMRV *pMrv;
+
+                //! convert
+                pMrv = (deviceMRV*)pDev;
+                if ( NULL == pMrv )
+                { logDbg();return QString(); }
+
+                //! check axes
+                if ( pMrv->getModel()->mCAN_SENDID == (quint32)sendId )
+                { return pDev->name(); }
+            }
             else
             { continue; }
 
-            //! convert
-            pMrq = (deviceMRQ*)pDev;
-            if ( NULL == pMrq )
-            { logDbg();return QString(); }
 
-            //! check axes
-            if ( pMrq->getModel()->mCAN_SENDID == (quint32)sendId )
-            { return pDev->name(); }
 
         }
     }
@@ -770,6 +659,7 @@ QStringList InstMgr::getResources()
 {
     QStringList resrc;
 
+    //! device
     foreach( VRoboList *pRoboList, mDeviceTree )
     {
         Q_ASSERT( NULL != pRoboList );
@@ -800,6 +690,37 @@ QStringList InstMgr::getChans()     //! chx@devicename
                 chanName = QString("CH%1@%2").arg( i+1).arg( pDev->name() );
                 resrc<<chanName;
             }
+        }
+    }
+
+    return resrc;
+}
+
+QStringList InstMgr::resources()
+{
+    QStringList resrc;
+
+    //! device
+    foreach( VRoboList *pRoboList, mDeviceTree )
+    {
+        Q_ASSERT( NULL != pRoboList );
+        foreach( VRobot * pDev, *pRoboList )
+        {
+            Q_ASSERT( NULL != pDev );
+
+            resrc<<pDev->getName();
+        }
+    }
+
+    //! robot
+    foreach( VRoboList *pRoboList, mFileDeviceTree )
+    {
+        Q_ASSERT( NULL != pRoboList );
+        foreach( VRobot * pDev, *pRoboList )
+        {
+            Q_ASSERT( NULL != pDev );
+
+            resrc<<pDev->getName();
         }
     }
 
@@ -958,7 +879,13 @@ int InstMgr::probeCANBus( CANBus *pNewBus,
 
             //! set def scpi name
             //! default device name
+            quint32 devSig;
+
+            devSig = pRobo->getSignature();
+
+            seq = selectSeqId( devSig, seq );
             pRobo->setName( QString("device%1").arg(seq) );
+            pRobo->setSeqId( seq );
             seq++;
 
             //! open scpi
@@ -984,6 +911,18 @@ void InstMgr::gcPhyBus()
 //    Q_ASSERT( NULL != m_pReceiveCache );
 //    m_pReceiveCache->detachBus();
 //    mCanBus.close();
+
+    //! collect the current device map
+    mDeviceMap.clear();
+    foreach( VRoboList *pList, mDeviceTree )
+    {
+        Q_ASSERT( NULL != pList );
+        foreach( VRobot*pRobo, *pList )
+        {
+            Q_ASSERT( NULL != pRobo );
+            mDeviceMap.insert( pRobo->getSignature(), pRobo->getSeqId() );
+        }
+    }
 
     foreach( CANBus *pBus, mCanBuses )
     {
@@ -1031,7 +970,40 @@ scpiShell *InstMgr::findShell( const QString &name )
         }
     }
 
+    //! for mgr
+    QString str = QHostInfo::localHostName();
+    if ( QString::compare(str, name, Qt::CaseInsensitive) == 0 )
+    { return m_pMainShell; }
+    else if ( QString::compare( "localhost", name, Qt::CaseInsensitive) == 0 )
+    { return m_pMainShell; }
+    else
+    {}
+
     return NULL;
+}
+
+int InstMgr::selectSeqId( quint32 sig, int seqId )
+{
+    QMapIterator<quint32, int> iter(mDeviceMap);
+
+    //! exist
+    while (iter.hasNext())
+    {
+        iter.next();
+        if ( iter.key() == sig )
+        { return iter.value(); }
+    }
+
+    //! exist
+    QList<int> seqs = mDeviceMap.values();
+
+    //! check exist in map?
+    while( seqs.contains( seqId ) )
+    {
+        seqId++;
+    }
+
+    return seqId;
 }
 
 }

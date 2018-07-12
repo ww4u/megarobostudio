@@ -31,7 +31,7 @@ int deviceMRQ::uploadDesc()
 int deviceMRQ::uploadBaseInfo()
 {
     loadSN();
-//    loadSwVer();
+
     loadSeqVer();
     loadHwVer();
 

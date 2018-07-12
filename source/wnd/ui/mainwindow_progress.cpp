@@ -2,7 +2,7 @@
 
 void MainWindow::slot_download_cancel( const QString &name, int id )
 {
-    tpvDownloader::cancelActives();
+    DeviceDownloader::cancelActives();
 }
 
 ProgressGroup *MainWindow::progress()

@@ -5,8 +5,7 @@
 
 
 int tpvDownloader::_downloaderInterval = 0;
-QList<tpvDownloader*> tpvDownloader::_activeLoaders;
-QMutex tpvDownloader::_activeLoadersMutex;
+
 void tpvDownloader::setInterval( int interval )
 {
     _downloaderInterval = interval;
@@ -16,21 +15,7 @@ int tpvDownloader::interval()
     return _downloaderInterval;
 }
 
-void tpvDownloader::cancelActives()
-{
-    tpvDownloader::_activeLoadersMutex.lock();
-
-    foreach( tpvDownloader*pLoader,
-             tpvDownloader::_activeLoaders )
-    {
-        Q_ASSERT( pLoader != NULL );
-        pLoader->requestInterruption();
-    }
-
-    tpvDownloader::_activeLoadersMutex.unlock();
-}
-
-tpvDownloader::tpvDownloader( QObject *pObj ) : QThread( pObj )
+tpvDownloader::tpvDownloader( QObject *pObj ) : DeviceDownloader( pObj )
 {
     mTryInterval = time_ms( 500 );
 
@@ -42,9 +27,9 @@ void tpvDownloader::run()
 {
     Q_ASSERT( NULL != m_pMRQ );
 
-    tpvDownloader::_activeLoadersMutex.lock();
-    tpvDownloader::_activeLoaders.append( this );
-    tpvDownloader::_activeLoadersMutex.unlock();
+//    tpvDownloader::_activeLoadersMutex.lock();
+//    tpvDownloader::_activeLoaders.append( this );
+//    tpvDownloader::_activeLoadersMutex.unlock();
 
 //sysLog( QString::number(mRegion.mAx), QString::number(mRegion.mPage), "down start" );
     m_pMRQ->acquireDownloader();
@@ -53,9 +38,9 @@ void tpvDownloader::run()
 
     m_pMRQ->releaseDownloader();
 
-    tpvDownloader::_activeLoadersMutex.lock();
-    tpvDownloader::_activeLoaders.removeAll( this );
-    tpvDownloader::_activeLoadersMutex.unlock();
+//    tpvDownloader::_activeLoadersMutex.lock();
+//    tpvDownloader::_activeLoaders.removeAll( this );
+//    tpvDownloader::_activeLoadersMutex.unlock();
 
     if ( ret == ERR_INTERRUPT_REQUESTED
          && tpvDownloader::_activeLoaders.size() == 0 )

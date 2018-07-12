@@ -1,4 +1,5 @@
 #include "mrvprop.h"
+#include "megamessagebox.h"
 
 #include "ui_mrqproperty.h"
 
@@ -18,10 +19,10 @@ MrvProp::MrvProp( VRobot *pMrqRobo,
     setupUi();
 
     buildConnection();
-//    //! three btns
-//    mbtnEnableSnap.append( false );
-//    mbtnEnableSnap.append( false );
-//    mbtnEnableSnap.append( false );
+    //! three btns
+    mbtnEnableSnap.append( false );
+    mbtnEnableSnap.append( false );
+    mbtnEnableSnap.append( false );
 }
 
 MrvProp::~MrvProp()
@@ -42,6 +43,22 @@ void MrvProp::slot_page_changed( int index )
     ui->btnApply->setEnabled( pView->isApplyAble() );
 
     ui->btnCancel->setFocus();      //! focus on cancel
+}
+
+void MrvProp::on_btnApply_clicked()
+{ post_request( msg_mrv_property_apply, MrvProp, Apply ); }
+void MrvProp::on_btnOK_clicked()
+{ post_request( msg_mrv_property_ok, MrvProp, Ok ); }
+void MrvProp::on_btnCancel_clicked()
+{ emit sigClose( this ); }
+void MrvProp::on_btnReset_clicked()
+{
+    //! prompt to reset
+    if ( QMessageBox::Ok !=
+         MegaMessageBox::question( this, QString(tr("Confirm") ),
+                                   QString( tr("Confirm to reset") ),
+                                   QMessageBox::Ok, QMessageBox::Cancel ) )
+    { return; }
 }
 
 void MrvProp::setModelObj( mcModelObj *pObj )
@@ -80,6 +97,31 @@ void MrvProp::updateScreen()
     }
 }
 
+int MrvProp::save( QString &outFileName )
+{
+    if ( getModelObj()->getPath().isEmpty() )
+    {
+        outFileName = QDir::currentPath() +
+                      QDir::separator() + getModelObj()->getName();
+    }
+    else
+    {
+        outFileName = getModelObj()->getPath() +
+                QDir::separator() + getModelObj()->getName();
+    }
+    outFileName = QDir::toNativeSeparators( outFileName );
+
+    slotModified( false );
+
+    return ((VRobot*)getModelObj())->save( outFileName + setup_d_ext );
+}
+int MrvProp::saveAs( QString &outFileName )
+{
+    slotModified( false );
+
+    return ((VRobot*)getModelObj())->save( outFileName );
+}
+
 void MrvProp::setupUi()
 {
     //! pages
@@ -88,13 +130,16 @@ void MrvProp::setupUi()
         mTitles<<"Info";
         mIcons<<":/res/image/icon2/info.png";
 
+        MrvCh *pMrvCh;
         for ( int i = 0; i < m_pRefModel->axes(); i++ )
         {
-            mViewPages.append( new MrvCh() );
+            pMrvCh = new MrvCh();
+            Q_ASSERT( NULL != pMrvCh );
+            mViewPages.append( pMrvCh );
             mTitles<<QString("CH%1").arg(i+1);
             mIcons<<":/res/image/icon2/focus.png";
 
-            ( (mrvView*)mViewPages.at( i ) )->setAxesId( i );
+            pMrvCh->setAxesId( i );
         }
 
         //! sys
@@ -135,10 +180,93 @@ void MrvProp::setupUi()
 void MrvProp::buildConnection()
 {
     connect( ui->listWidget, SIGNAL(currentRowChanged(int)),
-                  ui->stackedWidget, SLOT(setCurrentIndex(int)));
+             ui->stackedWidget, SLOT(setCurrentIndex(int)));
 
     connect( ui->stackedWidget, SIGNAL(currentChanged(int)),
              this, SLOT(slot_page_changed(int)));
+}
+
+int MrvProp::postApply( appMsg msg, void *pPara )
+{
+//    //! check device
+//    MegaDevice::deviceMRQ *pDevice;
+//    pDevice = getDevice();
+//    if ( NULL == pDevice )
+//    {
+//        sysPrompt( tr("Invalid device") );
+//        return ERR_INVALID_DEVICE_NAME;
+//    }
+
+    m_pMRV->preSet();
+
+    //! foreach apply
+    int id = 0;
+    foreach( modelView *pView, mViewPages )
+    {
+        Q_ASSERT( NULL != pView );
+        sysProgress( id++, pView->name(), mViewPages.size(), 0 );
+        sysProgress( true );
+        pView->setApply();
+
+        sysProgress( id, pView->name(), mViewPages.size(), 0 );
+    }
+
+    m_pMRV->postSet();
+
+    return 0;
+}
+void MrvProp::beginApply( void *pPara)
+{
+    sysProgress( 0, tr("Begin apply") );
+    sysProgress( true );
+
+    saveBtnSnap();
+}
+void MrvProp::endApply( int ret, void *pPara )
+{
+    sysProgress( false );
+
+    slotModified( false );
+
+    restoreBtnSnap();
+}
+
+int MrvProp::postOk( appMsg msg, void *pPara )
+{
+    return postApply( msg_mrv_property_apply, pPara );
+
+}
+void MrvProp::beginOk( void *pPara)
+{
+    beginApply( pPara );
+}
+void MrvProp::endOk( int ret, void *pPara )
+{
+    endApply( ret, pPara );
+
+    slotModified( false );
+
+    emit sigClose( this );
+}
+
+void MrvProp::saveBtnSnap( bool bNow )
+{
+    //! save
+    mbtnEnableSnap[0] = ui->btnApply->isEnabled();
+    mbtnEnableSnap[1] = ui->btnOK->isEnabled();
+    mbtnEnableSnap[2] = ui->btnCancel->isEnabled();
+
+    //! config
+    ui->btnApply->setEnabled( bNow );
+    ui->btnOK->setEnabled( bNow );
+    ui->btnCancel->setEnabled( bNow );
+}
+void MrvProp::restoreBtnSnap()
+{
+    //! restore
+    ui->btnApply->setEnabled( mbtnEnableSnap[0] );
+    ui->btnOK->setEnabled( mbtnEnableSnap[1] );
+    ui->btnCancel->setEnabled( mbtnEnableSnap[2] );
 }
 
 

@@ -6,6 +6,8 @@
 #include "tableedit.h"
 #include "../model/tpgroup.h"
 
+#include "tpvplot.h"
+
 namespace Ui {
 class TpEdit;
 }
@@ -29,8 +31,38 @@ protected:
     virtual void context_add_below();
     virtual void context_clear();
 
+protected:
+    virtual void onNetEvent(const QString &name,
+                            int axes,
+                            RoboMsg &msg);
+
+    void onMotionStatus( int axes, MRQ_MOTION_STATE_2 stat );
+
+protected:
+    bool checkChan( const QString &name,
+                    int axesId );
+    bool checkChan();
+
+    MegaDevice::deviceMRV *currentDevice( int &ax );
+
+    void gcLine();
+    bool checkLine();
+    int buildLine( );
+
+    void updatePlot();
+
+    int postDownload( appMsg msg, void *pPara );
+    void beginDownload( void *pPara);
+    void endDownload( int ret, void *pPara );
+
+Q_SIGNALS:
+    void sigLineChanged();
+
 protected Q_SLOTS:
     void slot_data_changed();
+
+    void slot_download_cancel();
+    void slot_line_changed();
 
     void on_btnBuild_clicked();     //! build line
 
@@ -43,14 +75,20 @@ protected Q_SLOTS:
     void on_btnClr_clicked();
     void on_btnGraph_clicked();
 
-    void slot_download_cancel();
-
     void on_spinLoop_valueChanged(int arg1);
+
+    void on_btnPref_clicked();
+
+private slots:
+    void on_comboBox_currentIndexChanged(int index);
 
 private:
     Ui::TpEdit *ui;
 
     TpGroup *m_pTpGroup;
+    tpvPlot *m_pPlot;
+
+    QList<QPointF> mTPs;
 };
 
 #endif // TPEDIT_H

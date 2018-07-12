@@ -7,24 +7,63 @@
 namespace MegaDevice
 {
 
+
+
 deviceMRV::deviceMRV()
 {
+}
+deviceMRV::~deviceMRV()
+{
+    delete_all( mAxesList );
 }
 
 void deviceMRV::postCtor()
 {
-    //! downloader
+    MrvAxes *pAxes;
     for ( int i = 0; i < axes(); i++ )
     {
+        //! downloader
         mTpIndexes<<0;
 
         mDownloaders.append( new TpDownloader() );
 
         Q_ASSERT( NULL != mDownloaders.at(i) );
         mDownloaders.at(i)->attachDevice( this, i );
+
+        //! mrv axes
+        pAxes = new MrvAxes();
+        Q_ASSERT( NULL != pAxes );
+
+        pAxes->setParent( this );
+        pAxes->setAxesId( i );
+
+        mAxesList.append( pAxes );
     }
 
     mDownloaderSema.release( 1 );
+}
+
+int deviceMRV::setDeviceId(DeviceId &id )
+{
+    int ret;
+
+    ret = MRV::setDeviceId( id );
+    if ( ret != 0 )
+    { return ret; }
+
+    //! vdevice ids
+    VDevice::setCanSendId( id.mSendId );
+    VDevice::setCanRecvId( id.mRecvId );
+    VDevice::setCanBroadcastId( id.mBroadcastId );
+
+    //! id apply
+    _MRV_model::setCAN_SENDID( id.mSendId );
+    _MRV_model::setCAN_RECEIVEID( id.mRecvId );
+    _MRV_model::setCAN_BROADCASTID( id.mBroadcastId );
+
+    setSignature( mDeviceId.mSignature );
+
+    return ret;
 }
 
 void deviceMRV::rst()
@@ -50,12 +89,16 @@ int deviceMRV::uploadDesc()
 int deviceMRV::uploadBaseInfo()
 {
     loadSN();
+
     loadSwVer();
-//    loadSeqVer();
+
     loadHwVer();
 
-//    loadFwVer();
     loadBtVer();
+
+    loadCycles();   //! for pt used
+    loadDeviceMode();
+    loadExecMode();
 
     return 0;
 }
@@ -193,6 +236,30 @@ QString deviceMRV::loadBtVer()
     }
 
     return mBtVer;
+}
+
+void deviceMRV::loadCycles()
+{
+    for ( int i = 0; i < axes(); i++ )
+    {
+        getPVT_CYCLES( i, mPVT_CYCLES + i );
+    }
+}
+
+void deviceMRV::loadDeviceMode()
+{
+    for ( int i = 0; i < axes(); i++ )
+    {
+        getVALVECTRL_DEVICE( i, mVALVECTRL_DEVICE + i );
+    }
+}
+
+void deviceMRV::loadExecMode()
+{
+    for ( int i = 0; i < axes(); i++ )
+    {
+        getPVT_EXECMODE( i, mPVT_EXECMODE + i );
+    }
 }
 
 MRV_model *deviceMRV::getModel()

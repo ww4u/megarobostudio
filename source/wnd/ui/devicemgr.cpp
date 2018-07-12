@@ -388,6 +388,7 @@ void deviceMgr::beginSearchDevice( void *pPara )
 void deviceMgr::endSearchDevice( int ret, void *pPara )
 {
     ui->pushButton->setEnabled( true );
+    sysOpc( 1 );
 
     sysLog( tr("end search") );
     sysProgress( false );
@@ -499,6 +500,7 @@ void deviceMgr::on_btnTest_clicked()
 
 void deviceMgr::on_pushButton_clicked()
 {
+    sysOpc( 0 );
     post_request( msg_search_device, deviceMgr, SearchDevice );
 }
 
@@ -832,6 +834,14 @@ void deviceMgr::contextMenuEvent(QContextMenuEvent *event)
         { return; }
 
         m_pRobo = ( pObj );
+        if ( robot_is_mrq( m_pRobo->mId ) )
+        {}
+        else
+        {
+            event->accept();
+            return;
+        }
+
         m_pMRQ = (MegaDevice::deviceMRQ*)( m_pRobo );
         mCurrentAxes = pItem->data(0,Qt::UserRole).toInt();
 

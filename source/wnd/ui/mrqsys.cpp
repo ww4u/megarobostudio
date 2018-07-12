@@ -77,12 +77,12 @@ int mrqSys::apply()
                     );
     }
 
-    //! driver
-    if ( m_pMrqModel->driverId() == VRobot::motor_driver_820 )
-    {
-        pDevice->setNEWDRIVER_CURRENT( comAssist::align( ui->spin820Current->value(),driver_current_unit) );
-        pDevice->setNEWDRIVER_MICROSTEPS( (MRQ_NEWDRIVER_MICROSTEPS)ui->cmb820MicroStep->value() );
-    }
+//    //! driver
+//    if ( m_pMrqModel->driverId() == VRobot::motor_driver_820 )
+//    {
+//        pDevice->setNEWDRIVER_CURRENT( comAssist::align( ui->spin820Current->value(),driver_current_unit) );
+//        pDevice->setNEWDRIVER_MICROSTEPS( (MRQ_NEWDRIVER_MICROSTEPS)ui->cmb820MicroStep->value() );
+//    }
 
     //! name
     pDevice->setName(
@@ -104,12 +104,12 @@ int mrqSys::updateUi()
         ui->cmbTResp->setCurrentIndex( m_pMrqModel->mOTP_RESPONSE );
     }
 
-    //! driver
-    if ( m_pMrqModel->driverId() == VRobot::motor_driver_820 )
-    {
-        ui->spin820Current->setValue( m_pMrqModel->mNEWDRIVER_CURRENT * driver_current_unit );
-        ui->cmb820MicroStep->setValue( m_pMrqModel->mNEWDRIVER_MICROSTEPS );
-    }
+//    //! driver
+//    if ( m_pMrqModel->driverId() == VRobot::motor_driver_820 )
+//    {
+//        ui->spin820Current->setValue( m_pMrqModel->mNEWDRIVER_CURRENT * driver_current_unit );
+//        ui->cmb820MicroStep->setValue( m_pMrqModel->mNEWDRIVER_MICROSTEPS );
+//    }
 
     //! name
     ui->edtAlias->setText( m_pMrqModel->getName() );
@@ -126,30 +126,30 @@ void mrqSys::adaptUi()
     else
     { ui->groupBox_2->setVisible( false ); }
 
-    if ( m_pMrqModel->driverId() == VRobot::motor_driver_820 )
-    {
-        ui->gp820->setVisible( true );
-    }
-    else
+//    if ( m_pMrqModel->driverId() == VRobot::motor_driver_820 )
+//    {
+//        ui->gp820->setVisible( true );
+//    }
+//    else
     {
         ui->gp820->setVisible( false );
     }
 
-    if ( ui->cmb820MicroStep->count() > 0 )
-    {}
-    else
-    {
-        //! microstep
-        //! fill the micro step
-        QStringList microList;
-        int base;
+//    if ( ui->cmb820MicroStep->count() > 0 )
+//    {}
+//    else
+//    {
+//        //! microstep
+//        //! fill the micro step
+//        QStringList microList;
+//        int base;
 
-        m_pMrqModel->microStepAttr( microList, base );
-        for ( int i = base; i < microList.size(); i++ )
-        {
-            ui->cmb820MicroStep->addItem( microList.at(i), i );
-        }
-    }
+//        m_pMrqModel->microStepAttr( microList, base );
+//        for ( int i = base; i < microList.size(); i++ )
+//        {
+//            ui->cmb820MicroStep->addItem( microList.at(i), i );
+//        }
+//    }
 }
 
 void mrqSys::on_edtAlias_textEdited(const QString &arg1)

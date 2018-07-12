@@ -28,6 +28,9 @@ public:
 
     void setupData();
 
+    void setOperable( bool b );
+    bool operAble();
+
 Q_SIGNALS:
     void itemXActivated( mcModelObj* );
 
@@ -38,6 +41,8 @@ private:
     Ui::roboMgr *ui;
 
     QList< VRobot * > mRobots;
+
+    bool mbOperable;
 };
 
 #endif // ROBOMGR_H

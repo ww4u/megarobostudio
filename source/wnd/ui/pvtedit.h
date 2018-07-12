@@ -100,7 +100,6 @@ protected Q_SLOTS:
     void slot_data_changed();
     void slot_line_changed();
 
-
 private:
     Ui::pvtEdit *ui;
 

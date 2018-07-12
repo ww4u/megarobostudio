@@ -224,8 +224,8 @@ int CANBus::initBus()
     INIT_CONFIG canConfig;
 
     //! config
-    canConfig.AccCode = 0xffffffff;
-//    canConfig.AccCode = 0x00000000;
+//    canConfig.AccCode = 0xffffffff;
+    canConfig.AccCode = 0x00000000;
     canConfig.AccMask = 0xffffffff;
     canConfig.Filter = 0;
     canConfig.Mode = 0;
@@ -238,10 +238,12 @@ int CANBus::initBus()
         return -1;
     }
 
-//    canConfig.baud = mSpeed;
-    canConfig.baud = 0;
+    canConfig.baud = mSpeed;
+//    canConfig.baud = 0;
     canConfig.Timing0 = _bps_timer_matrix[speedId].timer0;
     canConfig.Timing1 = _bps_timer_matrix[speedId].timer1;
+//    canConfig.Timing0 = 0;
+//    canConfig.Timing1 = 0;
 logDbg()<<canConfig.Timing0<<canConfig.Timing1<<mSpeed<<mDevType<<mDevId<<mCanId;
     int ret = mApi.init( mDevType, mDevId, mCanId, &canConfig );
     if ( ret != 1 )

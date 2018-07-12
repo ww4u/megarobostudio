@@ -69,6 +69,8 @@ void mrqAxes::spyEdited()
         ui->dblCurrent,
 
         ui->spinDistance,
+
+        ui->spin820Current,
 //        ui->spinInvertGap,
     };
 
@@ -84,6 +86,8 @@ void mrqAxes::spyEdited()
         ui->cmbEncMul,
 
         ui->cmbDrvVernier,
+
+        ui->cmb820MicroStep,
     };
 
     install_spy();
@@ -119,6 +123,7 @@ void mrqAxes::adaptUi()
         for ( int i = base; i < microList.size(); i++ )
         {
             ui->cmbDrvVernier->addItem( microList.at(i), i );
+            ui->cmb820MicroStep->addItem( microList.at(i), i );
         }
     }
 
@@ -172,9 +177,12 @@ int mrqAxes::apply()
         pDevice->setDRIVER_CURRENT( mAxesId, comAssist::align( ui->dblCurrent->value(),driver_current_unit) );
         pDevice->setDRIVER_MICROSTEPS( mAxesId, (MRQ_DRIVER_MICROSTEPS)ui->cmbDrvVernier->value() );
     }
-    else if ( m_pMrqModel->driverId() == VRobot::motor_driver_262 )
+    else if ( m_pMrqModel->driverId() == VRobot::motor_driver_820 )
     {
         pDevice->setNEWDRIVER_STATE( mAxesId, (MRQ_CAN_NETMANAGELED)ui->chk820->isChecked() );
+
+        pDevice->setNEWDRIVER_CURRENT( comAssist::align( ui->spin820Current->value(),driver_current_unit) );
+        pDevice->setNEWDRIVER_MICROSTEPS( (MRQ_NEWDRIVER_MICROSTEPS)ui->cmb820MicroStep->value() );
     }
     else
     {}
@@ -238,8 +246,8 @@ logDbg();
     else if ( m_pMrqModel->driverId() == VRobot::motor_driver_820 )
     {
         ui->chk820->setChecked( pModel->mNEWDRIVER_STATE[mAxesId] );
-//        ui->spin820Current->setValue( pModel->mNEWDRIVER_CURRENT * driver_current_unit );
-//        ui->cmb820MicroStep->setValue( pModel->mNEWDRIVER_MICROSTEPS );
+        ui->spin820Current->setValue( pModel->mNEWDRIVER_CURRENT * driver_current_unit );
+        ui->cmb820MicroStep->setValue( pModel->mNEWDRIVER_MICROSTEPS );
     }
     else
     {}

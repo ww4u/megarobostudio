@@ -11,7 +11,7 @@ class TpItem : public TpRow, public ISerial
 {
 public:
     static int columns();
-    static QString header( int col );
+    static QString header( int viewIndex, int col );
 
 public:
     TpItem( tpvType t= 0, tpvType p = 0 );

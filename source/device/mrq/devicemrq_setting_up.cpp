@@ -1,11 +1,5 @@
 #include "deviceMRQ.h"
 
-//#ifdef DEVICE_EMIT_SIGNAL
-//#include "../../app/dpcobj.h"
-//#endif
-
-
-
 namespace MegaDevice
 {
 

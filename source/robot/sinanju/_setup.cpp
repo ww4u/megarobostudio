@@ -17,6 +17,8 @@ int robotSinanju::serialIn( QXmlStreamReader &reader )
         { logDbg();ret = serialInArm( reader ); }
         else if ( reader.name() == "init_pos" )
         { logDbg();ret = serialInInitPos( reader ); }
+        else if ( reader.name() == "joint_ccw_zero" )
+        { ret = serialInJointCcw(reader); }
         else
         { reader.skipCurrentElement(); }
     }
@@ -44,6 +46,10 @@ int robotSinanju::serialOut( QXmlStreamWriter &writer )
 
     writer.writeStartElement("init_pos");
     ret = serialOutInitPos( writer );
+    writer.writeEndElement();
+
+    writer.writeStartElement("joint_zero_ccw");
+    ret = serialOutJointCcw( writer );
     writer.writeEndElement();
 
     return ret;
@@ -228,6 +234,33 @@ int robotSinanju::serialOutInitPos( QXmlStreamWriter &writer )
     writer.writeTextElement( "x", QString::number(mInitPos.at(0)));
     writer.writeTextElement( "y", QString::number(mInitPos.at(1)));
     writer.writeTextElement( "z", QString::number(mInitPos.at(2)));
+
+    return 0;
+}
+
+int robotSinanju::serialInJointCcw( QXmlStreamReader &reader )
+{
+    int iVal = 0;
+    int id = 0;
+    while(reader.readNextStartElement())
+    {
+        if ( reader.name() == "ccw" )
+        {
+            iVal = reader.readElementText().toInt();
+            mJointZeroCcw[ id++ ] = iVal > 0;
+        }
+        else
+        { reader.skipCurrentElement(); }
+    }
+
+    return 0;
+}
+int robotSinanju::serialOutJointCcw( QXmlStreamWriter &writer )
+{
+    for ( int i = 0; i < axes(); i++ )
+    {
+        writer.writeTextElement( "ccw", QString::number(mJointZeroCcw.at(i)) );
+    }
 
     return 0;
 }

@@ -32,7 +32,7 @@ void MrvSystem::spyEdited()
     QRadioButton *radBoxes[] = {
     };
     QLineEdit *edits[]={
-
+        ui->edtAlias
     };
 
     QSpinBox *spinBoxes[]={
@@ -54,6 +54,8 @@ int MrvSystem::apply()
     Q_ASSERT( NULL != m_pMRV );
 
     int ret;
+    if ( ui->edtAlias->text().length() > 0 )
+    { m_pMRV->setName( ui->edtAlias->text() ); }
     checked_call( m_pMRV->setSYSTEM_POWERON( (MRV_SYSTEM_POWERON)ui->cmbPwr->currentIndex() ) );
     checked_call( m_pMRV->setVALVECTRL_PWMFREQ( (uint32)ui->spinPwm->value() ) );
 
@@ -63,8 +65,9 @@ int MrvSystem::updateUi()
 {
     Q_ASSERT( NULL != m_pMRV );
 
+    ui->edtAlias->setText( m_pMRV->name() );
     ui->cmbPwr->setCurrentIndex( (int)m_pMRV->mSYSTEM_POWERON );
-    ui->spinPwm->setValue( m_pMRV->mVALVECTRL_PWMFREQ );
+    ui->spinPwm->setValue( m_pMRV->mVALVECTRL_PWMFREQ );    //! 1Hz
 
     return 0;
 }

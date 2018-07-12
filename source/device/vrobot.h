@@ -33,8 +33,8 @@ class deviceMRQ;
 
 class RoboTask;
 
-#define robot_is_mrq( id )          ( ( (id) >= VRobot::robot_mrq ) && ( (id) < VRobot::robot_mrv ) )
-#define robot_is_mrv( id )          ( ( (id) >= VRobot::robot_mrv ) && ( (id) < VRobot::robot_complex ) )
+#define robot_is_mrq( id )          ( ( (id) >= VRobot::robot_mrq ) && ( (id) < VRobot::robot_mrq_max ) )
+#define robot_is_mrv( id )          ( ( (id) >= VRobot::robot_mrv ) && ( (id) < VRobot::robot_mrv_max ) )
 #define robot_is_robot( id )        ( ( (id) >= VRobot::robot_complex ) && ( (id) < VRobot::robot_user ) )
 
 enum eRoboPlanMode
@@ -73,8 +73,12 @@ public:
         robot_geogoog_10,
         robot_geogoog_5_1,
 
+        robot_mrq_max,
+
         robot_mrv = 320,
         robot_gouf,
+
+        robot_mrv_max,
 
         robot_complex = 1024,
         robot_sinanju = 1024,
@@ -135,6 +139,10 @@ public:
 
     virtual int uploadSetting();
     virtual int applySetting();
+
+    virtual quint32 getSignature();
+    void setSeqId( int id );
+    int getSeqId();
 
 public:
     //! msg
@@ -360,6 +368,8 @@ protected:
     int checkRoboTask();
 
 protected:
+    int mSeqId;
+
     int mAxes, mRegions;                //! configs
     int mDCAxes;
 

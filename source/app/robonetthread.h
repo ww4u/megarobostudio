@@ -28,6 +28,8 @@ Q_SIGNALS:
     void signal_logout( const QString &str );
     void signal_prompt( const QString &str );
 
+    void signal_emergeStop();
+
     void signal_request( const RpcRequest &rpc );
 protected:
     mcModel *m_pModel;

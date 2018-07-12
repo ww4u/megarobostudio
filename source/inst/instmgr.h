@@ -59,10 +59,11 @@ public:
 
 public:
     void setMainModel( mcModel *pModel );
+    void setMainShell( scpiShell *pShell );
 
     int probeBus();
     int probeCanBus();
-    int _probeCanBus();
+//    int _probeCanBus();
 
     int emergencyStop();
     int hardReset();
@@ -85,6 +86,7 @@ public:
 
     //! find robot
     VRobot * findRobot( const QString &name, int axesId );
+    VRobot * findRobot( const QString &name, int *pAx );    //! chx@name
 
     VRobot * findRobot( const QString &name, const QString &bus );
     //! name@bus
@@ -98,13 +100,15 @@ public:
     VRobot * findRobotBySendId( int sendId, int devId, int axesId = 0 );
     VRobot * findRobotByRecvId( int recvId, int devId, int axesId = 0 );
 
-    deviceMRQ *findDevice( const QString &name, int axesId=0 );
-    deviceMRQ *findDevice( const QString &name, int *pAx );     //! chx@name
+    MegaDevice::deviceMRQ  *findDevice( const QString &name, int axesId=0 );
+    MegaDevice::deviceMRQ  *findDevice( const QString &name, int *pAx );     //! chx@name
 
     QString sendIdToName( int devId, int sendId );
 
     QStringList getResources();
     QStringList getChans();     //! chx@devicename
+
+    QStringList resources();
 
     void setTPVBase( float t=1.0f, float p=1.0f, float v=1.0f );
 
@@ -125,8 +129,11 @@ protected:
 
     scpiShell *findShell( const QString &name );
 
+    int selectSeqId( quint32 sig, int seqId );
+
 public:
     mcModel *m_pMainModel;
+    scpiShell *m_pMainShell;
 
     //! can bus
     CANBus mCanBus;
@@ -143,8 +150,8 @@ public:
 
     QList<IBus *> mFileBusList;
 
-//    receiveCache *m_pReceiveCache;
     INTRThread *m_pINTR;
+    QMap<quint32, int> mDeviceMap;
 };
 	
 }

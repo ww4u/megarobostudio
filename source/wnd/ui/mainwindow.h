@@ -46,6 +46,8 @@
 
 #include "warnprompt.h"
 
+#include "../com/rpcthread.h"
+
 //! models
 #include "../../model/mcmodel.h"
 #include "../../model/modelsyspref.h"
@@ -66,7 +68,7 @@ namespace Ui {
 class MainWindow;
 }
 
-class MainWindow : public QMainWindow
+class MainWindow : public QMainWindow, public scpiShell
 {
     Q_OBJECT
 
@@ -75,13 +77,22 @@ public:
     ~MainWindow();
 
 protected:
+    virtual const void* loadScpiCmd();
+
     virtual void closeEvent( QCloseEvent *event );
+
+public:
+    deviceMgr *getDeviceMgr();
+    mcModel *  getMcModel();
 
 protected:
     void init();
     void deinit();
 
     void setupUi();
+    void loadPlugin();
+    void loadPlugin( const QString &dirPath, QStringList &plugins );
+    QString pluginName( const QString &fullName );
 
     void setupUi_workarea();
     void setupUi_docks();
@@ -120,6 +131,8 @@ protected Q_SLOTS:
     void slot_itemModelUpdated( mcModelObj *pObj );
 
     void on_signalReport( int err, const QString &str );
+    void slot_action_plugin( QAction *pAction );
+    void slot_rpc_completed( RpcThread *pThread );
 
     void modelview_destroyed( QObject *pObj );
     void modelview_closed( QWidget *pObj );
@@ -136,7 +149,7 @@ protected Q_SLOTS:
 
     void slot_logout( const QString &str );
     void slot_prompt( const QString &str );
-//    void slot_request( const RpcRequest &rpc );
+//    void slot_emergeStop();
 
     //! connection
     void slot_robo_name_changed( const QString& );
@@ -249,6 +262,8 @@ private:
     //! uis
     Ui::MainWindow *ui;
     dpcObj *m_pDpcObj;
+
+    QStringList mPluginList;
 
     //! toolbar
     QToolBar *m_pToolbarRoboConn;

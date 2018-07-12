@@ -90,6 +90,17 @@ void sysRpc( const RpcRequest &rpc )
     sysQueue()->postMsg( e_rpc, rpc );
 }
 
+void sysOpc( int opc )
+{ _sysRunTime.mOpc = opc; }
+
+int qOpc()
+{ return _sysRunTime.mOpc; }
+
+void sysEmergeStop()
+{
+    sysQueue()->postMsg( e_emerge_stop );
+}
+
 void attachSysQueue( RoboMsgThread* pQueue )
 {
     Q_ASSERT( NULL != pQueue );

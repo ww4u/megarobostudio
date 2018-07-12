@@ -8,6 +8,7 @@
 #include "../widget/megamessagebox.h"
 
 #include <QSerialPortInfo>
+#include <QHostInfo>
 
 #ifdef NI_VISA
 #include "visa.h"
@@ -128,6 +129,7 @@ void sysPref::updateUi()
     //    slot_updateValidateEn();
 
     //! misa
+    ui->labelHostName->setText( QHostInfo::localHostName() );
     ui->chkMisaEn->setChecked( mPref.mMisaEn );
     ui->spinMisaSocket->setValue( mPref.mMisaSocket );
 

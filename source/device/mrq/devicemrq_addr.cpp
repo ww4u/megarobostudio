@@ -68,7 +68,7 @@ int deviceMRQ::applyIds( )
     //! 3. check mode
 
         //! clear all bus
-        m_pBus->clear( );
+        m_pBus->clear();
 
         m_pBus->write( DEVICE_RECEIVE_ID, MRQ_mc_CAN, MRQ_sc_CAN_NETMANAGESTATE_Q );
 

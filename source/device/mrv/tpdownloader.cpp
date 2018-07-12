@@ -1,6 +1,6 @@
 #include "tpdownloader.h"
 
-TpDownloader::TpDownloader(QObject *parent) : QThread(parent)
+TpDownloader::TpDownloader(QObject *parent) : DeviceDownloader(parent)
 {
     m_pMRV = NULL;
     mAx = 0;
@@ -47,11 +47,21 @@ int TpDownloader::downloadProc()
 
     m_pMRV->tpBeginSend( mAx );
 
+    sysQueue()->postMsg( e_download_started,
+                         m_pMRV->name(),
+                         tpvRegion( mAx, 0 ) );
+    //! invaid t
+    TpRow preRow;
+    preRow.mT = -1;
+
     while( mTpList.size() > 0 )
     {
         //! terminate
         if ( isInterruptionRequested() )
-        { break; }
+        {
+            m_pMRV->setPVT_RESET( mAx );
+            break;
+        }
 
         //! get buffer
         ret = m_pMRV->getPVT_BUFFERCHECK( mAx, &cacheSize );
@@ -74,14 +84,23 @@ int TpDownloader::downloadProc()
         }
 
         //! send
-        ret = batchDownload( sendCache );
+        ret = batchDownload( sendCache, preRow );
         if ( ret != 0 )
         { break; }
+
+        //! time tick in net
+        sysQueue()->postMsg( e_download_processing,
+                              m_pMRV->name(),
+                              tpvRegion( mAx, 0 ),
+                              sendCache.size(),
+                              mTpList.size(),
+                              sysTimeStamp()
+                              );
 
         //! delete the send cache
         mTpMutex.lock();
             for ( int i = 0; i < sendCache.size(); i++ )
-            { mTpList.removeAt(i); }
+            { mTpList.removeAt(0); }
         mTpMutex.unlock();
 
         foreach( TpRow *pRow, sendCache )
@@ -92,21 +111,55 @@ int TpDownloader::downloadProc()
         }
     }
 
-    m_pMRV->tpEndSend( mAx );
+    m_pMRV->tpEndSend( mAx, preRow );
+
+    sysQueue()->postMsg( e_download_completed,
+                         m_pMRV->name(),
+                         tpvRegion( mAx, 0 ) );
+
+    //! request status
+    m_pMRV->requestMotionState( mAx, MRV_MOTION_SWITCH_1_MAIN );
 
     return 0;
 }
 
-int TpDownloader::batchDownload( QList<TpRow*> &rows  )
+int TpDownloader::batchDownload( QList<TpRow*> &rows, TpRow &preItem  )
 {
     Q_ASSERT( NULL != m_pMRV );
 
     int ret=0;
-    foreach( TpRow *pRow, rows )
+
+    //! the first
+    if ( preItem.mT < 0 )
+    {}
+    else
+    { rows.prepend( &preItem ); }
+
+    //! left one
+    diffT( rows );
+
+    //! send the items
+    for ( int i = 0; i < rows.size() - 1; i++ )
     {
-        Q_ASSERT( NULL != pRow );
-        ret = m_pMRV->tpSend( pRow, mAx );
+        Q_ASSERT( rows.at(i) != NULL );
+        ret = m_pMRV->tpSend( rows.at(i), mAx );
+        if ( ret != 0 )
+        { return ret; }
     }
 
+    //! the current time
+    if( rows.size() > 0 )
+    { preItem = *rows[ rows.size() - 1 ]; }
+
     return ret;
+}
+
+int TpDownloader::diffT( QList<TpRow*> &rows )
+{
+    for ( int i = 0; i < rows.size() - 1; i++ )
+    {
+        rows[i]->mTL = rows[ i + 1 ]->mT - rows[ i ]->mT;
+    }
+
+    return 0;
 }

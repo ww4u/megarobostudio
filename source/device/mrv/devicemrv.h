@@ -8,22 +8,43 @@
 
 #include "../../com/basetype.h"
 
-//#include "tpdownloader.h"
+#include "mrvaxes.h"
+
 class TpDownloader;
 
 namespace MegaDevice
 {
+
+enum mrvMsg
+{
+    mrv_msg_unk = e_robo_operation,
+
+    mrv_msg_idle,       //! region
+    mrv_msg_end,
+    mrv_msg_running,
+
+    mrv_msg_run,        //! region
+    mrv_msg_stop,
+    mrv_msg_reset,
+};
+
 class deviceMRV : public MRV
 {
 public:
     deviceMRV();
+    virtual ~deviceMRV();
 
     virtual void postCtor();
 public:
     virtual const void* loadScpiCmd();
+    virtual int setDeviceId(DeviceId &id );
 
     virtual int uploadSetting();
     virtual int applySetting();
+
+protected:
+    int _uploadSetting();
+    int _applySetting();
 
 public:
     virtual void rst();
@@ -36,6 +57,24 @@ public:
     virtual QString deviceFullDesc();
 
 public:
+    virtual void onMsg( int subAxes, RoboMsg &msg );
+    virtual void onTimer( void *pContext, int id );
+
+    virtual void setStatus( int stat, const tpvRegion &reg, frameData &data );
+
+public:
+    int switchReset( int ax );
+    int switchRun( int ax );
+    int switchStop( int ax );
+
+    void preSet( int ax = x_channel );
+    void postSet( int ax = x_channel );
+
+public:
+    //! over write
+    int setVALVECTRL_DEVICE( byte val0, MRV_VALVECTRL_DEVICE val1 );
+
+public:
     void acquireDownloader();
     void releaseDownloader();
 
@@ -45,7 +84,11 @@ public:
     //! send
     int tpBeginSend( int ax );
     int tpSend( TpRow *row, int ax );
-    int tpEndSend( int ax );
+    int tpEndSend( int ax, TpRow &preRow );
+    quint32 alignP( int ax, tpvType val );
+
+    //! request
+    int requestMotionState( int ax, int page );
 
 public:
     //! prop
@@ -55,6 +98,11 @@ public:
     QString loadHwVer();
     QString loadBtVer();
 
+protected:
+    void loadCycles();
+    void loadDeviceMode();
+    void loadExecMode();
+
 public:
     MRV_model *getModel();
 
@@ -63,7 +111,17 @@ protected:
 
     QList<TpDownloader* > mDownloaders;
     QSemaphore mDownloaderSema;
+
+    QList<MrvAxes*> mAxesList;
+
 };
+
+#define MRV_PROGRESS( prog, info )      sysProgress( prog, info ); \
+                                    sysProgress( true );
+
+
+#define MRV_PROGRESS_HIDE()             \
+                                    sysProgress( false );
 
 }
 

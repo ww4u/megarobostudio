@@ -32,6 +32,8 @@
 #define x_channel                       128
 #define robo_channels(subGpIndex)            ( subGpIndex + sub_group_id_from + 10 )
 
+#define CHAR_DEGREE                        QChar(0x00B0)
+
 //! file ext
 #define setup_ext                       "stp"
 #define motion_ext                      "mc"

@@ -81,7 +81,7 @@ void deviceMRQ::onTimer( void *pContext, int id )
     MrqFsm *pFsm = (MrqFsm*)pContext;
     lpc( pFsm->axes() )->postMsg( e_robot_timeout,
 //                                  tpvRegion( pFsm->axes(), pFsm->page() ),
-                                  *pFsm,
+                                  *pFsm,        //! \todo why?
                                   id );
 }
 

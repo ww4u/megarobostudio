@@ -30,6 +30,9 @@ protected:
     int apply();
     int updateUi();
 
+private slots:
+    void on_chkLed_clicked(bool checked);
+
 private:
     Ui::MrvVertical *ui;
 };

@@ -15,7 +15,6 @@ MRQ_model::MRQ_model()
     }
 }
 
-
 int MRQ_model::serialOut( QXmlStreamWriter &writer )
 {
     writer.writeStartElement("mrq");

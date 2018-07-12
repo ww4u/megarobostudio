@@ -148,11 +148,14 @@ void sampleMgr::commitProc( QList< sampleProxy *> &commitList,
     else
     { return; }
 
+    if( m_pDbMeta->mbUpload != true )
+    { return; }
+
     //! \note set removeDatabase() doc
     {
         //! db
         QSqlDatabase db = QSqlDatabase::addDatabase("QMYSQL");
-        if ( !db.isValid() || m_pDbMeta == NULL || m_pDbMeta->mbUpload != true )
+        if ( !db.isValid() || m_pDbMeta == NULL  )
         {
             logDbg()<<db.lastError().text();
             return;

@@ -509,6 +509,13 @@
              <property name="bottomMargin">
               <number>3</number>
              </property>
+             <item row="2" column="0">
+              <widget class="QLabel" name="label_18">
+               <property name="text">
+                <string>Micro Step</string>
+               </property>
+              </widget>
+             </item>
              <item row="0" column="0">
               <widget class="QCheckBox" name="chk820">
                <property name="text">
@@ -516,7 +523,7 @@
                </property>
               </widget>
              </item>
-             <item row="1" column="1" rowspan="2">
+             <item row="3" column="1" rowspan="2">
               <spacer name="verticalSpacer_4">
                <property name="orientation">
                 <enum>Qt::Vertical</enum>
@@ -529,7 +536,10 @@
                </property>
               </spacer>
              </item>
-             <item row="0" column="2">
+             <item row="2" column="1">
+              <widget class="ValueComboBox" name="cmb820MicroStep"/>
+             </item>
+             <item row="0" column="1" colspan="2">
               <spacer name="horizontalSpacer">
                <property name="orientation">
                 <enum>Qt::Horizontal</enum>
@@ -541,6 +551,23 @@
                 </size>
                </property>
               </spacer>
+             </item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="label_21">
+               <property name="text">
+                <string>Current</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QDoubleSpinBox" name="spin820Current">
+               <property name="minimum">
+                <double>0.100000000000000</double>
+               </property>
+               <property name="maximum">
+                <double>25.000000000000000</double>
+               </property>
+              </widget>
              </item>
             </layout>
            </widget>

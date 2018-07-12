@@ -4,27 +4,26 @@
 #include <QtCore>
 
 #include "../../model/tpvitem.h"
-
+#include "../devicedownloader.h"
 //! delcare
 namespace MegaDevice {
 class deviceMRQ;
 }
 
 //! download the tpv to pvts
-class tpvDownloader : public QThread
+class tpvDownloader : public DeviceDownloader
 {
     Q_OBJECT
 
 private:
     static int _downloaderInterval;
-    static QList<tpvDownloader*> _activeLoaders;
-    static QMutex _activeLoadersMutex;
+
 
 public:
     static void setInterval( int interval );
     static int interval();
 
-    static void cancelActives();
+
 
 public:
     tpvDownloader( QObject *pObj=0 );

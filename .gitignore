@@ -29,7 +29,7 @@ settings/
 Debug/
 Release/
 source/arith/pvt/GelgoogProject/RTOS/
-source/arith/pvt/GelgoogProject/BSP/
+#source/arith/pvt/GelgoogProject/BSP/
 #source/arith/pvt/GelgoogProject/APP/
 doc/
 _icon/

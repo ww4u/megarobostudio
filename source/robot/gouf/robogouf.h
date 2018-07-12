@@ -2,7 +2,7 @@
 #define ROBOGOUF_H
 
 //#include "../../device/vrobot.h"
-#include "../../device/mrv/deviceMRV.h"
+#include "../../device/mrv/devicemrv.h"
 
 //class MegaDevice::deviceMRV;
 

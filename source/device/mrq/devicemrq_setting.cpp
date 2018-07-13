@@ -364,11 +364,15 @@ int deviceMRQ::uploadSetting()
 {
     int ret;
 
-    ret = _uploadSetting();
-    if ( ret != 0 )
-    { MRQ_PROGRESS_HIDE(); }
-    else
-    { setFilled(true); }
+    receiveCache::cli();
+
+        ret = _uploadSetting();
+        if ( ret != 0 )
+        { MRQ_PROGRESS_HIDE(); }
+        else
+        { setFilled(true); }
+
+    receiveCache::sti();
 
     return ret;
 }

@@ -7,11 +7,15 @@ int deviceMRV::uploadSetting()
 {
     int ret;
 
+    receiveCache::cli();
+
     ret = _uploadSetting();
     if ( ret != 0 )
     { MRV_PROGRESS_HIDE(); }
     else
     { setFilled(true); }
+
+    receiveCache::sti();
 
     return ret;
 }

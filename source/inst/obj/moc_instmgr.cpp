@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'instmgr.h'
 **
-** Created by: The Qt Meta Object Compiler version 67 (Qt 5.10.1)
+** Created by: The Qt Meta Object Compiler version 67 (Qt 5.10.0)
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
@@ -12,7 +12,7 @@
 #if !defined(Q_MOC_OUTPUT_REVISION)
 #error "The header file 'instmgr.h' doesn't include <QObject>."
 #elif Q_MOC_OUTPUT_REVISION != 67
-#error "This file was generated using the moc from 5.10.1. It"
+#error "This file was generated using the moc from 5.10.0. It"
 #error "cannot be used with the include files from this version of Qt."
 #error "(The moc has changed too much.)"
 #endif
@@ -118,7 +118,7 @@ void MegaDevice::INTRThread::qt_static_metacall(QObject *_o, QMetaObject::Call _
     }
 }
 
-QT_INIT_METAOBJECT const QMetaObject MegaDevice::INTRThread::staticMetaObject = {
+const QMetaObject MegaDevice::INTRThread::staticMetaObject = {
     { &QThread::staticMetaObject, qt_meta_stringdata_MegaDevice__INTRThread.data,
       qt_meta_data_MegaDevice__INTRThread,  qt_static_metacall, nullptr, nullptr}
 };
@@ -202,7 +202,7 @@ void MegaDevice::InstMgr::qt_static_metacall(QObject *_o, QMetaObject::Call _c, 
     Q_UNUSED(_a);
 }
 
-QT_INIT_METAOBJECT const QMetaObject MegaDevice::InstMgr::staticMetaObject = {
+const QMetaObject MegaDevice::InstMgr::staticMetaObject = {
     { &instServer::staticMetaObject, qt_meta_stringdata_MegaDevice__InstMgr.data,
       qt_meta_data_MegaDevice__InstMgr,  qt_static_metacall, nullptr, nullptr}
 };

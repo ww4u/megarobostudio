@@ -159,7 +159,9 @@ int robotDelta::goZero( const tpvRegion &region,
 
     //! request
     //! \todo
-//    pReq->request( this, (VRobot::apiTaskRequest)(this->zeroAxesTask), pArg );
+    pReq->request( this,
+                   (VRobot::apiTaskRequest)(&robotDelta::zeroAxesTask),
+                   pArg );
 
     //! start
     Q_ASSERT( NULL != m_pRoboTask );

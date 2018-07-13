@@ -148,7 +148,9 @@ int robotMegatron::goZero( const tpvRegion &region,
 
     //! request
     //! \todo
-//    pReq->request( this, (VRobot::apiTaskRequest)(this->zeroAxesTask), pArg );
+    pReq->request( this,
+                   (VRobot::apiTaskRequest)(&robotMegatron::zeroAxesTask),
+                   pArg );
 
     //! start
     Q_ASSERT( NULL != m_pRoboTask );

@@ -122,7 +122,7 @@ robotSinanju::robotSinanju()
     mHandZeroAngle = 60;
 
     mGapTime = 1;
-    mGapAngle = 1;
+    mGapAngle = 3;
 }
 
 robotSinanju::~robotSinanju()

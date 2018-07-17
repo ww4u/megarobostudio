@@ -86,7 +86,6 @@ logDbg();
     //! find
     if ( busType == VCI_MR_LANCAN )
     {
-
         char strs[ 1024 ] = { 0 };                          //! for the resources
         if ( 0 == mApi.find( VCI_MR_LANCAN, strs ) )
         {
@@ -349,9 +348,9 @@ int CANBus::doWrite(DeviceId &nodeId, byte *pBuf, int len)
         canObj.Data[i] = pBuf[i];
     }
 //logDbg()<<canObj.ID<<canObj.Data[0]<<canObj.Data[1]<<canObj.Data[2]<<canObj.Data[3]<<canObj.Data[4];
-    int ret;
-    IBus::lock();
-    ret = mApi.transmit( can_device_desc, &canObj, 1);
+    int ret;//logDbg();
+    IBus::lock();//logDbg();
+    ret = mApi.transmit( can_device_desc, &canObj, 1);//logDbg();
     mFrames += 1;
     if ( mWtInterval > 0 )
     { IBus::wait_us( mWtInterval ); }
@@ -433,6 +432,12 @@ IBus::lock();
     frameData tFrame;
     for ( int i = 0; i < ret; i++ )
     {
+        //! check data len
+        if ( canObj[i].DataLen > 0 && canObj[i].DataLen <= 8 )
+        {}
+        else
+        { return -1; }
+
         Q_ASSERT( canObj[i].DataLen > 0 && canObj[i].DataLen <= 8 );
 
         tFrame.clear();
@@ -530,7 +535,7 @@ int CANBus::doSplitRead( DeviceId &nodeId, int packOffset, byte *pBuf, int cap, 
 
         total = frameBuf[ packOffset ] & 0x0f;
         slice = ( frameBuf[ packOffset ] >> 4 ) & 0x0f;
-logDbg()<<total<<slice;
+
         //! cat the data
         for ( int i = packOffset + 1; i < retLen && outLen < cap; i++, outLen++ )
         {
@@ -547,6 +552,8 @@ int CANBus::enumerate( const modelSysPref &pref )
 {
     int ret;
 
+    receiveCache::cli();
+
     beginEnumerate();
 logDbg();
     if ( pref.mbAutoAssignId )
@@ -555,6 +562,8 @@ logDbg();
     { ret = rawEnumerate( pref ); }
 logDbg();
     endEnumerate();
+
+    receiveCache::sti();
 
     return ret;
 }
@@ -602,19 +611,19 @@ int CANBus::autoEnumerate( const modelSysPref &pref )
 int CANBus::rawEnumerate( const modelSysPref &pref )
 {
     int ret;
-
+logDbg();
     //! send-hash
     QMap< int, quint32 > sendHashMap;
     ret = collectHash( sendHashMap );
     if ( ret != 0 )
     { return ret; }
-
+logDbg();
     //! send-recv
     QMap< int, quint32 > sendRecvMap;
     ret = collectRecvId( sendRecvMap );
     if ( ret != 0 )
     { return ret; }
-
+logDbg();
     //! check the size
     if ( sendRecvMap.size() != sendHashMap.size() )
     {
@@ -635,10 +644,10 @@ int CANBus::rawEnumerate( const modelSysPref &pref )
         sysError( QObject::tr("ID match fail") );
         return -1;
     }
-
+logDbg();
     //! build
     buildDeviceIds( sendHashMap, sendRecvMap );
-
+logDbg();
     return 0;
 }
 
@@ -648,8 +657,9 @@ int CANBus::collectHash( )
     byte buf[] = { MRQ_mc_CAN, MRQ_sc_CAN_NETMANAGEHASH_Q };
     int ret;
 
+    Q_ASSERT( m_pRecvCache != NULL );
     m_pRecvCache->clear();
-
+logDbg();
     //! 1. broadcast
     DeviceId broadId( CAN_BROAD_ID );
     ret = doWrite( broadId, buf, sizeof(buf) );
@@ -657,7 +667,7 @@ int CANBus::collectHash( )
     { return ret; }
 
     wait_us( mEnumerateTmo );
-
+logDbg();
     //! 2. frame count
     int frame = size();logDbg()<<frame;
     if ( frame < 1 )
@@ -672,7 +682,7 @@ int CANBus::collectHash( )
 //sysLog( QString::number(ret), QString::number(__LINE__) );
     if ( ret != frame )
     { return -1; }
-
+logDbg();
     //! 4. all frames
     DeviceId *pDeviceId;
     uint32 hashId;
@@ -691,7 +701,7 @@ int CANBus::collectHash( )
         mEnumDevices.append( pDeviceId );
         logDbg()<<i;
     }
-
+logDbg();
     //! 5. sort the device by id
     qSort( mEnumDevices.begin(),
            mEnumDevices.end(),
@@ -703,26 +713,26 @@ int CANBus::collectHash( )
 //! send: hash
 int CANBus::collectHash( QMap< int, quint32 > &sendHashMap )
 {
-
     int ret;
 
+    Q_ASSERT( m_pRecvCache != NULL );
     m_pRecvCache->clear();
-
+logDbg();
     //! 0. can intf
     DeviceId broadId( CAN_BROAD_ID );
     byte buf0[] = { MRQ_mc_LINK, MRQ_sc_LINK_INTFC, MRQ_LINK_INTFC_CAN };
-    ret = doWrite( broadId, buf0, sizeof(buf0) );
+    ret = doWrite( broadId, buf0, sizeof(buf0) );logDbg();
     if ( ret != 0 )
     { return ret; }
-
+logDbg();
     //! 1. broadcast
     byte buf[] = { MRQ_mc_CAN, MRQ_sc_CAN_NETMANAGEHASH_Q };
     ret = doWrite( broadId, buf, sizeof(buf) );
     if ( ret != 0 )
     { return ret; }
-
+logDbg();
     wait_us( mEnumerateTmo );
-
+logDbg();
     //! 2. frame count
     int frame = size();logDbg()<<frame;
     if ( frame < 1 )

@@ -30,6 +30,7 @@
 #define sub_group_id_to                 255
 
 #define x_channel                       128
+#define x_pages                         10
 #define robo_channels(subGpIndex)            ( subGpIndex + sub_group_id_from + 10 )
 
 #define CHAR_DEGREE                        QChar(0x00B0)

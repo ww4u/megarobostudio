@@ -7,6 +7,7 @@ aboutDlg::aboutDlg(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->label_3->setText( qApp->applicationVersion() );
+    ui->label_5->setText( tr("Build:") + __DATE__ + " " +  __TIME__ );
 }
 
 aboutDlg::~aboutDlg()

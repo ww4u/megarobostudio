@@ -98,7 +98,7 @@ void MrqFsm::toState( mrqState stat, RoboMsg &detail )
 
         //! subscribe to leader
         if ( m_pLeader != NULL )
-        {logDbg()<<stat;
+        {//logDbg()<<stat;
             m_pLeader->subscribe( this,
                                   e_robot_member_state,
                                   stat,
@@ -173,7 +173,7 @@ void MrqUnit::onTimer( int id )
     if ( id == state_timer_id )
     {
         selfFsm()->Mrq()->requestMotionState( *selfFsm() );
-        logDbg()<<id;
+//        logDbg()<<id;
 //        sysLog( __FUNCTION__ );
 //        logWarning()<<id;
     }

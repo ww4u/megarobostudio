@@ -19,6 +19,8 @@ int robotSinanju::serialIn( QXmlStreamReader &reader )
         { logDbg();ret = serialInInitPos( reader ); }
         else if ( reader.name() == "joint_ccw_zero" )
         { ret = serialInJointCcw(reader); }
+        else if ( reader.name() == "joint_factory" )
+        { ret = serialInJointFactory(reader); }
         else
         { reader.skipCurrentElement(); }
     }
@@ -50,6 +52,10 @@ int robotSinanju::serialOut( QXmlStreamWriter &writer )
 
     writer.writeStartElement("joint_zero_ccw");
     ret = serialOutJointCcw( writer );
+    writer.writeEndElement();
+
+    writer.writeStartElement("joint_factory");
+    ret = serialOutJointFactory( writer );
     writer.writeEndElement();
 
     return ret;
@@ -142,7 +148,11 @@ int robotSinanju::serialInHandZero( QXmlStreamReader &reader )
 {
     while(reader.readNextStartElement())
     {
-        if ( reader.name() == "time" )
+        if ( reader.name() == "hand" )
+        {
+            mbHandAble = reader.readElementText().toInt() > 0;
+        }
+        else if ( reader.name() == "time" )
         {
             mHandZeroTime = reader.readElementText().toDouble();
         }
@@ -167,6 +177,7 @@ int robotSinanju::serialInHandZero( QXmlStreamReader &reader )
 
 int robotSinanju::serialOutHandZero( QXmlStreamWriter &writer )
 {
+    writer.writeTextElement( "hand", QString::number( mbHandAble) );
     writer.writeTextElement( "time", QString::number( mHandZeroTime));
     writer.writeTextElement( "angle", QString::number( mHandZeroAngle));
 
@@ -260,6 +271,33 @@ int robotSinanju::serialOutJointCcw( QXmlStreamWriter &writer )
     for ( int i = 0; i < axes(); i++ )
     {
         writer.writeTextElement( "ccw", QString::number(mJointZeroCcw.at(i)) );
+    }
+
+    return 0;
+}
+
+int robotSinanju::serialInJointFactory( QXmlStreamReader &reader )
+{
+    double fVal = 0;
+    int id = 0;
+    while(reader.readNextStartElement())
+    {
+        if ( reader.name() == "angle" )
+        {
+            fVal = reader.readElementText().toDouble();
+            mJointFactoryList[ id++ ] = fVal;
+        }
+        else
+        { reader.skipCurrentElement(); }
+    }
+
+    return 0;
+}
+int robotSinanju::serialOutJointFactory( QXmlStreamWriter &writer )
+{
+    for ( int i = 0; i < 4; i++ )
+    {
+        writer.writeTextElement( "angle", QString::number(mJointFactoryList.at(i)) );
     }
 
     return 0;

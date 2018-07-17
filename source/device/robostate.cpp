@@ -63,7 +63,7 @@ void RoboFsm::proc( int msg, RoboMsg &detail )
 {
     Q_ASSERT( NULL != m_pNowState );
 QString strName = m_pNowState->name();
-logDbg()<<"enter"<<strName;
+//logDbg()<<"enter"<<strName;
     //! sys proc
     //! \todo only for mrq timeout
     if ( msg == e_robot_timeout )
@@ -75,18 +75,18 @@ logDbg()<<"enter"<<strName;
 
         //! check time stamp
         if ( detail.timeStamp() == 0  )
-        { m_pNowState->proc( msg, detail ); logDbg(); }
+        { m_pNowState->proc( msg, detail ); /*logDbg();*/ }
         else
         {
             if ( detail.timeStamp() >= m_pNowState->timeStamp() )
-            { m_pNowState->proc( msg, detail ); logDbg(); }
+            { m_pNowState->proc( msg, detail ); }
             else
             {
 //                sysLog( __FUNCTION__,QString::number(__LINE__), QString::number(msg), strName );
             }
         }
     }
-logDbg()<<"exit"<<strName;
+//logDbg()<<"exit"<<strName;
 }
 
 void RoboFsm::subscribe( RoboFsm *pMember,
@@ -116,7 +116,7 @@ void RoboFsm::toState( RoboStateUnit *pState, RoboMsg &detail )
 
         m_pNowState = pState;
         m_pNowState->setTimeStamp( sysTimeStamp() );        //! save the time stamp
-        m_pNowState->onEnter( detail );logDbg()<<m_pNowState->name()<<Id1()<<Id2()<<"enter";
+        m_pNowState->onEnter( detail );//logDbg()<<m_pNowState->name()<<Id1()<<Id2()<<"enter";
     }
     else
     {

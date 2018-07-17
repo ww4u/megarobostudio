@@ -1,5 +1,6 @@
 
 #include "sinanju.h"
+#include "sinanjutask.h"
 
 #include "../../device/board/_MRQ_enum.h"
 
@@ -117,12 +118,21 @@ robotSinanju::robotSinanju()
     mArmLengths.append( 0 );
     mArmLengths.append( 0 );
 
+    m_pRoboTask = new SinanjuTask();
+    Q_ASSERT( NULL != m_pRoboTask );
+
+
     //! zero
     mHandZeroTime = 5;
     mHandZeroAngle = 60;
 
     mGapTime = 1;
     mGapAngle = 3;
+
+    //! hand
+    mbHandAble = true;
+    mJointFactoryList.clear();
+    mJointFactoryList<<0<<-20<<-65<<100;  //! \ref to the zero
 }
 
 robotSinanju::~robotSinanju()
@@ -177,7 +187,7 @@ void robotSinanju::onMsg( int subAxes, RoboMsg &msg )
         region = msg.at(0).value<tpvRegion>();
     }
 
-    logDbg()<<region.axes()<<region.page();
+//    logDbg()<<region.axes()<<region.page();
     Q_ASSERT( region.page() >= 0 && region.page() < regions() );
 
     fsm( region )->proc( msg.Msg(), msg );
@@ -316,4 +326,19 @@ void robotSinanju::gapAttr( double &gapTime, double &gapAngle )
 {
     gapTime = mGapTime;
     gapAngle = mGapAngle;
+}
+
+void robotSinanju::setHandAble( bool b )
+{ mbHandAble = b; }
+bool robotSinanju::handAble()
+{ return mbHandAble; }
+
+void robotSinanju::setJointFactoryAngle( int id, double angle )
+{
+    Q_ASSERT( id >= 0 && id < mJointFactoryList.size() );
+    mJointFactoryList[ id ] = angle;
+}
+double robotSinanju::jointFactoryAngle( int id )
+{
+    return mJointFactoryList.at(id);
 }

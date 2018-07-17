@@ -167,13 +167,6 @@
               </property>
              </widget>
             </item>
-            <item row="9" column="2">
-             <widget class="QPushButton" name="btnUploadZero">
-              <property name="text">
-               <string>Upload Zero</string>
-              </property>
-             </widget>
-            </item>
             <item row="4" column="2">
              <widget class="QDoubleSpinBox" name="spinAngleSArm">
               <property name="decimals">
@@ -224,7 +217,14 @@
               </property>
              </widget>
             </item>
-            <item row="10" column="2">
+            <item row="0" column="0">
+             <widget class="QPushButton" name="btnUploadZero">
+              <property name="text">
+               <string>Upload Zero</string>
+              </property>
+             </widget>
+            </item>
+            <item row="6" column="0">
              <widget class="QPushButton" name="btnGoZero">
               <property name="text">
                <string>Zero Arms</string>
@@ -235,9 +235,12 @@
           </widget>
          </item>
          <item>
-          <widget class="QGroupBox" name="groupBox_7">
+          <widget class="QGroupBox" name="gpHand">
            <property name="title">
             <string>Hand</string>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
            </property>
            <layout class="QGridLayout" name="gridLayout_2">
             <item row="1" column="3">
@@ -260,13 +263,6 @@
               </property>
               <property name="value">
                <double>10.000000000000000</double>
-              </property>
-             </widget>
-            </item>
-            <item row="3" column="0">
-             <widget class="QCheckBox" name="chkHandZeroCcw">
-              <property name="text">
-               <string>CCW</string>
               </property>
              </widget>
             </item>
@@ -297,10 +293,10 @@
               </property>
              </widget>
             </item>
-            <item row="1" column="0">
-             <widget class="QLabel" name="label_9">
+            <item row="3" column="1">
+             <widget class="QCheckBox" name="chkHandZeroCcw">
               <property name="text">
-               <string>Zero Angle(deg)</string>
+               <string>CCW</string>
               </property>
              </widget>
             </item>
@@ -343,7 +339,7 @@
               </property>
              </widget>
             </item>
-            <item row="4" column="0">
+            <item row="3" column="0">
              <widget class="QPushButton" name="btnZeroHand">
               <property name="maximumSize">
                <size>
@@ -353,6 +349,13 @@
               </property>
               <property name="text">
                <string>Zero Hand</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_9">
+              <property name="text">
+               <string>Zero Angle(deg)</string>
               </property>
              </widget>
             </item>

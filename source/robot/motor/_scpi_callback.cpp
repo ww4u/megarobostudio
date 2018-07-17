@@ -192,7 +192,7 @@ static scpi_result_t _scpi_program( scpi_t * context )
     else
     {}
 
-    //! p, v, t
+    //! t, p, v
     QList<float> dataset;
     int col = 3;
     QList<int> dataCols;
@@ -209,9 +209,9 @@ static scpi_result_t _scpi_program( scpi_t * context )
     for ( int i = 0; i < dataset.size()/col; i++ )
     {
         //! t
-        tp.t = dataset.at( i * col + 2 );
-        tp.p = dataset.at( i * col + 0 );
-        tp.v = dataset.at( i * col + 1 );
+        tp.t = dataset.at( i * col + 0 );
+        tp.p = dataset.at( i * col + 1 );
+        tp.v = dataset.at( i * col + 2 );
 
         curve.append( tp );
     }
@@ -305,6 +305,7 @@ static scpi_result_t _scpi_fsmState( scpi_t * context )
 
 static scpi_command_t _scpi_cmds[]=
 {
+    COM_ITEMs(),
 
     CMD_ITEM( "*IDN?", _scpi_idn ),
     CMD_ITEM( "RUN",  _scpi_run ),

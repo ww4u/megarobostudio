@@ -19,4 +19,8 @@
 
 #define CMD_ITEM( cmd, api )    { cmd, api, 0 }
 
+#define COM_ITEMs()          CMD_ITEM( "SYSTem:ERRor?", SCPI_SystemErrorNextQ ),\
+                            CMD_ITEM( "SYSTem:ERRor:NEXT?", SCPI_SystemErrorNextQ ),\
+                            CMD_ITEM( "SYSTem:ERRor:COUNt?", SCPI_SystemErrorCountQ )
+
 #endif

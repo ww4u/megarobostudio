@@ -101,7 +101,7 @@ void instServer::slot_readyRead( QObject *pObj )
             ary = pSocket->readLine();
             if ( ary.length() > 0 )
             {
-                qDebug()<<__FUNCTION__<<__LINE__<<ary;
+//                qDebug()<<__FUNCTION__<<__LINE__<<ary;
                 dataIn( pSocket, pObj->objectName(), ary );
             }
         }

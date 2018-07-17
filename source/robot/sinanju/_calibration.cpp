@@ -77,17 +77,21 @@
 //    return 0;
 //}
 
-int robotSinanju::goZero( const tpvRegion &region )
+int robotSinanju::goFactory( const tpvRegion &region )
 {
+    QList<double> aimAngles;
+
     for ( int i = 0; i < 4; i++ )
     {
-        goZero( region, i, false );
+        aimAngles.append( mJointFactoryList.at(i) + mInitAngles.at( i ) );
     }
 
-    //! for axes
-    goZero( region, 4, mJointZeroCcw.at(4) );
+    return toAimSession( region, aimAngles );
+}
 
-    return 0;
+int robotSinanju::goZero( const tpvRegion &region )
+{
+    return toAimSession( region, mInitAngles );
 }
 
 int robotSinanju::goZero( const tpvRegion &region,
@@ -203,3 +207,219 @@ int robotSinanju::getPOSE( float pos[] )
 
     return 0;
 }
+
+int robotSinanju::zeroAxesTask( void *pArg )
+{
+    int ret;
+
+    roboSinanjuTaskArgument *pZArg = (roboSinanjuTaskArgument*)pArg;
+
+    //! to zero
+    onLine();
+
+//    fsm(pZArg->mRegion)->setState( MegaDevice::mrq_state_calcend );
+
+    ret = toAim( pZArg->mRegion, pZArg->mAimAngles );
+    if ( ret != 0 )
+    { return ret; }
+
+    ret = waitFsm( pZArg->mRegion, MegaDevice::mrq_state_idle, pZArg->mTmo, pZArg->mTick );
+    if ( 0 != ret )
+    { return ret; }
+
+    //! to init
+    if ( mbHandAble )
+    {
+        onLine();
+
+//        fsm(pZArg->mRegion)->setState( MegaDevice::mrq_state_calcend );
+
+        ret = toAimd( pZArg->mRegion, pZArg->mAimAngles );
+        if ( ret != 0 )
+        { return ret; }
+
+        ret = waitFsm( pZArg->mRegion, MegaDevice::mrq_state_idle, pZArg->mTmo, pZArg->mTick );
+        if ( ret != 0 )
+        { return ret; }
+    }
+
+    return ret;
+}
+
+int robotSinanju::toAimSession( const tpvRegion &region,
+                  const QList<double> &aimAngles )
+{
+    //! new
+    RoboTaskRequest *pReq;
+    pReq = new RoboTaskRequest();
+    Q_ASSERT( NULL != pReq );
+
+    roboSinanjuTaskArgument *pArg;
+    pArg = new roboSinanjuTaskArgument();
+    Q_ASSERT( NULL != pArg );
+
+    //! fill
+    pArg->mTmo = mZeroTmo;
+    pArg->mTick = mZeroTick;
+    pArg->mRegion = region;
+
+    pArg->mAimAngles = aimAngles;
+
+    //! request
+    pReq->request( this,
+                   (VRobot::apiTaskRequest)(&robotSinanju::zeroAxesTask),
+                   pArg );
+
+    //! start
+    Q_ASSERT( NULL != m_pRoboTask );
+    m_pRoboTask->setRequest( pReq );
+    m_pRoboTask->start();
+
+    return 0;
+}
+
+int robotSinanju::goX( const tpvRegion &region,
+                           const QList<double> &aimAngles,
+                           float handT, float handP, float handV )
+{
+    //! get
+    float angles[4];
+    if ( nowAngle( angles ) != 0 )
+    { return -1; }
+
+    float distAngles[4];
+
+    Q_ASSERT( aimAngles.size() >= 4 );
+
+    for ( int i = 0; i < 4; i++ )
+    {
+        distAngles[i] = comAssist::diffAngle(
+                                              angles[i],
+                                              aimAngles.at(i),
+                                              mAngleDir.at(i) );
+
+        logDbg()<<distAngles[i];
+    }
+
+    float maxAngle;
+    maxAngle = qAbs( distAngles[0] );
+    for ( int i = 1; i < 4; i++ )
+    {
+        if ( qAbs(distAngles[i]) > maxAngle )
+        { maxAngle = qAbs(distAngles[i]); }
+    }
+
+    //! guess the speed
+    if ( maxAngle < 0.001 )
+    { return 0; }
+
+    float dT = maxAngle / mZeroSpeed;
+
+    delete_all( mJointsGroup );
+    tpvGroup *pGroup;
+    for ( int i = 0; i < 4; i++ )
+    {
+        pGroup = new tpvGroup();
+        if ( NULL == pGroup )
+        { return -1; }
+
+        pGroup->addItem( 0, 0, 0 );
+        pGroup->addItem( dT, distAngles[i], 0 );
+
+        mJointsGroup.append( pGroup );
+    }
+
+    //! for hand
+    pGroup = new tpvGroup();
+    if ( NULL == pGroup )
+    { return -1; }
+    pGroup->addItem( 0,0,0 );
+    pGroup->addItem( handT, handP, handV );
+
+    mJointsGroup.append( pGroup );
+
+    //! for download
+    run( region );
+
+    setLoop( 1 );
+
+    //! download
+    int ret = downloadTrace( region, mJointsGroup );
+    if ( ret != 0 )
+    { return ret; }
+
+    return 0;
+}
+
+int robotSinanju::toAim( const tpvRegion &region,
+                          const QList<double> &aimAngles )
+{
+    int ret;
+
+    float handT, handP, handV;
+
+    if ( mbHandAble )
+    {
+        if ( mJointZeroCcw.at( 4) )
+        {
+            handT = mHandZeroTime;
+            handP = -mHandZeroAngle;
+            handV = -mZeroSpeed;
+        }
+        else
+        {
+            handT = mHandZeroTime;
+            handP = mHandZeroAngle;
+            handV = mZeroSpeed;
+        }
+    }
+    else
+    {
+        handT = mGapTime;
+        handP = 0;
+        handV = 0;
+    }
+
+    ret = goX( region,
+                   aimAngles,
+                   handT, handP, handV );
+
+    return ret;
+}
+
+int robotSinanju::toAimd( const tpvRegion &region,
+                          const QList<double> &aimAngles )
+{
+    int ret;
+
+    float handT, handP, handV;
+
+    if ( mbHandAble )
+    {
+        if ( mJointZeroCcw.at( 4) )
+        {
+            handT = mGapTime;
+            handP = mGapAngle;
+            handV = 0;
+        }
+        else
+        {
+            handT = mGapTime;
+            handP = -mGapAngle;
+            handV = 0;
+        }
+    }
+    else
+    {
+        handT = mGapTime;
+        handP = 0;
+        handV = 0;
+    }
+
+    ret = goX( region,
+                   aimAngles,
+                   handT, handP, handV );
+
+    return ret;
+}
+

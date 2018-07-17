@@ -13,6 +13,16 @@
 
 #include "../../model/sinanjumotiongroup.h"
 
+class roboSinanjuTaskArgument : public RoboTaskArgument
+{
+public:
+    QList<double> mAimAngles;
+
+public:
+    roboSinanjuTaskArgument()
+    {}
+};
+
 class robotSinanju : public RawRobo
 {
 public:
@@ -36,6 +46,9 @@ public:
 
     virtual int run( const tpvRegion &region=0  );  //! just run
     virtual int stop( const tpvRegion &region=0 );  //! stop
+
+    virtual int goFactory( const tpvRegion &region=0 );
+
     virtual int goZero( const tpvRegion &region=0 );
     virtual int goZero( const tpvRegion &region,
                         int jointId, bool bCcw );
@@ -49,10 +62,26 @@ public:
 
     virtual int getPOSE( float pos[] );
 
+public:
+    int zeroAxesTask( void *pArg );
+
+protected:
+    int toAimSession( const tpvRegion &region,
+                      const QList<double> &aimAngles );
+
+    int goX( const tpvRegion &region,
+                 const QList<double> &aimAngles,
+                 float handT, float handP, float handV );
+    int toAim( const tpvRegion &region,
+                const QList<double> &aimAngles );
+    int toAimd( const tpvRegion &region,
+                const QList<double> &aimAngles );
+
+public:
     virtual int loopNow();
 
     virtual void toState(int stat);
-    virtual int state(const tpvRegion &region, int inTask = 0);
+//    virtual int state(const tpvRegion &region, int inTask = 0);
 
 public:
     virtual int build( MegaTableModel *pModel,
@@ -137,6 +166,9 @@ protected:
     int serialInJointCcw( QXmlStreamReader &reader );
     int serialOutJointCcw( QXmlStreamWriter &writer );
 
+    int serialInJointFactory( QXmlStreamReader &reader );
+    int serialOutJointFactory( QXmlStreamWriter &writer );
+
 protected:
     void exportPlan( const QString &fileName, xxxGroup<tracePoint> &tracePlan );
     void exportJoints( const QString &fileName, xxxGroup<jointsTrace> &jointsPlan );
@@ -148,11 +180,18 @@ public:
     void setGapAttr( double gapTime, double gapAngle );
     void gapAttr( double &gapTime, double &gapAngle );
 
-protected:
-//    handActionModel mHandActionModel;
+    void setHandAble( bool b );
+    bool handAble();
 
+    void setJointFactoryAngle( int id, double angle );
+    double jointFactoryAngle( int id );
+
+protected:
     double mHandZeroTime, mHandZeroAngle;
     double mGapTime, mGapAngle;
+
+    bool mbHandAble;
+    QList< double > mJointFactoryList;
 };
 
 #endif

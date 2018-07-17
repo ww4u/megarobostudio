@@ -104,6 +104,8 @@ void SinanjuPref::updateData()
     pRobo->setGapAttr( ui->spinGapTime->value(),
                        ui->spinGapAngle->value() );
 
+    pRobo->setHandAble( ui->gpHand->isChecked() );
+
     //! ccw
     pRobo->setJointZeroCcw( 4, ui->chkHandZeroCcw->isChecked() );
 }
@@ -144,6 +146,8 @@ void SinanjuPref::updateUi()
     pRobo->gapAttr( gapTime, gapAngle );
     ui->spinGapTime->setValue( gapTime );
     ui->spinGapAngle->setValue( gapAngle );
+
+    ui->gpHand->setChecked( pRobo->handAble() );
 
     ui->chkHandZeroCcw->setChecked( pRobo->jointZeroCcwList().at(4) );
 }
@@ -308,3 +312,23 @@ void SinanjuPref::on_btnUploadZero_clicked()
     emit sigModified( true );
 }
 
+
+void SinanjuPref::on_btnFactory_clicked()
+{
+    Q_ASSERT( m_pModelObj != NULL );
+    VRobot *pBase = ( VRobot *)m_pModelObj;
+    Q_ASSERT( NULL != pBase );
+
+    if ( !pBase->checkLink() )
+    {
+        sysPrompt( tr("Invalid link") );
+        return ;
+    }
+
+    MegaZeroAffirmMessageBox msgBox;
+    int ret = msgBox.exec();
+    if ( ret == QMessageBox::Ok )
+    {
+        pBase->goFactory( tpvRegion(0,0) );
+    }
+}

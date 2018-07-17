@@ -39,6 +39,8 @@ private slots:
 
     void on_btnZero_clicked();
 
+    void on_btnFactory_clicked();
+
 private:
     Ui::SinanjuPref *ui;
     QList<QTreeWidgetItem*> mItems;

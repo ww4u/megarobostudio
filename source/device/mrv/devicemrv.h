@@ -78,6 +78,7 @@ public:
     void acquireDownloader();
     void releaseDownloader();
 
+    bool isDownloading( int ax );
     int tpWrite( QList<TpRow*> &list, int ax );
     int tpWrite( QList<QPointF> &points, int ax );  //! x: t, y : p
 

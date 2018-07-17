@@ -92,10 +92,10 @@ void SysTimerThread::sysStartTimer( VRobot *pRobot,
 
         SysTimerThread::mTimerMutex.lock();
         SysTimerThread::_sys_timer_->mTimers.append( pTimer );
-        SysTimerThread::mTimerMutex.unlock();logDbg()<<id;
+        SysTimerThread::mTimerMutex.unlock();//logDbg()<<id;
     }
 
-    pTimer->start(tmous);logDbg()<<SysTimerThread::_sys_timer_->mTimers.size();
+    pTimer->start(tmous);//logDbg()<<SysTimerThread::_sys_timer_->mTimers.size();
 }
 void SysTimerThread::sysStopTimer( VRobot *pRobot,
                               void *pContext,
@@ -115,7 +115,7 @@ void SysTimerThread::sysStopTimer( VRobot *pRobot,
         SysTimerThread::_sys_timer_->mTimers.removeAll( pTimer );
         delete pTimer;
 
-        SysTimerThread::mTimerMutex.unlock();logDbg()<<SysTimerThread::_sys_timer_->mTimers.size();
+        SysTimerThread::mTimerMutex.unlock();//logDbg()<<SysTimerThread::_sys_timer_->mTimers.size();
     }
 }
 

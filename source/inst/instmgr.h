@@ -119,8 +119,7 @@ protected:
     int probeCANBus( CANBus *pBus,
                      int id,
                      const QString &devRsrc,
-                     VRoboList &roboList,
-                     int &seq );
+                     VRoboList &roboList );
 
     void gc();
 
@@ -129,7 +128,7 @@ protected:
 
     scpiShell *findShell( const QString &name );
 
-    int selectSeqId( quint32 sig, int seqId );
+    bool matchSeqId( quint32 sig, int &seqId );
 
 public:
     mcModel *m_pMainModel;

@@ -1040,6 +1040,27 @@ static scpi_result_t _scpi_gozero( scpi_t * context )
     return SCPI_RES_OK;
 }
 
+
+static scpi_result_t _scpi_fold( scpi_t * context )
+{
+    DEF_LOCAL_VAR();
+    DEF_ROBO();
+
+    CHECK_LINK();
+
+    int ax, page;
+
+    if ( SCPI_ParamInt32(context, &ax, true) != true )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    if ( SCPI_ParamInt32(context, &page, true) != true )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    pRobo->goFactory( tpvRegion(ax,page) );
+
+    return SCPI_RES_OK;
+}
+
 //! four rad
 //! ref the the zero
 //! angle in rad
@@ -1096,6 +1117,8 @@ static scpi_result_t _scpi_jointMove( scpi_t * context )
 static scpi_command_t _scpi_cmds[]=
 {
 
+    COM_ITEMs(),
+
     CMD_ITEM( "*IDN?", _scpi_idn ),
     CMD_ITEM( "RUN",  _scpi_run ),
     CMD_ITEM( "STOP", _scpi_stop ),
@@ -1126,6 +1149,8 @@ static scpi_command_t _scpi_cmds[]=
     CMD_ITEM( "DOWNLOAD", _scpi_download ),
     CMD_ITEM( "CALL", _scpi_call ),
     CMD_ITEM( "ZERO", _scpi_gozero ),
+    CMD_ITEM( "CENTER", _scpi_gozero ),
+    CMD_ITEM( "FOLD", _scpi_fold ),
 
     CMD_ITEM( "JOINT:RAD?", _scpi_jointRad ),
     CMD_ITEM( "JOINT:MOVE", _scpi_jointMove ),

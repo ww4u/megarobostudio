@@ -1371,13 +1371,18 @@ void MainWindow::slot_scriptmgr_changed()
 
 void MainWindow::on_actionForceStop_triggered()
 {
+    mMcModel.resetCommunicate();
+
+    RoboTask::killAll();
+
+    slot_pref_changed();
+
     if ( NULL != m_pDeviceMgr->m_pMgr )
     { m_pDeviceMgr->m_pMgr->emergencyStop(); }
 
-    mMcModel.resetCommunicate();
-    slot_pref_changed();
-
+    Q_ASSERT( NULL != m_pSysTimerThread );
     m_pSysTimerThread->stopAll();
+
 }
 
 void MainWindow::on_actionReset_triggered()

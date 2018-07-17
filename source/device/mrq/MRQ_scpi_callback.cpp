@@ -845,6 +845,8 @@ static scpi_command_t _mrq_scpi_cmds[]=
 {
     #include "../board/_MRQ_scpi_cmd.h"
 
+    COM_ITEMs(),
+
     CMD_ITEM( "*IDN?", _scpi_idn ),
     CMD_ITEM( "*LRN", _scpi_lrn ),      //! setupfile
     CMD_ITEM( "HRST", _scpi_hrst ),

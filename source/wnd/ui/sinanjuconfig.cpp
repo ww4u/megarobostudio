@@ -69,31 +69,40 @@ void SinanjuConfig::spyEdited()
 void SinanjuConfig::updateData()
 {
     Q_ASSERT( m_pModelObj != NULL );
-    VRobot *pBase = ( VRobot *)m_pModelObj;
-    Q_ASSERT( NULL != pBase );
+    robotSinanju *pRobo = ( robotSinanju *)m_pModelObj;
+    Q_ASSERT( NULL != pRobo );
 
-    pBase->mArmLengths[0] = ui->spinBaseLen->value();
-    pBase->mArmLengths[1] = ui->spinBigLen->value();
-    pBase->mArmLengths[2] = ui->spinLittleLen->value();
+    pRobo->mArmLengths[0] = ui->spinBaseLen->value();
+    pRobo->mArmLengths[1] = ui->spinBigLen->value();
+    pRobo->mArmLengths[2] = ui->spinLittleLen->value();
 
-    pBase->mInitPos[0] = ui->spinX->value();
-    pBase->mInitPos[1] = ui->spinY->value();
-    pBase->mInitPos[2] = ui->spinZ->value();
+    pRobo->mInitPos[0] = ui->spinX->value();
+    pRobo->mInitPos[1] = ui->spinY->value();
+    pRobo->mInitPos[2] = ui->spinZ->value();
 
+    pRobo->setJointFactoryAngle( 0, ui->angleFactBase->value() );
+    pRobo->setJointFactoryAngle( 1, ui->angleFactBa->value() );
+    pRobo->setJointFactoryAngle( 2, ui->angleFactLa->value() );
+    pRobo->setJointFactoryAngle( 3, ui->angleFactWr->value() );
 }
 void SinanjuConfig::updateUi()
 {
     Q_ASSERT( m_pModelObj != NULL );
-    VRobot *pBase = ( VRobot *)m_pModelObj;
-    Q_ASSERT( NULL != pBase );
+    robotSinanju *pRobo = ( robotSinanju *)m_pModelObj;
+    Q_ASSERT( NULL != pRobo );
 
-    Q_ASSERT( pBase->mArmLengths.size() >= 3 );
+    Q_ASSERT( pRobo->mArmLengths.size() >= 3 );
 
-    ui->spinBaseLen->setValue( pBase->mArmLengths.at(0) );
-    ui->spinBigLen->setValue( pBase->mArmLengths.at(1) );
-    ui->spinLittleLen->setValue( pBase->mArmLengths.at(2) );
+    ui->spinBaseLen->setValue( pRobo->mArmLengths.at(0) );
+    ui->spinBigLen->setValue( pRobo->mArmLengths.at(1) );
+    ui->spinLittleLen->setValue( pRobo->mArmLengths.at(2) );
 
-    ui->spinX->setValue( pBase->mInitPos.at(0) );
-    ui->spinY->setValue( pBase->mInitPos.at(1) );
-    ui->spinZ->setValue( pBase->mInitPos.at(2) );
+    ui->spinX->setValue( pRobo->mInitPos.at(0) );
+    ui->spinY->setValue( pRobo->mInitPos.at(1) );
+    ui->spinZ->setValue( pRobo->mInitPos.at(2) );
+
+    ui->angleFactBase->setValue( pRobo->jointFactoryAngle(0) );
+    ui->angleFactBa->setValue( pRobo->jointFactoryAngle(1) );
+    ui->angleFactLa->setValue( pRobo->jointFactoryAngle(2) );
+    ui->angleFactWr->setValue( pRobo->jointFactoryAngle(3) );
 }

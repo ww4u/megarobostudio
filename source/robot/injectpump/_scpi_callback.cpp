@@ -162,7 +162,7 @@ static scpi_result_t _scpi_program( scpi_t * context )
     QList<float> dataset;
     int col = 5;
     QList<int> dataCols;
-    dataCols<<0<<1<<2<<3;
+    dataCols<<0<<1<<2<<3<<4;
     if ( 0 != comAssist::loadDataset( pLocalStr, strLen, col, dataCols, dataset ) )
     {  scpi_ret( SCPI_RES_ERR ); }
 
@@ -414,6 +414,7 @@ static scpi_result_t _scpi_purge( scpi_t * context )
 
 static scpi_command_t _scpi_cmds[]=
 {
+    COM_ITEMs(),
 
     CMD_ITEM( "*IDN?", _scpi_idn ),
     CMD_ITEM( "RUN",  _scpi_run ),

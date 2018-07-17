@@ -93,7 +93,7 @@ void InstMgr::dataIn(  QTcpSocket *socket,
         rdSize = pShell->read( retData, retSize );
 
         dataOut( socket, retData, rdSize );
-        logDbg()<<rdSize<<retData;
+//        logDbg()<<rdSize<<retData;
 //        for ( int i = 0; i < rdSize; i++ )
 //        { logDbg()<<QString::number( retData[i],16); }
     }
@@ -141,7 +141,7 @@ logDbg();
 int InstMgr::probeCanBus()
 {
     CANBus *pNewBus;
-    int ret, deviceSeq;
+    int ret;
 
     Q_ASSERT( NULL != m_pMainModel );
 
@@ -152,7 +152,6 @@ int InstMgr::probeCanBus()
     else
     { devCount = m_pMainModel->mSysPref.mDeviceCount; }
 
-    deviceSeq = 1;
     for ( int i = 0; i < devCount; i++ )
     {
         pNewBus = new CANBus();
@@ -167,16 +166,18 @@ int InstMgr::probeCanBus()
             return ERR_ALLOC_FAIL;
         }
 
+        //! receive cache
         ret = probeCANBus( pNewBus,
                            m_pMainModel->mSysPref.mDeviceId + i,
                            m_pMainModel->mSysPref.mVisaList.value( i, "" ),
-                           *pRoboList,
-                           deviceSeq );
+                           *pRoboList
+                            );
         do
         {
             //! fail
             if ( ret != 0 )
             {
+                pNewBus->close();
                 delete pNewBus;
                 delete pRoboList;
                 break;
@@ -208,21 +209,80 @@ int InstMgr::probeCanBus()
         }while( 0 );
     }
 
+    //! assign device id for each device
+    quint32 devSig;
+    int deviceSeq = 1;
+    QList<int> seqList;
+
+    //! phy robo
+    QList<VRobot*> phyRoboList;
+    foreach( VRoboList *pList, mDeviceTree )
+    {
+        Q_ASSERT( NULL != pList );
+        phyRoboList.append( *pList );
+    }
+
+    foreach( VRobot* pRobo, phyRoboList )
+    {
+        Q_ASSERT( NULL != pRobo );
+
+        devSig = pRobo->getSignature();
+
+        //! check
+        if ( matchSeqId(devSig, deviceSeq ) )
+        {
+            pRobo->setName( QString("device%1").arg(deviceSeq) );
+            pRobo->setSeqId( deviceSeq );
+
+            seqList.append( deviceSeq );
+        }
+    }
+
+    //! assign the others
+    deviceSeq = 1;
+    foreach( VRobot *pRobo, phyRoboList )
+    {
+        Q_ASSERT( NULL != pRobo );
+
+        if ( pRobo->getSeqId() == 0 )
+        {
+            while( seqList.contains( deviceSeq ) )
+            {
+                deviceSeq++;
+                Q_ASSERT( deviceSeq < 256 );
+            }
+
+            seqList.append( deviceSeq );
+
+            pRobo->setName( QString("device%1").arg(deviceSeq) );
+            pRobo->setSeqId( deviceSeq );
+        }
+    }
+
     return 0;
 }
 
 //! broadcast
 int InstMgr::emergencyStop()
 {
-    byte buf[] = { MRQ_mc_MOTION, MRQ_sc_MOTION_SWITCH, CAN_BROAD_CHAN, MRQ_MOTION_SWITCH_EMERGSTOP, 0 };
+    byte bufstp[] = { MRQ_mc_MOTION, MRQ_sc_MOTION_SWITCH, CAN_BROAD_CHAN, MRQ_MOTION_SWITCH_EMERGSTOP, 0 };
+    byte bufrst[] = { MRQ_mc_MOTION, MRQ_sc_MOTION_SWITCH, CAN_BROAD_CHAN, MRQ_MOTION_SWITCH_RESET, 0 };
     int ret;
 
     //! 1. broadcast
     DeviceId broadId( CAN_BROAD_ID );
-    foreach ( CANBus *pBus, mCanBuses)
+    //! for each page
+    for ( int i = 0; i < x_pages; i++ )
     {
-        Q_ASSERT( NULL != pBus );
-        ret = pBus->doWrite( broadId, buf, sizeof(buf) );
+        bufstp[4] = i;
+        bufrst[4] = i;
+        foreach ( CANBus *pBus, mCanBuses)
+        {
+            Q_ASSERT( NULL != pBus );
+            ret = pBus->doWrite( broadId, bufstp, sizeof(bufstp) );
+
+            ret = pBus->doWrite( broadId, bufrst, sizeof(bufrst) );
+        }
     }
 
     //! 2. request
@@ -238,10 +298,14 @@ int InstMgr::hardReset()
 
     //! 1. broadcast
     DeviceId broadId( CAN_BROAD_ID );
-    foreach ( CANBus *pBus, mCanBuses)
+    for ( int i = 0; i < x_pages; i++ )
     {
-        Q_ASSERT( NULL != pBus );
-        ret = pBus->doWrite( broadId, buf, sizeof(buf) );
+        buf[4] = i;
+        foreach ( CANBus *pBus, mCanBuses)
+        {
+            Q_ASSERT( NULL != pBus );
+            ret = pBus->doWrite( broadId, buf, sizeof(buf) );
+        }
     }
 
     //! 2. request state
@@ -266,7 +330,7 @@ int InstMgr::requestStates()
             Q_ASSERT( NULL != pBus );
             ret = pBus->doWrite( broadId, stateBuf, sizeof(stateBuf) );
         }
-//        ret = mCanBus.doWrite( broadId, stateBuf, sizeof(stateBuf) );
+
         if ( ret != 0 )
         { return ret; }
     }
@@ -742,8 +806,7 @@ void InstMgr::postProbeBus()
 int InstMgr::probeCANBus( CANBus *pNewBus,
                           int id,
                           const QString &devRsrc,
-                          VRoboList &roboList,
-                          int &seq )
+                          VRoboList &roboList )
 {
     Q_ASSERT( NULL != pNewBus );
 
@@ -879,14 +942,14 @@ int InstMgr::probeCANBus( CANBus *pNewBus,
 
             //! set def scpi name
             //! default device name
-            quint32 devSig;
+//            quint32 devSig;
 
-            devSig = pRobo->getSignature();
+//            devSig = pRobo->getSignature();
 
-            seq = selectSeqId( devSig, seq );
-            pRobo->setName( QString("device%1").arg(seq) );
-            pRobo->setSeqId( seq );
-            seq++;
+//            seq = selectSeqId( devSig, seq );
+//            pRobo->setName( QString("device%1").arg(seq) );
+//            pRobo->setSeqId( seq );
+//            seq++;
 
             //! open scpi
             pRobo->open();
@@ -982,7 +1045,7 @@ scpiShell *InstMgr::findShell( const QString &name )
     return NULL;
 }
 
-int InstMgr::selectSeqId( quint32 sig, int seqId )
+bool InstMgr::matchSeqId( quint32 sig, int &seqId )
 {
     QMapIterator<quint32, int> iter(mDeviceMap);
 
@@ -991,19 +1054,14 @@ int InstMgr::selectSeqId( quint32 sig, int seqId )
     {
         iter.next();
         if ( iter.key() == sig )
-        { return iter.value(); }
+        {
+            seqId = iter.value();
+            return true;
+        }
     }
 
-    //! exist
-    QList<int> seqs = mDeviceMap.values();
-
-    //! check exist in map?
-    while( seqs.contains( seqId ) )
-    {
-        seqId++;
-    }
-
-    return seqId;
+    return false;
 }
+
 
 }

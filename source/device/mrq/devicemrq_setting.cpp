@@ -248,7 +248,7 @@ int deviceMRQ::loadPwms()
 }
 
 int deviceMRQ::loadFanPwm()
-{logDbg()<<mFanInfo.mDuty<<mFanInfo.mFreq;
+{
     int ret;
     ret = m_pBus->read(DEVICE_RECEIVE_ID,
                         (byte)MRQ_mc_SYSTEM,
@@ -258,7 +258,7 @@ int deviceMRQ::loadFanPwm()
     if (ret != 0)
     { return ret; }
 
-    logDbg()<<mFanInfo.mDuty<<mFanInfo.mFreq;
+//    logDbg()<<mFanInfo.mDuty<<mFanInfo.mFreq;
 
     return 0;
 }
@@ -266,7 +266,7 @@ int deviceMRQ::loadLedPwm()
 {
     int ret;
     for ( int i = 0; i < 4; i++ )
-    {logDbg()<<mLedInfo[i].mDuty<<mLedInfo[i].mFreq;
+    {
         ret = m_pBus->read(DEVICE_RECEIVE_ID,
                             (byte)MRQ_mc_SYSTEM,
                             (byte)(MRQ_sc_SYSTEM_ARMLEDPARA_Q),
@@ -276,7 +276,7 @@ int deviceMRQ::loadLedPwm()
         if (ret != 0)
         { return ret; }
 
-        logDbg()<<mLedInfo[i].mDuty<<mLedInfo[i].mFreq;
+//        logDbg()<<mLedInfo[i].mDuty<<mLedInfo[i].mFreq;
     }
     return 0;
 }

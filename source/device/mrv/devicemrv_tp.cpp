@@ -9,6 +9,11 @@ void deviceMRV::acquireDownloader()
 void deviceMRV::releaseDownloader()
 { mDownloaderSema.release(); }
 
+bool deviceMRV::isDownloading( int ax )
+{
+    return mDownloaders.at(ax)->isRunning();
+}
+
 int deviceMRV::tpWrite( QList<TpRow*> &list, int ax )
 {
     mDownloaders.at( ax )->append( list );
@@ -56,6 +61,10 @@ int deviceMRV::tpBeginSend( int ax )
 //    checked_call( setPVT_SAVE( ax ) );
 
     checked_call( setPVT_RESET( ax) );
+
+    //! set cycle
+    checked_call( setPVT_CYCLES( ax, mPVT_CYCLES[ax]) );
+
     checked_call( setPVT_START( ax ) );
 
     return 0;

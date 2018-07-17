@@ -17,10 +17,12 @@ SOURCES = \
     _state.cpp \
     _calibration.cpp \
     _setup.cpp \
-    _build.cpp
+    _build.cpp \
+    sinanjutask.cpp
 
 HEADERS = \
-    sinanju.h
+    sinanju.h \
+    sinanjutask.h
 
 
 

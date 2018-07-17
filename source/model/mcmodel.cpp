@@ -42,6 +42,7 @@ void mcModel::deinit()
 
 void mcModel::stopCommunicate()
 {
+    Q_ASSERT( NULL != m_pInstMgr );
     if ( m_pInstMgr->isListening() )
     {
         m_pInstMgr->stop();

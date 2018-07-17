@@ -495,6 +495,7 @@ static scpi_result_t _scpi_test2( scpi_t * context )
 
 static scpi_command_t _scpi_cmds[]=
 {
+    COM_ITEMs(),
 
     CMD_ITEM( "*IDN?", _scpi_idn ),
     CMD_ITEM( "RUN",  _scpi_run ),

@@ -198,7 +198,7 @@ protected:
 Q_SIGNALS:
     void itemXActivated( mcModelObj* );
 
-private slots:
+public slots:
 
     void on_actionProject_triggered();
     void on_actionOpen_Prj_triggered();

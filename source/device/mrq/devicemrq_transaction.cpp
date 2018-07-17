@@ -64,9 +64,9 @@ void deviceMRQ::onMsg( int subAxes, RoboMsg &detail )
         region = detail.at(0).value<tpvRegion>();
 
         Q_ASSERT( mMrqFsms.contains(region) );
-logDbg()<<varMsg;
+//logDbg()<<varMsg;
         mMrqFsms[ region ]->proc( varMsg, detail );
-logDbg()<<varMsg;
+//logDbg()<<varMsg;
     }
     else
     { Q_ASSERT(false); }

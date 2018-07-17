@@ -37,9 +37,46 @@ RoboTaskRequest::~RoboTaskRequest()
     { delete m_pArg; }
 }
 
+QList<RoboTask*> RoboTask::_roboTasks;
+
+void RoboTask::killAll()
+{logDbg()<<RoboTask::_roboTasks.size();
+    QList<bool> waitList;
+    foreach( RoboTask *pTask, RoboTask::_roboTasks )
+    {
+        Q_ASSERT( NULL != pTask );
+        if ( pTask->isRunning() )
+        {//logDbg();
+//            pTask->terminate();
+            pTask->requestInterruption();
+            waitList.append( true );
+        }
+        else
+        {
+            waitList.append( false );
+        }
+    }
+//logDbg()<<RoboTask::_roboTasks.size();
+    for ( int i = 0; i < RoboTask::_roboTasks.size(); i++ )
+    {
+        if ( waitList.at(i) && RoboTask::_roboTasks.at(i)->isRunning() )
+        {
+            Q_ASSERT( RoboTask::_roboTasks.at(i) != NULL );
+            RoboTask::_roboTasks[i]->wait();
+        }
+    }
+}
+
 RoboTask::RoboTask( QObject *pParent ) : QThread( pParent )
 {
     m_pReq = NULL;
+
+    RoboTask::_roboTasks.append( this );
+}
+
+RoboTask::~RoboTask()
+{
+    RoboTask::_roboTasks.removeAll( this );
 }
 
 void RoboTask::run()

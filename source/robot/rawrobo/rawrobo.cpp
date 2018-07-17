@@ -204,7 +204,7 @@ bool RawRobo::waitCondition(
 }
 
 RawRoboFsm * RawRobo::fsm( const tpvRegion &region )
-{logDbg()<<region.axes()<<region.page()<<mFsms.size();
+{//logDbg()<<region.axes()<<region.page()<<mFsms.size();
     Q_ASSERT( mFsms.contains( region) );
     Q_ASSERT( NULL != mFsms[region] );
 
@@ -245,6 +245,10 @@ int RawRobo::waitFsm( pvt_region,
 {
     do
     {
+        //! termination
+        if ( QThread::currentThread()->isInterruptionRequested() )
+        { return -2; }
+
         Q_ASSERT( tick > 0 );
         QThread::usleep( tick );
 

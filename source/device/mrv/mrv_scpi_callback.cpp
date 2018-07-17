@@ -77,6 +77,15 @@ static scpi_result_t _scpi_fsmState( scpi_t * context )
 
     DEF_MRV();
 
+    //! if downloading
+    if ( LOCALMRV()->isDownloading( ax ) )
+    {
+        SCPI_ResultInt32( context, MRV_MOTION_STATE_1_reserve1 );
+
+        return SCPI_RES_OK;
+    }
+
+    //! real status
     int state = LOCALMRV()->status( tpvRegion(ax) );
 
     SCPI_ResultInt32( context, state );
@@ -124,6 +133,91 @@ static scpi_result_t _scpi_stop( scpi_t * context )
     return SCPI_RES_OK;
 }
 
+//! TP ax,page,e:/ddd.csv
+static scpi_result_t _scpi_program( scpi_t * context )
+{logDbg();
+    // read
+    DEF_LOCAL_VAR();
+
+    int ax, page;
+
+    if ( SCPI_RES_OK != SCPI_ParamInt32( context, &ax, true ) )
+    { scpi_ret( SCPI_RES_ERR ); }logDbg()<<ax;
+
+    if ( SCPI_RES_OK != SCPI_ParamInt32( context, &page, true ) )
+    { scpi_ret( SCPI_RES_ERR ); }logDbg()<<page;
+
+    if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
+    { scpi_ret( SCPI_RES_ERR ); }logDbg()<<strLen<<pLocalStr;
+    if (strLen < 1)
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    //! load
+    QList<float> dataSets;
+    int col = 2;
+    QList<int> dataCols;
+    dataCols<<0<<1;
+    if ( 0 != comAssist::loadDataset( pLocalStr, strLen, col, dataCols, dataSets ) )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    int dotSize = dataSets.size()/col;
+    if ( (dotSize < 2) )
+    { scpi_ret( SCPI_RES_ERR ); }logDbg()<<dotSize;
+
+//    //! t,p
+//    TpRow *pDots = new TpRow[ dotSize ];
+
+//    if ( NULL == pDots )
+//    { logDbg(); scpi_ret( SCPI_RES_ERR ); }
+
+    //! move data
+    QList<QPointF> dots;
+    QPointF dot;
+    for( int i = 0; i < dotSize; i++ )
+    {
+        dot.setX( dataSets.at(i*col+ 0) );
+        dot.setY( dataSets.at(i*col+ 1) );
+
+        dots.append( dot );
+    }
+
+    DEF_MRV();
+
+    CHECK_LINK( ax, page );
+
+    //! send
+    int ret = -1;
+    ret = LOCALMRV()->tpWrite( dots, ax );
+
+    if ( ret != 0 )
+    { scpi_ret( SCPI_RES_ERR ); }
+    else
+    { return SCPI_RES_OK; }
+}
+
+//! TP ax,page
+static scpi_result_t _scpi_call( scpi_t * context )
+{
+    // read
+    DEF_LOCAL_VAR();
+
+    DEF_MRV();
+
+    int ax, page;
+
+    if ( SCPI_RES_OK != SCPI_ParamInt32( context, &ax, true ) )
+    { scpi_ret( SCPI_RES_ERR ); }logDbg()<<ax;
+
+    if ( SCPI_RES_OK != SCPI_ParamInt32( context, &page, true ) )
+    { scpi_ret( SCPI_RES_ERR ); }logDbg()<<page;
+
+    int state = LOCALMRV()->switchRun( ax );
+
+    SCPI_ResultInt32( context, state );
+
+    return SCPI_RES_OK;
+}
+
 static scpi_result_t _scpi_arb_write( scpi_t * context )
 {
     DEF_MRV();
@@ -161,10 +255,11 @@ static scpi_result_t _scpi_arb_read( scpi_t * context )
     return SCPI_RES_OK;
 }
 
-
 static scpi_command_t _scpi_cmds[]=
 {
     #include "../mrv_board/_MRV_scpi_cmd.h"
+
+    COM_ITEMs(),
 
     CMD_ITEM( "*IDN?", _scpi_idn ),
 
@@ -176,35 +271,8 @@ static scpi_command_t _scpi_cmds[]=
     CMD_ITEM( "RUN", _scpi_run ),
     CMD_ITEM( "STOP", _scpi_stop ),
 
-
-//    CMD_ITEM( "ANGLE:INCREASE?", _scpi_incangle ),
-//    CMD_ITEM( "ANGLE:ABSOLUTE?", _scpi_absangle ),
-//    CMD_ITEM( "DISTANCE?", _scpi_distance ),
-
-//    CMD_ITEM( "PROGRAM", _scpi_program ),
-//    CMD_ITEM( "DOWNLOAD", _scpi_program ),
-
-//    CMD_ITEM( "CALL", _scpi_call ),
-
-//    CMD_ITEM( "LZERO", _scpi_lightZero ),             //! light zero
-//    CMD_ITEM( "PEZERO", _scpi_lightZero ),
-
-//    CMD_ITEM( "TASK", _scpi_task ),
-
-//    CMD_ITEM( "FANDUTY", _scpi_fanduty ),
-//    CMD_ITEM( "LEDDUTY", _scpi_ledduty ),
-
-//    CMD_ITEM( "ENCODER:ZEROVALID?", _scpi_encoderZeroValid ),
-//    CMD_ITEM( "ENCODER:ZERO?", _scpi_encoderZero ),
-
-//    CMD_ITEM( "FRAMES?", _scpi_busFrames ),
-
-//    CMD_ITEM( "IO:OUT", _scpi_ioOut ),
-
-//    //! PDM
-//    CMD_ITEM( "PDM:REQDATA", _scpi_requestPdmData ),    //! ch,start,len
-//    CMD_ITEM( "PDM:MICUPLOAD", _scpi_micUpload ),       //! ch, filename
-//    CMD_ITEM( "PDM:UPLOADSTATE?", _scpi_qUploadState ),
+    CMD_ITEM( "PROGRAM", _scpi_program ),
+    CMD_ITEM( "CALL", _scpi_call ),
 
     CMD_ITEM( "WRITE", _scpi_arb_write ),
     CMD_ITEM( "READ", _scpi_arb_read ),

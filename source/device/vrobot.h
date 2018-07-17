@@ -187,6 +187,9 @@ public:
 
     virtual int run( const tpvRegion &region=0  );
     virtual int stop( const tpvRegion &region=0  );
+
+    virtual int goFactory( const tpvRegion &region=0 );
+
     virtual int goZero( const tpvRegion &region=0 );
     virtual int goZero( const tpvRegion &region,
                         int jointTabId );
@@ -431,7 +434,6 @@ public:
     QList <double> mInitAngles;         //! init angle
     QList <double> mInitPos;            //! sinanju:x,y,z
 
-
     QList <double> mArmLengths;         //! arm lengths from base:[0]
     double mBaseCompensation;
     double mLengthUnit;                 //! mm
@@ -481,8 +483,15 @@ public:
 class RoboTask : public QThread
 {
     Q_OBJECT
+
+protected:
+    static QList<RoboTask*> _roboTasks;
+public:
+    static void killAll();
+
 public:
     RoboTask( QObject *pObj = NULL );
+    ~RoboTask();
 
 protected:
     virtual void run();

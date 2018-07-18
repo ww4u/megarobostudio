@@ -170,6 +170,18 @@ void deviceMgr::setupUi()
                               this,
                               SLOT( context_robo_prop() ) );
 
+    //! hub menu
+    m_pHubMenu = new QMenu( this );
+    m_pHubMenu->addAction( QIcon( ":/res/image/icon/54.png" ),
+                              tr("Alias..."),
+                              this,
+                              SLOT( context_hub_alias() ) );
+    m_pHubMenu->addSeparator();
+    m_pHubMenu->addAction( QIcon( ":/res/image/icon/55.png" ),
+                              tr("Console..."),
+                              this,
+                              SLOT( context_hub_console() ) );
+
 }
 
 void deviceMgr::desetupUi()
@@ -260,67 +272,68 @@ void deviceMgr::updatePhyBusTree( VRoboList *pRoboList )
     {
         Q_ASSERT( NULL != pDev );
 
+        //! dev
         pItemDev = new QTreeWidgetItem( pItemBus );
         Q_ASSERT( NULL != pItemDev );
 
-        //! model
-//        pMrqModel = ((MegaDevice::deviceMRQ *)pDev)->getModel();
-//        Q_ASSERT( NULL != pMrqModel );
-
-//        pItemDev->setText( 0, pMrqModel->getFullDesc() );
-
-//        toolTips= QString("0X%1/0X%2/0X%3")
-//                .arg( pMrqModel->mCAN_RECEIVEID, 0, 16 )
-//                .arg( pMrqModel->mCAN_SENDID, 0, 16 )
-//                .arg( pMrqModel->mCAN_GROUPID1, 0, 16 )
-//                .toUpper();
-
         pItemDev->setText( 0, pDev->deviceFullDesc() );
 
-        ids = pDev->deviceIds();
-        Q_ASSERT(ids.size()>=3);
-
-        toolTips= QString("0X%1/0X%2/0X%3")
-                .arg( ids[0], 0, 16 )
-                .arg( ids[1], 0, 16 )
-                .arg( ids[2], 0, 16 )
-                .toUpper();
-
-        pItemDev->setToolTip( 0, toolTips );
-
-        //! obj type
-        pDev->setType( mcModelObj::model_device );
-
-        pItemDev->setData( 0, Qt::UserRole, QVariant::fromValue(pDev) );
-        pItemDev->setIcon( 0, QIcon(":/res/image/icon2/mobile.png") );
-
-        //! foreach axes
-        QString strName;
-        QString strToolTip;
-
-        for ( int i = 0; i < pDev->axes(); i++ )
+        if ( pDev->getType() == mcModelObj::model_device )
         {
-            pItemAxes = new QTreeWidgetItem( pItemDev );
-            Q_ASSERT( NULL != pItemAxes );
+            ids = pDev->deviceIds();
+            Q_ASSERT(ids.size()>=3);
 
-            QList<int> subIds  = pDev->subIDs( i );
+            toolTips= QString("0X%1/0X%2/0X%3")
+                    .arg( ids[0], 0, 16 )
+                    .arg( ids[1], 0, 16 )
+                    .arg( ids[2], 0, 16 )
+                    .toUpper();
 
-            strName = QString("CH%1").arg( i + 1 );
-            pItemAxes->setText( 0, strName );
+            pItemDev->setToolTip( 0, toolTips );
 
-            strToolTip = "Unknown group";
-            if ( subIds.at(0) != sub_group_id_from && subIds.at(0) != 0 )
-            { strToolTip = tr("GROUP1"); }
+            //! obj type
+            pItemDev->setData( 0, Qt::UserRole, QVariant::fromValue(pDev) );
+            pItemDev->setIcon( 0, QIcon( QPixmap::fromImage( pDev->getImage() ) ) );
 
-            if ( subIds.at(1) != sub_group_id_from && subIds.at(1) != 0 )
-            { strToolTip = tr("GROUP2"); }
+            //! foreach axes
+            QString strName;
+            QString strToolTip;
 
-            pItemAxes->setToolTip( 0, strToolTip );
-            pItemAxes->setData( 0, Qt::UserRole, QVariant(i) );     //! type is int,and axes
+            for ( int i = 0; i < pDev->axes(); i++ )
+            {
+                pItemAxes = new QTreeWidgetItem( pItemDev );
+                Q_ASSERT( NULL != pItemAxes );
 
-            pItemAxes->setIcon( 0, QIcon(":/res/image/icon2/focus.png") );
+                QList<int> subIds  = pDev->subIDs( i );
 
-            mAxesCount++;
+                strName = QString("CH%1").arg( i + 1 );
+                pItemAxes->setText( 0, strName );
+
+                strToolTip = "Unknown group";
+                if ( subIds.at(0) != sub_group_id_from && subIds.at(0) != 0 )
+                { strToolTip = tr("GROUP1"); }
+
+                if ( subIds.at(1) != sub_group_id_from && subIds.at(1) != 0 )
+                { strToolTip = tr("GROUP2"); }
+
+                pItemAxes->setToolTip( 0, strToolTip );
+                pItemAxes->setData( 0, Qt::UserRole, QVariant(i) );     //! type is int,and axes
+
+                pItemAxes->setIcon( 0, QIcon(":/res/image/icon2/focus.png") );
+
+                mAxesCount++;
+            }
+        }
+        else if ( pDev->getType() == mcModelObj::model_hub )
+        {
+            pItemDev->setData( 0, Qt::UserRole, QVariant::fromValue(pDev) );
+            pItemDev->setIcon( 0,
+                               QIcon( QPixmap::fromImage( pDev->getImage() ) )
+                               );
+        }
+        else
+        {
+
         }
     }
 
@@ -555,28 +568,6 @@ void deviceMgr::context_import()
 }
 void deviceMgr::context_export()
 {
-//    Q_ASSERT( NULL != m_pMRQ );
-
-//    if ( !m_pMRQ->isFilled() &&
-//         QMessageBox::Cancel == MegaMessageBox::question(this,
-//                                 tr("question"),
-//                                 tr("Device setting has not been updated, sure to export?"),
-//                                 QMessageBox::Ok, QMessageBox::Cancel) )
-//    { return; }
-
-//    QFileDialog fDlg;
-
-//    fDlg.setAcceptMode( QFileDialog::AcceptSave );
-//    fDlg.setNameFilter( tr("Device setup (*.stp)") );
-//    fDlg.selectFile( m_pMRQ->name() + ".stp" );
-//    if ( QDialog::Accepted != fDlg.exec() )
-//    { return; }
-
-//    Q_ASSERT( m_pMRQ != NULL );
-//    m_pMRQ->getModel()->save( fDlg.selectedFiles().first() );
-
-//    sysLog( fDlg.selectedFiles().first(), tr("save success") );
-
     Q_ASSERT( NULL != m_pRobo );
 
     if ( !m_pRobo->isFilled() &&
@@ -802,6 +793,15 @@ void deviceMgr::context_robo_prop()
     emit itemXActivated( (mcModelObj*)m_pRobo );
 }
 
+void deviceMgr::context_hub_alias()
+{
+    context_robo_alias();
+}
+void deviceMgr::context_hub_console()
+{
+    context_robo_console();
+}
+
 void deviceMgr::contextMenuEvent(QContextMenuEvent *event)
 {
     QPoint pt = event->pos();
@@ -904,6 +904,16 @@ void deviceMgr::contextMenuEvent(QContextMenuEvent *event)
         {
             m_pMRQ = NULL;
         }
+    }
+    else if ( pObj->Type() == mcModelObj::model_hub )
+    {
+        m_pRobo = ( pObj );
+        m_pCurrTreeItem = pItem;
+        mCurrentAxes = -1;
+logDbg()<<m_pRobo->deviceFullDesc();
+        m_pHubMenu->popup( mapToGlobal( event->pos() ) );
+        event->accept();
+
     }
     else if ( pObj->Type() == mcModelObj::model_tpv )
     {

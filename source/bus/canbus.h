@@ -37,6 +37,10 @@ public:
 
     virtual int doSend( const QString &buf );
 
+    //! raw write
+    virtual int doWrite( byte *pBuf, int len );
+    virtual int doRead( byte *pOutBuf, int len, int tmo, int &retLen );
+
     virtual int doWrite( DeviceId &nodeId, byte *pBuf, int len );
     virtual int doWrite( QList<frameData> &canFrames );
 

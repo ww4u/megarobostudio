@@ -28,6 +28,7 @@ typedef unsigned int  CALL (*p_VCI_Transmit)(unsigned int DeviceType, unsigned i
 typedef unsigned int  CALL (*p_VCI_Receive)(unsigned int DeviceType, unsigned int DeviceInd, unsigned int CANInd, P_CAN_OBJ pReceive, unsigned int Len, int WaitTime);
 
 typedef unsigned int  CALL (*p_VCI_Write)(unsigned int DeviceType, unsigned int DeviceInd, char * data, unsigned int Len);
+typedef unsigned int CALL (*p_VCI_Read)(unsigned int DeviceType, unsigned int DeviceInd, char* pReceive, unsigned int Length, int WaitTime);
 
 class CANApi
 {
@@ -56,6 +57,7 @@ public:
     p_VCI_Receive receive;
 
     p_VCI_Write write;
+    p_VCI_Read read;
 
 public:
     QLibrary mDll;

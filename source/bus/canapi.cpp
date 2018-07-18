@@ -18,6 +18,9 @@ CANApi::CANApi()
     transmit = NULL;
     receive = NULL;
 
+    write = NULL;
+    read = NULL;
+
     mPortId = 0;
 }
 
@@ -100,6 +103,10 @@ bool CANApi::loadApi( int portId )
         write = (p_VCI_Write)mDll.resolve("VCI_Write");
         if ( !write )
         { logDbg();return false; }
+
+        read = (p_VCI_Read)mDll.resolve("VCI_Read");
+        if ( !read )
+        { logDbg();return false; }
     }
 
     return true;
@@ -169,6 +176,10 @@ bool CANApi::loadApi( int portId )
     {
         write = (p_VCI_Write)VCI_Write;
         if ( !write )
+        { logDbg();return false; }
+
+        read = (p_VCI_Read)VCI_Read;
+        if ( !read )
         { logDbg();return false; }
     }
 

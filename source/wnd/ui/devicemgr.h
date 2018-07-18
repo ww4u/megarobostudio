@@ -83,6 +83,10 @@ protected Q_SLOTS:
     void context_robo_panel();
     void context_robo_prop();
 
+    //! hub
+    void context_hub_alias();
+    void context_hub_console();
+
 protected:
     virtual void contextMenuEvent(QContextMenuEvent *event);
 
@@ -140,6 +144,8 @@ public:
 
     QMenu *m_pRoboMenu;
     QAction *m_pRoboPanelAction;
+
+    QMenu *m_pHubMenu;
 
     MegaDevice::InstMgr *m_pMgr;
     deviceDb *m_pDeviceDb;

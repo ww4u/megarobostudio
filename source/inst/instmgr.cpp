@@ -940,21 +940,24 @@ int InstMgr::probeCANBus( CANBus *pNewBus,
             //! add robot
             roboList.append( pRobo );
 
-            //! set def scpi name
-            //! default device name
-//            quint32 devSig;
-
-//            devSig = pRobo->getSignature();
-
-//            seq = selectSeqId( devSig, seq );
-//            pRobo->setName( QString("device%1").arg(seq) );
-//            pRobo->setSeqId( seq );
-//            seq++;
-
             //! open scpi
             pRobo->open();
         }
         sysProgress( uiProgBase + (uiStep++)*uiProgStep, tr("robo") );
+    }
+
+    //! hub for e
+    if ( pNewBus->pId() == 0 )
+    {
+        pRobo = new Mrh_e();
+        if ( NULL == pRobo )
+        { return ERR_ALLOC_FAIL; }
+
+        pRobo->attachBus( pNewBus );
+        pRobo->setInstMgr( this );
+
+        pRobo->open();
+        roboList.append( pRobo );
     }
 
     return 0;

@@ -325,6 +325,30 @@ int CANBus::doSend( const QString &buf )
     { return 0; }
 }
 
+int CANBus::doWrite( byte *pBuf, int len )
+{
+    if ( mApi.write == NULL )
+    { return -1; }
+    IBus::lock();
+    int ret = mApi.write( mDevType, mDevId, (char*)pBuf, len );
+    IBus::unlock();
+    if ( ret != 1 )
+    { return -2; }
+
+    return 0;
+}
+int CANBus::doRead( byte *pOutBuf, int len, int tmo, int &retLen )
+{
+    if ( mApi.read == NULL )
+    { return -1; }
+    IBus::lock();
+    int ret = mApi.read( mDevType, mDevId, (char*)pOutBuf, len, tmo );
+    IBus::unlock();
+    retLen = ret;
+
+    return 0;
+}
+
 int CANBus::doWrite(DeviceId &nodeId, byte *pBuf, int len)
 {
     Q_ASSERT( NULL != pBuf );

@@ -6,6 +6,7 @@
 #include <QImage>
 
 #include "../device/vrobot.h"
+#include "../device/hub_e/mrh_e.h"
 
 //! robots
 #include "./megatron/megatron.h"

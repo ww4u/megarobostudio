@@ -114,6 +114,8 @@ VRobot::VRobot()
 //    m_pRoboTask = new RoboTask();
 //    Q_ASSERT( NULL != m_pRoboTask );
     m_pRoboTask = NULL;
+                                        //! device
+    setType( mcModelObj::model_device );
 }
 
 VRobot::~VRobot()

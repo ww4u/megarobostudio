@@ -96,7 +96,7 @@ int deviceMRV::uploadBaseInfo()
 
     loadBtVer();
 
-    loadCycles();   //! for pt used
+    loadCycles();       //! for pt used
     loadDeviceMode();
     loadExecMode();
 

@@ -23,4 +23,6 @@
                             CMD_ITEM( "SYSTem:ERRor:NEXT?", SCPI_SystemErrorNextQ ),\
                             CMD_ITEM( "SYSTem:ERRor:COUNt?", SCPI_SystemErrorCountQ )
 
+#define LOCAL_OBJ( type )      ((type*)context->user_context)
+
 #endif

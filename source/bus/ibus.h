@@ -108,6 +108,10 @@ public :
 
     virtual int doSend( const QString &buf );
 
+    //! raw write
+    virtual int doWrite( byte *pBuf, int len );
+    virtual int doRead( byte *pOutBuf, int len, int tmo, int &retLen );
+
     //! write to bus
     virtual int doWrite( DeviceId &id, byte *pBuf, int len );
     virtual int doWrite( QList<frameData> &canFrames );
@@ -182,6 +186,10 @@ public :
 
 	//! apis
 	public:
+        //! raw write
+        int write( byte *pData, int len );
+        int read( byte *pOut, int len, int tmo, int &retLen );
+
 		//! write
         //! no para
         int write( DeviceId &id, byte mainCode,

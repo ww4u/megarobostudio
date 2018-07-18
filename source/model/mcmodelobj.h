@@ -12,7 +12,9 @@ public:
         model_none,
         model_bus,
         model_device,
+        model_hub,
         model_composite_device,
+
         model_tpv,
         model_tp,
 

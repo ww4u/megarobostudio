@@ -83,6 +83,12 @@ int IBus::clear()
 { return 0; }
 int IBus::doSend( const QString &buf )
 { return 0; }
+
+int IBus::doWrite( byte *pBuf, int len )
+{ return -1; }
+int IBus::doRead( byte *pOutBuf, int len, int tmo, int &retLen )
+{ return -1; }
+
 int IBus::doWrite( DeviceId &nodeId, byte *pBuf, int len )
 { return -1; }
 int IBus::doWrite( QList<frameData> &canFrames )
@@ -127,6 +133,11 @@ void IBus::unlockQuery()
 
 //    m_pRecvCache->attachBus( this );
 //}
+
+int IBus::write( byte *pData, int len )
+{ return doWrite(pData, len ); }
+int IBus::read( byte *pOut, int len, int tmo, int &retLen )
+{ return doRead( pOut, len, tmo, retLen );  }
 
 //! write
 //! no para

@@ -181,7 +181,5 @@ int VRobot::applySetting()
 quint32 VRobot::getSignature()
 { return 0; }
 
-void VRobot::setSeqId( int id )
-{ mSeqId = id; }
-int VRobot::getSeqId()
-{ return mSeqId; }
+QString VRobot::getSN()
+{ return mSN; }

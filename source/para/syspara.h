@@ -67,6 +67,9 @@ public:
                             //! user
     int mStyleIndex, mLangIndex;
     QString mLatestPrjPath, mLatestPrjName;
+
+                            //! system alias
+    QStringList mAliases, mSNList;
 };
 
 #endif // SYSPARA_H

@@ -1,6 +1,30 @@
 #include "deviceMRQ.h"
 namespace MegaDevice
 {
+
+
+int deviceMRQ::applyDeviceId(DeviceId &id )
+{
+    int ret;
+
+    //! set
+    ret = setDeviceId( id );
+    if ( ret != 0 )
+    { return ret; }
+
+    //! write the device
+    ret = applyIds( );
+    if ( ret != 0 )
+    { return ret; }
+
+    //! verify
+    ret = verifyIds( );
+    if ( ret != 0 )
+    { return ret; }
+
+    return 0;
+}
+
 int deviceMRQ::setDeviceId(DeviceId &id )
 {
     int ret;
@@ -19,17 +43,17 @@ int deviceMRQ::setDeviceId(DeviceId &id )
     _MRQ_model::setCAN_RECEIVEID( id.mRecvId );
     _MRQ_model::setCAN_BROADCASTID( id.mBroadcastId );
 
-    //! write the device
-    ret = applyIds( );
-    if ( ret != 0 )
-    { return ret; }
-
-    //! verify
-    ret = verifyIds( );
-    if ( ret != 0 )
-    { return ret; }
-
     setSignature( mDeviceId.mSignature );
+
+//    //! write the device
+//    ret = applyIds( );
+//    if ( ret != 0 )
+//    { return ret; }
+
+//    //! verify
+//    ret = verifyIds( );
+//    if ( ret != 0 )
+//    { return ret; }
 
     return 0;
 }

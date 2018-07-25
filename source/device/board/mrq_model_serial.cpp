@@ -27,7 +27,7 @@ int MRQ_model::saveSystem( QXmlStreamWriter &writer )
     writer.writeTextElement( "mSYSTEM_POWERON", toString(mSYSTEM_POWERON) );
 
     writer.writeTextElement( "desc", mDesc );
-    writer.writeTextElement( "sn", mSn );
+    writer.writeTextElement( "sn", mSN );
     writer.writeTextElement( "sw", mSwVer );
     writer.writeTextElement( "hw", mHwVer );
 
@@ -50,7 +50,7 @@ int MRQ_model::loadSystem( QXmlStreamReader &reader )
         { mDesc =  reader.readElementText(); }
 
         else if ( reader.name() == "sn" )
-        { mSn =  reader.readElementText(); }
+        { mSN =  reader.readElementText(); }
 
         else if ( reader.name() == "sw" )
         { mSwVer =  reader.readElementText(); }

@@ -70,6 +70,15 @@ void modelSysPref::rst()
 
     mLangIndex = 0;
     mStyleIndex = 0;
+
+    //! alias for 8
+    mAliases.clear();
+    mSNList.clear();
+    for ( int i = 0; i < 8; i++ )
+    {
+        mAliases<<QString("Device%1").arg( i );
+        mSNList<<"";
+    }
 }
 
 //! save to xml
@@ -189,6 +198,17 @@ int modelSysPref::save( const QString &str )
 
     writer.writeTextElement( "geomerty_resolution", QString::number( mGeometryResolution ) );
     writer.writeTextElement( "angle_resolution", QString::number( mAngleResolution ) );
+
+    writer.writeEndElement();
+
+    //! alias
+    writer.writeStartElement("alias");
+
+    for( int i = 0; i < mAliases.size(); i++ )
+    {
+        writer.writeTextElement( "sn", ( mSNList.at(i) ) );
+        writer.writeTextElement( "alias", ( mAliases.at(i) ) );
+    }
 
     writer.writeEndElement();
 
@@ -372,6 +392,22 @@ int modelSysPref::load( const QString &str )
                         { reader.skipCurrentElement(); }
                     }
                 }
+                else if ( reader.name() == "alias" )
+                {
+                    int idSn, idAlias;
+                    idSn = 0;
+                    idAlias = 0;
+                    while( reader.readNextStartElement() )
+                    {
+                        if ( reader.name() == "sn" )
+                        { mSNList[idSn++] = reader.readElementText(); }
+                        else if ( reader.name() == "alias" )
+                        { mAliases[idAlias++] = reader.readElementText(); }
+                        else
+                        { reader.skipCurrentElement(); }
+                    }
+                }
+
                 else
                 { reader.skipCurrentElement(); }
             }
@@ -432,3 +468,23 @@ QString& modelSysPref::latestPrjPath()
 { return mLatestPrjPath; }
 QString& modelSysPref::latestPrjName()
 { return mLatestPrjName; }
+
+int modelSysPref::findAlias( const QString &sn, QString &alias )
+{
+    QString strLower = sn.toLower();
+
+    for( int i = 0; i < mSNList.size(); i++ )
+    {
+        if ( strLower == mSNList.at(i).toLower() )
+        {
+            alias = mAliases.at(i);
+            if ( alias.size() > 1 )
+            { return 0; }
+            else
+            { return -1; }
+        }
+    }
+
+    return -1;
+}
+

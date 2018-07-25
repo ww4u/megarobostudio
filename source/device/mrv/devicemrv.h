@@ -37,6 +37,9 @@ public:
     virtual void postCtor();
 public:
     virtual const void* loadScpiCmd();
+
+    virtual int applyDeviceId(DeviceId &id );
+
     virtual int setDeviceId(DeviceId &id );
 
     virtual int uploadSetting();
@@ -51,7 +54,7 @@ public:
     virtual int uploadDesc();
     virtual int uploadBaseInfo();
     virtual int uploadIDs();
-    virtual int upload();
+    virtual int upload( EnumDeviceContent content );
 
     virtual QList<int> deviceIds();
     virtual QString deviceFullDesc();

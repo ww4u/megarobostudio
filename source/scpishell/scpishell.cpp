@@ -176,7 +176,7 @@ int scpiShell::write( const char *p, int len )
     scpi_bool_t ret;
     ret = SCPI_Input( (scpi_t*)p_scpi_context, p, len );
     if ( !ret )
-    { qDebug()<<QByteArray( p, len ); }
+    { qDebug()<<"!!!"<<__FUNCTION__<<__LINE__<<QByteArray( p, len ); }
 
     return SCPI_RES_OK;
 }

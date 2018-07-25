@@ -112,6 +112,9 @@ public:
 
     void setTPVBase( float t=1.0f, float p=1.0f, float v=1.0f );
 
+    int openBus();
+    int closeBus();
+
 protected:
     void preProbeBus();
     void postProbeBus();
@@ -128,14 +131,14 @@ protected:
 
     scpiShell *findShell( const QString &name );
 
-    bool matchSeqId( quint32 sig, int &seqId );
+    bool matchSignature( quint32 sig, QString &alias );
 
 public:
     mcModel *m_pMainModel;
     scpiShell *m_pMainShell;
 
     //! can bus
-    CANBus mCanBus;
+//    CANBus mCanBus;
                                 //! can buses
     QList< CANBus *> mCanBuses;
 
@@ -150,7 +153,7 @@ public:
     QList<IBus *> mFileBusList;
 
     INTRThread *m_pINTR;
-    QMap<quint32, int> mDeviceMap;
+    QMap<quint32, QString> mDeviceMap;
 };
 	
 }

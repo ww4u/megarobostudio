@@ -25,6 +25,11 @@ instClient::instClient(  )
 //    qDebug()<<__FUNCTION__<<__LINE__;
 //}
 
+instClient::~instClient(  )
+{
+    close();
+}
+
 int instClient::open( const QString &name,
                       const QString &server,
                       const quint16 port)
@@ -56,8 +61,11 @@ int instClient::open( const QString &name,
 }
 int instClient::close()
 {
-    mSocket.close();
-    mName.clear();
+    if ( mSocket.isOpen() )
+    {
+        mSocket.close();
+        mName.clear();
+    }
     return 0;
 }
 

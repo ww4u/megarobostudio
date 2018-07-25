@@ -13,6 +13,13 @@ namespace MegaDevice
 
 class VDevice : public scpiShell
 {
+public:
+    enum EnumDeviceContent
+    {
+        e_device_content_full = 0,
+        e_device_content_id,
+    };
+
 
 protected:
     IBus *m_pBus;
@@ -23,6 +30,8 @@ public:
     {}
 
     //! device id
+    virtual int applyDeviceId(DeviceId &id );
+
     virtual int setDeviceId( DeviceId &id );
     DeviceId getDeviceId();
 
@@ -70,7 +79,7 @@ public:
 
 public:
     virtual void rst();
-    virtual int upload();       //! upload a few data
+    virtual int upload( EnumDeviceContent content = e_device_content_full );       //! upload a few data
 
     virtual int uploadSetting();
 

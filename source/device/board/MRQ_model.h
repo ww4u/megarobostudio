@@ -152,7 +152,7 @@ public:
     virtual QString getFullDesc( int axesId = -1 );
 
     QString getDesc();
-    QString getSN();
+//    QString getSN();
     QString getSwVer();
     QString getHwVer();
     QString getFwVer();
@@ -163,7 +163,6 @@ public:
 protected:
     QString mDesc;
 
-    QString mSn;
     QString mSwVer;
     QString mHwVer;
     QString mFwVer;

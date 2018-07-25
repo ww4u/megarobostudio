@@ -153,6 +153,37 @@ void sysPref::updateUi()
     //! space
     ui->spinDistanceError->setValue( mPref.mGeometryResolution );
     ui->spinAngleError->setValue( mPref.mAngleResolution );
+
+    //! sn list
+    QTableWidgetItem *pItem;
+//    for( int i = 0; i < ui->tableAlias->rowCount(); i++ )
+    for ( int i = 0; i < 8; i++ )
+    {logDbg()<<i<<ui->tableAlias->rowCount()<<ui->tableAlias->columnCount();
+        pItem = ui->tableAlias->takeItem( i, 0 );
+        if ( pItem == NULL )
+        {
+            pItem = new QTableWidgetItem( mPref.mSNList.at(i) );
+        }
+        else
+        {
+            logDbg()<<pItem->data(Qt::DisplayRole).toString();
+            pItem->setData( Qt::EditRole, mPref.mSNList.at(i) );
+        }
+        ui->tableAlias->setItem( i, 0, pItem );
+
+        pItem = ui->tableAlias->item( i, 1 );
+        if ( pItem == NULL )
+        {
+            pItem = new QTableWidgetItem( mPref.mAliases.at(i) );
+        }
+        else
+        {
+            logDbg()<<pItem->data(Qt::DisplayRole).toString();
+            pItem->setData( Qt::EditRole, mPref.mAliases.at(i) );
+        }
+
+        ui->tableAlias->setItem( i, 1, pItem );
+    }
 }
 
 void sysPref::updateData()
@@ -225,6 +256,22 @@ void sysPref::updateData()
     //! space
     mPref.mGeometryResolution = ui->spinDistanceError->value();
     mPref.mAngleResolution = ui->spinAngleError->value();
+
+    //! alias list
+    QString str;
+    for( int i = 0; i < ui->tableAlias->rowCount(); i++ )
+    {
+//        for( int j = 0; j < ui->tableAlias->columnCount(); j++ )
+        {
+            str = ui->tableAlias->item( i, 0 )->data( Qt::DisplayRole ).toString();
+            mPref.mSNList[i] = str;
+
+            str = ui->tableAlias->item( i, 1 )->data( Qt::DisplayRole ).toString();
+            mPref.mAliases[i] = str;
+        }
+//        ui->tableAlias->item()
+    }
+//    mPref.mAliases
 }
 
 bool sysPref::validateDb()

@@ -390,6 +390,9 @@ int deviceMgr::postSearchDevice( appMsg msg, void *pPara )
 void deviceMgr::beginSearchDevice( void *pPara )
 {
     ui->pushButton->setEnabled( false );
+
+    ui->chkOnLine->setEnabled( false );
+    ui->chkOnLine->setChecked( false );
     mAxesCount = 0;
 
     emit signal_instmgr_changed( false, m_pMgr );
@@ -409,6 +412,9 @@ void deviceMgr::endSearchDevice( int ret, void *pPara )
     { return; }
 
     updateUi();
+
+    ui->chkOnLine->setEnabled( true );
+    ui->chkOnLine->setChecked( true );
 
 //    //! debug
 ////    if ( mAxesCount == 0 || mAxesCount == 15 )
@@ -957,6 +963,22 @@ void deviceMgr::updateUi()
     emit signal_instmgr_changed( true, m_pMgr );
 }
 
+void deviceMgr::openBus()
+{
+    if ( ui->chkOnLine->isEnabled() && !ui->chkOnLine->isChecked() )
+    {
+        on_chkOnLine_clicked( true );
+    }
+}
+void deviceMgr::closeBus()
+{
+    if ( ui->chkOnLine->isEnabled() && ui->chkOnLine->isChecked() )
+    {
+        on_chkOnLine_clicked( false );
+        ui->chkOnLine->setChecked( false );
+    }
+}
+
 void deviceMgr::on_toolState_clicked()
 {
     if ( m_pDiagram != NULL )
@@ -970,4 +992,15 @@ void deviceMgr::on_toolState_clicked()
     { return; }
 
     m_pDiagram->setVisible( !m_pDiagram->isVisible() );
+}
+
+void deviceMgr::on_chkOnLine_clicked(bool checked)
+{
+    if ( checked )
+    { on_pushButton_clicked(); }
+    else
+    {
+        Q_ASSERT( NULL != m_pMgr );
+        m_pMgr->closeBus();
+    }
 }

@@ -123,6 +123,9 @@ protected:
 
     static QSemaphore _eventSema;
     static bool _eventEn;
+
+    static QMap<int, bool> _mapBypass;
+
 public:
     //! thread
     static void lock();
@@ -139,6 +142,9 @@ public:
 
     static void cli();
     static void sti();
+
+    static void setByPass( int devId, bool b );
+    static bool getByPass( int devId );
 
 public:
     receiveCache( QObject *parent = 0 );

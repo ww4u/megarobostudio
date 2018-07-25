@@ -58,6 +58,24 @@ static scpi_result_t _scpi_rsrc( scpi_t *context )
     return SCPI_RES_OK;
 }
 
+static scpi_result_t _scpi_bus_open( scpi_t *context )
+{
+    DEF_MGR();
+
+    LOCAL_MGR()->getDeviceMgr()->openBus( );
+
+    return SCPI_RES_OK;
+}
+
+static scpi_result_t _scpi_bus_close( scpi_t *context )
+{
+    DEF_MGR();
+
+    LOCAL_MGR()->getDeviceMgr()->closeBus(  );
+
+    return SCPI_RES_OK;
+}
+
 static scpi_result_t _scpi_device_stop( scpi_t *context )
 {
     DEF_LOCAL_VAR();
@@ -88,6 +106,9 @@ static scpi_command_t _mrq_scpi_cmds[]=
 
     CMD_ITEM( "FIND", _scpi_find ),
     CMD_ITEM( "RESOURCE?", _scpi_rsrc ),
+
+    CMD_ITEM( "BUS:OPEN", _scpi_bus_open ),
+    CMD_ITEM( "BUS:CLOSE", _scpi_bus_close ),
 
     CMD_ITEM( "DEVICE:STOP", _scpi_device_stop ),
     CMD_ITEM( "DEVICE:RESET", _scpi_device_reset ),

@@ -97,6 +97,18 @@ mcModelObj::obj_type mcModelObj::getType()
 mcModelObj::obj_type mcModelObj::Type()
 { return mType; }
 
+//model_device,
+//model_hub,
+QString mcModelObj::typeString()
+{
+    if ( mType == model_device )
+    { return "Device"; }
+    else if ( mType == model_hub )
+    { return "Hub"; }
+    else
+    { return "Unk"; }
+}
+
 void mcModelObj::setObj( void *pObj )
 {
     m_pObj = pObj;

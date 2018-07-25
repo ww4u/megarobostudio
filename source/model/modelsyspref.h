@@ -32,6 +32,8 @@ public:
     QString& latestPrjPath();
     QString& latestPrjName();
 
+    int findAlias( const QString &sn, QString &alias );
+
 public:
     dbMeta mDbMeta;
 

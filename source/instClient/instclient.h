@@ -10,6 +10,7 @@ class instClient
 {
 public:
     instClient();
+    ~instClient();
 
 public:
     int open( const QString &name,

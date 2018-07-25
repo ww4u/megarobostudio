@@ -19,7 +19,8 @@ SOURCES = \
                 libscpi/src/minimal.c \
                 libscpi/src/utils.c \
                 libscpi/src/units.c \
-    libscpi/src/parser.c
+#    libscpi/src/parser.c
+    libscpi/src/parser.cpp
 
 
 HEADERS = \

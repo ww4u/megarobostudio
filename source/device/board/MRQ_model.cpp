@@ -182,10 +182,7 @@ QString MRQ_model::getFullDesc( int id )
 
 QString MRQ_model::getDesc()
 { return mDesc; }
-QString MRQ_model::getSN()
-{
-    return mSn;
-}
+
 QString MRQ_model::getSwVer()
 { return mSwVer; }
 QString MRQ_model::getHwVer()

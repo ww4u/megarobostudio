@@ -75,6 +75,8 @@ public:
 public:
     virtual const void* loadScpiCmd();
 
+    virtual int applyDeviceId(DeviceId &id );
+
     virtual int setDeviceId(DeviceId &id );
 
 public:
@@ -101,7 +103,7 @@ public:
     virtual int uploadDesc();
     virtual int uploadBaseInfo();
     virtual int uploadIDs();
-    virtual int upload();
+    virtual int upload( EnumDeviceContent content );
 
     virtual QList<int> deviceIds(); //! receive/send/group
     virtual QList<int> subIDs( int ch );

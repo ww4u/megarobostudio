@@ -14,6 +14,9 @@ namespace MegaDevice {
 
 #define can_device_desc mDevType, mDevId, mCanId
 
+#define check_handle()      if ( mHandle <= 0 )\
+                            { return -1; }
+
 CANBus::CANBus()
 {
     mHandle = 0;
@@ -175,6 +178,9 @@ void CANBus::close()
             m_pRecvCache->wait();
             delete m_pRecvCache;
             m_pRecvCache = NULL;
+
+            //! bypass off
+            receiveCache::setByPass( mDevId, 0 );
         }
 
         int ret;
@@ -292,6 +298,8 @@ int CANBus::size()
 
 int CANBus::flush( DeviceId &id )
 {
+    check_handle();
+
     IBus::lock();
     mApi.clear( mDevType, mDevId, mCanId );
     IBus::unlock();
@@ -314,6 +322,8 @@ int CANBus::doSend( const QString &buf )
 {
     Q_ASSERT( mPId == 0 );
 
+    check_handle();
+
     IBus::lock();
     int ret = mApi.write( mDevType, mDevId, buf.toLatin1().data(), buf.size() );
     IBus::unlock();
@@ -329,6 +339,9 @@ int CANBus::doWrite( byte *pBuf, int len )
 {
     if ( mApi.write == NULL )
     { return -1; }
+
+    check_handle();
+
     IBus::lock();
     int ret = mApi.write( mDevType, mDevId, (char*)pBuf, len );
     IBus::unlock();
@@ -339,8 +352,13 @@ int CANBus::doWrite( byte *pBuf, int len )
 }
 int CANBus::doRead( byte *pOutBuf, int len, int tmo, int &retLen )
 {
+    retLen = 0;
+
     if ( mApi.read == NULL )
     { return -1; }
+
+    check_handle();
+
     IBus::lock();
     int ret = mApi.read( mDevType, mDevId, (char*)pOutBuf, len, tmo );
     IBus::unlock();
@@ -353,6 +371,8 @@ int CANBus::doWrite(DeviceId &nodeId, byte *pBuf, int len)
 {
     Q_ASSERT( NULL != pBuf );
     Q_ASSERT( len > 0 && len < 9 );
+
+    check_handle();
 
     CAN_OBJ canObj;
     memset( &canObj, 0, sizeof(CAN_OBJ));
@@ -396,6 +416,8 @@ int CANBus::doWrite( QList<frameData> &canFrames )
     else
     { return -1; }
 
+    check_handle();
+
     CAN_OBJ objs[ canFrames.size() ];
 
     //! copy the data
@@ -430,6 +452,8 @@ IBus::unlock();
 
 int CANBus::doReceive( QList<frameData> &canFrames )
 {
+    check_handle();
+
     CAN_OBJ canObj[128];
 //    CAN_OBJ canObj[1];
     int ret;
@@ -675,7 +699,6 @@ logDbg();
     return 0;
 }
 
-
 int CANBus::collectHash( )
 {
     byte buf[] = { MRQ_mc_CAN, MRQ_sc_CAN_NETMANAGEHASH_Q };
@@ -710,6 +733,7 @@ logDbg();
     //! 4. all frames
     DeviceId *pDeviceId;
     uint32 hashId;
+    QList<quint32> hashIdList;
     for ( int i = 0; i < frame; i++ )
     {
         pDeviceId = new DeviceId();
@@ -722,7 +746,15 @@ logDbg();
         pDeviceId->setSendId( frameIds[i] );logDbg()<<frameIds[i];
         pDeviceId->setSignature( hashId );logDbg()<<QString::number( hashId, 16 );
 
-        mEnumDevices.append( pDeviceId );
+        if ( hashIdList.contains(hashId) )
+        {
+            delete pDeviceId;
+        }
+        else
+        {
+            mEnumDevices.append( pDeviceId );
+            hashIdList.append( hashId );
+        }
         logDbg()<<i;
     }
 logDbg();

@@ -43,6 +43,11 @@ void deviceMRV::postCtor()
     mDownloaderSema.release( 1 );
 }
 
+int deviceMRV::applyDeviceId(DeviceId &id )
+{
+    return 0;
+}
+
 int deviceMRV::setDeviceId(DeviceId &id )
 {
     int ret;
@@ -117,13 +122,20 @@ int deviceMRV::uploadIDs()
     return ret;
 }
 
-int deviceMRV::upload()
+int deviceMRV::upload( EnumDeviceContent content )
 {
-    uploadDesc();
+    if ( content == e_device_content_id )
+    {
+        uploadIDs();
+    }
+    else
+    {
+        uploadDesc();
 
-    uploadBaseInfo();
+        uploadBaseInfo();
 
-    uploadIDs();
+        uploadIDs();
+    }
 
     return 0;
 }
@@ -178,22 +190,22 @@ QString deviceMRV::loadSN()
     //! write
     ret = m_pBus->write(DEVICE_RECEIVE_ID, (byte)MRV_mc_SYSTEM, (byte)MRV_sc_SYSTEM_SN_Q);
     if (ret != 0)
-    { return mSn; }
+    { return mSN; }
 
     byte buf[32];
     int retLen;
     ret = m_pBus->doSplitRead(DEVICE_RECEIVE_ID, 2, buf, sizeof(buf), &retLen );
     if (ret != 0)
-    { return mSn; }
+    { return mSN; }
 
     //! enugh
     if ( retLen < sizeof_array(buf) && retLen > 0 )
     {
-        mSn = QByteArray( (const char*)buf, retLen );
-        logDbg()<<mSn;
+        mSN = QByteArray( (const char*)buf, retLen );
+        logDbg()<<mSN;
     }
 
-    return mSn;
+    return mSN;
 }
 
 QString deviceMRV::loadSwVer()

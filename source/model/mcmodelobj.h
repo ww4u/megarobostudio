@@ -65,6 +65,7 @@ public:
     void setType( obj_type type );
     obj_type getType();
     obj_type Type();
+    QString typeString();
 
     void setObj( void *pObj );
     void* getObj();

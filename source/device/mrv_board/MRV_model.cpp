@@ -110,10 +110,7 @@ QString MRV_model::getFullDesc( int id )
 
 QString MRV_model::getDesc()
 { return mDesc; }
-QString MRV_model::getSN()
-{
-    return mSn;
-}
+
 QString MRV_model::getSwVer()
 { return mSwVer; }
 QString MRV_model::getHwVer()

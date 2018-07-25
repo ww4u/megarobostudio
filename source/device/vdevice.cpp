@@ -20,6 +20,9 @@ VDevice::VDevice()
    mTmo = 1;
 }
 
+int VDevice::applyDeviceId(DeviceId &id )
+{ return 0; }
+
 int VDevice::setDeviceId( DeviceId &id )
 {
     mDeviceId = id;
@@ -72,7 +75,7 @@ int VDevice::getTimeout()
 void VDevice::rst()
 {}
 
-int VDevice::upload()
+int VDevice::upload( EnumDeviceContent content )
 { return 0; }
 
 int VDevice::uploadSetting()

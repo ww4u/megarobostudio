@@ -30,7 +30,10 @@ QString Mrh_e::deviceFullDesc( )
      return QString( "MRH-E(%1)").arg( getName() ) ;
 }
 
-int Mrh_e::write( byte *pData, int len )
+int Mrh_e::write( byte *pData,
+                  int len,
+                  bool bTrim,
+                  byte v )
 {
     Q_ASSERT( NULL != pData );
     Q_ASSERT( NULL != m_pBus );
@@ -49,11 +52,44 @@ int Mrh_e::write( byte *pData, int len )
         mBufSize = len + 1;
     }
 
-    //! copy the data to add \n
-    memcpy( m_pBuf, pData, len );
-    m_pBuf[len] = 0x0a;
+    //! copy
+    if ( bTrim )
+    {
+        int trimLen = 0;
+        for ( int i = 0; i < len; i++ )
+        {
+            if ( v != pData[i] )
+            { m_pBuf[ trimLen++] = pData[i]; }
+        }
+        len = trimLen;
+    }
+    else
+    {
+        //! copy the data to add \n
+        memcpy( m_pBuf, pData, len );
+    }
 
-    int ret = m_pBus->write( m_pBuf, len+1 );
+    //! trim the end
+    {
+        int pos = len - 1;
+        do
+        {
+            if ( m_pBuf[pos] == '\n'  )
+            {}
+            else if ( m_pBuf[pos] == '\r' )
+            {}
+            else
+            { break; }
+            pos--;
+
+        }while( pos >= 0 );
+
+        Q_ASSERT( pos > 0 );
+        m_pBuf[ pos + 1 ] = '\n';
+        len = pos + 2;
+    }
+
+    int ret = m_pBus->write( m_pBuf, len );
 
     return ret;
 }
@@ -87,6 +123,12 @@ byte* Mrh_e::recv( int &retLen, int len, int tmo )
     }
 
     read( m_pBuf, len, tmo, retLen );
+//    if ( retLen <= 0 )
+//    {}
+//    else
+//    {
+//        m_pBuf[ retLen ] = 0;
+//    }
 
     return m_pBuf;
 }

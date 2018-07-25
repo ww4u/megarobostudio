@@ -141,9 +141,8 @@ public:
     virtual int applySetting();
 
     virtual quint32 getSignature();
-    void setSeqId( int id );
-    int getSeqId();
 
+    QString getSN();
 public:
     //! msg
     virtual void onMsg(  int subAxes, RoboMsg &msg );
@@ -371,7 +370,6 @@ protected:
     int checkRoboTask();
 
 protected:
-    int mSeqId;
 
     int mAxes, mRegions;                //! configs
     int mDCAxes;
@@ -404,6 +402,7 @@ protected:
 public:
     QString mClass;                     //! robot class
     QString mDetail;
+    QString mSN;
     robotEnum mId;
     QImage mImage;                      //! device image
 

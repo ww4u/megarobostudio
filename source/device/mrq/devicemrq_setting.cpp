@@ -62,25 +62,31 @@ int deviceMRQ::uploadIDs()
     return ret;
 }
 
-int deviceMRQ::upload()
+int deviceMRQ::upload( EnumDeviceContent content )
 {
-    uploadDesc();
-
-    uploadBaseInfo();
-
-    uploadIDs();
-
-    loadTpvCap();
-
-    loadMotorBasic();
-
-    if ( mId == robot_geogoog_5_1 )
+    if ( content == e_device_content_id )
     {
-        loadPwms();
-
-        loadEncoderZero();
+        uploadIDs();
     }
+    else
+    {
+        uploadDesc();
 
+        uploadBaseInfo();
+
+        uploadIDs();
+
+        loadTpvCap();
+
+        loadMotorBasic();
+
+        if ( mId == robot_geogoog_5_1 )
+        {
+            loadPwms();
+
+            loadEncoderZero();
+        }
+    }
     return 0;
 }
 
@@ -146,22 +152,22 @@ QString deviceMRQ::loadSN()
     //! write
     ret = m_pBus->write(DEVICE_RECEIVE_ID, (byte)MRQ_mc_SYSTEM, (byte)MRQ_sc_SYSTEM_SN_Q);
     if (ret != 0)
-    { return mSn; }
+    { return mSN; }
 
     byte buf[32];
     int retLen;
     ret = m_pBus->doSplitRead(DEVICE_RECEIVE_ID, 2, buf, sizeof(buf), &retLen );
     if (ret != 0)
-    { return mSn; }
+    { return mSN; }
 
     //! enugh
     if ( retLen < sizeof_array(buf) && retLen > 0 )
     {
-        mSn = QByteArray( (const char*)buf, retLen );
-        logDbg()<<mSn;
+        mSN = QByteArray( (const char*)buf, retLen );
+        logDbg()<<mSN;
     }
 
-    return mSn;
+    return mSN;
 }
 
 QString deviceMRQ::loadSwVer()

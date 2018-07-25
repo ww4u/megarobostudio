@@ -239,6 +239,8 @@ QSemaphore receiveCache::_eventSema;
 
 bool receiveCache::_eventEn = true;
 
+QMap<int, bool> receiveCache::_mapBypass;
+
 void receiveCache::lock()
 { _threadMutex.lock(); }
 void receiveCache::unlock()
@@ -267,6 +269,25 @@ void receiveCache::cli()
 void receiveCache::sti()
 {
     receiveCache::_eventEn = true;
+}
+
+void receiveCache::setByPass( int devId, bool b )
+{
+    if ( _mapBypass.contains(devId) )
+    {
+        receiveCache::_mapBypass[ devId ] = b;
+    }
+    else
+    {
+        receiveCache::_mapBypass.insert( devId, b );
+    }
+}
+bool receiveCache::getByPass( int devId )
+{
+    if ( receiveCache::_mapBypass.contains(devId) )
+    { return receiveCache::_mapBypass[devId]; }
+    else
+    { return false; }
 }
 
 receiveCache::receiveCache( QObject *parent ) : QThread( parent )
@@ -558,6 +579,14 @@ void receiveCache::run()
     {
         if ( isInterruptionRequested() )
         { break; }
+
+        //! bypass
+        //! \todo busid
+        if ( receiveCache::getByPass( 0 ) )
+        {
+            QThread::msleep( 500 );
+            continue;
+        }
 
         do
         {

@@ -20,7 +20,11 @@ public:
 
 
 public:
-    int write( byte *pData, int len );
+    int write( byte *pData,
+               int len,
+               bool bTrim = false,
+               byte v = 0 );
+
     int read( byte *pData, int len, int tmo, int &retLen );
     byte* recv( int &retLen, int len = 512, int tmo = 2000 );
 

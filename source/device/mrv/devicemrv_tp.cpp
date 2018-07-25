@@ -103,16 +103,22 @@ int deviceMRV::tpEndSend( int ax, TpRow &preRow )
     {
         if ( mPVT_EXECMODE[ax] == MRV_PVT_EXECMODE_NCYCLE )
         {
+            //! loop
             if ( mPVT_CYCLES[ax] > 1 )
             { break; }
+            //! single
             else
-            {}
+            {
+                //! last data
+                preRow.mTL = 0;
+            }
         }
         else
-        {}
+        {
+            //! last data
+            preRow.mTL = -1;
+        }
 
-        //! last data
-        preRow.mTL = -1;
         checked_call( tpSend( &preRow, ax ) );
 
     }while( 0 );

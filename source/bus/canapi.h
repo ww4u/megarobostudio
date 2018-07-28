@@ -5,6 +5,10 @@
 
 #ifdef ARCH_32
 #include "./include/MegaCanDevice.h"      //! MegaCanDevice_VC
+#endif
+
+#ifdef ARCH_RASPBERRY
+#include "./bspcan/bspCan.h"
 #else
 #include "./include/megadevice.h"
 #endif

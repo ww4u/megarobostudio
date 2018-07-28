@@ -11,4 +11,8 @@ SUBDIRS = ../source/device/device.pro \
     ../source/robot/robot.pro \
     ../source/para/para.pro
 
+contains( ARCH_HOST, raspberry ) {
+    SUBDIRS += ../source/bus/bspcan/bspcan.pro
+}
+
 #TRANSLATIONS = megarobostudio_lib_zh.ts

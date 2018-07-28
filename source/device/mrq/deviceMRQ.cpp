@@ -549,6 +549,11 @@ int deviceMRQ::rotate( pvt_region, float t, float ang, float endV )
 {
     run( pvt_region_p );
 
+    //! set loop 1
+    setMOTIONPLAN_CYCLENUM( region.axes(),
+                            (MRQ_MOTION_SWITCH_1)region.page(),
+                             1 );
+
     Q_ASSERT( mMrqFsms.contains( region) );
     mMrqFsms[ region ]->setState( mrq_state_run_reqed );
 

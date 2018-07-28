@@ -96,6 +96,18 @@ void sysPref::updateUi()
     on_cmbPort_currentIndexChanged( mPref.mPort );
 #else
 #endif
+
+#ifdef ARCH_RASPBERRY
+    ui->cmbPort->setCurrentIndex( e_can_mcp );
+    ui->cmbPort->setEnabled( false );
+
+    ui->spinDeviceCount->setVisible( false );
+    ui->spinDeviceId->setVisible( false );
+
+    on_cmbPort_currentIndexChanged( e_can_mcp );
+#endif
+
+
     ui->cmbSpeed->setCurrentText( QString::number(mPref.mSpeed) );
 
     ui->edtVisa->setText( mPref.mVisaAddr );

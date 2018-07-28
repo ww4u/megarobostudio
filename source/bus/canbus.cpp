@@ -61,10 +61,15 @@ int CANBus::open( int devType,
         dllName = "miniusbcan.dll";
         busType = VCI_MR_USBCAN;
     }
-    else if ( mPId == 0 )
+    else if ( mPId == 0 )       //! mrh-e
     {
         dllName = "MegaCanDevice.dll";
         busType = VCI_MR_USBCAN;
+    }
+    else if ( mPId == 4 )       //! mcp
+    {
+        dllName = "";
+        busType = VCI_MCP_CAN;
     }
     else    //!  ( mPId == 2 )
     {
@@ -116,6 +121,9 @@ logDbg();
             mDevId = id;
             sysLog( desc, QString::number(mDevId) );
         }
+    }
+    else if ( busType == VCI_MCP_CAN )
+    {
 
     }
     else if ( busType == VCI_MR_USBCAN )
@@ -137,10 +145,10 @@ logDbg()<<mDevType<<mDevId<<mCanId<<mHandle;
 
     //! init
     if ( busType == VCI_MR_LANCAN )
-    {
+    {}
 
-    }
-    else if ( busType == VCI_MR_USBCAN )
+    else if ( busType == VCI_MR_USBCAN
+              || busType == VCI_MCP_CAN )
     {
         if ( 0 != initBus() )
         {
@@ -713,8 +721,15 @@ int CANBus::collectHash( )
     Q_ASSERT( m_pRecvCache != NULL );
     m_pRecvCache->clear();
 logDbg();
-    //! 1. broadcast
+
+    //! 0. can intf
     DeviceId broadId( CAN_BROAD_ID );
+    byte buf0[] = { MRQ_mc_LINK, MRQ_sc_LINK_INTFC, MRQ_LINK_INTFC_CAN };
+    ret = doWrite( broadId, buf0, sizeof(buf0) );logDbg();
+    if ( ret != 0 )
+    { return ret; }
+
+    //! 1. broadcast
     ret = doWrite( broadId, buf, sizeof(buf) );
     if ( ret != 0 )
     { return ret; }

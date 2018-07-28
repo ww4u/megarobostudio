@@ -1,16 +1,17 @@
-// ÏÂÁÐ ifdef ¿éÊÇ´´½¨Ê¹´Ó DLL µ¼³ö¸ü¼òµ¥µÄ
-// ºêµÄ±ê×¼·½·¨¡£´Ë DLL ÖÐµÄËùÓÐÎÄ¼þ¶¼ÊÇÓÃÃüÁîÐÐÉÏ¶¨ÒåµÄ MEGACANDEVICE_EXPORTS
-// ·ûºÅ±àÒëµÄ¡£ÔÚÊ¹ÓÃ´Ë DLL µÄ
-// ÈÎºÎÆäËûÏîÄ¿ÉÏ²»Ó¦¶¨Òå´Ë·ûºÅ¡£ÕâÑù£¬Ô´ÎÄ¼þÖÐ°üº¬´ËÎÄ¼þµÄÈÎºÎÆäËûÏîÄ¿¶¼»á½«
-// MEGACANDEVICE_API º¯ÊýÊÓÎªÊÇ´Ó DLL µ¼ÈëµÄ£¬¶ø´Ë DLL Ôò½«ÓÃ´Ëºê¶¨ÒåµÄ
-// ·ûºÅÊÓÎªÊÇ±»µ¼³öµÄ¡£
+// ï¿½ï¿½ï¿½ï¿½ ifdef ï¿½ï¿½ï¿½Ç´ï¿½ï¿½ï¿½Ê¹ï¿½ï¿½ DLL ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½òµ¥µï¿½
+// ï¿½ï¿½Ä±ï¿½×¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ DLL ï¿½Ðµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½ï¿½ï¿½ï¿½ MEGACANDEVICE_EXPORTS
+// ï¿½ï¿½ï¿½Å±ï¿½ï¿½ï¿½Ä¡ï¿½ï¿½ï¿½Ê¹ï¿½Ã´ï¿½ DLL ï¿½ï¿½
+// ï¿½Îºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿ï¿½Ï²ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½Ë·ï¿½ï¿½Å¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô´ï¿½Ä¼ï¿½ï¿½Ð°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½Îºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½á½«
+// MEGACANDEVICE_API ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½Ç´ï¿½ DLL ï¿½ï¿½ï¿½ï¿½Ä£ï¿½ï¿½ï¿½ï¿½ï¿½ DLL ï¿½ï¿½ï¿½Ã´Ëºê¶¨ï¿½ï¿½ï¿½
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½Ç±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½
 
 #ifndef _MEGA_CAN_DEVICE_H_
 #define _MEGA_CAN_DEVICE_H_
 #ifdef MEGACANDEVICE_EXPORTS
 #define MEGACANDEVICE_API extern "C" __declspec(dllexport)
 #else
-#define MEGACANDEVICE_API __declspec(dllimport)
+//#define MEGACANDEVICE_API __declspec(dllimport)
+#define MEGACANDEVICE_API
 #endif
 
 #define VCI_UNKNOW      0
@@ -21,30 +22,30 @@
 #define VCI_MR_USBCAN2 7  //tmc
 #define VCI_MR_LANCAN 8
 
+#define VCI_MCP_CAN  9
+
+//CANï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+#define	ERR_CAN_OVERFLOW			0x0001	//CANï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú²ï¿½FIFOï¿½ï¿½ï¿½
+#define	ERR_CAN_ERRALARM			0x0002	//CANï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ó±¨¾ï¿½
+#define	ERR_CAN_PASSIVE				0x0004	//CANï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+#define	ERR_CAN_LOSE				0x0008	//CANï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ù²Ã¶ï¿½Ê§
+#define	ERR_CAN_BUSERR				0x0010	//CANï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß´ï¿½ï¿½ï¿½
+#define	ERR_CAN_REG_FULL			0x0020	//CANï¿½ï¿½ï¿½Õ¼Ä´ï¿½ï¿½ï¿½ï¿½ï¿½
+#define	ERR_CAN_REG_OVER			0x0040	//CANï¿½ï¿½ï¿½Õ¼Ä´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+#define	ERR_CAN_ZHUDONG	    		0x0080	//CANï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+
+//Í¨ï¿½Ã´ï¿½ï¿½ï¿½ï¿½ï¿½
+#define	ERR_DEVICEOPENED			0x0100	//ï¿½è±¸ï¿½Ñ¾ï¿½ï¿½ï¿½
+#define	ERR_DEVICEOPEN				0x0200	//ï¿½ï¿½ï¿½è±¸ï¿½ï¿½ï¿½ï¿½
+#define	ERR_DEVICENOTOPEN			0x0400	//ï¿½è±¸Ã»ï¿½Ð´ï¿½
+#define	ERR_BUFFEROVERFLOW			0x0800	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+#define	ERR_DEVICENOTEXIST			0x1000	//ï¿½ï¿½ï¿½è±¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+#define	ERR_LOADKERNELDLL			0x2000	//×°ï¿½Ø¶ï¿½Ì¬ï¿½ï¿½Ê§ï¿½ï¿½
+#define ERR_CMDFAILED				0x4000	//Ö´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê§ï¿½Ü´ï¿½ï¿½ï¿½ï¿½ï¿½
+#define	ERR_BUFFERCREATE			0x8000	//ï¿½Ú´æ²»ï¿½ï¿½
 
 
-//CAN´íÎóÂë
-#define	ERR_CAN_OVERFLOW			0x0001	//CAN¿ØÖÆÆ÷ÄÚ²¿FIFOÒç³ö
-#define	ERR_CAN_ERRALARM			0x0002	//CAN¿ØÖÆÆ÷´íÎó±¨¾¯
-#define	ERR_CAN_PASSIVE				0x0004	//CAN¿ØÖÆÆ÷Ïû¼«´íÎó
-#define	ERR_CAN_LOSE				0x0008	//CAN¿ØÖÆÆ÷ÖÙ²Ã¶ªÊ§
-#define	ERR_CAN_BUSERR				0x0010	//CAN¿ØÖÆÆ÷×ÜÏß´íÎó
-#define	ERR_CAN_REG_FULL			0x0020	//CAN½ÓÊÕ¼Ä´æÆ÷Âú
-#define	ERR_CAN_REG_OVER			0x0040	//CAN½ÓÊÕ¼Ä´æÆ÷Òç³ö
-#define	ERR_CAN_ZHUDONG	    		0x0080	//CAN¿ØÖÆÆ÷Ö÷¶¯´íÎó
-
-//Í¨ÓÃ´íÎóÂë
-#define	ERR_DEVICEOPENED			0x0100	//Éè±¸ÒÑ¾­´ò¿ª
-#define	ERR_DEVICEOPEN				0x0200	//´ò¿ªÉè±¸´íÎó
-#define	ERR_DEVICENOTOPEN			0x0400	//Éè±¸Ã»ÓÐ´ò¿ª
-#define	ERR_BUFFEROVERFLOW			0x0800	//»º³åÇøÒç³ö
-#define	ERR_DEVICENOTEXIST			0x1000	//´ËÉè±¸²»´æÔÚ
-#define	ERR_LOADKERNELDLL			0x2000	//×°ÔØ¶¯Ì¬¿âÊ§°Ü
-#define ERR_CMDFAILED				0x4000	//Ö´ÐÐÃüÁîÊ§°Ü´íÎóÂë
-#define	ERR_BUFFERCREATE			0x8000	//ÄÚ´æ²»×ã
-
-
-//º¯Êýµ÷ÓÃ·µ»Ø×´Ì¬Öµ
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã·ï¿½ï¿½ï¿½×´Ì¬Öµ
 #define	STATUS_OK					1
 #define STATUS_ERR					0
 
@@ -53,7 +54,7 @@
 #define CMD_CHGDESIPANDPORT		2
 
 
-//1.ZLGCANÏµÁÐ½Ó¿Ú¿¨ÐÅÏ¢µÄÊý¾ÝÀàÐÍ¡£
+//1.ZLGCANÏµï¿½Ð½Ó¿Ú¿ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¡ï¿½
 typedef  struct  _BOARD_INFO {
 	unsigned short	hw_Version;
 	unsigned short	fw_Version;
@@ -66,20 +67,20 @@ typedef  struct  _BOARD_INFO {
 	unsigned short	Reserved[4];
 } BOARD_INFO, *P_BOARD_INFO;
 
-//2.¶¨ÒåCANÐÅÏ¢Ö¡µÄÊý¾ÝÀàÐÍ¡£
+//2.ï¿½ï¿½ï¿½ï¿½CANï¿½ï¿½Ï¢Ö¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¡ï¿½
 typedef  struct  _CAN_OBJ {
 	unsigned int	ID;
 	unsigned int	TimeStamp;
 	unsigned char	TimeFlag;
 	unsigned char	SendType;
-	unsigned char	RemoteFlag;//ÊÇ·ñÊÇÔ¶³ÌÖ¡
-	unsigned char	ExternFlag;//ÊÇ·ñÊÇÀ©Õ¹Ö¡
+	unsigned char	RemoteFlag;//ï¿½Ç·ï¿½ï¿½ï¿½Ô¶ï¿½ï¿½Ö¡
+	unsigned char	ExternFlag;//ï¿½Ç·ï¿½ï¿½ï¿½ï¿½ï¿½Õ¹Ö¡
 	unsigned char	DataLen;
 	unsigned char	Data[8];
 	unsigned char	Reserved[3];
 }CAN_OBJ, *P_CAN_OBJ;
 
-//3.¶¨ÒåCAN¿ØÖÆÆ÷×´Ì¬µÄÊý¾ÝÀàÐÍ¡£
+//3.ï¿½ï¿½ï¿½ï¿½CANï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×´Ì¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¡ï¿½
 typedef struct _CAN_STATUS {
 	unsigned char	ErrInterrupt;
 	unsigned char	regMode;
@@ -92,14 +93,14 @@ typedef struct _CAN_STATUS {
 	unsigned int	Reserved;
 }CAN_STATUS, *P_CAN_STATUS;
 
-//4.¶¨Òå´íÎóÐÅÏ¢µÄÊý¾ÝÀàÐÍ¡£
+//4.ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¡ï¿½
 typedef struct _ERR_INFO {
 	unsigned int	ErrCode;
 	unsigned char	Passive_ErrData[3];
 	unsigned char	ArLost_ErrData;
 } ERR_INFO, *P_ERR_INFO;
 
-//5.¶¨Òå³õÊ¼»¯CANµÄÊý¾ÝÀàÐÍ
+//5.ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½CANï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 typedef struct _INIT_CONFIG {
 	unsigned int	AccCode;
 	unsigned int	AccMask;

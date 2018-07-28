@@ -9,6 +9,7 @@
 #define VCI_MR_USBCAN2 7  //tmc
 #define VCI_MR_LANCAN 8
 
+#define VCI_MCP_CAN  9
 
 typedef struct _INIT_CONFIG {
     unsigned int	AccCode;

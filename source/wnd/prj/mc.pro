@@ -79,11 +79,34 @@ INCLUDEPATH += "C:/Program Files (x86)/IVI Foundation/VISA/WinNT/Include"
 LIBS += -L"C:/Program Files (x86)/IVI Foundation/VISA/WinNT/lib/msc"
 LIBS += -lvisa32
 DEFINES += NI_VISA
-DEFINES += ARCH_32
+
 }
-unix{
+
+include("../../../prj/config.pri")
+
+linux{
 LIBS += -lmrhe -lusb-1.0
+message( "linux" )
 }
+
+if ( linux-arm* ){
+LIBS += -lbspcan
+LIBS -= -lmrhe -lusb-1.0
+#error("rasp")
+message( "rasp" )
+}
+
+#message( $$(ARCH_HOST) )
+#message( $(ARCH_HOST) )
+#!equals( $$(ARCH_HOST), "raspberry" ) {
+#linux{
+#LIBS += -lmrhe -lusb-1.0
+#message( "mrhe" )
+#}
+#}
+
+
+
 
 # arith
 LIBS += -lsinanju_split -lmegatron_split -lh2_split -larith_delta

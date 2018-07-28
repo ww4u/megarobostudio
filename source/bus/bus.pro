@@ -6,9 +6,7 @@ CONFIG += static
 
 #QMAKE_LFLAGS += -enable-stdcall-fixup
 
-win32 {
-DEFINES += ARCH_32
-}
+include(../../prj/config.pri)
 
 INCLUDEPATH += ../scpi-parser/libscpi/inc
 

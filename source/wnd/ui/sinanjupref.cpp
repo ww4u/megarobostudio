@@ -200,6 +200,7 @@ void SinanjuPref::spyEdited()
     install_spy();
 }
 
+//! \todo only for arms
 void SinanjuPref::on_btnGoZero_clicked()
 {
     Q_ASSERT( m_pModelObj != NULL );

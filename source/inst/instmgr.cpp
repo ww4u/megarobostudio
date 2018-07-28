@@ -884,7 +884,8 @@ int InstMgr::probeCANBus( CANBus *pNewBus,
     int portDevType[]={VCI_MR_USBCAN,
                        VCI_MR_USBCAN,
                        VCI_MR_LANCAN,
-                       VCI_USBCAN2 };
+                       VCI_USBCAN2,
+                       VCI_MCP_CAN };
 
     Q_ASSERT( NULL != m_pMainModel );
     //! bus prop.

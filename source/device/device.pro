@@ -6,6 +6,7 @@ CONFIG += static
 
 TARGET = ../../../lib/device
 
+include(../../prj/config.pri)
 
 INCLUDEPATH += ../scpi-parser/libscpi/inc
 

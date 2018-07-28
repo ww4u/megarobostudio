@@ -9,7 +9,9 @@
 
 #ifdef ARCH_RASPBERRY
 #include "./bspcan/bspCan.h"
-#else
+#endif
+
+#ifdef ARCH_LINUX
 #include "./include/megadevice.h"
 #endif
 

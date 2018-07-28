@@ -52,14 +52,15 @@ sysPref::sysPref(QWidget *parent) :
     slot_updateValidateEn();
     slot_validate_listmrt();
 
-#ifndef ARCH_32
+#ifdef ARCH_32
+    ui->cmbPort->removeItem( e_can_mcp );
+#endif
+
+#ifdef ARCH_LINUX
     ui->cmbPort->setCurrentIndex( 0 );
     ui->cmbPort->setEnabled( false );
 #endif
 
-#ifdef ARCH_32
-    ui->cmbPort->removeItem( e_can_mcp );
-#endif
 
 #ifdef ARCH_RASPBERRY
     ui->cmbPort->setCurrentIndex( e_can_mcp );
@@ -67,6 +68,9 @@ sysPref::sysPref(QWidget *parent) :
 
     ui->spinDeviceCount->setVisible( false );
     ui->spinDeviceId->setVisible( false );
+
+    ui->label_34->setVisible( false );
+    ui->label_35->setVisible( false );
 #endif
 
 }

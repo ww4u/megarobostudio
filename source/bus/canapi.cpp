@@ -35,14 +35,12 @@ CANApi::~CANApi()
 
 #endif
 
-#ifndef ARCH_RASPBERRY
-
-#include "canapi_linux.cpp"
-
-#else
-
+#ifdef ARCH_RASPBERRY
 #include "canapi_raspberry.cpp"
+#endif
 
+#ifdef ARCH_LINUX
+#include "canapi_linux.cpp"
 #endif
 
 }

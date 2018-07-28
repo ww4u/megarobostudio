@@ -15,4 +15,6 @@ contains( ARCH_HOST, raspberry ) {
     SUBDIRS += ../source/bus/bspcan/bspcan.pro
 }
 
+
+
 #TRANSLATIONS = megarobostudio_lib_zh.ts

@@ -6,6 +6,8 @@ TARGET = ../../../lib/inst
 
 INCLUDEPATH += ../scpi-parser/libscpi/inc
 
+include(../../prj/config.pri)
+
 OBJECTS_DIR = ./obj
 MOC_DIR = ./obj
 

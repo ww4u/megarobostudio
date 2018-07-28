@@ -504,6 +504,16 @@
                  <normaloff>:/res/image/miniusbcan.png</normaloff>:/res/image/miniusbcan.png</iconset>
                </property>
               </item>
+              <item>
+               <property name="text">
+                <string>MCP</string>
+               </property>
+               <property name="icon">
+                <iconset>
+                 <normalon>:/res/image/mcp251x.png</normalon>
+                </iconset>
+               </property>
+              </item>
              </widget>
             </item>
             <item row="0" column="0">
@@ -516,7 +526,7 @@
             <item row="3" column="0" colspan="2">
              <widget class="QTabWidget" name="tabWidget_2">
               <property name="currentIndex">
-               <number>1</number>
+               <number>0</number>
               </property>
               <widget class="QWidget" name="tab_5">
                <attribute name="title">

@@ -21,7 +21,7 @@ public:
     int write( const char *data, int len );
     int size( int tmo = 2000 );
     int read( char *pData, int len );
-    QByteArray readAll( int tmo = 2000 );
+    QByteArray readAll( int tmo = 20000 );
 
 public:
     QString name();

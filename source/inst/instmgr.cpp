@@ -526,7 +526,7 @@ VRobot * InstMgr::findRobot( const QString &name, int axesId  )
         {
             Q_ASSERT( NULL != pDev );
 
-            if ( pDev->name() == name )
+            if ( QString::compare( pDev->name(), name, Qt::CaseInsensitive ) == 0)
             {
                 //! check axes
                 if ( axesId >= pDev->axes() )
@@ -578,7 +578,8 @@ VRobot * InstMgr::findRobot( const QString &name, const QString &bus )
     foreach( VRobot *pRobo, *pList )
     {
         Q_ASSERT( NULL != pRobo );
-        if ( pRobo->name() == name )
+//        if ( pRobo->name() == name )
+        if ( QString::compare( pRobo->name(), name, Qt::CaseInsensitive) == 0 )
         { return pRobo; }
     }
 
@@ -622,14 +623,16 @@ VRoboList *InstMgr::findBus( const QString &busName )
     foreach( VRoboList *pList, mDeviceTree )
     {
         Q_ASSERT( NULL != pList );
-        if ( pList->bus()->name() == busName )
+//        if ( pList->bus()->name() == busName )
+        if ( QString::compare( pList->bus()->name(), busName, Qt::CaseInsensitive) == 0 )
         { return pList; }
     }
 
     foreach( VRoboList *pList, mFileDeviceTree )
     {
         Q_ASSERT( NULL != pList );
-        if ( pList->bus()->name() == busName )
+//        if ( pList->bus()->name() == busName )
+        if ( QString::compare( pList->bus()->name(), busName, Qt::CaseInsensitive) == 0 )
         { return pList; }
     }
 

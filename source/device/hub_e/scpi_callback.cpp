@@ -231,6 +231,8 @@ make_w_api( _scpi_script_file_end )
 make_w_api( _scpi_debug_factory_ioconfig )
 make_w_api( _scpi_debug_factory_ioset )
 make_r_api( _scpi_debug_factory_ioget )
+make_r_api( _scpi_debug_factory_iogetall )
+
 
 //! write "adddfa,adfsdf,fafa"
 static scpi_result_t _scpi_write( scpi_t * context )
@@ -353,6 +355,7 @@ static scpi_command_t _scpi_cmds[]=
     CMD_ITEM( "DEBUG:FACTORY:IOCONFIG", _scpi_debug_factory_ioconfig ),
     CMD_ITEM( "DEBUG:FACTORY:IOSET", _scpi_debug_factory_ioset ),
     CMD_ITEM( "DEBUG:FACTORY:IOGET", _scpi_debug_factory_ioget ),
+    CMD_ITEM( "DEBUG:FACTORY:IOGETALL", _scpi_debug_factory_iogetall ),
 //    CMD_ITEM( "DEBUG:FACTORY:SERIAL", _scpi_idn ),
 //    CMD_ITEM( "DEBUG:FACTORY:RESETSD", _scpi_idn ),
 

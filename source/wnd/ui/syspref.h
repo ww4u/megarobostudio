@@ -5,10 +5,19 @@
 
 #include "../../model/modelsyspref.h"
 
-
 namespace Ui {
 class sysPref;
 }
+
+enum EnumCanPort
+{
+    e_can_mrh_e,
+    e_can_usb_ii,
+    e_can_mrh_t,
+    e_can_mrh_u,
+
+    e_can_mcp,
+};
 
 class sysPref : public QDialog
 {

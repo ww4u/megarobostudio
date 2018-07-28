@@ -127,6 +127,10 @@ protected:
     static QMap<int, bool> _mapBypass;
 
 public:
+
+    static void pendBus( bool b );
+    static bool isPendBus();
+
     //! thread
     static void lock();
     static void unlock();

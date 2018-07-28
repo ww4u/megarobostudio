@@ -472,6 +472,12 @@ IBus::lock();
                         mRecvTmo );
     IBus::unlock();
 
+#ifdef ARCH_32
+
+#else
+    QThread::msleep( mRecvTmo );
+#endif
+
     //! read fail
     if ( ret > sizeof_array( canObj ) || ret < 1 )
     { return -1; }

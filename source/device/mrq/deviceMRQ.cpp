@@ -522,6 +522,7 @@ int deviceMRQ::call( int n, const tpvRegion &region )
                             (MRQ_MOTION_SWITCH_1)region.page(),
                              n );
 
+
     //! valid
     if ( region.motionMode() >= 0 )
     {
@@ -531,6 +532,9 @@ int deviceMRQ::call( int n, const tpvRegion &region )
                                   (MRQ_MOTIONPLAN_MOTIONMODE_1)region.motionMode()
                                   );
     }
+
+    Q_ASSERT( mMrqFsms.contains( region) );
+    mMrqFsms[ region ]->setState( mrq_state_calcend );
 
     //! set mode
     lpc( region.axes() )->postMsg(
@@ -544,6 +548,9 @@ int deviceMRQ::call( int n, const tpvRegion &region )
 int deviceMRQ::rotate( pvt_region, float t, float ang, float endV )
 {
     run( pvt_region_p );
+
+    Q_ASSERT( mMrqFsms.contains( region) );
+    mMrqFsms[ region ]->setState( mrq_state_run_reqed );
 
     return pvtWrite( pvt_region_p, t, ang, endV );
 }

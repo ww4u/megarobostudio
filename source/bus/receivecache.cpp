@@ -592,19 +592,19 @@ void receiveCache::run()
         {
             frameCache.clear();
 
-            receiveCache::lock();
-
             //! have detatched
             if ( m_pBus == NULL )
             {
-                receiveCache::unlock();
-                QThread::msleep( 10 );
+                QThread::msleep( 1000 );
                 break;
             }
+
+            receiveCache::lock();
 
             //! try to read a frame
             Q_ASSERT( NULL != m_pBus );
             ret = m_pBus->doReceive( frameCache );
+
             receiveCache::unlock();
 //sysLog( QString::number(ret), QString::number(__LINE__) );
             //! success

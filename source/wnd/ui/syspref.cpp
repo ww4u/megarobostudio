@@ -56,6 +56,19 @@ sysPref::sysPref(QWidget *parent) :
     ui->cmbPort->setCurrentIndex( 0 );
     ui->cmbPort->setEnabled( false );
 #endif
+
+#ifdef ARCH_32
+    ui->cmbPort->removeItem( e_can_mcp );
+#endif
+
+#ifdef ARCH_RASPBERRY
+    ui->cmbPort->setCurrentIndex( e_can_mcp );
+    ui->cmbPort->setEnabled( false );
+
+    ui->spinDeviceCount->setVisible( false );
+    ui->spinDeviceId->setVisible( false );
+#endif
+
 }
 
 sysPref::~sysPref()
@@ -77,6 +90,7 @@ modelSysPref sysPref::getPref()
 
 void sysPref::updateUi()
 {
+
 #ifdef ARCH_32
     ui->cmbPort->setCurrentIndex( mPref.mPort );
     on_cmbPort_currentIndexChanged( mPref.mPort );
@@ -97,6 +111,7 @@ void sysPref::updateUi()
     ui->spinEnumTmo->setValue( mPref.mEnumerateTimeout );
     ui->spinPvtInterval->setValue( mPref.mTpvInterval );
     ui->chkAutoAssignId->setChecked( mPref.mbAutoAssignId );
+
     ui->spinDeviceCount->setValue( mPref.mDeviceCount );
     ui->spinDeviceId->setValue( mPref.mDeviceId );
 
@@ -403,52 +418,33 @@ void sysPref::on_cmbPort_currentIndexChanged(int index)
     for (int i = ui->tabWidget_2->count() - 1; i >= 0 ; i-- )
     { ui->tabWidget_2->removeTab( i ); }
 
-    if ( index == 0 )
+    if ( index == e_can_mrh_e )
     {
          ui->labelCanPic->setPixmap( QPixmap(QString::fromUtf8(":/res/image/megacan.png")) );
 
-//         ui->tabWidget_2->setTabEnabled( 0, true );
-//         ui->tabWidget_2->setTabEnabled( 1, false );
-//         ui->tabWidget_2->setCurrentIndex( 0 );
-
          ui->tabWidget_2->insertTab( 0, m_pCANSetting, QString( tr("Setting") ) );
     }
-    else if ( index == 1 )
+    else if ( index == e_can_usb_ii )
     {
         ui->labelCanPic->setPixmap( QPixmap(QString::fromUtf8(":/res/image/can2.png")) );
 
-//        ui->tabWidget_2->setTabEnabled( 0, true );
-//        ui->tabWidget_2->setTabEnabled( 1, false );
-//        ui->tabWidget_2->setCurrentIndex( 0 );
-
-//        ui->tabWidget_2->widget(0)->setVisible( true );
-//        ui->tabWidget_2->widget(1)->setVisible( false );
-
         ui->tabWidget_2->insertTab( 0, m_pCANSetting, QString( tr("Setting") ) );
     }
-    else if ( index == 2 )
+    else if ( index == e_can_mrh_t )
     {
         ui->labelCanPic->setPixmap( QPixmap(QString::fromUtf8(":/res/image/mrh-t.png")) );
 
-//        ui->tabWidget_2->setTabEnabled( 0, false );
-//        ui->tabWidget_2->setTabEnabled( 1, true );
-//        ui->tabWidget_2->setCurrentIndex( 1 );
-
-//        ui->tabWidget_2->widget(0)->setVisible( false );
-//        ui->tabWidget_2->widget(1)->setVisible( true );
-
         ui->tabWidget_2->insertTab( 0, m_pMRHTSetting, QString( tr("Setting") ) );
     }
-    else if ( index == 3 )
+    else if ( index == e_can_mrh_u )
     {
         ui->labelCanPic->setPixmap( QPixmap(QString::fromUtf8(":/res/image/miniusbcan.png")) );
 
-//        ui->tabWidget_2->setTabEnabled( 0, true );
-//        ui->tabWidget_2->setTabEnabled( 1, false );
-//        ui->tabWidget_2->setCurrentIndex( 0 );
-
-//        ui->tabWidget_2->widget(0)->setVisible( true );
-//        ui->tabWidget_2->widget(1)->setVisible( false );
+        ui->tabWidget_2->insertTab( 0, m_pCANSetting, QString( tr("Setting") ) );
+    }
+    else if ( index == e_can_mcp )
+    {
+        ui->labelCanPic->setPixmap( QPixmap(QString::fromUtf8(":/res/image/mcp251x.png")) );
 
         ui->tabWidget_2->insertTab( 0, m_pCANSetting, QString( tr("Setting") ) );
     }

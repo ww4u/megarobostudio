@@ -6,6 +6,8 @@ int robotSinanju::call( int n, const tpvRegion &region )
 
     setLoop( n, region );
 
+    fsm( region )->setState( MegaDevice::mrq_state_calcend );
+
     lpc()->postMsg( (eRoboMsg)(MegaDevice::mrq_msg_call), region );
 
     return 0;

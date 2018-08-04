@@ -32,6 +32,12 @@ VRobot *robotFact::createRobot( const QString &str )
             break;
         }
 
+        if ( QString::compare(str,"mrx-h2m",Qt::CaseInsensitive) == 0 )
+        {
+            pRobo = new robotH2M();
+            break;
+        }
+
         if ( QString::compare(str,"mrx-h2z",Qt::CaseInsensitive) == 0
              || QString::compare(str,"mrx-h2-z",Qt::CaseInsensitive) == 0 )
         {

@@ -202,7 +202,7 @@ void sysPref::updateUi()
         }
         ui->tableAlias->setItem( i, 0, pItem );
 
-        pItem = ui->tableAlias->item( i, 1 );
+        pItem = ui->tableAlias->takeItem( i, 1 );
         if ( pItem == NULL )
         {
             pItem = new QTableWidgetItem( mPref.mAliases.at(i) );

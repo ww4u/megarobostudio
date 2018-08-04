@@ -54,6 +54,11 @@
        </item>
        <item>
         <property name="text">
+         <string>MRX-H2M</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
          <string>MRX-H2Z</string>
         </property>
        </item>

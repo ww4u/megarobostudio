@@ -169,7 +169,7 @@ int MRQ::getSYSTEM_SOFTVER(  char * val0, char * val1, char * val2, bool bQuery 
 }
 //! 
 //! 
-int MRQ::getSYSTEM_FPGAVER(  char * val0, char * val1, char * val2, bool bQuery )
+int MRQ::getSYSTEM_FPGAVER(  char * val0, char * val1, char * val2, char * val3, char * val4, char * val5, bool bQuery )
 {
 	//! 2 7
 	int ret = 0;
@@ -177,12 +177,18 @@ int MRQ::getSYSTEM_FPGAVER(  char * val0, char * val1, char * val2, bool bQuery 
 	byte lval0 = 0;
 	byte lval1 = 0;
 	byte lval2 = 0;
-	ret = m_pBus->read( DEVICE_RECEIVE_ID, (byte)2, (byte)7 , &lval0, &lval1, &lval2, bQuery);
+	byte lval3 = 0;
+	byte lval4 = 0;
+	byte lval5 = 0;
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, (byte)2, (byte)7 , &lval0, &lval1, &lval2, &lval3, &lval4, &lval5, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
 	*val0 = (char)lval0;
 	*val1 = (char)lval1;
 	*val2 = (char)lval2;
+	*val3 = (char)lval3;
+	*val4 = (char)lval4;
+	*val5 = (char)lval5;
 	return 0;
 }
 //! 
@@ -2305,7 +2311,7 @@ int MRQ::getMOTIONPLAN_MOTIONMODE( byte val0
 	return 0;
 }
 //! U8,ENUM,ENUM
-//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8,1/4|1/8|1/16|1/32
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8,4|8|16|32
 int MRQ::setMOTIONPLAN_MODIFYDUTY( byte val0
 ,MRQ_MOTION_SWITCH_1 val1
 ,MRQ_MOTIONPLAN_MODIFYDUTY_1 val2 )

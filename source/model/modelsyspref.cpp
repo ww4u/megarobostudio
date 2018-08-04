@@ -320,7 +320,7 @@ int modelSysPref::load( const QString &str )
                 {
                     while( reader.readNextStartElement() )
                     {
-                        logDbg()<<reader.name();
+//                        logDbg()<<reader.name();
                         if ( reader.name() == "auto_expand" )
                         { mAutoExpand = reader.readElementText().toInt() > 0; }
                         else if ( reader.name() == "search_onopen" )

@@ -402,7 +402,12 @@ int CANBus::doWrite(DeviceId &nodeId, byte *pBuf, int len)
 //logDbg()<<canObj.ID<<canObj.Data[0]<<canObj.Data[1]<<canObj.Data[2]<<canObj.Data[3]<<canObj.Data[4];
     int ret;//logDbg();
     IBus::lock();//logDbg();
-    ret = mApi.transmit( can_device_desc, &canObj, 1);//logDbg();
+//    for( int kk = 0; kk < 50; kk++ )
+    {
+        ret = mApi.transmit( can_device_desc, &canObj, 1);//logDbg();
+//        ret = 0;
+    }
+
     mFrames += 1;
     if ( mWtInterval > 0 )
     { IBus::wait_us( mWtInterval ); }
@@ -639,7 +644,7 @@ qint64 CANBus::frames()
 { return mFrames; }
 
 void CANBus::beginEnumerate()
-{
+{logDbg()<<mEnumDevices.size();
     //! destroy the enumerate
     delete_all( mEnumDevices );
 
@@ -647,7 +652,7 @@ void CANBus::beginEnumerate()
 }
 
 void CANBus::endEnumerate()
-{
+{logDbg()<<mDevices.size()<<mEnumDevices.size();
     //! clear the current
     delete_all( mDevices );
 

@@ -1552,3 +1552,4 @@ void MainWindow::slot_pref_changed()
     }
 }
 
+

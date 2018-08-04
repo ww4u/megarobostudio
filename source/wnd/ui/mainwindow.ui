@@ -157,6 +157,7 @@
     </property>
     <addaction name="actionAbout"/>
     <addaction name="actionDocs"/>
+    <addaction name="actionDataSet"/>
     <addaction name="actionPackage"/>
     <addaction name="actionExample"/>
    </widget>
@@ -181,6 +182,10 @@
     <widget class="QMenu" name="menuPlugin">
      <property name="title">
       <string>Plugin</string>
+     </property>
+     <property name="icon">
+      <iconset resource="../res/res.qrc">
+       <normaloff>:/res/image/icon2/evaluate.png</normaloff>:/res/image/icon2/evaluate.png</iconset>
      </property>
     </widget>
     <addaction name="actionAngle_A"/>
@@ -552,6 +557,15 @@
    </property>
    <property name="text">
     <string>Torque View</string>
+   </property>
+  </action>
+  <action name="actionDataSet">
+   <property name="icon">
+    <iconset resource="../res/res.qrc">
+     <normaloff>:/res/image/icon/22.png</normaloff>:/res/image/icon/22.png</iconset>
+   </property>
+   <property name="text">
+    <string>DataSet...</string>
    </property>
   </action>
  </widget>

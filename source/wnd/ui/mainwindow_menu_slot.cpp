@@ -321,7 +321,9 @@ void MainWindow::on_actionPackage_triggered()
 {
     QStringList args;
     QString str;
-    str = QCoreApplication::applicationDirPath() + QDir::separator() + QStringLiteral("package") + QDir::separator() + QStringLiteral("mrq");
+    str = QCoreApplication::applicationDirPath()
+            + QDir::separator() + QStringLiteral("package")
+            + QDir::separator() + QStringLiteral("mrq");
     str.replace("/", QDir::separator() );
     args<<str;
     //! \todo linux
@@ -333,13 +335,30 @@ void MainWindow::on_actionExample_triggered()
 {
     QStringList args;
     QString str;
-    str = QCoreApplication::applicationDirPath() + QDir::separator() + QStringLiteral("package") + QDir::separator() + QStringLiteral("example");
+    str = QCoreApplication::applicationDirPath()
+            + QDir::separator() + QStringLiteral("package")
+            + QDir::separator() + QStringLiteral("example");
     str.replace("/", QDir::separator() );
     args<<str;
     //! \todo linux
     logDbg()<<args;
     QProcess::execute( "explorer.exe", args );
 }
+
+void MainWindow::on_actionDataSet_triggered()
+{
+    QStringList args;
+    QString str;
+    str = QCoreApplication::applicationDirPath()
+            + QDir::separator() + QStringLiteral("package")
+            + QDir::separator() + QStringLiteral("dataset");
+    str.replace("/", QDir::separator() );
+    args<<str;
+    //! \todo linux
+    logDbg()<<args;
+    QProcess::execute( "explorer.exe", args );
+}
+
 
 
 //! pref

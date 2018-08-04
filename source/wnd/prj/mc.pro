@@ -23,8 +23,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-VERSION = 0.1.0.10
-#WINRT_MANIFEST.name = "Mega Robo Studio"
+VERSION = 0.1.0.11
 
 OBJECTS_DIR = ./obj
 MOC_DIR = ./obj
@@ -62,7 +61,7 @@ LIBS += -linstserver
 LIBS += -linstclient
 
 LIBS += -lrobotfact
-LIBS += -lmegatron -lsinanju -ldelta -lh2 -lh2z -linjectpump
+LIBS += -lmegatron -lsinanju -ldelta -lh2 -lh2z -lh2m -linjectpump
 LIBS += -lmotor
 #-lslide
 LIBS += -lquebeley -lgeogoog -lgeo8 -lgeo10 -lgeo51
@@ -543,7 +542,7 @@ FORMS += \
     ../ui/tpedit.ui \
     ../ui/motorpref.ui
 
-RESOURCES = ../res/res.qrc
+#RESOURCES = ../res/res.qrc
 
 RC_ICONS = ../res/image/logo/megarobo.ico
 

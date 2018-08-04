@@ -126,7 +126,8 @@ void H2Pref::adaptUi()
 
     bool bZ = false;
     QString strPixmapGeo;
-    if ( pBase->getId() == VRobot::robot_h2 )
+    if ( pBase->getId() == VRobot::robot_h2
+         || pBase->getId() == VRobot::robot_h2_m )
     {
         bZ = false;
         strPixmapGeo = ":/res/image/joint/mrx-h2_geo.png";

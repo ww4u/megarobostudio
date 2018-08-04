@@ -85,6 +85,7 @@ public:
         robot_delta,
         robot_megatron,
         robot_h2,
+        robot_h2_m,
         robot_h2z,
 
         robot_ip,

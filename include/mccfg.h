@@ -73,6 +73,7 @@
 #define robo_as     "MRX-AS"
 #define robo_h2     "MRX-H2"
 
+#define robo_h2m    "MRX-H2M"
 #define robo_h2z    "MRX-H2Z"
 #define robo_ip     "MRX-INJ2"
 

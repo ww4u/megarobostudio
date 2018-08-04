@@ -13,6 +13,7 @@
 #include "./sinanju/sinanju.h"
 #include "./delta/delta.h"
 #include "./h2/h2.h"
+#include "./h2m/h2m.h"
 #include "./h2z/h2z.h"
 #include "./injectpump/injectpump.h"
 

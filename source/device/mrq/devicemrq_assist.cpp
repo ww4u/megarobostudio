@@ -26,9 +26,19 @@ static float _microSteps[]=
 float deviceMRQ::slowRatio( int ax )
 {
     Q_ASSERT( ax >= 0 && ax < axes() );
-    Q_ASSERT( mMOTOR_GEARRATIODEN[ax] > 0 );
 
-    return (float)mMOTOR_GEARRATIONUM[ax] / mMOTOR_GEARRATIODEN[ax];
+    //! rot
+    if ( mMOTOR_TYPE[ax] == MRQ_MOTOR_TYPE_ROTARY )
+    {
+        Q_ASSERT( mMOTOR_GEARRATIODEN[ax] > 0 );
+
+        return (float)mMOTOR_GEARRATIONUM[ax] / mMOTOR_GEARRATIODEN[ax];
+    }
+    //! lead
+    else
+    {
+        return mMOTOR_LEAD[ax];
+    }
 }
 float deviceMRQ::stepAngle( int ax )
 {

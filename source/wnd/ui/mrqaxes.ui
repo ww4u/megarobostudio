@@ -44,6 +44,20 @@
       <property name="verticalSpacing">
        <number>6</number>
       </property>
+      <item row="2" column="3">
+       <widget class="QLabel" name="label_10">
+        <property name="text">
+         <string>Max Velocity(deg/s)</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2" rowspan="4">
+       <widget class="Line" name="line">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+       </widget>
+      </item>
       <item row="0" column="0">
        <widget class="QLabel" name="label">
         <property name="text">
@@ -85,41 +99,6 @@
         </item>
        </widget>
       </item>
-      <item row="0" column="2" rowspan="4">
-       <widget class="Line" name="line">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="3">
-       <widget class="QLabel" name="label_9">
-        <property name="text">
-         <string>Volt(V)</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="4">
-       <widget class="QDoubleSpinBox" name="spinMaxVolt">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="5" rowspan="4">
-       <widget class="Line" name="line_2">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="label_3">
-        <property name="text">
-         <string>Step Angle</string>
-        </property>
-       </widget>
-      </item>
       <item row="1" column="1">
        <widget class="QComboBox" name="cmbStepAngle">
         <item>
@@ -144,32 +123,26 @@
         </item>
        </widget>
       </item>
-      <item row="1" column="3">
-       <widget class="QLabel" name="label_11">
+      <item row="0" column="3">
+       <widget class="QLabel" name="label_9">
         <property name="text">
-         <string>Max Current(A)</string>
+         <string>Volt(V)</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="4">
-       <widget class="QDoubleSpinBox" name="spinMaxCurrent">
+      <item row="0" column="4">
+       <widget class="QDoubleSpinBox" name="spinMaxVolt">
         <property name="enabled">
-         <bool>false</bool>
+         <bool>true</bool>
         </property>
        </widget>
       </item>
-      <item row="1" column="8">
-       <spacer name="horizontalSpacer_4">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>Step Angle</string>
         </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
+       </widget>
       </item>
       <item row="2" column="0">
        <widget class="QLabel" name="label_4">
@@ -192,17 +165,30 @@
         </item>
        </widget>
       </item>
-      <item row="2" column="3">
-       <widget class="QLabel" name="label_10">
+      <item row="1" column="7">
+       <spacer name="horizontalSpacer_4">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="1" column="3">
+       <widget class="QLabel" name="label_11">
         <property name="text">
-         <string>Max Velocity(deg/s)</string>
+         <string>Max Current(A)</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="4">
-       <widget class="QDoubleSpinBox" name="spinMaxVelocity">
+      <item row="1" column="4">
+       <widget class="QDoubleSpinBox" name="spinMaxCurrent">
         <property name="enabled">
-         <bool>false</bool>
+         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -239,10 +225,17 @@
         </property>
        </widget>
       </item>
+      <item row="2" column="4">
+       <widget class="QDoubleSpinBox" name="spinMaxVelocity">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
       <item row="3" column="4">
        <widget class="QDoubleSpinBox" name="spinMaxAcc">
         <property name="enabled">
-         <bool>false</bool>
+         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -809,7 +802,7 @@
               </size>
              </property>
              <property name="pixmap">
-              <pixmap resource="../res/res.qrc">:/res/image/icon2/focus.png</pixmap>
+              <pixmap>:/res/image/icon2/focus.png</pixmap>
              </property>
              <property name="scaledContents">
               <bool>true</bool>
@@ -828,7 +821,7 @@
               <string/>
              </property>
              <property name="pixmap">
-              <pixmap resource="../res/res.qrc">:/res/image/icon2/settings_light.png</pixmap>
+              <pixmap>:/res/image/icon2/settings_light.png</pixmap>
              </property>
              <property name="scaledContents">
               <bool>true</bool>
@@ -865,8 +858,6 @@
    <header>valuecombobox.h</header>
   </customwidget>
  </customwidgets>
- <resources>
-  <include location="../res/res.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

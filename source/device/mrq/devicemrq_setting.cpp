@@ -199,13 +199,18 @@ QString deviceMRQ::loadHwVer()
 }
 QString deviceMRQ::loadFwVer()
 {
-    char v0, v1, v2;
+    char v0, v1, v2,v3,v4,v5;
     int ret;
 
-    ret = getSYSTEM_FPGAVER( &v0, &v1, &v2 );
+    ret = getSYSTEM_FPGAVER( &v0, &v1, &v2, &v3, &v4, &v5 );
     if ( ret == 0 )
     {
-        mFwVer = QString("%1.%2.%3").arg((int)v0).arg((int)v1).arg((int)v2);
+        mFwVer = QString("%1.%2.%3.%4.%5.%6").arg((int)v0)
+                                             .arg((int)v1)
+                                             .arg((int)v2)
+                                             .arg((int)v3)
+                                             .arg((int)v4)
+                                             .arg((int)v5);
     }
 
     return mFwVer;

@@ -122,6 +122,7 @@ void roboProp::setupUi( int id )
     }
     //! h2 && h2z
     else if ( VRobot::robot_h2 == id
+              || VRobot::robot_h2_m == id
               || VRobot::robot_h2z == id
               )
     {

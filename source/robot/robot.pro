@@ -17,4 +17,5 @@ SUBDIRS = \
     sinanju/sinanju.pro \
     h2/h2.pro \
     h2z/h2z.pro \
+    h2m/h2m.pro \
     injectpump/injectpump.pro

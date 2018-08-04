@@ -205,12 +205,24 @@ static scpi_result_t _scpi_getSYSTEM_FPGAVER( scpi_t * context )
 
 	char oval2;
 
-	(GET_OBJ(context))->getSYSTEM_FPGAVER( &oval0, &oval1, &oval2 );
+	char oval3;
+
+	char oval4;
+
+	char oval5;
+
+	(GET_OBJ(context))->getSYSTEM_FPGAVER( &oval0, &oval1, &oval2, &oval3, &oval4, &oval5 );
 	SCPI_ResultInt32(context, oval0);
 
 	SCPI_ResultInt32(context, oval1);
 
 	SCPI_ResultInt32(context, oval2);
+
+	SCPI_ResultInt32(context, oval3);
+
+	SCPI_ResultInt32(context, oval4);
+
+	SCPI_ResultInt32(context, oval5);
 
 	return SCPI_RES_OK;
 }

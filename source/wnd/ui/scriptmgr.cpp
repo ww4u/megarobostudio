@@ -31,6 +31,9 @@ MegaTableModel *scriptMgr::newMotion( const QString &clsName )
     else if ( clsName.compare( robo_h2, Qt::CaseInsensitive) == 0 )
     { pNewModelObj = new H2MotionGroup( clsName ); }
 
+    else if ( clsName.compare( robo_h2m, Qt::CaseInsensitive) == 0 )
+    { pNewModelObj = new H2MotionGroup( clsName ); }
+
     else if ( clsName.compare( robo_h2z, Qt::CaseInsensitive) == 0 )
     { pNewModelObj = new H2ZMotionGroup( clsName ); }
 

@@ -216,10 +216,10 @@ static value_desc _value_desc_MRQ_MOTIONPLAN_MOTIONMODE_1[] = {
 	{2,"LVT_NOCORRECT",},
 };
 static value_desc _value_desc_MRQ_MOTIONPLAN_MODIFYDUTY_1[] = {
-        {0,"4",},
-        {1,"8",},
-        {2,"16",},
-        {3,"32",},
+	{0,"4",},
+	{1,"8",},
+	{2,"16",},
+	{3,"32",},
 };
 static value_desc _value_desc_MRQ_MOTIONPLAN_ENDSTATE_1[] = {
 	{0,"STOP",},

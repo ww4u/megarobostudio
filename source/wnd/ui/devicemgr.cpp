@@ -766,7 +766,8 @@ void deviceMgr::context_robo_panel()
                                    roboName,
                                    this );
     }
-    else if ( rId == VRobot::robot_h2 )
+    else if ( rId == VRobot::robot_h2
+              || rId == VRobot::robot_h2_m )
     {
         pRoboPanel = new H2Panel( m_pmcModel,
                                    roboName,
@@ -897,6 +898,7 @@ void deviceMgr::contextMenuEvent(QContextMenuEvent *event)
             //! panel for some robo
             if ( m_pRobo->getId() == VRobot::robot_sinanju
                  || m_pRobo->getId() == VRobot::robot_h2
+                 || m_pRobo->getId() == VRobot::robot_h2_m
                  || m_pRobo->getId() == VRobot::robot_h2z
                                     )
             { m_pRoboPanelAction->setVisible(true); }

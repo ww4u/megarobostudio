@@ -80,6 +80,12 @@ int deviceMRQ::loadMotorBasic()
         if ( ret != 0 )
         { return ret; }
 
+        ret = getMOTOR_LEAD( i, &mMOTOR_LEAD[i] );
+        if ( ret != 0 )
+        { return ret; }
+
+        ret = getMOTOR_TYPE( i, &mMOTOR_TYPE[i] );
+
         //! driver
         if ( mDriverId == VRobot::motor_driver_262 )
         {
@@ -510,13 +516,14 @@ bool deviceMRQ::pvtVerify( pvt_region,
         dist += qAbs( list.at(i)->mP - list.at(i-1)->mP );
     }
 
+    Q_ASSERT( stepAngle( region.axes() ) > 0 );
+
     //! calc the mem
     //! dist * slow ratio * micro / step angle
     float memDot = dist * deviceMRQ::_mPBase
                     * slowRatio( region.axes() )
                     * microStep( region.axes() )
                     / stepAngle( region.axes() );
-    Q_ASSERT( stepAngle( region.axes() ) > 0 );
     if ( memDot < 0 )
     {
         Q_ASSERT( memDot >= 0 );

@@ -256,11 +256,15 @@ qDebug()<<a.applicationDirPath();
         {
             //! style
             CommonHelper::setStyle( a.applicationDirPath() + "/style" + "/mega.qss" );
+
+            QResource::registerResource( a.applicationDirPath() + "/style" + "/res.rcc" );
         }
         else
         {
             //! style
             CommonHelper::setStyle( a.applicationDirPath() + "/style" + "/classic.qss" );
+
+            QResource::registerResource( a.applicationDirPath() + "/style" + "/black.rcc" );
         }
     }
 

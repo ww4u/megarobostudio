@@ -220,6 +220,7 @@ public slots:
     void on_actionDocs_triggered();
     void on_actionPackage_triggered();
     void on_actionExample_triggered();
+    void on_actionDataSet_triggered();
 
     void on_actionpref_triggered();
 
@@ -254,9 +255,6 @@ public slots:
     void on_actionImport_I_triggered();
 
     void on_actiontest_triggered();
-
-
-
 
 private:
     //! uis

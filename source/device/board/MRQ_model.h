@@ -72,6 +72,9 @@ protected:
     int saveMotionPlan( QXmlStreamWriter &writer );
     int loadMotionPlan( QXmlStreamReader &reader );
 
+    int saveMotionSlew( int ax, QXmlStreamWriter &writer );
+    int loadMotionSlew( int ax, QXmlStreamReader &reader );
+
     int saveSubMotionPlan( int ax, QXmlStreamWriter &writer );
     int loadSubMotionPlan( int ax, QXmlStreamReader &reader );
 
@@ -160,6 +163,12 @@ public:
 
     QString getSeqVer();
 
+    int setAccScale( int id, int scale );
+    int getAccScale( int id );
+
+    int setDecScale( int id, int scale );
+    int getDecScale( int id );
+
 protected:
     QString mDesc;
 
@@ -173,6 +182,8 @@ protected:
 
     PwmInfo mFanInfo;
     PwmInfo mLedInfo[4];
+public:
+    QList<int16> mAccList, mDecList;   //! 1/1000
 };
 
 }

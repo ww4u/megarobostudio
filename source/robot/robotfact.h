@@ -20,6 +20,8 @@
 #include "./motor/motor.h"
 #include "./slide/slide.h"
 
+#include "./igus_delta/igus_delta.h"
+
 #include "./quebeley/roboquebeley.h"
 #include "./geogoog/robogeogoog.h"
 #include "./geo8/robogeo8.h"
@@ -27,6 +29,7 @@
 #include "./geo51/robogeo51.h"
 
 #include "./gouf/robogouf.h"
+
 
 class robotFact
 {

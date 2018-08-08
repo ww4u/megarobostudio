@@ -59,6 +59,14 @@ VRobot *robotFact::createRobot( const QString &str )
             break;
         }
 
+        //! igus
+        if ( QString::compare(str,"igus-drylin",Qt::CaseInsensitive) == 0
+              )
+        {
+            pRobo = new robotIgusDelta();
+            break;
+        }
+
 //        if ( QString::compare(str,"motor",Qt::CaseInsensitive) == 0 )
 //        {
 //            pRobo = new robotMotor();

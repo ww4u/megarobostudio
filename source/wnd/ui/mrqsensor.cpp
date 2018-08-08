@@ -101,7 +101,7 @@ int mrqSensor::apply()
 
             checked_call( pDevice->setSENSORUART_STATE( sensPort,
                                                         subSens,
-                                                        (MRQ_CAN_NETMANAGELED)suCfg.mbOnOff ) );
+                                                        (MRQ_SYSTEM_REVMOTION)suCfg.mbOnOff ) );
 
         }
 

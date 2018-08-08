@@ -23,6 +23,8 @@ int getSYSTEM_HARDVER(  char * val0, char * val1, bool bQuery=true );
 int getSYSTEM_BOOTVER(  char * val0, char * val1, bool bQuery=true );
 int getSYSTEM_EVENTCODE(  char * val0, char * val1, char * val2, char * val3, char * val4, char * val5, bool bQuery=true );
 int getSYSTEM_DIOSTATE(  uint16 * val0, bool bQuery=true );
+int setSYSTEM_REVMOTION( MRQ_SYSTEM_REVMOTION val0 );
+int getSYSTEM_REVMOTION(  MRQ_SYSTEM_REVMOTION * val0, bool bQuery=true );
 int setSYSTEM_FANPARA( byte val0 );
 int getSYSTEM_FANPARA(  byte * val0, bool bQuery=true );
 int setSYSTEM_ARMLEDPARA( MRQ_SYSTEM_ARMLEDPARA val0
@@ -56,7 +58,7 @@ int getCAN_GROUPID2(  uint32 * val0, bool bQuery=true );
 int setCAN_BROADCASTID( uint32 val0 );
 int getCAN_BROADCASTID(  uint32 * val0, bool bQuery=true );
 int setCAN_APPLYPARA(  );
-int setCAN_NETMANAGELED( MRQ_CAN_NETMANAGELED val0 );
+int setCAN_NETMANAGELED( MRQ_SYSTEM_REVMOTION val0 );
 int setCAN_NETMANAGESTATE( MRQ_CAN_NETMANAGESTATE val0 );
 int getCAN_NETMANAGESTATE(  MRQ_CAN_NETMANAGESTATE * val0, bool bQuery=true );
 int setCAN_NETMANAGEID( MRQ_CAN_NETMANAGEID val0
@@ -66,8 +68,8 @@ int setCAN_NETMANAGEHASH( uint32 val0 );
 int getCAN_NETMANAGEHASH(  uint32 * val0, bool bQuery=true );
 int setCLOCK_FREQUENCY( uint32 val0 );
 int getCLOCK_FREQUENCY(  uint32 * val0, bool bQuery=true );
-int setCLOCK_SYNCREGISTER( MRQ_CAN_NETMANAGELED val0 );
-int getCLOCK_SYNCREGISTER(  MRQ_CAN_NETMANAGELED * val0, bool bQuery=true );
+int setCLOCK_SYNCREGISTER( MRQ_SYSTEM_REVMOTION val0 );
+int getCLOCK_SYNCREGISTER(  MRQ_SYSTEM_REVMOTION * val0, bool bQuery=true );
 int setCLOCK_STARTTYPE( MRQ_CLOCK_STARTTYPE val0 );
 int getCLOCK_STARTTYPE(  MRQ_CLOCK_STARTTYPE * val0, bool bQuery=true );
 int setCLOCK_SYNCSTATE( MRQ_CLOCK_SYNCSTATE val0 );
@@ -116,23 +118,22 @@ int setMOTION_ORIGIN( byte val0
 int getMOTION_ORIGIN( byte val0, uint32 * val1, bool bQuery=true );
 int setMOTION_GOORIGIN( byte val0 );
 int setMOTION_OFFSETSTATE( byte val0
-,MRQ_CAN_NETMANAGELED val1 );
-int getMOTION_OFFSETSTATE( byte val0, MRQ_CAN_NETMANAGELED * val1, bool bQuery=true );
+,MRQ_SYSTEM_REVMOTION val1 );
+int getMOTION_OFFSETSTATE( byte val0, MRQ_SYSTEM_REVMOTION * val1, bool bQuery=true );
 int setMOTION_OFFSET( byte val0
 ,int32 val1 );
 int getMOTION_COUNTCIRCLE( byte val0, int16 * val1, bool bQuery=true );
 int getMOTION_ABCOUNT( byte val0, int32 * val1, bool bQuery=true );
-int setMOTION_REVMOTION( byte val0
-,MRQ_CAN_NETMANAGELED val1 );
-int getMOTION_REVMOTION( byte val0, MRQ_CAN_NETMANAGELED * val1, bool bQuery=true );
-int setMOTION_ABCOUNTRESET( byte val0 );
+int setMOTION_ABCOUNTCLEAR( byte val0 );
+int getMOTION_RUNTIMEL( byte val0, uint32 * val1, bool bQuery=true );
+int getMOTION_RUNTIMEH( byte val0, uint32 * val1, bool bQuery=true );
 int setIDENTITY_GROUP( byte val0
 ,MRQ_IDENTITY_GROUP val1
 ,byte val2 );
 int getIDENTITY_GROUP( byte val0
 ,MRQ_IDENTITY_GROUP val1, byte * val2, bool bQuery=true );
-int setIDENTITY_DISTDEVICE( MRQ_CAN_NETMANAGELED val0 );
-int getIDENTITY_DISTDEVICE(  MRQ_CAN_NETMANAGELED * val0, bool bQuery=true );
+int setIDENTITY_DISTDEVICE( MRQ_SYSTEM_REVMOTION val0 );
+int getIDENTITY_DISTDEVICE(  MRQ_SYSTEM_REVMOTION * val0, bool bQuery=true );
 int setIDENTITY_LABEL( byte val0
 ,MRQ_IDENTITY_LABEL val1
 ,MRQ_IDENTITY_LABEL_1 val2 );
@@ -243,16 +244,6 @@ int getMOTIONPLAN_ENDSTATE( byte val0
 ,MRQ_MOTION_SWITCH_1 val1, MRQ_MOTIONPLAN_ENDSTATE_1 * val2, bool bQuery=true );
 int getMOTIONPLAN_BUFFERSIZE( byte val0
 ,MRQ_MOTION_SWITCH_1 val1, uint32 * val2, bool bQuery=true );
-int setMOTIONPLAN_ACCSCALE( byte val0
-,MRQ_MOTION_SWITCH_1 val1
-,uint16 val2 );
-int getMOTIONPLAN_ACCSCALE( byte val0
-,MRQ_MOTION_SWITCH_1 val1, uint16 * val2, bool bQuery=true );
-int setMOTIONPLAN_DECSCALE( byte val0
-,MRQ_MOTION_SWITCH_1 val1
-,uint16 val2 );
-int getMOTIONPLAN_DECSCALE( byte val0
-,MRQ_MOTION_SWITCH_1 val1, uint16 * val2, bool bQuery=true );
 int setMOTIONPLAN_STOPMODE( byte val0
 ,MRQ_MOTION_SWITCH_1 val1
 ,MRQ_MOTIONPLAN_STOPMODE_1 val2 );
@@ -270,9 +261,9 @@ int getMOTIONPLAN_STOPTIME( byte val0
 ,MRQ_MOTION_SWITCH_1 val1, f32 * val2, bool bQuery=true );
 int setMOTIONPLAN_OOSLINESTATE( byte val0
 ,MRQ_MOTION_SWITCH_1 val1
-,MRQ_CAN_NETMANAGELED val2 );
+,MRQ_SYSTEM_REVMOTION val2 );
 int getMOTIONPLAN_OOSLINESTATE( byte val0
-,MRQ_MOTION_SWITCH_1 val1, MRQ_CAN_NETMANAGELED * val2, bool bQuery=true );
+,MRQ_MOTION_SWITCH_1 val1, MRQ_SYSTEM_REVMOTION * val2, bool bQuery=true );
 int setMOTIONPLAN_OOSLINEOUTNUM( byte val0
 ,MRQ_MOTION_SWITCH_1 val1
 ,uint16 val2 );
@@ -285,9 +276,9 @@ int getMOTIONPLAN_OOSLINERESPONSE( byte val0
 ,MRQ_MOTION_SWITCH_1 val1, MRQ_MOTIONPLAN_OOSLINERESPONSE_1 * val2, bool bQuery=true );
 int setMOTIONPLAN_OOSTOTALSTATE( byte val0
 ,MRQ_MOTION_SWITCH_1 val1
-,MRQ_CAN_NETMANAGELED val2 );
+,MRQ_SYSTEM_REVMOTION val2 );
 int getMOTIONPLAN_OOSTOTALSTATE( byte val0
-,MRQ_MOTION_SWITCH_1 val1, MRQ_CAN_NETMANAGELED * val2, bool bQuery=true );
+,MRQ_MOTION_SWITCH_1 val1, MRQ_SYSTEM_REVMOTION * val2, bool bQuery=true );
 int setMOTIONPLAN_OOSTOTALOUTNUM( byte val0
 ,MRQ_MOTION_SWITCH_1 val1
 ,uint32 val2 );
@@ -319,11 +310,19 @@ int setTIME( byte val0
 int getTIME( byte val0
 ,MRQ_MOTION_SWITCH_1 val1
 ,byte val2, f32 * val3, bool bQuery=true );
+int setTIMESCALE( byte val0
+,MRQ_MOTION_SWITCH_1 val1
+,byte val2
+,uint16 val3
+,uint16 val4 );
+int getTIMESCALE( byte val0
+,MRQ_MOTION_SWITCH_1 val1
+,byte val2, uint16 * val3, uint16 * val4, bool bQuery=true );
 int setREPORT_STATE( byte val0
 ,MRQ_REPORT_STATE val1
-,MRQ_CAN_NETMANAGELED val2 );
+,MRQ_SYSTEM_REVMOTION val2 );
 int getREPORT_STATE( byte val0
-,MRQ_REPORT_STATE val1, MRQ_CAN_NETMANAGELED * val2, bool bQuery=true );
+,MRQ_REPORT_STATE val1, MRQ_SYSTEM_REVMOTION * val2, bool bQuery=true );
 int setREPORT_PERIOD( byte val0
 ,MRQ_REPORT_STATE val1
 ,uint32 val2 );
@@ -335,8 +334,8 @@ int setTRIGGER_MODE( byte val0
 ,MRQ_TRIGGER_MODE val1 );
 int getTRIGGER_MODE( byte val0, MRQ_TRIGGER_MODE * val1, bool bQuery=true );
 int setTRIGGER_PATTSTATE( byte val0
-,MRQ_CAN_NETMANAGELED val1 );
-int getTRIGGER_PATTSTATE( byte val0, MRQ_CAN_NETMANAGELED * val1, bool bQuery=true );
+,MRQ_SYSTEM_REVMOTION val1 );
+int getTRIGGER_PATTSTATE( byte val0, MRQ_SYSTEM_REVMOTION * val1, bool bQuery=true );
 int setTRIGGER_PATTERN( byte val0
 ,MRQ_TRIGGER_PATTERN val1
 ,MRQ_TRIGGER_PATTERN val2 );
@@ -352,9 +351,9 @@ int setTRIGGER_PATTSPERIOD( byte val0
 int getTRIGGER_PATTSPERIOD( byte val0, uint32 * val1, bool bQuery=true );
 int setTRIGGER_LEVELSTATE( byte val0
 ,MRQ_TRIGGER_LEVELSTATE val1
-,MRQ_CAN_NETMANAGELED val2 );
+,MRQ_SYSTEM_REVMOTION val2 );
 int getTRIGGER_LEVELSTATE( byte val0
-,MRQ_TRIGGER_LEVELSTATE val1, MRQ_CAN_NETMANAGELED * val2, bool bQuery=true );
+,MRQ_TRIGGER_LEVELSTATE val1, MRQ_SYSTEM_REVMOTION * val2, bool bQuery=true );
 int setTRIGGER_LEVELTYPE( byte val0
 ,MRQ_TRIGGER_LEVELSTATE val1
 ,MRQ_TRIGGER_LEVELTYPE_1 val2 );
@@ -385,8 +384,8 @@ int setDRIVER_MICROSTEPS( byte val0
 ,MRQ_DRIVER_MICROSTEPS val1 );
 int getDRIVER_MICROSTEPS( byte val0, MRQ_DRIVER_MICROSTEPS * val1, bool bQuery=true );
 int setDRIVER_STATE( byte val0
-,MRQ_CAN_NETMANAGELED val1 );
-int getDRIVER_STATE( byte val0, MRQ_CAN_NETMANAGELED * val1, bool bQuery=true );
+,MRQ_SYSTEM_REVMOTION val1 );
+int getDRIVER_STATE( byte val0, MRQ_SYSTEM_REVMOTION * val1, bool bQuery=true );
 int setDRIVER_SGLIMIT( byte val0
 ,MRQ_DRIVER_SGLIMIT val1
 ,int8 val2 );
@@ -461,9 +460,9 @@ int getSENSORUART_STOPBIT( MRQ_SENSORUART_BAUD val0, MRQ_RS232_STOPBIT * val1, b
 int setSENSORUART_APPLYPARA( MRQ_SENSORUART_BAUD val0 );
 int setSENSORUART_STATE( MRQ_SENSORUART_BAUD val0
 ,MRQ_IDENTITY_LABEL_1 val1
-,MRQ_CAN_NETMANAGELED val2 );
+,MRQ_SYSTEM_REVMOTION val2 );
 int getSENSORUART_STATE( MRQ_SENSORUART_BAUD val0
-,MRQ_IDENTITY_LABEL_1 val1, MRQ_CAN_NETMANAGELED * val2, bool bQuery=true );
+,MRQ_IDENTITY_LABEL_1 val1, MRQ_SYSTEM_REVMOTION * val2, bool bQuery=true );
 int setSENSORUART_SOF( MRQ_SENSORUART_BAUD val0
 ,MRQ_IDENTITY_LABEL_1 val1
 ,byte val2 );
@@ -486,8 +485,8 @@ int getSENSORUART_SWITCHTIME( MRQ_SENSORUART_BAUD val0
 ,MRQ_IDENTITY_LABEL_1 val1, uint32 * val2, bool bQuery=true );
 int getSENSORUART_DATA( MRQ_SENSORUART_BAUD val0
 ,MRQ_IDENTITY_LABEL_1 val1, byte * val2, char * val3, char * val4, char * val5, bool bQuery=true );
-int setISOLATORIN_STATE( MRQ_CAN_NETMANAGELED val0 );
-int getISOLATORIN_STATE(  MRQ_CAN_NETMANAGELED * val0, bool bQuery=true );
+int setISOLATORIN_STATE( MRQ_SYSTEM_REVMOTION val0 );
+int getISOLATORIN_STATE(  MRQ_SYSTEM_REVMOTION * val0, bool bQuery=true );
 int setISOLATORIN_TYPE( MRQ_TRIGGER_LEVELTYPE_1 val0 );
 int getISOLATORIN_TYPE(  MRQ_TRIGGER_LEVELTYPE_1 * val0, bool bQuery=true );
 int setISOLATORIN_RESPONSE( MRQ_MOTIONPLAN_OOSLINERESPONSE_1 val0 );
@@ -499,8 +498,8 @@ int getISOLATORIN_SMODE(  MRQ_TRIGGER_PATTSMODE * val0, bool bQuery=true );
 int setISOLATORIN_SPERIOD( uint32 val0 );
 int getISOLATORIN_SPERIOD(  uint32 * val0, bool bQuery=true );
 int setABSENCALARM_STATE( MRQ_IDENTITY_LABEL_1 val0
-,MRQ_CAN_NETMANAGELED val1 );
-int getABSENCALARM_STATE( MRQ_IDENTITY_LABEL_1 val0, MRQ_CAN_NETMANAGELED * val1, bool bQuery=true );
+,MRQ_SYSTEM_REVMOTION val1 );
+int getABSENCALARM_STATE( MRQ_IDENTITY_LABEL_1 val0, MRQ_SYSTEM_REVMOTION * val1, bool bQuery=true );
 int setABSENCALARM_UPLIMIT( MRQ_IDENTITY_LABEL_1 val0
 ,uint32 val1 );
 int getABSENCALARM_UPLIMIT( MRQ_IDENTITY_LABEL_1 val0, uint32 * val1, bool bQuery=true );
@@ -516,8 +515,8 @@ int getABSENCALARM_ZEROPOSITION( MRQ_IDENTITY_LABEL_1 val0, MRQ_ABSENCALARM_ZERO
 int setABSENCALARM_RESPONSE( MRQ_MOTIONPLAN_OOSLINERESPONSE_1 val0 );
 int getABSENCALARM_RESPONSE(  MRQ_MOTIONPLAN_OOSLINERESPONSE_1 * val0, bool bQuery=true );
 int setDISTANCEALARM_STATE( MRQ_IDENTITY_LABEL_1 val0
-,MRQ_CAN_NETMANAGELED val1 );
-int getDISTANCEALARM_STATE( MRQ_IDENTITY_LABEL_1 val0, MRQ_CAN_NETMANAGELED * val1, bool bQuery=true );
+,MRQ_SYSTEM_REVMOTION val1 );
+int getDISTANCEALARM_STATE( MRQ_IDENTITY_LABEL_1 val0, MRQ_SYSTEM_REVMOTION * val1, bool bQuery=true );
 int setDISTANCEALARM_ALARM1DIST( MRQ_IDENTITY_LABEL_1 val0
 ,uint16 val1 );
 int getDISTANCEALARM_ALARM1DIST( MRQ_IDENTITY_LABEL_1 val0, uint16 * val1, bool bQuery=true );
@@ -527,33 +526,14 @@ int getDISTANCEALARM_ALARM2DIST( MRQ_IDENTITY_LABEL_1 val0, uint16 * val1, bool 
 int setDISTANCEALARM_ALARM3DIST( MRQ_IDENTITY_LABEL_1 val0
 ,uint16 val1 );
 int getDISTANCEALARM_ALARM3DIST( MRQ_IDENTITY_LABEL_1 val0, uint16 * val1, bool bQuery=true );
-int setOTP_STATE( MRQ_CAN_NETMANAGELED val0 );
-int getOTP_STATE(  MRQ_CAN_NETMANAGELED * val0, bool bQuery=true );
-int setOTP_THRESHOLD( uint16 val0 );
-int getOTP_THRESHOLD(  uint16 * val0, bool bQuery=true );
-int setOTP_RESPONSE( MRQ_MOTIONPLAN_OOSLINERESPONSE_1 val0 );
-int getOTP_RESPONSE(  MRQ_MOTIONPLAN_OOSLINERESPONSE_1 * val0, bool bQuery=true );
-int setOTP_PERIOD( uint32 val0 );
-int getOTP_PERIOD(  uint32 * val0, bool bQuery=true );
-int getOTP_DATA(  uint32 * val0, bool bQuery=true );
-int setANALOGIN_STATE( MRQ_CAN_NETMANAGELED val0 );
-int getANALOGIN_STATE(  MRQ_CAN_NETMANAGELED * val0, bool bQuery=true );
-int setANALOGIN_THRESHOLDH( f32 val0 );
-int getANALOGIN_THRESHOLDH(  f32 * val0, bool bQuery=true );
-int setANALOGIN_THRESHOLDL( f32 val0 );
-int getANALOGIN_THRESHOLDL(  f32 * val0, bool bQuery=true );
-int setANALOGIN_RESPONSEH( MRQ_MOTIONPLAN_OOSLINERESPONSE_1 val0 );
-int getANALOGIN_RESPONSEH(  MRQ_MOTIONPLAN_OOSLINERESPONSE_1 * val0, bool bQuery=true );
-int setANALOGIN_RESPONSEL( MRQ_MOTIONPLAN_OOSLINERESPONSE_1 val0 );
-int getANALOGIN_RESPONSEL(  MRQ_MOTIONPLAN_OOSLINERESPONSE_1 * val0, bool bQuery=true );
 int getNEWDRIVER_TYPE( byte val0, MRQ_NEWDRIVER_TYPE * val1, bool bQuery=true );
 int setNEWDRIVER_CURRENT( byte val0 );
 int getNEWDRIVER_CURRENT(  byte * val0, bool bQuery=true );
 int setNEWDRIVER_MICROSTEPS( MRQ_NEWDRIVER_MICROSTEPS val0 );
 int getNEWDRIVER_MICROSTEPS(  MRQ_NEWDRIVER_MICROSTEPS * val0, bool bQuery=true );
 int setNEWDRIVER_STATE( byte val0
-,MRQ_CAN_NETMANAGELED val1 );
-int getNEWDRIVER_STATE( byte val0, MRQ_CAN_NETMANAGELED * val1, bool bQuery=true );
+,MRQ_SYSTEM_REVMOTION val1 );
+int getNEWDRIVER_STATE( byte val0, MRQ_SYSTEM_REVMOTION * val1, bool bQuery=true );
 int setPDM_SAMPLESTATE( byte val0
 ,MRQ_CLOCK_SYNCSTATE val1 );
 int getPDM_SAMPLESTATE( byte val0, MRQ_CLOCK_SYNCSTATE * val1, bool bQuery=true );
@@ -564,6 +544,25 @@ int getPDM_MICSTEPCOUNT( byte val0, uint16 * val1, bool bQuery=true );
 int getPDM_MICSTEPDATA( byte val0
 ,uint16 val1
 ,uint16 val2, byte * val3, bool bQuery=true );
+int setOTP_STATE( MRQ_SYSTEM_REVMOTION val0 );
+int getOTP_STATE(  MRQ_SYSTEM_REVMOTION * val0, bool bQuery=true );
+int setOTP_THRESHOLD( uint16 val0 );
+int getOTP_THRESHOLD(  uint16 * val0, bool bQuery=true );
+int setOTP_RESPONSE( MRQ_MOTIONPLAN_OOSLINERESPONSE_1 val0 );
+int getOTP_RESPONSE(  MRQ_MOTIONPLAN_OOSLINERESPONSE_1 * val0, bool bQuery=true );
+int setOTP_PERIOD( uint32 val0 );
+int getOTP_PERIOD(  uint32 * val0, bool bQuery=true );
+int getOTP_DATA(  uint32 * val0, bool bQuery=true );
+int setANALOGIN_STATE( MRQ_SYSTEM_REVMOTION val0 );
+int getANALOGIN_STATE(  MRQ_SYSTEM_REVMOTION * val0, bool bQuery=true );
+int setANALOGIN_THRESHOLDH( f32 val0 );
+int getANALOGIN_THRESHOLDH(  f32 * val0, bool bQuery=true );
+int setANALOGIN_THRESHOLDL( f32 val0 );
+int getANALOGIN_THRESHOLDL(  f32 * val0, bool bQuery=true );
+int setANALOGIN_RESPONSEH( MRQ_MOTIONPLAN_OOSLINERESPONSE_1 val0 );
+int getANALOGIN_RESPONSEH(  MRQ_MOTIONPLAN_OOSLINERESPONSE_1 * val0, bool bQuery=true );
+int setANALOGIN_RESPONSEL( MRQ_MOTIONPLAN_OOSLINERESPONSE_1 val0 );
+int getANALOGIN_RESPONSEL(  MRQ_MOTIONPLAN_OOSLINERESPONSE_1 * val0, bool bQuery=true );
 };
 }
 #endif

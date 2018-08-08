@@ -442,6 +442,23 @@ int IBus::write( DeviceId &nodeId, byte mainCode,
 
     return doWrite( nodeId, buf, sizeof( buf ) );
 }
+
+//! 5 para
+int IBus::write( DeviceId &id, byte mainCode,
+           byte subCode,
+           byte v0,
+           byte v1,
+           uint16 v2,
+           uint16 v3
+            )
+{
+    byte buf[8] = { mainCode, subCode, v0, v1 };
+    memcpy( buf + 4, &v2, sizeof(uint16) );
+    memcpy( buf + 6, &v3, sizeof(uint16) );
+
+    return doWrite( id, buf, sizeof(buf) );
+}
+
 //! 6 para
 int IBus::write( DeviceId &nodeId, byte mainCode,
            byte subCode,
@@ -1003,6 +1020,28 @@ int IBus::read( DeviceId &nodeId, byte mainCode,
     for ( int i = 0; i < READ_LOOP_TRY; i++ )
     {
         ret = _read( nodeId, mainCode, subCode, v0, v1, v2, bQuery );
+        if ( 0 == ret )
+        { break; }
+    }
+    UNLOCK_QUERY();
+
+    return ret;
+}
+
+int IBus::read( DeviceId &nodeId, byte mainCode,
+            byte subCode,
+            byte v0,
+            byte v1,
+            UInt16 *v2,
+            UInt16 *v3,
+
+            bool bQuery  )
+{
+    int ret;
+    LOCK_QUERY();
+    for ( int i = 0; i < READ_LOOP_TRY; i++ )
+    {
+        ret = _read( nodeId, mainCode, subCode, v0, v1, v2, v3, bQuery );
         if ( 0 == ret )
         { break; }
     }
@@ -1917,6 +1956,39 @@ int IBus::_read( DeviceId &nodeId, byte mainCode,
     //! \todo check main/sub code
 
     memcpy( v3, readBuf + 7, 1 );
+
+    return 0;
+}
+
+int IBus::_read( DeviceId &nodeId, byte mainCode,
+           byte subCode,
+           byte v0,
+           byte v1,
+           UInt16 *v2,
+           UInt16 *v3,
+           bool bQuery )
+{
+    int ret;
+
+    if( bQuery )
+    {
+        flush( nodeId );
+
+        ret = write( nodeId, mainCode, subCode, v0, v1 );
+        if ( ret != 0 )
+        { return ret; }
+    }
+
+    int retLen;
+    byte readBuf[1+1+1+1+2+2];
+    ret = doRead( nodeId, readBuf, sizeof(readBuf), &retLen );
+    if ( ret != 0 )
+    { return ret; }
+
+    //! \todo check main/sub code
+
+    memcpy( v2, readBuf + 4, sizeof(UInt16) );
+    memcpy( v3, readBuf + 6, sizeof(UInt16) );
 
     return 0;
 }

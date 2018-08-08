@@ -360,7 +360,7 @@ int robotH2Z::rstZeroAngle()
     {
         pMrq = jointDevice( jId, &ax );
         Q_ASSERT( NULL != pMrq );
-        ret = pMrq->setMOTION_ABCOUNTRESET( ax );
+        ret = pMrq->setMOTION_ABCOUNTCLEAR( ax );
         if ( ret != 0 )
         { return ret; }
     }

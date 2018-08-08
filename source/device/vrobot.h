@@ -93,6 +93,8 @@ public:
         robot_motor,
         robot_slide,
 
+        robot_igus_delta,
+
         robot_user = 65536,
     };
 

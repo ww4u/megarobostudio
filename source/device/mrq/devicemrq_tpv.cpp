@@ -133,6 +133,9 @@ int deviceMRQ::beginTpvDownload( const tpvRegion &region )
 
     setTpvIndex( pvt_region_p, 0 );
 
+    //! cache slew rst
+    mSlewCache[ region ] = 0;
+
     return ret;
 }
 //! \todo in one call
@@ -147,13 +150,32 @@ int deviceMRQ::tpvDownload(
 
     DELOAD_REGION();
 
-//    checked_call( setPOSITION( pvt_page_p, index, p * _mPBase ) );
-//    checked_call( setVELOCITY( pvt_page_p, index, v * _mVBase ) );
-//    checked_call( setTIME( pvt_page_p, index, t * _mTBase ) );
-
     QList<frameData> tpvPacks;
     frameData framePackage;
     float val;
+    int16 i16Val;
+
+    //! scale
+    if ( index == 1 && mSlewCache[region] < 1 )
+    {
+        framePackage.clear();
+        framePackage.setFrameId( mDeviceId.mRecvId );
+        framePackage.append( (byte)MRQ_mc_TIMESCALE );
+        framePackage.append( (byte)ax );
+        framePackage.append( (byte)page );
+        framePackage.append( (byte)index );
+
+        i16Val = mAccList.at(ax);
+        framePackage.append( (const char*)&i16Val, sizeof(i16Val) );
+
+        i16Val = mDecList.at(ax);
+        framePackage.append( (const char*)&i16Val, sizeof(i16Val) );
+
+        tpvPacks.append( framePackage );
+
+        //! set cache
+        mSlewCache[ region] = 1;
+    }
 
     //! p
     framePackage.clear();

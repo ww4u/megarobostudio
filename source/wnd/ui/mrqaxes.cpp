@@ -170,7 +170,7 @@ int mrqAxes::apply()
     //! driver
     if ( m_pMrqModel->driverId() == VRobot::motor_driver_262 )
     {
-        pDevice->setDRIVER_STATE( mAxesId, (MRQ_CAN_NETMANAGELED)ui->chkDriverState->isChecked() );
+        pDevice->setDRIVER_STATE( mAxesId, (MRQ_SYSTEM_REVMOTION)ui->chkDriverState->isChecked() );
         pDevice->setDRIVER_IDLECURRENT( mAxesId, comAssist::align( ui->spinIdleCurrent->value(),motor_current_unit) );
         pDevice->setDRIVER_SWITCHTIME( mAxesId, comAssist::align( ui->spinIdleTime->value(),driver_time_unit) );
 
@@ -179,7 +179,7 @@ int mrqAxes::apply()
     }
     else if ( m_pMrqModel->driverId() == VRobot::motor_driver_820 )
     {
-        pDevice->setNEWDRIVER_STATE( mAxesId, (MRQ_CAN_NETMANAGELED)ui->chk820->isChecked() );
+        pDevice->setNEWDRIVER_STATE( mAxesId, (MRQ_SYSTEM_REVMOTION)ui->chk820->isChecked() );
 
         pDevice->setNEWDRIVER_CURRENT( comAssist::align( ui->spin820Current->value(),driver_current_unit) );
         pDevice->setNEWDRIVER_MICROSTEPS( (MRQ_NEWDRIVER_MICROSTEPS)ui->cmb820MicroStep->value() );

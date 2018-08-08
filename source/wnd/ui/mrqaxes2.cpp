@@ -134,14 +134,12 @@ int mrqAxes2::apply()
                                            ) );
 
     //! scale
-    checked_call( pDevice->setMOTIONPLAN_ACCSCALE( mAxesId,
-                                                   mPage,
+    checked_call( pDevice->setAccScale( mAxesId,
                                            comAssist::align( ui->spinSAcc->value(),
                                                              ACC_DEC_SCALE_UNIT )
                                            ) );
 
-    checked_call( pDevice->setMOTIONPLAN_DECSCALE( mAxesId,
-                                                   mPage,
+    checked_call( pDevice->setDecScale( mAxesId,
                                            comAssist::align( ui->spinSDec->value(),
                                                              ACC_DEC_SCALE_UNIT )
                                            ) );
@@ -163,7 +161,7 @@ int mrqAxes2::apply()
     //! out of line
     checked_call( pDevice->setMOTIONPLAN_OOSLINESTATE( mAxesId,
                                                        mPage,
-                                      (MRQ_CAN_NETMANAGELED)ui->chkOutOfLineState->isChecked() ) );
+                                      (MRQ_SYSTEM_REVMOTION)ui->chkOutOfLineState->isChecked() ) );
     checked_call( pDevice->setMOTIONPLAN_OOSLINEOUTNUM( mAxesId,
                                                         mPage,
                                       ui->spinOutOfLine->value() ) );
@@ -187,8 +185,8 @@ int mrqAxes2::updateUi()
     ui->cmbEndState->setCurrentIndex( m_pMrqModel->mMOTIONPLAN_ENDSTATE[mAxesId][0] );
 
     //! acc
-    ui->spinSAcc->setValue( m_pMrqModel->mMOTIONPLAN_ACCSCALE[mAxesId][0] * ACC_DEC_SCALE_UNIT );
-    ui->spinSDec->setValue( m_pMrqModel->mMOTIONPLAN_DECSCALE[mAxesId][0] * ACC_DEC_SCALE_UNIT );
+    ui->spinSAcc->setValue( m_pMrqModel->mAccList[mAxesId] * ACC_DEC_SCALE_UNIT );
+    ui->spinSDec->setValue( m_pMrqModel->mDecList[mAxesId] * ACC_DEC_SCALE_UNIT );
 
     //! stop
     ui->cmbStopMode->setCurrentIndex( m_pMrqModel->mMOTIONPLAN_STOPMODE[mAxesId][0] );on_cmbStopMode_currentIndexChanged( m_pMrqModel->mMOTIONPLAN_STOPMODE[mAxesId][0] );

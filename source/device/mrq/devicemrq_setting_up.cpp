@@ -148,8 +148,6 @@ MRQ_PROGRESS( 30, ("MOTORPLAN") );
         checked_call( getMOTIONPLAN_ENDSTATE( _i, _axPage, mMOTIONPLAN_ENDSTATE[_i]+_j) );
 
         checked_call( getMOTIONPLAN_BUFFERSIZE( _i, _axPage, mMOTIONPLAN_BUFFERSIZE[_i]+_j) );
-        checked_call( getMOTIONPLAN_ACCSCALE( _i, _axPage, mMOTIONPLAN_ACCSCALE[_i]+_j) );
-        checked_call( getMOTIONPLAN_DECSCALE( _i, _axPage, mMOTIONPLAN_DECSCALE[_i]+_j) );
 
         checked_call( getMOTIONPLAN_STOPMODE( _i, _axPage, mMOTIONPLAN_STOPMODE[_i]+_j) );
         checked_call( getMOTIONPLAN_STOPDISTANCE( _i, _axPage, mMOTIONPLAN_STOPDISTANCE[_i]+_j) );

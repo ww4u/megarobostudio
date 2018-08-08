@@ -62,6 +62,7 @@ LIBS += -linstclient
 
 LIBS += -lrobotfact
 LIBS += -lmegatron -lsinanju -ldelta -lh2 -lh2z -lh2m -linjectpump
+LIBS += -ligus_delta
 LIBS += -lmotor
 #-lslide
 LIBS += -lquebeley -lgeogoog -lgeo8 -lgeo10 -lgeo51

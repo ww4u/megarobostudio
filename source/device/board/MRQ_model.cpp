@@ -13,6 +13,7 @@ MRQ_model::MRQ_model()
         mLedInfo[i].mDuty = 50;
         mLedInfo[i].mFreq = 100;
     }
+
 }
 
 int MRQ_model::serialOut( QXmlStreamWriter &writer )
@@ -194,5 +195,29 @@ QString MRQ_model::getBtVer()
 
 QString MRQ_model::getSeqVer()
 { return mSeqVer; }
+
+int MRQ_model::setAccScale( int id, int scale )
+{
+    Q_ASSERT( id >=0 && id < axes() );
+    mAccList[id] = scale;
+    return 0;
+}
+int MRQ_model::getAccScale( int id )
+{
+    Q_ASSERT( id >=0 && id < axes() );
+    return mAccList[id];
+}
+
+int MRQ_model::setDecScale( int id, int scale )
+{
+    Q_ASSERT( id >=0 && id < axes() );
+    mDecList[id] = scale;
+    return 0;
+}
+int MRQ_model::getDecScale( int id )
+{
+    Q_ASSERT( id >=0 && id < axes() );
+    return mDecList[id];
+}
 
 }

@@ -532,12 +532,24 @@ void sysPref::on_edtVisa_textChanged(const QString &arg1)
 
 void sysPref::on_btnAdd_clicked()
 {
+    //! search exist
+    for ( int i = 0; i < ui->listMRTs->count(); i++ )
+    {
+        if ( ui->edtVisa->text().compare( ui->listMRTs->item( i)->text(), Qt::CaseInsensitive ) == 0 )
+        {
+            MegaMessageBox::information( this,
+                                         tr("info"),
+                                         ui->edtVisa->text() + " " + tr("alreay exist") );
+            return;
+        }
+    }
+
+    //! add item
     ui->listMRTs->addItem( ui->edtVisa->text() );
 }
 
 void sysPref::on_btnRemove_clicked()
 {
-//    ui->listMRTs->removeItemWidget( ui->listMRTs->currentItem() );
     delete ( ui->listMRTs->takeItem( ui->listMRTs->currentRow() ) );
 }
 

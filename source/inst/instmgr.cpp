@@ -152,8 +152,19 @@ int InstMgr::probeCanBus()
     else
     { devCount = m_pMainModel->mSysPref.mDeviceCount; }
 
+    QStringList openList;
+    QString subRsrc;
     for ( int i = 0; i < devCount; i++ )
     {
+        subRsrc = m_pMainModel->mSysPref.mVisaList.value( i, "" );
+
+        //! check exist
+        if ( openList.contains(subRsrc, Qt::CaseInsensitive) )
+        { continue; }
+        else
+        {}
+
+        //! search
         pNewBus = new CANBus();
         if ( NULL == pNewBus )
         { return ERR_ALLOC_FAIL; }
@@ -169,9 +180,12 @@ int InstMgr::probeCanBus()
         //! receive cache
         ret = probeCANBus( pNewBus,
                            m_pMainModel->mSysPref.mDeviceId + i,
-                           m_pMainModel->mSysPref.mVisaList.value( i, "" ),
+                           i,
+                           subRsrc,
                            *pRoboList
                             );
+        openList<<subRsrc;
+
         do
         {
             //! fail
@@ -873,6 +887,7 @@ void InstMgr::postProbeBus()
 
 int InstMgr::probeCANBus( CANBus *pNewBus,
                           int id,
+                          int seqId,
                           const QString &devRsrc,
                           VRoboList &roboList )
 {
@@ -901,6 +916,7 @@ int InstMgr::probeCANBus( CANBus *pNewBus,
     Q_ASSERT( m_pMainModel->mSysPref.mPort < sizeof_array(portDevType) );
     ret = pNewBus->open( portDevType[m_pMainModel->mSysPref.mPort],
                          id,
+                         seqId,
                          0,
                          devRsrc );
     if ( ret != 0 )

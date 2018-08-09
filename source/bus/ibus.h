@@ -97,7 +97,9 @@ public :
     int devId();
 
     virtual int open( int devType,
-                      int devId, int canId,
+                      int devId,
+                      int seqId,
+                      int canId,
                       const QString &desc="" );
 
     virtual void close();

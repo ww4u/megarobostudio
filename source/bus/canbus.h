@@ -16,13 +16,16 @@ namespace MegaDevice {
 
 class CANBus : public IBus
 {
+private:
+    static QString _lanRsrc;
+
 public:
     CANBus();
     ~CANBus();
 
 public:
     int open( int devType = 6,
-              int devId=0, int canId=0,
+              int devId=0, int seqId = 0, int canId=0,
               const QString &desc="");
     void close();
 
@@ -45,7 +48,6 @@ public:
     virtual int doWrite( QList<frameData> &canFrames );
 
     //! read from bus
-//    virtual int doReceive( int *pFrameId, byte *pBuf, int *pLen );
     virtual int doReceive( QList<frameData> &canFrames );
 
     virtual int doRead( DeviceId &nodeId, byte *pBuf, int cap, int *pLen );
@@ -60,9 +62,7 @@ public:
 
     virtual int enumerate( const modelSysPref &pref );
 	
-//    QString getDesc();
     int getDevType();
-//    int getDevId();
     int getCanId();
 
     qint64 frames();

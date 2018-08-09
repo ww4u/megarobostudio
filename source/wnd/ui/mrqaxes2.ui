@@ -261,7 +261,7 @@
       <item>
        <widget class="QGroupBox" name="gpSAcc">
         <property name="title">
-         <string>S Acc.</string>
+         <string>Slew Rate</string>
         </property>
         <layout class="QGridLayout" name="gridLayout_4">
          <item row="2" column="1">

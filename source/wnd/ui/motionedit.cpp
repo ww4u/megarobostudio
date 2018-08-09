@@ -59,6 +59,14 @@ void motionEdit::setModelObj( mcModelObj *pObj )
     ui->tableView->setModel( m_pMotionGroup );
 
     //! update ui
+    QString strRoboName;
+    strRoboName = m_pMotionGroup->className();
+    VRobot * pRobo = robotFact::createRobot( strRoboName );
+    Q_ASSERT( NULL != pRobo );
+    QImage img = pRobo->getImage();
+    ui->labelIcon->setToolTip( strRoboName );
+    ui->labelIcon->setPixmap( QPixmap::fromImage(img) );
+    delete pRobo;
 
     //! step
     ui->labelStep->setVisible( m_pMotionGroup->stepAble() );

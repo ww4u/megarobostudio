@@ -121,6 +121,7 @@ protected:
 
     int probeCANBus( CANBus *pBus,
                      int id,
+                     int seqId,
                      const QString &devRsrc,
                      VRoboList &roboList );
 

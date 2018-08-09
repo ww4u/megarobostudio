@@ -70,7 +70,7 @@ int IBus::devId()
 
 //int IBus::open(QString dev)
 //{ return 0; }
-int IBus::open( int devType, int devId, int canId, const QString &desc )
+int IBus::open( int devType, int devId, int seqId, int canId, const QString &desc )
 { return 0; }
 void IBus::close()
 { return; }

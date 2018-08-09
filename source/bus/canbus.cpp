@@ -17,6 +17,8 @@ namespace MegaDevice {
 #define check_handle()      if ( mHandle <= 0 )\
                             { return -1; }
 
+QString CANBus::_lanRsrc;
+
 CANBus::CANBus()
 {
     mHandle = 0;
@@ -41,7 +43,7 @@ CANBus::~CANBus()
 }
 
 int CANBus::open( int devType,
-                  int devId, int canId,
+                  int devId, int seqId, int canId,
                   const QString &desc )
 {
     mDevType = devType;
@@ -94,21 +96,31 @@ logDbg();
     //! find
     if ( busType == VCI_MR_LANCAN )
     {
-        char strs[ 1024 ] = { 0 };                          //! for the resources
-        if ( 0 == mApi.find( VCI_MR_LANCAN, strs ) )
+        //! the first time
+        //! find rsrc
+        if ( seqId == 0 )
         {
-            sysError( QObject::tr("device find fail") );
-            close();
-            return -1;
+            _lanRsrc.clear();
+
+            char strs[ 1024 ] = { 0 };                          //! for the resources
+            if ( 0 == mApi.find( VCI_MR_LANCAN, strs, sizeof(strs) ) )
+//            if ( 0 == mApi.find( VCI_MR_LANCAN, strs ) )
+            {
+                sysError( QObject::tr("device find fail") );
+                close();
+                return -1;
+            }
+
+            //! match the device id
+            QByteArray rawData;
+            rawData.setRawData( strs, qstrlen( strs ) );
+
+            _lanRsrc = QString( rawData );
         }
+        else
+        {}
 
-        //! match the device id
-        QByteArray rawData;
-        rawData.setRawData( strs, qstrlen( strs ) );
-
-        //! split
-        QString rawStr = QString( rawData );
-        QStringList rsrcList = rawStr.split( ';', QString::SkipEmptyParts );
+        QStringList rsrcList = _lanRsrc.split( ';', QString::SkipEmptyParts );
 
         int id = rsrcList.indexOf( desc );
         if ( id == -1 )

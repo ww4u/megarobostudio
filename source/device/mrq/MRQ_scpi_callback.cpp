@@ -415,6 +415,7 @@ static scpi_result_t _scpi_task( _scpi_t * context )
 }
 
 //! TPV ax,page,e:/ddd.csv
+//! ax,page,xxx.pvt
 static scpi_result_t _scpi_program( scpi_t * context )
 {logDbg();
     // read
@@ -435,11 +436,33 @@ static scpi_result_t _scpi_program( scpi_t * context )
 
     //! load
     QList<float> dataSets;
-    int col = 3;
+    int col;
     QList<int> dataCols;
-    dataCols<<0<<1<<2;
-    if ( 0 != comAssist::loadDataset( pLocalStr, strLen, col, dataCols, dataSets ) )
-    { scpi_ret( SCPI_RES_ERR ); }
+
+    //! en,t,p,v
+    do
+    {
+        int ret;
+
+        col = 4;
+        dataCols.clear();
+        dataCols<<0<<1<<2<<3;
+        dataSets.clear();
+        //! load success
+        ret = comAssist::loadDataset( pLocalStr, strLen, col, dataCols, dataSets );
+        if ( 0 == ret && ( dataSets.size() / col ) > 1  )
+        { break; }
+        else
+        {}
+
+        //! try t,p,v
+        col = 3;
+        dataCols.clear();
+        dataCols<<0<<1<<2;
+        dataSets.clear();
+        if ( 0 != comAssist::loadDataset( pLocalStr, strLen, col, dataCols, dataSets ) )
+        { scpi_ret( SCPI_RES_ERR ); }
+    }while( 0 );
 
     int dotSize = dataSets.size()/col;
     if ( (dotSize < 2) )
@@ -451,14 +474,56 @@ static scpi_result_t _scpi_program( scpi_t * context )
     if ( NULL == pDots )
     { logDbg(); scpi_ret( SCPI_RES_ERR ); }
 
+    int payloadLen;
+
     //! move data
-    for( int i = 0; i < dotSize; i++ )
+    if ( col == 3 )
     {
-        for ( int j = 0; j < col; j++ )
+        for( int i = 0; i < dotSize; i++ )
         {
-            pDots[i].datas[j] = dataSets.at(i*col+j);
-            pDots[i].setGc( true );
+            for ( int j = 0; j < col; j++ )
+            {
+                pDots[i].datas[j] = dataSets.at(i*col+j);
+                pDots[i].setGc( true );
+            }
         }
+
+        payloadLen = dotSize;
+    }
+    else if ( col == 4 )
+    {
+
+        payloadLen = 0;
+        for( int i = 0; i < dotSize; i++ )
+        {
+            //! enable
+            if ( dataSets.at( i * col ) > 0 )
+            {}
+            else
+            { continue; }
+
+
+            for ( int j = 1; j < 4; j++ )
+            {
+                pDots[ payloadLen ].datas[j-1] = dataSets.at( i*col+j );
+                pDots[ payloadLen ].setGc( true );
+            }
+            payloadLen++;
+        }
+
+        //! check len
+        if ( payloadLen > 1 )
+        {}
+        else
+        {
+            gc_array( pDots );
+            scpi_ret( SCPI_RES_ERR );
+        }
+    }
+    else
+    {
+        gc_array( pDots );
+        scpi_ret( SCPI_RES_ERR );
     }
 
     DEF_MRQ();
@@ -467,7 +532,7 @@ static scpi_result_t _scpi_program( scpi_t * context )
 
     //! send
     int ret = -1;
-    ret = LOCALMRQ()->pvtWrite( tpvRegion(ax, page), pDots, dotSize );
+    ret = LOCALMRQ()->pvtWrite( tpvRegion(ax, page), pDots, payloadLen );
 
     gc_array( pDots );
 

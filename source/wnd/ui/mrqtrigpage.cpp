@@ -84,7 +84,7 @@ int MrqTrigPage::apply()
 
         pDevice->setTRIGGER_LEVELSTATE( mAxesId,
                                         (MRQ_TRIGGER_LEVELSTATE)i,
-                                        (MRQ_CAN_NETMANAGELED)levelConifg.mbOnOff );
+                                        (MRQ_SYSTEM_REVMOTION)levelConifg.mbOnOff );
 
         pDevice->setTRIGGER_LEVELTYPE( mAxesId,
                                         (MRQ_TRIGGER_LEVELSTATE)i,
@@ -165,7 +165,7 @@ int MrqTrigPage::updateData()
 
         mTrigChans.at(i)->getConfig( levelConifg, pattConfig );
 
-        pModel->mTRIGGER_LEVELSTATE[ mAxesId ][ i ] = (MRQ_CAN_NETMANAGELED)levelConifg.mbOnOff;
+        pModel->mTRIGGER_LEVELSTATE[ mAxesId ][ i ] = (MRQ_SYSTEM_REVMOTION)levelConifg.mbOnOff;
         pModel->mTRIGGER_LEVELTYPE[ mAxesId ][ i ] = (MRQ_TRIGGER_LEVELTYPE_1)levelConifg.mTypeIndex;
         pModel->mTRIGGER_LEVELRESP[ mAxesId ][ i ] = (MRQ_MOTIONPLAN_OOSLINERESPONSE_1)levelConifg.mRespIndex;
         pModel->mTRIGGER_LEVELSPERIOD[ mAxesId ][ i ] = levelConifg.mPeriod;

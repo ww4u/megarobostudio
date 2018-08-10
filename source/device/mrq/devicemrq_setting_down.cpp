@@ -156,10 +156,6 @@ MRQ_PROGRESS( 10, ("MOTION") );
         checked_call( setMOTIONPLAN_WARNPOINT( _i, _axPage, mMOTIONPLAN_WARNPOINT[_i][_j]) );
         checked_call( setMOTIONPLAN_ENDSTATE( _i, _axPage, mMOTIONPLAN_ENDSTATE[_i][_j]) );
 
-//        checked_call( setMOTIONPLAN_BUFFERSIZE( _i, _axPage, mMOTIONPLAN_BUFFERSIZE[_i][_j]) );
-        checked_call( setMOTIONPLAN_ACCSCALE( _i, _axPage, mMOTIONPLAN_ACCSCALE[_i][_j]) );
-        checked_call( setMOTIONPLAN_DECSCALE( _i, _axPage, mMOTIONPLAN_DECSCALE[_i][_j]) );
-
         checked_call( setMOTIONPLAN_STOPMODE( _i, _axPage, mMOTIONPLAN_STOPMODE[_i][_j]) );
         checked_call( setMOTIONPLAN_STOPDISTANCE( _i, _axPage, mMOTIONPLAN_STOPDISTANCE[_i][_j]) );
         checked_call( setMOTIONPLAN_STOPTIME( _i, _axPage, mMOTIONPLAN_STOPTIME[_i][_j]) );

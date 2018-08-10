@@ -19,7 +19,8 @@ namespace MegaDevice {
 
 #undef CALL
 #define CALL
-typedef unsigned int  CALL (*p_VCI_FindDevice)(unsigned int DeviceType,char* desc );
+typedef unsigned int  CALL (*p_VCI_FindDevice)(unsigned int DeviceType,char* desc, int descLen );
+//typedef unsigned int  CALL (*p_VCI_FindDevice)(unsigned int DeviceType,char* desc );
 typedef unsigned int  CALL (*p_VCI_OpenDevice)(unsigned int DeviceType, unsigned int DeviceInd, unsigned int Reserved);
 typedef unsigned int  CALL (*p_VCI_CloseDevice)(unsigned int DeviceType, unsigned int DeviceInd);
 

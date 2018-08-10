@@ -70,7 +70,7 @@ int MrqIn::apply()
         ui->tab->getConfig( cfg );
 
         checked_call( pDevice->setISOLATORIN_STATE(
-                                      (MRQ_CAN_NETMANAGELED)cfg.mbEn ) );
+                                      (MRQ_SYSTEM_REVMOTION)cfg.mbEn ) );
         checked_call( pDevice->setISOLATORIN_TYPE(
                                          (MRQ_TRIGGER_LEVELTYPE_1)cfg.mTypeIndex ) );
         checked_call( pDevice->setISOLATORIN_RESPONSE( (MRQ_MOTIONPLAN_OOSLINERESPONSE_1)cfg.mRespIndex ) );
@@ -86,7 +86,7 @@ int MrqIn::apply()
         ui->tab_5->getConfig( cfg );
 
         checked_call( pDevice->setANALOGIN_STATE(
-                                      (MRQ_CAN_NETMANAGELED)cfg.mbEn ) );
+                                      (MRQ_SYSTEM_REVMOTION)cfg.mbEn ) );
         checked_call( pDevice->setANALOGIN_THRESHOLDH( cfg.mHT ) );
         checked_call( pDevice->setANALOGIN_THRESHOLDL( cfg.mLT ) );
         checked_call( pDevice->setANALOGIN_RESPONSEH( (MRQ_MOTIONPLAN_OOSLINERESPONSE_1)cfg.mHResp) );

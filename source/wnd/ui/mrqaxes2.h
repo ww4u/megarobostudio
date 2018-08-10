@@ -39,6 +39,10 @@ private slots:
 
     void on_cmbPlanMode_currentIndexChanged(int index);
 
+    void on_spinSAcc_valueChanged(double arg1);
+
+    void on_spinSDec_valueChanged(double arg1);
+
 private:
     Ui::mrqaxes2 *ui;
 };

@@ -22,6 +22,10 @@ static value_desc _value_desc_MRQ_SYSTEM_POWERON[] = {
 	{0,"DEFAULT",},
 	{1,"LAST",},
 };
+static value_desc _value_desc_MRQ_SYSTEM_REVMOTION[] = {
+	{0,"OFF",},
+	{1,"ON",},
+};
 static value_desc _value_desc_MRQ_SYSTEM_ARMLEDPARA[] = {
 	{0,"BASE",},
 	{1,"BIGARM",},
@@ -73,10 +77,6 @@ static value_desc _value_desc_MRQ_CAN_BAUD[] = {
 	{5,"50",},
 	{6,"20",},
 	{7,"10",},
-};
-static value_desc _value_desc_MRQ_CAN_NETMANAGELED[] = {
-	{0,"OFF",},
-	{1,"ON",},
 };
 static value_desc _value_desc_MRQ_CAN_NETMANAGESTATE[] = {
 	{0,"IDLE",},
@@ -401,6 +401,10 @@ const char* MRQ_SYSTEM_POWERON_toString( MRQ_SYSTEM_POWERON eType )
 {
 	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_SYSTEM_POWERON ) ); 
 }
+const char* MRQ_SYSTEM_REVMOTION_toString( MRQ_SYSTEM_REVMOTION eType )
+{
+	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_SYSTEM_REVMOTION ) ); 
+}
 const char* MRQ_SYSTEM_ARMLEDPARA_toString( MRQ_SYSTEM_ARMLEDPARA eType )
 {
 	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_SYSTEM_ARMLEDPARA ) ); 
@@ -432,10 +436,6 @@ const char* MRQ_CAN_TYPE_toString( MRQ_CAN_TYPE eType )
 const char* MRQ_CAN_BAUD_toString( MRQ_CAN_BAUD eType )
 {
 	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_CAN_BAUD ) ); 
-}
-const char* MRQ_CAN_NETMANAGELED_toString( MRQ_CAN_NETMANAGELED eType )
-{
-	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_CAN_NETMANAGELED ) ); 
 }
 const char* MRQ_CAN_NETMANAGESTATE_toString( MRQ_CAN_NETMANAGESTATE eType )
 {
@@ -693,6 +693,14 @@ int MRQ_SYSTEM_POWERON_toValue( const char *pStr, MRQ_SYSTEM_POWERON *pEVal )
 	*pEVal=(MRQ_SYSTEM_POWERON)lval;
 	return 0;
 }
+int MRQ_SYSTEM_REVMOTION_toValue( const char *pStr, MRQ_SYSTEM_REVMOTION *pEVal )
+{
+	int ret, lval;
+	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_SYSTEM_REVMOTION ), &lval );
+	if ( ret != 0 ) return ret; 
+	*pEVal=(MRQ_SYSTEM_REVMOTION)lval;
+	return 0;
+}
 int MRQ_SYSTEM_ARMLEDPARA_toValue( const char *pStr, MRQ_SYSTEM_ARMLEDPARA *pEVal )
 {
 	int ret, lval;
@@ -755,14 +763,6 @@ int MRQ_CAN_BAUD_toValue( const char *pStr, MRQ_CAN_BAUD *pEVal )
 	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_CAN_BAUD ), &lval );
 	if ( ret != 0 ) return ret; 
 	*pEVal=(MRQ_CAN_BAUD)lval;
-	return 0;
-}
-int MRQ_CAN_NETMANAGELED_toValue( const char *pStr, MRQ_CAN_NETMANAGELED *pEVal )
-{
-	int ret, lval;
-	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_CAN_NETMANAGELED ), &lval );
-	if ( ret != 0 ) return ret; 
-	*pEVal=(MRQ_CAN_NETMANAGELED)lval;
 	return 0;
 }
 int MRQ_CAN_NETMANAGESTATE_toValue( const char *pStr, MRQ_CAN_NETMANAGESTATE *pEVal )

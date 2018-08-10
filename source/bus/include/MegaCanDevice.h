@@ -145,5 +145,5 @@ MEGACANDEVICE_API unsigned int  CALL VCI_Receive(unsigned int DeviceType, unsign
 MEGACANDEVICE_API unsigned int CALL VCI_Write(unsigned int DeviceType, unsigned int DeviceInd, char * data, unsigned int Len);
 MEGACANDEVICE_API unsigned int CALL VCI_Read(unsigned int DeviceType, unsigned int DeviceInd, char* pReceive, unsigned int Length, int WaitTime);
 
-MEGACANDEVICE_API unsigned int CALL VCI_FindDevice(unsigned int DeviceType, char* desc);
+MEGACANDEVICE_API unsigned int CALL VCI_FindDevice(unsigned int DeviceType, char* desc, int desc_len );
 #endif // MEGA_CAN_DEVICE_H_

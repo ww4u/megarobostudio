@@ -97,7 +97,9 @@ public :
     int devId();
 
     virtual int open( int devType,
-                      int devId, int canId,
+                      int devId,
+                      int seqId,
+                      int canId,
                       const QString &desc="" );
 
     virtual void close();
@@ -301,6 +303,16 @@ public :
                    byte v1,
                    byte v2,
                    float f3 );
+
+        //! 5 para
+        int write( DeviceId &id, byte mainCode,
+                   byte subCode,
+                   byte v0,
+                   byte v1,
+                   uint16 v2,
+                   uint16 v3
+                    );
+
 
         //! 6 para
         int write( DeviceId &id, byte mainCode,
@@ -514,6 +526,16 @@ public :
                    f32 * v2,
                    bool bQuery = true );
 
+        //! 2 para
+        int read( DeviceId &id, byte mainCode,
+                    byte subCode,
+                    byte v0,
+                    byte v1,
+                    UInt16 *v2,
+                    UInt16 *v3,
+
+                    bool bQuery = true );
+
         //! 3 para
         int read( DeviceId &id, byte mainCode,
                     byte subCode,
@@ -522,6 +544,7 @@ public :
                     UInt16 v2,
                     byte * v3,
                     bool bQuery = true );
+
 
         //! ******** sub apis ********
         int _read( DeviceId &id, byte mainCode,
@@ -730,6 +753,14 @@ public :
                    UInt16 v1,
                    UInt16 v2,
                    byte * v3,
+                   bool bQuery = true );
+
+        int _read( DeviceId &id, byte mainCode,
+                   byte subCode,
+                   byte v0,
+                   byte v1,
+                   UInt16 *v2,
+                   UInt16 * v3,
                    bool bQuery = true );
 
 };

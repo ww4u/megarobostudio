@@ -113,7 +113,7 @@ int MrqAlarm::applyAngleAlarm()
         mAnglePages.at(i)->data( encAlarmConfig );
 
         pDevice->setABSENCALARM_STATE( (MRQ_IDENTITY_LABEL_1)i,
-                                        (MRQ_CAN_NETMANAGELED)encAlarmConfig.mbEn );
+                                        (MRQ_SYSTEM_REVMOTION)encAlarmConfig.mbEn );
 
         pDevice->setABSENCALARM_UPLIMIT( (MRQ_IDENTITY_LABEL_1)i,
                                          encAlarmConfig.mUpLimit );
@@ -144,7 +144,7 @@ int MrqAlarm::applyDistanceAlarm()
         mDistPages.at(i)->data( distConfig );
 
         pDevice->setDISTANCEALARM_STATE( (MRQ_IDENTITY_LABEL_1)i,
-                                        (MRQ_CAN_NETMANAGELED)distConfig.mbEn );
+                                        (MRQ_SYSTEM_REVMOTION)distConfig.mbEn );
 
         pDevice->setDISTANCEALARM_ALARM1DIST( (MRQ_IDENTITY_LABEL_1)i,
                                          distConfig.mDist[0]);

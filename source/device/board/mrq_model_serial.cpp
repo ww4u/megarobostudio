@@ -247,7 +247,7 @@ int MRQ_model::saveSubMotion( int id, QXmlStreamWriter &writer )
 //    writer.writeTextElement( "mMOTION_COUNTCIRCLE", DeviceModel::toString( mMOTION_COUNTCIRCLE[id]) );
 //    writer.writeTextElement( "mMOTION_ABCOUNT", DeviceModel::toString( mMOTION_ABCOUNT[id]) );
 
-    writer.writeTextElement( "mMOTION_REVMOTION", toString( mMOTION_REVMOTION[id]) );
+//    writer.writeTextElement( "mMOTION_REVMOTION", toString( mMOTION_REVMOTION[id]) );
 
     return 0;
 }
@@ -286,8 +286,6 @@ int MRQ_model::loadSubMotion( int id, QXmlStreamReader &reader )
         else if ( reader.name() == "mMOTION_OFFSETSTATE" )
         { toValue( reader.readElementText(), &mMOTION_OFFSETSTATE[id] ); }
 
-        else if ( reader.name() == "mMOTION_REVMOTION" )
-        { toValue( reader.readElementText(), &mMOTION_REVMOTION[id] ); }
         else
         { reader.skipCurrentElement(); }
     }
@@ -395,6 +393,9 @@ int MRQ_model::saveSubMotor( int id, QXmlStreamWriter &writer )
 
     writer.writeTextElement( "mMOTOR_BACKLASH", DeviceModel::toString( mMOTOR_BACKLASH[id]) );
 
+    writer.writeTextElement( "mAcc", QString::number( mAccList.at(id) ) );
+    writer.writeTextElement( "mDec", QString::number( mDecList.at(id) ) );
+
     return 0;
 }
 int MRQ_model::loadSubMotor( int id, QXmlStreamReader &reader )
@@ -428,6 +429,12 @@ int MRQ_model::loadSubMotor( int id, QXmlStreamReader &reader )
 
         else if ( reader.name() == "mMOTOR_BACKLASH" )
         { DeviceModel::toValue( reader.readElementText(), &mMOTOR_BACKLASH[id] ); }
+
+        else if ( reader.name() == "mAcc" )
+        { mAccList[id] = reader.readElementText().toInt(); }
+
+        else if ( reader.name() == "mDec" )
+        { mDecList[id] = reader.readElementText().toInt(); }
 
         else
         { reader.skipCurrentElement(); }
@@ -565,8 +572,6 @@ int MRQ_model::saveSubMotionPlanPage( int id, int page,
     writer.writeTextElement( "mMOTIONPLAN_WARNPOINT", DeviceModel::toString( mMOTIONPLAN_WARNPOINT[id][page] ) );
 
     writer.writeTextElement( "mMOTIONPLAN_ENDSTATE", toString( mMOTIONPLAN_ENDSTATE[id][page] ) );
-    writer.writeTextElement( "mMOTIONPLAN_ACCSCALE", DeviceModel::toString( mMOTIONPLAN_ACCSCALE[id][page] ) );
-    writer.writeTextElement( "mMOTIONPLAN_DECSCALE", DeviceModel::toString( mMOTIONPLAN_DECSCALE[id][page] ) );
 
     writer.writeTextElement( "mMOTIONPLAN_STOPMODE", toString( mMOTIONPLAN_STOPMODE[id][page] ) );
     writer.writeTextElement( "mMOTIONPLAN_STOPDISTANCE", DeviceModel::toString( mMOTIONPLAN_STOPDISTANCE[id][page] ) );
@@ -605,10 +610,6 @@ int MRQ_model::loadSubMotionPlanPage( int id, int page,
 
         else if ( reader.name() == "mMOTIONPLAN_ENDSTATE" )
         { toValue( reader.readElementText(), &mMOTIONPLAN_ENDSTATE[id][page] ); }
-        else if ( reader.name() == "mMOTIONPLAN_ACCSCALE" )
-        { DeviceModel::toValue( reader.readElementText(), &mMOTIONPLAN_ACCSCALE[id][page] ); }
-        else if ( reader.name() == "mMOTIONPLAN_DECSCALE" )
-        { DeviceModel::toValue( reader.readElementText(), &mMOTIONPLAN_DECSCALE[id][page] ); }
 
         else if ( reader.name() == "mMOTIONPLAN_STOPMODE" )
         { toValue( reader.readElementText(), &mMOTIONPLAN_STOPMODE[id][page] ); }

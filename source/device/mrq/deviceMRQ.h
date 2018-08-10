@@ -304,6 +304,8 @@ protected:
     float microStep( int ax );
 
 protected:
+    QMap< tpvRegion, int > mSlewCache;
+
     QMap< tpvRegion, int > mTpvIndexes;
     QMap< tpvRegion, int > mTpvCaps;
     QMap< tpvRegion, int > mTpvBufferSizes;

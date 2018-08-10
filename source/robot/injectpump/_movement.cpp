@@ -272,7 +272,7 @@ int robotInject::zeroAxesTask( void *pArg )
         Q_ASSERT( NULL != pDev );
         pDev->setTRIGGER_LEVELSTATE( subAx,
                                      MRQ_TRIGGER_LEVELSTATE_TRIG1,
-                                     MRQ_CAN_NETMANAGELED_ON );
+                                     MRQ_SYSTEM_REVMOTION_ON );
 
         //! m
         move( pZArg->mZeroDist, 0, pZArg->mZeroTime,
@@ -288,7 +288,7 @@ int robotInject::zeroAxesTask( void *pArg )
         //! disable stop
         pDev->setTRIGGER_LEVELSTATE( subAx,
                                      MRQ_TRIGGER_LEVELSTATE_TRIG1,
-                                     MRQ_CAN_NETMANAGELED_OFF );
+                                     MRQ_SYSTEM_REVMOTION_OFF );
 
         //! gap
         move( pZArg->mZeroVGapDist, 0, pZArg->mZeroVGapTime,

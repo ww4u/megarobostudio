@@ -18,4 +18,5 @@ SUBDIRS = \
     h2/h2.pro \
     h2z/h2z.pro \
     h2m/h2m.pro \
-    injectpump/injectpump.pro
+    injectpump/injectpump.pro \
+    igus_delta/igus_delta.pro

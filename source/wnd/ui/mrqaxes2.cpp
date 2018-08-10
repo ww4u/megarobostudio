@@ -2,7 +2,7 @@
 #include "ui_mrqaxes2.h"
 #include "../com/comassist.h"
 
-#define ACC_DEC_SCALE_UNIT  0.001f
+#define ACC_DEC_SCALE_UNIT  0.1f
 
 
 mrqAxes2::mrqAxes2(QWidget *parent) :
@@ -134,14 +134,12 @@ int mrqAxes2::apply()
                                            ) );
 
     //! scale
-    checked_call( pDevice->setMOTIONPLAN_ACCSCALE( mAxesId,
-                                                   mPage,
+    checked_call( pDevice->setAccScale( mAxesId,
                                            comAssist::align( ui->spinSAcc->value(),
                                                              ACC_DEC_SCALE_UNIT )
                                            ) );
 
-    checked_call( pDevice->setMOTIONPLAN_DECSCALE( mAxesId,
-                                                   mPage,
+    checked_call( pDevice->setDecScale( mAxesId,
                                            comAssist::align( ui->spinSDec->value(),
                                                              ACC_DEC_SCALE_UNIT )
                                            ) );
@@ -163,7 +161,7 @@ int mrqAxes2::apply()
     //! out of line
     checked_call( pDevice->setMOTIONPLAN_OOSLINESTATE( mAxesId,
                                                        mPage,
-                                      (MRQ_CAN_NETMANAGELED)ui->chkOutOfLineState->isChecked() ) );
+                                      (MRQ_SYSTEM_REVMOTION)ui->chkOutOfLineState->isChecked() ) );
     checked_call( pDevice->setMOTIONPLAN_OOSLINEOUTNUM( mAxesId,
                                                         mPage,
                                       ui->spinOutOfLine->value() ) );
@@ -187,8 +185,8 @@ int mrqAxes2::updateUi()
     ui->cmbEndState->setCurrentIndex( m_pMrqModel->mMOTIONPLAN_ENDSTATE[mAxesId][0] );
 
     //! acc
-    ui->spinSAcc->setValue( m_pMrqModel->mMOTIONPLAN_ACCSCALE[mAxesId][0] * ACC_DEC_SCALE_UNIT );
-    ui->spinSDec->setValue( m_pMrqModel->mMOTIONPLAN_DECSCALE[mAxesId][0] * ACC_DEC_SCALE_UNIT );
+    ui->spinSAcc->setValue( m_pMrqModel->mAccList[mAxesId] * ACC_DEC_SCALE_UNIT );
+    ui->spinSDec->setValue( m_pMrqModel->mDecList[mAxesId] * ACC_DEC_SCALE_UNIT );
 
     //! stop
     ui->cmbStopMode->setCurrentIndex( m_pMrqModel->mMOTIONPLAN_STOPMODE[mAxesId][0] );on_cmbStopMode_currentIndexChanged( m_pMrqModel->mMOTIONPLAN_STOPMODE[mAxesId][0] );
@@ -228,8 +226,20 @@ void mrqAxes2::on_cmbTuneMode_currentIndexChanged(int index)
 
 void mrqAxes2::on_cmbPlanMode_currentIndexChanged(int index)
 {
-    bool bAccVisible;
-    bAccVisible = (index == 2 );
+    if(index == 0 )
+    { ui->gpSAcc->setVisible( false ); }
+    else
+    { ui->gpSAcc->setVisible( true ); }
+}
 
-    ui->gpSAcc->setVisible( bAccVisible );
+void mrqAxes2::on_spinSAcc_valueChanged(double arg1)
+{
+    if ( ui->spinSDec->value() > 100-arg1 )
+    { ui->spinSDec->setValue( 100 - arg1); }
+}
+
+void mrqAxes2::on_spinSDec_valueChanged(double arg1)
+{
+    if ( ui->spinSAcc->value() > 100-arg1 )
+    { ui->spinSAcc->setValue( 100 - arg1); }
 }

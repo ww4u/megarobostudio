@@ -83,7 +83,7 @@ int robotMotor::zeroAxesTask( void *pZeroArg )
     //! mrq
     pMrq->setTRIGGER_LEVELSTATE( ax,
                                  (MRQ_TRIGGER_LEVELSTATE)mPosIndex,
-                                 (MRQ_CAN_NETMANAGELED)mbZeroPosEn );
+                                 (MRQ_SYSTEM_REVMOTION)mbZeroPosEn );
 
     ret = move( pArg->mZeroDist, pArg->mZeroTime, pArg->mZeroEndV, region  );
 
@@ -95,7 +95,7 @@ int robotMotor::zeroAxesTask( void *pZeroArg )
     //! invert
     pMrq->setTRIGGER_LEVELSTATE( ax,
                                  (MRQ_TRIGGER_LEVELSTATE)mPosIndex,
-                                 (MRQ_CAN_NETMANAGELED)mbGapPosEn );
+                                 (MRQ_SYSTEM_REVMOTION)mbGapPosEn );
 
     ret = move( pArg->mZeroGapDist, pArg->mZeroGapTime, 0, region  );
 

@@ -134,8 +134,17 @@ void deviceMRQ::postCtor()
     deviceProxyMotor *pProxyMotor;
     tpvDownloader *pLoader;
     MrqTaskThread *pTask;
+
+    mAccList.clear();
+    mDecList.clear();
+
+    //! foreach axes
     for ( int i = 0; i < axes(); i++ )
     {
+        //! default acc/dec list
+        mAccList<<300;
+        mDecList<<300;
+
         for ( int j = 0; j < regions(); j++ )
         {
             region.setRegion( i, j );
@@ -170,6 +179,9 @@ void deviceMRQ::postCtor()
             Q_ASSERT( NULL != pLoader );
             pLoader->attachDevice( this, tpvRegion(i,j) );
             mDownloaders.insert( tpvRegion(i,j), pLoader );
+
+            //! slew cache
+            mSlewCache.insert( region, -1 );
         }
 
         //! foreach axes

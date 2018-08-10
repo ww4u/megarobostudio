@@ -15,6 +15,9 @@ public:
     explicit cfgTab(QWidget *parent = 0);
     ~cfgTab();
 
+private slots:
+    void on_cfgTab_currentChanged(int index);
+
 private:
     Ui::cfgTab *ui;
 };

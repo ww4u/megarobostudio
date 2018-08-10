@@ -211,3 +211,33 @@ end_time()
 
     delete_all( groups );
 }
+
+//! id1, id2
+QString deviceMgr::subGroupString( QList<int> subIds )
+{
+    QString strGp;
+    do
+    {
+        strGp = "Unknown group";
+        if ( subIds.at(0) != sub_group_id_from && subIds.at(0) != 0 )
+        {
+            strGp = tr("GROUP1");
+            break;
+        }
+
+        if ( subIds.at(1) != sub_group_id_from && subIds.at(1) != 0 )
+        { strGp = tr("GROUP2"); }
+    }while( 0 );
+
+    return strGp;
+}
+
+QString deviceMgr::subGroupString( int id )
+{
+    if ( id == robo_channels(0) )
+    { return tr("GROUP1"); }
+    else if ( id == robo_channels(1) )
+    { return tr("GROUP2"); }
+    else
+    { return "Unknown group"; }
+}

@@ -693,6 +693,7 @@ void MainWindow::on_itemXActivated( mcModelObj *pObj )
         if ( index >= 0 )
         {
             ui->widget->setCurrentWidget( pView );
+//            pView->setActive();
             return;
         }
         //! no view
@@ -757,8 +758,10 @@ void MainWindow::on_itemXActivated( mcModelObj *pObj )
               || pObj->getType() == mcModelObj::model_device
               || pObj->getType() == mcModelObj::model_composite_device
               )
-    {logDbg();
-        createRoboProp( pObj );logDbg();
+    {
+        pView = createRoboProp( pObj );
+        Q_ASSERT( NULL != pView );
+        pView->setActive();
     }
 
     //! scene file
@@ -929,6 +932,16 @@ void MainWindow::slot_instmgr_changed( bool bEnd, MegaDevice::InstMgr *pMgr )
     }
 }
 
+//! device changed
+void MainWindow::slot_device_active_changed( const QString &name )
+{logDbg()<<name;
+    //! change the device name
+    if ( name.length() > 0 )
+    {
+        m_pAxesConnTool->setCurrentName( name );
+    }
+}
+
 void MainWindow::slot_net_event(
                                 const QString &name,
                                 int axes,
@@ -1047,6 +1060,8 @@ void MainWindow::slot_tabwidget_currentChanged(int index)
     if ( NULL == pViewModel )
     { return; }
 
+    pViewModel->setActive();
+
     Q_ASSERT( pViewModel->getModelObj() != NULL );
     mcModelObj::obj_type objType = pViewModel->getModelObj()->getType();
     if (  objType == mcModelObj::model_tpv
@@ -1114,6 +1129,7 @@ modelView *MainWindow::createModelView( modelView *pView,
 
     ui->widget->addTab( pView, comAssist::pureFileName(pObj->getName()) );
     ui->widget->setCurrentWidget( pView );
+//    pView->setActive();
 
     //! wnd manage
     connect( pView,
@@ -1175,6 +1191,9 @@ modelView *MainWindow::createRoboProp( mcModelObj *pObj )
         Q_ASSERT( NULL != pProp );
         createModelView( pProp, pBase );        //! device is a model
 
+        connect( pProp, SIGNAL(sigActiveDeviceChanged(const QString &)),
+                 this, SLOT(slot_device_active_changed(const QString &)));
+
         return pProp;
     }
     //! mrv
@@ -1185,6 +1204,9 @@ modelView *MainWindow::createRoboProp( mcModelObj *pObj )
 
         Q_ASSERT( NULL != pmrvProp );
         createModelView( pmrvProp, pBase );
+
+        connect( pmrvProp, SIGNAL(sigActiveDeviceChanged(const QString &)),
+                 this, SLOT(slot_device_active_changed(const QString &)));
 
         return pmrvProp;
     }

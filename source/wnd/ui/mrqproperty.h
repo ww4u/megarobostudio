@@ -46,6 +46,8 @@ public:
     virtual void setMcModel( mcModel *pMcModel );
 
     virtual void updateScreen();
+
+    virtual void setActive();
 protected:
     void setupUi( );
     void desetupUi();

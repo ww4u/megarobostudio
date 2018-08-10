@@ -8,6 +8,7 @@ class roboQuebeley : public MegaDevice::deviceMRQ
 {
 public:
     roboQuebeley( robotEnum id );
+    virtual void postCtor();
 
 public:
     virtual QString trigSrcAlias( int ax, int iTrig );

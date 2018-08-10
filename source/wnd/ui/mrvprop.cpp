@@ -97,6 +97,9 @@ void MrvProp::updateScreen()
     }
 }
 
+void MrvProp::setActive()
+{ emit sigActiveDeviceChanged( m_pSystem->deviceName() ); }
+
 int MrvProp::save( QString &outFileName )
 {
     if ( getModelObj()->getPath().isEmpty() )
@@ -143,7 +146,9 @@ void MrvProp::setupUi()
         }
 
         //! sys
-        mViewPages.append( new MrvSystem() );
+        m_pSystem = new MrvSystem();
+        Q_ASSERT( NULL != m_pSystem );
+        mViewPages.append( m_pSystem );
         mTitles<<QString("System");
         mIcons<<":/res/image/icon2/settings_light.png";
     }

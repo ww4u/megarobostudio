@@ -309,12 +309,7 @@ void deviceMgr::updatePhyBusTree( VRoboList *pRoboList )
                 strName = QString("CH%1").arg( i + 1 );
                 pItemAxes->setText( 0, strName );
 
-                strToolTip = "Unknown group";
-                if ( subIds.at(0) != sub_group_id_from && subIds.at(0) != 0 )
-                { strToolTip = tr("GROUP1"); }
-
-                if ( subIds.at(1) != sub_group_id_from && subIds.at(1) != 0 )
-                { strToolTip = tr("GROUP2"); }
+                strToolTip = subGroupString( subIds );
 
                 pItemAxes->setToolTip( 0, strToolTip );
                 pItemAxes->setData( 0, Qt::UserRole, QVariant(i) );     //! type is int,and axes
@@ -365,7 +360,9 @@ void deviceMgr::updateVirBusTree( VRoboList *pRoboList )
         Q_ASSERT( NULL != pItemDev );
 
         pItemDev->setText( 0, pDev->name() );
-        toolTip = QString("0x%1/0x%2").arg( pDev->canGroupId(), 0, 16 ).arg( pDev->subGroupId(),0, 16 );
+//        toolTip = QString("0x%1/0x%2").arg( pDev->canGroupId(), 0, 16 ).arg( pDev->subGroupId(),0, 16 );
+        toolTip = QString("0x%1/%2").arg( pDev->canGroupId(), 0, 16 )
+                                      .arg( subGroupString( pDev->subGroupId() ) );
         toolTip = toolTip.toUpper();
         pItemDev->setToolTip(0, toolTip);
 //        pItemDev->setToolTip( 0, pDev->name() + "-" + pDev->getClass() );

@@ -25,7 +25,7 @@
    <string>Preference</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../res/res.qrc">
+   <iconset>
     <normaloff>:/res/image/icon/205.png</normaloff>:/res/image/icon/205.png</iconset>
   </property>
   <property name="sizeGripEnabled">
@@ -473,7 +473,7 @@
                 <string>MRH-E</string>
                </property>
                <property name="icon">
-                <iconset resource="../res/res.qrc">
+                <iconset>
                  <normaloff>:/res/image/megacan.png</normaloff>:/res/image/megacan.png</iconset>
                </property>
               </item>
@@ -482,7 +482,7 @@
                 <string>USB-CAN II</string>
                </property>
                <property name="icon">
-                <iconset resource="../res/res.qrc">
+                <iconset>
                  <normaloff>:/res/image/can2.png</normaloff>:/res/image/can2.png</iconset>
                </property>
               </item>
@@ -491,7 +491,7 @@
                 <string>MRH-T</string>
                </property>
                <property name="icon">
-                <iconset resource="../res/res.qrc">
+                <iconset>
                  <normaloff>:/res/image/mrh-t.png</normaloff>:/res/image/mrh-t.png</iconset>
                </property>
               </item>
@@ -500,7 +500,7 @@
                 <string>MRH-U</string>
                </property>
                <property name="icon">
-                <iconset resource="../res/res.qrc">
+                <iconset>
                  <normaloff>:/res/image/miniusbcan.png</normaloff>:/res/image/miniusbcan.png</iconset>
                </property>
               </item>
@@ -894,7 +894,7 @@
                <string/>
               </property>
               <property name="pixmap">
-               <pixmap resource="../res/res.qrc">:/res/image/megacan.png</pixmap>
+               <pixmap>:/res/image/megacan.png</pixmap>
               </property>
               <property name="scaledContents">
                <bool>true</bool>
@@ -1667,7 +1667,7 @@ p, li { white-space: pre-wrap; }
           <bool>true</bool>
          </property>
          <property name="rowCount">
-          <number>8</number>
+          <number>10</number>
          </property>
          <attribute name="horizontalHeaderMinimumSectionSize">
           <number>100</number>
@@ -1680,6 +1680,8 @@ p, li { white-space: pre-wrap; }
            <string/>
           </property>
          </row>
+         <row/>
+         <row/>
          <row/>
          <row/>
          <row/>
@@ -1705,6 +1707,11 @@ p, li { white-space: pre-wrap; }
          <item row="0" column="1">
           <property name="text">
            <string>device1</string>
+          </property>
+         </item>
+         <item row="1" column="0">
+          <property name="text">
+           <string/>
           </property>
          </item>
          <item row="1" column="1">
@@ -1742,6 +1749,16 @@ p, li { white-space: pre-wrap; }
            <string>device8</string>
           </property>
          </item>
+         <item row="8" column="1">
+          <property name="text">
+           <string>device9</string>
+          </property>
+         </item>
+         <item row="9" column="1">
+          <property name="text">
+           <string>device10</string>
+          </property>
+         </item>
         </widget>
        </item>
       </layout>
@@ -1769,9 +1786,7 @@ p, li { white-space: pre-wrap; }
    </item>
   </layout>
  </widget>
- <resources>
-  <include location="../res/res.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>buttonBox</sender>

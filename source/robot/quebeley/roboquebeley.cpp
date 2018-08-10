@@ -27,23 +27,22 @@ roboQuebeley::roboQuebeley( robotEnum id )
     mOutputs = 1;
     mInputs = 1;
 
-    mDOs = 2;
-    mDIs = 2;
+    mDIs = 0;
+    mDOs = 1;
 
-    mISOs = 2;
     mISIs = 0;
+    mISOs = 1;
 
-    mAINs = 1;
+    mUARTs = 1;
+    mUART_Sensors = 1;      //! \todo 2
 
-    mUARTs = 2;
-    mUART_Sensors = 1;      //! \todo 1
+    mTemperatures = 0;      //! otp
+    mAINs = 0;
 
     mSensorNameList.clear();
     mSensorNameList<<QObject::tr("SEN1")<<QObject::tr("SEN2");
 
-    mTemperatures = 1;      //! otp
 
-    setTrigSrcs( 5 );
 
     if ( id == robot_qubeley_d )
     { mImage = QImage::fromData( _megaimage, sizeof(_megaimage) ); }
@@ -51,6 +50,56 @@ roboQuebeley::roboQuebeley( robotEnum id )
     { mImage = QImage::fromData( _megaimage, sizeof(_megaimage_s) ); }
     else
     { Q_ASSERT(false); }
+}
+
+void roboQuebeley::postCtor()
+{
+    deviceMRQ::postCtor();
+
+    if ( mId==robot_qubeley_s ) //! 1.0
+    {
+        mOutputs = 1;
+        mInputs = 0;
+
+        mDIs = 0;
+        mDOs = 2;
+
+        mISIs = 0;
+        mISOs = 2;
+
+        mUARTs = 1;
+        mUART_Sensors = 2;
+
+        mTemperatures = 1;      //! otp
+        mAINs = 1;
+
+        setTrigSrcs( 4 );
+
+        mSensorNameList.clear();
+        mSensorNameList<<QObject::tr("SEN1")<<QObject::tr("SEN2");
+    }
+    else
+    {
+        mOutputs = 1;
+        mInputs = 0;
+
+        mDIs = 0;
+        mDOs = 1;
+
+        mISIs = 0;
+        mISOs = 1;
+
+        mUARTs = 2;
+        mUART_Sensors = 1;      //! \todo 2
+
+        mTemperatures = 0;
+        mAINs = 0;
+
+        setTrigSrcs( 2 );
+
+        mSensorNameList.clear();
+        mSensorNameList<<QObject::tr("SEN1")<<QObject::tr("SEN2");
+    }
 }
 
 QString roboQuebeley::trigSrcAlias( int ax, int iTrig )

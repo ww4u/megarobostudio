@@ -21,6 +21,9 @@ public:
 public:
     virtual void modelChanged();
 
+public:
+    QString deviceName();
+
 protected:
     void spyEdited();
     void setupUi();

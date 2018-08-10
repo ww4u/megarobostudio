@@ -41,6 +41,8 @@ Q_SIGNALS:
     void sigModified( bool b );
     void sigModified( modelView *pView, bool b );
 
+    void sigActiveDeviceChanged( const QString &devName );
+
 protected Q_SLOTS:
     void slot_modified();
     void slotModified( bool b );
@@ -78,6 +80,8 @@ public:
 
     virtual void updateScreen();
     virtual void updateModel();
+
+    virtual void setActive();
 
 protected:
     virtual void onRequest( RpcRequest &req );

@@ -542,7 +542,7 @@ FORMS += \
     ../ui/tpedit.ui \
     ../ui/motorpref.ui
 
-RESOURCES = ../res/res.qrc
+#RESOURCES = ../res/res.qrc
 
 RC_ICONS = ../res/image/logo/megarobo.ico
 

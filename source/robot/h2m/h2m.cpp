@@ -3,6 +3,12 @@
 
 #include "../../device/board/_MRQ_enum.h"
 
+static quint8 _detail[]=
+{
+    #include "./detail.cpp"
+};
+
+
 robotH2M::robotH2M()
 {
     mClass = QObject::tr("MRX-H2M");
@@ -19,7 +25,7 @@ robotH2M::robotH2M()
 //    mPoseTitles.clear();
 //    mPoseTitles<<"X"<<"Y";
 
-//    mDetail = QString::fromLocal8Bit( (char*)_detail, sizeof_array(_detail) );
+    mDetail = QString::fromLocal8Bit( (char*)_detail, sizeof_array(_detail) );
 
     //! joint name
 //    mJointName.clear();
@@ -43,7 +49,8 @@ robotH2M::robotH2M()
 //    mZeroY = 0;
 
     mAngleDir.clear();
-    mAngleDir<<false<<true;                 //! x:  y:
+//    mAngleDir<<false<<true;                 //! x:  y:
+    mAngleDir<<true<<false;
 
     mAxesDirs.clear();
     mAxesDirs<<-1<<-1;

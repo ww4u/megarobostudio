@@ -191,6 +191,9 @@ void modelView::updateScreen()
 void modelView::updateModel()
 {}
 
+void modelView::setActive()
+{}
+
 void modelView::onRequest( RpcRequest &req )
 {
 

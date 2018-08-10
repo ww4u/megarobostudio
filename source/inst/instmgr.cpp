@@ -252,7 +252,7 @@ int InstMgr::probeCanBus()
             if ( matchSignature(devSig, strDevName ) )
             {
                 deviceSeq = 0;
-                while( seqList.contains( strDevName.toLower() ) )
+                while( seqList.contains( strDevName.toLower(), Qt::CaseInsensitive ) )
                 {
                     //! rst the type
                     if ( pRobo->Type() != objType )
@@ -298,7 +298,7 @@ int InstMgr::probeCanBus()
 
                 Q_ASSERT( deviceSeq < 256 );
                 logDbg();
-            }while( seqList.contains( strDevName.toLower() ) );
+            }while( seqList.contains( strDevName.toLower(), Qt::CaseInsensitive ) );
 
             pRobo->setName( strDevName );
             seqList.append( strDevName.toLower() );

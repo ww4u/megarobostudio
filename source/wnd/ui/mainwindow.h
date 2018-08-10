@@ -139,6 +139,7 @@ protected Q_SLOTS:
     void slot_modelView_modified( modelView *pView, bool b );
 
     void slot_instmgr_changed( bool bEnd, MegaDevice::InstMgr *pMgr );
+    void slot_device_active_changed( const QString &name );
 
     void slot_net_event( const QString &name,
                          int axes,

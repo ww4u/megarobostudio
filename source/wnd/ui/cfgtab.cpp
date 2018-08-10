@@ -12,3 +12,8 @@ cfgTab::~cfgTab()
 {
     delete ui;
 }
+
+void cfgTab::on_cfgTab_currentChanged(int index)
+{
+
+}

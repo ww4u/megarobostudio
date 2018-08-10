@@ -31,6 +31,9 @@ void mrqSys::modelChanged()
     updateUi();
 }
 
+QString mrqSys::deviceName()
+{ return ui->edtAlias->text(); }
+
 void mrqSys::spyEdited()
 {
     QCheckBox *checkBoxes[]=
@@ -77,17 +80,9 @@ int mrqSys::apply()
                     );
     }
 
-//    //! driver
-//    if ( m_pMrqModel->driverId() == VRobot::motor_driver_820 )
-//    {
-//        pDevice->setNEWDRIVER_CURRENT( comAssist::align( ui->spin820Current->value(),driver_current_unit) );
-//        pDevice->setNEWDRIVER_MICROSTEPS( (MRQ_NEWDRIVER_MICROSTEPS)ui->cmb820MicroStep->value() );
-//    }
-
     //! name
-    pDevice->setName(
-                 ui->edtAlias->text()
-                );
+//    pDevice->setName( ui->edtAlias->text() );
+
     return 0;
 
 }

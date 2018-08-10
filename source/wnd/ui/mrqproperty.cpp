@@ -153,6 +153,9 @@ void mrqProperty::updateScreen()
     }
 }
 
+void mrqProperty::setActive()
+{ emit sigActiveDeviceChanged( m_pSysPage->deviceName() ); }
+
 void mrqProperty::setupUi()
 {
     //! new

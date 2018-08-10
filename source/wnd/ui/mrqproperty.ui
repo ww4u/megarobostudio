@@ -157,6 +157,9 @@
       </property>
       <item>
        <widget class="QPushButton" name="btnReset">
+        <property name="toolTip">
+         <string>Restore the factory setting</string>
+        </property>
         <property name="text">
          <string>Reset</string>
         </property>

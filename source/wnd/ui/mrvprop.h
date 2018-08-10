@@ -36,6 +36,7 @@ public:
     virtual void setMcModel( mcModel *pMcModel );
 
     virtual void updateScreen();
+    virtual void setActive();
 
     virtual int  save( QString &outFileName );
     virtual int  saveAs( QString &outFileName );
@@ -62,6 +63,8 @@ private:
 
     QList<modelView *> mViewPages;
     QList< bool > mbtnEnableSnap;
+
+    MrvSystem *m_pSystem;
 
     QStringList mTitles;
     QStringList mIcons;

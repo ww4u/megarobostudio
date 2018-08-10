@@ -261,19 +261,13 @@
       <item>
        <widget class="QGroupBox" name="gpSAcc">
         <property name="title">
-         <string>S Acc.</string>
+         <string>Slew Acc.</string>
         </property>
         <layout class="QGridLayout" name="gridLayout_4">
-         <item row="2" column="1">
-          <widget class="QDoubleSpinBox" name="spinSDec">
-           <property name="minimum">
-            <double>0.100000000000000</double>
-           </property>
-           <property name="maximum">
-            <double>0.500000000000000</double>
-           </property>
-           <property name="singleStep">
-            <double>0.100000000000000</double>
+         <item row="0" column="0">
+          <widget class="QLabel" name="label_10">
+           <property name="text">
+            <string>Acc Scale</string>
            </property>
           </widget>
          </item>
@@ -290,14 +284,26 @@
            </property>
           </widget>
          </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="label_11">
+         <item row="0" column="2" rowspan="2">
+          <widget class="QLabel" name="label_14">
+           <property name="maximumSize">
+            <size>
+             <width>64</width>
+             <height>64</height>
+            </size>
+           </property>
            <property name="text">
-            <string>Dec Scale</string>
+            <string/>
+           </property>
+           <property name="pixmap">
+            <pixmap resource="../res/res.qrc">:/res/image/icon3/slew.png</pixmap>
+           </property>
+           <property name="scaledContents">
+            <bool>true</bool>
            </property>
           </widget>
          </item>
-         <item row="0" column="2">
+         <item row="0" column="3">
           <spacer name="horizontalSpacer_4">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
@@ -310,10 +316,23 @@
            </property>
           </spacer>
          </item>
-         <item row="0" column="0">
-          <widget class="QLabel" name="label_10">
+         <item row="1" column="0">
+          <widget class="QLabel" name="label_11">
            <property name="text">
-            <string>Acc Scale</string>
+            <string>Dec Scale</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QDoubleSpinBox" name="spinSDec">
+           <property name="minimum">
+            <double>0.100000000000000</double>
+           </property>
+           <property name="maximum">
+            <double>0.500000000000000</double>
+           </property>
+           <property name="singleStep">
+            <double>0.100000000000000</double>
            </property>
           </widget>
          </item>
@@ -499,6 +518,8 @@
    <header>valuecombobox.h</header>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="../res/res.qrc"/>
+ </resources>
  <connections/>
 </ui>

@@ -53,7 +53,8 @@ robotH2Z::robotH2Z()
     mZeroY = 0;
 
     mAngleDir.clear();
-    mAngleDir<<false<<true<<true;                 //! x:  y:
+//    mAngleDir<<false<<true<<true;                 //! x:  y:
+    mAngleDir<<true<<false;
 
     mAxesDirs.clear();
     mAxesDirs<<-1<<-1<<1;

@@ -231,6 +231,17 @@ bool    comAssist::ammendFileName( QString &fileName )
             return true;
         }
 
+        //! 4. check {app}/doc
+        fullName = QCoreApplication::applicationDirPath()
+                   + QDir::separator() + "doc"
+                   + QDir::separator() + fileName;
+        fullName = QDir::toNativeSeparators( fullName );
+        if ( QFile::exists( fullName ) )
+        {
+            fileName = fullName;
+            return true;
+        }
+
     }while(0);
 
     //! show file error

@@ -12,6 +12,8 @@
 
 #include "pvtpref.h"
 
+#include "../model/dspindelegate.h"
+
 namespace Ui {
 class pvtEdit;
 }
@@ -115,6 +117,8 @@ private:
     QList< QPointF > mTVs;
 
     modelPvtPref mPvtPref;
+
+    dSpinDelegate *m_pSpinDelegate;
 };
 
 #endif // PVTEDIT_H

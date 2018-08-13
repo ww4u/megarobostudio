@@ -27,8 +27,7 @@ public:
     explicit sysPref(QWidget *parent = 0);
     ~sysPref();
 
-    void setPref( const modelSysPref &pref );
-    modelSysPref getPref();
+    void setPref( modelSysPref *pPref );
 
 public:
     void updateUi();
@@ -56,7 +55,7 @@ private slots:
 
     void on_edtVisa_textChanged(const QString &arg1);
 
-    void on_btnAdd_clicked();
+    void on_btnAddT_clicked();
 
     void on_btnRemove_clicked();
 
@@ -68,12 +67,17 @@ private slots:
 
     void on_listMRTs_currentRowChanged(int currentRow);
 
+    //! slot
+    void slot_toolbar_add();
+    void slot_toolbar_del();
+    void slot_toolbar_clr();
+
 private:
     Ui::sysPref *ui;
-
-    modelSysPref mPref;
-
     QWidget *m_pCANSetting, *m_pMRHTSetting;
+public:
+    modelSysPref *m_pPref;
+
 };
 
 #endif // SYSPREF_H

@@ -557,14 +557,16 @@ VRobot * InstMgr::findRobot( const QString &name, int axesId  )
 VRobot * InstMgr::findRobot( const QString &name, int *pAxes )    //! chx@name
 {
     Q_ASSERT( NULL != pAxes );
+    QString uName;
+    uName = name.toUpper();
 
-    QStringList strList = name.split("@", QString::SkipEmptyParts );
+    QStringList strList = uName.split("@", QString::SkipEmptyParts );
 
     if ( strList.length() < 2 )
     { logDbg()<<name; return NULL; }
 
     //! try convert the ch id
-    if ( strList[0].startsWith( "CH" ) )
+    if ( strList[0].startsWith( "CH"  ) )
     {}
     else
     { logDbg()<<name; return NULL; }

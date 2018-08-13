@@ -109,8 +109,14 @@ void roboProp::setupUi( int id )
     //! new
     m_pInfoPage = new_widget( roboInfo, ":/res/image/icon2/info.png", tr("Info") );
     m_pDetailPage = new_widget( RoboDesc, ":/res/image/icon2/info.png", tr("Detail") );
-    m_pComPref  = new_widget( RoboComPref, ":/res/image/icon2/settings_light.png", tr("Option") );
 
+    //! pref
+    if ( VRobot::robot_motors == id )
+    { m_pComPref = new_widget( MotorsPref, ":/res/image/icon2/settings_light.png", tr("Option") ); }
+    else
+    { m_pComPref  = new_widget( RoboComPref, ":/res/image/icon2/settings_light.png", tr("Option") ); }
+
+    //! special prop
     if ( VRobot::robot_delta == id )
     {
         m_pDeltaPref  = new_widget( DeltaPref, ":/res/image/icon2/settings_light.png", tr("Zero") );

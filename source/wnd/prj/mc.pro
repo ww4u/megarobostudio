@@ -23,7 +23,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-VERSION = 0.1.0.11
+VERSION = 0.1.0.13
 
 OBJECTS_DIR = ./obj
 MOC_DIR = ./obj
@@ -63,7 +63,7 @@ LIBS += -linstclient
 LIBS += -lrobotfact
 LIBS += -lmegatron -lsinanju -ldelta -lh2 -lh2z -lh2m -linjectpump
 LIBS += -ligus_delta
-LIBS += -lmotor
+LIBS += -lmotor -lmotors
 #-lslide
 LIBS += -lquebeley -lgeogoog -lgeo8 -lgeo10 -lgeo51
 LIBS += -lgouf
@@ -291,7 +291,13 @@ SOURCES += \
     ../ui/tpedit.cpp \
     ../ui/motorpref.cpp \
     ../ui/mainwindow_shell.cpp \
-    ../../com/rpcthread.cpp
+    ../../com/rpcthread.cpp \
+    ../../model/dspindelegate.cpp \
+    ../../model/relationmodel.cpp \
+    ../ui/robotaddr.cpp \
+    ../ui/motorspref.cpp \
+    ../ui/tabletoolbar.cpp \
+    ../ui/notice.cpp
 
 HEADERS += \
         ../ui/mainwindow.h \
@@ -448,7 +454,13 @@ HEADERS += \
     ../../model/tpitem.h \
     ../ui/tpedit.h \
     ../ui/motorpref.h \
-    ../../com/rpcthread.h
+    ../../com/rpcthread.h \
+    ../../model/dspindelegate.h \
+    ../../model/relationmodel.h \
+    ../ui/robotaddr.h \
+    ../ui/motorspref.h \
+    ../ui/tabletoolbar.h \
+    ../ui/notice.h
 
 FORMS += \
         ../ui/mainwindow.ui \
@@ -541,15 +553,20 @@ FORMS += \
     ../ui/h2zpanel.ui \
     ../ui/h2panel.ui \
     ../ui/tpedit.ui \
-    ../ui/motorpref.ui
+    ../ui/motorpref.ui \
+    ../ui/robotaddr.ui \
+    ../ui/motorspref.ui \
+    ../ui/tabletoolbar.ui \
+    ../ui/notice.ui
 
-RESOURCES = ../res/res.qrc
+#RESOURCES = ../res/res.qrc
 
 RC_ICONS = ../res/image/logo/megarobo.ico
 
 TRANSLATIONS = ../../translate/megarobostudio_zh_CN.ts \
                 ../../translate/megarobostudio_zh_TW.ts
 DISTFILES += \
-    ../../../installer/doc/readme.txt
+    ../../../installer/doc/readme.txt \
+    ../../../installer/doc/errant.txt
 
 

@@ -366,12 +366,10 @@ void MainWindow::on_actionpref_triggered( )
 {
     sysPref dlg;
 
-    dlg.setPref( mMcModel.mSysPref );
+    dlg.setPref( &mMcModel.mSysPref );
 
     if ( QDialog::Accepted == dlg.exec() )
     {
-        mMcModel.mSysPref = dlg.getPref();
-
         mMcModel.mSysPref.save( pref_file_name );
 
         applyConfigs();

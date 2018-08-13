@@ -2,7 +2,7 @@
 #define SYSPARA_H
 
 #include <QtCore>
-
+#include "../model/relationmodel.h"
 class SysPara
 {
 public:
@@ -49,6 +49,7 @@ public:
     bool mbAutoLoadPrj;
     bool mbAffirmZero;
     bool mbAutoStatusView;
+    bool mbShowNotice;
 
 
                             //! misa
@@ -69,7 +70,7 @@ public:
     QString mLatestPrjPath, mLatestPrjName;
 
                             //! system alias
-    QStringList mAliases, mSNList;
+    RelationModel mAlias;
 };
 
 #endif // SYSPARA_H

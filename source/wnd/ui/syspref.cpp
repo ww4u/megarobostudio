@@ -50,7 +50,16 @@ sysPref::sysPref(QWidget *parent) :
     { ui->cmbComPort->addItem(info.portName()); }
 
     slot_updateValidateEn();
+
     slot_validate_listmrt();
+
+    //! tool bar
+    connect( ui->aliasToolBar, SIGNAL(signal_add_clicked()),
+             this, SLOT(slot_toolbar_add()));
+    connect( ui->aliasToolBar, SIGNAL(signal_del_clicked()),
+             this, SLOT(slot_toolbar_del()));
+    connect( ui->aliasToolBar, SIGNAL(signal_clr_clicked()),
+             this, SLOT(slot_toolbar_clr()));
 
 #ifdef ARCH_32
     ui->cmbPort->removeItem( e_can_mcp );
@@ -80,24 +89,20 @@ sysPref::~sysPref()
     delete ui;
 }
 
-void sysPref::setPref( const modelSysPref &pref )
+void sysPref::setPref( modelSysPref *pPref )
 {
-    mPref = pref;
+    Q_ASSERT( NULL != pPref );
+    m_pPref = pPref;
 
     updateUi();
-}
-
-modelSysPref sysPref::getPref()
-{
-    return mPref;
 }
 
 void sysPref::updateUi()
 {
 
 #ifdef ARCH_32
-    ui->cmbPort->setCurrentIndex( mPref.mPort );
-    on_cmbPort_currentIndexChanged( mPref.mPort );
+    ui->cmbPort->setCurrentIndex( m_pPref->mPort );
+    on_cmbPort_currentIndexChanged( m_pPref->mPort );
 #else
 #endif
 
@@ -112,197 +117,157 @@ void sysPref::updateUi()
 #endif
 
 
-    ui->cmbSpeed->setCurrentText( QString::number(mPref.mSpeed) );
+    ui->cmbSpeed->setCurrentText( QString::number(m_pPref->mSpeed) );
 
-    ui->edtVisa->setText( mPref.mVisaAddr );
-    ui->spinVisaTmo->setValue( mPref.mVisaTmo );
+    ui->edtVisa->setText( m_pPref->mVisaAddr );
+    ui->spinVisaTmo->setValue( m_pPref->mVisaTmo );
     ui->listMRTs->clear();
-    ui->listMRTs->addItems( mPref.mVisaList );
+    ui->listMRTs->addItems( m_pPref->mVisaList );
 
-    ui->spinTmo->setValue( mPref.mTimeout );
-    ui->spinRecvTmo->setValue( mPref.mRecvTmo );
-    ui->spinInterval->setValue( mPref.mInterval );
+    ui->spinTmo->setValue( m_pPref->mTimeout );
+    ui->spinRecvTmo->setValue( m_pPref->mRecvTmo );
+    ui->spinInterval->setValue( m_pPref->mInterval );
 
-    ui->spinFailTry->setValue( mPref.mFailTryCnt );
-    ui->spinEnumTmo->setValue( mPref.mEnumerateTimeout );
-    ui->spinPvtInterval->setValue( mPref.mTpvInterval );
-    ui->chkAutoAssignId->setChecked( mPref.mbAutoAssignId );
+    ui->spinFailTry->setValue( m_pPref->mFailTryCnt );
+    ui->spinEnumTmo->setValue( m_pPref->mEnumerateTimeout );
+    ui->spinPvtInterval->setValue( m_pPref->mTpvInterval );
+    ui->chkAutoAssignId->setChecked( m_pPref->mbAutoAssignId );
 
-    ui->spinDeviceCount->setValue( mPref.mDeviceCount );
-    ui->spinDeviceId->setValue( mPref.mDeviceId );
+    ui->spinDeviceCount->setValue( m_pPref->mDeviceCount );
+    ui->spinDeviceId->setValue( m_pPref->mDeviceId );
 
-    ui->spinSendFrom->setValue((mPref.mSendIdFrom));
-    ui->spinSendTo->setValue((mPref.mSendIdTo));
+    ui->spinSendFrom->setValue((m_pPref->mSendIdFrom));
+    ui->spinSendTo->setValue((m_pPref->mSendIdTo));
 
-    ui->spinRecvFrom->setValue((mPref.mRecvIdFrom));
-    ui->spinRecvTo->setValue((mPref.mRecvIdTo));
+    ui->spinRecvFrom->setValue((m_pPref->mRecvIdFrom));
+    ui->spinRecvTo->setValue((m_pPref->mRecvIdTo));
 
-    ui->spinGpFrom->setValue((mPref.mGroupIdFrom));
-    ui->spinGpTo->setValue((mPref.mGroupIdTo));
+    ui->spinGpFrom->setValue((m_pPref->mGroupIdFrom));
+    ui->spinGpTo->setValue((m_pPref->mGroupIdTo));
 
-    ui->dblTimeUnit->setValue( mPref.mTimeUnit );
-    ui->dblPosUnit->setValue( mPref.mPosUnit );
-    ui->dblVelUnit->setValue( mPref.mVelUnit );
+    ui->dblTimeUnit->setValue( m_pPref->mTimeUnit );
+    ui->dblPosUnit->setValue( m_pPref->mPosUnit );
+    ui->dblVelUnit->setValue( m_pPref->mVelUnit );
 
-    ui->spinSampleTick->setValue( mPref.mSampleTick );
+    ui->spinSampleTick->setValue( m_pPref->mSampleTick );
 
-    ui->chkAutoExpand->setChecked( mPref.mAutoExpand );
-    ui->chkAutoLoadSet->setChecked( mPref.mbAutoLoadSetup );
-    ui->chkSearch->setChecked( mPref.mbSearchOnOpen );
-    ui->chkMaximize->setChecked( mPref.mbMaximizeStartup );
+    ui->chkAutoExpand->setChecked( m_pPref->mAutoExpand );
+    ui->chkAutoLoadSet->setChecked( m_pPref->mbAutoLoadSetup );
+    ui->chkSearch->setChecked( m_pPref->mbSearchOnOpen );
+    ui->chkMaximize->setChecked( m_pPref->mbMaximizeStartup );
+    ui->chkShowNotice->setChecked( m_pPref->mbShowNotice );
 
-    ui->chkLoadLast->setChecked( mPref.mbAutoLoadPrj );
-    ui->chkAutoZeroAffirm->setChecked( mPref.mbAffirmZero );
-    ui->chkAutoStatus->setChecked( mPref.mbAutoStatusView );
+    ui->chkLoadLast->setChecked( m_pPref->mbAutoLoadPrj );
+    ui->chkAutoZeroAffirm->setChecked( m_pPref->mbAffirmZero );
+    ui->chkAutoStatus->setChecked( m_pPref->mbAutoStatusView );
 
-    ui->cmbStyle->setCurrentIndex( mPref.mStyleIndex );
-    ui->cmbLang->setCurrentIndex( mPref.mLangIndex );
+    ui->cmbStyle->setCurrentIndex( m_pPref->mStyleIndex );
+    ui->cmbLang->setCurrentIndex( m_pPref->mLangIndex );
 
     //! db
-    ui->chkUpload->setChecked( mPref.mDbMeta.mbUpload );
-    ui->edtDbName->setText( mPref.mDbMeta.mDbName );
-    ui->edtHost->setText( mPref.mDbMeta.mHostName );
-    ui->edtTableName->setText( mPref.mDbMeta.mTableName );
-    ui->edtUserName->setText( mPref.mDbMeta.mUserName );
-    ui->edtPassword->setText( mPref.mDbMeta.mPassword );
+    ui->chkUpload->setChecked( m_pPref->mDbMeta.mbUpload );
+    ui->edtDbName->setText( m_pPref->mDbMeta.mDbName );
+    ui->edtHost->setText( m_pPref->mDbMeta.mHostName );
+    ui->edtTableName->setText( m_pPref->mDbMeta.mTableName );
+    ui->edtUserName->setText( m_pPref->mDbMeta.mUserName );
+    ui->edtPassword->setText( m_pPref->mDbMeta.mPassword );
 
     //    slot_updateValidateEn();
 
     //! misa
     ui->labelHostName->setText( QHostInfo::localHostName() );
-    ui->chkMisaEn->setChecked( mPref.mMisaEn );
-    ui->spinMisaSocket->setValue( mPref.mMisaSocket );
+    ui->chkMisaEn->setChecked( m_pPref->mMisaEn );
+    ui->spinMisaSocket->setValue( m_pPref->mMisaSocket );
 
-    ui->chkComOnOff->setChecked( mPref.mComEn );
-    ui->cmbComPort->setCurrentText( mPref.mComName );
+    ui->chkComOnOff->setChecked( m_pPref->mComEn );
+    ui->cmbComPort->setCurrentText( m_pPref->mComName );
 
-    ui->edtRemotePath->setText( mPref.mRemoteDirPath );
+    ui->edtRemotePath->setText( m_pPref->mRemoteDirPath );
 
-    ui->tempPath->setText( mPref.mDumpPath );
-    ui->edtEventLog->setText( mPref.mEventLogFile );
+    ui->tempPath->setText( m_pPref->mDumpPath );
+    ui->edtEventLog->setText( m_pPref->mEventLogFile );
 
     //! space
-    ui->spinDistanceError->setValue( mPref.mGeometryResolution );
-    ui->spinAngleError->setValue( mPref.mAngleResolution );
+    ui->spinDistanceError->setValue( m_pPref->mGeometryResolution );
+    ui->spinAngleError->setValue( m_pPref->mAngleResolution );
 
-    //! sn list
-    QTableWidgetItem *pItem;
-//    for( int i = 0; i < ui->tableAlias->rowCount(); i++ )
-    for ( int i = 0; i < 8; i++ )
-    {logDbg()<<i<<ui->tableAlias->rowCount()<<ui->tableAlias->columnCount();
-        pItem = ui->tableAlias->takeItem( i, 0 );
-        if ( pItem == NULL )
-        {
-            pItem = new QTableWidgetItem( mPref.mSNList.at(i) );
-        }
-        else
-        {
-            logDbg()<<pItem->data(Qt::DisplayRole).toString();
-            pItem->setData( Qt::EditRole, mPref.mSNList.at(i) );
-        }
-        ui->tableAlias->setItem( i, 0, pItem );
-
-        pItem = ui->tableAlias->takeItem( i, 1 );
-        if ( pItem == NULL )
-        {
-            pItem = new QTableWidgetItem( mPref.mAliases.at(i) );
-        }
-        else
-        {
-            logDbg()<<pItem->data(Qt::DisplayRole).toString();
-            pItem->setData( Qt::EditRole, mPref.mAliases.at(i) );
-        }
-
-        ui->tableAlias->setItem( i, 1, pItem );
-    }
+    //! set model
+    ui->tableView->setModel( &m_pPref->mAlias );
 }
 
 void sysPref::updateData()
 {
-    mPref.mPort = ui->cmbPort->currentIndex();
-    mPref.mSpeed = ui->cmbSpeed->currentText().toInt();
+    m_pPref->mPort = ui->cmbPort->currentIndex();
+    m_pPref->mSpeed = ui->cmbSpeed->currentText().toInt();
 
-    mPref.mVisaAddr = ui->edtVisa->text();
-    mPref.mVisaTmo = ui->spinVisaTmo->value();
-    mPref.mVisaList.clear();
+    m_pPref->mVisaAddr = ui->edtVisa->text();
+    m_pPref->mVisaTmo = ui->spinVisaTmo->value();
+    m_pPref->mVisaList.clear();
     for ( int i = 0; i < ui->listMRTs->count(); i++ )
-    { mPref.mVisaList.append( ui->listMRTs->item(i)->text() ); }
+    { m_pPref->mVisaList.append( ui->listMRTs->item(i)->text() ); }
 
-    mPref.mTimeout = ui->spinTmo->value();
-    mPref.mRecvTmo = ui->spinRecvTmo->value();
-    mPref.mInterval = ui->spinInterval->value();
-    mPref.mFailTryCnt = ui->spinFailTry->value();
-    mPref.mEnumerateTimeout = ui->spinEnumTmo->value();
-    mPref.mTpvInterval = ui->spinPvtInterval->value();
-    mPref.mbAutoAssignId = ui->chkAutoAssignId->isChecked();
-    mPref.mDeviceCount = ui->spinDeviceCount->value();
-    mPref.mDeviceId = ui->spinDeviceId->value();
+    m_pPref->mTimeout = ui->spinTmo->value();
+    m_pPref->mRecvTmo = ui->spinRecvTmo->value();
+    m_pPref->mInterval = ui->spinInterval->value();
+    m_pPref->mFailTryCnt = ui->spinFailTry->value();
+    m_pPref->mEnumerateTimeout = ui->spinEnumTmo->value();
+    m_pPref->mTpvInterval = ui->spinPvtInterval->value();
+    m_pPref->mbAutoAssignId = ui->chkAutoAssignId->isChecked();
+    m_pPref->mDeviceCount = ui->spinDeviceCount->value();
+    m_pPref->mDeviceId = ui->spinDeviceId->value();
 
-    mPref.mSendIdFrom = ui->spinSendFrom->value();
-    mPref.mSendIdTo = ui->spinSendTo->value();
+    m_pPref->mSendIdFrom = ui->spinSendFrom->value();
+    m_pPref->mSendIdTo = ui->spinSendTo->value();
 
-    mPref.mRecvIdFrom = ui->spinRecvFrom->value();
-    mPref.mRecvIdTo = ui->spinRecvTo->value();
+    m_pPref->mRecvIdFrom = ui->spinRecvFrom->value();
+    m_pPref->mRecvIdTo = ui->spinRecvTo->value();
 
-    mPref.mGroupIdFrom = ui->spinGpFrom->value();
-    mPref.mGroupIdTo = ui->spinGpTo->value();
+    m_pPref->mGroupIdFrom = ui->spinGpFrom->value();
+    m_pPref->mGroupIdTo = ui->spinGpTo->value();
 
-    mPref.mTimeUnit = ui->dblTimeUnit->value();
-    mPref.mPosUnit = ui->dblPosUnit->value();
-    mPref.mVelUnit = ui->dblVelUnit->value();
+    m_pPref->mTimeUnit = ui->dblTimeUnit->value();
+    m_pPref->mPosUnit = ui->dblPosUnit->value();
+    m_pPref->mVelUnit = ui->dblVelUnit->value();
 
-    mPref.mSampleTick = ui->spinSampleTick->value();
+    m_pPref->mSampleTick = ui->spinSampleTick->value();
 
-    mPref.mAutoExpand = ui->chkAutoExpand->isChecked();
-    mPref.mbAutoLoadSetup = ui->chkAutoLoadSet->isChecked();
-    mPref.mbSearchOnOpen = ui->chkSearch->isChecked();
-    mPref.mbMaximizeStartup = ui->chkMaximize->isChecked();
+    m_pPref->mAutoExpand = ui->chkAutoExpand->isChecked();
+    m_pPref->mbAutoLoadSetup = ui->chkAutoLoadSet->isChecked();
+    m_pPref->mbSearchOnOpen = ui->chkSearch->isChecked();
+    m_pPref->mbMaximizeStartup = ui->chkMaximize->isChecked();
 
-    mPref.mbAutoLoadPrj = ui->chkLoadLast->isChecked();
-    mPref.mbAffirmZero = ui->chkAutoZeroAffirm->isChecked();
-    mPref.mbAutoStatusView = ui->chkAutoStatus->isChecked();
+    m_pPref->mbShowNotice = ui->chkShowNotice->isChecked();
 
-    mPref.mStyleIndex = ui->cmbStyle->currentIndex();
-    mPref.mLangIndex = ui->cmbLang->currentIndex();
+    m_pPref->mbAutoLoadPrj = ui->chkLoadLast->isChecked();
+    m_pPref->mbAffirmZero = ui->chkAutoZeroAffirm->isChecked();
+    m_pPref->mbAutoStatusView = ui->chkAutoStatus->isChecked();
+
+    m_pPref->mStyleIndex = ui->cmbStyle->currentIndex();
+    m_pPref->mLangIndex = ui->cmbLang->currentIndex();
 
     //! db meta
-    mPref.mDbMeta.mbUpload = ui->chkUpload->isChecked();
-    mPref.mDbMeta.mDbName = ui->edtDbName->text() ;
-    mPref.mDbMeta.mHostName = ui->edtHost->text();
-    mPref.mDbMeta.mTableName = ui->edtTableName->text();
-    mPref.mDbMeta.mUserName = ui->edtUserName->text();
-    mPref.mDbMeta.mPassword = ui->edtPassword->text();
+    m_pPref->mDbMeta.mbUpload = ui->chkUpload->isChecked();
+    m_pPref->mDbMeta.mDbName = ui->edtDbName->text() ;
+    m_pPref->mDbMeta.mHostName = ui->edtHost->text();
+    m_pPref->mDbMeta.mTableName = ui->edtTableName->text();
+    m_pPref->mDbMeta.mUserName = ui->edtUserName->text();
+    m_pPref->mDbMeta.mPassword = ui->edtPassword->text();
 
     //! misa
-    mPref.mMisaEn = ui->chkMisaEn->isChecked();
-    mPref.mMisaSocket = ui->spinMisaSocket->value();
+    m_pPref->mMisaEn = ui->chkMisaEn->isChecked();
+    m_pPref->mMisaSocket = ui->spinMisaSocket->value();
 
-    mPref.mComEn = ui->chkComOnOff->isChecked();
-    mPref.mComName = ui->cmbComPort->currentText();
+    m_pPref->mComEn = ui->chkComOnOff->isChecked();
+    m_pPref->mComName = ui->cmbComPort->currentText();
 
-    mPref.mRemoteDirPath = ui->edtRemotePath->text();
+    m_pPref->mRemoteDirPath = ui->edtRemotePath->text();
 
-    mPref.mEventLogFile = ui->edtEventLog->text();
+    m_pPref->mEventLogFile = ui->edtEventLog->text();
 
     //! space
-    mPref.mGeometryResolution = ui->spinDistanceError->value();
-    mPref.mAngleResolution = ui->spinAngleError->value();
+    m_pPref->mGeometryResolution = ui->spinDistanceError->value();
+    m_pPref->mAngleResolution = ui->spinAngleError->value();
 
-    //! alias list
-    QString str;
-    for( int i = 0; i < ui->tableAlias->rowCount(); i++ )
-    {
-//        for( int j = 0; j < ui->tableAlias->columnCount(); j++ )
-        {
-            str = ui->tableAlias->item( i, 0 )->data( Qt::DisplayRole ).toString();
-            mPref.mSNList[i] = str;
-
-            str = ui->tableAlias->item( i, 1 )->data( Qt::DisplayRole ).toString();
-            mPref.mAliases[i] = str;
-        }
-//        ui->tableAlias->item()
-    }
-//    mPref.mAliases
 }
 
 bool sysPref::validateDb()
@@ -419,7 +384,7 @@ void sysPref::on_buttonBox_clicked(QAbstractButton *button)
                                        QMessageBox::Ok, QMessageBox::Cancel ) )
         { return; }
 
-        mPref.rst();
+        m_pPref->rst();
         updateUi();
     }
     else if ( ui->buttonBox->buttonRole( button ) == QDialogButtonBox::AcceptRole )
@@ -515,12 +480,12 @@ void sysPref::on_btnVerify_2_clicked()
     if ( validateVisaRsrc( strIdn ) )
     {
         MegaMessageBox::information( this, tr("Info"), tr("Connect success ") + strIdn );
-        ui->btnAdd->setEnabled( true );
+        ui->btnAddT->setEnabled( true );
     }
     else
     {
         MegaMessageBox::warning( this, tr("Info"), tr("Connect fail") );
-        ui->btnAdd->setEnabled( false );
+        ui->btnAddT->setEnabled( false );
     }
     QApplication::restoreOverrideCursor();
 }
@@ -530,7 +495,7 @@ void sysPref::on_edtVisa_textChanged(const QString &arg1)
     slot_validate_listmrt();
 }
 
-void sysPref::on_btnAdd_clicked()
+void sysPref::on_btnAddT_clicked()
 {
     //! search exist
     for ( int i = 0; i < ui->listMRTs->count(); i++ )
@@ -568,12 +533,12 @@ void sysPref::slot_validate_listmrt()
     if ( ui->edtVisa->text().length() > 0 )
     {
         ui->btnVerify_2->setEnabled(true);
-        ui->btnAdd->setEnabled( true );
+        ui->btnAddT->setEnabled( true );
     }
     else
     {
         ui->btnVerify_2->setEnabled(false);
-        ui->btnAdd->setEnabled( false );
+        ui->btnAddT->setEnabled( false );
     }
 
     if ( ui->listMRTs->currentItem() != NULL )
@@ -590,4 +555,27 @@ void sysPref::slot_validate_listmrt()
 void sysPref::on_listMRTs_currentRowChanged(int currentRow)
 {
     slot_validate_listmrt();
+}
+
+#define model_      (m_pPref->mAlias)
+void sysPref::slot_toolbar_add()
+{
+    if ( ui->tableView->currentIndex().isValid() )
+    { model_.insertRow( ui->tableView->currentIndex().row() + 1 ); }
+    else
+    { model_.insertRow(0); }
+}
+void sysPref::slot_toolbar_del()
+{
+    model_.removeRow( ui->tableView->currentIndex().row() );
+}
+void sysPref::slot_toolbar_clr()
+{
+    MegaDeleteAffirmMessageBox msgBox;
+    int ret = msgBox.exec();
+    if ( ret == QMessageBox::Ok )
+    {
+//        model_.removeRows( 0, m_pPref->mAlias.mItems.size() );
+        model_.removeRows( 0, model_.mItems.size(), QModelIndex() );
+    }
 }

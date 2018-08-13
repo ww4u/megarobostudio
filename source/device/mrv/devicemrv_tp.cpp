@@ -15,7 +15,10 @@ bool deviceMRV::isDownloading( int ax )
 }
 
 int deviceMRV::tpWrite( QList<TpRow*> &list, int ax )
-{
+{   
+    //! to idle
+    assignStatus( MRV_MOTION_STATE_1_IDLE, tpvRegion(ax,0) );
+
     mDownloaders.at( ax )->append( list );
 
     if ( mDownloaders.at(ax)->isRunning() )

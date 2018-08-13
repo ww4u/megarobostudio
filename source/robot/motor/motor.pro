@@ -6,8 +6,8 @@ TARGET = ../../../../lib/motor
 
 INCLUDEPATH += ../../scpi-parser/libscpi/inc
 
-OBJECTS_DIR = ../obj
-MOC_DIR = ../obj
+OBJECTS_DIR = ./obj
+MOC_DIR = ./obj
 
 SOURCES = \
     motor.cpp \

@@ -144,7 +144,7 @@ QList<int> deviceMRV::deviceIds()
 {
     QList<int> ids;
 
-    ids<<mCAN_RECEIVEID<<mCAN_SENDID<<mCAN_GROUPID1;
+    ids<<mCAN_RECEIVEID<<mCAN_SENDID<<mCAN_GROUPID1<<mCAN_GROUPID2;
     return ids;
 }
 

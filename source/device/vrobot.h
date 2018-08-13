@@ -91,6 +91,7 @@ public:
         robot_ip,
 
         robot_motor,
+        robot_motors,
         robot_slide,
 
         robot_igus_delta,
@@ -335,6 +336,9 @@ public:
 
     //! MOTION_STAUS
     virtual void setStatus( int stat, const tpvRegion &region, frameData &data );
+
+    void assignStatus( int stat, const tpvRegion &region );
+
     int status( const tpvRegion &region );
     virtual int state( const tpvRegion &region, int inTask = 0 );
 

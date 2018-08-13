@@ -271,6 +271,16 @@
           <item row="6" column="1" colspan="2">
            <widget class="QLineEdit" name="edtEventLog"/>
           </item>
+          <item row="3" column="1">
+           <widget class="QCheckBox" name="chkShowNotice">
+            <property name="layoutDirection">
+             <enum>Qt::RightToLeft</enum>
+            </property>
+            <property name="text">
+             <string>Show Notice on Startup</string>
+            </property>
+           </widget>
+          </item>
          </layout>
         </widget>
        </item>
@@ -719,7 +729,7 @@
                  </widget>
                 </item>
                 <item row="2" column="1">
-                 <widget class="QPushButton" name="btnAdd">
+                 <widget class="QPushButton" name="btnAddT">
                   <property name="text">
                    <string>Add</string>
                   </property>
@@ -1662,103 +1672,16 @@ p, li { white-space: pre-wrap; }
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_5">
        <item>
-        <widget class="QTableWidget" name="tableAlias">
-         <property name="alternatingRowColors">
-          <bool>true</bool>
-         </property>
-         <property name="rowCount">
-          <number>10</number>
-         </property>
-         <attribute name="horizontalHeaderMinimumSectionSize">
-          <number>100</number>
+        <widget class="TableToolbar" name="aliasToolBar" native="true"/>
+       </item>
+       <item>
+        <widget class="QTableView" name="tableView">
+         <attribute name="horizontalHeaderDefaultSectionSize">
+          <number>300</number>
          </attribute>
          <attribute name="horizontalHeaderStretchLastSection">
           <bool>true</bool>
          </attribute>
-         <row>
-          <property name="text">
-           <string/>
-          </property>
-         </row>
-         <row/>
-         <row/>
-         <row/>
-         <row/>
-         <row/>
-         <row/>
-         <row/>
-         <row/>
-         <row/>
-         <column>
-          <property name="text">
-           <string>SN</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>Alias</string>
-          </property>
-         </column>
-         <item row="0" column="0">
-          <property name="text">
-           <string/>
-          </property>
-         </item>
-         <item row="0" column="1">
-          <property name="text">
-           <string>device1</string>
-          </property>
-         </item>
-         <item row="1" column="0">
-          <property name="text">
-           <string/>
-          </property>
-         </item>
-         <item row="1" column="1">
-          <property name="text">
-           <string>device2</string>
-          </property>
-         </item>
-         <item row="2" column="1">
-          <property name="text">
-           <string>device3</string>
-          </property>
-         </item>
-         <item row="3" column="1">
-          <property name="text">
-           <string>device4</string>
-          </property>
-         </item>
-         <item row="4" column="1">
-          <property name="text">
-           <string>device5</string>
-          </property>
-         </item>
-         <item row="5" column="1">
-          <property name="text">
-           <string>device6</string>
-          </property>
-         </item>
-         <item row="6" column="1">
-          <property name="text">
-           <string>device7</string>
-          </property>
-         </item>
-         <item row="7" column="1">
-          <property name="text">
-           <string>device8</string>
-          </property>
-         </item>
-         <item row="8" column="1">
-          <property name="text">
-           <string>device9</string>
-          </property>
-         </item>
-         <item row="9" column="1">
-          <property name="text">
-           <string>device10</string>
-          </property>
-         </item>
         </widget>
        </item>
       </layout>
@@ -1786,6 +1709,14 @@ p, li { white-space: pre-wrap; }
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>TableToolbar</class>
+   <extends>QWidget</extends>
+   <header>tabletoolbar.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>
@@ -1827,12 +1758,12 @@ p, li { white-space: pre-wrap; }
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>132</x>
-     <y>78</y>
+     <x>179</x>
+     <y>106</y>
     </hint>
     <hint type="destinationlabel">
-     <x>134</x>
-     <y>92</y>
+     <x>179</x>
+     <y>134</y>
     </hint>
    </hints>
   </connection>
@@ -1843,12 +1774,12 @@ p, li { white-space: pre-wrap; }
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>151</x>
-     <y>92</y>
+     <x>179</x>
+     <y>134</y>
     </hint>
     <hint type="destinationlabel">
-     <x>151</x>
-     <y>73</y>
+     <x>179</x>
+     <y>106</y>
     </hint>
    </hints>
   </connection>
@@ -1859,12 +1790,12 @@ p, li { white-space: pre-wrap; }
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>199</x>
-     <y>78</y>
+     <x>269</x>
+     <y>106</y>
     </hint>
     <hint type="destinationlabel">
-     <x>197</x>
-     <y>88</y>
+     <x>269</x>
+     <y>134</y>
     </hint>
    </hints>
   </connection>
@@ -1875,12 +1806,12 @@ p, li { white-space: pre-wrap; }
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>214</x>
-     <y>94</y>
+     <x>269</x>
+     <y>134</y>
     </hint>
     <hint type="destinationlabel">
-     <x>214</x>
-     <y>78</y>
+     <x>269</x>
+     <y>106</y>
     </hint>
    </hints>
   </connection>
@@ -1891,12 +1822,12 @@ p, li { white-space: pre-wrap; }
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>114</x>
-     <y>129</y>
+     <x>179</x>
+     <y>162</y>
     </hint>
     <hint type="destinationlabel">
-     <x>112</x>
-     <y>147</y>
+     <x>179</x>
+     <y>190</y>
     </hint>
    </hints>
   </connection>
@@ -1907,12 +1838,12 @@ p, li { white-space: pre-wrap; }
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>123</x>
-     <y>144</y>
+     <x>179</x>
+     <y>190</y>
     </hint>
     <hint type="destinationlabel">
-     <x>123</x>
-     <y>131</y>
+     <x>179</x>
+     <y>162</y>
     </hint>
    </hints>
   </connection>
@@ -1923,12 +1854,12 @@ p, li { white-space: pre-wrap; }
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>183</x>
-     <y>133</y>
+     <x>269</x>
+     <y>162</y>
     </hint>
     <hint type="destinationlabel">
-     <x>183</x>
-     <y>151</y>
+     <x>269</x>
+     <y>190</y>
     </hint>
    </hints>
   </connection>
@@ -1939,12 +1870,12 @@ p, li { white-space: pre-wrap; }
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>229</x>
-     <y>145</y>
+     <x>269</x>
+     <y>190</y>
     </hint>
     <hint type="destinationlabel">
-     <x>229</x>
-     <y>130</y>
+     <x>269</x>
+     <y>162</y>
     </hint>
    </hints>
   </connection>
@@ -1955,12 +1886,12 @@ p, li { white-space: pre-wrap; }
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>133</x>
-     <y>188</y>
+     <x>179</x>
+     <y>218</y>
     </hint>
     <hint type="destinationlabel">
-     <x>136</x>
-     <y>211</y>
+     <x>179</x>
+     <y>246</y>
     </hint>
    </hints>
   </connection>
@@ -1971,12 +1902,12 @@ p, li { white-space: pre-wrap; }
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>153</x>
-     <y>203</y>
+     <x>179</x>
+     <y>246</y>
     </hint>
     <hint type="destinationlabel">
-     <x>156</x>
-     <y>189</y>
+     <x>179</x>
+     <y>218</y>
     </hint>
    </hints>
   </connection>
@@ -1987,12 +1918,12 @@ p, li { white-space: pre-wrap; }
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>195</x>
-     <y>188</y>
+     <x>269</x>
+     <y>218</y>
     </hint>
     <hint type="destinationlabel">
-     <x>191</x>
-     <y>204</y>
+     <x>269</x>
+     <y>246</y>
     </hint>
    </hints>
   </connection>
@@ -2003,12 +1934,12 @@ p, li { white-space: pre-wrap; }
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>215</x>
-     <y>201</y>
+     <x>269</x>
+     <y>246</y>
     </hint>
     <hint type="destinationlabel">
-     <x>217</x>
-     <y>186</y>
+     <x>269</x>
+     <y>218</y>
     </hint>
    </hints>
   </connection>

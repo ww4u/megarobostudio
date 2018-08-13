@@ -237,16 +237,16 @@ int RoboComPref::applyGroupId()
 
         //! set sub group
 
-        //! disable the other group
-        for ( int i = 0; i < ui->cmbGroup->count(); i++ )
-        {
-            if ( i != (MRQ_IDENTITY_GROUP)ui->cmbGroup->currentIndex() )
-            {
-                pMRQ->setIDENTITY_GROUP( axesId,
-                                        (MRQ_IDENTITY_GROUP)( i ),
-                                         sub_group_id_from );
-            }
-        }
+//        //! disable the other group
+//        for ( int i = 0; i < ui->cmbGroup->count(); i++ )
+//        {
+//            if ( i != (MRQ_IDENTITY_GROUP)ui->cmbGroup->currentIndex() )
+//            {
+//                pMRQ->setIDENTITY_GROUP( axesId,
+//                                        (MRQ_IDENTITY_GROUP)( i ),
+//                                         sub_group_id_from );
+//            }
+//        }
 
         pMRQ->setIDENTITY_GROUP( axesId,
                                  (MRQ_IDENTITY_GROUP)ui->cmbGroup->currentIndex(),

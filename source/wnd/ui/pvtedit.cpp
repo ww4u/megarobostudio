@@ -9,6 +9,9 @@
 
 #include "../../../arith/pvt/pvt.h"
 #include "../../widget/megamessagebox.h"
+
+
+
 pvtEdit::pvtEdit(QWidget *parent) :
     tableEdit(parent),
     ui(new Ui::pvtEdit)
@@ -33,6 +36,10 @@ pvtEdit::pvtEdit(QWidget *parent) :
     setupUi();
 
     buildConnection();
+
+    //! delegate
+    m_pSpinDelegate = new dSpinDelegate( this );
+    Q_ASSERT( NULL != m_pSpinDelegate );
 }
 
 pvtEdit::~pvtEdit()
@@ -52,6 +59,9 @@ void pvtEdit::setModelObj( mcModelObj *pObj )
     mTpvGroup = (tpvGroup*)pObj->getObj();
 
     ui->tableView->setModel( mTpvGroup );
+    ui->tableView->setItemDelegateForColumn( 1, m_pSpinDelegate );
+    ui->tableView->setItemDelegateForColumn( 2, m_pSpinDelegate );
+    ui->tableView->setItemDelegateForColumn( 3, m_pSpinDelegate );
 
     connect( mTpvGroup, SIGNAL(signal_data_changed()),
              this, SLOT(slot_data_changed()) );

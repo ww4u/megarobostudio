@@ -81,6 +81,8 @@ int deviceMRV::switchReset( int ax )
 {
     int ret;
 
+    assignStatus( MRV_MOTION_STATE_1_IDLE, tpvRegion(ax,0) );
+
     ret = setMOTION_SWITCH( ax, MRV_MOTION_SWITCH_RESET, MRV_MOTION_SWITCH_1_MAIN );
 
     lpc( ax )->postMsg( (eRoboMsg)mrv_msg_reset, tpvRegion(ax) );
@@ -91,6 +93,8 @@ int deviceMRV::switchRun( int ax )
 {
     int ret;
 
+    assignStatus( MRV_MOTION_STATE_1_IDLE, tpvRegion(ax,0) );
+
     ret = setMOTION_SWITCH( ax, MRV_MOTION_SWITCH_RUN, MRV_MOTION_SWITCH_1_MAIN );
 
     lpc( ax )->postMsg( (eRoboMsg)mrv_msg_run, tpvRegion(ax) );
@@ -100,6 +104,8 @@ int deviceMRV::switchRun( int ax )
 int deviceMRV::switchStop( int ax )
 {
     int ret;
+
+    assignStatus( MRV_MOTION_STATE_1_IDLE, tpvRegion(ax,0) );
 
     ret = setMOTION_SWITCH( ax, MRV_MOTION_SWITCH_STOP, MRV_MOTION_SWITCH_1_MAIN );
 

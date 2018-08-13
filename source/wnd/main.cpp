@@ -1,6 +1,7 @@
 #include "./ui/mainwindow.h"
 #include <QApplication>
-
+#include "./ui/notice.h"
+#include "../com/comassist.h"
 class CommonHelper
 {
 public:
@@ -218,12 +219,15 @@ int main(int argc, char *argv[])
 qDebug()<<a.applicationDirPath();
     //! load pref
     //! translator
-    QTranslator translator;
+
+    modelSysPref pref;
     {
-        modelSysPref pref;
+
         pref.load( pref_file_name );
         if ( pref.mLangIndex != 0 )
         {
+            QTranslator translator;
+
             QLocale::Language lang;
             QLocale::Country area;
             if ( pref.mLangIndex == 1 )
@@ -251,6 +255,8 @@ qDebug()<<a.applicationDirPath();
                                   a.applicationDirPath() + "/translate"
                                   ) )
             {  a.installTranslator(&translator); }
+            else
+            { QMessageBox::information( NULL, "info", "language loss"); }
         }
         if ( pref.mStyleIndex != 0 )
         {
@@ -267,6 +273,34 @@ qDebug()<<a.applicationDirPath();
             QResource::registerResource( a.applicationDirPath() + "/style" + "/black.rcc" );
         }
     }
+
+    //! notice
+    do
+    {
+        if ( pref.mbShowNotice )
+        {}
+        else
+        { break; }
+
+        QString fullName = "errant.txt";
+        if( comAssist::ammendFileName( fullName ) )
+        {}
+        else
+        { break; }
+
+        Notice noticeDlg;
+
+        if ( noticeDlg.load( fullName ) )
+        {}
+        else
+        { break; }
+
+        noticeDlg.exec();
+
+        pref.mbShowNotice = noticeDlg.nextShowAble();
+        pref.save( pref_file_name );
+
+    }while( 0 );
 
     //! dpc set thread
     QThread thread;

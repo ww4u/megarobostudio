@@ -281,12 +281,13 @@ void deviceMgr::updatePhyBusTree( VRoboList *pRoboList )
         if ( pDev->getType() == mcModelObj::model_device )
         {
             ids = pDev->deviceIds();
-            Q_ASSERT(ids.size()>=3);
+            Q_ASSERT(ids.size()>=4);
 
-            toolTips= QString("0X%1/0X%2/0X%3")
+            toolTips= QString("0X%1/0X%2/0X%3/0X%4")
                     .arg( ids[0], 0, 16 )
                     .arg( ids[1], 0, 16 )
                     .arg( ids[2], 0, 16 )
+                    .arg( ids[3], 0, 16 )
                     .toUpper();
 
             pItemDev->setToolTip( 0, toolTips );

@@ -5,8 +5,7 @@ SUBDIRS = \
           ./megatron/megatron.pro \
           ./delta/delta.pro \
           ./motor/motor.pro \
-#          ./slide/slide.pro \
-#          ./slide2/slide2.pro \
+          ./motors/motors.pro \
     quebeley/quebeley.pro \
     geogoog/geogoog.pro \
     gouf/gouf.pro \

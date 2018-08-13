@@ -216,18 +216,15 @@ end_time()
 QString deviceMgr::subGroupString( QList<int> subIds )
 {
     QString strGp;
-    do
+    QString strSep ;
+    for ( int i = 0; i <subIds.size(); i++ )
     {
-        strGp = "Unknown group";
-        if ( subIds.at(0) != sub_group_id_from && subIds.at(0) != 0 )
-        {
-            strGp = tr("GROUP1");
-            break;
-        }
+        strGp = strGp + strSep;
 
-        if ( subIds.at(1) != sub_group_id_from && subIds.at(1) != 0 )
-        { strGp = tr("GROUP2"); }
-    }while( 0 );
+        strGp += subGroupString( subIds.at(i) );
+
+        strSep = "/";
+    }
 
     return strGp;
 }

@@ -23,9 +23,6 @@ robotMotor::robotMotor()
     setAxesDefName( 1 );
     setJointName( 1 );
 
-    mJointName.clear();
-    mJointName<<QObject::tr("Motor");
-
     mImage = QImage::fromData( _megaimage, sizeof(_megaimage) );
 
     mDetail = QString::fromLocal8Bit( (char*)_detail, sizeof_array(_detail) );

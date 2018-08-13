@@ -43,6 +43,7 @@ void modelSysPref::rst()
     mbAutoLoadPrj = true;
     mbAffirmZero = true;
     mbAutoStatusView = true;
+    mbShowNotice = true;
 
     mDumpPath = QCoreApplication::applicationDirPath() + "/temp";
     mEventLogFile = "eventlog.dat";
@@ -70,15 +71,6 @@ void modelSysPref::rst()
 
     mLangIndex = 0;
     mStyleIndex = 0;
-
-    //! alias for 8
-    mAliases.clear();
-    mSNList.clear();
-    for ( int i = 0; i < 8; i++ )
-    {
-        mAliases<<QString("Device%1").arg( i );
-        mSNList<<"";
-    }
 }
 
 //! save to xml
@@ -156,6 +148,7 @@ int modelSysPref::save( const QString &str )
     writer.writeTextElement( "auto_load_prj", QString::number( mbAutoLoadPrj) );
     writer.writeTextElement( "affirm_zero", QString::number( mbAffirmZero) );
     writer.writeTextElement( "auto_status", QString::number( mbAutoStatusView) );
+    writer.writeTextElement( "show_notice", QString::number(mbShowNotice) );
 
     writer.writeTextElement( "language_id", QString::number(mLangIndex) );
     writer.writeTextElement( "style_id", QString::number(mStyleIndex) );
@@ -204,10 +197,14 @@ int modelSysPref::save( const QString &str )
     //! alias
     writer.writeStartElement("alias");
 
-    for( int i = 0; i < mAliases.size(); i++ )
+    for( int i = 0; i < mAlias.mItems.size(); i++ )
     {
-        writer.writeTextElement( "sn", ( mSNList.at(i) ) );
-        writer.writeTextElement( "alias", ( mAliases.at(i) ) );
+        writer.writeStartElement("item");
+
+            writer.writeTextElement("name", mAlias.mItems.at(i)->name() );
+            writer.writeTextElement("value", mAlias.mItems.at(i)->value() );
+
+        writer.writeEndElement();
     }
 
     writer.writeEndElement();
@@ -337,6 +334,10 @@ int modelSysPref::load( const QString &str )
                         { mbAffirmZero = reader.readElementText().toInt() > 0; }
                         else if ( reader.name() == "auto_status" )
                         { mbAutoStatusView = reader.readElementText().toInt() > 0; }
+
+                        else if ( reader.name() == "show_notice" )
+                        { mbShowNotice = reader.readElementText().toInt() > 0; }
+
                         else if ( reader.name() == "language_id" )
                         { mLangIndex = reader.readElementText().toInt(); }
                         else if ( reader.name() == "style_id" )
@@ -397,12 +398,23 @@ int modelSysPref::load( const QString &str )
                     int idSn, idAlias;
                     idSn = 0;
                     idAlias = 0;
+                    Relation *pItem;
                     while( reader.readNextStartElement() )
                     {
-                        if ( reader.name() == "sn" )
-                        { mSNList[idSn++] = reader.readElementText(); }
-                        else if ( reader.name() == "alias" )
-                        { mAliases[idAlias++] = reader.readElementText(); }
+                        if ( reader.name() == "item" )
+                        {
+                            pItem = new Relation();
+                            while( reader.readNextStartElement() )
+                            {
+                                if ( reader.name() == "name" )
+                                { pItem->setName( reader.readElementText());}
+                                else if ( reader.name() == "value" )
+                                { pItem->setValue( reader.readElementText()); }
+                                else
+                                { reader.skipCurrentElement(); }
+                            }
+                            mAlias.mItems.append( pItem );
+                        }
                         else
                         { reader.skipCurrentElement(); }
                     }
@@ -473,11 +485,11 @@ int modelSysPref::findAlias( const QString &sn, QString &alias )
 {
     QString strLower = sn.toLower();
 
-    for( int i = 0; i < mSNList.size(); i++ )
+    for ( int i = 0; i < mAlias.mItems.size(); i++ )
     {
-        if ( strLower == mSNList.at(i).toLower() )
+        if ( strLower == mAlias.mItems.at(i)->name() )
         {
-            alias = mAliases.at(i);
+            alias = mAlias.mItems.at(i)->value();
             if ( alias.size() > 1 )
             { return 0; }
             else

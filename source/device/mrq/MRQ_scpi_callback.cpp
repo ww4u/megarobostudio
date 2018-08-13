@@ -218,14 +218,14 @@ static scpi_result_t _scpi_rotate( scpi_t * context )
 }
 
 //! int, float, float
-//! ax, page, t, angle
+//! ax, page, t, angle, speed
 static scpi_result_t _scpi_preRotate( scpi_t * context )
 {
     // read
     DEF_LOCAL_VAR();
 
     int ax, page;
-    float val2, val3;
+    float val2, val3, val4;
 
     if ( SCPI_RES_OK != SCPI_ParamInt32( context, &ax, true ) )
     { scpi_ret( SCPI_RES_ERR ); }
@@ -239,11 +239,16 @@ static scpi_result_t _scpi_preRotate( scpi_t * context )
     if ( SCPI_RES_OK != SCPI_ParamFloat( context, &val3, true ) )
     { scpi_ret( SCPI_RES_ERR ); }
 
+    if ( SCPI_RES_OK != SCPI_ParamFloat( context, &val4, true ) )
+    { val4 = 0; }
+    else
+    {}
+
     DEF_MRQ();
 
     CHECK_LINK( ax, page );
 
-    LOCALMRQ()->preRotate( tpvRegion(ax,page), val2, val3 );
+    LOCALMRQ()->preRotate( tpvRegion(ax,page), val2, val3, val4 );
 
     return SCPI_RES_OK;
 }

@@ -18,7 +18,9 @@
 #include "./injectpump/injectpump.h"
 
 #include "./motor/motor.h"
-#include "./slide/slide.h"
+#include "./motors/motors.h"
+
+//#include "./slide/slide.h"
 
 #include "./igus_delta/igus_delta.h"
 

@@ -70,10 +70,14 @@ static scpi_result_t _scpi_fsmState( scpi_t * context )
     // read
     DEF_LOCAL_VAR();
 
-    int ax;
+    int ax, page;
 
     if ( SCPI_RES_OK != SCPI_ParamInt32( context, &ax, true ) )
     { scpi_ret( SCPI_RES_ERR ); }
+
+    page = 0;
+    if ( SCPI_RES_OK != SCPI_ParamInt32( context, &page, true ) )
+    { page=0; }
 
     DEF_MRV();
 
@@ -211,9 +215,7 @@ static scpi_result_t _scpi_call( scpi_t * context )
     if ( SCPI_RES_OK != SCPI_ParamInt32( context, &page, true ) )
     { scpi_ret( SCPI_RES_ERR ); }logDbg()<<page;
 
-    int state = LOCALMRV()->switchRun( ax );
-
-    SCPI_ResultInt32( context, state );
+    LOCALMRV()->switchRun( ax );
 
     return SCPI_RES_OK;
 }

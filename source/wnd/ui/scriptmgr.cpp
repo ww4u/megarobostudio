@@ -262,6 +262,7 @@ int scriptMgr::openMotionGroup( const QString &path, const QString &file )
     int ret = pModel->load( file );
     if ( ret != 0 )
     {
+        sysError( file, "do not exist" );
         delete pModel;
         return ret;
     }
@@ -291,6 +292,7 @@ int scriptMgr::openTpv( const QString &path, const QString &file )
     int ret = pGroup->load( file, tpvGroup::pvt_tpv );
     if ( ret != 0 )
     {
+        sysError( file, "do not exist" );
         delete pGroup;
         return ret;
     }
@@ -321,6 +323,7 @@ logDbg()<<file;
     int ret = pGroup->load( file );
     if ( ret != 0 )
     {
+        sysError( file, "do not exist" );
         delete pGroup;
         return ret;
     }
@@ -366,6 +369,7 @@ int scriptMgr::openSetup( const QString &path, const QString &file )
     ret = pBase->load( file );
     if ( ret != 0 )
     {
+        sysError( file, "do not exist" );
         delete pBase;
         return ERR_FILE_READ_FAIL;
     }

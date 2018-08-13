@@ -286,17 +286,21 @@ logDbg();
     return SCPI_RES_OK;
 }
 
-//! int
+//! ax, page
 static scpi_result_t _scpi_fsmState( scpi_t * context )
 {
     DEF_LOCAL_VAR();
     DEF_ROBO();
 
-    int page;
+    int ax, page;
+
+    if ( SCPI_ParamInt32(context, &ax, true) != true )
+    { scpi_ret( SCPI_RES_ERR ); }
+
     if ( SCPI_ParamInt32(context, &page, true) != true )
     { scpi_ret( SCPI_RES_ERR ); }
 
-    int ret = LOCAL_ROBO()->state( tpvRegion(0,page) );
+    int ret = LOCAL_ROBO()->state( tpvRegion(ax,page) );
 
     SCPI_ResultInt32( context, ret );
 

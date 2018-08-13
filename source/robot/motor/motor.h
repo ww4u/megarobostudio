@@ -56,7 +56,6 @@ public:
               float endV,
               const tpvRegion &region );
 
-
 public:
     virtual int goZero( const tpvRegion &region,
                         int jointId, bool bCcw );

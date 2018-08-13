@@ -23,6 +23,7 @@
 #include "ipconfig.h"
 
 #include "motorpref.h"
+#include "motorspref.h"
 
 //! use mrq property
 namespace Ui {
@@ -78,7 +79,7 @@ private:
     roboInfo *m_pInfoPage;
     RoboDesc *m_pDetailPage;
 
-    RoboComPref *m_pComPref;
+    QWidget *m_pComPref;
 
     MegatronPref *m_pMegatronPref;
 

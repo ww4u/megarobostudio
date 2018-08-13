@@ -177,6 +177,12 @@ void VRobot::setStatus( int stat, const tpvRegion &region, frameData &data )
 //                        );
 }
 
+void VRobot::assignStatus( int stat, const tpvRegion &region )
+{
+    mRobotStatus[ region ] = stat;
+    Q_ASSERT( mRobotStatus.contains( region ) );
+}
+
 int VRobot::status( const tpvRegion &region )
 {
     if ( mRobotStatus.contains( region ) )

@@ -1,125 +1,109 @@
 
 #include "robotfact.h"
 
+#define str_is( a, b )          ( QString::compare( a,b, Qt::CaseInsensitive) == 0 )
+#define str_is_2( a, b1, b2 )   ( str_is(a,b1) || str_is(a,b2) )
+#define str_is_4( a, b1, b2, b3, b4 )   ( str_is_2(a,b1,b2) || str_is_2(a,b3,b4) )
+
 VRobot *robotFact::createRobot( const QString &str )
 {
     VRobot *pRobo;
     do
     {
-        if ( QString::compare(str,"megatron",Qt::CaseInsensitive) == 0
-             || QString::compare(str,"mrx-as",Qt::CaseInsensitive) == 0 )
+        if ( str_is_2( str, "megatron", "mrx-as") )
         {
             pRobo = new robotMegatron();
             break;
         }
 
-        if ( QString::compare(str,"sinanju",Qt::CaseInsensitive) == 0
-             || QString::compare(str,"mrx-t4",Qt::CaseInsensitive) == 0 )
+        if ( str_is_2( str, "sinanju", "mrx-t4") )
         {
             pRobo = new robotSinanju();
             break;
         }
-        if ( QString::compare(str,"delta",Qt::CaseInsensitive) == 0
-             || QString::compare(str,"mrx-dt",Qt::CaseInsensitive) == 0 )
+
+        if ( str_is_2( str, "delta", "mrx-dt") )
         {
             pRobo = new robotDelta();
             break;
         }
-        if ( QString::compare(str,"h2",Qt::CaseInsensitive) == 0
-             || QString::compare(str,"mrx-h2",Qt::CaseInsensitive) == 0 )
+
+        if ( str_is_2( str, "h2", "mrx-h2") )
         {
             pRobo = new robotH2();
             break;
         }
 
-        if ( QString::compare(str,"mrx-h2m",Qt::CaseInsensitive) == 0 )
+        if ( str_is( str, "mrx-h2m") )
         {
             pRobo = new robotH2M();
             break;
         }
 
-        if ( QString::compare(str,"mrx-h2z",Qt::CaseInsensitive) == 0
-             || QString::compare(str,"mrx-h2-z",Qt::CaseInsensitive) == 0 )
+        if ( str_is_2( str, "mrx-h2-z", "mrx-h2z") )
         {
             pRobo = new robotH2Z();
             break;
         }
 
-        if ( QString::compare(str,"mrx-inj2",Qt::CaseInsensitive) == 0
-              )
+        if ( str_is( str, "mrx-inj2") )
         {
             pRobo = new robotInject();
             break;
         }
 
-        if ( QString::compare(str,"mrx-motor",Qt::CaseInsensitive) == 0
-              )
+        if ( str_is( str, "mrx-motor") )
         {
             pRobo = new robotMotor();
             break;
         }
 
+        if ( str_is( str, "mrx-motors") )
+        {
+            pRobo = new robotMotors();
+//            pRobo = new robotMotor();
+            break;
+        }
+
         //! igus
-        if ( QString::compare(str,"igus-drylin",Qt::CaseInsensitive) == 0
-              )
+        if ( str_is( str, "igus-drylin") )
         {
             pRobo = new robotIgusDelta();
             break;
         }
 
-//        if ( QString::compare(str,"motor",Qt::CaseInsensitive) == 0 )
-//        {
-//            pRobo = new robotMotor();
-//            break;
-//        }
-
-//        if ( QString::compare(str,"slide",Qt::CaseInsensitive) == 0 )
-//        {
-//            pRobo = new robotSlide();
-//            break;
-//        }
-    //    if ( QString::compare(str,"slide2",Qt::CaseInsensitive) == 0 )
-    //    {
-    //        return new robotSlide2();
-    //    }
-
-        if ( QString::compare(str,"quebeley",Qt::CaseInsensitive) == 0
-             || QString::compare(str,"MRQ-C-23-D",Qt::CaseInsensitive) == 0 )
+        if ( str_is_2(str, "quebeley", "MRQ-C-23-D") )
         {
             pRobo = new roboQuebeley( VRobot::robot_qubeley_d );
             break;
         }
 
-        if ( QString::compare(str,"MRQ-C-23-S",Qt::CaseInsensitive) == 0 )
+        if ( str_is(str, "MRQ-C-23-S") )
         {
             pRobo = new roboQuebeley( VRobot::robot_qubeley_s );
             break;
         }
-        if ( QString::compare(str,"geogoog",Qt::CaseInsensitive) == 0
-             || QString::compare(str,"MRQ-M-23-04",Qt::CaseInsensitive) == 0 )
+
+        if ( str_is_2(str, "geogoog", "MRQ-M-23-04") )
         {
             pRobo = new roboGeogoog();
             break;
         }
 
-        if ( QString::compare(str,"geogoog10",Qt::CaseInsensitive) == 0
-             || QString::compare(str,"MRQ-M1710",Qt::CaseInsensitive) == 0
-             || QString::compare(str,"MRQ_MC_1710",Qt::CaseInsensitive) == 0
-             || QString::compare(str,"geo10",Qt::CaseInsensitive)==0 )
+        if ( str_is_4(str, "geogoog10", "MRQ-M1710", "MRQ_MC_1710", "geo10") )
         {
             pRobo = new roboGeo10();
             break;
         }
 
-        if ( QString::compare(str,"geogoog5_1",Qt::CaseInsensitive) == 0
-             || QString::compare(str,"MRQ-MV",Qt::CaseInsensitive) == 0 )
+        if ( str_is_2(str, "geogoog5_1", "MRQ-MV") )
         {
             pRobo = new roboGeo51();
             break;
         }
 
         //! gouf
-        if ( QString::compare(str,"MRV-M3604",Qt::CaseInsensitive) == 0 )
+        if ( str_is(str, "MRV-M3604") )
         {
             pRobo = new roboGouf();
             break;

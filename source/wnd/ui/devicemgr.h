@@ -124,7 +124,7 @@ protected:
     void execRoboTest();
 
     QString subGroupString( QList<int> subGps );
-    QString subGroupString( int id );
+    QString subGroupString( int index, int id );
 
     int doTest( appMsg msg, void *pPara );
 

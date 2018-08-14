@@ -326,7 +326,7 @@ int InstMgr::probeCanBus()
 int InstMgr::emergencyStop()
 {
     byte bufstp[] = { MRQ_mc_MOTION, MRQ_sc_MOTION_SWITCH, CAN_BROAD_CHAN, MRQ_MOTION_SWITCH_EMERGSTOP, 0 };
-    byte bufrst[] = { MRQ_mc_MOTION, MRQ_sc_MOTION_SWITCH, CAN_BROAD_CHAN, MRQ_MOTION_SWITCH_RESET, 0 };
+//    byte bufrst[] = { MRQ_mc_MOTION, MRQ_sc_MOTION_SWITCH, CAN_BROAD_CHAN, MRQ_MOTION_SWITCH_RESET, 0 };
     int ret;
 
     //! 1. broadcast
@@ -335,13 +335,13 @@ int InstMgr::emergencyStop()
     for ( int i = 0; i < x_pages; i++ )
     {
         bufstp[4] = i;
-        bufrst[4] = i;
+//        bufrst[4] = i;
         foreach ( CANBus *pBus, mCanBuses)
         {
             Q_ASSERT( NULL != pBus );
             ret = pBus->doWrite( broadId, bufstp, sizeof(bufstp) );
 
-            ret = pBus->doWrite( broadId, bufrst, sizeof(bufrst) );
+//            ret = pBus->doWrite( broadId, bufrst, sizeof(bufrst) );
         }
     }
 

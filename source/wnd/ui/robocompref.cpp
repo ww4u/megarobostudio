@@ -87,12 +87,12 @@ void RoboComPref::spyEdited()
     QRadioButton *radBoxes[] = {
     };
     QLineEdit *edits[]={
-        ui->edtAlias,
+//        ui->edtAlias,
     };
 
     QSpinBox *spinBoxes[]={
-        ui->spinBox,
-        ui->spinBox_2,
+//        ui->spinBox,
+//        ui->spinBox_2,
     };
 
     QDoubleSpinBox *doubleSpinBoxes[]={
@@ -104,8 +104,7 @@ void RoboComPref::spyEdited()
     };
 
     QComboBox *comboxes[]={
-//        ui->cmbGpSubId,
-        ui->cmbGroup,
+//        ui->cmbGroup,
         ui->cmbInterpMode,
     };
 
@@ -123,12 +122,15 @@ void RoboComPref::updateUi()
     VRobot *pBase = ( VRobot *)m_pModelObj;
     Q_ASSERT( NULL != pBase );
 
-    ui->edtAlias->setText( pBase->getName() );
+//    ui->edtAlias->setText( pBase->getName() );
+    ui->widget->setAlias( pBase->getName() );
 
     Q_ASSERT( NULL != m_pmcModel );
-    ui->spinBox->setValue( pBase->canGroupId() );
-    ui->cmbGroup->setCurrentIndex( pBase->subGroup() );
-//    ui->cmbGpSubId->setCurrentText( QString::number( pBase->subGroupId() ) );
+    ui->widget->setGroupSel( pBase->groupSel() );
+    ui->widget->setGroupId( pBase->canGroupId() );
+
+    ui->widget->setSubGroupIndex( pBase->subGroup() );
+    ui->widget->setSubGroupId( pBase->subGroupId() );
 
     double spd;
     int zeroTmo, zeroTick;
@@ -166,9 +168,11 @@ void RoboComPref::updateData()
     if ( NULL == pRobo )
     { return; }
 
-    pRobo->setCanGroupId( ui->spinBox->value() );
-    pRobo->setSubGroup( ui->cmbGroup->currentIndex() );
-    pRobo->setSubGroupId( robo_channels( ui->cmbGroup->currentIndex() ) );
+    pRobo->setGroupSel( ui->widget->groupSel() );
+    pRobo->setCanGroupId( ui->widget->groupId() );
+
+    pRobo->setSubGroup( ui->widget->subGroupIndex() );
+    pRobo->setSubGroupId( ui->widget->subGroupId() );
 
     //! interp
 //    RawRobo *pRawRobo = (RawRobo*)pRobo;
@@ -227,8 +231,11 @@ int RoboComPref::applyGroupId()
         }
 
         //! set group id
-        gpId = ui->spinBox->value();
-        ret = pMRQ->setCAN_GROUPID1( gpId );
+        gpId = ui->widget->groupId();
+        if ( ui->widget->groupSel() == 0 )
+        { ret = pMRQ->setCAN_GROUPID1( gpId ); }
+        else
+        { ret = pMRQ->setCAN_GROUPID2( gpId ); }
         if ( ret != 0 )
         {
             logDbg();
@@ -249,8 +256,8 @@ int RoboComPref::applyGroupId()
 //        }
 
         pMRQ->setIDENTITY_GROUP( axesId,
-                                 (MRQ_IDENTITY_GROUP)ui->cmbGroup->currentIndex(),
-                                 robo_channels( ui->cmbGroup->currentIndex() ) );
+                                 (MRQ_IDENTITY_GROUP)ui->widget->subGroupIndex(),
+                                 ( ui->widget->subGroupId() ) );
 
         pMRQ->setCAN_APPLYPARA();
     }

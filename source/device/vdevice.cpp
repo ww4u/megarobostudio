@@ -12,6 +12,7 @@ VDevice::VDevice()
 
    mCanRecvId = 0x01;
    mCanSendId = 0x01;
+   mCanGroupSel = 0;
    mCanGroupId = 0x01;
 
    mCanBroadcastId = 0x01;
@@ -55,6 +56,11 @@ int VDevice::getCanBroadcastId()
 { return mCanBroadcastId; }
 int VDevice::canBroadcastId()
 { return mCanBroadcastId; }
+
+void VDevice::setGroupSel( int id )
+{ mCanGroupSel = id; }
+int VDevice::groupSel()
+{ return mCanGroupSel; }
 
 void VDevice::setCanGroupId( int id )
 { mCanGroupId = id; }

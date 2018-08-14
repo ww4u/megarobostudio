@@ -70,12 +70,14 @@ int MrvVertical::apply()
 {
     Q_ASSERT( NULL != m_pMRV );
 
+    //! \note first set the device mode
+    m_pMRV->setVALVECTRL_DEVICE( mAxesId, (MRV_VALVECTRL_DEVICE)ui->cmbDevice->currentIndex() );
+
     m_pMRV->setGLOBAL_DISTINGUISH( mAxesId, (MRV_CAN_NETMANAGELED)ui->chkLed->isChecked() );
 
     m_pMRV->setPVT_EXECMODE( mAxesId, (MRV_PVT_EXECMODE)ui->cmbExec->currentIndex() );
     m_pMRV->setPVT_CYCLES( mAxesId, ui->spinLoop->value() );
 
-    m_pMRV->setVALVECTRL_DEVICE( mAxesId, (MRV_VALVECTRL_DEVICE)ui->cmbDevice->currentIndex() );
     m_pMRV->setVALVECTRL_ACTION( mAxesId, (MRV_VALVECTRL_ACTION)ui->cmbAction->currentIndex() );
 
     m_pMRV->setVALVECTRL_IDLEDUTY( mAxesId, comAssist::align( ui->spinIdleDuty->value(), duty_unit ) );

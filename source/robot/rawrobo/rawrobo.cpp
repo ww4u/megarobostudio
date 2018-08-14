@@ -124,7 +124,7 @@ void RawRobo::queryState( const tpvRegion &region )
     Q_ASSERT( NULL != m_pBus );
     MegaDevice::DeviceId id( mCanGroupId );     //! \todo sub group
     m_pBus->write( id, MRQ_mc_MOTION, MRQ_sc_MOTION_STATE_Q,
-                   (byte)robo_channels(mSubGroup),
+                   (byte)mSubGroupId,
                    (byte)region.page()
                     );
 }

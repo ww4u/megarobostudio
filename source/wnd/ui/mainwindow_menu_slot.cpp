@@ -359,7 +359,21 @@ void MainWindow::on_actionDataSet_triggered()
     QProcess::execute( "explorer.exe", args );
 }
 
-
+void MainWindow::on_actionReadMe_triggered()
+{
+    QStringList args;
+    QString str;
+    str = QCoreApplication::applicationDirPath()
+            + QDir::separator()
+            + QStringLiteral("doc")
+            + QDir::separator()
+            + QStringLiteral("readme.txt");
+    str.replace("/","\\");
+    args<<str;
+    //! \todo linux
+    logDbg()<<str;
+    QProcess::execute( "explorer.exe", args );
+}
 
 //! pref
 void MainWindow::on_actionpref_triggered( )

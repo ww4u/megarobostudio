@@ -18,6 +18,11 @@ void RobotAddr::setAlias( QString &str )
 QString RobotAddr::alias()
 { return ui->edtAlias->text(); }
 
+void RobotAddr::setGroupSel( int gp )
+{ ui->cmbGp->setCurrentIndex(gp); }
+int RobotAddr::groupSel()
+{ ui->cmbGp->currentIndex(); }
+
 void RobotAddr::setGroupId( int id )
 { ui->spinBox->setValue(id); }
 int RobotAddr::groupId()
@@ -27,3 +32,8 @@ void RobotAddr::setSubGroupIndex( int id )
 { ui->cmbGroup->setCurrentIndex(id); }
 int RobotAddr::subGroupIndex()
 { return ui->cmbGroup->currentIndex(); }
+
+void RobotAddr::setSubGroupId( int id )
+{ ui->spinSubGpDec->setValue(id); }
+int RobotAddr::subGroupId()
+{ return ui->spinSubGpDec->value(); }

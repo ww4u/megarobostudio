@@ -7,20 +7,13 @@
     <x>0</x>
     <y>0</y>
     <width>289</width>
-    <height>90</height>
+    <height>142</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
-    <widget class="QLabel" name="label_8">
-     <property name="text">
-      <string>Alias</string>
-     </property>
-    </widget>
-   </item>
    <item row="0" column="1" colspan="2">
     <widget class="QLineEdit" name="edtAlias">
      <property name="text">
@@ -28,7 +21,94 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="2">
+   <item row="0" column="0">
+    <widget class="QLabel" name="label_8">
+     <property name="text">
+      <string>Alias</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="label_10">
+     <property name="text">
+      <string>Sub ID</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1">
+    <widget class="QSpinBox" name="spinSubGpDec">
+     <property name="minimum">
+      <number>130</number>
+     </property>
+     <property name="maximum">
+      <number>255</number>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="3">
+    <spacer name="horizontalSpacer">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>40</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="label_9">
+     <property name="text">
+      <string>Group ID</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1" colspan="2">
+    <widget class="QComboBox" name="cmbGroup">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <item>
+      <property name="text">
+       <string>ID1</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>ID2</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="4" column="2">
+    <widget class="QSpinBox" name="spinSubGpHex">
+     <property name="prefix">
+      <string>0x</string>
+     </property>
+     <property name="minimum">
+      <number>130</number>
+     </property>
+     <property name="maximum">
+      <number>255</number>
+     </property>
+     <property name="displayIntegerBase">
+      <number>16</number>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="QSpinBox" name="spinBox">
+     <property name="minimum">
+      <number>128</number>
+     </property>
+     <property name="maximum">
+      <number>255</number>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="2">
     <widget class="QSpinBox" name="spinBox_2">
      <property name="suffix">
       <string/>
@@ -47,11 +127,8 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="1">
-    <widget class="QComboBox" name="cmbGroup">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
+   <item row="1" column="1" colspan="2">
+    <widget class="QComboBox" name="cmbGp">
      <item>
       <property name="text">
        <string>Group1</string>
@@ -62,43 +139,6 @@
        <string>Group2</string>
       </property>
      </item>
-    </widget>
-   </item>
-   <item row="1" column="0">
-    <widget class="QLabel" name="label_9">
-     <property name="text">
-      <string>Group ID</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="label_10">
-     <property name="text">
-      <string>Group</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="3">
-    <spacer name="horizontalSpacer">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>40</width>
-       <height>20</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="1" column="1">
-    <widget class="QSpinBox" name="spinBox">
-     <property name="minimum">
-      <number>128</number>
-     </property>
-     <property name="maximum">
-      <number>255</number>
-     </property>
     </widget>
    </item>
   </layout>
@@ -134,6 +174,38 @@
     <hint type="destinationlabel">
      <x>90</x>
      <y>40</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>spinSubGpDec</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>spinSubGpHex</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>90</x>
+     <y>95</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>145</x>
+     <y>97</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>spinSubGpHex</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>spinSubGpDec</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>167</x>
+     <y>87</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>91</x>
+     <y>90</y>
     </hint>
    </hints>
   </connection>

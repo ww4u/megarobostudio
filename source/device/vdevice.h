@@ -48,6 +48,9 @@ public:
     int getCanBroadcastId();
     int canBroadcastId();
 
+    void setGroupSel( int id );
+    int groupSel();
+
     virtual void setCanGroupId( int id );
     int getCanGroupId();
     int canGroupId();
@@ -87,6 +90,7 @@ protected:
                         //! can ids
     int mCanRecvId;     //! node id = recv id
     int mCanSendId;
+    int mCanGroupSel;   //! gp0/1
     int mCanGroupId;
 
     int mCanBroadcastId;

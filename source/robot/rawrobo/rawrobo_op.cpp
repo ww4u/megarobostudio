@@ -56,7 +56,7 @@ void RawRobo::switchReset( const tpvRegion &region )
     Q_ASSERT( NULL != m_pBus );
     MegaDevice::DeviceId id( mCanGroupId );
     m_pBus->write( id, MRQ_mc_MOTION, MRQ_sc_MOTION_SWITCH,
-                   robo_channels(mSubGroup),
+                   (mSubGroupId),
                    (byte)MRQ_MOTION_SWITCH_RESET,
                    (byte)region.page() );
 }
@@ -65,7 +65,7 @@ void RawRobo::switchStop( const tpvRegion &region )
     Q_ASSERT( NULL != m_pBus );
     MegaDevice::DeviceId id( mCanGroupId );
     m_pBus->write( id, MRQ_mc_MOTION, MRQ_sc_MOTION_SWITCH,
-                   robo_channels(mSubGroup),
+                   (mSubGroupId),
                    (byte)MRQ_MOTION_SWITCH_STOP,
                    (byte)region.page() );
 }
@@ -74,7 +74,7 @@ void RawRobo::switchRun( const tpvRegion &region )
     Q_ASSERT( NULL != m_pBus );
     MegaDevice::DeviceId id( mCanGroupId );
     m_pBus->write( id, MRQ_mc_MOTION, MRQ_sc_MOTION_SWITCH,
-                   robo_channels(mSubGroup),
+                   (mSubGroupId),
                    (byte)MRQ_MOTION_SWITCH_RUN,
                    (byte)region.page() );
     logDbg();
@@ -85,7 +85,7 @@ void RawRobo::switchPrepare( const tpvRegion &region )
     Q_ASSERT( NULL != m_pBus );
     MegaDevice::DeviceId id( mCanGroupId );
     m_pBus->write( id, MRQ_mc_MOTION, MRQ_sc_MOTION_SWITCH,
-                   robo_channels(mSubGroup),
+                   (mSubGroupId),
                   (byte)MRQ_MOTION_SWITCH_PREPARE,
                   (byte)region.page() );
 
@@ -117,7 +117,7 @@ void RawRobo::switchEmergStop( const tpvRegion &region )
     Q_ASSERT( NULL != m_pBus );
     MegaDevice::DeviceId id( mCanGroupId );
     m_pBus->write( id, MRQ_mc_MOTION, MRQ_sc_MOTION_SWITCH,
-                   robo_channels(mSubGroup),
+                   (mSubGroupId),
                    (byte)MRQ_MOTION_SWITCH_EMERGSTOP,
                    (byte)region.page() );
 }

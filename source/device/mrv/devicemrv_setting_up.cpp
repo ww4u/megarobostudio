@@ -54,7 +54,14 @@ MRV_PROGRESS( 20, ("VALVE") );
         checked_call( getVALVECTRL_TIME( i, mVALVECTRL_TIME + i ) );
     }
 
-MRV_PROGRESS( 20, "THRESHOLD" );
+MRV_PROGRESS( 30, "PVT" );
+    for ( int i = 0; i < axes(); i++ )
+    {
+        checked_call( getPVT_EXECMODE( i, mPVT_EXECMODE+i ) );
+        checked_call( getPVT_CYCLES( i, mPVT_CYCLES+i ) );
+    }
+
+MRV_PROGRESS( 40, "THRESHOLD" );
     for ( int i=0; i < axes(); i++ )
 //for ( int i=0; i < 0; i++ )
     {
@@ -74,7 +81,7 @@ MRV_PROGRESS( 20, "THRESHOLD" );
         checked_call( getTHRESHOLD_TIMEACTION( i, mTHRESHOLD_TIMEACTION + i ) );
     }
 
-MRV_PROGRESS( 30, "IOCONFIG" );
+MRV_PROGRESS( 50, "IOCONFIG" );
     for ( int i = 0; i < axes(); i++ )
     {
         checked_call( getIOCONFIG_IOFUNCSEL( i, mIOCONFIG_IOFUNCSEL + i ) );

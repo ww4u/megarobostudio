@@ -34,11 +34,17 @@ int deviceMRV::_applySetting()
             checked_call( setGLOBAL_DISTINGUISH( i, mGLOBAL_DISTINGUISH[i] ) );
         }
 
-    MRV_PROGRESS( 20, ("VALVE") );
-        checked_call( setVALVECTRL_PWMFREQ( mVALVECTRL_PWMFREQ ) );
+    //! \note set device at first
+    MRV_PROGRESS( 21, ("VALVE") );
         for ( int i = 0; i < axes(); i++ )
         {
             checked_call( setVALVECTRL_DEVICE( i, mVALVECTRL_DEVICE[i] ) );
+        }
+
+    MRV_PROGRESS( 21, ("VALVE") );
+        checked_call( setVALVECTRL_PWMFREQ( mVALVECTRL_PWMFREQ ) );
+        for ( int i = 0; i < axes(); i++ )
+        {
             checked_call( setVALVECTRL_RTDUTY( i, mVALVECTRL_RTDUTY[i] ) );
             checked_call( setVALVECTRL_ACTION( i, mVALVECTRL_ACTION[i] ) );
             checked_call( setVALVECTRL_IDLEDUTY( i, mVALVECTRL_IDLEDUTY[i] ) );
@@ -54,7 +60,16 @@ int deviceMRV::_applySetting()
 //            checked_call( getVALVECTRL_TIME( i, mVALVECTRL_TIME[i] ) );
         }
 
-    MRV_PROGRESS( 20, "THRESHOLD" );
+    MRV_PROGRESS( 30, "PVT" )
+    {
+        for ( int i=0; i < axes(); i++ )
+        {
+            checked_call( setPVT_EXECMODE( i, mPVT_EXECMODE[i] ) );
+            checked_call( setPVT_CYCLES( i, mPVT_CYCLES[i] ) );
+        }
+    }
+
+    MRV_PROGRESS( 40, "THRESHOLD" );
         for ( int i=0; i < axes(); i++ )
         {
             checked_call( setTHRESHOLD_HIGHPRESSURE( i, mTHRESHOLD_HIGHPRESSURE[i] ) );
@@ -73,7 +88,7 @@ int deviceMRV::_applySetting()
             checked_call( setTHRESHOLD_TIMEACTION( i, mTHRESHOLD_TIMEACTION[i] ) );
         }
 
-    MRV_PROGRESS( 30, "IOCONFIG" );
+    MRV_PROGRESS( 50, "IOCONFIG" );
         for ( int i = 0; i < axes(); i++ )
         {
             checked_call( setIOCONFIG_IOFUNCSEL( i, mIOCONFIG_IOFUNCSEL[i] ) );

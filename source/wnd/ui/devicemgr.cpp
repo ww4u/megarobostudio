@@ -283,7 +283,7 @@ void deviceMgr::updatePhyBusTree( VRoboList *pRoboList )
             ids = pDev->deviceIds();
             Q_ASSERT(ids.size()>=4);
 
-            toolTips= QString("0X%1/0X%2/0X%3/0X%4")
+            toolTips= QString("S:0X%1/R:0X%2/G1:0X%3/G2:0X%4")
                     .arg( ids[0], 0, 16 )
                     .arg( ids[1], 0, 16 )
                     .arg( ids[2], 0, 16 )
@@ -310,7 +310,7 @@ void deviceMgr::updatePhyBusTree( VRoboList *pRoboList )
                 strName = QString("CH%1").arg( i + 1 );
                 pItemAxes->setText( 0, strName );
 
-                strToolTip = subGroupString( subIds );
+                strToolTip = subGroupString( subIds ).toUpper();
 
                 pItemAxes->setToolTip( 0, strToolTip );
                 pItemAxes->setData( 0, Qt::UserRole, QVariant(i) );     //! type is int,and axes
@@ -361,12 +361,10 @@ void deviceMgr::updateVirBusTree( VRoboList *pRoboList )
         Q_ASSERT( NULL != pItemDev );
 
         pItemDev->setText( 0, pDev->name() );
-//        toolTip = QString("0x%1/0x%2").arg( pDev->canGroupId(), 0, 16 ).arg( pDev->subGroupId(),0, 16 );
-        toolTip = QString("0x%1/%2").arg( pDev->canGroupId(), 0, 16 )
-                                      .arg( subGroupString( pDev->subGroupId() ) );
+        toolTip = QString("G:0X%1/%2").arg( pDev->canGroupId(), 0, 16 )
+                                    .arg( subGroupString( pDev->subGroup(), pDev->subGroupId() ) );
         toolTip = toolTip.toUpper();
         pItemDev->setToolTip(0, toolTip);
-//        pItemDev->setToolTip( 0, pDev->name() + "-" + pDev->getClass() );
 
         //! obj type
         pDev->setType( mcModelObj::model_composite_device );

@@ -19,11 +19,17 @@ public:
     void setAlias( QString &str );
     QString alias();
 
+    void setGroupSel( int gp );
+    int groupSel();
+
     void setGroupId( int id );
     int groupId();
 
     void setSubGroupIndex( int id );
     int subGroupIndex();
+
+    void setSubGroupId( int id );
+    int subGroupId();
 
 private:
     Ui::RobotAddr *ui;

@@ -74,6 +74,10 @@ int VRobot::load( const QString &name )
                                 {
                                     mCanGroupId  = reader.readElementText().toInt();
                                 }
+                                else if ( reader.name() == "group_sel" )
+                                {
+                                    mCanGroupSel =  reader.readElementText().toInt();
+                                }
                                 else if ( reader.name() == "sub_group" )
                                 {
                                     mSubGroup  = reader.readElementText().toInt();
@@ -141,6 +145,7 @@ int VRobot::save( const QString &name )
 
             writer.writeStartElement("group");
 
+                writer.writeTextElement("group_sel", QString::number(mCanGroupSel) );
                 writer.writeTextElement("can_id", QString::number(mCanGroupId) );
                 writer.writeTextElement("sub_group", QString::number(mSubGroup) );
                 writer.writeTextElement("sub_groupid", QString::number(mSubGroupId) );

@@ -39,9 +39,10 @@ void MotorsPref::setModelObj( mcModelObj *pObj )
 int MotorsPref::setApply()
 {
     //! addr
+    base_->setGroupSel( ui->widget->groupSel() );
     base_->setCanGroupId( ui->widget->groupId() );
     base_->setSubGroup( ui->widget->subGroupIndex() );
-    base_->setSubGroupId( robo_channels( ui->widget->subGroupIndex() ) );
+    base_->setSubGroupId( ( ui->widget->subGroupId() ) );
 
     //! connection name
     QStringList connectionS;
@@ -82,7 +83,10 @@ logDbg()<<connectionS;
 
         //! set group id
         gpId = ui->widget->groupId();
-        ret = pMRQ->setCAN_GROUPID2( gpId );
+        if ( ui->widget->groupSel() == 0 )
+        { ret = pMRQ->setCAN_GROUPID1( gpId ); }
+        else
+        { ret = pMRQ->setCAN_GROUPID2( gpId ); }
         if ( ret != 0 )
         {
             logDbg();
@@ -91,20 +95,9 @@ logDbg()<<connectionS;
 
         //! set sub group
 
-//        //! disable the other group
-//        for ( int i = 0; i < 2; i++ )
-//        {
-//            if ( i != (MRQ_IDENTITY_GROUP)ui->widget->subGroupIndex() )
-//            {
-//                pMRQ->setIDENTITY_GROUP( axesId,
-//                                        (MRQ_IDENTITY_GROUP)( i ),
-//                                         sub_group_id_from );
-//            }
-//        }
-
         pMRQ->setIDENTITY_GROUP( axesId,
                                  (MRQ_IDENTITY_GROUP)ui->widget->subGroupIndex(),
-                                 robo_channels( ui->widget->subGroupIndex() ) );
+                                 ( ui->widget->subGroupId() ) );
 
         pMRQ->setCAN_APPLYPARA();
     }
@@ -113,21 +106,18 @@ logDbg()<<connectionS;
 }
 
 void MotorsPref::updateScreen()
-{logDbg()<<base_->getName();
-    //! addr set
-    ui->widget->setAlias( base_->getName() );
-    ui->widget->setGroupId( base_->canGroupId() );
-    ui->widget->setSubGroupIndex( base_->subGroup() );
-
+{
+    updateUi();
     //! connections by model
 }
 
 void MotorsPref::updateUi()
 {
     ui->widget->setAlias( base_->getName() );
+    ui->widget->setGroupSel( base_->groupSel() );
     ui->widget->setGroupId( base_->canGroupId() );
     ui->widget->setSubGroupIndex( base_->subGroup() );
-
+    ui->widget->setSubGroupId( base_->subGroupId() );
 }
 
 void MotorsPref::slot_add_clicked()

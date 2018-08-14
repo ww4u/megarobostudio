@@ -221,13 +221,12 @@ qDebug()<<a.applicationDirPath();
     //! translator
 
     modelSysPref pref;
+    QTranslator translator;
     {
 
         pref.load( pref_file_name );
         if ( pref.mLangIndex != 0 )
         {
-            QTranslator translator;
-
             QLocale::Language lang;
             QLocale::Country area;
             if ( pref.mLangIndex == 1 )
@@ -253,10 +252,16 @@ qDebug()<<a.applicationDirPath();
                                   QLatin1String("megarobostudio"),
                                   QLatin1String("_"),
                                   a.applicationDirPath() + "/translate"
-                                  ) )
-            {  a.installTranslator(&translator); }
+                                  )
+                 && a.installTranslator(&translator) )
+            {
+            }
             else
-            { QMessageBox::information( NULL, "info", "language loss"); }
+            {
+                QMessageBox::information( NULL,
+                                        QObject::tr("Info"),
+                                        QObject::tr("language loss"));
+            }
         }
         if ( pref.mStyleIndex != 0 )
         {

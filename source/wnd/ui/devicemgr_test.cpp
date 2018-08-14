@@ -221,7 +221,7 @@ QString deviceMgr::subGroupString( QList<int> subIds )
     {
         strGp = strGp + strSep;
 
-        strGp += subGroupString( subIds.at(i) );
+        strGp += subGroupString( i, subIds.at(i) );
 
         strSep = "/";
     }
@@ -229,12 +229,7 @@ QString deviceMgr::subGroupString( QList<int> subIds )
     return strGp;
 }
 
-QString deviceMgr::subGroupString( int id )
+QString deviceMgr::subGroupString( int index, int id )
 {
-    if ( id == robo_channels(0) )
-    { return tr("GROUP1"); }
-    else if ( id == robo_channels(1) )
-    { return tr("GROUP2"); }
-    else
-    { return "Unknown group"; }
+    return QString("ID%1:0X%2").arg(index + 1).arg( id, 0, 16 );
 }

@@ -395,9 +395,9 @@ int modelSysPref::load( const QString &str )
                 }
                 else if ( reader.name() == "alias" )
                 {
-                    int idSn, idAlias;
-                    idSn = 0;
-                    idAlias = 0;
+//                    int idSn, idAlias;
+//                    idSn = 0;
+//                    idAlias = 0;
                     Relation *pItem;
                     while( reader.readNextStartElement() )
                     {

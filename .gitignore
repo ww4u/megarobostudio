@@ -39,5 +39,12 @@ _board/
 *.Debug
 *.Release
 moc_*
+*.config
+*.csproj
+*.sln
 source/arith/delta/arith/_AddPointParam*
 source/arith/delta/arith/_function*
+source/misa/c#/test/bin
+source/misa/c#/test/obj
+source/misa/c#/test/Properties
+

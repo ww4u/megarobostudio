@@ -125,6 +125,20 @@ static scpi_result_t _scpi_qSn( scpi_t * context )
     return SCPI_RES_OK;
 }
 
+static scpi_result_t _scpi_qVersion( scpi_t * context )
+{
+    DEF_LOCAL_VAR();
+
+    DEF_MRQ();
+
+    QString str;
+    str = LOCALMRQ()->getModel()->getSeqVer();
+
+    SCPI_ResultText( context, str.toLatin1().data() );
+
+    return SCPI_RES_OK;
+}
+
 //! ax,page
 static scpi_result_t _scpi_run( scpi_t * context )
 {
@@ -923,6 +937,8 @@ static scpi_command_t _mrq_scpi_cmds[]=
 
     CMD_ITEM( "SN", _scpi_sn ),
     CMD_ITEM( "SN?", _scpi_qSn ),
+
+    CMD_ITEM( "VERSION?", _scpi_qVersion ),
 
     CMD_ITEM( "TEST:ADD", _scpi_testAdd ),
 

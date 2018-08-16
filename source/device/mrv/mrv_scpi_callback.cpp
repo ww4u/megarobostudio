@@ -32,6 +32,21 @@ static scpi_result_t _scpi_idn( scpi_t * context )
     return SCPI_RES_OK;
 }
 
+static scpi_result_t _scpi_qVersion( scpi_t * context )
+{
+    // read
+    DEF_LOCAL_VAR();
+
+    DEF_MRV();
+
+    QString str;
+    str = LOCALMRV()->getModel()->getSwVer();
+
+    SCPI_ResultText( context, str.toLatin1().data() );
+
+    return SCPI_RES_OK;
+}
+
 //! lrn setup.stp
 static scpi_result_t _scpi_lrn( scpi_t * context )
 {
@@ -264,6 +279,8 @@ static scpi_command_t _scpi_cmds[]=
     COM_ITEMs(),
 
     CMD_ITEM( "*IDN?", _scpi_idn ),
+
+    CMD_ITEM( "VERSION?", _scpi_qVersion ),
 
     CMD_ITEM( "*LRN", _scpi_lrn ),      //! setupfile
 //    CMD_ITEM( "HRST", _scpi_hrst ),

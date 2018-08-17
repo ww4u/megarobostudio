@@ -5,7 +5,11 @@
 
 #include "midevice.h"
 
+#include "megarobo.h"
+
 #include "C_MRQ.h"
 #include "mrq.h"
+
+#include "sinanju.h"
 
 #endif

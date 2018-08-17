@@ -39,6 +39,15 @@ static int testDevice()
     MRQ_getLINK_INTFC( vi, intf );
     printf( "intf:%s\n", intf );
 
+    robo_getIdn( vi, intf );
+    printf( "idn:%s\n", intf );
+
+    MRQ_move( vi, 0,0,1,20,0 );
+    robo_waitIdle( vi, 0,0, 2000 );
+
+    robo_call( vi, 0,0, 1, -1 );
+    robo_waitIdle( vi, 0,0, 2000 );
+
     int switchTime;
     MRQ_setSENSORUART_SWITCHTIME( vi, "UART1", "S1", 120 );
     MRQ_getSENSORUART_SWITCHTIME( vi, "UART1", "S1", &switchTime );
@@ -52,11 +61,31 @@ static int testDevice()
     return 0;
 }
 
+static int testT4()
+{
+    ViSession vi = miOpen( "mrx-t4");
+
+    char recvStr[64];
+
+    robo_getIdn( vi, recvStr );
+    printf("idn:%s\n", recvStr );
+
+    Sinanju_Center( vi, 0, 0 );
+    robo_waitIdle( vi, 0,0, 20000);
+
+    Sinanju_Fold( vi, 0, 0 );
+    robo_waitIdle( vi, 0,0, 20000);
+
+    return 0;
+}
+
 int main()
 {
 //    testPara();
 
     testDevice();
+
+    testT4();
 
     return 0;
 }

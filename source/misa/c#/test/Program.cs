@@ -35,6 +35,21 @@ namespace test
             dev.getSENSORUART_SWITCHTIME("UART1", "S2", out sTime);
 
             Console.WriteLine(link);
+
+            dev.move(0, 0, 1, -20, 0);
+            dev.waitIdle(0, 0, 2000);
+
+            dev.call(0, 0, 1, -1 );
+            dev.waitIdle(0, 0, 2000);
+
+            Sinanju sinanju = new Sinanju();
+            sinanju.miOpen("MRX-T4");
+            string recvStr;
+            sinanju.getIdn(out recvStr);
+            Console.WriteLine("IDN:{0}", recvStr );
+
+            sinanju.fold();
+            sinanju.waitIdle(0, 0, 2000 );
         }
     }
 }

@@ -1,10 +1,10 @@
 using System;
 namespace mega_device
 {
-class MRQ : miDevice
+public class CS_MRQ : MegaRobo
 {
 
-    public MRQ()
+    public CS_MRQ()
     {}
     //!ENUM
     //!NONE|CAN|RS232

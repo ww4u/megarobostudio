@@ -1,7 +1,7 @@
 
 namespace mega_device
 {
-	class miDevice
+	public class miDevice
 	{
 		protected int mVi = 0;
         protected const int _read_cap = 256;

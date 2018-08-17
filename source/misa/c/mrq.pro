@@ -21,8 +21,14 @@ MOC_DIR = ./obj
 SOURCES = \
           visa_adapter.c \
                   C_MRQ.c \
+                  mrq.c \
           midevice.c \
+          megarobo.c \
+          sinanju.c \
           test.c
 		  
-HEADERS = visa_adapter.h
+HEADERS = visa_adapter.h \
+    megarobo.h \
+    sinanju.h \
+    misa.h
 

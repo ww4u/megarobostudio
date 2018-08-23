@@ -6,6 +6,7 @@
 
 
 #include "../bus/canbus.h"
+#include "../bus/rs232bus.h"
 #include "../bus/receivecache.h"
 
 #include "../instServer/instserver.h"
@@ -63,6 +64,8 @@ public:
 
     int probeBus();
     int probeCanBus();
+    int probeRs232Bus();
+
 //    int _probeCanBus();
 
     int emergencyStop();
@@ -119,7 +122,7 @@ protected:
     void preProbeBus();
     void postProbeBus();
 
-    int probeCANBus( CANBus *pBus,
+    int probeCANBus( IBus *pBus,
                      int id,
                      int seqId,
                      const QString &devRsrc,
@@ -129,7 +132,7 @@ protected:
 
     void gcPhyBus();
     void gcFileBus();
-
+public:
     scpiShell *findShell( const QString &name );
 
     bool matchSignature( quint32 sig, QString &alias );
@@ -138,10 +141,9 @@ public:
     mcModel *m_pMainModel;
     scpiShell *m_pMainShell;
 
-    //! can bus
-//    CANBus mCanBus;
                                 //! can buses
-    QList< CANBus *> mCanBuses;
+//    QList< CANBus *> mCanBuses;
+    QList< IBus *> mBuses;
 
     //! \todo other bus
 

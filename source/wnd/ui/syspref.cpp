@@ -20,6 +20,10 @@ sysPref::sysPref(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    //! set combox option
+    for ( int i = 0; i < ui->cmbPort->count(); i++ )
+    { ui->cmbPort->setItemData( i, i ); }
+
     ui->label_43->setText( tr("Angle") + "(" + QChar(0x00B0) + ")" );
 
     //! db changed
@@ -41,8 +45,17 @@ sysPref::sysPref(QWidget *parent) :
 
     m_pCANSetting = ui->tabWidget_2->widget(0);
     m_pMRHTSetting = ui->tabWidget_2->widget(1);
+    m_pRs232Setting = ui->tabWidget_2->widget(2);
+    m_pUsbSetting = ui->tabWidget_2->widget(3);
+
+    //! validate enable
+    ui->portLanSetting->setValidateEnable( true );
+
+    ui->tabWidget_2->removeTab(3);
+    ui->tabWidget_2->removeTab(2);
     ui->tabWidget_2->removeTab(1);
     ui->tabWidget_2->removeTab(0);
+
 
     //! for com port
     QList<QSerialPortInfo> portList = QSerialPortInfo::availablePorts();
@@ -51,7 +64,7 @@ sysPref::sysPref(QWidget *parent) :
 
     slot_updateValidateEn();
 
-    slot_validate_listmrt();
+//    slot_validate_listmrt();
 
     //! tool bar
     connect( ui->aliasToolBar, SIGNAL(signal_add_clicked()),
@@ -99,15 +112,18 @@ void sysPref::setPref( modelSysPref *pPref )
 
 void sysPref::updateUi()
 {
+    //! index
+    int index = ui->cmbPort->findData( m_pPref->mPort );
+    if ( index < 0 )
+    { index = 0; }
+    ui->cmbPort->setCurrentIndex( index );
 
 #ifdef ARCH_32
-    ui->cmbPort->setCurrentIndex( m_pPref->mPort );
-    on_cmbPort_currentIndexChanged( m_pPref->mPort );
+    on_cmbPort_currentIndexChanged( ui->cmbPort->currentText() );
 #else
 #endif
 
 #ifdef ARCH_RASPBERRY
-    ui->cmbPort->setCurrentIndex( e_can_mcp );
     ui->cmbPort->setEnabled( false );
 
     ui->spinDeviceCount->setVisible( false );
@@ -116,13 +132,35 @@ void sysPref::updateUi()
     on_cmbPort_currentIndexChanged( e_can_mcp );
 #endif
 
-
     ui->cmbSpeed->setCurrentText( QString::number(m_pPref->mSpeed) );
 
-    ui->edtVisa->setText( m_pPref->mVisaAddr );
-    ui->spinVisaTmo->setValue( m_pPref->mVisaTmo );
-    ui->listMRTs->clear();
-    ui->listMRTs->addItems( m_pPref->mVisaList );
+    //! lan
+    ui->portLanSetting->setCurrentRsrc( m_pPref->mVisaAddr );
+    ui->portLanSetting->setRsrcs( m_pPref->mVisaList );
+
+    ui->port232Setting->setCurrentRsrc( m_pPref->mRs232Addr );
+    ui->port232Setting->setRsrcs( m_pPref->mRs232List );
+
+    ui->portUsbSetting->setCurrentRsrc( m_pPref->mUsbAddr );
+    ui->portUsbSetting->setRsrcs( m_pPref->mUsbList );
+
+    ui->portLanSetting->setTmo( m_pPref->mVisaTmo );
+
+    //! search options
+    //! ASRL[0-9]*::?*INSTR
+    //! USB?*INSTR
+    ui->portLanSetting->searchOption( "TCPIP?*::?*INSTR");
+    ui->port232Setting->searchOption( "ASRL?*::?*INSTR");
+    ui->portUsbSetting->searchOption( "USB?*::?*INSTR");
+
+    //! rs232 settting
+    uartConfig uCfg;
+    uCfg.mBaudInd = m_pPref->mBaudIndex;
+    uCfg.mDataInd = m_pPref->mDataWidthIndex;
+    uCfg.mParityInd = m_pPref->mParityIndex;
+    uCfg.mStopInd = m_pPref->mStopIndex;
+    uCfg.mFlowInd = m_pPref->mFlowControlIndex;
+    ui->port232Cfg->setConfig( uCfg );
 
     ui->spinTmo->setValue( m_pPref->mTimeout );
     ui->spinRecvTmo->setValue( m_pPref->mRecvTmo );
@@ -197,14 +235,32 @@ void sysPref::updateUi()
 
 void sysPref::updateData()
 {
-    m_pPref->mPort = ui->cmbPort->currentIndex();
+//    m_pPref->mPort = ui->cmbPort->currentIndex();
+
+    m_pPref->mPort = ui->cmbPort->currentData().toInt();
+
     m_pPref->mSpeed = ui->cmbSpeed->currentText().toInt();
 
-    m_pPref->mVisaAddr = ui->edtVisa->text();
-    m_pPref->mVisaTmo = ui->spinVisaTmo->value();
-    m_pPref->mVisaList.clear();
-    for ( int i = 0; i < ui->listMRTs->count(); i++ )
-    { m_pPref->mVisaList.append( ui->listMRTs->item(i)->text() ); }
+    //! lan
+    m_pPref->mVisaAddr = ui->portLanSetting->currentRsrc();
+    m_pPref->mVisaList = ui->portLanSetting->rsrcs();
+
+    m_pPref->mRs232Addr = ui->port232Setting->currentRsrc();
+    m_pPref->mRs232List = ui->port232Setting->rsrcs();
+
+    m_pPref->mUsbAddr = ui->portUsbSetting->currentRsrc();
+    m_pPref->mUsbList = ui->portUsbSetting->rsrcs();
+
+    //! rs232 setting
+    uartConfig uCfg;
+    ui->port232Cfg->getConfig( uCfg );
+    m_pPref->mBaudIndex = uCfg.mBaudInd;
+    m_pPref->mDataWidthIndex = uCfg.mDataInd;
+    m_pPref->mParityIndex = uCfg.mParityInd;
+    m_pPref->mStopIndex = uCfg.mStopInd;
+    m_pPref->mFlowControlIndex = uCfg.mFlowInd;
+
+    m_pPref->mVisaTmo = ui->portLanSetting->tmo();
 
     m_pPref->mTimeout = ui->spinTmo->value();
     m_pPref->mRecvTmo = ui->spinRecvTmo->value();
@@ -332,47 +388,47 @@ bool sysPref::updateValidateEn()
     return true;
 }
 
-bool sysPref::validateVisaRsrc( QString &strIdn )
-{
-#ifdef NI_VISA
-    ViStatus stat;
-    ViSession viDef, viSes;
+//bool sysPref::validateVisaRsrc( QString &strIdn )
+//{
+//#ifdef NI_VISA
+//    ViStatus stat;
+//    ViSession viDef, viSes;
 
-    stat = viOpenDefaultRM( &viDef );
-    if ( stat != VI_SUCCESS )
-    { return false; }
+//    stat = viOpenDefaultRM( &viDef );
+//    if ( stat != VI_SUCCESS )
+//    { return false; }
 
-    QString strRsrc = ui->edtVisa->text();
-    stat = viOpen( viDef, strRsrc.toLatin1().data(), 0, ui->spinVisaTmo->value(), &viSes );
-    if ( stat != VI_SUCCESS )
-    { return false; }
+//    QString strRsrc = ui->edtVisa->text();
+//    stat = viOpen( viDef, strRsrc.toLatin1().data(), 0, ui->spinVisaTmo->value(), &viSes );
+//    if ( stat != VI_SUCCESS )
+//    { return false; }
 
-    //! check idn?
-    stat = viPrintf( viSes, "*IDN?\n" );
-    if ( stat != VI_SUCCESS )
-    { return false; }
+//    //! check idn?
+//    stat = viPrintf( viSes, "*IDN?\n" );
+//    if ( stat != VI_SUCCESS )
+//    { return false; }
 
-    ViByte buf[128];
-    ViUInt32 retCount;
-    stat = viRead( viSes, buf, 128, &retCount );
-    if ( stat != VI_SUCCESS && stat != VI_SUCCESS_MAX_CNT && stat != VI_SUCCESS_TERM_CHAR )
-    { return false; }
+//    ViByte buf[128];
+//    ViUInt32 retCount;
+//    stat = viRead( viSes, buf, 128, &retCount );
+//    if ( stat != VI_SUCCESS && stat != VI_SUCCESS_MAX_CNT && stat != VI_SUCCESS_TERM_CHAR )
+//    { return false; }
 
-    if( retCount < 16 )
-    { return false; }
+//    if( retCount < 16 )
+//    { return false; }
 
-    strIdn = QString::fromLocal8Bit( (char*)buf, retCount );
+//    strIdn = QString::fromLocal8Bit( (char*)buf, retCount );
 
-    stat = viClose( viSes );
-    if ( stat != VI_SUCCESS )
-    { return false; }
+//    stat = viClose( viSes );
+//    if ( stat != VI_SUCCESS )
+//    { return false; }
 
-    stat = viClose( viDef );
-    if ( stat != VI_SUCCESS )
-    { return false; }
-#endif
-    return true;
-}
+//    stat = viClose( viDef );
+//    if ( stat != VI_SUCCESS )
+//    { return false; }
+//#endif
+//    return true;
+//}
 
 void sysPref::on_buttonBox_clicked(QAbstractButton *button)
 {
@@ -393,44 +449,87 @@ void sysPref::on_buttonBox_clicked(QAbstractButton *button)
     }
 }
 
-void sysPref::on_cmbPort_currentIndexChanged(int index)
+//#define port_can_mrh_e  "MRH-E"
+//#define port_usb_ii     "USB-CAN II"
+//#define port_mrh_t      "MRH-T"
+//#define port_mrh_u      "MRH-U"
+
+//#define port_mcp        "MCP"
+//#define port_rs232      "RS232"
+//#define port_usb        "USB"
+//#define str_is( )
+void sysPref::on_cmbPort_currentIndexChanged(const QString &arg1)
 {
     //! remove tab
     for (int i = ui->tabWidget_2->count() - 1; i >= 0 ; i-- )
     { ui->tabWidget_2->removeTab( i ); }
 
-    if ( index == e_can_mrh_e )
+    if ( str_is( arg1, port_can_mrh_e )  )
     {
          ui->labelCanPic->setPixmap( QPixmap(QString::fromUtf8(":/res/image/megacan.png")) );
 
          ui->tabWidget_2->insertTab( 0, m_pCANSetting, QString( tr("Setting") ) );
+
+         ui->gpAutoCanId->setVisible( true );
     }
-    else if ( index == e_can_usb_ii )
+
+    else if ( str_is( arg1, port_usb_ii )  )
     {
         ui->labelCanPic->setPixmap( QPixmap(QString::fromUtf8(":/res/image/can2.png")) );
 
         ui->tabWidget_2->insertTab( 0, m_pCANSetting, QString( tr("Setting") ) );
+
+        ui->gpAutoCanId->setVisible( true );
     }
-    else if ( index == e_can_mrh_t )
+
+    else if ( str_is( arg1, port_mrh_t )  )
     {
         ui->labelCanPic->setPixmap( QPixmap(QString::fromUtf8(":/res/image/mrh-t.png")) );
 
         ui->tabWidget_2->insertTab( 0, m_pMRHTSetting, QString( tr("Setting") ) );
+
+        ui->gpAutoCanId->setVisible( true );
     }
-    else if ( index == e_can_mrh_u )
+
+    else if ( str_is( arg1, port_mrh_u )  )
     {
         ui->labelCanPic->setPixmap( QPixmap(QString::fromUtf8(":/res/image/miniusbcan.png")) );
 
         ui->tabWidget_2->insertTab( 0, m_pCANSetting, QString( tr("Setting") ) );
+
+        ui->gpAutoCanId->setVisible( true );
     }
-    else if ( index == e_can_mcp )
+
+    else if ( str_is( arg1, port_mcp )  )
     {
         ui->labelCanPic->setPixmap( QPixmap(QString::fromUtf8(":/res/image/mcp251x.png")) );
 
         ui->tabWidget_2->insertTab( 0, m_pCANSetting, QString( tr("Setting") ) );
+
+        ui->gpAutoCanId->setVisible( true );
+    }
+
+    else if ( str_is( arg1, port_rs232 )  )
+    {
+        ui->labelCanPic->setPixmap( QPixmap(QString::fromUtf8(":/res/image/rs232.png")) );
+
+        ui->tabWidget_2->insertTab( 0, m_pRs232Setting, QString( tr("Setting") ) );
+
+        ui->gpAutoCanId->setVisible( false );
+    }
+
+    else if ( str_is( arg1, port_usb )  )
+    {
+        ui->labelCanPic->setPixmap( QPixmap(QString::fromUtf8(":/res/image/usb.png")) );
+
+        ui->tabWidget_2->insertTab( 0, m_pUsbSetting, QString( tr("Setting") ) );
+
+        ui->gpAutoCanId->setVisible( true );
     }
     else
-    {}
+    {
+
+    }
 }
 
 void sysPref::on_btnDetail_clicked()
@@ -473,89 +572,89 @@ void sysPref::slot_styleLang_changed( int index )
     MegaMessageBox::information( this, tr("Info"), tr("Setting need be restartd to validate") );
 }
 
-void sysPref::on_btnVerify_2_clicked()
-{
-    QString strIdn;
-    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-    if ( validateVisaRsrc( strIdn ) )
-    {
-        MegaMessageBox::information( this, tr("Info"), tr("Connect success ") + strIdn );
-        ui->btnAddT->setEnabled( true );
-    }
-    else
-    {
-        MegaMessageBox::warning( this, tr("Info"), tr("Connect fail") );
-        ui->btnAddT->setEnabled( false );
-    }
-    QApplication::restoreOverrideCursor();
-}
+//void sysPref::on_btnVerify_2_clicked()
+//{
+//    QString strIdn;
+//    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+//    if ( validateVisaRsrc( strIdn ) )
+//    {
+//        MegaMessageBox::information( this, tr("Info"), tr("Connect success ") + strIdn );
+//        ui->btnAddT->setEnabled( true );
+//    }
+//    else
+//    {
+//        MegaMessageBox::warning( this, tr("Info"), tr("Connect fail") );
+//        ui->btnAddT->setEnabled( false );
+//    }
+//    QApplication::restoreOverrideCursor();
+//}
 
-void sysPref::on_edtVisa_textChanged(const QString &arg1)
-{
-    slot_validate_listmrt();
-}
+//void sysPref::on_edtVisa_textChanged(const QString &arg1)
+//{
+//    slot_validate_listmrt();
+//}
 
-void sysPref::on_btnAddT_clicked()
-{
-    //! search exist
-    for ( int i = 0; i < ui->listMRTs->count(); i++ )
-    {
-        if ( ui->edtVisa->text().compare( ui->listMRTs->item( i)->text(), Qt::CaseInsensitive ) == 0 )
-        {
-            MegaMessageBox::information( this,
-                                         tr("info"),
-                                         ui->edtVisa->text() + " " + tr("alreay exist") );
-            return;
-        }
-    }
+//void sysPref::on_btnAddT_clicked()
+//{
+//    //! search exist
+//    for ( int i = 0; i < ui->listMRTs->count(); i++ )
+//    {
+//        if ( ui->edtVisa->text().compare( ui->listMRTs->item( i)->text(), Qt::CaseInsensitive ) == 0 )
+//        {
+//            MegaMessageBox::information( this,
+//                                         tr("info"),
+//                                         ui->edtVisa->text() + " " + tr("alreay exist") );
+//            return;
+//        }
+//    }
 
-    //! add item
-    ui->listMRTs->addItem( ui->edtVisa->text() );
-}
+//    //! add item
+//    ui->listMRTs->addItem( ui->edtVisa->text() );
+//}
 
-void sysPref::on_btnRemove_clicked()
-{
-    delete ( ui->listMRTs->takeItem( ui->listMRTs->currentRow() ) );
-}
+//void sysPref::on_btnRemove_clicked()
+//{
+//    delete ( ui->listMRTs->takeItem( ui->listMRTs->currentRow() ) );
+//}
 
-void sysPref::on_btnClear_clicked()
-{
-    ui->listMRTs->clear();
-}
+//void sysPref::on_btnClear_clicked()
+//{
+//    ui->listMRTs->clear();
+//}
 
-void sysPref::on_edtVisa_textEdited(const QString &arg1)
-{
-    slot_validate_listmrt();
-}
+//void sysPref::on_edtVisa_textEdited(const QString &arg1)
+//{
+//    slot_validate_listmrt();
+//}
 
-void sysPref::slot_validate_listmrt()
-{
-    if ( ui->edtVisa->text().length() > 0 )
-    {
-        ui->btnVerify_2->setEnabled(true);
-        ui->btnAddT->setEnabled( true );
-    }
-    else
-    {
-        ui->btnVerify_2->setEnabled(false);
-        ui->btnAddT->setEnabled( false );
-    }
+//void sysPref::slot_validate_listmrt()
+//{
+//    if ( ui->edtVisa->text().length() > 0 )
+//    {
+//        ui->btnVerify_2->setEnabled(true);
+//        ui->btnAddT->setEnabled( true );
+//    }
+//    else
+//    {
+//        ui->btnVerify_2->setEnabled(false);
+//        ui->btnAddT->setEnabled( false );
+//    }
 
-    if ( ui->listMRTs->currentItem() != NULL )
-    { ui->btnRemove->setEnabled( true ); }
-    else
-    { ui->btnRemove->setEnabled( false );}
+//    if ( ui->listMRTs->currentItem() != NULL )
+//    { ui->btnRemove->setEnabled( true ); }
+//    else
+//    { ui->btnRemove->setEnabled( false );}
 
-    if ( ui->listMRTs->count() > 0 )
-    { ui->btnClear->setEnabled( true ); }
-    else
-    { ui->btnClear->setEnabled( false ); }
-}
+//    if ( ui->listMRTs->count() > 0 )
+//    { ui->btnClear->setEnabled( true ); }
+//    else
+//    { ui->btnClear->setEnabled( false ); }
+//}
 
-void sysPref::on_listMRTs_currentRowChanged(int currentRow)
-{
-    slot_validate_listmrt();
-}
+//void sysPref::on_listMRTs_currentRowChanged(int currentRow)
+//{
+//    slot_validate_listmrt();
+//}
 
 #define model_      (m_pPref->mAlias)
 void sysPref::slot_toolbar_add()
@@ -579,3 +678,5 @@ void sysPref::slot_toolbar_clr()
         model_.removeRows( 0, model_.mItems.size(), QModelIndex() );
     }
 }
+
+

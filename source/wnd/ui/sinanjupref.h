@@ -31,7 +31,7 @@ protected:
     int applyGroupId();
 
 private slots:
-    void on_btnGoZero_clicked();
+    void on_btnZeroArm_clicked();
 
     void on_btnZeroHand_clicked();
 

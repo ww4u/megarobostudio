@@ -2379,7 +2379,7 @@ int MRQ::getMOTIONPLAN_REMAINPOINT( byte val0
 
 	uint16 lval0 = 0;
 	ret = m_pBus->read( DEVICE_RECEIVE_ID, (byte)53, (byte)12 , val0, (byte)val1, &lval0, bQuery);
-	if ( ret != 0){ log_device(); } 
+    if ( ret != 0){ log_device(); }
 	if ( ret != 0) return ret;
 	*val2 = lval0;
 	return 0;

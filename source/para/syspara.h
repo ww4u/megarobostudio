@@ -14,19 +14,34 @@ public:
     };
 public:
     int mPort;
-    int mSpeed;     //! speed index
+    int mSpeed;             //! speed index
     int mTimeout;
     int mRecvTmo;
-    int mInterval;  //! for write interval
+    int mInterval;          //! for write interval
     int mTpvInterval;
     int mFailTryCnt;
     bool mbAutoAssignId;
     int mDeviceId;
     int mDeviceCount;
 
-    QString mVisaAddr;
-    int mVisaTmo;
+    QString mVisaAddr;      //! lan
     QStringList mVisaList;
+
+    QString mRs232Addr;
+    QStringList mRs232List;
+
+    QString mUsbAddr;
+    QStringList mUsbList;
+
+                            //! uart baud
+    int mBaudIndex;
+    int mDataWidthIndex;
+    int mParityIndex;
+    int mStopIndex;
+    int mFlowControlIndex;
+
+
+    int mVisaTmo;           //! common to each
 
     int mEnumerateTimeout;
     int mSampleTick;

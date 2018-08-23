@@ -25,6 +25,7 @@ SOURCES = \
           midevice.c \
           megarobo.c \
           sinanju.c \
+          mimgr.c \
           test.c
 		  
 HEADERS = visa_adapter.h \

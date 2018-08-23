@@ -494,6 +494,7 @@ int deviceMRQ::requestMotionState( pvt_region )
 
     DELOAD_REGION();
 
+
     ret = m_pBus->write( DEVICE_RECEIVE_ID,
                          MRQ_mc_MOTION,
                          MRQ_sc_MOTION_STATE_Q,
@@ -687,7 +688,7 @@ int deviceMRQ::lightCouplingZero( pvt_region,
     //! start the thread
     mTaskThread.at(region.axes())->setRequest( pReq );
 
-    mTaskThread.at( region.axes())->start();
+    mTaskThread.at( region.axes() )->start();
 
     return 0;
 }
@@ -720,6 +721,7 @@ int deviceMRQ::taskLightCouplingZero( void *pArg )
             if ( ret != 0 )
             { break; }
         }
+
     }while( 0 );
 
     //! delete the arg
@@ -757,6 +759,9 @@ int deviceMRQ::waitFsm( pvt_region,
     {
         Q_ASSERT( tick > 0 );
         QThread::usleep( tick );
+
+        if ( QThread::currentThread()->isInterruptionRequested() )
+        { return -1; }
 
         if ( fsmState( region, 1 ) == dstState )
         { return 0; }

@@ -6,6 +6,10 @@ int robo_getIdn( ViSession vi, char *val0 )
 {
     _robo_get_str( sprintf(args,"*IDN?") )
 }
+int robo_getOpc( ViSession vi, int *val0 )
+{
+	_robo_get_int( sprintf(args,"*OPC?") )
+}
 int robo_lrn( ViSession vi, char *val0 )
 {
     _robo_set( sprintf( args, "*LRN \"%s\"" , val0 ) )

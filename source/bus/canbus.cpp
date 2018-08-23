@@ -10,7 +10,7 @@ namespace MegaDevice {
 #define recv_id( id )   ( ((id)<<4) + 0xf )
 #define max_nodes       4096    //! 12bit + 12bit = 24bit
 
-#define FRAME_LEN   8
+//#define FRAME_LEN   8
 
 #define can_device_desc mDevType, mDevId, mCanId
 
@@ -30,6 +30,8 @@ CANBus::CANBus()
     mBusType = e_bus_can;
 
     mFrames = 0;
+
+    mLinkType = MRQ_LINK_INTFC_CAN;
 }
 
 CANBus::~CANBus()
@@ -42,7 +44,8 @@ CANBus::~CANBus()
     delete_all( mDevices );
 }
 
-int CANBus::open( int devType,
+int CANBus::open( const modelSysPref &pref,
+                  int devType,
                   int devId, int seqId, int canId,
                   const QString &desc )
 {
@@ -205,7 +208,7 @@ void CANBus::close()
 
         int ret;
         ret = mApi.close( mDevType, mDevId );
-        logDbg()<<ret<<mDevType<<mDevId;
+//        logDbg()<<ret<<mDevType<<mDevId;
         mHandle = 0;
 
         mApi.unload();
@@ -474,7 +477,6 @@ IBus::unlock();
     { return 0; }
 }
 
-
 int CANBus::doReceive( QList<frameData> &canFrames )
 {
     check_handle();
@@ -534,98 +536,98 @@ IBus::lock();
     return 0;
 }
 
-//! read from cache
-int CANBus::doRead( DeviceId &nodeId, byte *pBuf, int cap, int *pLen )
-{
-    Q_ASSERT( pBuf != NULL );
-    Q_ASSERT( pLen != NULL );
+////! read from cache
+//int CANBus::doRead( DeviceId &nodeId, byte *pBuf, int cap, int *pLen )
+//{
+//    Q_ASSERT( pBuf != NULL );
+//    Q_ASSERT( pLen != NULL );
 
-    int ret, retLen, frameId;
-    byte frameBuf[ FRAME_LEN ];
-    ret = doFrameRead( nodeId, &frameId, frameBuf, &retLen );
-    if ( ret != 0 )
-    {
-        *pLen = 0;logDbg();
-        return ret;
-    }
+//    int ret, retLen, frameId;
+//    byte frameBuf[ FRAME_LEN ];
+//    ret = doFrameRead( nodeId, &frameId, frameBuf, &retLen );
+//    if ( ret != 0 )
+//    {
+//        *pLen = 0;logDbg();
+//        return ret;
+//    }
 
-    if ( cap != retLen )
-    {
-        for( int i = 0; i < retLen; i++ )
-        { logDbg()<<QString::number( frameBuf[i], 16 ); }
-        *pLen = retLen;logDbg()<<retLen<<cap<<frameId<<nodeId.sendId()<<nodeId.recvId();
-        return -2;
-    }
+//    if ( cap != retLen )
+//    {
+//        for( int i = 0; i < retLen; i++ )
+//        { logDbg()<<QString::number( frameBuf[i], 16 ); }
+//        *pLen = retLen;logDbg()<<retLen<<cap<<frameId<<nodeId.sendId()<<nodeId.recvId();
+//        return -2;
+//    }
 
-    *pLen = cap;
-    memcpy( pBuf, frameBuf, *pLen );
+//    *pLen = cap;
+//    memcpy( pBuf, frameBuf, *pLen );
 
-    return 0;
-}
+//    return 0;
+//}
 
-//! read from cache
-//! nodeId -- device recv id
-int CANBus::doFrameRead( DeviceId &nodeId, int *pFrameId, byte *pBuf, int *pLen )
-{
-    //! read from cache by timeout
-    Q_ASSERT( NULL != m_pRecvCache );
+////! read from cache
+////! nodeId -- device recv id
+//int CANBus::doFrameRead( DeviceId &nodeId, int *pFrameId, byte *pBuf, int *pLen )
+//{
+//    //! read from cache by timeout
+//    Q_ASSERT( NULL != m_pRecvCache );
 
-    return m_pRecvCache->readAFrame( nodeId, pFrameId, pBuf, pLen, mRdTmo );
-}
+//    return m_pRecvCache->readAFrame( nodeId, pFrameId, pBuf, pLen, mRdTmo );
+//}
 
-//! read a few frame
-int CANBus::doFrameRead( DeviceId &nodeId, int *pFrameId, byte *pBuf, int eachFrameSize, int n )
-{
-    frameHouse frames;
+////! read a few frame
+//int CANBus::doFrameRead( DeviceId &nodeId, int *pFrameId, byte *pBuf, int eachFrameSize, int n )
+//{
+//    frameHouse frames;
 
-    //! read frames
-    m_pRecvCache->readFrame( nodeId, frames );
+//    //! read frames
+//    m_pRecvCache->readFrame( nodeId, frames );
 
-    int i = 0;
-    for ( i = 0; i < frames.size() && i < n ; i++ )
-    {
-        pFrameId[i] = frames[i].frameId();
-        memcpy( pBuf + i * eachFrameSize,
-                frames[i].data(),
-                qMin( frames[i].size(), eachFrameSize )
-                );
-    }
+//    int i = 0;
+//    for ( i = 0; i < frames.size() && i < n ; i++ )
+//    {
+//        pFrameId[i] = frames[i].frameId();
+//        memcpy( pBuf + i * eachFrameSize,
+//                frames[i].data(),
+//                qMin( frames[i].size(), eachFrameSize )
+//                );
+//    }
 
-    return i;
-}
+//    return i;
+//}
 
-int CANBus::doSplitRead( DeviceId &nodeId, int packOffset, byte *pBuf, int cap, int *pLen )
-{
-    int ret, retLen;
-    byte frameBuf[ FRAME_LEN ];
+//int CANBus::doSplitRead( DeviceId &nodeId, int packOffset, byte *pBuf, int cap, int *pLen )
+//{
+//    int ret, retLen;
+//    byte frameBuf[ FRAME_LEN ];
 
-    int slice, total;
+//    int slice, total;
 
-    int outLen = 0;
-    int frameId;
-    do
-    {
-        ret = doFrameRead( nodeId, &frameId, frameBuf, &retLen );
-        if ( ret != 0 )
-        { return ret; }
+//    int outLen = 0;
+//    int frameId;
+//    do
+//    {
+//        ret = doFrameRead( nodeId, &frameId, frameBuf, &retLen );
+//        if ( ret != 0 )
+//        { return ret; }
 
-        if ( retLen <= packOffset )
-        { return -1; }
+//        if ( retLen <= packOffset )
+//        { return -1; }
 
-        total = frameBuf[ packOffset ] & 0x0f;
-        slice = ( frameBuf[ packOffset ] >> 4 ) & 0x0f;
+//        total = frameBuf[ packOffset ] & 0x0f;
+//        slice = ( frameBuf[ packOffset ] >> 4 ) & 0x0f;
 
-        //! cat the data
-        for ( int i = packOffset + 1; i < retLen && outLen < cap; i++, outLen++ )
-        {
-            pBuf[ outLen ] = frameBuf[ i ];
-        }
-    }while( slice < total );
+//        //! cat the data
+//        for ( int i = packOffset + 1; i < retLen && outLen < cap; i++, outLen++ )
+//        {
+//            pBuf[ outLen ] = frameBuf[ i ];
+//        }
+//    }while( slice < total );
 
-    *pLen = outLen;
+//    *pLen = outLen;
 
-    return 0;
-}
+//    return 0;
+//}
 
 int CANBus::enumerate( const modelSysPref &pref )
 {
@@ -634,12 +636,13 @@ int CANBus::enumerate( const modelSysPref &pref )
     receiveCache::cli();
 
     beginEnumerate();
-logDbg();
-    if ( pref.mbAutoAssignId )
+
+    //! only for can
+    if ( pref.mbAutoAssignId && mBusType == e_bus_can )
     { ret = autoEnumerate( pref ); }
     else
     { ret = rawEnumerate( pref ); }
-logDbg();
+
     endEnumerate();
 
     receiveCache::sti();
@@ -656,7 +659,7 @@ qint64 CANBus::frames()
 { return mFrames; }
 
 void CANBus::beginEnumerate()
-{logDbg()<<mEnumDevices.size();
+{//logDbg()<<mEnumDevices.size();
     //! destroy the enumerate
     delete_all( mEnumDevices );
 
@@ -664,7 +667,7 @@ void CANBus::beginEnumerate()
 }
 
 void CANBus::endEnumerate()
-{logDbg()<<mDevices.size()<<mEnumDevices.size();
+{//logDbg()<<mDevices.size()<<mEnumDevices.size();
     //! clear the current
     delete_all( mDevices );
 
@@ -690,19 +693,19 @@ int CANBus::autoEnumerate( const modelSysPref &pref )
 int CANBus::rawEnumerate( const modelSysPref &pref )
 {
     int ret;
-logDbg();
+
     //! send-hash
     QMap< int, quint32 > sendHashMap;
     ret = collectHash( sendHashMap );
     if ( ret != 0 )
     { return ret; }
-logDbg();
+
     //! send-recv
     QMap< int, quint32 > sendRecvMap;
     ret = collectRecvId( sendRecvMap );
     if ( ret != 0 )
     { return ret; }
-logDbg();
+
     //! check the size
     if ( sendRecvMap.size() != sendHashMap.size() )
     {
@@ -741,8 +744,9 @@ logDbg();
 
     //! 0. can intf
     DeviceId broadId( CAN_BROAD_ID );
-    byte buf0[] = { MRQ_mc_LINK, MRQ_sc_LINK_INTFC, MRQ_LINK_INTFC_CAN };
-    ret = doWrite( broadId, buf0, sizeof(buf0) );logDbg();
+    //byte buf0[] = { MRQ_mc_LINK, MRQ_sc_LINK_INTFC, MRQ_LINK_INTFC_CAN };
+    byte buf0[] = { MRQ_mc_LINK, MRQ_sc_LINK_INTFC, mLinkType };
+    ret = doWrite( broadId, buf0, sizeof(buf0) );logDbg()<<mLinkType;
     if ( ret != 0 )
     { return ret; }
 
@@ -781,8 +785,8 @@ logDbg();
         //! get hash id
         memcpy( &hashId, (readBuf + i * collectFrameSize) + 2, 4 );
 
-        pDeviceId->setSendId( frameIds[i] );logDbg()<<frameIds[i];
-        pDeviceId->setSignature( hashId );logDbg()<<QString::number( hashId, 16 );
+        pDeviceId->setSendId( frameIds[i] );//logDbg()<<frameIds[i];
+        pDeviceId->setSignature( hashId );//logDbg()<<QString::number( hashId, 16 );
 
         if ( hashIdList.contains(hashId) )
         {
@@ -814,7 +818,8 @@ int CANBus::collectHash( QMap< int, quint32 > &sendHashMap )
 logDbg();
     //! 0. can intf
     DeviceId broadId( CAN_BROAD_ID );
-    byte buf0[] = { MRQ_mc_LINK, MRQ_sc_LINK_INTFC, MRQ_LINK_INTFC_CAN };
+//    byte buf0[] = { MRQ_mc_LINK, MRQ_sc_LINK_INTFC, MRQ_LINK_INTFC_CAN };
+    byte buf0[] = { MRQ_mc_LINK, MRQ_sc_LINK_INTFC, mLinkType };
     ret = doWrite( broadId, buf0, sizeof(buf0) );logDbg();
     if ( ret != 0 )
     { return ret; }
@@ -849,6 +854,48 @@ logDbg();
         memcpy( &hashId, (readBuf + i * collectFrameSize) + 2, 4 );
 
         sendHashMap.insert( frameIds[i], hashId );
+    }
+
+    return 0;
+}
+
+int CANBus::collectSendId( QMap< int, quint32 > &sendRecvMap )
+{
+    byte buf[] = { MRQ_mc_CAN, MRQ_sc_CAN_SENDID_Q };
+    int ret;
+
+    m_pRecvCache->clear();
+
+    //! 1. broadcast
+    DeviceId broadId( CAN_BROAD_ID );
+    ret = doWrite( broadId, buf, sizeof(buf) );
+    if ( ret != 0 )
+    { return ret; }
+
+    wait_us( mEnumerateTmo );
+
+    //! 2. frame count
+    int frame = size();logDbg()<<frame;
+    if ( frame < 1 )
+    { logDbg(); return -1; }
+
+    //! 3. read all frame
+    int collectFrameSize = 6;
+    byte readBuf[ collectFrameSize * frame ];
+    int frameIds[ frame ];
+
+    ret = doFrameRead( broadId, frameIds, readBuf, collectFrameSize, frame );
+    if ( ret != frame )
+    { return -1; }
+
+    //! 4. all frames
+    uint32 sendId;
+    for ( int i = 0; i < frame; i++ )
+    {
+        //! get send id
+        memcpy( &sendId, (readBuf + i * collectFrameSize) + 2, 4 );
+
+        sendRecvMap.insert( frameIds[i], sendId );
     }
 
     return 0;
@@ -914,6 +961,42 @@ void CANBus::buildDeviceIds( QMap< int, quint32 > &sendHashMap,
         pDeviceId->setSendId( iter.key() );
         pDeviceId->setSignature( iter.value() );
 
+        Q_ASSERT( sendRecvMap.contains( iter.key() ) );
+        pDeviceId->setRecvId( sendRecvMap.value( iter.key()) );
+
+        mEnumDevices.append( pDeviceId );
+    }
+
+    //!  sort the device by id
+    qSort( mEnumDevices.begin(),
+           mEnumDevices.end(),
+           deviceIdLessThan );
+}
+
+void CANBus::buildDeviceIds( QMap< int, quint32 > &sendHashMap,
+                             QMap< int, quint32 > &sendSendMap,
+                             QMap< int, quint32 > &sendRecvMap )
+{
+    DeviceId *pDeviceId;
+
+    //! match the sendId: recvid, signature
+    QMapIterator<int, quint32> iter(sendHashMap);
+    while (iter.hasNext())
+    {
+        iter.next();
+
+        pDeviceId = new DeviceId();
+        if ( NULL == pDeviceId )
+        { break; }
+
+        //! signature
+        pDeviceId->setSignature( iter.value() );
+
+        //! send
+        Q_ASSERT( sendSendMap.contains( iter.key() ) );
+        pDeviceId->setSendId( sendSendMap.value( iter.key()) );
+
+        //! receive
         Q_ASSERT( sendRecvMap.contains( iter.key() ) );
         pDeviceId->setRecvId( sendRecvMap.value( iter.key()) );
 

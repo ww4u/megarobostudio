@@ -17,7 +17,18 @@ enum EnumCanPort
     e_can_mrh_u,
 
     e_can_mcp,
+    e_rs232,
+    e_usb,
 };
+
+#define port_can_mrh_e  "MRH-E"
+#define port_usb_ii     "USB-CAN II"
+#define port_mrh_t      "MRH-T"
+#define port_mrh_u      "MRH-U"
+
+#define port_mcp        "MCP"
+#define port_rs232      "RS232"
+#define port_usb        "USB"
 
 class sysPref : public QDialog
 {
@@ -36,12 +47,12 @@ public:
 protected:
     bool validateDb();
     bool updateValidateEn();
-    bool validateVisaRsrc( QString &strIdn );
+//    bool validateVisaRsrc( QString &strIdn );
 
 private slots:
     void on_buttonBox_clicked(QAbstractButton *button);
 
-    void on_cmbPort_currentIndexChanged(int index);
+    void on_cmbPort_currentIndexChanged(const QString &arg1);
 
     void on_btnDetail_clicked();
 
@@ -51,30 +62,34 @@ private slots:
 
     void slot_styleLang_changed( int index );
 
-    void on_btnVerify_2_clicked();
+//    void on_btnVerify_2_clicked();
 
-    void on_edtVisa_textChanged(const QString &arg1);
+//    void on_edtVisa_textChanged(const QString &arg1);
 
-    void on_btnAddT_clicked();
+//    void on_btnAddT_clicked();
 
-    void on_btnRemove_clicked();
+//    void on_btnRemove_clicked();
 
-    void on_btnClear_clicked();
+//    void on_btnClear_clicked();
 
-    void on_edtVisa_textEdited(const QString &arg1);
+//    void on_edtVisa_textEdited(const QString &arg1);
 
-    void slot_validate_listmrt();
+//    void slot_validate_listmrt();
 
-    void on_listMRTs_currentRowChanged(int currentRow);
+//    void on_listMRTs_currentRowChanged(int currentRow);
 
     //! slot
     void slot_toolbar_add();
     void slot_toolbar_del();
     void slot_toolbar_clr();
 
+
+
 private:
     Ui::sysPref *ui;
     QWidget *m_pCANSetting, *m_pMRHTSetting;
+    QWidget *m_pRs232Setting, *m_pUsbSetting;
+
 public:
     modelSysPref *m_pPref;
 

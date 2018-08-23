@@ -11,6 +11,10 @@
 #define sizeof_double( item )           (int)( sizeof(item)/sizeof(double) )
 #define offsetof_double( a, b )         (int)( offsetof( a, b )/sizeof(double) )
 
+#define str_is( a, b )          ( QString::compare( (a),(b), Qt::CaseInsensitive) == 0 )
+#define str_is_2( a, b1, b2 )   ( str_is(a,b1) || str_is(a,b2) )
+#define str_is_4( a, b1, b2, b3, b4 )   ( str_is_2(a,b1,b2) || str_is_2(a,b3,b4) )
+
 //! bit ops
 #define set_bit( val, bitN )     val |= (1<<(bitN));
 #define unset_bit( val, bitN )     val &= (~(1<<(bitN)));

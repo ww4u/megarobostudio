@@ -11,7 +11,8 @@
 
 class receiveCache;
 
-#define is_phy_bus( busType )       ( (busType) == MegaDevice::IBus::e_bus_can )
+#define is_phy_bus( busType )       ( ( (busType) == MegaDevice::IBus::e_bus_can ) \
+                                       || ( (busType) == MegaDevice::IBus::e_bus_232 ) )
 
 class frameData : public QByteArray
 {
@@ -37,6 +38,8 @@ Q_DECLARE_METATYPE( frameData* )
 
 namespace MegaDevice {
 
+#define FRAME_LEN   8
+
 class IBus
 {
 public:
@@ -44,6 +47,7 @@ public:
     {
         e_bus_unk,
         e_bus_can,
+        e_bus_232,
         e_bus_file,
     };
 
@@ -66,6 +70,9 @@ protected:
     QString mName;
 
     eBusType mBusType;
+    byte mLinkType;         //! can,232
+    DeviceId mDeviceId;     //! the attached bus
+
                             //! receive cache
     receiveCache *m_pRecvCache;
 
@@ -96,7 +103,11 @@ public :
     void setDevId( int devId );
     int devId();
 
-    virtual int open( int devType,
+    void setDeviceId( DeviceId &id );
+    DeviceId deviceId();
+
+    virtual int open( const modelSysPref &pref,
+                      int devType,
                       int devId,
                       int seqId,
                       int canId,

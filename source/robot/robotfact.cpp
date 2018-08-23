@@ -1,10 +1,6 @@
 
 #include "robotfact.h"
 
-#define str_is( a, b )          ( QString::compare( a,b, Qt::CaseInsensitive) == 0 )
-#define str_is_2( a, b1, b2 )   ( str_is(a,b1) || str_is(a,b2) )
-#define str_is_4( a, b1, b2, b3, b4 )   ( str_is_2(a,b1,b2) || str_is_2(a,b3,b4) )
-
 VRobot *robotFact::createRobot( const QString &str )
 {
     VRobot *pRobo;

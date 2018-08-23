@@ -16,6 +16,8 @@
 #define mera_robo_prestop       8
 
 int robo_getIdn( ViSession vi, char *idn );
+int robo_getOpc( ViSession vi, int *pOpc );
+
 int robo_lrn( ViSession vi, char *lrn );
 int robo_hrst( ViSession vi );
 

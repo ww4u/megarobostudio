@@ -7,6 +7,9 @@ MrqUart::MrqUart(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    ui->cmbFlow->setVisible( false );
+    ui->label_10->setVisible( false );
+
     spyEdited();
 }
 

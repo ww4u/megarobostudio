@@ -21,7 +21,9 @@ SOURCES = \
     deviceid.cpp \
     receivecache.cpp \
     filebus.cpp \
-    canapi.cpp
+    canapi.cpp \
+    rs232bus.cpp \
+    rs232_adapt.cpp
 
 HEADERS = \
     ibus.h \
@@ -29,5 +31,6 @@ HEADERS = \
     deviceid.h \
     receivecache.h \
     filebus.h \
-    canapi.h
+    canapi.h \
+    rs232bus.h
 

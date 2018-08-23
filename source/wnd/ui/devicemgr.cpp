@@ -222,7 +222,7 @@ void deviceMgr::updateData()
         }
         else
         {
-            updateVirBusTree( pList );logDbg();
+            updateVirBusTree( pList );
         }
     }
 }
@@ -240,15 +240,22 @@ void deviceMgr::updatePhyBusTree( VRoboList *pRoboList )
     Q_ASSERT( pRoboList->bus() != NULL );
     pItemBus->setText( 0, pRoboList->bus()->name() );
 
+    //! \todo bus type
     QStringList strList,typeList;
     strList<<":/res/image/megacan.png"
            <<":/res/image/can2.png"
            <<":/res/image/mrh-t.png"
-           <<":/res/image/miniusbcan.png";
+           <<":/res/image/miniusbcan.png"
+           <<":/res/image/mcp251x.png"
+           <<":/res/image/rs232.png"
+           <<":/res/image/usb.png";
     typeList<<"MRH-E"
            <<"USBCAN-II"
            <<"MRH-T"
-           <<"MRH-U";
+           <<"MRH-U"
+           <<"MCP"
+           <<"RS232"
+           <<"USB";
     int pId = pRoboList->bus()->pId();
     if (  pId >=0 && pId < strList.size() )
     {
@@ -264,7 +271,6 @@ void deviceMgr::updatePhyBusTree( VRoboList *pRoboList )
     //! device
     QTreeWidgetItem *pItemDev;
     QTreeWidgetItem *pItemAxes;
-//    MegaDevice::MRQ_model *pMrqModel;
 
     //! robot
     QList<int> ids;

@@ -1513,21 +1513,27 @@ void MainWindow::slot_com_receive( const QString &str )
 {logDbg()<<str;
     //! find device and do
     if ( str.length() < 3 )
-    { sysError( tr("Invlid cmd"), str );
+    { sysError( tr("Invalid cmd"), str );
         return;
     }
 
     //! get name
     QStringList secList = str.split( " ", QString::SkipEmptyParts );
     if ( secList.size() < 2 )
-    { sysError( tr("Invlid cmd"), str );
+    { sysError( tr("Invalid cmd"), str );
         return;
     }
 
     //! \todo full name
-    VRobot * pRobo = mMcModel.m_pInstMgr->findAbbRobot( secList.at(0) );
-    if ( NULL == pRobo )
-    { sysError( tr("Invlid cmd"), str );
+//    VRobot * pRobo = mMcModel.m_pInstMgr->findAbbRobot( secList.at(0) );
+//    if ( NULL == pRobo )
+//    { sysError( tr("Invalid cmd"), str );
+//        return;
+//    }
+
+    scpiShell *pShell = mMcModel.m_pInstMgr->findShell( secList.at(0) );
+    if ( NULL == pShell )
+    { sysError( tr("Invalid cmd"), str );
         return;
     }
 
@@ -1536,15 +1542,15 @@ void MainWindow::slot_com_receive( const QString &str )
     strFullCmd = strFullCmd.remove( 0, secList.at(0).size() );
     strFullCmd.append( "\r\n" );
     logDbg()<<strFullCmd;
-    pRobo->write( strFullCmd.toUtf8().data(), strFullCmd.length() );
+    pShell->write( strFullCmd.toUtf8().data(), strFullCmd.length() );
     //! read
     {
-        int retSize = pRobo->size();
+        int retSize = pShell->size();
         if ( retSize > 0 )
         {
             char *pOut = new char[ retSize ];
             Q_ASSERT( NULL != pOut );
-            if ( retSize == pRobo->read( pOut, retSize ) )
+            if ( retSize == pShell->read( pOut, retSize ) )
             {
                 QByteArray ary( pOut, retSize );
                 emit sig_com_send( ary );

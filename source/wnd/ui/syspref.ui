@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>708</width>
-    <height>633</height>
+    <height>648</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -25,28 +25,13 @@
    <string>Preference</string>
   </property>
   <property name="windowIcon">
-   <iconset>
+   <iconset resource="../res/res.qrc">
     <normaloff>:/res/image/icon/205.png</normaloff>:/res/image/icon/205.png</iconset>
   </property>
   <property name="sizeGripEnabled">
    <bool>false</bool>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
-   <property name="spacing">
-    <number>3</number>
-   </property>
-   <property name="leftMargin">
-    <number>3</number>
-   </property>
-   <property name="topMargin">
-    <number>3</number>
-   </property>
-   <property name="rightMargin">
-    <number>3</number>
-   </property>
-   <property name="bottomMargin">
-    <number>3</number>
-   </property>
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="sizePolicy">
@@ -300,50 +285,21 @@
           <item row="2" column="1">
            <widget class="QLineEdit" name="edtRemotePath"/>
           </item>
-          <item row="4" column="0" colspan="2">
-           <widget class="QGroupBox" name="groupBox_14">
-            <property name="title">
-             <string>COM</string>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_50">
+            <property name="text">
+             <string>Host Name</string>
             </property>
-            <layout class="QGridLayout" name="gridLayout_6">
-             <item row="1" column="0">
-              <widget class="QCheckBox" name="chkComOnOff">
-               <property name="text">
-                <string>On/Off</string>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="1">
-              <widget class="QComboBox" name="cmbComPort">
-               <property name="editable">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="0">
-              <widget class="QLabel" name="label_48">
-               <property name="text">
-                <string>COM</string>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="2">
-              <spacer name="horizontalSpacer_6">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-            </layout>
            </widget>
           </item>
-          <item row="3" column="0" colspan="2">
+          <item row="1" column="1">
+           <widget class="QLabel" name="labelHostName">
+            <property name="text">
+             <string>TextLabel</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0">
            <widget class="QGroupBox" name="groupBox_6">
             <property name="title">
              <string>Socket</string>
@@ -392,17 +348,53 @@
             </layout>
            </widget>
           </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="label_50">
-            <property name="text">
-             <string>Host Name</string>
+          <item row="4" column="1">
+           <widget class="QGroupBox" name="groupBox_14">
+            <property name="title">
+             <string>COM</string>
             </property>
+            <layout class="QGridLayout" name="gridLayout_6">
+             <item row="1" column="0">
+              <widget class="QCheckBox" name="chkComOnOff">
+               <property name="text">
+                <string>On/Off</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="1">
+              <widget class="QComboBox" name="cmbComPort">
+               <property name="editable">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0">
+              <widget class="QLabel" name="label_48">
+               <property name="text">
+                <string>COM</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="2">
+              <spacer name="horizontalSpacer_6">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
            </widget>
           </item>
-          <item row="1" column="1">
-           <widget class="QLabel" name="labelHostName">
+          <item row="3" column="0" colspan="2">
+           <widget class="QLabel" name="label_32">
             <property name="text">
-             <string>TextLabel</string>
+             <string>*More pathes are seperatated by ','(comma).</string>
             </property>
            </widget>
           </item>
@@ -461,6 +453,100 @@
             <property name="spacing">
              <number>3</number>
             </property>
+            <item row="6" column="0" colspan="2">
+             <widget class="QGroupBox" name="groupBox_12">
+              <property name="title">
+               <string/>
+              </property>
+              <layout class="QGridLayout" name="gridLayout_7">
+               <item row="0" column="3">
+                <widget class="QSpinBox" name="spinFailTry">
+                 <property name="minimum">
+                  <number>0</number>
+                 </property>
+                 <property name="maximum">
+                  <number>10</number>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="1">
+                <widget class="QSpinBox" name="spinRecvTmo">
+                 <property name="minimum">
+                  <number>1</number>
+                 </property>
+                 <property name="maximum">
+                  <number>100</number>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="0">
+                <widget class="QLabel" name="label">
+                 <property name="text">
+                  <string>Timeout(us)</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="1">
+                <widget class="QSpinBox" name="spinTmo">
+                 <property name="minimum">
+                  <number>1000</number>
+                 </property>
+                 <property name="maximum">
+                  <number>1000000</number>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="0">
+                <widget class="QLabel" name="label_42">
+                 <property name="text">
+                  <string>Receive Timeout(ms)</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="1">
+                <widget class="QSpinBox" name="spinInterval">
+                 <property name="minimum">
+                  <number>0</number>
+                 </property>
+                 <property name="maximum">
+                  <number>1000000</number>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="2">
+                <widget class="QLabel" name="label_18">
+                 <property name="text">
+                  <string>Fail Try Count</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="0">
+                <widget class="QLabel" name="label_6">
+                 <property name="text">
+                  <string>Send Interval(us)</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="2">
+                <widget class="QLabel" name="label_27">
+                 <property name="text">
+                  <string>PVT Interval(us)</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="3">
+                <widget class="QSpinBox" name="spinPvtInterval">
+                 <property name="minimum">
+                  <number>0</number>
+                 </property>
+                 <property name="maximum">
+                  <number>1000000</number>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
             <item row="0" column="1">
              <widget class="QComboBox" name="cmbPort">
               <property name="enabled">
@@ -483,7 +569,7 @@
                 <string>MRH-E</string>
                </property>
                <property name="icon">
-                <iconset>
+                <iconset resource="../res/res.qrc">
                  <normaloff>:/res/image/megacan.png</normaloff>:/res/image/megacan.png</iconset>
                </property>
               </item>
@@ -492,7 +578,7 @@
                 <string>USB-CAN II</string>
                </property>
                <property name="icon">
-                <iconset>
+                <iconset resource="../res/res.qrc">
                  <normaloff>:/res/image/can2.png</normaloff>:/res/image/can2.png</iconset>
                </property>
               </item>
@@ -501,7 +587,7 @@
                 <string>MRH-T</string>
                </property>
                <property name="icon">
-                <iconset>
+                <iconset resource="../res/res.qrc">
                  <normaloff>:/res/image/mrh-t.png</normaloff>:/res/image/mrh-t.png</iconset>
                </property>
               </item>
@@ -510,7 +596,7 @@
                 <string>MRH-U</string>
                </property>
                <property name="icon">
-                <iconset>
+                <iconset resource="../res/res.qrc">
                  <normaloff>:/res/image/miniusbcan.png</normaloff>:/res/image/miniusbcan.png</iconset>
                </property>
               </item>
@@ -524,6 +610,24 @@
                 </iconset>
                </property>
               </item>
+              <item>
+               <property name="text">
+                <string>RS232</string>
+               </property>
+               <property name="icon">
+                <iconset resource="../res/res.qrc">
+                 <normaloff>:/res/image/rs232.png</normaloff>:/res/image/rs232.png</iconset>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>USB</string>
+               </property>
+               <property name="icon">
+                <iconset resource="../res/res.qrc">
+                 <normaloff>:/res/image/usb.png</normaloff>:/res/image/usb.png</iconset>
+               </property>
+              </item>
              </widget>
             </item>
             <item row="0" column="0">
@@ -533,10 +637,10 @@
               </property>
              </widget>
             </item>
-            <item row="3" column="0" colspan="2">
+            <item row="5" column="0" colspan="2">
              <widget class="QTabWidget" name="tabWidget_2">
               <property name="currentIndex">
-               <number>0</number>
+               <number>2</number>
               </property>
               <widget class="QWidget" name="tab_5">
                <attribute name="title">
@@ -689,192 +793,89 @@
                <attribute name="title">
                 <string>Setting</string>
                </attribute>
-               <layout class="QFormLayout" name="formLayout_7">
-                <item row="0" column="0">
-                 <widget class="QLabel" name="label_32">
-                  <property name="text">
-                   <string>Address</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="0" column="1">
-                 <widget class="QLineEdit" name="edtVisa">
-                  <property name="text">
-                   <string>TCPIP0::192.168.131.192::inst0::INSTR</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="0">
-                 <widget class="QLabel" name="label_33">
-                  <property name="text">
-                   <string>Timeout(ms)</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="1">
-                 <widget class="QSpinBox" name="spinVisaTmo">
-                  <property name="minimum">
-                   <number>1</number>
-                  </property>
-                  <property name="maximum">
-                   <number>1000000</number>
-                  </property>
-                 </widget>
-                </item>
-                <item row="2" column="0">
-                 <widget class="QPushButton" name="btnVerify_2">
-                  <property name="text">
-                   <string>Verify</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="2" column="1">
-                 <widget class="QPushButton" name="btnAddT">
-                  <property name="text">
-                   <string>Add</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="3" column="0" colspan="2">
-                 <widget class="QListWidget" name="listMRTs">
-                  <property name="minimumSize">
-                   <size>
-                    <width>0</width>
-                    <height>0</height>
-                   </size>
-                  </property>
-                 </widget>
-                </item>
-                <item row="4" column="0">
-                 <widget class="QPushButton" name="btnRemove">
-                  <property name="text">
-                   <string>Remove</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="4" column="1">
-                 <widget class="QPushButton" name="btnClear">
-                  <property name="text">
-                   <string>RemoveAll</string>
+               <layout class="QVBoxLayout" name="verticalLayout_10">
+                <item>
+                 <widget class="PortOption" name="portLanSetting" native="true">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
                   </property>
                  </widget>
                 </item>
                </layout>
               </widget>
+              <widget class="QWidget" name="tab_7">
+               <attribute name="title">
+                <string>Setting</string>
+               </attribute>
+               <layout class="QHBoxLayout" name="horizontalLayout_3">
+                <item>
+                 <widget class="PortOption" name="port232Setting" native="true"/>
+                </item>
+                <item>
+                 <widget class="MrqUart" name="port232Cfg" native="true"/>
+                </item>
+               </layout>
+              </widget>
+              <widget class="QWidget" name="tab_8">
+               <attribute name="title">
+                <string>Setting</string>
+               </attribute>
+               <layout class="QVBoxLayout" name="verticalLayout_12">
+                <item>
+                 <widget class="PortOption" name="portUsbSetting" native="true"/>
+                </item>
+               </layout>
+              </widget>
              </widget>
             </item>
-            <item row="4" column="0" colspan="2">
-             <widget class="QGroupBox" name="groupBox_12">
+            <item row="1" column="0" colspan="2">
+             <widget class="QGroupBox" name="gpAutoCanId">
               <property name="title">
                <string/>
               </property>
-              <layout class="QFormLayout" name="formLayout_8">
-               <item row="1" column="0">
-                <widget class="QLabel" name="label">
+              <property name="flat">
+               <bool>false</bool>
+              </property>
+              <layout class="QHBoxLayout" name="horizontalLayout_4">
+               <property name="spacing">
+                <number>0</number>
+               </property>
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
+               <item>
+                <widget class="QLabel" name="label_28">
                  <property name="text">
-                  <string>Timeout(us)</string>
+                  <string>Auto Assign ID</string>
                  </property>
                 </widget>
                </item>
-               <item row="1" column="1">
-                <widget class="QSpinBox" name="spinTmo">
-                 <property name="minimum">
-                  <number>1000</number>
+               <item>
+                <widget class="QCheckBox" name="chkAutoAssignId">
+                 <property name="toolTip">
+                  <string>Auto Assign: Auto assign send/receive id for each device</string>
                  </property>
-                 <property name="maximum">
-                  <number>1000000</number>
+                 <property name="layoutDirection">
+                  <enum>Qt::LeftToRight</enum>
                  </property>
-                </widget>
-               </item>
-               <item row="2" column="0">
-                <widget class="QLabel" name="label_6">
                  <property name="text">
-                  <string>Send Interval(us)</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="2" column="1">
-                <widget class="QSpinBox" name="spinInterval">
-                 <property name="minimum">
-                  <number>0</number>
-                 </property>
-                 <property name="maximum">
-                  <number>1000000</number>
-                 </property>
-                </widget>
-               </item>
-               <item row="3" column="0">
-                <widget class="QLabel" name="label_18">
-                 <property name="text">
-                  <string>Fail Try Count</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="3" column="1">
-                <widget class="QSpinBox" name="spinFailTry">
-                 <property name="minimum">
-                  <number>0</number>
-                 </property>
-                 <property name="maximum">
-                  <number>10</number>
-                 </property>
-                </widget>
-               </item>
-               <item row="4" column="0">
-                <widget class="QLabel" name="label_27">
-                 <property name="text">
-                  <string>PVT Interval(us)</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="4" column="1">
-                <widget class="QSpinBox" name="spinPvtInterval">
-                 <property name="minimum">
-                  <number>0</number>
-                 </property>
-                 <property name="maximum">
-                  <number>1000000</number>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="0">
-                <widget class="QLabel" name="label_42">
-                 <property name="text">
-                  <string>Receive Timeout(ms)</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="1">
-                <widget class="QSpinBox" name="spinRecvTmo">
-                 <property name="minimum">
-                  <number>1</number>
-                 </property>
-                 <property name="maximum">
-                  <number>100</number>
+                  <string/>
                  </property>
                 </widget>
                </item>
               </layout>
-             </widget>
-            </item>
-            <item row="1" column="0">
-             <widget class="QLabel" name="label_28">
-              <property name="text">
-               <string>Auto Assign ID</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="1">
-             <widget class="QCheckBox" name="chkAutoAssignId">
-              <property name="toolTip">
-               <string>Auto Assign: Auto assign send/receive id for each device</string>
-              </property>
-              <property name="layoutDirection">
-               <enum>Qt::LeftToRight</enum>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
              </widget>
             </item>
            </layout>
@@ -904,7 +905,7 @@
                <string/>
               </property>
               <property name="pixmap">
-               <pixmap>:/res/image/megacan.png</pixmap>
+               <pixmap resource="../res/res.qrc">:/res/image/megacan.png</pixmap>
               </property>
               <property name="scaledContents">
                <bool>true</bool>
@@ -1716,8 +1717,22 @@ p, li { white-space: pre-wrap; }
    <header>tabletoolbar.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>PortOption</class>
+   <extends>QWidget</extends>
+   <header>portoption.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>MrqUart</class>
+   <extends>QWidget</extends>
+   <header>mrquart.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="../res/res.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>buttonBox</sender>

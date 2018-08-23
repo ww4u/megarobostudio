@@ -37,6 +37,8 @@ IBus::IBus()
     mSpeed = 1000000;
     mPId = 0;
     mDevId = 0;
+
+    mLinkType = 0;
 }
 
 void IBus::setName( const QString & name )
@@ -68,9 +70,14 @@ void IBus::setDevId( int devId )
 int IBus::devId()
 { return mDevId; }
 
+void IBus::setDeviceId( DeviceId &id )
+{ mDeviceId = id; }
+DeviceId IBus::deviceId()
+{ return mDeviceId; }
+
 //int IBus::open(QString dev)
 //{ return 0; }
-int IBus::open( int devType, int devId, int seqId, int canId, const QString &desc )
+int IBus::open( const modelSysPref &pref, int devType, int devId, int seqId, int canId, const QString &desc )
 { return 0; }
 void IBus::close()
 { return; }
@@ -97,15 +104,109 @@ int IBus::doReceive( int *pFrameId, byte *pBuf, int *pLen )
 { return -1; }
 int IBus::doReceive( QList< frameData > &receiveFrames )
 { return -1; }
-int IBus::doRead( DeviceId &nodeId, byte *pBuf, int cap, int *pLen )
-{ return -1; }
 
+//int IBus::doRead( DeviceId &nodeId, byte *pBuf, int cap, int *pLen )
+//{ return -1; }
+
+//int IBus::doFrameRead( DeviceId &nodeId, int *pFrameId, byte *pBuf, int *pLen )
+//{ return -1; }
+//int IBus::doFrameRead( DeviceId &nodeId, int *pFrameId, byte *pBuf, int eachFrameSize, int n )
+//{ return -1; }
+//int IBus::doSplitRead( DeviceId &nodeId, int packOffset, byte *pBuf, int cap, int *pLen )
+//{ return -1; }
+
+//! read from cache
+int IBus::doRead( DeviceId &nodeId, byte *pBuf, int cap, int *pLen )
+{
+    Q_ASSERT( pBuf != NULL );
+    Q_ASSERT( pLen != NULL );
+
+    int ret, retLen, frameId;
+    byte frameBuf[ FRAME_LEN ];
+    ret = doFrameRead( nodeId, &frameId, frameBuf, &retLen );
+    if ( ret != 0 )
+    {
+        *pLen = 0;logDbg();
+        return ret;
+    }
+
+    if ( cap != retLen )
+    {
+        for( int i = 0; i < retLen; i++ )
+        { logDbg()<<QString::number( frameBuf[i], 16 ); }
+        *pLen = retLen;logDbg()<<retLen<<cap<<frameId<<nodeId.sendId()<<nodeId.recvId();
+        return -2;
+    }
+
+    *pLen = cap;
+    memcpy( pBuf, frameBuf, *pLen );
+
+    return 0;
+}
+
+//! read from cache
+//! nodeId -- device recv id
 int IBus::doFrameRead( DeviceId &nodeId, int *pFrameId, byte *pBuf, int *pLen )
-{ return -1; }
+{
+    //! read from cache by timeout
+    Q_ASSERT( NULL != m_pRecvCache );
+
+    return m_pRecvCache->readAFrame( nodeId, pFrameId, pBuf, pLen, mRdTmo );
+}
+
+//! read a few frame
 int IBus::doFrameRead( DeviceId &nodeId, int *pFrameId, byte *pBuf, int eachFrameSize, int n )
-{ return -1; }
+{
+    frameHouse frames;
+
+    //! read frames
+    m_pRecvCache->readFrame( nodeId, frames );
+
+    int i = 0;
+    for ( i = 0; i < frames.size() && i < n ; i++ )
+    {
+        pFrameId[i] = frames[i].frameId();
+        memcpy( pBuf + i * eachFrameSize,
+                frames[i].data(),
+                qMin( frames[i].size(), eachFrameSize )
+                );
+    }
+
+    return i;
+}
+
 int IBus::doSplitRead( DeviceId &nodeId, int packOffset, byte *pBuf, int cap, int *pLen )
-{ return -1; }
+{
+    int ret, retLen;
+    byte frameBuf[ FRAME_LEN ];
+
+    int slice, total;
+
+    int outLen = 0;
+    int frameId;
+    do
+    {
+        ret = doFrameRead( nodeId, &frameId, frameBuf, &retLen );
+        if ( ret != 0 )
+        { return ret; }
+
+        if ( retLen <= packOffset )
+        { return -1; }
+
+        total = frameBuf[ packOffset ] & 0x0f;
+        slice = ( frameBuf[ packOffset ] >> 4 ) & 0x0f;
+
+        //! cat the data
+        for ( int i = packOffset + 1; i < retLen && outLen < cap; i++, outLen++ )
+        {
+            pBuf[ outLen ] = frameBuf[ i ];
+        }
+    }while( slice < total );
+
+    *pLen = outLen;
+
+    return 0;
+}
 
 int IBus::enumerate( const modelSysPref &pref )
 {

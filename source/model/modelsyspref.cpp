@@ -24,6 +24,13 @@ void modelSysPref::rst()
     mVisaTmo = 2000;                //! 2s
     mVisaAddr = "TCPIP::172.16.0.1::INSTR";
 
+                                    //! rs232
+    mBaudIndex = 7;
+    mDataWidthIndex = 0;
+    mParityIndex = 0;
+    mStopIndex = 0;
+    mFlowControlIndex = 0;
+
     mRecvIdFrom = receive_id_from;  //! id range
     mRecvIdTo = receive_id_to;
 
@@ -93,9 +100,29 @@ int modelSysPref::save( const QString &str )
     //! port
     writer.writeTextElement( "port", QString::number(mPort) );
     writer.writeTextElement( "speed", QString::number(mSpeed) );
+    //! lan
     writer.writeTextElement( "visa_addr",( mVisaAddr ) );
-    writer.writeTextElement( "visa_tmo", QString::number( mVisaTmo ) );
     writer.writeTextElement( "visa_list", mVisaList.join(',') );
+    //! rs232
+    writer.writeTextElement( "serial_addr",( mRs232Addr ) );
+    writer.writeTextElement( "serial_list", mRs232List.join(',') );
+    //! usb
+    writer.writeTextElement( "usb_addr",( mUsbAddr ) );
+    writer.writeTextElement( "usb_list", mUsbList.join(',') );
+
+    writer.writeTextElement( "visa_tmo", QString::number( mVisaTmo ) );
+
+    //! rs232
+    writer.writeStartElement("rs232");
+    {
+        writer.writeTextElement( "baud", QString::number(mBaudIndex) );
+        writer.writeTextElement( "datawidth", QString::number(mDataWidthIndex) );
+        writer.writeTextElement( "parity", QString::number(mParityIndex) );
+        writer.writeTextElement( "stop", QString::number(mStopIndex) );
+
+        writer.writeTextElement( "flow", QString::number(mFlowControlIndex) );
+    }
+    writer.writeEndElement();
 
     //! time
     writer.writeTextElement( "tmo", QString::number(mTimeout) );
@@ -241,14 +268,50 @@ int modelSysPref::load( const QString &str )
                 else if ( reader.name() == "speed" )
                 { mSpeed = reader.readElementText().toInt(); }
 
+                //! lan
                 else if ( reader.name() == "visa_addr" )
                 { mVisaAddr = reader.readElementText(); }
 
+                else if ( reader.name() == "visa_list" )
+                { mVisaList = reader.readElementText().split(',',QString::SkipEmptyParts); }
+
+                //! rs232
+                else if ( reader.name() == "serial_addr" )
+                { mRs232Addr = reader.readElementText(); }
+
+                else if ( reader.name() == "serial_list" )
+                { mRs232List = reader.readElementText().split(',',QString::SkipEmptyParts); }
+
+                //! usb
+                else if ( reader.name() == "usb_addr" )
+                { mUsbAddr = reader.readElementText(); }
+
+                else if ( reader.name() == "usb_list" )
+                { mUsbList = reader.readElementText().split(',',QString::SkipEmptyParts); }
+
+                else if ( reader.name() == "rs232" )
+                {
+                    while( reader.readNextStartElement() )
+                    {
+                        if ( reader.name() == "baud" )
+                        { mBaudIndex = reader.readElementText().toInt(); }
+                        else if ( reader.name() == "datawidth" )
+                        { mDataWidthIndex = reader.readElementText().toInt(); }
+                        else if ( reader.name() == "parity" )
+                        { mParityIndex = reader.readElementText().toInt(); }
+                        else if ( reader.name() == "stop" )
+                        { mStopIndex = reader.readElementText().toInt(); }
+                        else if ( reader.name() == "flow" )
+                        { mFlowControlIndex = reader.readElementText().toInt(); }
+                        else
+                        { reader.skipCurrentElement(); }
+                    }
+                }
+
+                //! tmo
                 else if ( reader.name() == "visa_tmo" )
                 { mVisaTmo = reader.readElementText().toInt(); }
 
-                else if ( reader.name() == "visa_list" )
-                { mVisaList = reader.readElementText().split(',',QString::SkipEmptyParts); }
 
                 else if ( reader.name() == "tmo" )
                 { mTimeout = reader.readElementText().toInt(); }

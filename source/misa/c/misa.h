@@ -3,6 +3,10 @@
 
 #include "visa.h"
 
+#ifdef __cplusplus
+extern "C" 
+{
+#endif
 #include "midevice.h"
 
 #include "megarobo.h"
@@ -11,5 +15,11 @@
 #include "mrq.h"
 
 #include "sinanju.h"
+
+#include "mimgr.h"
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

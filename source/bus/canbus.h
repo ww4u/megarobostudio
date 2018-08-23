@@ -24,7 +24,8 @@ public:
     ~CANBus();
 
 public:
-    int open( int devType = 6,
+    int open( const modelSysPref &pref,
+              int devType = 6,
               int devId=0, int seqId = 0, int canId=0,
               const QString &desc="");
     void close();
@@ -50,15 +51,14 @@ public:
     //! read from bus
     virtual int doReceive( QList<frameData> &canFrames );
 
-    virtual int doRead( DeviceId &nodeId, byte *pBuf, int cap, int *pLen );
+//    virtual int doRead( DeviceId &nodeId, byte *pBuf, int cap, int *pLen );
 
-    virtual int doFrameRead( DeviceId &nodeId, int *pFrameId, byte *pBuf, int *pLen );
-    virtual int doFrameRead( DeviceId &nodeId, int *pFrameId, byte *pBuf, int eachFrameSize, int n );
-    virtual int doSplitRead( DeviceId &nodeId, int packOffset,
-                             byte *pBuf,
-                             int cap,
-                             int *pLen );
-
+//    virtual int doFrameRead( DeviceId &nodeId, int *pFrameId, byte *pBuf, int *pLen );
+//    virtual int doFrameRead( DeviceId &nodeId, int *pFrameId, byte *pBuf, int eachFrameSize, int n );
+//    virtual int doSplitRead( DeviceId &nodeId, int packOffset,
+//                             byte *pBuf,
+//                             int cap,
+//                             int *pLen );
 
     virtual int enumerate( const modelSysPref &pref );
 	
@@ -72,14 +72,19 @@ protected:
     void endEnumerate();
 
     int autoEnumerate( const modelSysPref &pref );
-    int rawEnumerate( const modelSysPref &pref );
+    virtual int rawEnumerate( const modelSysPref &pref );
 
     int collectHash( );
 
     int collectHash( QMap< int, quint32 > &sendHashMap );
+    int collectSendId( QMap< int, quint32 > &sendSendMap );
     int collectRecvId( QMap< int, quint32 > &sendRecvMap );
 
     void buildDeviceIds( QMap< int, quint32 > &sendHashMap,
+                         QMap< int, quint32 > &sendRecvMap );
+
+    void buildDeviceIds( QMap< int, quint32 > &sendHashMap,
+                         QMap< int, quint32 > &sendSendMap,
                          QMap< int, quint32 > &sendRecvMap );
 
     int assignIds( const modelSysPref &pref );

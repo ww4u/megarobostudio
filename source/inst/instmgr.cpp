@@ -3,8 +3,14 @@
 #include "instmgr.h"
 #include "../../model/mcmodel.h"
 
-
+#define MRH_E_PORT 0
+#define MRH_CAN_II_PORT 1
 #define MRH_T_PORT  2
+#define MRH_U_PORT  3
+
+#define MCP_PORT    4
+#define RS232_PORT  5
+#define USB_PORT    6
 
 namespace MegaDevice
 {
@@ -140,15 +146,29 @@ logDbg();
 
 int InstMgr::probeCanBus()
 {
-    CANBus *pNewBus;
+    IBus *pNewBus;
     int ret;
 
     Q_ASSERT( NULL != m_pMainModel );
 
     //! -T
     int devCount;
+    QStringList rsrcList;
     if ( m_pMainModel->mSysPref.mPort == MRH_T_PORT )
-    { devCount = m_pMainModel->mSysPref.mVisaList.count(); }
+    {
+        devCount = m_pMainModel->mSysPref.mVisaList.count();
+        rsrcList = m_pMainModel->mSysPref.mVisaList;
+    }
+    else if ( m_pMainModel->mSysPref.mPort == RS232_PORT )
+    {
+        devCount = m_pMainModel->mSysPref.mRs232List.count();
+        rsrcList = m_pMainModel->mSysPref.mRs232List;
+    }
+    else if ( m_pMainModel->mSysPref.mPort == USB_PORT )
+    {
+        devCount = m_pMainModel->mSysPref.mUsbList.count();
+        rsrcList = m_pMainModel->mSysPref.mUsbList;
+    }
     else
     { devCount = m_pMainModel->mSysPref.mDeviceCount; }
 
@@ -156,7 +176,7 @@ int InstMgr::probeCanBus()
     QString subRsrc;
     for ( int i = 0; i < devCount; i++ )
     {
-        subRsrc = m_pMainModel->mSysPref.mVisaList.value( i, "" );
+        subRsrc = rsrcList.value( i, "" );
 
         //! check exist
         if ( openList.contains(subRsrc, Qt::CaseInsensitive) )
@@ -165,7 +185,15 @@ int InstMgr::probeCanBus()
         {}
 
         //! search
-        pNewBus = new CANBus();
+        if ( m_pMainModel->mSysPref.mPort == RS232_PORT )
+        {
+            pNewBus = new Rs232Bus();
+        }
+        else
+        {
+            pNewBus = new CANBus();
+        }
+
         if ( NULL == pNewBus )
         { return ERR_ALLOC_FAIL; }
 
@@ -206,7 +234,7 @@ int InstMgr::probeCanBus()
             //! success
             {
                 //! add the bus
-                mCanBuses.append( pNewBus );
+                mBuses.append( pNewBus );
 
                 //! add the tree
                 mDeviceTree.append( pRoboList );
@@ -322,6 +350,13 @@ int InstMgr::probeCanBus()
     return 0;
 }
 
+int InstMgr::probeRs232Bus()
+{
+
+
+    return 0;
+}
+
 //! broadcast
 int InstMgr::emergencyStop()
 {
@@ -335,8 +370,7 @@ int InstMgr::emergencyStop()
     for ( int i = 0; i < x_pages; i++ )
     {
         bufstp[4] = i;
-//        bufrst[4] = i;
-        foreach ( CANBus *pBus, mCanBuses)
+        foreach ( IBus *pBus, mBuses)
         {
             Q_ASSERT( NULL != pBus );
             ret = pBus->doWrite( broadId, bufstp, sizeof(bufstp) );
@@ -361,7 +395,7 @@ int InstMgr::hardReset()
     for ( int i = 0; i < x_pages; i++ )
     {
         buf[4] = i;
-        foreach ( CANBus *pBus, mCanBuses)
+        foreach ( IBus *pBus, mBuses )
         {
             Q_ASSERT( NULL != pBus );
             ret = pBus->doWrite( broadId, buf, sizeof(buf) );
@@ -385,7 +419,7 @@ int InstMgr::requestStates()
     for ( byte i = 0; i < 10; i++ )
     {
         stateBuf[3] = i;
-        foreach ( CANBus *pBus, mCanBuses)
+        foreach ( IBus *pBus, mBuses )
         {
             Q_ASSERT( NULL != pBus );
             ret = pBus->doWrite( broadId, stateBuf, sizeof(stateBuf) );
@@ -540,7 +574,8 @@ VRobot * InstMgr::findRobot( const QString &name, int axesId  )
         {
             Q_ASSERT( NULL != pDev );
 
-            if ( QString::compare( pDev->name(), name, Qt::CaseInsensitive ) == 0)
+//            if ( QString::compare( pDev->name(), name, Qt::CaseInsensitive ) == 0)
+            if ( str_is( pDev->getName(), name ) )
             {
                 //! check axes
                 if ( axesId >= pDev->axes() )
@@ -595,7 +630,8 @@ VRobot * InstMgr::findRobot( const QString &name, const QString &bus )
     {
         Q_ASSERT( NULL != pRobo );
 //        if ( pRobo->name() == name )
-        if ( QString::compare( pRobo->name(), name, Qt::CaseInsensitive) == 0 )
+//        if ( QString::compare( pRobo->name(), name, Qt::CaseInsensitive) == 0 )
+        if ( str_is( pRobo->getName(), name ) )
         { return pRobo; }
     }
 
@@ -640,7 +676,8 @@ VRoboList *InstMgr::findBus( const QString &busName )
     {
         Q_ASSERT( NULL != pList );
 //        if ( pList->bus()->name() == busName )
-        if ( QString::compare( pList->bus()->name(), busName, Qt::CaseInsensitive) == 0 )
+//        if ( QString::compare( pList->bus()->name(), busName, Qt::CaseInsensitive) == 0 )
+        if ( str_is( pList->bus()->name(), busName ) )
         { return pList; }
     }
 
@@ -648,7 +685,8 @@ VRoboList *InstMgr::findBus( const QString &busName )
     {
         Q_ASSERT( NULL != pList );
 //        if ( pList->bus()->name() == busName )
-        if ( QString::compare( pList->bus()->name(), busName, Qt::CaseInsensitive) == 0 )
+//        if ( QString::compare( pList->bus()->name(), busName, Qt::CaseInsensitive) == 0 )
+        if( str_is( pList->bus()->name(), busName ) )
         { return pList; }
     }
 
@@ -870,7 +908,7 @@ int InstMgr::openBus()
 int InstMgr::closeBus()
 {
     //! can bus
-    foreach( CANBus *pBus, mCanBuses )
+    foreach( IBus *pBus, mBuses )
     {
         Q_ASSERT( NULL != pBus );
 
@@ -887,7 +925,7 @@ void InstMgr::preProbeBus()
 void InstMgr::postProbeBus()
 {}
 
-int InstMgr::probeCANBus( CANBus *pNewBus,
+int InstMgr::probeCANBus( IBus *pNewBus,
                           int id,
                           int seqId,
                           const QString &devRsrc,
@@ -902,7 +940,9 @@ int InstMgr::probeCANBus( CANBus *pNewBus,
                        VCI_MR_USBCAN,
                        VCI_MR_LANCAN,
                        VCI_USBCAN2,
-                       VCI_MCP_CAN };
+                       VCI_MCP_CAN,
+                       0,
+                       0 };
 
     Q_ASSERT( NULL != m_pMainModel );
     //! bus prop.
@@ -916,7 +956,8 @@ int InstMgr::probeCANBus( CANBus *pNewBus,
 
     //! open
     Q_ASSERT( m_pMainModel->mSysPref.mPort < sizeof_array(portDevType) );
-    ret = pNewBus->open( portDevType[m_pMainModel->mSysPref.mPort],
+    ret = pNewBus->open( m_pMainModel->mSysPref,
+                         portDevType[m_pMainModel->mSysPref.mPort],
                          id,
                          seqId,
                          0,
@@ -938,8 +979,6 @@ int InstMgr::probeCANBus( CANBus *pNewBus,
     VRobot *pRobo;
 
     //! a robo list
-//    VRoboList *pRoboList = new VRoboList();
-//    Q_ASSERT( NULL != pRoboList );
     roboList.attachBus( pNewBus );
 
     int uiProgBase = 30;
@@ -952,6 +991,7 @@ int InstMgr::probeCANBus( CANBus *pNewBus,
     foreach( DeviceId * pId, pNewBus->mDevices )
     {
         //! detect device
+        if ( pNewBus->busType() == IBus::e_bus_can )
         {
             pMRQ = new deviceMRQ();
             Q_ASSERT( NULL != pMRQ );
@@ -961,6 +1001,7 @@ int InstMgr::probeCANBus( CANBus *pNewBus,
             pMRQ->setTimeout( m_pMainModel->mSysPref.mTimeout );
 
             pMRQ->attachBus( pNewBus );
+            pNewBus->setDeviceId( *pId );
             pMRQ->setInstMgr( this );
 
             //! iter ref the sibling
@@ -989,6 +1030,7 @@ int InstMgr::probeCANBus( CANBus *pNewBus,
             pMRQ->setTimeout( m_pMainModel->mSysPref.mTimeout );
 
             pMRQ->attachBus( pNewBus );
+            pNewBus->setDeviceId( *pId );
             pMRQ->setInstMgr( this );
 
             //! iter ref the sibling
@@ -1120,13 +1162,13 @@ void InstMgr::gcPhyBus()
         }
     }
 
-    foreach( CANBus *pBus, mCanBuses )
+    foreach( IBus *pBus, mBuses )
     {
         Q_ASSERT( NULL != pBus );
         pBus->close();
     }
 
-    delete_all( mCanBuses );
+    delete_all( mBuses );
 
     delete_all( mDeviceTree );
 
@@ -1149,7 +1191,8 @@ scpiShell *InstMgr::findShell( const QString &name )
         foreach( scpiShell * pDev, *pRoboList )
         {
             Q_ASSERT( NULL != pDev );
-            if ( QString::compare( pDev->getName(), name, Qt::CaseInsensitive)==0 )
+//            if ( QString::compare( pDev->getName(), name, Qt::CaseInsensitive)==0 )
+            if ( str_is( pDev->getName(), name ) )
             { return pDev; }
         }
     }
@@ -1161,16 +1204,19 @@ scpiShell *InstMgr::findShell( const QString &name )
         foreach( scpiShell * pDev, *pRoboList )
         {
             Q_ASSERT( NULL != pDev );
-            if ( QString::compare( pDev->getName(), name, Qt::CaseInsensitive)==0 )
+//            if ( QString::compare( pDev->getName(), name, Qt::CaseInsensitive)==0 )
+            if ( str_is( pDev->getName(), name ) )
             { return pDev; }
         }
     }
 
     //! for mgr
     QString str = QHostInfo::localHostName();
-    if ( QString::compare(str, name, Qt::CaseInsensitive) == 0 )
+//    if ( QString::compare(str, name, Qt::CaseInsensitive) == 0 )
+    if ( str_is( str, name ) )
     { return m_pMainShell; }
-    else if ( QString::compare( "localhost", name, Qt::CaseInsensitive) == 0 )
+//    else if ( QString::compare( "localhost", name, Qt::CaseInsensitive) == 0 )
+    else if ( str_is( "localhost", name ) )
     { return m_pMainShell; }
     else
     {}

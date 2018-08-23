@@ -45,16 +45,6 @@ int deviceMRQ::setDeviceId(DeviceId &id )
 
     setSignature( mDeviceId.mSignature );
 
-//    //! write the device
-//    ret = applyIds( );
-//    if ( ret != 0 )
-//    { return ret; }
-
-//    //! verify
-//    ret = verifyIds( );
-//    if ( ret != 0 )
-//    { return ret; }
-
     return 0;
 }
 

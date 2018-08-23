@@ -201,7 +201,7 @@ void SinanjuPref::spyEdited()
 }
 
 //! \todo only for arms
-void SinanjuPref::on_btnGoZero_clicked()
+void SinanjuPref::on_btnZeroArm_clicked()
 {
     Q_ASSERT( m_pModelObj != NULL );
     VRobot *pBase = ( VRobot *)m_pModelObj;
@@ -220,8 +220,8 @@ void SinanjuPref::on_btnGoZero_clicked()
         QList<int> jList;
         QList<bool> ccwList;
 
-        jList<<0<<1<<2<<3<<4;
-        ccwList<<false<<false<<false<<false<<ui->chkHandZeroCcw->isChecked();
+        jList<<0<<1<<2<<3;
+        ccwList<<false<<false<<false<<false;
 
         pBase->goZero( tpvRegion(0,0),
                        jList,

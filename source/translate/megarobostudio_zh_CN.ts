@@ -1246,7 +1246,7 @@
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished">连接名</translation>
+        <translation type="unfinished">名称</translation>
     </message>
     <message>
         <source>Fx(mm)</source>
@@ -4193,7 +4193,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Auto Assign ID</source>
-        <translation type="unfinished">自动分别CAN ID</translation>
+        <translation type="unfinished">自动分配CAN ID</translation>
     </message>
     <message>
         <source>Auto Assign: Auto assign send/receive id for each device</source>

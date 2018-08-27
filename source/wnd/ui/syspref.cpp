@@ -64,8 +64,6 @@ sysPref::sysPref(QWidget *parent) :
 
     slot_updateValidateEn();
 
-//    slot_validate_listmrt();
-
     //! tool bar
     connect( ui->aliasToolBar, SIGNAL(signal_add_clicked()),
              this, SLOT(slot_toolbar_add()));

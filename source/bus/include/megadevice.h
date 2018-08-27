@@ -6,7 +6,7 @@
 #define VCI_USBCAN2		4
 #define VCI_MR_COMCAN 5
 #define VCI_MR_USBCAN 6
-#define VCI_MR_USBCAN2 7  //tmc
+#define VCI_MR_USBTMC 7  //tmc
 #define VCI_MR_LANCAN 8
 
 #define VCI_MCP_CAN  9

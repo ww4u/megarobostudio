@@ -14,6 +14,7 @@ int Rs232Bus::size()
 }
 int Rs232Bus::flush( DeviceId &nodeId )
 {
+#ifdef NI_VISA
     IBus::lock();
 
     viFlush( mViDevice, VI_READ_BUF_DISCARD );
@@ -24,7 +25,7 @@ int Rs232Bus::flush( DeviceId &nodeId )
     }
 
     IBus::unlock();
-
+#endif
     return 0;
 }
 int Rs232Bus::clear()

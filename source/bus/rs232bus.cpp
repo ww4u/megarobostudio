@@ -1,6 +1,6 @@
 #include "rs232bus.h"
 #include "receivecache.h"
-#include "../device/board/_mrq_enum.h"
+#include "../device/board/_MRQ_enum.h"
 namespace MegaDevice {
 
 //Rs232Bus::Rs232Bus() : IBus()
@@ -47,6 +47,7 @@ int Rs232Bus::open(
 
 int Rs232Bus::open_( const modelSysPref &pref, QString str )
 {
+#ifdef NI_VISA
     ViStatus viStat = viOpenDefaultRM( &mViDef );
     if ( viStat != VI_SUCCESS )
     { return -1; }
@@ -92,10 +93,14 @@ int Rs232Bus::open_( const modelSysPref &pref, QString str )
     { return -1; }
 
     return 0;
+#else
+    return -1;
+#endif
 }
 
 void Rs232Bus::close()
 {
+#ifdef NI_VISA
     //! clean cache
     if ( NULL != m_pRecvCache )
     {
@@ -119,6 +124,7 @@ void Rs232Bus::close()
         viClose( mViDef );
         mViDef = 0;
     }
+#endif
 }
 
 //! no para
@@ -467,6 +473,7 @@ void Rs232Bus::decode( U8List &payload, U8List &rawData )
 
 int Rs232Bus::send( U8List &sendList )
 {
+#ifdef NI_VISA
     quint8 *pBuf = new quint8[ sendList.size() ];
     Q_ASSERT( NULL != pBuf );
 
@@ -494,10 +501,14 @@ int Rs232Bus::send( U8List &sendList )
     { return -1; }
 
     return 0;
+#else
+    return -1;
+#endif
 }
 
 int Rs232Bus::recv( U8List &readList, int cnt )
 {
+#ifdef NI_VISA
     quint8 *pBuf = new quint8[ cnt ];
     Q_ASSERT( NULL != pBuf );
 
@@ -535,7 +546,9 @@ int Rs232Bus::recv( U8List &readList, int cnt )
     delete []pBuf;
 
     return 0;
-
+#else
+    return -1;
+#endif
 }
 
 quint8 Rs232Bus::xored( U8List &data )

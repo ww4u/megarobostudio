@@ -1,7 +1,11 @@
 #ifndef RS232BUS_H
 #define RS232BUS_H
 
+#ifdef NI_VISA
 #include "visa.h"
+#else
+#define ViSession int
+#endif
 
 #include <QtCore>
 typedef QList<quint8> U8List;

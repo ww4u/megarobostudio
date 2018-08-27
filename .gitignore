@@ -48,3 +48,7 @@ source/misa/c#/test/bin
 source/misa/c#/test/obj
 source/misa/c#/test/Properties
 
+source/bus/obj/moc_*.h
+source/bus/obj/moc_*.cpp
+source/inst/obj/moc_?*.h
+source/inst/obj/moc_?*.cpp

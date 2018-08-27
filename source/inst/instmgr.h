@@ -108,6 +108,8 @@ public:
     QStringList getResources();
     QStringList getChans();     //! chx@devicename
 
+    QStringList robots();
+
     QStringList resources();
 
     void setTPVBase( float t=1.0f, float p=1.0f, float v=1.0f );

@@ -9,6 +9,11 @@ int miMgr_getResource( ViSession vi, char *val0 )
 {
 	_robo_get_str( sprintf(args,"RESOURCE?") )
 }
+int miMgr_getRobot( ViSession vi, char *val0 )
+{ _robo_get_str( sprintf(args,"ROBOT?") ) }
+
+int miMgr_getDevice( ViSession vi, char *val0 )
+{ _robo_get_str( sprintf(args,"DEVICE?") ) }
 
 int miMgr_openBus( ViSession vi )
 {

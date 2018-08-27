@@ -45,6 +45,33 @@ static scpi_result_t _scpi_find( scpi_t *context )
     return SCPI_RES_OK;
 }
 
+static scpi_result_t _scpi_devices( scpi_t *context )
+{
+    DEF_MGR();
+
+    QStringList rsrcList = LOCAL_MGR()->getMcModel()->m_pInstMgr->getResources();
+    logDbg()<<rsrcList;
+    QString ary = rsrcList.join(",");
+
+    SCPI_ResultText( context, ary.toLatin1().data() );
+
+    return SCPI_RES_OK;
+}
+
+
+static scpi_result_t _scpi_robots( scpi_t *context )
+{
+    DEF_MGR();
+
+    QStringList rsrcList = LOCAL_MGR()->getMcModel()->m_pInstMgr->robots();
+    logDbg()<<rsrcList;
+    QString ary = rsrcList.join(",");
+
+    SCPI_ResultText( context, ary.toLatin1().data() );
+
+    return SCPI_RES_OK;
+}
+
 static scpi_result_t _scpi_rsrc( scpi_t *context )
 {
     DEF_MGR();
@@ -105,6 +132,8 @@ static scpi_command_t _mrq_scpi_cmds[]=
     CMD_ITEM( "*OPC?", _scpi_qOpc ),
 
     CMD_ITEM( "FIND", _scpi_find ),
+    CMD_ITEM( "DEVICE?", _scpi_devices ),
+    CMD_ITEM( "ROBOT?", _scpi_robots ),
     CMD_ITEM( "RESOURCE?", _scpi_rsrc ),
 
     CMD_ITEM( "BUS:OPEN", _scpi_bus_open ),

@@ -14,7 +14,7 @@ int miSend( ViSession vi, char *buf, int len )
     sendBuf[ len ] = 0x0d;
     sendBuf[ len + 1] = 0x0a;
 
-    viSta = viWrite( vi, (ViConstBuf)sendBuf, (ViUInt32)(len+2), &retCount );
+    viSta = viWrite( vi, (ViBuf)sendBuf, (ViUInt32)(len+2), &retCount );
     if ( viSta != VI_SUCCESS )
     { return -1; }
 

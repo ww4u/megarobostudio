@@ -5,6 +5,8 @@
 
 int miMgr_find( ViSession vi );
 int miMgr_getResource( ViSession vi, char *val );
+int miMgr_getRobot( ViSession vi, char *val );
+int miMgr_getDevice( ViSession vi, char *val );
 
 int miMgr_openBus( ViSession vi );
 int miMgr_closeBus( ViSession vi );

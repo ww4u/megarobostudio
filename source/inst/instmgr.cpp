@@ -817,7 +817,7 @@ QString InstMgr::sendIdToName( int devId, int sendId)
     return QString();
 }
 
-//! for all devices
+//! for all phy devices
 QStringList InstMgr::getResources()
 {
     QStringList resrc;
@@ -859,21 +859,9 @@ QStringList InstMgr::getChans()     //! chx@devicename
     return resrc;
 }
 
-QStringList InstMgr::resources()
+QStringList InstMgr::robots()
 {
     QStringList resrc;
-
-    //! device
-    foreach( VRoboList *pRoboList, mDeviceTree )
-    {
-        Q_ASSERT( NULL != pRoboList );
-        foreach( VRobot * pDev, *pRoboList )
-        {
-            Q_ASSERT( NULL != pDev );
-
-            resrc<<pDev->getName();
-        }
-    }
 
     //! robot
     foreach( VRoboList *pRoboList, mFileDeviceTree )
@@ -886,6 +874,45 @@ QStringList InstMgr::resources()
             resrc<<pDev->getName();
         }
     }
+
+    return resrc;
+}
+
+QStringList InstMgr::resources()
+{
+    QStringList resrc;
+
+    //! device
+    QStringList phyRsrc;
+    phyRsrc = getResources();
+
+    QStringList roboRsrc;
+    roboRsrc = robots();
+
+    resrc<<phyRsrc<<roboRsrc;
+
+//    foreach( VRoboList *pRoboList, mDeviceTree )
+//    {
+//        Q_ASSERT( NULL != pRoboList );
+//        foreach( VRobot * pDev, *pRoboList )
+//        {
+//            Q_ASSERT( NULL != pDev );
+
+//            resrc<<pDev->getName();
+//        }
+//    }
+
+//    //! robot
+//    foreach( VRoboList *pRoboList, mFileDeviceTree )
+//    {
+//        Q_ASSERT( NULL != pRoboList );
+//        foreach( VRobot * pDev, *pRoboList )
+//        {
+//            Q_ASSERT( NULL != pDev );
+
+//            resrc<<pDev->getName();
+//        }
+//    }
 
     return resrc;
 }

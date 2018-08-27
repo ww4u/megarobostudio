@@ -36,4 +36,4 @@ bool Notice::load( QString &str )
 }
 
 bool Notice::nextShowAble()
-{ ui->checkBox->isChecked(); }
+{ return ui->checkBox->isChecked(); }

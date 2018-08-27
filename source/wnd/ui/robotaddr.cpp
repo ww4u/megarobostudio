@@ -21,7 +21,7 @@ QString RobotAddr::alias()
 void RobotAddr::setGroupSel( int gp )
 { ui->cmbGp->setCurrentIndex(gp); }
 int RobotAddr::groupSel()
-{ ui->cmbGp->currentIndex(); }
+{ return ui->cmbGp->currentIndex(); }
 
 void RobotAddr::setGroupId( int id )
 { ui->spinBox->setValue(id); }

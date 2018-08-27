@@ -79,13 +79,38 @@ static int testT4()
     return 0;
 }
 
+static int TestMgr()
+{
+    ViSession vi = miOpen( "localhost");
+
+    char recvStr[512];
+
+    int ret;
+    ret = miMgr_getResource( vi, recvStr );
+    ret = miMgr_getRobot( vi, recvStr );
+    ret = miMgr_getDevice( vi, recvStr );
+
+//    robo_getIdn( vi, recvStr );
+//    printf("idn:%s\n", recvStr );
+
+//    Sinanju_Center( vi, 0, 0 );
+//    robo_waitIdle( vi, 0,0, 20000);
+
+//    Sinanju_Fold( vi, 0, 0 );
+//    robo_waitIdle( vi, 0,0, 20000);
+
+    return 0;
+}
+
 int main()
 {
 //    testPara();
 
-    testDevice();
+//    testDevice();
 
-    testT4();
+//    testT4();
+
+    TestMgr();
 
     return 0;
 }

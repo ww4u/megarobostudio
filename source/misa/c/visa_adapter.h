@@ -61,19 +61,20 @@ int parasDeInit( struPara *pCon );
                                     ret = miWaitRead(vi);\
                                     if ( ret != 0 ){ return ret; }\
                                     \
-                                    char recvBuf[RECV_BUF];\
+                                    char recvBuf[RECV_BUF+1];\
                                     int retCount;\
-                                    ret = miRecv( vi, recvBuf, sizeof(recvBuf), &retCount);\
+                                    ret = miRecv( vi, recvBuf, RECV_BUF, &retCount);\
                                     if ( ret != 0 ){ return ret; }\
                                     if ( retCount < 1 ){ return -1; }\
                                     struPara para;\
+                                    recvBuf[retCount] = 0;\
                                     if ( parasInit( &para, recvBuf) != 0 ) { return -1; }\
                                     if ( parasCount( &para) < 1 )\
                                     {\
                                          parasDeInit(&para);\
                                          return -1;\
                                     }\
-                                    strcpy(val0, paraAt( &para, 0 ) );\
+                                    strcpy( val0, recvBuf );\
                                     parasDeInit(&para);\
                                     return 0;
 

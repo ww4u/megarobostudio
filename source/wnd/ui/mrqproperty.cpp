@@ -97,6 +97,8 @@ void mrqProperty::setModelObj( mcModelObj *pObj )
 
     //! \todo pobj memory leak
 
+    pObj->setGc( false );
+
     //! foreach apply
     foreach( modelView *pView, mViewPages )
     {

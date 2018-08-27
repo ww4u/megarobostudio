@@ -512,7 +512,7 @@ int Rs232Bus::recv( U8List &readList, int cnt )
     {
         if ( retCount > 0 ) //! read success
         {
-            Q_ASSERT( retCount < cnt );
+            Q_ASSERT( (int)retCount < cnt );
             viStat = viRead( mViDevice, pBuf + retCount, cnt - retCount, &retCount );
         }
     }

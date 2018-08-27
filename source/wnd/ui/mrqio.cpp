@@ -137,9 +137,9 @@ int mrqIo::apply()
 
 int mrqIo::updateUi()
 {
-    MegaDevice::deviceMRQ *pDevice;
-    pDevice = getDevice();
-    Q_ASSERT( NULL != pDevice );
+//    MegaDevice::deviceMRQ *pDevice;
+//    pDevice = getDevice();
+//    Q_ASSERT( NULL != pDevice );
 
     //! for yo apply
     for ( int i = 0; i < m_pMrqModel->isos(); i++ )

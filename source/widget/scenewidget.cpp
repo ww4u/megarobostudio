@@ -28,6 +28,7 @@ sceneWidget::~sceneWidget()
     if ( m_pBase != NULL && m_pBase->getGc() )
     {
         delete m_pBase;
+        m_pBase = NULL;
     }
 }
 

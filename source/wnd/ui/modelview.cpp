@@ -34,6 +34,7 @@ modelView::~modelView()
     //! shadow gc in local
     if ( mbGc && NULL != m_pModelObj && m_pModelObj->getGc() )
     {
+        m_pModelObj->setGc( false );
         delete m_pModelObj;
         m_pModelObj = NULL;
     }

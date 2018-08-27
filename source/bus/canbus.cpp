@@ -17,7 +17,7 @@ namespace MegaDevice {
 #define check_handle()      if ( mHandle <= 0 )\
                             { return -1; }
 
-QString CANBus::_lanRsrc;
+QString CANBus::_visaRsrc;
 
 CANBus::CANBus()
 {
@@ -76,6 +76,15 @@ int CANBus::open( const modelSysPref &pref,
         dllName = "";
         busType = VCI_MCP_CAN;
     }
+    else if ( mPId == 5 )       //! 232
+    {
+
+    }
+    else if ( mPId == 6 )       //! usb
+    {
+        dllName = "MegaCanDevice.dll";
+        busType = VCI_MR_USBTMC;
+    }
     else    //!  ( mPId == 2 )
     {
         dllName = "MegaCanDevice.dll";
@@ -97,17 +106,17 @@ logDbg();
     }
 
     //! find
-    if ( busType == VCI_MR_LANCAN )
+    if ( busType == VCI_MR_LANCAN
+         || busType == VCI_MR_USBTMC )
     {
         //! the first time
         //! find rsrc
         if ( seqId == 0 )
         {
-            _lanRsrc.clear();
+            _visaRsrc.clear();
 
             char strs[ 1024 ] = { 0 };                          //! for the resources
-            if ( 0 == mApi.find( VCI_MR_LANCAN, strs, sizeof(strs) ) )
-//            if ( 0 == mApi.find( VCI_MR_LANCAN, strs ) )
+            if ( 0 == mApi.find( busType, strs, sizeof(strs) ) )
             {
                 sysError( QObject::tr("device find fail") );
                 close();
@@ -118,12 +127,12 @@ logDbg();
             QByteArray rawData;
             rawData.setRawData( strs, qstrlen( strs ) );
 
-            _lanRsrc = QString( rawData );
+            _visaRsrc = QString( rawData );
         }
         else
         {}
 
-        QStringList rsrcList = _lanRsrc.split( ';', QString::SkipEmptyParts );
+        QStringList rsrcList = _visaRsrc.split( ';', QString::SkipEmptyParts );
 
         int id = rsrcList.indexOf( desc );
         if ( id == -1 )
@@ -147,7 +156,7 @@ logDbg();
     }
     else
     { return -1; }
-logDbg();
+
     //! open
     mHandle = mApi.open( mDevType, mDevId, mCanId );
 logDbg()<<mDevType<<mDevId<<mCanId<<mHandle;
@@ -159,9 +168,11 @@ logDbg()<<mDevType<<mDevId<<mCanId<<mHandle;
     }
 
     //! init
-    if ( busType == VCI_MR_LANCAN )
+    if ( busType == VCI_MR_LANCAN
+         || busType == VCI_MR_USBTMC )
     {}
 
+    //! init
     else if ( busType == VCI_MR_USBCAN
               || busType == VCI_MCP_CAN )
     {

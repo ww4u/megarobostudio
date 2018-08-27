@@ -675,8 +675,6 @@ VRoboList *InstMgr::findBus( const QString &busName )
     foreach( VRoboList *pList, mDeviceTree )
     {
         Q_ASSERT( NULL != pList );
-//        if ( pList->bus()->name() == busName )
-//        if ( QString::compare( pList->bus()->name(), busName, Qt::CaseInsensitive) == 0 )
         if ( str_is( pList->bus()->name(), busName ) )
         { return pList; }
     }
@@ -684,8 +682,6 @@ VRoboList *InstMgr::findBus( const QString &busName )
     foreach( VRoboList *pList, mFileDeviceTree )
     {
         Q_ASSERT( NULL != pList );
-//        if ( pList->bus()->name() == busName )
-//        if ( QString::compare( pList->bus()->name(), busName, Qt::CaseInsensitive) == 0 )
         if( str_is( pList->bus()->name(), busName ) )
         { return pList; }
     }
@@ -942,7 +938,7 @@ int InstMgr::probeCANBus( IBus *pNewBus,
                        VCI_USBCAN2,
                        VCI_MCP_CAN,
                        0,
-                       0 };
+                       VCI_MR_USBTMC };
 
     Q_ASSERT( NULL != m_pMainModel );
     //! bus prop.

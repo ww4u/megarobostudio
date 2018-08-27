@@ -18,7 +18,6 @@
 
 class mcModel;
 
-//typedef QList< VRobot *> VRoboList;
 typedef QList< VRoboList * > DeviceTree;
 
 namespace MegaDevice 
@@ -65,8 +64,6 @@ public:
     int probeBus();
     int probeCanBus();
     int probeRs232Bus();
-
-//    int _probeCanBus();
 
     int emergencyStop();
     int hardReset();

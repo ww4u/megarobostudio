@@ -17,7 +17,7 @@ namespace MegaDevice {
 class CANBus : public IBus
 {
 private:
-    static QString _lanRsrc;
+    static QString _visaRsrc;
 
 public:
     CANBus();

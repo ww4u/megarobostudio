@@ -7,6 +7,7 @@
 
 #include "../device/vrobot.h"
 #include "../device/hub_e/mrh_e.h"
+#include "../device/hub_t/mrh_t.h"
 
 //! robots
 #include "./megatron/megatron.h"

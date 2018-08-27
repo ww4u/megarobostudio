@@ -65,7 +65,8 @@ bool CANApi::loadApi( int portId )
     if ( !receive )
     { logDbg();return false; }
 
-    if ( portId == 0 )
+    if ( portId == 0
+         || portId == 2 )
     {
         write = (p_VCI_Write)mDll.resolve("VCI_Write");
         if ( !write )

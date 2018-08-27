@@ -46,7 +46,9 @@ ADDMOD obj\devicemrv_transaction.o
 ADDMOD obj\mrvaxes.o
 ADDMOD obj\devicedownloader.o
 ADDMOD obj\mrh_e.o
-ADDMOD obj\scpi_callback.o
+ADDMOD obj\mrh_t.o
+ADDMOD obj\mrh_e_scpi_callback.o
+ADDMOD obj\mrh_t_scpi_callback.o
 ADDMOD obj\moc_tpvdownloader.o
 ADDMOD obj\moc_vrobot.o
 ADDMOD obj\moc_roboworker.o

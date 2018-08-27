@@ -1142,9 +1142,22 @@ int InstMgr::probeCANBus( IBus *pNewBus,
     }
 
     //! hub for e
-    if ( pNewBus->pId() == 0 )
+    if ( pNewBus->pId() == MRH_E_PORT )
     {
         pRobo = new Mrh_e();
+        if ( NULL == pRobo )
+        { return ERR_ALLOC_FAIL; }
+
+        pRobo->attachBus( pNewBus );
+        pRobo->setInstMgr( this );
+
+        pRobo->open();
+        roboList.append( pRobo );
+    }
+    //! hub for t
+    if ( pNewBus->pId() == MRH_T_PORT )
+    {
+        pRobo = new Mrh_t();
         if ( NULL == pRobo )
         { return ERR_ALLOC_FAIL; }
 

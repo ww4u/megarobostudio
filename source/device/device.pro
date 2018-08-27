@@ -64,8 +64,9 @@ SOURCES = \
     mrv/mrvaxes.cpp \
     devicedownloader.cpp \
     hub_e/mrh_e.cpp \
-    hub_e/scpi_callback.cpp
-
+    hub_t/mrh_t.cpp \
+    hub_e/mrh_e_scpi_callback.cpp \
+    hub_t/mrh_t_scpi_callback.cpp
 
 
 
@@ -88,5 +89,6 @@ HEADERS = vdevice.h \
     mrv/tpdownloader.h \
     mrv/mrvaxes.h \
     devicedownloader.h \
-    hub_e/mrh_e.h
+    hub_e/mrh_e.h \
+    hub_t/mrh_t.h
 

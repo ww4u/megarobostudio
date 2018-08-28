@@ -617,7 +617,7 @@ void deviceMgr::context_mrq_alias()
                                          &ok);
     if (ok && !text.isEmpty())
     {
-        m_pMRQ->setName( text );        //! must be override
+        m_pRobo->setName( text );        //! must be override
         m_pCurrTreeItem->setText( 0, m_pRobo->getFullDesc( ) );
 
         Q_ASSERT( NULL != m_pRobo );

@@ -1371,7 +1371,7 @@ void MainWindow::slot_wndActive( QString str )
 {
     for( int i = 0; i < ui->widget->count(); i++ )
     {
-        if ( ui->widget->tabText(i) == str )
+        if ( str_is( ui->widget->tabText(i), str ) )
         {
             ui->widget->setCurrentWidget( ui->widget->widget(i) );
         }
@@ -1502,12 +1502,23 @@ void MainWindow::on_actionImport_I_triggered()
 
 void MainWindow::on_actiontest_triggered()
 {
-    QFile qss( "G:/work/mc/develope/source/wnd/res/qss/mega.qss" );
-    qss.open(QFile::ReadOnly);
-    qApp->setStyleSheet(qss.readAll());
-    qss.close();
-}
+//    QFile qss( "G:/work/mc/develope/source/wnd/res/qss/mega.qss" );
+//    qss.open(QFile::ReadOnly);
+//    qApp->setStyleSheet(qss.readAll());
+//    qss.close();
+logDbg();
+    QProcess *pProcess = new QProcess();
 
+    QStringList strList;
+    strList<<"-c"<<"print(\"hello\")";
+    pProcess->execute( "python", strList );
+    pProcess->waitForFinished();
+
+    logDbg()<<pProcess->readAllStandardOutput();
+    logDbg()<<pProcess->readAllStandardError();
+    delete pProcess;
+
+}
 
 void MainWindow::slot_com_receive( const QString &str )
 {logDbg()<<str;

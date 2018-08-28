@@ -118,15 +118,9 @@ void instServer::slot_destroyConnection( QObject *pObj )
     mServiceMutex.unlock();
 }
 
-void instServer::start( quint32 port )
+bool instServer::start( quint32 port )
 {
-    if ( mServer.listen( QHostAddress::Any, port ) )
-    {
-        qDebug()<<__FUNCTION__<<__LINE__<<mServer.serverAddress()<<mServer.serverPort();
-        qDebug()<<mServer.errorString();
-    }
-    else
-    { qDebug()<<mServer.errorString(); }
+    return mServer.listen( QHostAddress::Any, port );
 }
 void instServer::stop()
 {

@@ -58,7 +58,7 @@ void MotorState::setState( const QString &stat, int page )
 
     if ( mStates.contains( page ) )
     {
-        if ( stat == strRunning )
+        if ( str_is( stat, strRunning) )
         {
             Q_ASSERT( mRunningTimes.at(page) != NULL );
 
@@ -80,7 +80,8 @@ void MotorState::setState( const QString &stat, int page )
     else
     {
         //! enter running
-        if ( stat == strRunning  )
+//        if ( stat == strRunning  )
+        if ( str_is(stat, strRunning) )
         { mRunningTimes[page]->start(); }
 
         ui->labelRunning->setVisible( false );

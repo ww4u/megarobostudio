@@ -59,7 +59,9 @@ void mcModel::resetCommunicate()
     if ( mSysPref.mMisaEn )
     {
         Q_ASSERT( NULL != m_pInstMgr );
-        m_pInstMgr->start( mSysPref.mMisaSocket );
-        sysLog( QObject::tr("port"), QString::number( mSysPref.mMisaSocket ), QObject::tr("opened") );
+        if ( m_pInstMgr->start( mSysPref.mMisaSocket ) )
+        { sysLog( QObject::tr("port"), QString::number( mSysPref.mMisaSocket ), QObject::tr("open success") ); }
+        else
+        { sysError( QObject::tr("port"), QString::number( mSysPref.mMisaSocket ), QObject::tr("open fail") ); }
     }
 }

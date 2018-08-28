@@ -55,7 +55,7 @@ int eventViewer::exceptionCode( const QString &str )
 {
     for( int i = 0; i < sizeof_array(_exceptions_); i++ )
     {
-        if ( _exceptions_[i].str == str )
+        if ( str_is( _exceptions_[i].str,str) )
         { return _exceptions_[i].id; }
     }
 
@@ -65,7 +65,7 @@ int eventViewer::actionCode( const QString &str )
 {
     for( int i = 0; i < sizeof_array(_exception_actions_); i++ )
     {
-        if ( _exception_actions_[i].str == str )
+        if ( str_is( _exception_actions_[i].str,str) )
         { return _exception_actions_[i].id; }
     }
 
@@ -76,7 +76,7 @@ int eventViewer::exceptionIndex( const QString &str )
 {
     for( int i = 0; i < sizeof_array(_exceptions_); i++ )
     {
-        if ( _exceptions_[i].str == str )
+        if ( str_is( _exceptions_[i].str, str ) )
         { return i; }
     }
 

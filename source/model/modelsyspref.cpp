@@ -550,7 +550,7 @@ int modelSysPref::findAlias( const QString &sn, QString &alias )
 
     for ( int i = 0; i < mAlias.mItems.size(); i++ )
     {
-        if ( strLower == mAlias.mItems.at(i)->name() )
+        if ( str_is( strLower, mAlias.mItems.at(i)->name()))
         {
             alias = mAlias.mItems.at(i)->value();
             if ( alias.size() > 1 )

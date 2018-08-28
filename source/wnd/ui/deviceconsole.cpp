@@ -1,5 +1,6 @@
 #include "deviceconsole.h"
 #include "ui_deviceconsole.h"
+#include "../../include/mcdef.h"
 
 #define LUT_COUNT   10
 
@@ -57,7 +58,7 @@ void deviceConsole::on_btnWrite_clicked()
     for( int i = 0; i < ui->comboBox->count(); i++ )
     {
         //! equal
-        if ( ui->comboBox->itemText(i) == str )
+        if( str_is( ui->comboBox->itemText(i), str ) )
         {
             ui->comboBox->removeItem(i);
             break;

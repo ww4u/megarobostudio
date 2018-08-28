@@ -33,7 +33,7 @@ protected Q_SLOTS:
     void slot_destroyConnection( QObject *pObj );
 
 public:
-    void start( quint32 port = LISTEN_PORT );
+    bool start( quint32 port = LISTEN_PORT );
     void stop();
     bool isListening();
 

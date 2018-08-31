@@ -17,7 +17,7 @@ int tpvDownloader::interval()
 
 tpvDownloader::tpvDownloader( QObject *pObj ) : DeviceDownloader( pObj )
 {
-    mTryInterval = time_ms( 500 );
+    mTryInterval = time_s( 1 );
 
     m_pMRQ = NULL;
 }
@@ -214,12 +214,13 @@ logDbg()<<mRegion.axes()<<mRegion.page();
 //                QString::number(mTpvs.size()),
 //                QString::number( m_pMRQ->getTpvIndex(mRegion)  )
 //                );
-        if ( batchSize > 0 )
+        //! \errant keep one empty at least
+        if ( batchSize > 1 )
         {
 //            receiveCache::lock();   //! disable read
 
             ret = batchDownload( transQueue,
-                                 batchSize, total, now );
+                                 batchSize - 1, total, now );
 
 //            receiveCache::unlock();
 

@@ -26,6 +26,8 @@ enum mrvMsg
     mrv_msg_run,        //! region
     mrv_msg_stop,
     mrv_msg_reset,
+
+    mrv_msg_completed,  //! region
 };
 
 class deviceMRV : public MRV

@@ -13,9 +13,9 @@ void TpDownloader::run()
     m_pMRV->acquireDownloader();
 
     int ret;
-
+sysLog( __FUNCTION__, QString::number( __LINE__) );
     ret = downloadProc();
-    logDbg()<<ret;
+sysLog( __FUNCTION__, QString::number( __LINE__), QString::number( ret ), QString::number( mAx ) );
 
     m_pMRV->releaseDownloader();
 }
@@ -119,7 +119,7 @@ int TpDownloader::downloadProc()
 
     //! request status
     m_pMRV->requestMotionState( mAx, MRV_MOTION_SWITCH_1_MAIN );
-
+sysLog( __FUNCTION__, QString::number(__LINE__) );
     return 0;
 }
 

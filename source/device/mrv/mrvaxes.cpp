@@ -31,6 +31,10 @@ void MrvAxes::proc( RoboMsg &msg )
     else if ( msg.mMsg == (eRoboMsg)mrv_msg_reset )
     { startTimer( mrv_timer_id, mrv_timeout ); }
 
+    //! completed
+    else if ( msg.mMsg == (eRoboMsg)mrv_msg_completed )
+    { startTimer( mrv_timer_id, mrv_timeout ); }
+
     else if ( msg.mMsg == e_robot_timeout )
     {
         Q_ASSERT( NULL != m_pMrv );

@@ -16,6 +16,9 @@ static msg_type _msg_patterns[] =
     { mrv_msg_run, {TPV_REGEION_TYPE_ID, QMetaType::Int} },
     { mrv_msg_stop, {TPV_REGEION_TYPE_ID, QMetaType::Int} },
     { mrv_msg_reset, {TPV_REGEION_TYPE_ID, QMetaType::Int} },
+
+    { mrv_msg_completed, {TPV_REGEION_TYPE_ID, QMetaType::Int} },
+
 };
 
 void deviceMRV::onMsg( int subAxes, RoboMsg &msg )
@@ -57,7 +60,8 @@ void deviceMRV::setStatus( int stat, const tpvRegion &region, frameData &data  )
 {
     int ch = region.axes();
     MRV::setStatus( stat, region, data );
-logDbg()<<ch<<stat;
+//logDbg()<<ch<<stat;
+sysLog( __FUNCTION__, QString::number( __LINE__), QString::number( ch ), QString::number( stat ) );
     if ( stat == MRV_MOTION_STATE_1_IDLE )
     {
         lpc( ch )->postMsg( (eRoboMsg)mrv_msg_idle, region, data.timeStamp() ) ;

@@ -128,6 +128,9 @@ int deviceMRV::tpEndSend( int ax, TpRow &preRow )
 
     checked_call( setPVT_END( ax ) );
 
+    //! download completed
+    lpc( ax )->postMsg( (eRoboMsg)mrv_msg_completed, tpvRegion(ax) );
+
     return 0;
 }
 

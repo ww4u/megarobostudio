@@ -17,7 +17,8 @@ void interruptHandler::setInstMgr( MegaDevice::InstMgr *pInstMgr )
 }
 
 void interruptHandler::slot_event( eventId id,
-                                   frameData data )
+                                   frameData data
+                                    )
 {
     //! find device by event id
     Q_ASSERT( NULL != m_pInstMgr );
@@ -80,7 +81,7 @@ void interruptThread::connectInterrupt( MegaDevice::INTRThread *pINTR )
     Q_ASSERT( NULL != pINTR );
 
     connect( pINTR,
-             SIGNAL(sig_event(eventId,frameData)),
+             SIGNAL(sig_event(eventId,frameData )),
              &mDefInterruptHandle,
              SLOT(slot_event( eventId,frameData)),
              Qt::QueuedConnection );

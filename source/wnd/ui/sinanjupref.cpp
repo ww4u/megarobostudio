@@ -223,7 +223,7 @@ void SinanjuPref::on_btnZeroArm_clicked()
         jList<<0<<1<<2<<3;
         ccwList<<false<<false<<false<<false;
 
-        pBase->goZero( tpvRegion(0,0),
+        pBase->goZero( tpvRegion(0, ui->widget->page() ),
                        jList,
                        ccwList );
     }
@@ -245,7 +245,7 @@ void SinanjuPref::on_btnZeroHand_clicked()
     int ret = msgBox.exec();
     if ( ret == QMessageBox::Ok )
     {
-        pBase->goZero( tpvRegion(0,0),
+        pBase->goZero( tpvRegion(0, ui->widget->page() ),
                        4, ui->chkHandZeroCcw->isChecked() );
     }
 }
@@ -266,7 +266,7 @@ void SinanjuPref::on_btnZero_clicked()
     int ret = msgBox.exec();
     if ( ret == QMessageBox::Ok )
     {
-        pBase->goZero( tpvRegion(0,0) );
+        pBase->goZero( tpvRegion(0, ui->widget->page() ) );
     }
 }
 
@@ -330,6 +330,6 @@ void SinanjuPref::on_btnFactory_clicked()
     int ret = msgBox.exec();
     if ( ret == QMessageBox::Ok )
     {
-        pBase->goFactory( tpvRegion(0,0) );
+        pBase->goFactory( tpvRegion(0, ui->widget->page()) );
     }
 }

@@ -63,7 +63,7 @@ void axesKnob::rotate( float angle, float t )
         return;
     }
 
-    if ( pMrq->fsmState( tpvRegion(ax,0) ) != MegaDevice::mrq_state_idle )
+    if ( pMrq->fsmState( tpvRegion(ax, ui->pageOption->page() ) ) != MegaDevice::mrq_state_idle )
     {
         QMessageBox::warning( this, tr("Warning"), tr("Device is not idle now, try later!") );
         return;
@@ -72,14 +72,14 @@ void axesKnob::rotate( float angle, float t )
     int ret;
     //! write only one time
     ret = pMrq->setMOTIONPLAN_CYCLENUM( ax,
-                                        MRQ_MOTION_SWITCH_1_MAIN,
+                                        (MRQ_MOTION_SWITCH_1)ui->pageOption->page(),
                                         1 );
     if ( ret != 0 )
     { return; }
 
     //! run the device
     ret = pMrq->pvtWrite( tpvRegion( ax,
-                                     (int)MRQ_MOTION_SWITCH_1_MAIN ),
+                                     ui->pageOption->page()),
                         0,0,
                         t,
                         angle
@@ -87,7 +87,7 @@ void axesKnob::rotate( float angle, float t )
     if ( ret != 0 )
     { return; }
 
-    ret = pMrq->run( tpvRegion(ax,0) );
+    ret = pMrq->run( tpvRegion(ax, ui->pageOption->page() ) );
     if ( ret != 0 )
     { return; }
 
@@ -125,46 +125,6 @@ void axesKnob::on_sliderValue_sliderReleased()
 
     rotate( mStopAngle - mStartAngle,
            time_to_s( mStartTime.msecsTo( mStopTime ) ) );
-
-//    int ax;
-//    MegaDevice::deviceMRQ *pMrq = currentDevice( ax );
-//    if ( NULL == pMrq )
-//    {
-//        sysError( tr("Invalid device") );
-//        return;
-//    }
-
-//    if ( pMrq->fsmState( tpvRegion(ax,0) ) != MegaDevice::mrq_state_idle )
-//    {
-//        QMessageBox::warning( this, tr("Warning"), tr("Device is not idle now, try later!") );
-//        return;
-//    }
-
-//    int ret;
-//    //! write only one time
-//    ret = pMrq->setMOTIONPLAN_CYCLENUM( ax,
-//                                        MRQ_MOTION_SWITCH_1_MAIN,
-//                                        1 );
-//    if ( ret != 0 )
-//    { return; }
-
-//    //! run the device
-//    ret = pMrq->pvtWrite( tpvRegion( ax,
-//                                     (int)MRQ_MOTION_SWITCH_1_MAIN ),
-//                        0,0,
-//                        time_to_s( mStartTime.msecsTo( mStopTime ) ),
-//                        mStopAngle - mStartAngle
-//                        );
-//    if ( ret != 0 )
-//    { return; }
-
-//    ret = pMrq->run( tpvRegion(ax,0) );
-//    if ( ret != 0 )
-//    { return; }
-
-//    //! view connection
-//    ui->label->setText( QString("%2%3 %1ms").arg( mStartTime.msecsTo( mStopTime ) )
-//                                          .arg( mStopAngle - mStartAngle ).arg(QChar(0x00B0)) );
 }
 
 void axesKnob::on_sliderValue_sliderMoved(int position)

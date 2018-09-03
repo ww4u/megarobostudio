@@ -95,7 +95,7 @@ void T4Panel::moveD( float dx, float dy, float dz )
         pt.z += dz;
         curve.append( pt );
 
-        pRobo->move( curve, tpvRegion(0,0) );
+        pRobo->move( curve, tpvRegion(0, ui->widget->page() ) );
 
     }while( 0 );
 }
@@ -129,7 +129,7 @@ void T4Panel::moveA( float x, float y, float z, float dt )
         pt.z = z;
         curve.append( pt );
 
-        pRobo->move( curve, tpvRegion(0,0) );
+        pRobo->move( curve, tpvRegion(0,ui->widget->page()) );
 
     }while( 0 );
 }
@@ -182,7 +182,7 @@ void T4Panel::on_btnCenter_clicked()
    robotSinanju *pRobo = Robot();
    if ( NULL != pRobo )
    {
-       pRobo->goZero( tpvRegion(0,0) );
+       pRobo->goZero( tpvRegion(0,ui->widget->page()) );
    }
 }
 

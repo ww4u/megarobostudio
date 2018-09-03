@@ -85,6 +85,7 @@ public:
     QString mLatestPrjPath, mLatestPrjName;
 
                             //! system alias
+    bool mAliasEn;
     RelationModel mAlias;
 };
 

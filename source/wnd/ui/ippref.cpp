@@ -131,7 +131,7 @@ void IPPref::on_btnZeroX_clicked()
     else
     { return; }
 
-    pRobo->goZero( tpvRegion(0,0), 0, ui->chkCcwValve->isChecked() );
+    pRobo->goZero( tpvRegion(0,ui->widget->page()), 0, ui->chkCcwValve->isChecked() );
 }
 
 void IPPref::on_btnZeroY_clicked()
@@ -149,7 +149,7 @@ void IPPref::on_btnZeroY_clicked()
     { return; }
 
     //! joint 1
-    pRobo->goZero( tpvRegion(0,0), 1, ui->chkCcwInj->isChecked() );
+    pRobo->goZero( tpvRegion(0,ui->widget->page()), 1, ui->chkCcwInj->isChecked() );
 }
 
 void IPPref::on_btnZeroBody_clicked()
@@ -166,5 +166,5 @@ void IPPref::on_btnZeroBody_clicked()
     else
     { return; }
 
-    pRobo->goZero( tpvRegion(0,0) );
+    pRobo->goZero( tpvRegion(0,ui->widget->page()) );
 }

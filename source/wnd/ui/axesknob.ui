@@ -14,7 +14,7 @@
    <string>Axes</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../res/res.qrc">
+   <iconset>
     <normaloff>:/res/image/icon/23.png</normaloff>:/res/image/icon/23.png</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
@@ -186,6 +186,9 @@
         </property>
        </widget>
       </item>
+      <item row="0" column="2" colspan="3">
+       <widget class="PageOption" name="pageOption" native="true"/>
+      </item>
      </layout>
     </widget>
    </item>
@@ -198,9 +201,13 @@
    <header>lrbutton.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>PageOption</class>
+   <extends>QWidget</extends>
+   <header>pageoption.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
- <resources>
-  <include location="../res/res.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

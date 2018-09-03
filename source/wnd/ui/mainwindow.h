@@ -154,17 +154,20 @@ protected Q_SLOTS:
 
     //! connection
     void slot_robo_name_changed( const QString& );
+    void slot_robo_page_changed( int page );
 
     void slot_device_name_changed( const QString &name );
     void slot_device_ch_index_changed( int id );
+    void slot_device_page_changed( int page );
 
     //! tabwidget
     void slot_tabwidget_currentChanged(int index);
 
     void slot_scene_changed();
     void slot_download_cancel( const QString &name, int id );
-
+public:
     void slot_com_receive( const QString &str );
+protected:
     void slot_pref_changed();
 protected:
     modelView *findView( mcModelObj *pModel );

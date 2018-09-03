@@ -31,6 +31,8 @@ int Rs232Bus::open(
     if ( ret != 0 )
     { return ret; }
 
+    setDevId( devId );
+
     //! attach
     Q_ASSERT( NULL == m_pRecvCache );
     m_pRecvCache = new receiveCache();

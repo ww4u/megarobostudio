@@ -41,6 +41,9 @@ void axesConnection::setCurrentCH( const int index )
     ui->cmbDeviceAxes->setCurrentIndex( index );
 }
 
+int axesConnection::page()
+{ return ui->widget->page(); }
+
 QComboBox *axesConnection::getCombName()
 {
     return ui->cmbDeviceName;
@@ -49,6 +52,11 @@ QComboBox *axesConnection::getCombName()
 QComboBox *axesConnection::getCombCH()
 {
     return ui->cmbDeviceAxes;
+}
+
+QComboBox *axesConnection::getCombPage()
+{
+    return ui->widget->getComb();
 }
 
 //! check name

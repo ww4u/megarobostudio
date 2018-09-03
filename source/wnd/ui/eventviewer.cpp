@@ -136,7 +136,7 @@ void eventViewer::setMcModel( mcModel *pObj )
     m_pMcModel = pObj;
 }
 
-void eventViewer::slot_event( eventId id, frameData data )
+void eventViewer::slot_event( eventId id, frameData data, int busId )
 {
     //! bypass status event
     if ( id == event_status )
@@ -151,7 +151,10 @@ void eventViewer::slot_event( eventId id, frameData data )
         }
 
         QString str;
-        str = QString("ID:%1,Time:%2,FrameId:%3,Data:").arg( id ).arg( QDateTime::currentDateTime().toString("hh:mm:ss.zzz") ).arg( data.frameId(), 0, 16 );
+        str = QString("ID:%1,Time:%2,Bus:%3,FrameId:%4,Data:").arg( id )
+                                                              .arg( QDateTime::currentDateTime().toString("hh:mm:ss.zzz") )
+                                                              .arg( data.devId() )
+                                                              .arg( data.frameId(), 0, 16 );
         str.append( data.toHex(' ') );
 
         ui->listWidget->addItem(str);

@@ -267,15 +267,18 @@ int InstMgr::probeCanBus()
     }
 
     //! match the sn
-    foreach( VRobot* pRobo, phyRoboList )
+    if ( m_pMainModel->mSysPref.mAliasEn )
     {
-        Q_ASSERT( NULL != pRobo );
-
-        ret = m_pMainModel->mSysPref.findAlias( pRobo->getSN(), strDevName );
-        if ( ret == 0 )
+        foreach( VRobot* pRobo, phyRoboList )
         {
-            pRobo->setName( strDevName );
-            seqList.append( strDevName.toLower() );
+            Q_ASSERT( NULL != pRobo );
+
+            ret = m_pMainModel->mSysPref.findAlias( pRobo->getSN(), strDevName );
+            if ( ret == 0 )
+            {
+                pRobo->setName( strDevName );
+                seqList.append( strDevName.toLower() );
+            }
         }
     }
 

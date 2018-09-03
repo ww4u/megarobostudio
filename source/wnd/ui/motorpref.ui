@@ -20,7 +20,7 @@
       <string>Zero Config</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_3">
-      <item row="1" column="3" rowspan="2">
+      <item row="1" column="4" rowspan="2">
        <widget class="QGroupBox" name="groupBox_4">
         <property name="title">
          <string>Gap</string>
@@ -68,6 +68,13 @@
        </widget>
       </item>
       <item row="0" column="1">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>POS</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
        <widget class="QComboBox" name="cmbPosIndex">
         <item>
          <property name="text">
@@ -81,7 +88,7 @@
         </item>
        </widget>
       </item>
-      <item row="1" column="4">
+      <item row="1" column="5">
        <spacer name="horizontalSpacer">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
@@ -95,13 +102,9 @@
        </spacer>
       </item>
       <item row="0" column="0">
-       <widget class="QLabel" name="label">
-        <property name="text">
-         <string>POS</string>
-        </property>
-       </widget>
+       <widget class="PageOption" name="widget" native="true"/>
       </item>
-      <item row="1" column="0" colspan="3">
+      <item row="1" column="0" colspan="4">
        <widget class="QGroupBox" name="groupBox_5">
         <property name="title">
          <string>Zero</string>
@@ -216,8 +219,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>363</width>
-        <height>168</height>
+        <width>380</width>
+        <height>86</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -239,7 +242,7 @@
           <string/>
          </property>
          <property name="pixmap">
-          <pixmap resource="../res/res.qrc">:/res/image/joint/motor.png</pixmap>
+          <pixmap>:/res/image/joint/motor.png</pixmap>
          </property>
          <property name="scaledContents">
           <bool>true</bool>
@@ -265,8 +268,14 @@
    </item>
   </layout>
  </widget>
- <resources>
-  <include location="../res/res.qrc"/>
- </resources>
+ <customwidgets>
+  <customwidget>
+   <class>PageOption</class>
+   <extends>QWidget</extends>
+   <header>pageoption.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
  <connections/>
 </ui>

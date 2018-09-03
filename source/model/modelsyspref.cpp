@@ -78,6 +78,8 @@ void modelSysPref::rst()
 
     mLangIndex = 0;
     mStyleIndex = 0;
+
+    mAliasEn = true;
 }
 
 //! save to xml
@@ -223,7 +225,7 @@ int modelSysPref::save( const QString &str )
 
     //! alias
     writer.writeStartElement("alias");
-
+    writer.writeTextElement("enable", QString::number( mAliasEn ) );
     for( int i = 0; i < mAlias.mItems.size(); i++ )
     {
         writer.writeStartElement("item");
@@ -464,7 +466,9 @@ int modelSysPref::load( const QString &str )
                     Relation *pItem;
                     while( reader.readNextStartElement() )
                     {
-                        if ( reader.name() == "item" )
+                        if ( reader.name() == "enable" )
+                        { mAliasEn = reader.readElementText().toInt()> 0; }
+                        else if ( reader.name() == "item" )
                         {
                             pItem = new Relation();
                             while( reader.readNextStartElement() )

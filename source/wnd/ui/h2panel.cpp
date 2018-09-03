@@ -46,7 +46,7 @@ void H2Panel::moveD( float dx, float dy )
         if ( NULL == pRobo )
         { break; }
 
-        pRobo->move( dx, dy, ui->spinStepT->value(), 0,0, tpvRegion(0,0));
+        pRobo->move( dx, dy, ui->spinStepT->value(), 0,0, tpvRegion(0,ui->widget->page()));
 
     }while( 0 );
 }
@@ -78,7 +78,7 @@ void H2Panel::moveA( float x, float y, float dt )
         pt.y = y;
         curve.append( pt );
 
-        pRobo->move( curve, tpvRegion(0,0) );
+        pRobo->move( curve, tpvRegion(0,ui->widget->page()) );
 
     }while( 0 );
 }
@@ -146,7 +146,7 @@ void H2Panel::on_btnCenter_clicked()
     robotH2 *pRobo = Robot();
     if ( NULL != pRobo )
     {
-        pRobo->goZero( tpvRegion(0,0) );
+        pRobo->goZero( tpvRegion(0,ui->widget->page()) );
     }
 }
 

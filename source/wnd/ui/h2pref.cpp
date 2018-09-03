@@ -163,11 +163,11 @@ void H2Pref::zeroJoint( int jointId, bool bCcw )
 
     if ( !pBase->checkLink() )
     {
-        sysPrompt( tr("Invalid conection") );
+        sysPrompt( tr("Invalid connection") );
         return;
     }
 
-    pBase->goZero( tpvRegion(0,0), jointId, bCcw );
+    pBase->goZero( tpvRegion(0,ui->widget->page()), jointId, bCcw );
 }
 
 void H2Pref::slot_joint_zero( int jId, bool bCcw )
@@ -216,7 +216,7 @@ void H2Pref::on_btnZeroBody_clicked()
         jList<<0<<1;
         ccwList<<false<<false;
     }
-    pBase->goZero( tpvRegion(0,0),
+    pBase->goZero( tpvRegion(0,ui->widget->page()),
                    jList,
                    ccwList
                    );

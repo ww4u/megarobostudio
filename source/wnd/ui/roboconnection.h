@@ -20,8 +20,11 @@ public:
     void setCurrentName( const QString &str );
     void setCurrentName( const int index );
 
+    int page();
+
 public:
     QComboBox *getCombName();
+    QComboBox *getCombPage();
 
 private slots:
 

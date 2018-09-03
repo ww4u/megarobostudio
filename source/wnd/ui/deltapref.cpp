@@ -167,7 +167,7 @@ void DeltaPref::zeroJoint( int jointId, bool bCcw )
     VRobot *pBase = ( VRobot *)m_pModelObj;
     Q_ASSERT( NULL != pBase );
 
-    pBase->goZero( tpvRegion(0,0), jointId, bCcw );
+    pBase->goZero( tpvRegion(0, ui->widget->page() ), jointId, bCcw );
 }
 
 void DeltaPref::slot_joint_zero( int jId, bool bccw )
@@ -268,7 +268,7 @@ void DeltaPref::on_btnZeroBody_clicked()
     VRobot *pBase = ( VRobot *)m_pModelObj;
     Q_ASSERT( NULL != pBase );
 
-    pBase->goZero( tpvRegion(0,0), jointList, ccwList );
+    pBase->goZero( tpvRegion(0, ui->widget->page() ), jointList, ccwList );
 }
 
 void DeltaPref::on_chkAllCcw_clicked(bool checked)

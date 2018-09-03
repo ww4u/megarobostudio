@@ -65,7 +65,9 @@ protected:
     int mSpeed;           //! speed
     int mPId;             //! productId: 0 -- mega can
                           //! 1 -- usb can ii
-    int mDevId;
+                          //!
+    int mDevId;           //! device id -- device handle
+
 
     QString mName;
 

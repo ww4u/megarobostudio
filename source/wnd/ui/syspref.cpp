@@ -127,7 +127,7 @@ void sysPref::updateUi()
     ui->spinDeviceCount->setVisible( false );
     ui->spinDeviceId->setVisible( false );
 
-    on_cmbPort_currentIndexChanged( e_can_mcp );
+    on_cmbPort_currentIndexChanged( ui->cmbPort->currentText() );
 #endif
 
     ui->cmbSpeed->setCurrentText( QString::number(m_pPref->mSpeed) );
@@ -228,6 +228,7 @@ void sysPref::updateUi()
     ui->spinAngleError->setValue( m_pPref->mAngleResolution );
 
     //! set model
+    ui->gpAlias->setChecked( m_pPref->mAliasEn );
     ui->tableView->setModel( &m_pPref->mAlias );
 }
 
@@ -318,9 +319,12 @@ void sysPref::updateData()
 
     m_pPref->mEventLogFile = ui->edtEventLog->text();
 
+    m_pPref->mAliasEn = ui->gpAlias->isChecked();
+
     //! space
     m_pPref->mGeometryResolution = ui->spinDistanceError->value();
     m_pPref->mAngleResolution = ui->spinAngleError->value();
+
 
 }
 
@@ -677,4 +681,9 @@ void sysPref::slot_toolbar_clr()
     }
 }
 
-
+void sysPref::on_gpAlias_toggled(bool arg1)
+{
+//    ui->gpAlias->setEnabled( arg1 );
+    ui->aliasToolBar->setEnabled( arg1 );
+    ui->tableView->setEnabled( arg1 );
+}

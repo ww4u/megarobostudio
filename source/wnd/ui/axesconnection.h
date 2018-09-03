@@ -23,9 +23,12 @@ public:
     void setCurrentCH( const QString &str );
     void setCurrentCH( const int index );
 
+    int page();
+
 public:
     QComboBox *getCombName();
     QComboBox *getCombCH();
+    QComboBox *getCombPage();
 
 private slots:
     void on_cmbDeviceName_currentIndexChanged(const QString &arg1);

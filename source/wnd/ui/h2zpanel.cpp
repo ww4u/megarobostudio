@@ -47,7 +47,7 @@ void H2ZPanel::moveD( float dx, float dy, float dz )
         { break; }
 
         pRobo->move( dx, dy, dz,
-                     ui->spinStepT->value(), 0, 0, 0, tpvRegion(0,0) );
+                     ui->spinStepT->value(), 0, 0, 0, tpvRegion(0,ui->widget->page()) );
 
     }while( 0 );
 }
@@ -81,7 +81,7 @@ void H2ZPanel::moveA( float x, float y, float z, float dt )
         pt.z = z;
         curve.append( pt );
 
-        pRobo->move( curve, tpvRegion(0,0) );
+        pRobo->move( curve, tpvRegion(0,ui->widget->page()) );
 
     }while( 0 );
 }
@@ -159,7 +159,7 @@ void H2ZPanel::on_btnCenter_clicked()
     robotH2Z *pRobo = Robot();
     if ( NULL != pRobo )
     {
-        pRobo->goZero( tpvRegion(0,0) );
+        pRobo->goZero( tpvRegion(0,ui->widget->page()) );
     }
 }
 

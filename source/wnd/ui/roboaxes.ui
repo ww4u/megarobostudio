@@ -20,7 +20,7 @@
    <string>Robot</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../res/res.qrc">
+   <iconset>
     <normaloff>:/res/image/icon/23.png</normaloff>:/res/image/icon/23.png</iconset>
   </property>
   <property name="sizeGripEnabled">
@@ -105,7 +105,7 @@
                <string/>
               </property>
               <property name="pixmap">
-               <pixmap resource="../res/res.qrc">:/res/image/icon3/time.png</pixmap>
+               <pixmap>:/res/image/icon3/time.png</pixmap>
               </property>
               <property name="scaledContents">
                <bool>true</bool>
@@ -273,7 +273,7 @@
                <string>...</string>
               </property>
               <property name="icon">
-               <iconset resource="../res/res.qrc">
+               <iconset>
                 <normaloff>:/res/image/icon/332.png</normaloff>:/res/image/icon/332.png</iconset>
               </property>
               <property name="iconSize">
@@ -285,70 +285,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QComboBox" name="comboBox">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>50</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <item>
-               <property name="text">
-                <string>P0</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>P1</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>P2</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>P3</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>P4</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>P5</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>P6</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>P7</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>P8</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>P9</string>
-               </property>
-              </item>
-             </widget>
+             <widget class="PageOption" name="widget" native="true"/>
             </item>
             <item>
              <widget class="QLabel" name="labelStat">
@@ -473,6 +410,12 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>PageOption</class>
+   <extends>QWidget</extends>
+   <header>pageoption.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>RoboJoint</class>
    <extends>QWidget</extends>
    <header>robojoint.h</header>
@@ -482,8 +425,6 @@
  <tabstops>
   <tabstop>btnZero</tabstop>
  </tabstops>
- <resources>
-  <include location="../res/res.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

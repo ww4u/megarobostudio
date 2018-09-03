@@ -55,7 +55,7 @@ int motionEdit::doDownload( QList<tpvGroup *> &groups,
     pRobo->onLine();
     pRobo->download( groups,
                      jointTabId,
-                     tpvRegion(0,0) );  //! \todo page
+                     tpvRegion(0, m_pmcModel->mConn.roboPage() ) );
 
     return 0;
 }

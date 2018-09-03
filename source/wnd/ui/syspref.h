@@ -85,6 +85,8 @@ private slots:
 
 
 
+    void on_gpAlias_toggled(bool arg1);
+
 private:
     Ui::sysPref *ui;
     QWidget *m_pCANSetting, *m_pMRHTSetting;

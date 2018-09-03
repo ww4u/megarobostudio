@@ -15,6 +15,9 @@ public:
     void setRoboName( const QString &str );
     QString getRoboName();
 
+    void setRoboPage( int page );
+    int roboPage();
+
     void setDevice( const QString &str, int ch );
 
     void setDeviceName( const QString &str );
@@ -23,16 +26,17 @@ public:
     QString getDeviceName();
     int getDeviceCH();
 
-//    void setRobot( VRobot *pRobo );
-//    VRobot *getRobot();
-//    VRobot *robot();
+    void setDevicePage( int page );
+    int devicePage();
 
 public:
     QString mRoboName;
+    int     mRoboPage;
+
     QString mDeviceName;
     int     mAxesId;
+    int     mDevicePage;
 
-//    VRobot  *m_pRobot;
 };
 
 #endif // MCCONNECTION_H

@@ -135,7 +135,7 @@ void MotorPref::zeroJoint( int jointId, bool bCcw )
         return;
     }
 
-    pBase->goZero( tpvRegion(0,0), jointId, bCcw );
+    pBase->goZero( tpvRegion(0,ui->widget->page() ), jointId, bCcw );
 }
 
 void MotorPref::slot_joint_zero( int jId, bool bCcw )
@@ -169,7 +169,7 @@ void MotorPref::on_btnZeroBody_clicked()
     jList<<0;
     ccwList<<ui->chkCcw->isChecked();
 
-    pBase->goZero( tpvRegion(0,0),
+    pBase->goZero( tpvRegion(0,ui->widget->page()),
                    jList,
                    ccwList
                    );

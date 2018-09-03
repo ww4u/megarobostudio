@@ -224,9 +224,10 @@ void pvtEdit::context_add_below()
 int pvtEdit::postDownload( appMsg msg, void *pPara )
 {
     QString str;
-    int axesId;
+    int axesId, page;
     str = m_pmcModel->getConnection().getDeviceName();
     axesId = m_pmcModel->getConnection().getDeviceCH();
+    page = m_pmcModel->getConnection().devicePage();
 
     MegaDevice::deviceMRQ *pMrq = m_pmcModel->m_pInstMgr->findDevice( str,
                                                                       axesId );
@@ -235,7 +236,7 @@ int pvtEdit::postDownload( appMsg msg, void *pPara )
     //! set loop count
     int ret;
     ret = pMrq->setMOTIONPLAN_CYCLENUM( axesId,
-                                        MRQ_MOTION_SWITCH_1_MAIN,
+                                        (MRQ_MOTION_SWITCH_1)page,
                                         ui->spinLoop->value() );
     if ( ret != 0 )
     { return ret; }
@@ -244,7 +245,7 @@ int pvtEdit::postDownload( appMsg msg, void *pPara )
     mTpvGroup->getRows( tpvRows );
 
     //! download
-    ret = pMrq->pvtWrite( tpvRegion(axesId, MRQ_MOTION_SWITCH_1_MAIN), tpvRows );
+    ret = pMrq->pvtWrite( tpvRegion(axesId, page ), tpvRows );
     if ( ret != 0 )
     { return ret; }
 

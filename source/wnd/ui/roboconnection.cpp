@@ -27,6 +27,11 @@ void roboConnection::setCurrentName( const int index )
     ui->cmbRobotName->setCurrentIndex( index );
 }
 
+int roboConnection::page()
+{ return ui->widget->page(); }
+
 QComboBox *roboConnection::getCombName()
 { return ui->cmbRobotName; }
 
+QComboBox *roboConnection::getCombPage()
+{ return ui->widget->getComb(); }

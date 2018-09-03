@@ -47,6 +47,8 @@ roboAxes::roboAxes(mcModel *pModel,
                  this, SLOT(slot_joint_zero(int,bool)));
     }
 
+    buildConnection();
+
     setModal( false );
 
     mTimer.setInterval( ui->sampleTimer->value() );
@@ -227,6 +229,8 @@ void roboAxes::adapteUiToRobot( VRobot *pRobo )
 
 void roboAxes::buildConnection()
 {
+    connect( ui->widget->getComb(), SIGNAL(currentIndexChanged(int)),
+             this, SLOT(slot_comboBox_currentIndexChanged(int)) );
 }
 
 //! convert the time by t
@@ -259,11 +263,11 @@ void roboAxes::rotate( int jointId,
     //! only one time
     pMrq->setMOTIONPLAN_CYCLENUM( subAx, MRQ_MOTION_SWITCH_1_MAIN, 1 );
 
-    pMrq->pvtWrite( tpvRegion(subAx,0),
+    pMrq->pvtWrite( tpvRegion(subAx,ui->widget->page() ),
                     (t1), a1,
                     (t2), a2
                     );
-    pMrq->run( tpvRegion(subAx,0) );
+    pMrq->run( tpvRegion(subAx, ui->widget->page() ) );
 }
 
 void roboAxes::zero( int jointId,
@@ -278,7 +282,7 @@ void roboAxes::zero( int jointId,
 
     Q_ASSERT( NULL != pRobo );
 
-    pRobo->goZero( tpvRegion(0,0), jointId, bCcw );
+    pRobo->goZero( tpvRegion(0, ui->widget->page() ), jointId, bCcw );
 }
 
 void roboAxes::on_btnZero_clicked()
@@ -303,7 +307,7 @@ void roboAxes::on_btnZero_clicked()
         }
 
         //! zero
-        pRobo->goZero( tpvRegion(0,0) );
+        pRobo->goZero( tpvRegion(0, ui->widget->page() ) );
     }
 }
 
@@ -316,7 +320,7 @@ void roboAxes::on_spinStepTime_valueChanged(double arg1)
     }
 }
 
-void roboAxes::on_comboBox_currentIndexChanged(int index)
+void roboAxes::slot_comboBox_currentIndexChanged(int index)
 {
     VRobot *pRobo = Robot();
     if ( NULL == pRobo )
@@ -334,5 +338,5 @@ void roboAxes::on_comboBox_currentIndexChanged(int index)
 
 void roboAxes::on_toolButton_clicked()
 {
-    on_comboBox_currentIndexChanged( ui->comboBox->currentIndex() );
+    slot_comboBox_currentIndexChanged( ui->widget->page() );
 }

@@ -73,8 +73,9 @@ void deviceMRQ::setStatus( int stat, const tpvRegion &region, frameData &data  )
     }
     else
     {
-        logDbg()<<stat;
-        Q_ASSERT(false);
+//        logDbg()<<stat;
+//        Q_ASSERT(false);
+        sysPrompt( QObject::tr("Invalid status ") + QString::number( ch ) + "/" + QString::number( stat ) );
     }
 }
 

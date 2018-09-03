@@ -414,6 +414,11 @@ void MainWindow::buildConnection()
              this,
              SLOT(slot_robo_name_changed(const QString&))
              );
+    connect( m_pRoboConnTool->getCombPage(),
+             SIGNAL(currentIndexChanged(int)),
+             this,
+             SLOT(slot_robo_page_changed(int))
+             );
 
     //! axes conn
     connect( m_pAxesConnTool->getCombName(),
@@ -426,6 +431,12 @@ void MainWindow::buildConnection()
              SIGNAL(currentIndexChanged(int)),
              this,
              SLOT(slot_device_ch_index_changed(int))
+             );
+
+    connect( m_pAxesConnTool->getCombPage(),
+             SIGNAL(currentIndexChanged(int)),
+             this,
+             SLOT(slot_device_page_changed(int))
              );
 
     //! motor panel
@@ -1034,6 +1045,12 @@ void MainWindow::slot_robo_name_changed( const QString &name )
 
     emit sig_robo_name_changed( name );
 }
+
+void MainWindow::slot_robo_page_changed( int page )
+{
+    mMcModel.mConn.setRoboPage( page );
+}
+
 void MainWindow::slot_device_name_changed( const QString &name )
 {
     mMcModel.mConn.setDeviceName( name );
@@ -1045,6 +1062,9 @@ void MainWindow::slot_device_ch_index_changed( int id )
     mMcModel.mConn.setDeviceCH( id );
     logDbg()<<id;
 }
+
+void MainWindow::slot_device_page_changed( int page )
+{ mMcModel.mConn.setDevicePage(page); }
 
 void MainWindow::slot_tabwidget_currentChanged(int index)
 {
@@ -1534,13 +1554,6 @@ void MainWindow::slot_com_receive( const QString &str )
     { sysError( tr("Invalid cmd"), str );
         return;
     }
-
-    //! \todo full name
-//    VRobot * pRobo = mMcModel.m_pInstMgr->findAbbRobot( secList.at(0) );
-//    if ( NULL == pRobo )
-//    { sysError( tr("Invalid cmd"), str );
-//        return;
-//    }
 
     scpiShell *pShell = mMcModel.m_pInstMgr->findShell( secList.at(0) );
     if ( NULL == pShell )

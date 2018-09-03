@@ -298,7 +298,8 @@ SOURCES += \
     ../ui/motorspref.cpp \
     ../ui/tabletoolbar.cpp \
     ../ui/notice.cpp \
-    ../ui/portoption.cpp
+    ../ui/portoption.cpp \
+    ../ui/pageoption.cpp
 
 HEADERS += \
         ../ui/mainwindow.h \
@@ -462,7 +463,8 @@ HEADERS += \
     ../ui/motorspref.h \
     ../ui/tabletoolbar.h \
     ../ui/notice.h \
-    ../ui/portoption.h
+    ../ui/portoption.h \
+    ../ui/pageoption.h
 
 FORMS += \
         ../ui/mainwindow.ui \
@@ -560,7 +562,8 @@ FORMS += \
     ../ui/motorspref.ui \
     ../ui/tabletoolbar.ui \
     ../ui/notice.ui \
-    ../ui/portoption.ui
+    ../ui/portoption.ui \
+    ../ui/pageoption.ui
 
 #RESOURCES = ../res/res.qrc
 

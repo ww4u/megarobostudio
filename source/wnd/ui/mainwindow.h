@@ -165,10 +165,14 @@ protected Q_SLOTS:
 
     void slot_scene_changed();
     void slot_download_cancel( const QString &name, int id );
-public:
+public Q_SLOTS:
     void slot_com_receive( const QString &str );
-protected:
+protected Q_SLOTS:
     void slot_pref_changed();
+
+    void slot_process_output();
+    void slot_process_exit( int, QProcess::ExitStatus );
+
 protected:
     modelView *findView( mcModelObj *pModel );
     modelView *createModelView( modelView *pView, mcModelObj *pModel );
@@ -262,7 +266,9 @@ public slots:
     void on_actiontest_triggered();
 
 private slots:
+    void on_actionRun_Script_triggered();
 
+    void on_actionTerminate_triggered();
 
 private:
     //! uis
@@ -322,6 +328,10 @@ private:
     RoboNetThread *m_pRoboNetThread;
     SysTimerThread *m_pSysTimerThread;
     ComThread *m_pComThread;
+
+    //! Process
+    QProcess *m_pProcess;
+    QString mCurrentScript;
 };
 
 #endif // MAINWINDOW_H

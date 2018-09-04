@@ -27,7 +27,7 @@ pvtEdit::pvtEdit(QWidget *parent) :
 
     mCurT = 0;
     mCurP = 0;
-    mCurV = 1;
+    mCurV = 0;
 
     mTpvGroup = NULL;
 
@@ -538,11 +538,11 @@ void pvtEdit::on_btnAdd_clicked()
     //! current
     curRow = ui->tableView->currentIndex().row();
 
-    mCurT += mTStep;
-    mCurP += mPStep;
-
     mTpvGroup->insertRow( curRow + 1 );
     (*mTpvGroup)[ curRow + 1 ]->set( mCurT, mCurP, mCurV );
+
+    mCurT += mTStep;
+    mCurP += mPStep;
 
     ui->tableView->setCurrentIndex( mTpvGroup->index( curRow + 1, 0) );
 }

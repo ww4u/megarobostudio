@@ -227,6 +227,8 @@ void sysPref::updateUi()
     ui->spinDistanceError->setValue( m_pPref->mGeometryResolution );
     ui->spinAngleError->setValue( m_pPref->mAngleResolution );
 
+    ui->labelFont->setText( m_pPref->mFontFamily + ":" + QString::number( m_pPref->mPointSize) );
+
     //! set model
     ui->gpAlias->setChecked( m_pPref->mAliasEn );
     ui->tableView->setModel( &m_pPref->mAlias );
@@ -686,4 +688,17 @@ void sysPref::on_gpAlias_toggled(bool arg1)
 //    ui->gpAlias->setEnabled( arg1 );
     ui->aliasToolBar->setEnabled( arg1 );
     ui->tableView->setEnabled( arg1 );
+}
+
+void sysPref::on_btnFont_clicked()
+{
+    QFontDialog dlg;
+
+    if ( dlg.exec() == QDialog::Accepted )
+    {
+        m_pPref->mFontFamily = dlg.selectedFont().family();
+        m_pPref->mPointSize = dlg.selectedFont().pointSize();
+
+        ui->labelFont->setText( m_pPref->mFontFamily + ":" + QString::number( m_pPref->mPointSize) );
+    }
 }

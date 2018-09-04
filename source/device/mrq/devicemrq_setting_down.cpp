@@ -98,8 +98,8 @@ MRQ_PROGRESS( 10, ("MOTION") );
     checked_call( setIDENTITY_DISTDEVICE( mIDENTITY_DISTDEVICE ) );
     for ( int i = 0; i < axes(); i++ )
     {
-        checked_call( setIDENTITY_GROUP( i, MRQ_IDENTITY_GROUP_GROUP1, mIDENTITY_GROUP[i][0] ) );
-        checked_call( setIDENTITY_GROUP( i, MRQ_IDENTITY_GROUP_GROUP2, mIDENTITY_GROUP[i][1] ) );
+//        checked_call( setIDENTITY_GROUP( i, MRQ_IDENTITY_GROUP_GROUP1, mIDENTITY_GROUP[i][0] ) );
+//        checked_call( setIDENTITY_GROUP( i, MRQ_IDENTITY_GROUP_GROUP2, mIDENTITY_GROUP[i][1] ) );
 
 //        checked_call( setIDENTITY_LABEL( i,
 //                                         mIDENTITY_LABEL + i,

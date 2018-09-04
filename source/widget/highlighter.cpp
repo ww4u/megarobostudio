@@ -56,19 +56,19 @@ Highlighter::Highlighter(QTextDocument *parent)
 {
     HighlightingRule rule;
 
-    keywordFormat.setForeground(Qt::darkBlue);
-    keywordFormat.setFontWeight(QFont::Bold);
+    keywordFormat.setForeground(Qt::magenta);
+//    keywordFormat.setFontWeight(QFont::Bold);
     QStringList keywordPatterns;
-    keywordPatterns << "\\bchar\\b" << "\\bclass\\b" << "\\bconst\\b"
-                    << "\\bdouble\\b" << "\\benum\\b" << "\\bexplicit\\b"
-                    << "\\bfriend\\b" << "\\binline\\b" << "\\bint\\b"
-                    << "\\blong\\b" << "\\bnamespace\\b" << "\\boperator\\b"
-                    << "\\bprivate\\b" << "\\bprotected\\b" << "\\bpublic\\b"
-                    << "\\bshort\\b" << "\\bsignals\\b" << "\\bsigned\\b"
-                    << "\\bslots\\b" << "\\bstatic\\b" << "\\bstruct\\b"
-                    << "\\btemplate\\b" << "\\btypedef\\b" << "\\btypename\\b"
-                    << "\\bunion\\b" << "\\bunsigned\\b" << "\\bvirtual\\b"
-                    << "\\bvoid\\b" << "\\bvolatile\\b" << "\\bbool\\b";
+    keywordPatterns << "\\band\\b" << "\\bas\\b" << "\\bassert\\b"
+                    << "\\bbreak\\b" << "\\bclass\\b" << "\\bcontinue\\b"
+                    << "\\bdef\\b" << "\\bdel\\b" << "\\belif\\b"
+                    << "\\belse\\b" << "\\bexcept\\b" << "\\bfinally\\b"
+                    << "\\bfor\\b" << "\\bfrom\\b" << "\\bglobal\\b"
+                    << "\\bif\\b" << "\\bimport\\b" << "\\bin\\b"
+                    << "\\bis\\b" << "\\blambda\\b" << "\\bnot\\b"
+                    << "\\bor\\b" << "\\bpass\\b" << "\\braise\\b"
+                    << "\\breturn\\b" << "\\btry\\b" << "\\bwhile\\b"
+                    << "\\bwith\\b" << "\\byield\\b";
     foreach (const QString &pattern, keywordPatterns) {
         rule.pattern = QRegularExpression(pattern);
         rule.format = keywordFormat;
@@ -86,8 +86,8 @@ Highlighter::Highlighter(QTextDocument *parent)
 //! [2]
 
 //! [3]
-    singleLineCommentFormat.setForeground(Qt::red);
-    rule.pattern = QRegularExpression("//[^\n]*");
+    singleLineCommentFormat.setForeground(Qt::darkGray);
+    rule.pattern = QRegularExpression("#[^\n]*");
     rule.format = singleLineCommentFormat;
     highlightingRules.append(rule);
 
@@ -103,7 +103,7 @@ Highlighter::Highlighter(QTextDocument *parent)
 
 //! [5]
     functionFormat.setFontItalic(true);
-    functionFormat.setForeground(Qt::blue);
+    functionFormat.setForeground(Qt::cyan);
     rule.pattern = QRegularExpression("\\b[A-Za-z0-9_]+(?=\\()");
     rule.format = functionFormat;
     highlightingRules.append(rule);

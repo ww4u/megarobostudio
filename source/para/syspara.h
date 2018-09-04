@@ -80,6 +80,10 @@ public:
     double mGeometryResolution;     //! 5mm
     double mAngleResolution;        //! degree
 
+                                    //! font
+    QString mFontFamily;
+    int     mPointSize;
+
                             //! user
     int mStyleIndex, mLangIndex;
     QString mLatestPrjPath, mLatestPrjName;

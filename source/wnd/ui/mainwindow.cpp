@@ -87,12 +87,20 @@ void MainWindow::init()
 
     m_pInterruptThread = NULL;
     m_pSampleThread = NULL;
+
+    m_pProcess = NULL;
 }
 void MainWindow::deinit()
 {
     if ( NULL != m_pSpyCfgModel )
     {
         delete m_pSpyCfgModel;
+    }
+
+    if ( NULL != m_pProcess )
+    {
+        m_pProcess->terminate();
+        delete m_pProcess;
     }
 
     delete ui;
@@ -1074,6 +1082,9 @@ void MainWindow::slot_tabwidget_currentChanged(int index)
 
     m_pRoboMgr->setOperable( false );
 
+    //! enabled
+    ui->actionRun_Script->setEnabled( false );
+
     //! to enable
     modelView *pViewModel;
     pViewModel = (modelView*)ui->widget->widget(index);
@@ -1101,6 +1112,11 @@ void MainWindow::slot_tabwidget_currentChanged(int index)
     else if ( objType == mcModelObj::model_scene_file )
     {
         m_pRoboMgr->setOperable( true );
+    }
+    else if ( objType == mcModelObj::model_py_file )
+    {
+        mCurrentScript = pViewModel->getModelObj()->getPath() + QDir::separator() + pViewModel->getModelObj()->getName();
+        ui->actionRun_Script->setEnabled( true );
     }
     else
     {}
@@ -1527,16 +1543,27 @@ void MainWindow::on_actiontest_triggered()
 //    qApp->setStyleSheet(qss.readAll());
 //    qss.close();
 logDbg();
-    QProcess *pProcess = new QProcess();
+//    QProcess *pProcess = new QProcess();
+    if ( NULL == m_pProcess )
+    {
+        m_pProcess = new QProcess();
+        connect( m_pProcess, SIGNAL(readyReadStandardOutput()),
+                 this, SLOT(slot_process_output()) );
+
+        connect( m_pProcess, SIGNAL(readyReadStandardError()),
+                 this, SLOT(slot_process_output()) );
+    }
 
     QStringList strList;
-    strList<<"-c"<<"print(\"hello\")";
-    pProcess->execute( "python", strList );
-    pProcess->waitForFinished();
+//    strList<<"-c"<<"print(\"hello\")";
+//    m_pProcess->execute( "python", strList );
 
-    logDbg()<<pProcess->readAllStandardOutput();
-    logDbg()<<pProcess->readAllStandardError();
-    delete pProcess;
+    strList<<"G:/study/py/hello.py";
+    m_pProcess->start( "python", strList );
+
+//    logDbg()<<pProcess->readAllStandardOutput();
+//    logDbg()<<pProcess->readAllStandardError();
+//    delete pProcess;
 
 }
 
@@ -1604,4 +1631,18 @@ void MainWindow::slot_pref_changed()
     }
 }
 
+void MainWindow::slot_process_output()
+{
+    Q_ASSERT( NULL != m_pProcess );
 
+    {
+        sysLog( m_pProcess->readAll() );
+    }
+}
+
+void MainWindow::slot_process_exit( int code, QProcess::ExitStatus stat )
+{
+    sysLog( tr("script complted") + QString::number( code ), QString::number( (int)stat ) );
+    ui->actionTerminate->setEnabled( false );
+    ui->actionRun_Script->setEnabled( true );
+}

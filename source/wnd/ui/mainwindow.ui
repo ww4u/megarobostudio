@@ -175,6 +175,9 @@
     </property>
     <addaction name="actionReset"/>
     <addaction name="actionForceStop"/>
+    <addaction name="separator"/>
+    <addaction name="actionRun_Script"/>
+    <addaction name="actionTerminate"/>
    </widget>
    <widget class="QMenu" name="menuTool_T">
     <property name="title">
@@ -576,6 +579,48 @@
    </property>
    <property name="text">
     <string>ReadMe...</string>
+   </property>
+  </action>
+  <action name="actionRun_Script">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>:/res/image/icon/playon.png</normaloff>:/res/image/icon/playon.png</iconset>
+   </property>
+   <property name="text">
+    <string>Run</string>
+   </property>
+   <property name="toolTip">
+    <string>Run Script</string>
+   </property>
+   <property name="statusTip">
+    <string/>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+R</string>
+   </property>
+  </action>
+  <action name="actionTerminate">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>:/res/image/icon/stop.png</normaloff>:/res/image/icon/stop.png</iconset>
+   </property>
+   <property name="text">
+    <string>Terminate</string>
+   </property>
+   <property name="toolTip">
+    <string>Terminate the script</string>
+   </property>
+   <property name="statusTip">
+    <string/>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+T</string>
    </property>
   </action>
  </widget>

@@ -394,5 +394,48 @@ void MainWindow::on_actionpref_triggered( )
     }
 }
 
+void MainWindow::on_actionRun_Script_triggered()
+{
+    if ( NULL == m_pProcess )
+    {
+        m_pProcess = new QProcess();
+        connect( m_pProcess, SIGNAL(readyReadStandardOutput()),
+                 this, SLOT(slot_process_output()) );
+
+        connect( m_pProcess, SIGNAL(readyRead()),
+                 this, SLOT(slot_process_output()) );
+
+
+        connect( m_pProcess, SIGNAL(readyReadStandardError()),
+                 this, SLOT(slot_process_output()) );
+
+        connect( m_pProcess, SIGNAL(finished(int,QProcess::ExitStatus)),
+                 this, SLOT(slot_process_exit(int,QProcess::ExitStatus)) );
+    }
+
+    Q_ASSERT( NULL != m_pProcess );
+    //! run the script
+    QStringList args;
+    args<<mCurrentScript;
+    m_pProcess->start( "python", args );
+
+    //! run
+    if ( m_pProcess->waitForStarted() )
+    {
+        sysLog( mCurrentScript, tr("started") );
+        ui->actionRun_Script->setEnabled( false );
+        ui->actionTerminate->setEnabled( true );
+    }
+    else
+    {}
+}
+
+void MainWindow::on_actionTerminate_triggered()
+{
+    if ( NULL != m_pProcess )
+    {
+        m_pProcess->kill();
+    }
+}
 
 

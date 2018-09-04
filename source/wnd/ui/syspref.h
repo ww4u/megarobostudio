@@ -83,9 +83,9 @@ private slots:
     void slot_toolbar_del();
     void slot_toolbar_clr();
 
-
-
     void on_gpAlias_toggled(bool arg1);
+
+    void on_btnFont_clicked();
 
 private:
     Ui::sysPref *ui;

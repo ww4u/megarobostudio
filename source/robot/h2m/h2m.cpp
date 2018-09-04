@@ -35,7 +35,6 @@ robotH2M::robotH2M()
 //    mImage = QImage::fromData( _megaimage, sizeof(_megaimage) );
 
     mArmLengths.clear();
-//    mArmLengths<<13.4<<13.4<<802<<494<<52<<38;
     mArmLengths<<13.4<<13.4<<580<<494<<52<<38;
 
     //! mask
@@ -45,11 +44,7 @@ robotH2M::robotH2M()
     mJointZeroCcw.clear();
     mJointZeroCcw<<true<<true;
 
-//    mZeroX = 32.7;
-//    mZeroY = 0;
-
     mAngleDir.clear();
-//    mAngleDir<<false<<true;                 //! x:  y:
     mAngleDir<<true<<false;
 
     mAxesDirs.clear();

@@ -76,6 +76,10 @@ void modelSysPref::rst()
     mGeometryResolution = 0.1;
     mAngleResolution = 0.001;
 
+    //! font
+    mFontFamily = "arial";
+    mPointSize = 12;
+
     mLangIndex = 0;
     mStyleIndex = 0;
 
@@ -220,6 +224,14 @@ int modelSysPref::save( const QString &str )
 
     writer.writeTextElement( "geomerty_resolution", QString::number( mGeometryResolution ) );
     writer.writeTextElement( "angle_resolution", QString::number( mAngleResolution ) );
+
+    writer.writeEndElement();
+
+    //! font
+    writer.writeStartElement("font");
+
+    writer.writeTextElement( "family", mFontFamily );
+    writer.writeTextElement( "size", QString::number( mPointSize ) );
 
     writer.writeEndElement();
 
@@ -454,6 +466,18 @@ int modelSysPref::load( const QString &str )
                         { mGeometryResolution = reader.readElementText().toDouble(); }
                         else if ( reader.name() == "angle_resolution" )
                         { mAngleResolution = reader.readElementText().toDouble(); }
+                        else
+                        { reader.skipCurrentElement(); }
+                    }
+                }
+                else if ( reader.name() == "font" )
+                {
+                    while( reader.readNextStartElement() )
+                    {
+                        if ( reader.name() == "family" )
+                        { mFontFamily = reader.readElementText(); }
+                        else if ( reader.name() == "size" )
+                        { mPointSize = reader.readElementText().toInt(); }
                         else
                         { reader.skipCurrentElement(); }
                     }

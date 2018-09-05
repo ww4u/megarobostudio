@@ -1464,12 +1464,9 @@ void MainWindow::on_actionAngle_A_triggered()
         m_pAngleMonitor->setWindowTitle( tr("Angle") );
 
         QMap<int, QString> subMap;
-//        subMap[ MRQ_REPORT_STATE_XANGLE ] = tr("Increase Angle");
-        subMap[ MRQ_REPORT_STATE_ABSENC ] = tr("Absolute Angle");
+        subMap[ MRQ_DATA_XANGLE ] = tr("Increase Angle");
+        subMap[ MRQ_DATA_ABSANGLE ] = tr("Absolute Angle");
         m_pAngleMonitor->setDataIds( subMap );
-        m_pAngleMonitor->setDataId( MRQ_REPORT_STATE_ABSENC );
-
-        m_pAngleMonitor->setRange( 0, 360 );
     }
 
     m_pAngleMonitor->show();
@@ -1492,8 +1489,7 @@ void MainWindow::on_actionDistance_D_triggered()
         { return; }
 
         m_pDistMonitor->setWindowTitle( tr("Distance") );
-        m_pDistMonitor->setDataId( MRQ_REPORT_STATE_DIST );
-        m_pDistMonitor->setRange( 0, 65535 );
+        m_pDistMonitor->setDataId( MRQ_DATA_DISTANCE );
     }
 
     m_pDistMonitor->show();

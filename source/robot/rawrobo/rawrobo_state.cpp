@@ -30,22 +30,18 @@ void RawRoboUnit::toState( int stat, RoboMsg &detail )
                          selfFsm()->Robot()->name(),
                          stat );
 
-    logDbg()<<selfFsm()->Robot()->name();
+//    logDbg()<<selfFsm()->Robot()->name();
 }
 
 void RawRoboUnit::onEnter( RoboMsg &detail )
 {
     initState();
-
-//    selfFsm()->Robot()->lpc()->clear();
 }
 
 //! rst state
 void RawRoboUnit::onExit( RoboMsg &detail )
 {
     initState();
-
-//    selfFsm()->Robot()->lpc()->clear();
 }
 
 void RawRoboUnit::proc( int msg, RoboMsg &detail )
@@ -86,8 +82,6 @@ void RawRoboUnit::proc( int msg, RoboMsg &detail )
     else if ( msg == MegaDevice::mrq_msg_call )
     {
         selfFsm()->reqRun( true );          //! request run
-
-//        selfFsm()->Robot()->switchPrepare( selfFsm()->region() );
 
                                             //! start timer
         toState( MegaDevice::mrq_state_calcend, detail );

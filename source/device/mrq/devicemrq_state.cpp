@@ -37,10 +37,10 @@ deviceMRQ *MrqFsmContext::Mrq()
 
 void MrqFsmContext::reqRun( bool b )
 {
-    mbRunReqed = b;//logWarning()<<b<<QString::number( (UINT_PTR)(&mbRunReqed), 16 );
+    mbRunReqed = b;
 }
 bool MrqFsmContext::runReqed()
-{//logDbg()<<QString::number( (quint32)(&mbRunReqed), 16 );
+{
     return mbRunReqed;
 }
 
@@ -157,15 +157,10 @@ void MrqUnit::toState( mrqState stat, RoboMsg &detail )
 void MrqUnit::onEnter( RoboMsg &detail )
 {
     killTimer( state_timer_id );
-
-//    selfFsm()->Mrq()->lpc( selfFsm()->axes() )->clear();
-
 }
 void MrqUnit::onExit( RoboMsg &detail )
 {
     killTimer( state_timer_id );
-
-//    selfFsm()->Mrq()->lpc( selfFsm()->axes() )->clear();
 }
 
 void MrqUnit::onTimer( int id )
@@ -239,6 +234,9 @@ void IdleMrqUnit::onEnter(RoboMsg &detail)
     selfFsm()->reqRun( false );
 
     killTimer( state_timer_id );
+
+//    if ( selfFsm()->mId2 == 4 )
+//    { sysLog( __FUNCTION__, QString::number(__LINE__), QString::number( selfFsm()->mId3 ) ); }
 }
 
 //! RunReqedMrqUnit
@@ -516,10 +514,10 @@ void CalcendMrqUnit::onTimer( int id )
     if ( id == prepare_timer_id )
     {
         selfFsm()->Mrq()->setMOTION_SWITCH(
-                                                    selfFsm()->axes(),
+                                                selfFsm()->axes(),
 
-                                                    MRQ_MOTION_SWITCH_PREPARE,
-                                                    (MRQ_MOTION_SWITCH_1)selfFsm()->page()
+                                                MRQ_MOTION_SWITCH_PREPARE,
+                                                (MRQ_MOTION_SWITCH_1)selfFsm()->page()
                                                 );
         sysError("parepare fail", QString::number( selfFsm()->axes() ) );
     }
@@ -581,7 +579,7 @@ void StandbyMrqUnit::proc( int msg, RoboMsg &detail )
                                                 MRQ_MOTION_SWITCH_RUN,
                                                 (MRQ_MOTION_SWITCH_1)selfFsm()->page() );
 //            sysLog( __FUNCTION__, QString::number(__LINE__) );
-            logDbg();
+//            logDbg();
         }
         else
         { logDbg(); }
@@ -615,7 +613,7 @@ void StandbyMrqUnit::onEnter( RoboMsg &detail )
         ret = selfFsm()->Mrq()->setMOTION_SWITCH( selfFsm()->axes(),
                                                   MRQ_MOTION_SWITCH_RUN,
                                                   (MRQ_MOTION_SWITCH_1)selfFsm()->page() );
-        logDbg();
+//        logDbg();
 
         if ( ret != 0  )
         { toState(mrq_state_idle, detail );  sysLog( __FUNCTION__, QString::number(__LINE__) ); }

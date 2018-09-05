@@ -143,27 +143,6 @@ int RawRobo::state( const tpvRegion &region, int inTask )
             { return MegaDevice::mrq_state_running; }
         }
 
-//        MegaDevice::deviceMRQ *pMrq;
-//        int subAx, mrqState;
-//        //! sub joint task -- check again
-//        for ( int i = 0; i < axes(); i++ )
-//        {
-//            pMrq = jointDevice( i, &subAx );
-//            if ( NULL == pMrq )
-//            {}
-//            //! get real state
-//            else
-//            {
-//                mrqState = pMrq->fsmState( region, inTask );
-//                if ( mrqState == MegaDevice::mrq_state_running )
-//                {
-//                    return MegaDevice::mrq_state_running;
-//                }
-//                else
-//                {}
-//            }
-//        }
-
         //! real status
         return fsm( region )->state();
     }

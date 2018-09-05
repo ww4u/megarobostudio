@@ -46,6 +46,8 @@ void PortOption::setRsrcs( const QStringList &rsrcs )
 {
     ui->listMRTs->clear();
     ui->listMRTs->addItems( rsrcs );
+
+    on_listMRTs_currentRowChanged( 0 );
 }
 QStringList PortOption::rsrcs()
 {

@@ -97,7 +97,7 @@ protected:
     void *m_pLeaderPara;
 
     QMutex *m_pMutex;
-
+public:
     //! debug
     int mId1, mId2, mId3;
 };

@@ -20,8 +20,6 @@ public:
 
     QString connection();
 
-    void setRange( int mi, int ma );
-
     void setValue( float val );
     float value();
 

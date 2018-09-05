@@ -122,7 +122,8 @@ int deviceMRQ::beginTpvDownload( const tpvRegion &region )
                                     (MRQ_MOTION_SWITCH_1)region.page()) );
 
     //! force to idle
-    ((MrqFsm*)Fsm( region ))->setState( MegaDevice::mrq_state_idle );
+//    ((MrqFsm*)Fsm( region ))->setState( MegaDevice::mrq_state_idle );
+    ((MrqFsm*)Fsm( region ))->setState( MegaDevice::mrq_state_program );
 
     //! \errant exec mode to cycle
     checked_call( setMOTIONPLAN_EXECUTEMODE( pvt_page_p,

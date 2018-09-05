@@ -46,14 +46,13 @@ robotH2::robotH2()
     mJointCcwMask<<false<<false;
 
     mJointZeroCcw.clear();
-    mJointZeroCcw<<true<<true;
+    mJointZeroCcw<<false<<false;
 
     mZeroX = 32.7;
     mZeroY = 0;
 
     mAngleDir.clear();
-//    mAngleDir<<true<<true;                 //! x:  y:
-    mAngleDir<<false<<false;                 //! x:  y:
+    mAngleDir<<true<<true;
 
     mAxesDirs.clear();
     mAxesDirs<<-1<<-1;

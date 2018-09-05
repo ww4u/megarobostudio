@@ -6,15 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>618</width>
-    <height>41</height>
+    <width>204</width>
+    <height>73</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Angle</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../res/res.qrc">
+   <iconset>
     <normaloff>:/res/image/icon/332.png</normaloff>:/res/image/icon/332.png</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
@@ -56,7 +56,7 @@
         <string>...</string>
        </property>
        <property name="icon">
-        <iconset resource="../res/res.qrc">
+        <iconset>
          <normaloff>:/res/image/icon/addition.png</normaloff>:/res/image/icon/addition.png</iconset>
        </property>
        <property name="iconSize">
@@ -76,7 +76,7 @@
         <string>...</string>
        </property>
        <property name="icon">
-        <iconset resource="../res/res.qrc">
+        <iconset>
          <normaloff>:/res/image/icon/empty.png</normaloff>:/res/image/icon/empty.png</iconset>
        </property>
        <property name="iconSize">
@@ -84,73 +84,6 @@
          <width>24</width>
          <height>24</height>
         </size>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLabel" name="label">
-       <property name="maximumSize">
-        <size>
-         <width>24</width>
-         <height>24</height>
-        </size>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="pixmap">
-        <pixmap resource="../res/res.qrc">:/res/image/icon3/time.png</pixmap>
-       </property>
-       <property name="scaledContents">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QSpinBox" name="spinInterval">
-       <property name="minimumSize">
-        <size>
-         <width>0</width>
-         <height>24</height>
-        </size>
-       </property>
-       <property name="toolTip">
-        <string extracomment="Interval">Tick</string>
-       </property>
-       <property name="minimum">
-        <number>10</number>
-       </property>
-       <property name="maximum">
-        <number>10000</number>
-       </property>
-       <property name="singleStep">
-        <number>100</number>
-       </property>
-       <property name="value">
-        <number>1000</number>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLabel" name="label_2">
-       <property name="text">
-        <string>ms</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QCheckBox" name="checkBox">
-       <property name="minimumSize">
-        <size>
-         <width>0</width>
-         <height>24</height>
-        </size>
-       </property>
-       <property name="toolTip">
-        <string extracomment="On,off"/>
-       </property>
-       <property name="text">
-        <string>On/Off</string>
        </property>
       </widget>
      </item>
@@ -190,6 +123,77 @@
     </layout>
    </item>
    <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QCheckBox" name="checkBox">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>24</height>
+        </size>
+       </property>
+       <property name="toolTip">
+        <string extracomment="On,off"/>
+       </property>
+       <property name="text">
+        <string>On/Off</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="label">
+       <property name="maximumSize">
+        <size>
+         <width>24</width>
+         <height>24</height>
+        </size>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>:/res/image/icon3/time.png</pixmap>
+       </property>
+       <property name="scaledContents">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>ms</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QSpinBox" name="spinInterval">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>24</height>
+        </size>
+       </property>
+       <property name="toolTip">
+        <string extracomment="Interval">Tick</string>
+       </property>
+       <property name="minimum">
+        <number>10</number>
+       </property>
+       <property name="maximum">
+        <number>10000</number>
+       </property>
+       <property name="singleStep">
+        <number>100</number>
+       </property>
+       <property name="value">
+        <number>1000</number>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
     <widget class="Line" name="line">
      <property name="minimumSize">
       <size>
@@ -214,8 +218,6 @@
    <header>valuecombobox.h</header>
   </customwidget>
  </customwidgets>
- <resources>
-  <include location="../res/res.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

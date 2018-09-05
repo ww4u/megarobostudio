@@ -16,9 +16,6 @@ AngleMonitor::AngleMonitor(QWidget *parent) :
     m_pModel = NULL;
     mDataId = 0;
 
-    mMin = 0;
-    mMax = 360;
-
     ui->comboBox->setEnabled( false );
     ui->comboBox->setVisible( false );
     ui->labelSubItem->setVisible( false );
@@ -57,12 +54,6 @@ void AngleMonitor::setDataId( int id )
     { ui->comboBox->setValue( id ); }
 }
 
-void AngleMonitor::setRange( int mi, int ma )
-{
-    mMin = mi;
-    mMax = ma;
-}
-
 void AngleMonitor::setDataIds( QMap<int, QString> &subItem )
 {
     QMap<int, QString>::const_iterator i = subItem.constBegin();
@@ -82,8 +73,6 @@ void  AngleMonitor::addAnAngle()
     AngleWidget *pWidget = new AngleWidget();
     if ( NULL == pWidget )
     { return; }
-
-    pWidget->setRange( mMin, mMax );
 
     mAngleWidgets.append( pWidget );
     emit sig_anglewidget_changed();

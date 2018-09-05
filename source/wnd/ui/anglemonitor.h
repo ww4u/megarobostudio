@@ -23,7 +23,6 @@ public:
     void setConnections( const QStringList &conn );
 
     void setDataId( int id );
-    void setRange( int mi, int ma );
 
     void setDataIds( QMap<int, QString> &subItem );
 
@@ -65,7 +64,6 @@ private:
     QStringList mConns;
 
     int mDataId;
-    int mMin, mMax;
 };
 
 #endif // ANGLEMONITOR_H

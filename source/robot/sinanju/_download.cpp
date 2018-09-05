@@ -69,7 +69,7 @@ int robotSinanju::downloadTrace( const tpvRegion &region,
     ret = download( groups, jointsTabList, region );
     if ( ret != 0 )
     { return ret; }
-logDbg()<<groups.size();
+//logDbg()<<groups.size();
 
     return 0;
 }

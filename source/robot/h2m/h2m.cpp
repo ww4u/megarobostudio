@@ -42,10 +42,10 @@ robotH2M::robotH2M()
     mJointCcwMask<<false<<false;
 
     mJointZeroCcw.clear();
-    mJointZeroCcw<<true<<true;
+    mJointZeroCcw<<false<<false;
 
     mAngleDir.clear();
-    mAngleDir<<true<<false;
+    mAngleDir<<true<<true;
 
     mAxesDirs.clear();
     mAxesDirs<<-1<<-1;

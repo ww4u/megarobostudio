@@ -1174,6 +1174,101 @@ int IBus::read( DeviceId &nodeId, byte mainCode,
 }
 
 //! ******* sub apis ********
+
+bool IBus::verifyCode( byte mainCode,
+                 byte subCode,
+                 byte *pBuf )
+{
+    Q_ASSERT( NULL != pBuf );
+
+    if ( mainCode != pBuf[0] ||
+         subCode != pBuf[1] )
+    { return false; }
+
+    return true;
+}
+
+bool IBus::verifyCode( byte mainCode,
+                 byte subCode,
+                 byte v0,
+                 byte *pBuf )
+{
+    Q_ASSERT( NULL != pBuf );
+
+    if ( mainCode != pBuf[0] ||
+         subCode != pBuf[1] ||
+         v0 != pBuf[2] )
+    { return false; }
+
+    return true;
+}
+
+bool IBus::verifyCode( byte mainCode,
+                 byte subCode,
+                 UInt16 v0,
+                 byte *pBuf )
+{
+    UInt16 val;
+
+    memcpy( &val, pBuf + 2, 2 );
+
+    if ( mainCode != pBuf[0] ||
+         subCode != pBuf[1] ||
+         v0 != val )
+    { return false; }
+
+    return true;
+}
+
+bool IBus::verifyCode( byte mainCode,
+                 byte subCode,
+                 byte v0,
+                 byte v1,
+                 byte *pBuf )
+{
+    if ( mainCode != pBuf[0] ||
+         subCode != pBuf[1] ||
+         v0 != pBuf[2] ||
+         v1 != pBuf[3] )
+    { return false; }
+
+    return true;
+}
+
+bool IBus::verifyCode( byte mainCode,
+                 byte subCode,
+                 byte v0,
+                 UInt16 v1,
+                 UInt16 v2,
+                 byte *pBuf )
+{
+    UInt16 val1, val2;
+
+    memcpy( &val1, pBuf + 3, 2 );
+    memcpy( &val2, pBuf + 5, 2 );
+
+    if ( mainCode != pBuf[0] ||
+         subCode != pBuf[1] ||
+         v0 != pBuf[2] ||
+         v1 != val1 ||
+         v2 != val2 )
+    { return false; }
+
+    return true;
+}
+
+#define VERIFY_CODE()   if ( verifyCode( mainCode, subCode, readBuf ) ){} \
+                        else{ return -1; }
+
+#define VERIFY_CODE_3()   if ( verifyCode( mainCode, subCode, v0, readBuf ) ){} \
+                        else{ return -1; }
+
+#define VERIFY_CODE_4()   if ( verifyCode( mainCode, subCode, v0, v1, readBuf ) ){} \
+                        else{ return -1; }
+
+#define VERIFY_CODE_5()   if ( verifyCode( mainCode, subCode, v0, v1, v2, readBuf ) ){} \
+                        else{ return -1; }
+
 int IBus::_read( DeviceId &nodeId, byte mainCode,
             byte subCode,
             byte * v0,
@@ -1194,6 +1289,8 @@ int IBus::_read( DeviceId &nodeId, byte mainCode,
     ret = doRead( nodeId, readBuf, sizeof(readBuf), &retLen );
     if ( ret != 0 )
     { return ret; }
+
+    VERIFY_CODE();
 
     *v0 = readBuf[2];
     return 0;
@@ -1221,6 +1318,8 @@ int IBus::_read( DeviceId &nodeId, byte mainCode,
     if ( ret != 0 )
     { return ret; }
 
+    VERIFY_CODE();
+
     *v0 = readBuf[2];
     *v1 = readBuf[3];
     return 0;
@@ -1247,6 +1346,8 @@ int IBus::_read( DeviceId &id, byte mainCode,
     ret = doRead( id, readBuf, sizeof(readBuf), &retLen );
     if ( ret != 0 )
     { return ret; }
+
+    VERIFY_CODE();
 
     *v0 = readBuf[2];
     memcpy( v1, readBuf + 3, 4 );
@@ -1278,6 +1379,8 @@ int IBus::_read( DeviceId &nodeId, byte mainCode,
     if ( ret != 0 )
     { return ret; }
 
+    VERIFY_CODE();
+
     *v0 = readBuf[2];
     *v1 = readBuf[3];
     *v2 = readBuf[4];
@@ -1308,6 +1411,8 @@ int IBus::_read( DeviceId &nodeId, byte mainCode,
     if ( ret != 0 )
     { return ret; }
 
+    VERIFY_CODE();
+
     *v0 = readBuf[2];
     *v1 = readBuf[3];
     *v2 = readBuf[4];
@@ -1337,6 +1442,8 @@ int IBus::_read( DeviceId &nodeId, byte mainCode,
     ret = doRead( nodeId, readBuf, sizeof(readBuf), &retLen );
     if ( ret != 0 )
     { return ret; }
+
+    VERIFY_CODE();
 
     *v0 = readBuf[2];
     *v1 = readBuf[3];
@@ -1372,6 +1479,8 @@ int IBus::_read( DeviceId &nodeId, byte mainCode,
     if ( ret != 0 )
     { return ret; }
 
+    VERIFY_CODE();
+
     *v0 = readBuf[2];
     *v1 = readBuf[3];
     *v2 = readBuf[4];
@@ -1404,6 +1513,8 @@ int IBus::_read( DeviceId &nodeId, byte mainCode,
     if ( ret != 0 )
     { return ret; }
 
+    VERIFY_CODE();
+
     memcpy( v0, readBuf + 2, 2 );
 
     return 0;
@@ -1429,6 +1540,8 @@ int IBus::_read( DeviceId &nodeId, byte mainCode,
     ret = doRead( nodeId, readBuf, sizeof(readBuf), &retLen );
     if ( ret != 0 )
     { return ret; }
+
+    VERIFY_CODE();
 
     memcpy( v0, readBuf + 2, 4 );
 
@@ -1456,6 +1569,8 @@ int IBus::_read( DeviceId &nodeId, byte mainCode,
     ret = doRead( nodeId, readBuf, sizeof(readBuf), &retLen );
     if ( ret != 0 )
     { return ret; }
+
+    VERIFY_CODE();
 
     memcpy( v0, readBuf + 2, 4 );
 
@@ -1486,6 +1601,8 @@ int IBus::_read( DeviceId &nodeId, byte mainCode,
     if ( ret != 0 )
     { return ret; }
 
+    VERIFY_CODE_3();
+
     memcpy( v1, readBuf + 3, 1 );
 
     return 0;
@@ -1514,6 +1631,8 @@ int IBus::_read( DeviceId &nodeId, byte mainCode,
     ret = doRead( nodeId, readBuf, sizeof(readBuf), &retLen );
     if ( ret != 0 )
     { return ret; }
+
+    VERIFY_CODE_3();
 
     memcpy( v1, readBuf + 3, 1 );
     memcpy( v2, readBuf + 4, 1 );
@@ -1545,6 +1664,8 @@ int IBus::_read( DeviceId &nodeId, byte mainCode,
     if ( ret != 0 )
     { return ret; }
 
+    VERIFY_CODE_3();
+
     memcpy( v1, readBuf + 3, 1 );
     memcpy( v2, readBuf + 4, 1 );
 
@@ -1575,6 +1696,8 @@ int IBus::_read( DeviceId &nodeId, byte mainCode,
     if ( ret != 0 )
     { return ret; }
 
+    VERIFY_CODE_3();
+
     memcpy( v1, readBuf + 3, 1 );
     memcpy( v2, readBuf + 4, 4 );
 
@@ -1604,6 +1727,8 @@ int IBus::_read( DeviceId &id, byte mainCode,
     ret = doRead( id, readBuf, sizeof(readBuf), &retLen );
     if ( ret != 0 )
     { return ret; }
+
+    VERIFY_CODE_3();
 
     memcpy( v1, readBuf + 3, 1 );
     memcpy( v2, readBuf + 4, 4 );
@@ -1639,6 +1764,8 @@ int IBus::_read( DeviceId &nodeId, byte mainCode,
     if ( ret != 0 )
     { return ret; }
 
+    VERIFY_CODE_3();
+
     memcpy( v1, readBuf + 3, 1 );
     memcpy( v2, readBuf + 4, 1 );
     memcpy( v3, readBuf + 5, 1 );
@@ -1671,6 +1798,8 @@ int IBus::_read( DeviceId &nodeId, byte mainCode,
     if ( ret != 0 )
     { return ret; }
 
+    VERIFY_CODE_3();
+
     memcpy( v1, readBuf + 3, 2 );
 
     return 0;
@@ -1698,6 +1827,8 @@ int IBus::_read( DeviceId &nodeId, byte mainCode,
     ret = doRead( nodeId, readBuf, sizeof(readBuf), &retLen );
     if ( ret != 0 )
     { return ret; }
+
+    VERIFY_CODE_3();
 
     memcpy( v1, readBuf + 3, 4 );
 
@@ -1727,6 +1858,8 @@ int IBus::_read( DeviceId &nodeId, byte mainCode,
     if ( ret != 0 )
     { return ret; }
 
+    VERIFY_CODE_3();
+
     memcpy( v1, readBuf + 3, 2 );
 
     return 0;
@@ -1755,6 +1888,8 @@ int IBus::_read( DeviceId &nodeId, byte mainCode,
     if ( ret != 0 )
     { return ret; }
 
+    VERIFY_CODE_3();
+
     memcpy( v1, readBuf + 3, 4 );
 
     return 0;
@@ -1783,6 +1918,8 @@ int IBus::_read( DeviceId &nodeId, byte mainCode,
     if ( ret != 0 )
     { return ret; }
 
+    VERIFY_CODE_3();
+
     memcpy( v1, readBuf + 3, 4 );
 
     return 0;
@@ -1810,6 +1947,8 @@ int IBus::_read( DeviceId &nodeId, byte mainCode,
     ret = doRead( nodeId, readBuf, sizeof(readBuf), &retLen );
     if ( ret != 0 )
     { return ret; }
+
+    VERIFY_CODE_3();
 
     memcpy( v1, readBuf + 4, 4 );
 
@@ -1840,6 +1979,8 @@ int IBus::_read( DeviceId &nodeId, byte mainCode,
     ret = doRead( nodeId, readBuf, sizeof(readBuf), &retLen );
     if ( ret != 0 )
     { return ret; }
+
+    VERIFY_CODE_4();
 
     memcpy( v2, readBuf + 4, 1 );
 
@@ -1874,6 +2015,8 @@ int IBus::_read( DeviceId &nodeId, byte mainCode,
     if ( ret != 0 )
     { return ret; }
 
+    VERIFY_CODE_4();
+
     *v2 = readBuf[4];
     *v3 = readBuf[5];
     *v4 = readBuf[6];
@@ -1906,6 +2049,8 @@ int IBus::_read( DeviceId &nodeId, byte mainCode,
     if ( ret != 0 )
     { return ret; }
 
+    VERIFY_CODE_4();
+
     *v2 = readBuf[4];
 
     return 0;
@@ -1934,6 +2079,8 @@ int IBus::_read( DeviceId &nodeId, byte mainCode,
     ret = doRead( nodeId, readBuf, sizeof(readBuf), &retLen );
     if ( ret != 0 )
     { return ret; }
+
+    VERIFY_CODE_4();
 
     memcpy( v2, readBuf + 4, 2 );
 
@@ -1964,6 +2111,8 @@ int IBus::_read( DeviceId &nodeId, byte mainCode,
     if ( ret != 0 )
     { return ret; }
 
+    VERIFY_CODE_4();
+
     memcpy( v2, readBuf + 4, 2 );
 
     return 0;
@@ -1992,6 +2141,8 @@ int IBus::_read( DeviceId &nodeId, byte mainCode,
     ret = doRead( nodeId, readBuf, sizeof(readBuf), &retLen );
     if ( ret != 0 )
     { return ret; }
+
+    VERIFY_CODE_4();
 
     memcpy( v2, readBuf + 4, 4 );
 
@@ -2022,7 +2173,7 @@ int IBus::_read( DeviceId &nodeId, byte mainCode,
     if ( ret != 0 )
     { return ret; }
 
-    //! \todo check main/sub code
+    VERIFY_CODE_4();
 
     memcpy( v2, readBuf + 4, 4 );
 
@@ -2054,7 +2205,7 @@ int IBus::_read( DeviceId &nodeId, byte mainCode,
     if ( ret != 0 )
     { return ret; }
 
-    //! \todo check main/sub code
+    VERIFY_CODE_5();
 
     memcpy( v3, readBuf + 7, 1 );
 
@@ -2086,7 +2237,7 @@ int IBus::_read( DeviceId &nodeId, byte mainCode,
     if ( ret != 0 )
     { return ret; }
 
-    //! \todo check main/sub code
+    VERIFY_CODE_4();
 
     memcpy( v2, readBuf + 4, sizeof(UInt16) );
     memcpy( v3, readBuf + 6, sizeof(UInt16) );

@@ -51,5 +51,6 @@ void RawRobo::onMsg( int subAxes, RoboMsg &msg )
     logDbg()<<region.axes()<<region.page();
     Q_ASSERT( region.page() >= 0 && region.page() < regions() );
 
+    //! to some region
     fsm( region )->proc( msg.Msg(), msg );
 }

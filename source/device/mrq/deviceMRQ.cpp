@@ -405,17 +405,23 @@ int deviceMRQ::micUpload( int ch, const QString &fileName )
 //! [0~360)
 float deviceMRQ::getIncAngle( int ax )
 {
-//    int ret;
-//    quint32 xangle;
+    //! get lines
+    int ret;
+    int xLines;
+    ret = MRQ::getMOTION_ABCOUNT( ax, &xLines );
+    if ( ret != 0 )
+    { return 0; }
 
-//    ret = MRQ::getREPORT_DATA( ax, MRQ_REPORT_STATE_XANGLE, &xangle );
-//    if ( ret != 0 )
-//    { return -1; }
-//    else
-//    {
-//        return INC_ANGLE_TO_DEG( xangle );
-//    }
-    return 0;
+    //! try the line number
+    if ( mENCODER_LINENUM[ax] < 1 )
+    { getENCODER_LINENUM( ax, mENCODER_LINENUM + ax ); }
+    if ( mENCODER_LINENUM[ax] < 1 )
+    {
+        sysError( QObject::tr("Invalid encoder line number") );
+        return 0;
+    }
+
+    return xLines*360.0/mENCODER_LINENUM[ax];
 }
 
 //! [0~360)
@@ -452,11 +458,11 @@ float deviceMRQ::getDist( int ax )
 
 float deviceMRQ::getSensor( int ax, int dataId )
 {
-    if ( dataId == MRQ_REPORT_STATE_DIST )
+    if ( dataId == MRQ_DATA_DISTANCE )
     { return getDist( ax); }
-//    else if ( dataId == MRQ_REPORT_STATE_XANGLE )
-//    { return getIncAngle( ax ); }
-    else if ( dataId == MRQ_REPORT_STATE_ABSENC )
+    else if ( dataId == MRQ_DATA_XANGLE )
+    { return getIncAngle( ax ); }
+    else if ( dataId == MRQ_DATA_ABSANGLE )
     { return getAbsAngle( ax ); }
     else
     { return 0; }
@@ -473,7 +479,7 @@ bool  deviceMRQ::getEncoderZeroValid()
 
     return false;
 }
-int   deviceMRQ::setEncoderZero( int ax, float zero )
+int deviceMRQ::setEncoderZero( int ax, float zero )
 {
     quint32 zeroEnc = valueToAbsAngle( zero );
 

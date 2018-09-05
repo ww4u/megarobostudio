@@ -47,14 +47,13 @@ robotH2Z::robotH2Z()
     mJointCcwMask[2] = true;
 
     mJointZeroCcw.clear();
-    mJointZeroCcw<<true<<true<<false;
+    mJointZeroCcw<<false<<false<<false;
 
     mZeroX = 32.7;
     mZeroY = 0;
 
     mAngleDir.clear();
-//    mAngleDir<<false<<true<<true;                 //! x:  y:
-    mAngleDir<<false<<false<<true;
+    mAngleDir<<true<<true<<true;
 
     mAxesDirs.clear();
     mAxesDirs<<-1<<-1<<1;

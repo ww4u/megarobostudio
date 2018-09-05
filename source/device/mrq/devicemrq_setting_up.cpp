@@ -177,7 +177,7 @@ MRQ_PROGRESS( 50, ("TRIGGER") );
         }
         Q_ASSERT( i < sizeof_array(mTRIGGER_MODE) );
         checked_call( getTRIGGER_MODE( i, mTRIGGER_MODE+i) );
-        checked_call( getTRIGGER_PATTSTATE( i, mTRIGGER_PATTSTATE+i) );
+//        checked_call( getTRIGGER_PATTSTATE( i, mTRIGGER_PATTSTATE+i) );
 
 //        checked_call( getTRIGGER_PATTERN( i,
 //                                          mTRIGGER_PATTERN+i,
@@ -187,9 +187,9 @@ MRQ_PROGRESS( 50, ("TRIGGER") );
 //                                          mTRIGGER_PATTERN4+i
 //                                          ) ); U16?
 
-        checked_call( getTRIGGER_PATTRESP( i, mTRIGGER_PATTRESP+i) );
-        checked_call( getTRIGGER_PATTSMODE( i, mTRIGGER_PATTSMODE+i) );
-        checked_call( getTRIGGER_PATTSPERIOD( i, mTRIGGER_PATTSPERIOD+i) );
+//        checked_call( getTRIGGER_PATTRESP( i, mTRIGGER_PATTRESP+i) );
+//        checked_call( getTRIGGER_PATTSMODE( i, mTRIGGER_PATTSMODE+i) );
+//        checked_call( getTRIGGER_PATTSPERIOD( i, mTRIGGER_PATTSPERIOD+i) );
 
         for( int j = 0; j < mTrigSrcs; j++ )
         {

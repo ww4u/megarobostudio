@@ -560,6 +560,30 @@ public :
 
 
         //! ******** sub apis ********
+        bool verifyCode( byte mainCode,
+                         byte subCode,
+                         byte *pBuf );
+        bool verifyCode( byte mainCode,
+                         byte subCode,
+                         byte v0,
+                         byte *pBuf );
+        bool verifyCode( byte mainCode,
+                         byte subCode,
+                         UInt16 v0,
+                         byte *pBuf );
+
+        bool verifyCode( byte mainCode,
+                         byte subCode,
+                         byte v0,
+                         byte v1,
+                         byte *pBuf );
+        bool verifyCode( byte mainCode,
+                         byte subCode,
+                         byte v0,
+                         UInt16 v1,
+                         UInt16 v2,
+                         byte *pBuf );
+
         int _read( DeviceId &id, byte mainCode,
                     byte subCode,
                     byte * v0,

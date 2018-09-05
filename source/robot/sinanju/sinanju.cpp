@@ -196,12 +196,12 @@ void robotSinanju::onMsg( int subAxes, RoboMsg &msg )
 int robotSinanju::download( QList<tpvGroup*> &groups,
                              QList<int> &joints,
                              const tpvRegion &region )
-{logDbg();
+{//logDbg();
     Q_ASSERT( groups.size() == joints.size() );
 
     MegaDevice::deviceMRQ *pMrq;
     int axes;
-logDbg();
+//logDbg();
     int ret;
     tpvRegion mrqRegion;
     for ( int i = 0; i < groups.size(); i++ )

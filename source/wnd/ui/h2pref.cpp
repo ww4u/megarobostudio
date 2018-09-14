@@ -90,6 +90,14 @@ void H2Pref::updateData()
                    ui->spinGapDist->value(),
                    ui->spinGapZTime->value(),
                    ui->spinGapZDist->value() );
+
+    //! ccw
+    if ( ui->chkCcwX->isVisible() )
+    { pRobo->setJointZeroCcw( 0, ui->chkCcwX->isChecked() ); }
+    if ( ui->chkCcwY->isVisible() )
+    { pRobo->setJointZeroCcw( 1, ui->chkCcwY->isChecked() ); }
+    if ( ui->chkCcw->isVisible() )
+    { pRobo->setJointZeroCcw( 2, ui->chkCcw->isChecked() ); }
 }
 
 void H2Pref::updateUi()
@@ -115,7 +123,13 @@ void H2Pref::updateUi()
     ui->spinGapZTime->setValue( gapZTime );
     ui->spinGapZDist->setValue( gapZDistance );
 
-//    ui->chkCcw->setChecked( pRobo->jointZeroCcwList().at(2) );
+    //! check
+    if ( ui->chkCcwX->isVisible() )
+    { ui->chkCcwX->setChecked( pRobo->jointZeroCcwList().at(0) ); }
+    if ( ui->chkCcwY->isVisible() )
+    { ui->chkCcwY->setChecked( pRobo->jointZeroCcwList().at(1) ); }
+    if ( ui->chkCcw->isVisible() )
+    { ui->chkCcw->setChecked( pRobo->jointZeroCcwList().at(2) ); }
 }
 
 void H2Pref::adaptUi()
@@ -139,6 +153,13 @@ void H2Pref::adaptUi()
     }
     else
     {}
+
+    //! x,y,ccw visible
+    ui->chkCcwX->setVisible( pBase->jointZeroCcwVisibleList().at(0) );
+    ui->chkCcwY->setVisible( pBase->jointZeroCcwVisibleList().at(1) );
+
+    ui->chkCcwX->setChecked( pBase->jointZeroCcwList().at(0) );
+    ui->chkCcwY->setChecked( pBase->jointZeroCcwList().at(1) );
 
     //! z enable
     ui->labelZ->setVisible( bZ );
@@ -181,12 +202,12 @@ void H2Pref::slot_joint_zero( int jId, bool bCcw )
 #define sig_joint( id, bccw )    emit signal_joint_zero( id, bccw );
 void H2Pref::on_btnZeroX_clicked()
 {
-    sig_joint( 0, false );
+    sig_joint( 0, ui->chkCcwX->isChecked() );
 }
 
 void H2Pref::on_btnZeroY_clicked()
 {
-    sig_joint( 1, false );
+    sig_joint( 1, ui->chkCcwY->isChecked() );
 }
 
 void H2Pref::on_btnZeroBody_clicked()
@@ -209,12 +230,20 @@ void H2Pref::on_btnZeroBody_clicked()
     if ( ui->chkCcw->isVisible() )
     {
         jList<<0<<1<<2;
-        ccwList<<false<<false<<ui->chkCcw->isChecked();
+//        ccwList<<false<<false<<ui->chkCcw->isChecked();
+
+        ccwList<<ui->chkCcwX->isChecked()
+               <<ui->chkCcwY->isChecked()
+               <<ui->chkCcw->isChecked();
     }
     else
     {
         jList<<0<<1;
-        ccwList<<false<<false;
+//        ccwList<<false<<false;
+
+        ccwList<<ui->chkCcwX->isChecked()
+               <<ui->chkCcwY->isChecked();
+
     }
     pBase->goZero( tpvRegion(0,ui->widget->page()),
                    jList,
@@ -225,4 +254,31 @@ void H2Pref::on_btnZeroBody_clicked()
 void H2Pref::on_btnZeroZ_clicked()
 {
     sig_joint( 2, ui->chkCcw->isChecked() );
+}
+
+void H2Pref::on_chkCcwX_clicked(bool checked)
+{
+    Q_ASSERT( m_pModelObj != NULL );
+    VRobot *pBase = ( VRobot *)m_pModelObj;
+    Q_ASSERT( NULL != pBase );
+
+    pBase->setJointZeroCcw( 0, checked );
+}
+
+void H2Pref::on_chkCcwY_clicked(bool checked)
+{
+    Q_ASSERT( m_pModelObj != NULL );
+    VRobot *pBase = ( VRobot *)m_pModelObj;
+    Q_ASSERT( NULL != pBase );
+
+    pBase->setJointZeroCcw( 1, checked );
+}
+
+void H2Pref::on_chkCcw_clicked(bool checked)
+{
+    Q_ASSERT( m_pModelObj != NULL );
+    VRobot *pBase = ( VRobot *)m_pModelObj;
+    Q_ASSERT( NULL != pBase );
+
+    pBase->setJointZeroCcw( 2, checked );
 }

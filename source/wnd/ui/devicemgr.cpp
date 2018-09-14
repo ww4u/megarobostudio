@@ -157,7 +157,7 @@ void deviceMgr::setupUi()
                               this,
                               SLOT( context_robo_console() ) );
     m_pRoboMenu->addSeparator();
-    m_pRoboMenu->addAction( QIcon( ":/res/image/icon2/circle.png" ),
+    m_pRoboJoiontAction = m_pRoboMenu->addAction( QIcon( ":/res/image/icon2/circle.png" ),
                               tr("Joint..."),
                               this,
                               SLOT( context_robo_axes() ) );
@@ -906,6 +906,12 @@ void deviceMgr::contextMenuEvent(QContextMenuEvent *event)
             { m_pRoboPanelAction->setVisible(true); }
             else
             { m_pRoboPanelAction->setVisible(false); }
+
+            //! motors has no joints
+            if ( m_pRobo->getId() == VRobot::robot_motors )
+            { m_pRoboJoiontAction->setVisible( false ); }
+            else
+            { m_pRoboJoiontAction->setVisible( true ); }
 
             m_pRoboMenu->popup( mapToGlobal( event->pos() ) );
             event->accept();

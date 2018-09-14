@@ -57,20 +57,19 @@ robotIgusDelta::robotIgusDelta()
     mbInterpAble = true;
 
     //! length
-    mArmLengths.append( 132 );
-    mArmLengths.append( 262.5 );
-    mArmLengths.append( 100 );
-    mArmLengths.append( 10 );
-    mArmLengths.append( -10 );
+    mArmLengths.append( 679.2 );
+    mArmLengths.append( 400 );
+    mArmLengths.append( 72.75 );
+    mArmLengths.append( MATH_PI/4 );
 
-    mAngleLimit.clear();
-    mAngleLimit<<0<<2*MATH_PI<<0<<2*MATH_PI<<0<<2*MATH_PI;
+    //!
+    mOffset.append( 0 );
+    mOffset.append( 239.5 );
 
-    mP0.clear();
-    mP0<<0<<-218.8<<0;
-
-    mA0.clear();
-    mA0<<0<<0<<0.5;
+    mP0<<0<<0<<526.168;
+    mPosLim<<239.5<<385.5;
+    mScal = 70;
+    mVm = 2*360*2;
 
     //! connection name
     //! debug used

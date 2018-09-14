@@ -193,6 +193,29 @@ static scpi_result_t _scpi_fstop( scpi_t * context )
     return SCPI_RES_OK;
 }
 
+//! ax,page
+static scpi_result_t _scpi_sync( scpi_t * context )
+{
+    // read
+    DEF_LOCAL_VAR();
+
+    int ax, page;
+
+    if ( SCPI_RES_OK != SCPI_ParamInt32( context, &ax, true ) )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    if ( SCPI_RES_OK != SCPI_ParamInt32( context, &page, true ) )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    DEF_MRQ();
+
+    CHECK_LINK( ax, page );
+
+    LOCALMRQ()->requestMotionState( tpvRegion(ax,page) );
+
+    return SCPI_RES_OK;
+}
+
 //! int, float, float, float
 //! ax, page, t, angle, endV
 static scpi_result_t _scpi_rotate( scpi_t * context )
@@ -945,6 +968,7 @@ static scpi_command_t _mrq_scpi_cmds[]=
     CMD_ITEM( "RUN", _scpi_run ),
     CMD_ITEM( "STOP", _scpi_stop ),
     CMD_ITEM( "FSTOP", _scpi_fstop ),
+    CMD_ITEM( "SYNC", _scpi_sync ),
 
     CMD_ITEM( "ROTATE", _scpi_rotate ),
     CMD_ITEM( "MOVE", _scpi_rotate ),

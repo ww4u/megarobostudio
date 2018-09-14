@@ -17,7 +17,7 @@ protected:
     virtual void run();
 
 public:
-    void setInterval( int us );
+    void _setInterval( int us );
     int interval();
 
 protected:

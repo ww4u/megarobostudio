@@ -90,6 +90,35 @@ int VRobot::load( const QString &name )
                                 { reader.skipCurrentElement(); }
                             }
                         }
+
+                        else if ( reader.name() == "joint_zero" )
+                        {
+                            int subId = 0;
+                            while(reader.readNextStartElement())
+                            {
+                                if ( reader.name() == "ccw" )
+                                {
+                                    mJointZeroCcw[ subId++ ]  = reader.readElementText().toInt() > 0;
+                                }
+                                else
+                                { reader.skipCurrentElement(); }
+                            }
+                        }
+
+                        else if ( reader.name() == "angle_dir" )
+                        {
+                            int subId = 0;
+                            while(reader.readNextStartElement())
+                            {
+                                if ( reader.name() == "dir" )
+                                {
+                                    mAngleDir[ subId++ ]  = reader.readElementText().toInt() > 0;
+                                }
+                                else
+                                { reader.skipCurrentElement(); }
+                            }
+                        }
+
                         else
                         { reader.skipCurrentElement(); }
                     }
@@ -149,6 +178,26 @@ int VRobot::save( const QString &name )
                 writer.writeTextElement("can_id", QString::number(mCanGroupId) );
                 writer.writeTextElement("sub_group", QString::number(mSubGroup) );
                 writer.writeTextElement("sub_groupid", QString::number(mSubGroupId) );
+
+            writer.writeEndElement();
+
+            //! zero ccw
+            writer.writeStartElement("joint_zero");
+
+            for ( int i = 0; i < mJointZeroCcw.size(); i++ )
+            {
+                writer.writeTextElement("ccw", QString::number(mJointZeroCcw.at(i)) );
+            }
+
+            writer.writeEndElement();
+
+            //! angle dir
+            writer.writeStartElement("angle_dir");
+
+            for ( int i = 0; i < mAngleDir.size(); i++ )
+            {
+                writer.writeTextElement("dir", QString::number(mAngleDir.at(i)) );
+            }
 
             writer.writeEndElement();
 

@@ -75,6 +75,8 @@ void modelSysPref::rst()
     //! motion
     mGeometryResolution = 0.1;
     mAngleResolution = 0.001;
+    mOmitEn = true;
+    mOmitThreshold = 0.5;
 
     //! font
     mFontFamily = "arial";
@@ -84,6 +86,8 @@ void modelSysPref::rst()
     mStyleIndex = 0;
 
     mAliasEn = true;
+
+    mSysMode = sys_normal;
 }
 
 //! save to xml
@@ -224,6 +228,9 @@ int modelSysPref::save( const QString &str )
 
     writer.writeTextElement( "geomerty_resolution", QString::number( mGeometryResolution ) );
     writer.writeTextElement( "angle_resolution", QString::number( mAngleResolution ) );
+
+    writer.writeTextElement( "omit_enable", QString::number(mOmitEn) );
+    writer.writeTextElement( "omit_threshold", QString::number(mOmitThreshold) );
 
     writer.writeEndElement();
 
@@ -466,6 +473,10 @@ int modelSysPref::load( const QString &str )
                         { mGeometryResolution = reader.readElementText().toDouble(); }
                         else if ( reader.name() == "angle_resolution" )
                         { mAngleResolution = reader.readElementText().toDouble(); }
+                        else if ( reader.name() == "omit_enable" )
+                        { mOmitEn = reader.readElementText().toInt() > 0; }
+                        else if ( reader.name() == "omit_threshold" )
+                        { mOmitThreshold = reader.readElementText().toDouble(); }
                         else
                         { reader.skipCurrentElement(); }
                     }

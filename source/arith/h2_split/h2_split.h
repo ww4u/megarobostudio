@@ -51,7 +51,7 @@ struct SlovePoint
 int h2Split( const QList<double> &armLengthes,
              const QList<double> &zeroXy,
              QList< endPoint *> &points,
-              QList< tpvList*> &splitDataset );
+             QList< tpvList*> &splitDataset );
 int h2Split(
                     const QList<double> &armLengthes,
                     const QList<double> &zeroXy,

@@ -39,7 +39,7 @@ void logOut::on_btnExport_clicked()
     for ( int i = 0; i < ui->listWidget->count(); i++ )
     {
         str = ui->listWidget->item(i)->data(Qt::DisplayRole).toString();
-
+        str.append('\n');
         file.write( str.toLocal8Bit() );
     }
 }

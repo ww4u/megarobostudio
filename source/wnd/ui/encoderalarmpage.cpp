@@ -79,6 +79,11 @@ void EncoderAlarmPage::data( EncoderAlarmConfig &config )
     ui->comboBox->setCurrentIndex( config.mZeroPos );
 }
 
+void EncoderAlarmPage::setZeroEnable( bool b )
+{ ui->doubleSpinBox_3->setEnabled( b ); }
+bool EncoderAlarmPage::isZeroEnable()
+{ return ui->doubleSpinBox_3->isEnabled(); }
+
 void EncoderAlarmPage::spyEdited()
 {
     QCheckBox *checkBoxes[]=

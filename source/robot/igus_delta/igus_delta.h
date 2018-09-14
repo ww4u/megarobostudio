@@ -67,21 +67,21 @@ public:
     int verifyTrace( QList<TraceKeyPoint> &curve );
 
     int buildTrace( QList<TraceKeyPoint> &curve,
-                    QList<arith_delta::deltaPoint> &jointsPlan );
+                    QList<deltaPoint> &jointsPlan );
 
     int planTrace( QList<TraceKeyPoint> &curve,
                    xxxGroup<tracePoint> &tracePoints );
 
     int splitTrace( xxxGroup<tracePoint> &tracePoints,
-                    QList<arith_delta::deltaPoint> &traceJoints );
+                    QList<deltaPoint> &traceJoints );
 
     int convertTrace(   QList<TraceKeyPoint> &curve,
-                        QList<arith_delta::deltaPoint> &jointsPlan,
+                        QList<deltaPoint> &jointsPlan,
                         QList< tpvGroup *> &gp,
                         QList< int > &sectionList );
 
     int buildTpvGroup( QList<TraceKeyPoint> &curve,
-                       QList<arith_delta::deltaPoint> &jointsPlan,
+                       QList<deltaPoint> &jointsPlan,
                        QList< tpvGroup *> &gp );
     //! download
 protected:
@@ -116,25 +116,28 @@ public:
     int serialOutInit( QXmlStreamWriter &writer);
     int serialInInit( QXmlStreamReader &reader );
 
-    int serialOutAngle( QXmlStreamWriter &writer);
-    int serialInAngle( QXmlStreamReader &reader );
-
     int serialOutArm( QXmlStreamWriter &writer);
     int serialInArm( QXmlStreamReader &reader );
 
-    int serialOutRange( QXmlStreamWriter &writer);
-    int serialInRange( QXmlStreamReader &reader );
+    int serialOutOffset( QXmlStreamWriter &writer);
+    int serialInOffset( QXmlStreamReader &reader );
 
     int serialOutP0( QXmlStreamWriter &writer);
     int serialInP0( QXmlStreamReader &reader );
 
-    int serialOutA0( QXmlStreamWriter &writer);
-    int serialInA0( QXmlStreamReader &reader );
+    int serialOutPosLim( QXmlStreamWriter &writer);
+    int serialInPosLim( QXmlStreamReader &reader );
+
+    int serialOutMisc( QXmlStreamWriter &writer);
+    int serialInMisc( QXmlStreamReader &reader );
 
 public:
-    QList<double> mAngleLimit;
-    QList<double> mP0, mA0;
+    QList<double> mP0;
+    QList<double> mPosLim;
+    QList<double> mOffset;
+    double mScal, mVm;
 
+    //! zero && init
     double mZeroTime, mZeroAngle;
     double mInitT, mInitL, mInitR, mInitY, mInitH;
 };

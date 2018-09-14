@@ -67,21 +67,21 @@ public:
     int verifyTrace( QList<TraceKeyPoint> &curve );
 
     int buildTrace( QList<TraceKeyPoint> &curve,
-                    QList<arith_delta::deltaPoint> &jointsPlan );
+                    QList<deltaPoint> &jointsPlan );
 
     int planTrace( QList<TraceKeyPoint> &curve,
                    xxxGroup<tracePoint> &tracePoints );
 
     int splitTrace( xxxGroup<tracePoint> &tracePoints,
-                    QList<arith_delta::deltaPoint> &traceJoints );
+                    QList<deltaPoint> &traceJoints );
 
     int convertTrace(   QList<TraceKeyPoint> &curve,
-                        QList<arith_delta::deltaPoint> &jointsPlan,
+                        QList<deltaPoint> &jointsPlan,
                         QList< tpvGroup *> &gp,
                         QList< int > &sectionList );
 
     int buildTpvGroup( QList<TraceKeyPoint> &curve,
-                       QList<arith_delta::deltaPoint> &jointsPlan,
+                       QList<deltaPoint> &jointsPlan,
                        QList< tpvGroup *> &gp );
     //! download
 protected:

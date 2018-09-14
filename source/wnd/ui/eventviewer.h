@@ -36,7 +36,7 @@ public:
     void setMcModel( mcModel *pObj );
 
 protected Q_SLOTS:
-    void slot_event( eventId id, frameData, int );
+    void slot_event( eventId id, frameData );
 public Q_SLOTS:
     void slot_exception_changed();
 

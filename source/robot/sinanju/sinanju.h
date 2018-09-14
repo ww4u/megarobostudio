@@ -17,7 +17,7 @@ class roboSinanjuTaskArgument : public RoboTaskArgument
 {
 public:
     QList<double> mAimAngles;
-
+    bool mbStick;
 public:
     roboSinanjuTaskArgument()
     {}
@@ -67,15 +67,19 @@ public:
 
 protected:
     int toAimSession( const tpvRegion &region,
-                      const QList<double> &aimAngles );
+                      const QList<double> &aimAngles,
+                      bool bStick=false);
 
     int goX( const tpvRegion &region,
-                 const QList<double> &aimAngles,
-                 float handT, float handP, float handV );
+             const QList<double> &aimAngles,
+             float handT, float handP, float handV,
+             bool bStick=false);
     int toAim( const tpvRegion &region,
-                const QList<double> &aimAngles );
+                const QList<double> &aimAngles,
+               bool bStick=false );
     int toAimd( const tpvRegion &region,
-                const QList<double> &aimAngles );
+                const QList<double> &aimAngles,
+                bool bStick=false );
 
 public:
     virtual int loopNow();

@@ -24,6 +24,9 @@ INTRThread::~INTRThread()
 void INTRThread::slot_event( eventId id, frameData dat )
 {
     receiveCache::decEvent();       //! dec
+
+//    receiveCache::dequeueEvent();
+
     emit sig_event( id, dat );
 }
 
@@ -397,11 +400,14 @@ int InstMgr::hardReset()
     DeviceId broadId( CAN_BROAD_ID );
     for ( int i = 0; i < x_pages; i++ )
     {
+        //! page
         buf[4] = i;
         foreach ( IBus *pBus, mBuses )
         {
             Q_ASSERT( NULL != pBus );
             ret = pBus->doWrite( broadId, buf, sizeof(buf) );
+            if ( ret != 0 )
+            { return ret; }
         }
     }
 
@@ -419,13 +425,16 @@ int InstMgr::requestStates()
     byte stateBuf[]= { MRQ_mc_MOTION, MRQ_sc_MOTION_STATE_Q, CAN_BROAD_CHAN, 0 };
 
     //! for each page
-    for ( byte i = 0; i < 10; i++ )
+    for ( byte i = 0; i < x_pages; i++ )
     {
+        //! page
         stateBuf[3] = i;
         foreach ( IBus *pBus, mBuses )
         {
             Q_ASSERT( NULL != pBus );
             ret = pBus->doWrite( broadId, stateBuf, sizeof(stateBuf) );
+            if ( ret != 0 )
+            { return ret; }
         }
 
         if ( ret != 0 )

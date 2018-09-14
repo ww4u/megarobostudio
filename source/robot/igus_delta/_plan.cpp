@@ -1,6 +1,7 @@
 #include "igus_delta.h"
 
 #include "../../arith/delta/arith_delta.h"
+#include "../../arith/arith_igus/arith_igus.h"
 
 int robotIgusDelta::verifyTrace( QList<TraceKeyPoint> &curve )
 {
@@ -29,7 +30,7 @@ int robotIgusDelta::verifyTrace( QList<TraceKeyPoint> &curve )
 }
 
 int robotIgusDelta::buildTrace( QList<TraceKeyPoint> &curve,
-                QList<arith_delta::deltaPoint> &jointsPlan )
+                QList<deltaPoint> &jointsPlan )
 {
     int ret;
 
@@ -37,7 +38,7 @@ int robotIgusDelta::buildTrace( QList<TraceKeyPoint> &curve,
     ret = planTrace( curve, tracePlan );
     if ( ret != 0 )
     { return ret; }
-logDbg()<<tracePlan.size();
+//logDbg()<<tracePlan.size();
     ret = splitTrace( tracePlan, jointsPlan );
     if ( ret != 0 )
     { return ret; }
@@ -105,11 +106,11 @@ logDbg()<<curve.size()<<xyzResLen<<mPlanAttr.mStep;
 }
 
 int robotIgusDelta::splitTrace( xxxGroup<tracePoint> &tracePoints,
-                            QList<arith_delta::deltaPoint> &traceJoints )
+                            QList<deltaPoint> &traceJoints )
 {
-    QList<arith_delta::D4Point> points;
+    QList<D4Point> points;
 
-    arith_delta::D4Point d4Pt;
+    D4Point d4Pt;
     for ( int i = 0; i < tracePoints.size(); i++ )
     {
         d4Pt.t = tracePoints.data()[i].t;
@@ -127,16 +128,29 @@ int robotIgusDelta::splitTrace( xxxGroup<tracePoint> &tracePoints,
     }
 
     int ret;
-logDbg();
-    ret = arith_delta::ccwSlove( points, traceJoints );
-logDbg();
+
+    //! config para
+    arith_igus::igusConfig cfg;
+    for ( int i = 0; i < 4; i++ )
+    { cfg.armLength[i] = mArmLengths[i]; /*sysLog(QString::number(mArmLengths[i]));*/ }
+    for ( int i = 0; i < 2; i++ )
+    { cfg.offset[i] = mOffset[i]; /*sysLog(QString::number(mOffset[i]));*/}
+    for ( int i = 0; i < 3; i++ )
+    { cfg.P0[i] = mP0[i]; /*sysLog(QString::number(mP0[i]));*/}
+    for ( int i = 0; i < 2; i++ )
+    { cfg.posLim[i] = mPosLim[i]; /*sysLog(QString::number(mPosLim[i]))*/;}
+    cfg.scal = mScal;/*sysLog(QString::number(mScal));*/
+    cfg.vM = mVm;/*sysLog(QString::number(mVm));*/
+
+    ret = arith_igus::ccwSlove( cfg, points, traceJoints );
+    sysLog( __FUNCTION__, QString::number(ret) );
     return ret;
 }
 
 int robotIgusDelta::convertTrace(  QList<TraceKeyPoint> &curve,
-                               QList<arith_delta::deltaPoint> &jointsPlan,
-                               QList< tpvGroup *> &gp,
-                               QList< int > &sectionList )
+                                   QList<deltaPoint> &jointsPlan,
+                                   QList< tpvGroup *> &gp,
+                                   QList< int > &sectionList )
 {
     //! 0.check
     if( jointsPlan.size() > 0 )
@@ -147,7 +161,7 @@ int robotIgusDelta::convertTrace(  QList<TraceKeyPoint> &curve,
     int ret;
     delete_all( gp );
 
-    //! 0~1
+    //! 0/1/2
     ret = buildTpvGroup( curve, jointsPlan, gp );
     if ( ret != 0 )
     { return ret; }
@@ -171,8 +185,9 @@ int robotIgusDelta::convertTrace(  QList<TraceKeyPoint> &curve,
     gp.append( pGroup );
 
     //! sections
-    //! x,z,y,h
-    sectionList<<0<<2<<2<<2;
+    //! x,y,z
+    //! h
+    sectionList<<0<<3<<3<<1;
 
 //    //! log joint group
 //    foreach ( tpvGroup *pGp, mJointsGroup )
@@ -188,27 +203,44 @@ int robotIgusDelta::convertTrace(  QList<TraceKeyPoint> &curve,
 }
 
 int robotIgusDelta::buildTpvGroup( QList<TraceKeyPoint> &curve,
-                               QList<arith_delta::deltaPoint> &jointsPlan,
+                               QList<deltaPoint> &jointsPlan,
                                QList< tpvGroup *> &jointsGroup )
 {
     //! create each joints group
     delete_all( jointsGroup );
 
     int ret;
-    //! for x,z
-    for ( int i = 0; i < 2; i++ )
+    //! for p1,p2,p3
+    for ( int i = 0; i < 3; i++ )
     {
         tpvGroup *pGroup = new tpvGroup();
         Q_ASSERT( NULL != pGroup );
 logDbg()<<jointsPlan.size();
+
+        //! init filter
+        TpvFilter<float> jFilter( jointsPlan.size(),
+                           _mSysPara->mOmitEn,
+                           (float)_mSysPara->mOmitThreshold );
+
         //! for each data
         for ( int j = 0; j < jointsPlan.size(); j++ )
         {
+            //! delta p check
+            if ( jFilter.filter( j,
+                                 jointsPlan.at(j).t,
+                                 jointsPlan.at(j).p[i],
+                                 jointsPlan.at(j).v[i]
+                                 ) )
+            {
+                continue;
+            }
+
             ret = pGroup->addItem(
                                 jointsPlan.at(j).t,
                                 jointsPlan.at(j).p[i],
                                 jointsPlan.at(j).v[i]
                              );
+
             if ( ret != 0 )
             {
                 delete_all( jointsGroup );
@@ -218,23 +250,6 @@ logDbg()<<jointsPlan.size();
 
         jointsGroup.append( pGroup );
     }
-
-    //! for y
-    tpvGroup *pGroup = new tpvGroup();
-    Q_ASSERT( NULL != pGroup );
-
-    for ( int i = 0; i < curve.size(); i++ )
-    {
-        ret = pGroup->addItem( curve.at(i).t,
-                               curve.at(i).y,
-                               0 );
-        if ( ret != 0 )
-        {
-            delete_all( jointsGroup );
-            return ret;
-        }
-    }
-    jointsGroup.append( pGroup );
 
     return 0;
 }

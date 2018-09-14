@@ -156,6 +156,11 @@ void roboProp::setupUi( int id )
         m_pIpPref = new_widget( IPPref, ":/res/image/icon2/settings_light.png", tr("Pref") );
         m_pIpConfig = new_widget( IPConfig, ":/res/image/icon2/settings_light.png", tr("Config") );
     }
+    else if ( VRobot::robot_igus_delta == id )
+    {
+        m_pIgusPref = new_widget( IgusDeltaPref, ":/res/image/icon2/settings_light.png", tr("Zero") );
+        m_pIgusConfig = new_widget( IgusConfig, ":/res/image/icon2/settings_light.png", tr("Pref") );
+    }
     else
     {}
 
@@ -190,7 +195,6 @@ void roboProp::setupUi( int id )
     { ui->stackedWidget->setCurrentIndex( 3 ); }
     else
     { ui->stackedWidget->setCurrentWidget( m_pComPref ); }
-
 }
 
 void roboProp::desetupUi()

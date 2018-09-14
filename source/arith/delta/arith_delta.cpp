@@ -270,7 +270,6 @@ int ccwSlove( QList<D4Point> & points,
     return ccwSlove( points, deltaPoints, lConfig );
 }
 
-
 int cwSlove( QList<deltaPoint> &deltaPoints,
           QList<D4Point> &points,
           arithDeltaConfig &localConfig )

@@ -5,4 +5,6 @@ SUBDIRS = ./pathplan \
           ./pvt \
           ./megatron_split \
           ./h2_split \
-          ./delta
+          ./delta \
+          ./arith_igus
+

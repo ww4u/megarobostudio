@@ -136,7 +136,7 @@ void eventViewer::setMcModel( mcModel *pObj )
     m_pMcModel = pObj;
 }
 
-void eventViewer::slot_event( eventId id, frameData data, int busId )
+void eventViewer::slot_event( eventId id, frameData data )
 {
     //! bypass status event
     if ( id == event_status )

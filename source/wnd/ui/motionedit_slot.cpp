@@ -111,7 +111,7 @@ void motionEdit::on_btnStart_clicked()
     ui->btnStart->setEnabled( false );
 
     //! download motion
-    pRobot->run( );
+    pRobot->run( tpvRegion(0, m_pmcModel->mConn.roboPage() ) );
 }
 
 void motionEdit::on_btnStop_clicked()
@@ -122,7 +122,7 @@ void motionEdit::on_btnStop_clicked()
     { return; }
 
     //! download motion
-    pRobot->stop( );
+    pRobot->stop( tpvRegion(0, m_pmcModel->mConn.roboPage() ) );
 }
 
 //! compile
@@ -257,7 +257,8 @@ void motionEdit::on_spinLoop_valueChanged(int arg1)
         return;
     }
 
-    pRobot->setLoop( arg1 );
+    pRobot->setLoop( arg1,
+                     tpvRegion( 0,m_pmcModel->mConn.roboPage()) );
 }
 
 void motionEdit::on_btnSmartEdit_toggled(bool checked)

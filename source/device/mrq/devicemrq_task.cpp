@@ -29,13 +29,6 @@ void MrqTaskThread::run()
     deviceMRQ *pMrq;
     pMrq = (deviceMRQ *)m_pReq->m_pRobo;
 
-//    Q_ASSERT( NULL != m_pReq->m_pApi );
-
-//    deviceMRQ::apiMrqRequest pApi;
-//    pApi = (deviceMRQ::apiMrqRequest)m_pReq->m_pApi;
-
-//    ArgLightCoupZero *pArg = (ArgLightCoupZero*)(m_pReq->m_pArg);
-
     int ret = ( pMrq->*(m_pReq->m_pApi))( m_pReq->m_pArg );
 
     gc();

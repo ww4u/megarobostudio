@@ -185,6 +185,16 @@ void VRobot::setJointZeroCcw( int jId, bool b )
 QList<bool> VRobot::jointZeroCcwList()
 { return mJointZeroCcw; }
 
+void VRobot::setJointZeroCcwVisible( int jId, bool b )
+{
+    Q_ASSERT( jId >=0 && jId < mJointCcwMask.size() );
+
+    mJointCcwMask[jId] = b;
+}
+
+QList<bool> VRobot::jointZeroCcwVisibleList()
+{ return mJointCcwMask; }
+
 void VRobot::setPoseCount( int pos )
 { mPoseCount = pos; }
 int VRobot::poseCount()

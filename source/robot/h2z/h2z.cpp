@@ -42,8 +42,11 @@ robotH2Z::robotH2Z()
     mArmLengths.clear();
     mArmLengths<<13.4<<13.4<<580<<494<<52<<38;
 
-    mJointCcwMask[0] = false;
-    mJointCcwMask[1] = false;
+//    mJointCcwMask[0] = false;
+//    mJointCcwMask[1] = false;
+
+    mJointCcwMask[0] = true;
+    mJointCcwMask[1] = true;
     mJointCcwMask[2] = true;
 
     mJointZeroCcw.clear();
@@ -86,106 +89,13 @@ robotH2Z::~robotH2Z()
 
 }
 
-//int robotH2Z::serialIn( QXmlStreamReader &reader )
-//{
-//    while(reader.readNextStartElement())
-//    {
-//        if ( reader.name() == "raw" )
-//        { serialInRaw(reader); }
-//        else if ( reader.name() == "zero" )
-//        { serialInZero(reader); }
-//        else if ( reader.name() == "arm" )
-//        { serialInArm(reader); }
-//        else
-//        { reader.skipCurrentElement(); }
-//    }
+void robotH2Z::setJointZeroCcw( int jId, bool b )
+{
+    robotH2::setJointZeroCcw( jId, b );
 
-//    return 0;
-//}
-//int robotH2Z::serialOut( QXmlStreamWriter &writer )
-//{
-//    writer.writeStartElement("raw");
-//    serialOutRaw(writer);
-//    writer.writeEndElement();
-
-//    writer.writeStartElement("zero");
-//    serialOutZero(writer);
-//    writer.writeEndElement();
-
-//    writer.writeStartElement("arm");
-//    serialOutArm( writer );
-//    writer.writeEndElement();
-
-//    return 0;
-//}
-
-//int robotH2Z::serialOutZero( QXmlStreamWriter &writer)
-//{
-//    writer.writeTextElement( "time", QString::number(mZeroTime) );
-//    writer.writeTextElement( "distance", QString::number(mZeroDistance) );
-
-//    writer.writeTextElement( "gap_time", QString::number(mGapTime) );
-//    writer.writeTextElement( "gap_distance", QString::number(mGapDistance) );
-
-//    writer.writeTextElement( "x", QString::number(mZeroX) );
-//    writer.writeTextElement( "y", QString::number(mZeroY) );
-
-//    return 0;
-//}
-//int robotH2Z::serialInZero( QXmlStreamReader &reader )
-//{
-//    while(reader.readNextStartElement())
-//    {
-//        if ( reader.name() == "time" )
-//        { mZeroTime = reader.readElementText().toDouble(); }
-//        else if ( reader.name() == "distance" )
-//        { mZeroDistance = reader.readElementText().toDouble(); }
-//        else if ( reader.name() == "gap_time" )
-//        { mGapTime = reader.readElementText().toDouble(); }
-//        else if ( reader.name() == "gap_distance" )
-//        { mGapDistance = reader.readElementText().toDouble(); }
-//        else if ( reader.name() == "x" )
-//        { mZeroX = reader.readElementText().toDouble(); }
-//        else if ( reader.name() == "y" )
-//        { mZeroY = reader.readElementText().toDouble(); }
-//        else
-//        { reader.skipCurrentElement(); }
-//    }
-
-//    return 0;
-//}
-
-//int robotH2Z::serialOutArm( QXmlStreamWriter &writer)
-//{
-//    for ( int i = 0; i < mArmLengths.size(); i++ )
-//    {
-//        writer.writeTextElement( "value", QString::number( mArmLengths.at(i) ) );
-//    }
-
-//    return 0;
-//}
-//int robotH2Z::serialInArm( QXmlStreamReader &reader )
-//{
-//    int id = 0;
-//    while(reader.readNextStartElement())
-//    {
-//        if ( reader.name() == "value" )
-//        {
-//            mArmLengths[id++] = reader.readElementText().toDouble();
-//        }
-//        else
-//        { reader.skipCurrentElement(); }
-//    }
-
-//    return 0;
-//}
-
-//int robotH2Z::download( VRobot *pSetup )
-//{
-//    Q_ASSERT( NULL != pSetup );
-
-//    return 0;
-//}
+    Q_ASSERT( jId >= 0 && jId < mAngleDir.size() );
+    mAngleDir[ jId ] = !b;
+}
 
 
 

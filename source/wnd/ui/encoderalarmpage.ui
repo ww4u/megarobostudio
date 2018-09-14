@@ -51,6 +51,9 @@
    </item>
    <item row="1" column="1">
     <widget class="QDoubleSpinBox" name="doubleSpinBox">
+     <property name="toolTip">
+      <string>Up Limit</string>
+     </property>
      <property name="maximum">
       <double>180.000000000000000</double>
      </property>
@@ -61,6 +64,9 @@
    </item>
    <item row="2" column="1">
     <widget class="QDoubleSpinBox" name="doubleSpinBox_2">
+     <property name="toolTip">
+      <string>Down Limit</string>
+     </property>
      <property name="minimum">
       <double>-180.000000000000000</double>
      </property>
@@ -74,6 +80,9 @@
    </item>
    <item row="3" column="1">
     <widget class="QDoubleSpinBox" name="doubleSpinBox_3">
+     <property name="toolTip">
+      <string>Only enabled in admin mode</string>
+     </property>
      <property name="maximum">
       <double>360.000000000000000</double>
      </property>
@@ -83,6 +92,9 @@
     <widget class="QComboBox" name="comboBox">
      <property name="enabled">
       <bool>false</bool>
+     </property>
+     <property name="toolTip">
+      <string>Zero at</string>
      </property>
      <item>
       <property name="text">

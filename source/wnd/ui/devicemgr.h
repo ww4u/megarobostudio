@@ -150,6 +150,7 @@ public:
 
     QMenu *m_pRoboMenu;
     QAction *m_pRoboPanelAction;
+    QAction *m_pRoboJoiontAction;
 
     QMenu *m_pHubMenu;
 

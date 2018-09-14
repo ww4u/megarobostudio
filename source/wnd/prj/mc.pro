@@ -23,7 +23,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-VERSION = 0.1.0.15
+VERSION = 0.1.0.16
 
 OBJECTS_DIR = ./obj
 MOC_DIR = ./obj
@@ -109,7 +109,7 @@ message( "rasp" )
 
 
 # arith
-LIBS += -lsinanju_split -lmegatron_split -lh2_split -larith_delta
+LIBS += -lsinanju_split -lmegatron_split -lh2_split -larith_delta -larith_igus
 LIBS += -lpathplan
 LIBS += -lpvt
 
@@ -299,7 +299,9 @@ SOURCES += \
     ../ui/tabletoolbar.cpp \
     ../ui/notice.cpp \
     ../ui/portoption.cpp \
-    ../ui/pageoption.cpp
+    ../ui/pageoption.cpp \
+    ../ui/igusconfig.cpp \
+    ../ui/igusdeltapref.cpp
 
 HEADERS += \
         ../ui/mainwindow.h \
@@ -464,7 +466,9 @@ HEADERS += \
     ../ui/tabletoolbar.h \
     ../ui/notice.h \
     ../ui/portoption.h \
-    ../ui/pageoption.h
+    ../ui/pageoption.h \
+    ../ui/igusconfig.h \
+    ../ui/igusdeltapref.h
 
 FORMS += \
         ../ui/mainwindow.ui \
@@ -563,9 +567,12 @@ FORMS += \
     ../ui/tabletoolbar.ui \
     ../ui/notice.ui \
     ../ui/portoption.ui \
-    ../ui/pageoption.ui
+    ../ui/pageoption.ui \
+    ../ui/igusconfig.ui \
+    ../ui/igusdrylinpref.ui
 
-#RESOURCES = ../res/res.qrc
+
+RESOURCES = ../res/res.qrc
 
 RC_ICONS = ../res/image/logo/megarobo.ico
 

@@ -28,6 +28,9 @@ public:
     void setData( EncoderAlarmConfig &config );
     void data( EncoderAlarmConfig &config );
 
+    void setZeroEnable( bool b );
+    bool isZeroEnable();
+
 protected: 
     void spyEdited();
 

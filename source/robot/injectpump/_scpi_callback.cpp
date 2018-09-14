@@ -34,15 +34,39 @@ static scpi_result_t _scpi_idn( scpi_t * context )
     return SCPI_RES_OK;
 }
 
-//! page
+//! ax page
 static scpi_result_t _scpi_run( scpi_t * context )
 {
     DEF_LOCAL_VAR();
     DEF_ROBO();
 
+    int ax, page;
+    if ( SCPI_ParamInt32(context, &ax, true) != true )
+    { scpi_ret( SCPI_RES_ERR ); }
+    if ( SCPI_ParamInt32(context, &page, true) != true )
+    { scpi_ret( SCPI_RES_ERR ); }
+
     CHECK_LINK();
 
-    LOCAL_ROBO()->run();logDbg();
+    LOCAL_ROBO()->run( tpvRegion(ax,page) );
+
+    return SCPI_RES_OK;
+}
+
+static scpi_result_t _scpi_sync( scpi_t * context )
+{
+    DEF_LOCAL_VAR();
+    DEF_ROBO();
+
+    int ax, page;
+    if ( SCPI_ParamInt32(context, &ax, true) != true )
+    { scpi_ret( SCPI_RES_ERR ); }
+    if ( SCPI_ParamInt32(context, &page, true) != true )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    CHECK_LINK();
+
+    LOCAL_ROBO()->sync( tpvRegion(ax,page) );
 
     return SCPI_RES_OK;
 }
@@ -418,6 +442,7 @@ static scpi_command_t _scpi_cmds[]=
 
     CMD_ITEM( "*IDN?", _scpi_idn ),
     CMD_ITEM( "RUN",  _scpi_run ),
+    CMD_ITEM( "SYNC", _scpi_sync ),
 
     CMD_ITEM( "MOVE", _scpi_move ),         //! ax,page, v1,i1,v2,i2,t
     CMD_ITEM( "PREMOVE", _scpi_preMove ),   //! ax,page, v1,i1,v2,i2,t

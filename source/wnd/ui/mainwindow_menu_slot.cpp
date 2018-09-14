@@ -300,7 +300,8 @@ void MainWindow::on_actionScene_triggered()
 //! about
 void MainWindow::on_actionAbout_triggered()
 {
-    aboutDlg dlg;
+    //! pref
+    aboutDlg dlg( &mMcModel.mSysPref );
 
     dlg.exec();
 }

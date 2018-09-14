@@ -111,7 +111,7 @@ int robotIgusDelta::program( QList<TraceKeyPoint> &curve,
     //!
 
     //! 1.build
-    QList<arith_delta::deltaPoint> jointsPlan;
+    QList<deltaPoint> jointsPlan;
     ret = buildTrace( curve, jointsPlan );
     if ( ret != 0 )
     { return ret; }

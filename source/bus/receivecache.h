@@ -44,19 +44,24 @@ public:
     void setEnable( bool b );
     bool getEnable();
 
+    void setRepeatAble( bool b );
+    bool repeatAble();
+
     void setMainSubCode( int mainCode, int subCode );
     void setMainSubCode( int mainCode,
                          int subCode,
                          int patterns[],
                          int pattLen );
 
-    bool match( QByteArray &ary );
+    bool match( frameData &ary );
 protected:
     eventId mEventId;
     bool mbEn;
+    bool mRepeatAble;
 
     int mPatterns[6];
     int mPatternLen;
+
 };
 
 
@@ -126,10 +131,13 @@ protected:
 
     static QMap<int, bool> _mapBypass;
 
+    static QQueue< frameData > _cacheEvents;
+    static QMutex _cacheEventsMutex;
+
 public:
 
-    static void pendBus( bool b );
-    static bool isPendBus();
+//    static void pendBus( bool b );
+//    static bool isPendBus();
 
     //! thread
     static void lock();
@@ -149,6 +157,9 @@ public:
 
     static void setByPass( int devId, bool b );
     static bool getByPass( int devId );
+
+    static bool queueInEvent( bool bRepetable, frameData &frame );
+    static bool dequeueEvent();
 
 public:
     receiveCache( QObject *parent = 0 );

@@ -692,7 +692,7 @@ int deviceMRQ::lightCouplingZero( pvt_region,
                    pArg );
 
     //! start the thread
-    mTaskThread.at(region.axes())->setRequest( pReq );
+    mTaskThread.at( region.axes() )->setRequest( pReq );
 
     mTaskThread.at( region.axes() )->start();
 
@@ -730,8 +730,9 @@ int deviceMRQ::taskLightCouplingZero( void *pArg )
 
     }while( 0 );
 
-    //! delete the arg
-    delete pLightZero;
+//    //! delete the arg
+//    delete pLightZero;
+    //! \note the arg is deleted in the thread run()
 
     return ret;
 }

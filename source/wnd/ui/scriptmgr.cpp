@@ -39,6 +39,10 @@ MegaTableModel *scriptMgr::newMotion( const QString &clsName )
 
     else if ( clsName.compare( robo_ip, Qt::CaseInsensitive) == 0 )
     { pNewModelObj = new IPMotionGroup( clsName ); }
+
+    else if ( clsName.compare( robo_igus_drylin, Qt::CaseInsensitive) == 0 )
+    { pNewModelObj = new DeltaMotionGroup( clsName ); }
+
     else
     { return NULL; }
 

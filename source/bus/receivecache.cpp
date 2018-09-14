@@ -1,9 +1,10 @@
 #include "receivecache.h"
-
+#include "../../source/sys/sysapi.h"
 frameEvent::frameEvent()
 {
     mEventId = event_none;
     mbEn = false;
+    mRepeatAble = true;
 
     mPatternLen = 0;
     for ( int i = 0; i < sizeof_array( mPatterns); i++ )
@@ -25,6 +26,11 @@ void frameEvent::setEnable( bool b )
 { mbEn = b; }
 bool frameEvent::getEnable()
 { return mbEn; }
+
+void frameEvent::setRepeatAble( bool b )
+{ mRepeatAble = b; }
+bool frameEvent::repeatAble()
+{ return mRepeatAble; }
 
 void frameEvent::setMainSubCode( int mainCode,
                                  int subCode )
@@ -49,13 +55,14 @@ void frameEvent::setMainSubCode( int mainCode,
     mPatternLen = pattLen;
 }
 
-bool frameEvent::match( QByteArray &ary )
+bool frameEvent::match( frameData &ary )
 {
     if ( ary.length() < 2 + mPatternLen )
     { return false; }
 
     do
     {
+        //! check pattern
         if ( ary.at(0) != at(0) )
         { break; }
 
@@ -73,6 +80,12 @@ bool frameEvent::match( QByteArray &ary )
             else
             {}
         }
+
+//        //! check repeat
+//        if ( receiveCache::queueInEvent( mRepeatAble, ary ) )
+//        {}
+//        else
+//        { return false; }
 
         return true;
 
@@ -104,6 +117,20 @@ void frameData::setTimeStamp( quint64 t )
 { mTimeStamp = t; }
 quint64 frameData::timeStamp()
 { return mTimeStamp; }
+
+bool frameData::isLike( frameData &data )
+{
+    if ( mFrameId != data.frameId() )
+    { return false; }
+
+    if ( mDevId != data.devId() )
+    { return false; }
+
+    if ( (QByteArray)(*this) != (QByteArray)data )
+    { return false; }
+
+    return true;
+}
 
 //! -- frame house
 frameHouse::frameHouse()
@@ -241,6 +268,9 @@ bool receiveCache::_eventEn = true;
 
 QMap<int, bool> receiveCache::_mapBypass;
 
+QQueue< frameData > receiveCache::_cacheEvents;
+QMutex receiveCache::_cacheEventsMutex;
+
 void receiveCache::lock()
 { _threadMutex.lock(); }
 void receiveCache::unlock()
@@ -288,6 +318,47 @@ bool receiveCache::getByPass( int devId )
     { return receiveCache::_mapBypass[devId]; }
     else
     { return false; }
+}
+
+bool receiveCache::queueInEvent( bool bRepeatable, frameData &frame )
+{
+    //! check repeatable
+    _cacheEventsMutex.lock();
+
+    if ( bRepeatable )
+    {
+    }
+    else
+    {
+        //! iter
+        foreach( frameData data, receiveCache::_cacheEvents )
+        {
+            if ( data.isLike( frame ) )
+            {
+                sysLog( QObject::tr("repeat detect") );
+                _cacheEventsMutex.unlock();
+                return false;
+            }
+        }
+    }
+
+    receiveCache::_cacheEvents.enqueue( frame );
+
+    _cacheEventsMutex.unlock();
+
+    return true;
+}
+bool receiveCache::dequeueEvent( )
+{
+    //! dequeue out
+    _cacheEventsMutex.lock();
+
+    if ( receiveCache::_cacheEvents.size() > 0 )
+    { receiveCache::_cacheEvents.dequeue(); }
+
+    _cacheEventsMutex.unlock();
+
+    return true;
 }
 
 receiveCache::receiveCache( QObject *parent ) : QThread( parent )
@@ -560,7 +631,7 @@ int receiveCache::frameBytes( int id )
     return sum;
 }
 
-#include "../../source/sys/sysapi.h"
+
 void receiveCache::lockWarehouse()
 { mCacheMutex.lock(); }
 void receiveCache::unlockWarehouse()
@@ -643,7 +714,7 @@ bool receiveCache::detectEvent( frameData &ary )
     {
         Q_ASSERT( NULL != pEvt );
         //! find event
-//        if ( ary.startsWith( *pEvt) && pEvt->getEnable() )
+        //! \todo check repeat events
         if ( pEvt->getEnable() && pEvt->match(ary) )
         {
             emit sig_event( pEvt->getId(), ary );

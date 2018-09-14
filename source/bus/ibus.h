@@ -28,6 +28,9 @@ public:
     void setTimeStamp( quint64 t );
     quint64 timeStamp();
 
+    //! same except ts
+    bool isLike( frameData &data );
+
 protected:
     int mFrameId;
     int mDevId;

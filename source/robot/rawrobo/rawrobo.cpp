@@ -20,7 +20,7 @@ TraceKeyPoint::TraceKeyPoint( float pt, float px, float py, float pz, float phan
 
     hand = phand;
     iMask = 0;
-    set_bit( iMask, BIT_INTERP );
+//    set_bit( iMask, BIT_INTERP );
 }
 
 MegatronKeyPoint::MegatronKeyPoint( float pt,
@@ -240,5 +240,11 @@ int RawRobo::waitFsm( pvt_region,
     return -1;
 }
 
+void RawRobo::sync( const tpvRegion &region )
+{
+    onLine();
+
+    queryState( region );
+}
 
 

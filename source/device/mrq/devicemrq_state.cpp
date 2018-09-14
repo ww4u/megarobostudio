@@ -47,7 +47,7 @@ bool MrqFsmContext::runReqed()
 //! MrqFsm
 MrqFsm::MrqFsm()
 {
-    mState = mrq_state_idle;
+    mState = mrq_state_unk;
 }
 
 MrqFsm::~MrqFsm()
@@ -69,6 +69,7 @@ void MrqFsm::build()
 {
     //! create each state
     RoboStateUnit *pUnit;
+    create_unit( mrq_state_unk, UnkMrqUnit );
     create_unit( mrq_state_idle, IdleMrqUnit );
     create_unit( mrq_state_run_reqed, RunReqedMrqUnit );
     create_unit( mrq_state_program, ProgramMrqUnit );
@@ -82,7 +83,8 @@ void MrqFsm::build()
     create_unit( mrq_state_prestop, PreStopMrqUnit );
 
     //! init state
-    init( mStateMap[mrq_state_idle] );
+//    init( mStateMap[mrq_state_idle] );
+    init( mStateMap[mrq_state_unk] );
 }
 
 void MrqFsm::toState( mrqState stat, RoboMsg &detail )
@@ -181,6 +183,55 @@ MrqFsm *MrqUnit::selfFsm()
     return (MrqFsm*)Fsm();
 }
 
+//! unk unit
+UnkMrqUnit::UnkMrqUnit( RoboFsm *pFsm ) : MrqUnit( pFsm )
+{ setName("unkmrq"); }
+void UnkMrqUnit::proc( int msg, RoboMsg &detail )
+{
+    //! ops
+/*    if ( msg == mrq_msg_run )
+    { toState( mrq_state_run_reqed, detail ); }
+
+    else */if ( msg == mrq_msg_stop )
+    { }
+
+    else if ( msg == mrq_msg_rst )
+    { }
+
+    else if ( msg == mrq_msg_call
+              || msg == mrq_msg_run )
+    {logDbg();
+//        selfFsm()->reqRun(true);
+//        toState( mrq_state_calcend, detail );
+    }
+
+    else if ( msg == mrq_msg_program )
+    { toState( mrq_state_program, detail ); }
+
+    //! device status
+    else if ( msg == mrq_msg_idle )
+    { }
+
+    else if ( msg == mrq_msg_calcing )
+    { toState( mrq_state_calcing, detail ); }
+
+    //! \note idle to end
+    else if ( msg == mrq_msg_calcend )
+    { toState( mrq_state_calcend, detail ); }
+
+    else if ( msg == mrq_msg_standby )
+    { toState( mrq_state_standby, detail ); logDbg(); }
+
+    else if ( msg == mrq_msg_running )
+    { toState( mrq_state_running, detail ); }
+
+    else if ( msg == mrq_msg_error )
+    { sysLog( __FUNCTION__, QString::number(__LINE__) ); }
+
+    else    //! keep
+    { }
+}
+
 //! idle unit
 IdleMrqUnit::IdleMrqUnit( RoboFsm *pFsm ) : MrqUnit( pFsm )
 { setName("idlemrq"); }
@@ -213,8 +264,9 @@ void IdleMrqUnit::proc( int msg, RoboMsg &detail )
     else if ( msg == mrq_msg_calcing )
     { toState( mrq_state_calcing, detail ); }
 
+    //! \note keep to idle
     else if ( msg == mrq_msg_calcend )
-    { /*toState( mrq_state_calcend, detail ); sysLog(__FUNCTION__, QString::number(__LINE__) );*/ }
+    { /*toState( mrq_state_calcend, detail );*/ }
 
     else if ( msg == mrq_msg_standby )
     { toState( mrq_state_standby, detail ); logDbg(); }
@@ -500,6 +552,12 @@ void CalcendMrqUnit::onEnter( RoboMsg &detail )
              startTimer( prepare_timer_id, prepare_timer_tmo );
         }
     }
+
+//    sysLog( __FUNCTION__,
+//            QString::number( selfFsm()->Id1() ),
+//            QString::number( selfFsm()->axes() ),
+//            QString::number( selfFsm()->page() )
+//            );
 }
 void CalcendMrqUnit::onExit( RoboMsg &detail )
 {

@@ -30,6 +30,10 @@ void RawRoboUnit::toState( int stat, RoboMsg &detail )
                          selfFsm()->Robot()->name(),
                          stat );
 
+//    sysLog( __FUNCTION__,
+//            QString::number( __LINE__ ),
+//            QString::number( stat )
+//            );
 //    logDbg()<<selfFsm()->Robot()->name();
 }
 
@@ -147,6 +151,17 @@ void RawRoboUnit::setMemberState( int subAx,
 {/*logDbg()<<stat<<subAx;*/
     mMemberStates[ subAx ] = stat;
 
+//    sysLog( __FUNCTION__,
+//            QString("%1/%2/%3/%4/%5")
+//             .arg( mMemberStates[0] )
+//             .arg( mMemberStates[1] )
+//             .arg( mMemberStates[2] )
+//             .arg( mMemberStates[3] )
+//             .arg( mMemberStates[4] )
+//            ,
+//            QString::number(region.axes()),
+//            QString::number(region.page()) );
+
     int preVal = mMemberStates[0];
     foreach (int val, mMemberStates)
     {
@@ -156,11 +171,16 @@ void RawRoboUnit::setMemberState( int subAx,
         else
         { /*logDbg()<<mMemberStates;*/ return; }
     }
-logDbg()<<preVal;
-logDbg()<<mMemberStates;
+//logDbg()<<preVal;
+//logDbg()<<mMemberStates;
 
     //! full match
     mState = preVal;
+
+//    sysLog( __FUNCTION__,
+//            QString::number( mState ),
+//            QString::number(region.axes()),
+//            QString::number(region.page()) );
 
     toState( mState, detail );
 }
@@ -249,7 +269,7 @@ CalcendRawRoboUnit::CalcendRawRoboUnit( MegaDevice::RoboFsm *pFsm,
     mName = "CalcendRawRoboUnit";
 }
 
-void CalcendRawRoboUnit:: proc( int msg, RoboMsg &detail )
+void CalcendRawRoboUnit::proc( int msg, RoboMsg &detail )
 {
     //! ops
     if ( msg == MegaDevice::mrq_msg_run
@@ -286,7 +306,7 @@ StandbyRawRoboUnit::StandbyRawRoboUnit( MegaDevice::RoboFsm *pFsm,
      mName = "StandbyRawRoboUnit";
 }
 void StandbyRawRoboUnit::proc( int msg, RoboMsg &detail )
-{logDbg()<<msg;
+{//logDbg()<<msg;
     //! ops
     if ( msg == MegaDevice::mrq_msg_run
          || msg == MegaDevice::mrq_msg_call )

@@ -77,4 +77,6 @@
 #define robo_h2z    "MRX-H2Z"
 #define robo_ip     "MRX-INJ2"
 
+#define robo_igus_drylin    "IGUS-DRYLIN"
+
 #endif

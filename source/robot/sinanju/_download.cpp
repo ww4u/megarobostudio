@@ -62,7 +62,7 @@ int robotSinanju::downloadTrace( const tpvRegion &region,
 
     onLine();
 
-    fsm( region )->setState( MegaDevice::mrq_state_idle );
+    fsm( region )->setState( MegaDevice::mrq_state_program );
 
     QList<int> jointsTabList;
     jointsTabList<<0<<1<<2<<3<<4;

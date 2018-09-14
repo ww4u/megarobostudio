@@ -2,10 +2,10 @@
 
 mcConnection::mcConnection()
 {
-    mRoboPage = 0;
+    mRoboPage = 1;      //! \note default to SMALL
 
     mAxesId = 0;
-    mDevicePage = 0;
+    mDevicePage = 1;
 }
 mcConnection::~mcConnection()
 {

@@ -21,6 +21,8 @@ enum mrqState
     mrq_state_prerun,
     mrq_state_running,
     mrq_state_prestop,
+
+    mrq_state_unk,          //! unknown state
 };
 
 class deviceMRQ;
@@ -60,8 +62,6 @@ public:
 public:
     virtual void build();
 
-//    virtual void proc( int msg, RoboMsg &detail );
-
     virtual void toState( mrqState stat, RoboMsg &detail );
 
     virtual void startTimer( int id=0, int tmous=1000 );
@@ -92,6 +92,18 @@ public:
     virtual void onTimer( int id );
 public:
     MrqFsm *selfFsm();
+
+};
+
+class UnkMrqUnit : public MrqUnit
+{
+public:
+    UnkMrqUnit( RoboFsm *pFsm );
+
+public:
+    virtual void proc( int msg, RoboMsg &detail );
+
+protected:
 
 };
 

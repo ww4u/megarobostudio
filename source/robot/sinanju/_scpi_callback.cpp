@@ -70,6 +70,25 @@ static scpi_result_t _scpi_stop( scpi_t * context )
     return SCPI_RES_OK;
 }
 
+//! ax, page
+static scpi_result_t _scpi_sync( scpi_t * context )
+{
+    DEF_LOCAL_VAR();
+    DEF_ROBO();
+
+    int ax, page;
+    if ( SCPI_ParamInt32(context, &ax, true) != true )
+    { scpi_ret( SCPI_RES_ERR ); }
+    if ( SCPI_ParamInt32(context, &page, true) != true )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    CHECK_LINK();
+
+    pRobo->sync( tpvRegion(ax,page) );
+
+    return SCPI_RES_OK;
+}
+
 //! move ch,page, motionMode,
 //! x1,y1,z1,h1, x2,y2,z2,h2, t
 static scpi_result_t _scpi_move( scpi_t * context )
@@ -1122,6 +1141,7 @@ static scpi_command_t _scpi_cmds[]=
     CMD_ITEM( "*IDN?", _scpi_idn ),
     CMD_ITEM( "RUN",  _scpi_run ),
     CMD_ITEM( "STOP", _scpi_stop ),
+    CMD_ITEM( "SYNC", _scpi_sync ),
 
     CMD_ITEM( "MOVE", _scpi_move ),
     CMD_ITEM( "PREMOVE", _scpi_premove ),

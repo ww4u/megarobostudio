@@ -103,6 +103,7 @@
 <file>image/joint/mrx-dt.png</file>
 
 <file>image/joint/mrx-inj2.png</file>
+<file>image/joint/igus-drylin.png</file>
 
 <file>image/joint/mrx-h2_geo.png</file>
 <file>image/joint/mrx-h2z_geo.png</file>
@@ -113,6 +114,8 @@
 <file>image/joint/h2geo.png</file>
 <file>image/joint/h2zgeo.png</file>
 <file>image/joint/motor.png</file>
+
+<file>image/joint/igus-drylingeo.png</file>
 
 <file>image/slice/down_arrow.png</file>
 <file>image/slice/down_arrow_disabled.png</file>

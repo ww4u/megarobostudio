@@ -3,6 +3,34 @@
 
 #include <QtCore>
 
+//! points
+struct D4Point
+{
+    float t;
+    float x, y, z;
+    float vx, vy, vz;
+};
+
+struct deltaPoint
+{
+    union
+    {
+        struct
+        {
+            float p[3];     //! xzy, pos
+            float v[3];     //! xzy, vel
+            float t;
+        };
+        struct
+        {
+            float pl,pr,py;
+            float vl,vr,vy;
+            float tt;
+        };
+        float datas[7];
+    };
+};
+
 class RpcRequest : public QByteArray
 {
 //    Q_OBJECT

@@ -112,16 +112,20 @@ int robotH2Z::goZero( const tpvRegion &region,
     RoboTaskRequest *pReq;
     pReq = new RoboTaskRequest();
 
+    int dir;
+
     //! x
     if ( jointId == 0 )
-    {logDbg()<<mZeroDistance<<mZeroTime<<mGapDistance<<mGapTime;
+    {
+        dir = bCcw ? (-1) : (1);
+
         //! arg
         pArg->mAx = 0;
-        pArg->mZeroDist = -mZeroDistance;
+        pArg->mZeroXDist = dir * mZeroDistance;
         pArg->mZeroTime = mZeroTime;
-        pArg->mZeroEndV = -mZeroSpeed;
+        pArg->mZeroXEndV = dir * mZeroSpeed;
 
-        pArg->mZeroGapDist = mGapDistance;
+        pArg->mZeroXGapDist = -dir * mGapDistance;
         pArg->mZeroGapTime = mGapTime;
 
         //! time
@@ -138,13 +142,15 @@ int robotH2Z::goZero( const tpvRegion &region,
     }
     else if ( jointId == 1 )
     {
+        dir = bCcw ? (-1) : (1);
+
         //! arg
         pArg->mAx = 1;
-        pArg->mZeroDist = -mZeroDistance;
+        pArg->mZeroYDist = dir * mZeroDistance;
         pArg->mZeroTime = mZeroTime;
-        pArg->mZeroEndV = -mZeroSpeed;
+        pArg->mZeroYEndV = dir * mZeroSpeed;
 
-        pArg->mZeroGapDist = mGapDistance;
+        pArg->mZeroYGapDist = -dir * mGapDistance;
         pArg->mZeroGapTime = mGapTime;
 
         //! time
@@ -162,14 +168,14 @@ int robotH2Z::goZero( const tpvRegion &region,
     {
         //! arg
         //! same as x,y
-        int zDir = bCcw ? (-1) : (1);
+        dir = bCcw ? (-1) : (1);
 
         pArg->mAx = 2;
-        pArg->mZeroZDist = zDir * mZeroDistance;
+        pArg->mZeroZDist = dir * mZeroDistance;
         pArg->mZeroZTime = mZeroTime;
-        pArg->mZeroZEndV = zDir * mZeroSpeed;
+        pArg->mZeroZEndV = dir * mZeroSpeed;
 
-        pArg->mZeroGapZDist = -1 * zDir * mGapZDistance;
+        pArg->mZeroGapZDist = -1 * dir * mGapZDistance;
         pArg->mZeroGapZTime = mGapZTime;
 
         //! time
@@ -218,26 +224,41 @@ int robotH2Z::goZero( const tpvRegion &region,
     RoboTaskRequest *pReq;
     pReq = new RoboTaskRequest();
 
+    int dir;
+
     //! arg
     pArg->mAx = 128;        //! full ax
-    pArg->mZeroDist = -mZeroDistance;
-    pArg->mZeroTime = mZeroTime;
-    pArg->mZeroEndV = -mZeroSpeed;
 
-                            //! us
+    dir = ccwList.at(0) ? (-1) : (1);
+    pArg->mZeroXDist = dir * mZeroDistance;
+    pArg->mZeroTime = mZeroTime;
+    pArg->mZeroXEndV = dir * mZeroSpeed;
+
     pArg->mTmo = mZeroTmo;
     pArg->mTick = mZeroTick;
 
-    pArg->mZeroGapDist = mGapDistance;
+    pArg->mZeroXGapDist = -dir * mGapDistance;
     pArg->mZeroGapTime = mGapTime;
 
-                            //! special for z
-    int zDir = ccwList.at(2) ? (-1) : (1);
-    pArg->mZeroZDist = zDir * mZeroDistance ;
-    pArg->mZeroZTime = mZeroTime;
-    pArg->mZeroZEndV = zDir * mZeroSpeed;
+                            //! bx
+    dir = ccwList.at(1) ? (-1) : (1);
+    pArg->mZeroYDist = dir * mZeroDistance;
+    pArg->mZeroTime = mZeroTime;
+    pArg->mZeroYEndV = dir * mZeroSpeed;
 
-    pArg->mZeroGapZDist = -1 * zDir * mGapZDistance;
+    pArg->mZeroYGapDist = -dir * mGapDistance;
+    pArg->mZeroGapTime = mGapTime;
+
+    pArg->mTmo = mZeroTmo;
+    pArg->mTick = mZeroTick;
+
+                            //! special for z
+    dir = ccwList.at(2) ? (-1) : (1);
+    pArg->mZeroZDist = dir * mZeroDistance ;
+    pArg->mZeroZTime = mZeroTime;
+    pArg->mZeroZEndV = dir * mZeroSpeed;
+
+    pArg->mZeroGapZDist = -1 * dir * mGapZDistance;
     pArg->mZeroGapZTime = mGapZTime;
 
     pReq->request( this,
@@ -269,7 +290,7 @@ int robotH2Z::zeroAxesTask( void *pArg )
     if ( pZArg->mAx == 0 )
     {
         //! m
-        move( pZArg->mZeroDist, 0, 0, pZArg->mZeroTime, pZArg->mZeroEndV,0,0,region );
+        move( pZArg->mZeroXDist, 0, 0, pZArg->mZeroTime, pZArg->mZeroXEndV,0,0,region );
 
         //! wait
         //! \todo wait idle
@@ -278,7 +299,7 @@ int robotH2Z::zeroAxesTask( void *pArg )
         { return ret; }
 
         //! gap
-        move( pZArg->mZeroGapDist, 0, 0, pZArg->mZeroGapTime, 0,0,0, region );
+        move( pZArg->mZeroXGapDist, 0, 0, pZArg->mZeroGapTime, 0,0,0, region );
 
         ret = waitFsm( region, MegaDevice::mrq_state_idle, pZArg->mTmo, pZArg->mTick );
         if ( ret != 0 )
@@ -290,13 +311,13 @@ int robotH2Z::zeroAxesTask( void *pArg )
     //! y
     else if ( pZArg->mAx == 1 )
     {
-        move( 0, pZArg->mZeroDist, 0, pZArg->mZeroTime, 0,pZArg->mZeroEndV,0, region );
+        move( 0, pZArg->mZeroYDist, 0, pZArg->mZeroTime, 0,pZArg->mZeroYEndV,0, region );
 
         ret = waitFsm( region, MegaDevice::mrq_state_idle, pZArg->mTmo, pZArg->mTick );
         if ( ret != 0 )
         { return ret; }
 
-        move( 0, pZArg->mZeroGapDist, 0, pZArg->mZeroGapTime, 0,0,0, region );
+        move( 0, pZArg->mZeroYGapDist, 0, pZArg->mZeroGapTime, 0,0,0, region );
 
         ret = waitFsm( region, MegaDevice::mrq_state_idle, pZArg->mTmo, pZArg->mTick );
         if ( ret != 0 )

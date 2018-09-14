@@ -11,16 +11,20 @@ int robotIgusDelta::serialIn( QXmlStreamReader &reader )
         { ret = serialInZero(reader); }
         else if ( reader.name() == "init" )
         { ret = serialInInit(reader); }
-        else if ( reader.name() == "angle" )
-        { ret = serialInAngle(reader); }
+
         else if ( reader.name() == "arm" )
         { ret = serialInArm(reader); }
-        else if ( reader.name() == "range" )
-        { ret = serialInRange(reader); }
+        else if ( reader.name() == "offset" )
+        { ret = serialInOffset(reader); }
+
         else if ( reader.name() == "p0" )
         { ret = serialInP0(reader); }
-        else if ( reader.name() == "a0" )
-        { ret = serialInA0(reader); }
+
+        else if ( reader.name() == "poslim" )
+        { ret = serialInPosLim(reader); }
+
+        else if ( reader.name() == "misc" )
+        { ret = serialInMisc(reader); }
         else
         { reader.skipCurrentElement(); }
     }
@@ -43,24 +47,24 @@ int robotIgusDelta::serialOut( QXmlStreamWriter &writer )
     ret = serialOutInit(writer);
     writer.writeEndElement();
 
-    writer.writeStartElement("angle");
-    ret = serialOutAngle(writer);
-    writer.writeEndElement();
-
     writer.writeStartElement("arm");
     ret = serialOutArm(writer);
     writer.writeEndElement();
 
-    writer.writeStartElement("range");
-    ret = serialOutRange(writer);
+    writer.writeStartElement("offset");
+    ret = serialOutOffset(writer);
     writer.writeEndElement();
 
     writer.writeStartElement("p0");
     ret = serialOutP0(writer);
     writer.writeEndElement();
 
-    writer.writeStartElement("a0");
-    ret = serialOutA0(writer);
+    writer.writeStartElement("poslim");
+    ret = serialOutPosLim(writer);
+    writer.writeEndElement();
+
+    writer.writeStartElement("misc");
+    ret = serialOutMisc(writer);
     writer.writeEndElement();
 
     return 0;
@@ -148,28 +152,6 @@ int robotIgusDelta::serialInInit( QXmlStreamReader &reader )
     return 0;
 }
 
-int robotIgusDelta::serialOutAngle( QXmlStreamWriter &writer)
-{
-//    writer.writeTextElement( "value", QString::number(mInitAngles.at(0)) );
-//    writer.writeTextElement( "value", QString::number(mInitAngles.at(1)) );
-
-    return 0;
-}
-int robotIgusDelta::serialInAngle( QXmlStreamReader &reader )
-{
-//    int id = 0;
-//    while(reader.readNextStartElement())
-//    {
-//        if ( reader.name() == "value" )
-//        {
-//            mInitAngles[id++] = reader.readElementText().toDouble();
-//        }
-//        else
-//        {}
-//    }
-
-    return 0;
-}
 int robotIgusDelta::serialOutArm( QXmlStreamWriter &writer)
 {
     for ( int i = 0; i < mArmLengths.size(); i++ )
@@ -195,26 +177,26 @@ int robotIgusDelta::serialInArm( QXmlStreamReader &reader )
     return 0;
 }
 
-int robotIgusDelta::serialOutRange( QXmlStreamWriter &writer)
+int robotIgusDelta::serialOutOffset( QXmlStreamWriter &writer)
 {
-    for ( int i = 0; i < mAngleLimit.size(); i++ )
+    for ( int i = 0; i < mOffset.size(); i++ )
     {
-        writer.writeTextElement( "value", QString::number( mAngleLimit.at(i) ) );
+        writer.writeTextElement( "value", QString::number( mOffset.at(i) ) );
     }
 
     return 0;
 }
-int robotIgusDelta::serialInRange( QXmlStreamReader &reader )
+int robotIgusDelta::serialInOffset( QXmlStreamReader &reader )
 {
     int id = 0;
     while(reader.readNextStartElement())
     {
         if ( reader.name() == "value" )
         {
-            mAngleLimit[id++] = reader.readElementText().toDouble();
+            mOffset[id++] = reader.readElementText().toDouble();
         }
         else
-        { reader.skipCurrentElement(); }
+        {}
     }
 
     return 0;
@@ -245,23 +227,51 @@ int robotIgusDelta::serialInP0( QXmlStreamReader &reader )
     return 0;
 }
 
-int robotIgusDelta::serialOutA0( QXmlStreamWriter &writer)
+int robotIgusDelta::serialOutPosLim( QXmlStreamWriter &writer)
 {
-    for ( int i = 0; i < mA0.size(); i++ )
+    for ( int i = 0; i < mPosLim.size(); i++ )
     {
-        writer.writeTextElement( "value", QString::number( mA0.at(i) ) );
+        writer.writeTextElement( "value", QString::number( mPosLim.at(i) ) );
     }
 
     return 0;
 }
-int robotIgusDelta::serialInA0( QXmlStreamReader &reader )
+int robotIgusDelta::serialInPosLim( QXmlStreamReader &reader )
 {
     int id = 0;
     while(reader.readNextStartElement())
     {
         if ( reader.name() == "value" )
         {
-            mA0[id++] = reader.readElementText().toDouble();
+            mPosLim[id++] = reader.readElementText().toDouble();
+        }
+        else
+        { reader.skipCurrentElement(); }
+    }
+
+    return 0;
+}
+
+int robotIgusDelta::serialOutMisc( QXmlStreamWriter &writer)
+{
+    {
+        writer.writeTextElement( "scal", QString::number( mScal ) );
+        writer.writeTextElement( "vm", QString::number( mVm ) );
+    }
+
+    return 0;
+}
+int robotIgusDelta::serialInMisc( QXmlStreamReader &reader )
+{
+    while(reader.readNextStartElement())
+    {
+        if ( reader.name() == "scal" )
+        {
+            mScal = reader.readElementText().toDouble();
+        }
+        else if ( reader.name() == "vm" )
+        {
+            mVm = reader.readElementText().toDouble();
         }
         else
         { reader.skipCurrentElement(); }

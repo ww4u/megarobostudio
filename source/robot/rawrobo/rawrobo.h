@@ -172,6 +172,68 @@ protected:
     bool mbRunReqed;
 };
 
+template<typename T>
+class TpvFilter
+{
+protected:
+    T mT, mP, mV;
+    int mSize;
+    int mIndex;
+
+    bool mEn;
+    T mOmit;
+
+public:
+    TpvFilter( int size, bool en, T omit )
+    {
+        mSize = size;
+        mIndex = 0;
+
+        mEn = en;
+        mOmit = omit;
+    }
+public:
+    bool filter( int index, T t , T p, T v )
+    {
+        if ( mEn )
+        {}
+        else
+        { return false; }
+
+        //! the first
+        if ( index == 0 )
+        {
+            mT = t;
+            mP = p;
+            mV = v;
+
+            return false;
+        }
+        //! the last
+        else if ( index == mSize - 1 )
+        {
+            mT = t;
+            mP = p;
+            mV = v;
+            return false;
+        }
+        else
+        {
+//            if ( qAbs( p - mP )/qAbs( t - mT ) > mOmit )
+            if ( qAbs( t - mT ) < mOmit )
+            { return true; }
+            else
+            {
+                mT = t;
+                mP = p;
+                mV = v;
+                return false;
+            }
+        }
+    }
+
+};
+
 //! robo
 class RawRobo : public VRobot
 {
@@ -233,6 +295,8 @@ protected:
                      int dstState,
                      int tmous,
                      int tick );
+public:
+    void sync( const tpvRegion &region=0 );
 
 protected:
     int serialOutRaw( QXmlStreamWriter &writer );

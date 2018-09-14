@@ -25,7 +25,7 @@
    <string>Preference</string>
   </property>
   <property name="windowIcon">
-   <iconset>
+   <iconset resource="../res/res.qrc">
     <normaloff>:/res/image/icon/205.png</normaloff>:/res/image/icon/205.png</iconset>
   </property>
   <property name="sizeGripEnabled">
@@ -475,7 +475,7 @@
                 <string>MRH-E</string>
                </property>
                <property name="icon">
-                <iconset>
+                <iconset resource="../res/res.qrc">
                  <normaloff>:/res/image/megacan.png</normaloff>:/res/image/megacan.png</iconset>
                </property>
               </item>
@@ -484,7 +484,7 @@
                 <string>USB-CAN II</string>
                </property>
                <property name="icon">
-                <iconset>
+                <iconset resource="../res/res.qrc">
                  <normaloff>:/res/image/can2.png</normaloff>:/res/image/can2.png</iconset>
                </property>
               </item>
@@ -493,7 +493,7 @@
                 <string>MRH-T</string>
                </property>
                <property name="icon">
-                <iconset>
+                <iconset resource="../res/res.qrc">
                  <normaloff>:/res/image/mrh-t.png</normaloff>:/res/image/mrh-t.png</iconset>
                </property>
               </item>
@@ -502,7 +502,7 @@
                 <string>MRH-U</string>
                </property>
                <property name="icon">
-                <iconset>
+                <iconset resource="../res/res.qrc">
                  <normaloff>:/res/image/miniusbcan.png</normaloff>:/res/image/miniusbcan.png</iconset>
                </property>
               </item>
@@ -521,7 +521,7 @@
                 <string>RS232</string>
                </property>
                <property name="icon">
-                <iconset>
+                <iconset resource="../res/res.qrc">
                  <normaloff>:/res/image/rs232.png</normaloff>:/res/image/rs232.png</iconset>
                </property>
               </item>
@@ -530,7 +530,7 @@
                 <string>USB</string>
                </property>
                <property name="icon">
-                <iconset>
+                <iconset resource="../res/res.qrc">
                  <normaloff>:/res/image/usb.png</normaloff>:/res/image/usb.png</iconset>
                </property>
               </item>
@@ -811,7 +811,7 @@
                <string/>
               </property>
               <property name="pixmap">
-               <pixmap>:/res/image/megacan.png</pixmap>
+               <pixmap resource="../res/res.qrc">:/res/image/megacan.png</pixmap>
               </property>
               <property name="scaledContents">
                <bool>true</bool>
@@ -1634,11 +1634,36 @@ p, li { white-space: pre-wrap; }
             <property name="title">
              <string>Resolution</string>
             </property>
-            <layout class="QFormLayout" name="formLayout_9">
-             <item row="1" column="0">
-              <widget class="QLabel" name="label_43">
-               <property name="text">
-                <string>Angle(deg)</string>
+            <layout class="QGridLayout" name="gridLayout_9">
+             <item row="2" column="1">
+              <widget class="QDoubleSpinBox" name="spinOmit">
+               <property name="toolTip">
+                <string>Omit when less than angle</string>
+               </property>
+               <property name="decimals">
+                <number>3</number>
+               </property>
+               <property name="minimum">
+                <double>0.001000000000000</double>
+               </property>
+               <property name="maximum">
+                <double>90.000000000000000</double>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QDoubleSpinBox" name="spinDistanceError">
+               <property name="toolTip">
+                <string>Geometry Distance</string>
+               </property>
+               <property name="decimals">
+                <number>3</number>
+               </property>
+               <property name="minimum">
+                <double>0.001000000000000</double>
+               </property>
+               <property name="maximum">
+                <double>10.000000000000000</double>
                </property>
               </widget>
              </item>
@@ -1651,6 +1676,9 @@ p, li { white-space: pre-wrap; }
              </item>
              <item row="1" column="1">
               <widget class="QDoubleSpinBox" name="spinAngleError">
+               <property name="toolTip">
+                <string>Angle Error</string>
+               </property>
                <property name="decimals">
                 <number>3</number>
                </property>
@@ -1662,18 +1690,35 @@ p, li { white-space: pre-wrap; }
                </property>
               </widget>
              </item>
-             <item row="0" column="1">
-              <widget class="QDoubleSpinBox" name="spinDistanceError">
-               <property name="decimals">
-                <number>3</number>
-               </property>
-               <property name="minimum">
-                <double>0.001000000000000</double>
-               </property>
-               <property name="maximum">
-                <double>10.000000000000000</double>
+             <item row="1" column="0">
+              <widget class="QLabel" name="label_43">
+               <property name="text">
+                <string>Angle(deg)</string>
                </property>
               </widget>
+             </item>
+             <item row="2" column="0">
+              <widget class="QCheckBox" name="chkOmit">
+               <property name="layoutDirection">
+                <enum>Qt::LeftToRight</enum>
+               </property>
+               <property name="text">
+                <string>Vernier Omit</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="2">
+              <spacer name="horizontalSpacer_7">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
              </item>
             </layout>
            </widget>
@@ -1728,23 +1773,16 @@ p, li { white-space: pre-wrap; }
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_11">
           <item>
-           <widget class="TableToolbar" name="aliasToolBar" native="true">
-            <widget class="QTableView" name="tableView">
-             <property name="geometry">
-              <rect>
-               <x>0</x>
-               <y>20</y>
-               <width>676</width>
-               <height>531</height>
-              </rect>
-             </property>
-             <attribute name="horizontalHeaderDefaultSectionSize">
-              <number>300</number>
-             </attribute>
-             <attribute name="horizontalHeaderStretchLastSection">
-              <bool>true</bool>
-             </attribute>
-            </widget>
+           <widget class="TableToolbar" name="aliasToolBar" native="true"/>
+          </item>
+          <item>
+           <widget class="QTableView" name="tableView">
+            <attribute name="horizontalHeaderDefaultSectionSize">
+             <number>300</number>
+            </attribute>
+            <attribute name="horizontalHeaderStretchLastSection">
+             <bool>true</bool>
+            </attribute>
            </widget>
           </item>
          </layout>
@@ -1795,7 +1833,9 @@ p, li { white-space: pre-wrap; }
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="../res/res.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>buttonBox</sender>

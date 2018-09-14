@@ -282,7 +282,7 @@ int pvtEdit::postStart( appMsg msg, void *pPara )
 //    if ( stat != MRQ_MOTION_STATE_2_CALCEND )
 //    { return ERR_CAN_NOT_RUN; }
     int ret;
-    ret = pMrq->run( tpvRegion(axesId,0) );
+    ret = pMrq->run( tpvRegion(axesId, m_pmcModel->mConn.devicePage() ) );
 
     return ret;
 }
@@ -309,7 +309,7 @@ int pvtEdit::postStop( appMsg msg, void *pPara )
     Q_ASSERT( NULL != pMrq );
 
     int ret;
-    ret = pMrq->stop( tpvRegion(axesId,0) );
+    ret = pMrq->stop( tpvRegion(axesId, m_pmcModel->mConn.devicePage() ) );
 
     return ret;
 }
@@ -597,7 +597,7 @@ void pvtEdit::slot_download_cancel()
     id = m_pmcModel->getConnection().getDeviceCH();
 
     MegaDevice::deviceMRQ *pMrq = m_pmcModel->m_pInstMgr->findDevice( str, id );
-    pMrq->terminate( tpvRegion(mAgentAxes,0) );
+    pMrq->terminate( tpvRegion(mAgentAxes, m_pmcModel->mConn.devicePage() ) );
 }
 
 void pvtEdit::on_spinLoop_valueChanged(int arg1)
@@ -614,7 +614,9 @@ void pvtEdit::on_spinLoop_valueChanged(int arg1)
                                                                       axesId );
     Q_ASSERT( NULL != pMrq );
 
-    pMrq->setMOTIONPLAN_CYCLENUM( axesId, MRQ_MOTION_SWITCH_1_MAIN, arg1 );
+    pMrq->setMOTIONPLAN_CYCLENUM( axesId,
+                                  (MRQ_MOTION_SWITCH_1)m_pmcModel->mConn.devicePage(),
+                                  arg1 );
 }
 
 void pvtEdit::on_comboBox_currentIndexChanged(int index)

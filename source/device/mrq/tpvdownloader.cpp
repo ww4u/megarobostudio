@@ -199,9 +199,9 @@ logDbg()<<mRegion.axes()<<mRegion.page();
         else
         {}
 
-        //! 1024 / (8*3) = 42
-        if ( batchSize > 36 )
-        { batchSize = 36; }
+//        //! 1024 / (8*3) = 42
+//        if ( batchSize > 36 )
+//        { batchSize = 36; }
 
 //        if ( batchSize > 128 )
 //        { batchSize = 128; }

@@ -46,10 +46,7 @@ public:
 
 
 public:
-//    virtual int serialIn( QXmlStreamReader &reader );
-//    virtual int serialOut( QXmlStreamWriter &writer );
-
-//    virtual int download( VRobot *pSetup );
+    virtual void setJointZeroCcw( int jId, bool b );
 
 public:
     virtual int build( MegaTableModel *pModel,

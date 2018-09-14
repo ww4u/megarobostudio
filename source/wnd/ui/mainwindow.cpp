@@ -294,6 +294,7 @@ void MainWindow::setupToolbar()
     m_pToolbarRoboConn->addWidget( m_pRoboConnTool );
     addToolBar( m_pToolbarRoboConn );
 
+
     //! op tool
     m_pToolbarQuickOp = new QToolBar();    
     m_pToolbarQuickOp->addAction( ui->actionEvent_E );
@@ -388,7 +389,7 @@ void MainWindow::buildConnection()
              SIGNAL(sig_event(eventId,frameData)),
              m_pEventViewer,
              SLOT(slot_event(eventId,frameData)),
-             Qt::QueuedConnection);
+             Qt::QueuedConnection );
     connect( m_pEventViewer,
              SIGNAL(accepted()),
              this,
@@ -521,6 +522,10 @@ void MainWindow::setupData()
 
     if ( mMcModel.mSysPref.mbMaximizeStartup )
     { showMaximized(); }
+
+    //! conn
+    m_pAxesConnTool->getCombPage()->setCurrentIndex( mMcModel.mConn.mDevicePage );
+    m_pRoboConnTool->getCombPage()->setCurrentIndex( mMcModel.mConn.mRoboPage );
 }
 
 void MainWindow::applyConfigs()
@@ -568,6 +573,7 @@ void MainWindow::setupService()
     //! interrupt event
     frameEvent event;
     event.setEnable( true );
+    event.setRepeatAble( false );
     event.setId( event_status );
     event.setMainSubCode( MRQ_mc_MOTION, MRQ_sc_MOTION_STATE_Q );
     receiveCache::setFrameEventEnable( event, true );
@@ -620,7 +626,7 @@ void MainWindow::stopService()
     m_pSampleThread = NULL;
 
     //! robo net
-    m_pRoboNetThread->terminate();
+    m_pRoboNetThread->requestInterruption();
     m_pRoboNetThread->wait();
     delete m_pRoboNetThread;
     m_pRoboNetThread = NULL;

@@ -2,7 +2,7 @@
 #include "../../include/mcstd.h"
 RoboMsgThread::RoboMsgThread( QObject *pObj ) : QThread( pObj )
 {
-    mIntervalus = 100000;   //! 10ms
+    mIntervalus = 100000;   //! 100ms
 }
 
 void RoboMsgThread::onMsg( RoboMsg &msg )
@@ -10,13 +10,16 @@ void RoboMsgThread::onMsg( RoboMsg &msg )
 
 void RoboMsgThread::run()
 {
-//    Q_FOREVER
+    Q_FOREVER
     {
+        if ( isInterruptionRequested() )
+        { break; }
+
         process( mIntervalus, this );
     }
 }
 
-void RoboMsgThread::setInterval( int us )
+void RoboMsgThread::_setInterval( int us )
 { mIntervalus = us;  }
 int RoboMsgThread::interval()
 { return mIntervalus; }

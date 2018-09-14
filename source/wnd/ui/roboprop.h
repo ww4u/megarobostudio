@@ -25,6 +25,9 @@
 #include "motorpref.h"
 #include "motorspref.h"
 
+#include "igusdeltapref.h"
+#include "igusconfig.h"
+
 //! use mrq property
 namespace Ui {
 class mrqProperty;
@@ -99,7 +102,8 @@ private:
 
     AxnPref *m_pAxnPref;
 
-//    RoboHand *m_pHandPage;
+    IgusDeltaPref *m_pIgusPref;
+    IgusConfig *m_pIgusConfig;
 
     int mPrefId;                //! id by robot
     QList<modelView*> mPrefPages;

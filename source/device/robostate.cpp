@@ -74,17 +74,17 @@ QString strName = m_pNowState->name();
 //        { logDbg()<<m_pNowState->name(); Q_ASSERT(false); }
 
         //! check time stamp
-        if ( detail.timeStamp() == 0  )
+//        if ( detail.timeStamp() == 0  )
         { m_pNowState->proc( msg, detail ); /*logDbg();*/ }
-        else
-        {
-            if ( detail.timeStamp() >= m_pNowState->timeStamp() )
-            { m_pNowState->proc( msg, detail ); }
-            else
-            {
-//                sysLog( __FUNCTION__,QString::number(__LINE__), QString::number(msg), strName );
-            }
-        }
+//        else
+//        {
+//            if ( detail.timeStamp() >= m_pNowState->timeStamp() )
+//            { m_pNowState->proc( msg, detail ); }
+//            else
+//            {
+////                sysLog( __FUNCTION__,QString::number(__LINE__), QString::number(msg), strName );
+//            }
+//        }
     }
 //logDbg()<<"exit"<<strName;
 }

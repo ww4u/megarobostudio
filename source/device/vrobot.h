@@ -306,8 +306,11 @@ public:
 
     virtual QString trigSrcAlias( int ax, int iTrig );
 
-    void setJointZeroCcw( int jId, bool b );
+    virtual void setJointZeroCcw( int jId, bool b );
     QList<bool> jointZeroCcwList();
+
+    void setJointZeroCcwVisible( int jId, bool b );
+    QList<bool> jointZeroCcwVisibleList();
 
     void setPoseCount( int pos );
     int poseCount();
@@ -431,6 +434,10 @@ public:
     QList<bool> mJointZeroCcw;          //! zero ccw for each joint
 
     QList<bool> mAngleDir;              //! true: +
+
+    QList<bool> mAngleStickDir;
+    QList<bool> mAngleStickAble;
+
     QList<bool> mLvtAble;
 
     QList <double> mRefAngles;          //! 'ref' angles for each joint by joint id
@@ -446,7 +453,6 @@ public:
 
     RoboWorker* m_pAxesWorkers;         //! worker
     RoboWorker* m_pRoboWoker;
-
                                         //! task
     RoboTask *m_pRoboTask;
 };

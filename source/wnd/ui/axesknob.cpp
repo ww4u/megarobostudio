@@ -63,7 +63,16 @@ void axesKnob::rotate( float angle, float t )
         return;
     }
 
-    if ( pMrq->fsmState( tpvRegion(ax, ui->pageOption->page() ) ) != MegaDevice::mrq_state_idle )
+    int state = pMrq->fsmState( tpvRegion(ax, ui->pageOption->page() ) );
+    if ( state == MegaDevice::mrq_state_idle
+         || state == MegaDevice::mrq_state_calcend
+         || state == MegaDevice::mrq_state_standby
+         || state == MegaDevice::mrq_state_unk
+         )
+    {
+
+    }
+    else
     {
         QMessageBox::warning( this, tr("Warning"), tr("Device is not idle now, try later!") );
         return;

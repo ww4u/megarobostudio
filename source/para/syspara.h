@@ -3,6 +3,13 @@
 
 #include <QtCore>
 #include "../model/relationmodel.h"
+
+enum SysMode
+{
+    sys_normal,
+    sys_admin,
+};
+
 class SysPara
 {
 public:
@@ -79,7 +86,8 @@ public:
                                     //! motion
     double mGeometryResolution;     //! 5mm
     double mAngleResolution;        //! degree
-
+    bool   mOmitEn;
+    double mOmitThreshold;
                                     //! font
     QString mFontFamily;
     int     mPointSize;
@@ -91,6 +99,8 @@ public:
                             //! system alias
     bool mAliasEn;
     RelationModel mAlias;
+
+    SysMode mSysMode;       //! sysmode
 };
 
 #endif // SYSPARA_H

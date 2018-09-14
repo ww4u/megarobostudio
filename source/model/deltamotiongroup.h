@@ -10,7 +10,7 @@ class DeltaMotionGroup : public SinanjuMotionGroup
 public:
 public:
     DeltaMotionGroup( const QString &className = "mrx-dt",
-                        const QString &name="" );
+                      const QString &name="" );
 };
 
 #endif // DELTAMOTIONGROUP_H

@@ -101,15 +101,20 @@ bool RoboMsgQueue::filter( const RoboMsg & msg )
 
 void RoboMsgQueue::postMsg( const RoboMsg &msg, quint64 t )
 {
-    lock();
+
     if ( filter(msg) )
     {}
     else
     {
-        _msgSema.release();
         RoboMsg lMsg = msg;
         lMsg.setTimeStamp( t );
+
+        lock();
         mQueue.enqueue( lMsg );
+        unlock();
+
+        mSemaphore.release();
+        _msgSema.release();     //! total sema
 
         //! thread not running
         if ( NULL != m_pMsgThread && !m_pMsgThread->isRunning() )
@@ -118,7 +123,6 @@ void RoboMsgQueue::postMsg( const RoboMsg &msg, quint64 t )
         }
     }
 
-    unlock();
 }
 
 void RoboMsgQueue::postMsg( eRoboMsg msg, quint64 t )
@@ -406,29 +410,27 @@ void RoboMsgQueue::process( int intervalus,
 
     RoboMsg lMsg;
     //! loop do
-    while( mQueue.size() > 0 )
-    {
+//    while( mQueue.size() > 0 )
+//    while( 1 )
+    {   
+        if( mSemaphore.tryAcquire(1, intervalus/1000 ) )
+        {}
+        else
+        { return; }
+
+        _msgSema.acquire();
+
         lock();
 
         lMsg = mQueue.dequeue();
 
         unlock();
 
-        QThread::usleep( intervalus );
+        //! no delay for speed
+//        QThread::usleep( intervalus );
 
         if ( NULL != pThread )
         { pThread->onMsg( lMsg ); }
 
-        _msgSema.acquire();
-
-//        QVariant var;
-//        qDebug()<<lMsg.mMsg<<lMsg.size();
-//        for( int i = 0; i < lMsg.size(); i++ )
-//        {
-//            var = lMsg[i];
-//            qDebug()<<var.typeName();
-//            if ( var.type() == QMetaType::Int )
-//            { qDebug()<<var.toInt(); }
-//        }
     }
 }

@@ -185,7 +185,7 @@ int robotDelta::zeroAxesTask( void *pArg )
 
         //! foreach axes
         for ( int i = 0; i < pZArg->mJList.size(); i++ )
-        {
+        {logDbg()<<pZArg->mRegion.mAx<<pZArg->mRegion.mPage<<pZArg->mJList[i];
             ret = jMove( pZArg->mRegion,
                    pZArg->mJList[i], pZArg->mCcwList[i],
                    mZeroTime,

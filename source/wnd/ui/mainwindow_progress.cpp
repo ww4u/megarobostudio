@@ -34,7 +34,7 @@ bool MainWindow::progressProc(  const QString &name,
         progress()->progressProg( name, axes, 0 );
         progress()->progressShow( name, axes, true );
 
-        logDbg()<<name<<axes;
+//        logDbg()<<name<<axes;
     }
     else if ( msg.getMsg() == e_download_processing )
     {

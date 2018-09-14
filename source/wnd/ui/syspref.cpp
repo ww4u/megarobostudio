@@ -226,6 +226,8 @@ void sysPref::updateUi()
     //! space
     ui->spinDistanceError->setValue( m_pPref->mGeometryResolution );
     ui->spinAngleError->setValue( m_pPref->mAngleResolution );
+    ui->chkOmit->setChecked( m_pPref->mOmitEn );
+    ui->spinOmit->setValue( m_pPref->mOmitThreshold );
 
     ui->labelFont->setText( m_pPref->mFontFamily + ":" + QString::number( m_pPref->mPointSize) );
 
@@ -326,7 +328,8 @@ void sysPref::updateData()
     //! space
     m_pPref->mGeometryResolution = ui->spinDistanceError->value();
     m_pPref->mAngleResolution = ui->spinAngleError->value();
-
+    m_pPref->mOmitEn = ui->chkOmit->isChecked();
+    m_pPref->mOmitThreshold = ui->spinOmit->value();
 
 }
 

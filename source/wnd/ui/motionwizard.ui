@@ -67,6 +67,11 @@
          <string>MRX-INJ2</string>
         </property>
        </item>
+       <item>
+        <property name="text">
+         <string>IGUS-DRYLIN</string>
+        </property>
+       </item>
       </widget>
      </item>
      <item>

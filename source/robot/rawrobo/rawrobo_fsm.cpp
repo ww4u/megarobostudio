@@ -60,7 +60,7 @@ void RawRoboFsm::subscribe( MegaDevice::RoboFsm *pMember,   //! child
     Q_ASSERT( Robot() != NULL );
     Q_ASSERT( Robot()->lpc() != NULL );
 
-logDbg()<<QString::number( (UINT_PTR)pMember, 16 )<<(UINT_PTR)pMember->leaderPara();
+//logDbg()<<QString::number( (UINT_PTR)pMember, 16 )<<(UINT_PTR)pMember->leaderPara();
 
     //! subax, region, state
     //! \note to robot, not robt.ax
@@ -70,6 +70,12 @@ logDbg()<<QString::number( (UINT_PTR)pMember, 16 )<<(UINT_PTR)pMember->leaderPar
                              pMember->region(),
                              stat
                              );
+
+//    sysLog( __FUNCTION__,
+//            QString::number( pMember->region().axes() ),
+//            QString::number( pMember->region().page() ),
+//            QString::number( stat )
+//            );
 }
 
 void RawRoboFsm::toState( int stat, RoboMsg &detail )

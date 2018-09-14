@@ -128,7 +128,7 @@ void mrqAxes::adaptUi()
     }
 
     //! encoder able
-    ui->gb_encoder->setVisible( m_pMrqModel->encoderAble() );
+    ui->groupBox_3->setVisible( m_pMrqModel->encoderAble() );
 
     //! driver type
     if ( m_pMrqModel->driverId() == VRobot::motor_driver_262 )

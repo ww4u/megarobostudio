@@ -125,7 +125,8 @@ float comAssist::normalizeDegreeN180_180( float degree[], int n )
     return 0;
 }
 
-float comAssist::diffAngle( float a, float b, bool bCw )
+float comAssist::diffAngle( float a, float b, bool bCw,
+                            bool bStickAble, bool bStickCcw )
 {
     float distab, distba;
 
@@ -134,11 +135,21 @@ float comAssist::diffAngle( float a, float b, bool bCw )
 
     int dir = bCw ? 1 : -1;
 
-    //! select min
-    if ( qAbs(distab) < qAbs(distba) )
-    { return distab * dir; }
+    if ( bStickAble )
+    {
+        if ( bStickCcw )
+        { return distba * dir; }
+        else
+        { return distab * dir; }
+    }
     else
-    { return distba * dir; }
+    {
+        //! select min
+        if ( qAbs(distab) < qAbs(distba) )
+        { return distab * dir; }
+        else
+        { return distba * dir; }
+    }
 }
 
 float comAssist::radToDeg( float rad )

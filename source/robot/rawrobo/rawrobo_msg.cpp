@@ -48,7 +48,7 @@ void RawRobo::onMsg( int subAxes, RoboMsg &msg )
         region = msg.at(0).value<tpvRegion>();
     }
 
-    logDbg()<<region.axes()<<region.page();
+//    logDbg()<<region.axes()<<region.page();
     Q_ASSERT( region.page() >= 0 && region.page() < regions() );
 
     //! to some region

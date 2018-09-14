@@ -29,7 +29,7 @@ int robotDelta::verifyTrace( QList<TraceKeyPoint> &curve )
 }
 
 int robotDelta::buildTrace( QList<TraceKeyPoint> &curve,
-                QList<arith_delta::deltaPoint> &jointsPlan )
+                QList<deltaPoint> &jointsPlan )
 {
     int ret;
 
@@ -105,11 +105,11 @@ logDbg()<<curve.size()<<xyzResLen<<mPlanAttr.mStep;
 }
 
 int robotDelta::splitTrace( xxxGroup<tracePoint> &tracePoints,
-                            QList<arith_delta::deltaPoint> &traceJoints )
+                            QList<deltaPoint> &traceJoints )
 {
-    QList<arith_delta::D4Point> points;
+    QList<D4Point> points;
 
-    arith_delta::D4Point d4Pt;
+    D4Point d4Pt;
     for ( int i = 0; i < tracePoints.size(); i++ )
     {
         d4Pt.t = tracePoints.data()[i].t;
@@ -134,7 +134,7 @@ logDbg();
 }
 
 int robotDelta::convertTrace(  QList<TraceKeyPoint> &curve,
-                               QList<arith_delta::deltaPoint> &jointsPlan,
+                               QList<deltaPoint> &jointsPlan,
                                QList< tpvGroup *> &gp,
                                QList< int > &sectionList )
 {
@@ -188,7 +188,7 @@ int robotDelta::convertTrace(  QList<TraceKeyPoint> &curve,
 }
 
 int robotDelta::buildTpvGroup( QList<TraceKeyPoint> &curve,
-                               QList<arith_delta::deltaPoint> &jointsPlan,
+                               QList<deltaPoint> &jointsPlan,
                                QList< tpvGroup *> &jointsGroup )
 {
     //! create each joints group

@@ -16,8 +16,13 @@
 struct H2ZeroArg : public RoboTaskArgument
 {
     int mAx;                        //! 0 -- x
-    float mZeroDist,mZeroTime, mZeroEndV;
+    float mZeroTime;
+    float mZeroDist,mZeroEndV;
     float mZeroGapDist, mZeroGapTime;
+
+    //! x,y dist
+    float mZeroXDist,mZeroXEndV, mZeroXGapDist;
+    float mZeroYDist,mZeroYEndV, mZeroYGapDist;
 
     float mZeroZDist, mZeroZTime, mZeroZEndV;
     float mZeroGapZDist, mZeroGapZTime;

@@ -120,13 +120,15 @@ VRobot::~VRobot()
 {
     gcWorker();
 
+    m_pRoboWoker->requestInterruption();
+    m_pRoboWoker->wait();
     delete m_pRoboWoker;
 
     if ( NULL != m_pRoboTask )
     {
         if ( m_pRoboTask->isRunning() )
         {
-            m_pRoboTask->terminate();
+            m_pRoboTask->requestInterruption();
             m_pRoboTask->wait();
         }
 
@@ -148,7 +150,7 @@ void VRobot::gcWorker()
         {
             if ( m_pAxesWorkers[i].isRunning() )
             {
-                m_pAxesWorkers[i].terminate();
+                m_pAxesWorkers[i].requestInterruption();
             }
         }
         for( int i = 0; i < axes(); i++ )

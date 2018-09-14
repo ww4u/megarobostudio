@@ -38,7 +38,7 @@ int robotDelta::build(   MegaTableModel *pModel,
 
     //! build
     int ret;
-    QList<arith_delta::deltaPoint> jointTrace;
+    QList<deltaPoint> jointTrace;
     ret = buildTrace( curve, jointTrace );
     if ( ret != 0 )
     { return ret; }

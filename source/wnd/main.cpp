@@ -184,6 +184,7 @@ int __main(int argc, char *argv[])
     return 0;
 }
 
+//int serviceProc( int argc, char *argv[] )
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
@@ -326,5 +327,4 @@ qDebug()<<a.applicationDirPath();
 
     return ret;
 }
-
 

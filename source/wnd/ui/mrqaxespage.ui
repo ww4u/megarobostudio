@@ -34,6 +34,11 @@
        <string>POS</string>
       </attribute>
      </widget>
+     <widget class="MrqTune" name="pageTune">
+      <attribute name="title">
+       <string>Tune</string>
+      </attribute>
+     </widget>
     </widget>
    </item>
   </layout>
@@ -55,6 +60,12 @@
    <class>MrqTrigPage</class>
    <extends>QWidget</extends>
    <header>mrqtrigpage.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>MrqTune</class>
+   <extends>QWidget</extends>
+   <header>mrqtune.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

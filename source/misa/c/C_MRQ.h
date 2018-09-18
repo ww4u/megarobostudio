@@ -857,11 +857,11 @@ int MRQ_setTRIGGER_LEVELTYPE( ViSession vi, int val0,char * val1,char * val2 );
 //!val2
 int MRQ_getTRIGGER_LEVELTYPE( ViSession vi, int val0,char * val1 , char * val2 );
 //!U8,ENUM,ENUM
-//![CHANNUM],TRIG1|TRIG2|TRIG3|TRIG4|TRIG5,NONE|ALARM|STOP|ALARM&STOP
+//![CHANNUM],TRIG1|TRIG2|TRIG3|TRIG4|TRIG5,NONE|ALARM|STOP|ALARM&STOP|RUN
 int MRQ_setTRIGGER_LEVELRESP( ViSession vi, int val0,char * val1,char * val2 );
 //!U8,ENUM
 //![CHANNUM],TRIG1|TRIG2|TRIG3|TRIG4|TRIG5
-//!MRQ_MOTIONPLAN_OOSLINERESPONSE_1
+//!MRQ_TRIGGER_LEVELRESP_1
 //!val2
 int MRQ_getTRIGGER_LEVELRESP( ViSession vi, int val0,char * val1 , char * val2 );
 //!U8,ENUM,ENUM
@@ -880,6 +880,14 @@ int MRQ_setTRIGGER_LEVELSPERIOD( ViSession vi, int val0,char * val1,float val2 )
 //!f32
 //!val2
 int MRQ_getTRIGGER_LEVELSPERIOD( ViSession vi, int val0,char * val1 , float *val2 );
+//!U8,ENUM,ENUM
+//![CHANNUM],TRIG1|TRIG2|TRIG3|TRIG4|TRIG5,MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8
+int MRQ_setTRIGGER_LEVELRUNWAVE( ViSession vi, int val0,char * val1,char * val2 );
+//!U8,ENUM
+//![CHANNUM],TRIG1|TRIG2|TRIG3|TRIG4|TRIG5
+//!MRQ_MOTION_SWITCH_1
+//!val2
+int MRQ_getTRIGGER_LEVELRUNWAVE( ViSession vi, int val0,char * val1 , char * val2 );
 //!U8
 //![CHANNUM]
 //!MRQ_DRIVER_TYPE
@@ -1138,6 +1146,38 @@ int MRQ_getSENSORUART_SWITCHTIME( ViSession vi, char * val0,char * val1 , int *v
 //!byte,char,char,char
 //!val2,val3,val4,val5
 int MRQ_getSENSORUART_DATA( ViSession vi, char * val0,char * val1 , int *val2,int *val3,int *val4,int *val5 );
+//!U8,ENUM
+//![CHANNUM],OFF|ON
+int MRQ_setTUNING_STATE( ViSession vi, int val0,char * val1 );
+//!U8
+//![CHANNUM]
+//!MRQ_SYSTEM_REVMOTION
+//!val1
+int MRQ_getTUNING_STATE( ViSession vi, int val0 , char * val1 );
+//!U8,ENUM
+//![CHANNUM],1/2|1/4
+int MRQ_setTUNING_MINICURRRATIO( ViSession vi, int val0,char * val1 );
+//!U8
+//![CHANNUM]
+//!MRQ_DRIVER_MINICURRRATIO
+//!val1
+int MRQ_getTUNING_MINICURRRATIO( ViSession vi, int val0 , char * val1 );
+//!U8,U16,U16
+//![CHANNUM]
+int MRQ_setTUNING_ENERGYEFFIC( ViSession vi, int val0,int val1,int val2 );
+//!U8
+//![CHANNUM]
+//!uint16,uint16
+//!val1,val2
+int MRQ_getTUNING_ENERGYEFFIC( ViSession vi, int val0 , int *val1,int *val2 );
+//!U8,ENUM,ENUM
+//![CHANNUM],1|2|4|8,32|8|2|1
+int MRQ_setTUNING_CURRREGULATE( ViSession vi, int val0,char * val1,char * val2 );
+//!U8
+//!
+//!MRQ_TUNING_CURRREGULATE,MRQ_TUNING_CURRREGULATE_1
+//!val1,val2
+int MRQ_getTUNING_CURRREGULATE( ViSession vi, int val0 , char * val1,char * val2 );
 //!ENUM
 //!OFF|ON
 int MRQ_setISOLATORIN_STATE( ViSession vi, char * val0 );

@@ -16,40 +16,56 @@ namespace test
 
             dev.miOpen("device1");
 
-            string link;
-            dev.getLINK_INTFC(out link);
+            byte[] ary;
+            dev.getSensorUartData("UART1", "s1", out ary);
+            if (ary == null)
+            { }
+            else
+            { }
 
-            UInt32 sTime;
-            dev.getSENSORUART_SWITCHTIME("UART1", "S1", out sTime);
-            Console.WriteLine(sTime);
+            //string link;
+            //dev.getLINK_INTFC(out link);
 
-            dev.setSENSORUART_SWITCHTIME("UART1", "S1", 130);
-            dev.getSENSORUART_SWITCHTIME("UART1", "S1", out sTime);
+            //UInt32 sTime;
+            //dev.getSENSORUART_SWITCHTIME("UART1", "S1", out sTime);
+            //Console.WriteLine(sTime);
 
-            Console.WriteLine(sTime);
+            //dev.setSENSORUART_SWITCHTIME("UART1", "S1", 130);
+            //dev.getSENSORUART_SWITCHTIME("UART1", "S1", out sTime);
 
-            dev.getSENSORUART_SWITCHTIME("UART1", "S2", out sTime);
-            Console.WriteLine(sTime);
+            //Console.WriteLine(sTime);
 
-            dev.setSENSORUART_SWITCHTIME("UART1", "S2", 140);
-            dev.getSENSORUART_SWITCHTIME("UART1", "S2", out sTime);
+            //dev.getSENSORUART_SWITCHTIME("UART1", "S2", out sTime);
+            //Console.WriteLine(sTime);
 
-            Console.WriteLine(link);
+            //dev.setSENSORUART_SWITCHTIME("UART1", "S2", 140);
+            //dev.getSENSORUART_SWITCHTIME("UART1", "S2", out sTime);
 
-            dev.move(0, 0, 1, -20, 0);
-            dev.waitIdle(0, 0, 2000);
+            //Console.WriteLine(link);
 
-            dev.call(0, 0, 1, -1 );
-            dev.waitIdle(0, 0, 2000);
+            //dev.move(0, 0, 1, -20, 0);
+            //dev.waitIdle(0, 0, 2000);
 
-            Sinanju sinanju = new Sinanju();
-            sinanju.miOpen("MRX-T4");
-            string recvStr;
-            sinanju.getIdn(out recvStr);
-            Console.WriteLine("IDN:{0}", recvStr );
+            //dev.call(0, 0, 1, -1 );
+            //dev.waitIdle(0, 0, 2000);
 
-            sinanju.fold();
-            sinanju.waitIdle(0, 0, 2000 );
+            //Sinanju sinanju = new Sinanju();
+            //sinanju.miOpen("MRX-T4");
+            //string recvStr;
+            //sinanju.getIdn(out recvStr);
+            //Console.WriteLine("IDN:{0}", recvStr );
+
+            //sinanju.fold();
+            //sinanju.waitIdle(0, 0, 2000 );
+
+            //Motors mot;
+            //mot = new Motors();
+            //mot.miOpen("mrx-motors");
+            //mot.call( 0, 0 );
+            //mot.waitIdle(0, 0);
+
+            //mot.call(0, 1);
+            //mot.waitIdle(0, 1);
         }
     }
 }

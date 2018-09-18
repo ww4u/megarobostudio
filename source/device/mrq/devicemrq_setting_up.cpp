@@ -191,13 +191,19 @@ MRQ_PROGRESS( 50, ("TRIGGER") );
 //        checked_call( getTRIGGER_PATTSMODE( i, mTRIGGER_PATTSMODE+i) );
 //        checked_call( getTRIGGER_PATTSPERIOD( i, mTRIGGER_PATTSPERIOD+i) );
 
+        int trigId;
         for( int j = 0; j < mTrigSrcs; j++ )
         {
-            checked_call( getTRIGGER_LEVELSTATE( i, (MRQ_TRIGGER_LEVELSTATE)j, mTRIGGER_LEVELSTATE[i]+j) );
-            checked_call( getTRIGGER_LEVELTYPE( i, (MRQ_TRIGGER_LEVELSTATE)j, mTRIGGER_LEVELTYPE[i]+j) );
-            checked_call( getTRIGGER_LEVELRESP( i, (MRQ_TRIGGER_LEVELSTATE)j, mTRIGGER_LEVELRESP[i]+j) );
-            checked_call( getTRIGGER_LEVELSMODE( i, (MRQ_TRIGGER_LEVELSTATE)j, mTRIGGER_LEVELSMODE[i]+j) );
-            checked_call( getTRIGGER_LEVELSPERIOD( i, (MRQ_TRIGGER_LEVELSTATE)j, mTRIGGER_LEVELSPERIOD[i]+j) );
+            trigId = mTrigIdsList.at( j );
+
+            checked_call( getTRIGGER_LEVELSTATE( i, (MRQ_TRIGGER_LEVELSTATE)trigId, mTRIGGER_LEVELSTATE[i]+trigId) );
+            checked_call( getTRIGGER_LEVELTYPE( i, (MRQ_TRIGGER_LEVELSTATE)trigId, mTRIGGER_LEVELTYPE[i]+trigId) );
+            checked_call( getTRIGGER_LEVELRESP( i, (MRQ_TRIGGER_LEVELSTATE)trigId, mTRIGGER_LEVELRESP[i]+trigId) );
+            checked_call( getTRIGGER_LEVELSMODE( i, (MRQ_TRIGGER_LEVELSTATE)trigId, mTRIGGER_LEVELSMODE[i]+trigId) );
+            checked_call( getTRIGGER_LEVELSPERIOD( i, (MRQ_TRIGGER_LEVELSTATE)trigId, mTRIGGER_LEVELSPERIOD[i]+trigId) );
+
+            if ( mbRunWaveAble )
+            { checked_call( getTRIGGER_LEVELRUNWAVE( i, (MRQ_TRIGGER_LEVELSTATE)trigId, mTRIGGER_LEVELRUNWAVE[i]+trigId) ); }
         }
 
         if ( mDriverId == VRobot::motor_driver_262 )
@@ -276,6 +282,20 @@ MRQ_PROGRESS( 70, ("SENSOR") );
 
             checked_call( getSENSORUART_RECEIVENUM( (MRQ_SENSORUART_BAUD)i, (MRQ_IDENTITY_LABEL_1)j, mSENSORUART_RECEIVENUM[i] + j) );
             checked_call( getSENSORUART_SWITCHTIME( (MRQ_SENSORUART_BAUD)i, (MRQ_IDENTITY_LABEL_1)j, mSENSORUART_SWITCHTIME[i] + j) );
+        }
+    }
+
+    //! tunning
+    if ( mbTunningAble )
+    {
+        MRQ_PROGRESS( 72, ("TUNNING") );
+
+        for ( int i = 0; i < axes(); i++ )
+        {
+            checked_call( getTUNING_STATE( i, mTUNING_STATE + i ) );
+            checked_call( getTUNING_MINICURRRATIO( i, mTUNING_MINICURRRATIO + i ) );
+            checked_call( getTUNING_ENERGYEFFIC( i, mTUNING_ENERGYEFFIC + i, mTUNING_ENERGYEFFIC1 + i) );
+            checked_call( getTUNING_CURRREGULATE( i, mTUNING_CURRREGULATE + i, mTUNING_CURRREGULATE1 + i ) );
         }
     }
 

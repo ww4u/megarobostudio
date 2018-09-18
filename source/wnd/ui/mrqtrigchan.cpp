@@ -24,8 +24,11 @@ void MrqTrigChan::setConfig(
 
     exchange_combox( cmbLevelMode, levConfig.mTypeIndex, true );
     exchange_combox( cmbLevelResponse, levConfig.mRespIndex, true );
+    on_cmbLevelResponse_currentIndexChanged( levConfig.mRespIndex );
 
     exchange_spin( spinLevelPeriod, levConfig.mPeriod, true );
+
+    ui->widget->setPage( levConfig.mRunIndex );
 }
 void MrqTrigChan::getConfig(
                 trigLevelConfig &levConfig,
@@ -37,6 +40,8 @@ void MrqTrigChan::getConfig(
     exchange_combox( cmbLevelResponse, levConfig.mRespIndex, false );
 
     exchange_spin( spinLevelPeriod, levConfig.mPeriod, false );
+
+    levConfig.mRunIndex = ui->widget->page();
 }
 
 void MrqTrigChan::spyEdited()
@@ -62,4 +67,13 @@ void MrqTrigChan::spyEdited()
     };
 
     install_spy();
+}
+
+void MrqTrigChan::on_cmbLevelResponse_currentIndexChanged(int index)
+{
+    //! the last
+    if ( index == ui->cmbLevelResponse->count() - 1 )
+    { ui->widget->setVisible( true ); }
+    else
+    { ui->widget->setVisible( false ); }
 }

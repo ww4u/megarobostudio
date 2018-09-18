@@ -29,32 +29,37 @@ static int testDevice()
     if ( vi == 0 )
     { return -1; }
 
-    viPrintf( vi, "*IDN?\n" );
+    int ret;
+    char buf[128];
+    ret = MRQ_getSensorUartData( vi, "UART1", "S1", buf, 128 );
+    printf( "%d\n", ret );
 
-    char buf[64];
-    int retCount;
-    miRecv( vi, buf, 64, &retCount );
+//    viPrintf( vi, "*IDN?\n" );
 
-    char intf[64];
-    MRQ_getLINK_INTFC( vi, intf );
-    printf( "intf:%s\n", intf );
+//    char buf[64];
+//    int retCount;
+//    miRecv( vi, buf, 64, &retCount );
 
-    robo_getIdn( vi, intf );
-    printf( "idn:%s\n", intf );
+//    char intf[64];
+//    MRQ_getLINK_INTFC( vi, intf );
+//    printf( "intf:%s\n", intf );
 
-    MRQ_move( vi, 0,0,1,20,0 );
-    robo_waitIdle( vi, 0,0, 2000 );
+//    robo_getIdn( vi, intf );
+//    printf( "idn:%s\n", intf );
 
-    robo_call( vi, 0,0, 1, -1 );
-    robo_waitIdle( vi, 0,0, 2000 );
+//    MRQ_move( vi, 0,0,1,20,0 );
+//    robo_waitIdle( vi, 0,0, 2000 );
 
-    int switchTime;
-    MRQ_setSENSORUART_SWITCHTIME( vi, "UART1", "S1", 120 );
-    MRQ_getSENSORUART_SWITCHTIME( vi, "UART1", "S1", &switchTime );
-    printf( "sw:%d\n", switchTime );
+//    robo_call( vi, 0,0, 1, -1 );
+//    robo_waitIdle( vi, 0,0, 2000 );
 
-    MRQ_getSENSORUART_SWITCHTIME( vi, "UART1", "S2", &switchTime );
-    printf( "sw2:%d\n", switchTime );
+//    int switchTime;
+//    MRQ_setSENSORUART_SWITCHTIME( vi, "UART1", "S1", 120 );
+//    MRQ_getSENSORUART_SWITCHTIME( vi, "UART1", "S1", &switchTime );
+//    printf( "sw:%d\n", switchTime );
+
+//    MRQ_getSENSORUART_SWITCHTIME( vi, "UART1", "S2", &switchTime );
+//    printf( "sw2:%d\n", switchTime );
 
     miClose( vi );
 
@@ -106,11 +111,11 @@ int main()
 {
 //    testPara();
 
-//    testDevice();
+    testDevice();
 
 //    testT4();
 
-    TestMgr();
+//    TestMgr();
 
     return 0;
 }

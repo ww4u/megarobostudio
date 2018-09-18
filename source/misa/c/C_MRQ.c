@@ -5100,7 +5100,7 @@ int MRQ_getTRIGGER_LEVELTYPE( ViSession vi, int val0,char * val1 , char * val2 )
 }
 
 //!U8,ENUM,ENUM
-//![CHANNUM],TRIG1|TRIG2|TRIG3|TRIG4|TRIG5,NONE|ALARM|STOP|ALARM&STOP
+//![CHANNUM],TRIG1|TRIG2|TRIG3|TRIG4|TRIG5,NONE|ALARM|STOP|ALARM&STOP|RUN
 int MRQ_setTRIGGER_LEVELRESP( ViSession vi, int val0,char * val1,char * val2 )
 {
 //!设置电平触发的响应
@@ -5114,7 +5114,7 @@ int MRQ_setTRIGGER_LEVELRESP( ViSession vi, int val0,char * val1,char * val2 )
 
 //!U8,ENUM
 //![CHANNUM],TRIG1|TRIG2|TRIG3|TRIG4|TRIG5
-//!MRQ_MOTIONPLAN_OOSLINERESPONSE_1
+//!MRQ_TRIGGER_LEVELRESP_1
 //!val2
 int MRQ_getTRIGGER_LEVELRESP( ViSession vi, int val0,char * val1 , char * val2 )
 {
@@ -5236,6 +5236,53 @@ int MRQ_getTRIGGER_LEVELSPERIOD( ViSession vi, int val0,char * val1 , float *val
          return -1;
     }
     *val2 = atof( paraAt( &para, 0) );
+    parasDeInit(&para);
+    return 0;
+}
+
+//!U8,ENUM,ENUM
+//![CHANNUM],TRIG1|TRIG2|TRIG3|TRIG4|TRIG5,MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8
+int MRQ_setTRIGGER_LEVELRUNWAVE( ViSession vi, int val0,char * val1,char * val2 )
+{
+//!设置电平触发响应为RUN时执行的波表
+//!TRIGGER LEVELRUNWAVE
+    char args[SEND_BUF];
+    sprintf( args, "TRIGGER:LEVELRUNWAVE %d,%s,%s" , val0,val1,val2);
+    int ret;
+    ret = miSend( vi, args, strlen(args) );
+    return ret;
+}
+
+//!U8,ENUM
+//![CHANNUM],TRIG1|TRIG2|TRIG3|TRIG4|TRIG5
+//!MRQ_MOTION_SWITCH_1
+//!val2
+int MRQ_getTRIGGER_LEVELRUNWAVE( ViSession vi, int val0,char * val1 , char * val2 )
+{
+//!查询电平触发响应为RUN时执行的波表
+//!TRIGGER LEVELRUNWAVE
+
+    char args[SEND_BUF];
+    sprintf( args, "TRIGGER:LEVELRUNWAVE? %d,%s" , val0,val1);
+    int ret;
+    ret = miSend( vi, args, strlen(args) );
+    if ( ret != 0 ){ return ret; }
+    ret = miWaitRead(vi);
+    if ( ret != 0 ){ return ret; }
+
+    char recvBuf[RECV_BUF];
+    int retCount;
+    ret = miRecv( vi, recvBuf, sizeof(recvBuf), &retCount);
+    if ( ret != 0 ){ return ret; }
+    if ( retCount < 1 ){ return -1; }
+    struPara para;
+    if ( parasInit( &para, recvBuf) != 0 ) { return -1; }
+    if ( parasCount( &para) < 1 )
+    {
+         parasDeInit(&para);
+         return -1;
+    }
+    strcpy(val2, paraAt( &para, 0 ) );
     parasDeInit(&para);
     return 0;
 }
@@ -6765,6 +6812,196 @@ int MRQ_getSENSORUART_DATA( ViSession vi, char * val0,char * val1 , int *val2,in
     *val3 = atoi( paraAt( &para, 1) );
     *val4 = atoi( paraAt( &para, 2) );
     *val5 = atoi( paraAt( &para, 3) );
+    parasDeInit(&para);
+    return 0;
+}
+
+//!U8,ENUM
+//![CHANNUM],OFF|ON
+int MRQ_setTUNING_STATE( ViSession vi, int val0,char * val1 )
+{
+//!设置驱动开关状态
+//!TUNING STATE
+    char args[SEND_BUF];
+    sprintf( args, "TUNING:STATE %d,%s" , val0,val1);
+    int ret;
+    ret = miSend( vi, args, strlen(args) );
+    return ret;
+}
+
+//!U8
+//![CHANNUM]
+//!MRQ_SYSTEM_REVMOTION
+//!val1
+int MRQ_getTUNING_STATE( ViSession vi, int val0 , char * val1 )
+{
+//!查询驱动开关状态
+//!TUNING STATE
+
+    char args[SEND_BUF];
+    sprintf( args, "TUNING:STATE? %d" , val0);
+    int ret;
+    ret = miSend( vi, args, strlen(args) );
+    if ( ret != 0 ){ return ret; }
+    ret = miWaitRead(vi);
+    if ( ret != 0 ){ return ret; }
+
+    char recvBuf[RECV_BUF];
+    int retCount;
+    ret = miRecv( vi, recvBuf, sizeof(recvBuf), &retCount);
+    if ( ret != 0 ){ return ret; }
+    if ( retCount < 1 ){ return -1; }
+    struPara para;
+    if ( parasInit( &para, recvBuf) != 0 ) { return -1; }
+    if ( parasCount( &para) < 1 )
+    {
+         parasDeInit(&para);
+         return -1;
+    }
+    strcpy(val1, paraAt( &para, 0 ) );
+    parasDeInit(&para);
+    return 0;
+}
+
+//!U8,ENUM
+//![CHANNUM],1/2|1/4
+int MRQ_setTUNING_MINICURRRATIO( ViSession vi, int val0,char * val1 )
+{
+//!设置运行过程中的最低电流比
+//!TUNING MINICURRRATIO
+    char args[SEND_BUF];
+    sprintf( args, "TUNING:MINICURRRATIO %d,%s" , val0,val1);
+    int ret;
+    ret = miSend( vi, args, strlen(args) );
+    return ret;
+}
+
+//!U8
+//![CHANNUM]
+//!MRQ_DRIVER_MINICURRRATIO
+//!val1
+int MRQ_getTUNING_MINICURRRATIO( ViSession vi, int val0 , char * val1 )
+{
+//!查询运行过程中的最低电流比
+//!TUNING MINICURRRATIO
+
+    char args[SEND_BUF];
+    sprintf( args, "TUNING:MINICURRRATIO? %d" , val0);
+    int ret;
+    ret = miSend( vi, args, strlen(args) );
+    if ( ret != 0 ){ return ret; }
+    ret = miWaitRead(vi);
+    if ( ret != 0 ){ return ret; }
+
+    char recvBuf[RECV_BUF];
+    int retCount;
+    ret = miRecv( vi, recvBuf, sizeof(recvBuf), &retCount);
+    if ( ret != 0 ){ return ret; }
+    if ( retCount < 1 ){ return -1; }
+    struPara para;
+    if ( parasInit( &para, recvBuf) != 0 ) { return -1; }
+    if ( parasCount( &para) < 1 )
+    {
+         parasDeInit(&para);
+         return -1;
+    }
+    strcpy(val1, paraAt( &para, 0 ) );
+    parasDeInit(&para);
+    return 0;
+}
+
+//!U8,U16,U16
+//![CHANNUM]
+int MRQ_setTUNING_ENERGYEFFIC( ViSession vi, int val0,int val1,int val2 )
+{
+//!设置运行过程中能效的上下限，上下限一起设置，上限在前，下限在后，千分之
+//!TUNING ENERGYEFFIC
+    char args[SEND_BUF];
+    sprintf( args, "TUNING:ENERGYEFFIC %d,%d,%d" , val0,val1,val2);
+    int ret;
+    ret = miSend( vi, args, strlen(args) );
+    return ret;
+}
+
+//!U8
+//![CHANNUM]
+//!uint16,uint16
+//!val1,val2
+int MRQ_getTUNING_ENERGYEFFIC( ViSession vi, int val0 , int *val1,int *val2 )
+{
+//!查询运行过程中能效的上下限
+//!TUNING ENERGYEFFIC
+
+    char args[SEND_BUF];
+    sprintf( args, "TUNING:ENERGYEFFIC? %d" , val0);
+    int ret;
+    ret = miSend( vi, args, strlen(args) );
+    if ( ret != 0 ){ return ret; }
+    ret = miWaitRead(vi);
+    if ( ret != 0 ){ return ret; }
+
+    char recvBuf[RECV_BUF];
+    int retCount;
+    ret = miRecv( vi, recvBuf, sizeof(recvBuf), &retCount);
+    if ( ret != 0 ){ return ret; }
+    if ( retCount < 1 ){ return -1; }
+    struPara para;
+    if ( parasInit( &para, recvBuf) != 0 ) { return -1; }
+    if ( parasCount( &para) < 2 )
+    {
+         parasDeInit(&para);
+         return -1;
+    }
+    *val1 = atoi( paraAt( &para, 0) );
+    *val2 = atoi( paraAt( &para, 1) );
+    parasDeInit(&para);
+    return 0;
+}
+
+//!U8,ENUM,ENUM
+//![CHANNUM],1|2|4|8,32|8|2|1
+int MRQ_setTUNING_CURRREGULATE( ViSession vi, int val0,char * val1,char * val2 )
+{
+//!设置电流调节的速度，上升速度和下降速度
+//!TUNING CURRREGULATE
+    char args[SEND_BUF];
+    sprintf( args, "TUNING:CURRREGULATE %d,%s,%s" , val0,val1,val2);
+    int ret;
+    ret = miSend( vi, args, strlen(args) );
+    return ret;
+}
+
+//!U8
+//!
+//!MRQ_TUNING_CURRREGULATE,MRQ_TUNING_CURRREGULATE_1
+//!val1,val2
+int MRQ_getTUNING_CURRREGULATE( ViSession vi, int val0 , char * val1,char * val2 )
+{
+//!查询电流调节的速度，上升速度和下降速度
+//!TUNING CURRREGULATE
+
+    char args[SEND_BUF];
+    sprintf( args, "TUNING:CURRREGULATE? %d" , val0);
+    int ret;
+    ret = miSend( vi, args, strlen(args) );
+    if ( ret != 0 ){ return ret; }
+    ret = miWaitRead(vi);
+    if ( ret != 0 ){ return ret; }
+
+    char recvBuf[RECV_BUF];
+    int retCount;
+    ret = miRecv( vi, recvBuf, sizeof(recvBuf), &retCount);
+    if ( ret != 0 ){ return ret; }
+    if ( retCount < 1 ){ return -1; }
+    struPara para;
+    if ( parasInit( &para, recvBuf) != 0 ) { return -1; }
+    if ( parasCount( &para) < 2 )
+    {
+         parasDeInit(&para);
+         return -1;
+    }
+    strcpy(val1, paraAt( &para, 0 ) );
+    strcpy(val2, paraAt( &para, 1 ) );
     parasDeInit(&para);
     return 0;
 }

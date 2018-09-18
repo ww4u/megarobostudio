@@ -435,10 +435,13 @@ int CANBus::doWrite(DeviceId &nodeId, byte *pBuf, int len)
     }
 
     mFrames += 1;
+
+    IBus::unlock();
+
     if ( mWtInterval > 0 )
     { IBus::wait_us( mWtInterval ); }
 
-    IBus::unlock();
+
     if ( 1 !=  ret )
     {
         sysError( __FUNCTION__, QString::number(__LINE__) );

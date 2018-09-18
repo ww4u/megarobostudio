@@ -278,6 +278,12 @@ public:
     void setEncoderAble( bool );
     bool encoderAble();
 
+    void setRunWaveAble( bool b );
+    bool runWaveAble();
+
+    void setTunningAble( bool b );
+    bool tunningAble();
+
     void setDriverId( int id );
     int driverId();
 
@@ -305,6 +311,8 @@ public:
     int trigSrcs();
 
     virtual QString trigSrcAlias( int ax, int iTrig );
+
+    QList<int> trigSrcIdList();
 
     virtual void setJointZeroCcw( int jId, bool b );
     QList<bool> jointZeroCcwList();
@@ -394,6 +402,7 @@ protected:
     QStringList mSensorNameList;
 
     int mTrigSrcs;                      //! 5,2
+    QList<int> mTrigIdsList;
 
     int mPoseCount;                     //! 0,3..
     QStringList mPoseTitles;
@@ -402,6 +411,9 @@ protected:
 
     bool mbInterpAble;
     bool mbEncoderAble;
+    bool mbRunWaveAble;
+    bool mbTunningAble;
+
     int  mDriverId;
 
     QStringList mMicrostepsList;

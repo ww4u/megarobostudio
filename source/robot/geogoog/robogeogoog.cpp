@@ -27,6 +27,8 @@ roboGeogoog::roboGeogoog()
 
     mMicrostepBase = 2;     //! 64
 
+    setTunningAble( true );
+
     mImage = QImage::fromData( _megaimage, sizeof(_megaimage) );
 }
 

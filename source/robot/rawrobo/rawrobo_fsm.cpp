@@ -8,7 +8,7 @@ RawRoboFsm::RawRoboFsm()
     m_pRobot = NULL;
 
     mbRunReqed = false;
-    mState = -1;
+    mState = MegaDevice::mrq_state_unk; //! unk
 
 }
 RawRoboFsm::~RawRoboFsm()
@@ -34,6 +34,7 @@ void RawRoboFsm::build()
 
     //! create each state
     RawRoboUnit *pUnit;
+    create_unit( MegaDevice::mrq_state_unk, UnkRawRoboUnit );
     create_unit( MegaDevice::mrq_state_idle, IdleRawRoboUnit );
     create_unit( MegaDevice::mrq_state_run_reqed, RunReqedRawRoboUnit );
     create_unit( MegaDevice::mrq_state_program, ProgramRawRoboUnit );

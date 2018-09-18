@@ -197,9 +197,20 @@ int RawRoboUnit::state()
 
 void RawRoboUnit::initState()
 {
-    mState = -1;
+    mState = MegaDevice::mrq_state_unk;
     for ( int i = 0; i < mMemberCount; i++ )
     { mMemberStates.insert( i, mState ); }
+}
+
+UnkRawRoboUnit::UnkRawRoboUnit( MegaDevice::RoboFsm *pFsm,
+                     int members ) : RawRoboUnit( pFsm, members )
+{
+    mName = "UnkRawRoboUnit";
+}
+
+void UnkRawRoboUnit::proc( int msg, RoboMsg &detail )
+{
+    RawRoboUnit::proc( msg, detail );
 }
 
 //! real states

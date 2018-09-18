@@ -84,6 +84,10 @@ int MRQ_model::serialOut( QXmlStreamWriter &writer )
         saveSensorUART( writer );
         writer.writeEndElement();
 
+        writer.writeStartElement("tunning");
+        saveTunning( writer );
+        writer.writeEndElement();
+
         writer.writeStartElement("isoi");
         saveISOi( writer );
         writer.writeEndElement();
@@ -150,6 +154,8 @@ int MRQ_model::serialIn( QXmlStreamReader &reader )
                 { loadISOo( reader); }
                 else if ( reader.name() == "sensoruart" )
                 { loadSensorUART( reader); }
+                else if ( reader.name() == "tunning" )
+                { loadTunning( reader ); }
                 else if ( reader.name() == "isoi" )
                 { loadISOi( reader); }
                 else if ( reader.name() == "ai" )

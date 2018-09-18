@@ -948,10 +948,40 @@ static scpi_result_t _scpi_arb_read( scpi_t * context )
     return SCPI_RES_OK;
 }
 
+static scpi_result_t __scpi_getSENSORUART_DATA( scpi_t * context )
+{
+    // read
+    DEF_LOCAL_VAR();
+
+    MRQ_SENSORUART_BAUD val0;
+    if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
+        { return SCPI_RES_ERR; }
+    if (strLen < 1)
+        { return SCPI_RES_ERR; }
+    if ( MRQ_SENSORUART_BAUD_toValue( pLocalStr, &val0) != 0 )
+        { return SCPI_RES_ERR; }
+
+    MRQ_IDENTITY_LABEL_1 val1;
+    if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
+        { return SCPI_RES_ERR; }
+    if (strLen < 1)
+        { return SCPI_RES_ERR; }
+    if ( MRQ_IDENTITY_LABEL_1_toValue( pLocalStr, &val1) != 0 )
+        { return SCPI_RES_ERR; }
+
+    int ret;
+    QByteArray ary;
+    ret = GET_OBJ(context)->loadSensorUartData( val0, val1, ary );
+    if ( ret != 0 )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    SCPI_ResultArbitraryBlock( context, ary.data(), ary.length() );
+
+    return SCPI_RES_OK;
+}
+
 static scpi_command_t _mrq_scpi_cmds[]=
 {
-    #include "../board/_MRQ_scpi_cmd.h"
-
     COM_ITEMs(),
 
     CMD_ITEM( "*IDN?", _scpi_idn ),
@@ -1013,6 +1043,12 @@ static scpi_command_t _mrq_scpi_cmds[]=
 
     CMD_ITEM( "WRITE", _scpi_arb_write ),
     CMD_ITEM( "READ", _scpi_arb_read ),
+
+    //! over write
+    CMD_ITEM( "SENSORUART:DATA?", __scpi_getSENSORUART_DATA ),
+
+    //! common
+    #include "../board/_MRQ_scpi_cmd.h"
 
     SCPI_CMD_LIST_END
 };

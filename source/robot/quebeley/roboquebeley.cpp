@@ -42,7 +42,7 @@ roboQuebeley::roboQuebeley( robotEnum id )
     mSensorNameList.clear();
     mSensorNameList<<QObject::tr("SEN1")<<QObject::tr("SEN2");
 
-
+    mbRunWaveAble = true;
 
     if ( id == robot_qubeley_d )
     { mImage = QImage::fromData( _megaimage, sizeof(_megaimage) ); }
@@ -73,7 +73,7 @@ void roboQuebeley::postCtor()
         mTemperatures = 1;      //! otp
         mAINs = 1;
 
-        setTrigSrcs( 4 );
+        setTrigSrcs( 4 + 1 );   //! encoder z
 
         mSensorNameList.clear();
         mSensorNameList<<QObject::tr("SEN1")<<QObject::tr("SEN2");
@@ -95,7 +95,8 @@ void roboQuebeley::postCtor()
         mTemperatures = 0;
         mAINs = 0;
 
-        setTrigSrcs( 2 );
+        setTrigSrcs( 2 + 1 );
+        mTrigIdsList[2] = MRQ_TRIGGER_LEVELSTATE_TRIG5;
 
         mSensorNameList.clear();
         mSensorNameList<<QObject::tr("SEN1")<<QObject::tr("SEN2");
@@ -106,14 +107,30 @@ QString roboQuebeley::trigSrcAlias( int ax, int iTrig )
 {
     Q_ASSERT( ax == 0 && iTrig >= 0 && iTrig < trigSrcs() );
 
-    if ( iTrig >= 0 && iTrig < 4 )
+    //! 5
+    if ( mId==robot_qubeley_s )
     {
-        return QString("X%1").arg(iTrig+1);
+        if ( iTrig >= 0 && iTrig < 4 )
+        {
+            return QString("X%1").arg(iTrig+1);
+        }
+        else if ( iTrig == 4 )
+        { return QString(QObject::tr("SW_Z")); }
+        else
+        { return ""; }
     }
-    else if ( iTrig == 4 )
-    { return QString(QObject::tr("SW_Z")); }
+    //! 3
     else
-    { return ""; }
+    {
+        if ( iTrig >= 0 && iTrig < 2 )
+        {
+            return QString("X%1").arg(iTrig+1);
+        }
+        else if ( iTrig == 2 )
+        { return QString(QObject::tr("SW_Z")); }
+        else
+        { return ""; }
+    }
 }
 
 int roboQuebeley::serialIn( QXmlStreamReader &reader )

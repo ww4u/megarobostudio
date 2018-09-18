@@ -137,7 +137,9 @@ public:
     QString loadName();
 
     int setSN( const QString &sn );
-
+    int loadSensorUartData( MRQ_SENSORUART_BAUD u,
+                            MRQ_IDENTITY_LABEL_1 s,
+                            QByteArray &ary );
     //! overwrite
 public:
     int getREPORT_DATA_( byte val0

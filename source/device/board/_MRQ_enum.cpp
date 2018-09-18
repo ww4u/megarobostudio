@@ -273,6 +273,13 @@ static value_desc _value_desc_MRQ_TRIGGER_LEVELTYPE_1[] = {
 	{3,"FALL",},
 	{4,"HIGH",},
 };
+static value_desc _value_desc_MRQ_TRIGGER_LEVELRESP_1[] = {
+	{0,"NONE",},
+	{1,"ALARM",},
+	{2,"STOP",},
+	{3,"ALARM&STOP",},
+	{4,"RUN",},
+};
 static value_desc _value_desc_MRQ_DRIVER_TYPE[] = {
 	{0,"D17",},
 	{1,"D23",},
@@ -360,6 +367,18 @@ static value_desc _value_desc_MRQ_SENSORUART_BAUD_1[] = {
 	{8,"128000",},
 	{9,"2000000",},
 	{10,"2500000",},
+};
+static value_desc _value_desc_MRQ_TUNING_CURRREGULATE[] = {
+	{0,"1",},
+	{1,"2",},
+	{2,"4",},
+	{3,"8",},
+};
+static value_desc _value_desc_MRQ_TUNING_CURRREGULATE_1[] = {
+	{0,"32",},
+	{1,"8",},
+	{2,"2",},
+	{3,"1",},
 };
 static value_desc _value_desc_MRQ_ABSENCALARM_ZEROPOSITION_1[] = {
 	{0,"NONE",},
@@ -577,6 +596,10 @@ const char* MRQ_TRIGGER_LEVELTYPE_1_toString( MRQ_TRIGGER_LEVELTYPE_1 eType )
 {
 	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_TRIGGER_LEVELTYPE_1 ) ); 
 }
+const char* MRQ_TRIGGER_LEVELRESP_1_toString( MRQ_TRIGGER_LEVELRESP_1 eType )
+{
+	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_TRIGGER_LEVELRESP_1 ) ); 
+}
 const char* MRQ_DRIVER_TYPE_toString( MRQ_DRIVER_TYPE eType )
 {
 	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_DRIVER_TYPE ) ); 
@@ -640,6 +663,14 @@ const char* MRQ_SENSORUART_BAUD_toString( MRQ_SENSORUART_BAUD eType )
 const char* MRQ_SENSORUART_BAUD_1_toString( MRQ_SENSORUART_BAUD_1 eType )
 {
 	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_SENSORUART_BAUD_1 ) ); 
+}
+const char* MRQ_TUNING_CURRREGULATE_toString( MRQ_TUNING_CURRREGULATE eType )
+{
+	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_TUNING_CURRREGULATE ) ); 
+}
+const char* MRQ_TUNING_CURRREGULATE_1_toString( MRQ_TUNING_CURRREGULATE_1 eType )
+{
+	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_TUNING_CURRREGULATE_1 ) ); 
 }
 const char* MRQ_ABSENCALARM_ZEROPOSITION_1_toString( MRQ_ABSENCALARM_ZEROPOSITION_1 eType )
 {
@@ -1045,6 +1076,14 @@ int MRQ_TRIGGER_LEVELTYPE_1_toValue( const char *pStr, MRQ_TRIGGER_LEVELTYPE_1 *
 	*pEVal=(MRQ_TRIGGER_LEVELTYPE_1)lval;
 	return 0;
 }
+int MRQ_TRIGGER_LEVELRESP_1_toValue( const char *pStr, MRQ_TRIGGER_LEVELRESP_1 *pEVal )
+{
+	int ret, lval;
+	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_TRIGGER_LEVELRESP_1 ), &lval );
+	if ( ret != 0 ) return ret; 
+	*pEVal=(MRQ_TRIGGER_LEVELRESP_1)lval;
+	return 0;
+}
 int MRQ_DRIVER_TYPE_toValue( const char *pStr, MRQ_DRIVER_TYPE *pEVal )
 {
 	int ret, lval;
@@ -1171,6 +1210,22 @@ int MRQ_SENSORUART_BAUD_1_toValue( const char *pStr, MRQ_SENSORUART_BAUD_1 *pEVa
 	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_SENSORUART_BAUD_1 ), &lval );
 	if ( ret != 0 ) return ret; 
 	*pEVal=(MRQ_SENSORUART_BAUD_1)lval;
+	return 0;
+}
+int MRQ_TUNING_CURRREGULATE_toValue( const char *pStr, MRQ_TUNING_CURRREGULATE *pEVal )
+{
+	int ret, lval;
+	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_TUNING_CURRREGULATE ), &lval );
+	if ( ret != 0 ) return ret; 
+	*pEVal=(MRQ_TUNING_CURRREGULATE)lval;
+	return 0;
+}
+int MRQ_TUNING_CURRREGULATE_1_toValue( const char *pStr, MRQ_TUNING_CURRREGULATE_1 *pEVal )
+{
+	int ret, lval;
+	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_TUNING_CURRREGULATE_1 ), &lval );
+	if ( ret != 0 ) return ret; 
+	*pEVal=(MRQ_TUNING_CURRREGULATE_1)lval;
 	return 0;
 }
 int MRQ_ABSENCALARM_ZEROPOSITION_1_toValue( const char *pStr, MRQ_ABSENCALARM_ZEROPOSITION_1 *pEVal )

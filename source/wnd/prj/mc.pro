@@ -301,7 +301,8 @@ SOURCES += \
     ../ui/portoption.cpp \
     ../ui/pageoption.cpp \
     ../ui/igusconfig.cpp \
-    ../ui/igusdeltapref.cpp
+    ../ui/igusdeltapref.cpp \
+    ../ui/mrqtune.cpp
 
 HEADERS += \
         ../ui/mainwindow.h \
@@ -468,7 +469,8 @@ HEADERS += \
     ../ui/portoption.h \
     ../ui/pageoption.h \
     ../ui/igusconfig.h \
-    ../ui/igusdeltapref.h
+    ../ui/igusdeltapref.h \
+    ../ui/mrqtune.h
 
 FORMS += \
         ../ui/mainwindow.ui \
@@ -569,7 +571,8 @@ FORMS += \
     ../ui/portoption.ui \
     ../ui/pageoption.ui \
     ../ui/igusconfig.ui \
-    ../ui/igusdrylinpref.ui
+    ../ui/igusdrylinpref.ui \
+    ../ui/mrqtune.ui
 
 
 RESOURCES = ../res/res.qrc

@@ -10,6 +10,7 @@ MrqAxesPage::MrqAxesPage(QWidget *parent) :
     mSubViews.append( ui->pageMotor );
     mSubViews.append( ui->pageMotion );
     mSubViews.append( ui->pageTrigger );
+    mSubViews.append( ui->pageTune );
 //    mSubViews.append( ui->pagePlan );
 
     spyEdited();
@@ -72,6 +73,9 @@ void MrqAxesPage::modelChanged()
     FOREACH_SUBVIEW_CALL( modelChanged );logDbg();
 
     mrqView::modelChanged();
+
+    ui->pageTune->setVisible( m_pMrqModel->tunningAble() );
+
 }
 
 void MrqAxesPage::spyEdited()
@@ -79,5 +83,6 @@ void MrqAxesPage::spyEdited()
     LINK_MODIFIED( ui->pageMotor );
     LINK_MODIFIED( ui->pageMotion );
     LINK_MODIFIED( ui->pageTrigger );
+    LINK_MODIFIED( ui->pageTune );
 //    LINK_MODIFIED( ui->pagePlan );
 }

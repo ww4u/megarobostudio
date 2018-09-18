@@ -8,7 +8,7 @@ namespace mega_device
         {
         }
 
-        public int move(int ax, int page, float t, float angle, float endV)
+        public int move(int ax, int page, float t, float angle, float endV=0.0f)
         {
             return roboSet(string.Format("MOVE {0},{1},{2},{3},{4}",
                                           ax, page,
@@ -16,7 +16,7 @@ namespace mega_device
                                           endV ) );
         }
 
-        public int preMove(int ax, int page, float t, float angle, float endV)
+        public int preMove(int ax, int page, float t, float angle, float endV = 0.0f)
         {
             return roboSet(string.Format("PREMOVE {0},{1},{2},{3},{4}",
                                               ax, page,
@@ -70,6 +70,13 @@ namespace mega_device
         public int getZero(int ax, out float val)
         {
             return roboGet_float(string.Format("ENCODER:ZERO? {0}", ax), out val);
+        }
+
+        public int getSensorUartData(string uart, string sens, out byte [] datas )
+        {
+            return roboGet_stream( string.Format("SENSORUART:DATA? {0},{1}", uart, sens),
+                                    out datas
+                                    );
         }
     }
 

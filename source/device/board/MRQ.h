@@ -361,9 +361,9 @@ int getTRIGGER_LEVELTYPE( byte val0
 ,MRQ_TRIGGER_LEVELSTATE val1, MRQ_TRIGGER_LEVELTYPE_1 * val2, bool bQuery=true );
 int setTRIGGER_LEVELRESP( byte val0
 ,MRQ_TRIGGER_LEVELSTATE val1
-,MRQ_MOTIONPLAN_OOSLINERESPONSE_1 val2 );
+,MRQ_TRIGGER_LEVELRESP_1 val2 );
 int getTRIGGER_LEVELRESP( byte val0
-,MRQ_TRIGGER_LEVELSTATE val1, MRQ_MOTIONPLAN_OOSLINERESPONSE_1 * val2, bool bQuery=true );
+,MRQ_TRIGGER_LEVELSTATE val1, MRQ_TRIGGER_LEVELRESP_1 * val2, bool bQuery=true );
 int setTRIGGER_LEVELSMODE( byte val0
 ,MRQ_TRIGGER_LEVELSTATE val1
 ,MRQ_TRIGGER_PATTSMODE val2 );
@@ -374,6 +374,11 @@ int setTRIGGER_LEVELSPERIOD( byte val0
 ,f32 val2 );
 int getTRIGGER_LEVELSPERIOD( byte val0
 ,MRQ_TRIGGER_LEVELSTATE val1, f32 * val2, bool bQuery=true );
+int setTRIGGER_LEVELRUNWAVE( byte val0
+,MRQ_TRIGGER_LEVELSTATE val1
+,MRQ_MOTION_SWITCH_1 val2 );
+int getTRIGGER_LEVELRUNWAVE( byte val0
+,MRQ_TRIGGER_LEVELSTATE val1, MRQ_MOTION_SWITCH_1 * val2, bool bQuery=true );
 int getDRIVER_TYPE( byte val0, MRQ_DRIVER_TYPE * val1, bool bQuery=true );
 int getDRIVER_STATEREG( byte val0
 ,MRQ_DRIVER_STATEREG val1, uint32 * val2, bool bQuery=true );
@@ -485,6 +490,20 @@ int getSENSORUART_SWITCHTIME( MRQ_SENSORUART_BAUD val0
 ,MRQ_IDENTITY_LABEL_1 val1, uint32 * val2, bool bQuery=true );
 int getSENSORUART_DATA( MRQ_SENSORUART_BAUD val0
 ,MRQ_IDENTITY_LABEL_1 val1, byte * val2, char * val3, char * val4, char * val5, bool bQuery=true );
+int setTUNING_STATE( byte val0
+,MRQ_SYSTEM_REVMOTION val1 );
+int getTUNING_STATE( byte val0, MRQ_SYSTEM_REVMOTION * val1, bool bQuery=true );
+int setTUNING_MINICURRRATIO( byte val0
+,MRQ_DRIVER_MINICURRRATIO val1 );
+int getTUNING_MINICURRRATIO( byte val0, MRQ_DRIVER_MINICURRRATIO * val1, bool bQuery=true );
+int setTUNING_ENERGYEFFIC( byte val0
+,uint16 val1
+,uint16 val2 );
+int getTUNING_ENERGYEFFIC( byte val0, uint16 * val1, uint16 * val2, bool bQuery=true );
+int setTUNING_CURRREGULATE( byte val0
+,MRQ_TUNING_CURRREGULATE val1
+,MRQ_TUNING_CURRREGULATE_1 val2 );
+int getTUNING_CURRREGULATE( byte val0, MRQ_TUNING_CURRREGULATE * val1, MRQ_TUNING_CURRREGULATE_1 * val2, bool bQuery=true );
 int setISOLATORIN_STATE( MRQ_SYSTEM_REVMOTION val0 );
 int getISOLATORIN_STATE(  MRQ_SYSTEM_REVMOTION * val0, bool bQuery=true );
 int setISOLATORIN_TYPE( MRQ_TRIGGER_LEVELTYPE_1 val0 );

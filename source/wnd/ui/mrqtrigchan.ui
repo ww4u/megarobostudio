@@ -23,7 +23,7 @@
       <attribute name="title">
        <string>Level</string>
       </attribute>
-      <layout class="QFormLayout" name="formLayout_2">
+      <layout class="QGridLayout" name="gridLayout">
        <item row="0" column="0">
         <widget class="QCheckBox" name="chkLevel">
          <property name="text">
@@ -35,6 +35,55 @@
         <widget class="QLabel" name="label_2">
          <property name="text">
           <string>Level Mode</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QComboBox" name="cmbLevelResponse">
+         <item>
+          <property name="text">
+           <string>NONE</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>ALARM</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>STOP</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>ALARM + STOP</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>RUN</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="4" column="1">
+        <widget class="QDoubleSpinBox" name="spinLevelPeriod">
+         <property name="decimals">
+          <number>3</number>
+         </property>
+         <property name="minimum">
+          <double>0.001000000000000</double>
+         </property>
+         <property name="maximum">
+          <double>10.000000000000000</double>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0">
+        <widget class="QLabel" name="label_4">
+         <property name="text">
+          <string>Period(s)</string>
          </property>
         </widget>
        </item>
@@ -74,49 +123,21 @@
          </property>
         </widget>
        </item>
-       <item row="2" column="1">
-        <widget class="QComboBox" name="cmbLevelResponse">
-         <item>
-          <property name="text">
-           <string>NONE</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>ALARM</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>STOP</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>ALARM + STOP</string>
-          </property>
-         </item>
-        </widget>
+       <item row="2" column="2">
+        <widget class="PageOption" name="widget" native="true"/>
        </item>
-       <item row="3" column="0">
-        <widget class="QLabel" name="label_4">
-         <property name="text">
-          <string>Period(s)</string>
+       <item row="1" column="2">
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
          </property>
-        </widget>
-       </item>
-       <item row="3" column="1">
-        <widget class="QDoubleSpinBox" name="spinLevelPeriod">
-         <property name="decimals">
-          <number>3</number>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
          </property>
-         <property name="minimum">
-          <double>0.001000000000000</double>
-         </property>
-         <property name="maximum">
-          <double>10.000000000000000</double>
-         </property>
-        </widget>
+        </spacer>
        </item>
       </layout>
      </widget>
@@ -137,6 +158,14 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>PageOption</class>
+   <extends>QWidget</extends>
+   <header>pageoption.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

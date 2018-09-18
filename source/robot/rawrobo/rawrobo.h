@@ -353,6 +353,23 @@ protected:
     int mMemberCount;
 };
 
+class UnkRawRoboUnit : public RawRoboUnit
+{
+public:
+    UnkRawRoboUnit( MegaDevice::RoboFsm *pFsm,
+                     int members );
+
+public:
+    virtual void proc( int msg, RoboMsg &detail );
+
+//    virtual void onEnter( RoboMsg &detail );
+//    virtual void onExit();
+//    virtual void onRst();
+
+protected:
+
+};
+
 class IdleRawRoboUnit : public RawRoboUnit
 {
 public:

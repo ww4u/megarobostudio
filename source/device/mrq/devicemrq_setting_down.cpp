@@ -195,13 +195,19 @@ MRQ_PROGRESS( 10, ("MOTION") );
         checked_call( setTRIGGER_PATTSMODE( i, mTRIGGER_PATTSMODE[i]) );
         checked_call( setTRIGGER_PATTSPERIOD( i, mTRIGGER_PATTSPERIOD[i]) );
 
+        MRQ_TRIGGER_LEVELSTATE trigId;
         for( int j = 0; j < mTrigSrcs; j++ )
         {
+            trigId = (MRQ_TRIGGER_LEVELSTATE)mTrigIdsList.at( j );
+
             checked_call( setTRIGGER_LEVELSTATE( i, (MRQ_TRIGGER_LEVELSTATE)j, mTRIGGER_LEVELSTATE[i][j]) );
             checked_call( setTRIGGER_LEVELTYPE( i, (MRQ_TRIGGER_LEVELSTATE)j, mTRIGGER_LEVELTYPE[i][j]) );
             checked_call( setTRIGGER_LEVELRESP( i, (MRQ_TRIGGER_LEVELSTATE)j, mTRIGGER_LEVELRESP[i][j]) );
             checked_call( setTRIGGER_LEVELSMODE( i, (MRQ_TRIGGER_LEVELSTATE)j, mTRIGGER_LEVELSMODE[i][j]) );
             checked_call( setTRIGGER_LEVELSPERIOD( i, (MRQ_TRIGGER_LEVELSTATE)j, mTRIGGER_LEVELSPERIOD[i][j]) );
+
+            if ( mbRunWaveAble )
+            { checked_call( setTRIGGER_LEVELRUNWAVE( i, (MRQ_TRIGGER_LEVELSTATE)j, mTRIGGER_LEVELRUNWAVE[i][j]) ); }
         }
 
         MRQ_PROGRESS_DOWN( 50, ("TRIGGER") );
@@ -285,6 +291,19 @@ MRQ_PROGRESS( 10, ("MOTION") );
 
             MRQ_PROGRESS_DOWN( 70, ("SENSOR") );
         }
+    }
+
+    //! tunning
+    if ( mbTunningAble )
+    {
+        for ( int i = 0; i < axes(); i++ )
+        {
+            checked_call( setTUNING_STATE( i, mTUNING_STATE[i] ) );
+            checked_call( setTUNING_MINICURRRATIO( i, mTUNING_MINICURRRATIO[i] ) );
+            checked_call( setTUNING_ENERGYEFFIC( i, mTUNING_ENERGYEFFIC[i], mTUNING_ENERGYEFFIC1[i] ) );
+            checked_call( setTUNING_CURRREGULATE( i, mTUNING_CURRREGULATE[i], mTUNING_CURRREGULATE1[i] ) );
+        }
+        MRQ_PROGRESS( 72, ("TUNNING") );
     }
 
     for ( int i = 0; i < mISIs; i++ )

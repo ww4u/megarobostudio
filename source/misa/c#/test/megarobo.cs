@@ -5,6 +5,7 @@ namespace mega_device
 {
     public class MegaRobo : miDevice
     {
+        public const int mega_robo_unk = -1;
         public const int mega_robo_idle = 0;
         public const int mega_robo_run_reqed = 1;
         public const int mega_robo_program = 2;
@@ -130,6 +131,52 @@ namespace mega_device
             return 0;
         }
 
+        public int roboGet_stream(string args,
+                                   out byte []ary
+                                   )
+        {
+            ary = null; 
+
+            int ret;
+            ret = miSend(args);
+            if (ret != 0) { return ret; }
+            ret = miWaitRead();
+            if (ret != 0) { return ret; }
+
+            string strRecv;
+            int retCount;
+            ret = miRecv(out strRecv, out retCount);
+            if (ret != 0) { return ret; }
+            if (retCount < 2 ) { return -1; }
+
+            if (strRecv[0] != '#')
+            { return -1; }
+
+            int headLen;
+            headLen = strRecv[1] - '0';
+            if (headLen > 0 && headLen <= 9)
+            { }
+            else
+            { return -1; }
+
+            string strPad = strRecv.Substring(2, headLen);
+
+            int padLen = Convert.ToInt32(strPad);
+            if (padLen <= 0)
+            { return -1; }
+
+            if (strRecv.Length < (2 + headLen + padLen))
+            { return -1; }
+
+            ary = new byte[ padLen ];
+            for (int i = 0; i < padLen; i++)
+            {
+                ary[i] = (byte)strRecv[2 + headLen + i];
+            }
+
+            return 0;
+        }
+
         public int getIdn( out string val )
         {
             return roboGet_str( "*IDN?", out val );
@@ -194,12 +241,12 @@ namespace mega_device
             return -1; 
         }
 
-        public int waitEnd(int ax, int page, int tmoms)
+        public int waitEnd(int ax, int page, int tmoms=2000)
         {
             return waitx(ax, page, mega_robo_calcend, tmoms);
         }
 
-        public int waitIdle(int ax, int page, int tmoms)
+        public int waitIdle(int ax, int page, int tmoms=2000)
         {
             return waitx(ax, page, mega_robo_idle, tmoms);
         }

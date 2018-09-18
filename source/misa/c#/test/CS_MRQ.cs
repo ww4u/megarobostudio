@@ -4909,7 +4909,7 @@ public class CS_MRQ : MegaRobo
     }
 
     //!U8,ENUM,ENUM
-    //![CHANNUM],TRIG1|TRIG2|TRIG3|TRIG4|TRIG5,NONE|ALARM|STOP|ALARM&STOP
+    //![CHANNUM],TRIG1|TRIG2|TRIG3|TRIG4|TRIG5,NONE|ALARM|STOP|ALARM&STOP|RUN
     public int setTRIGGER_LEVELRESP(  byte val0, string val1, string val2 )
     {
         //!设置电平触发的响应
@@ -4923,7 +4923,7 @@ public class CS_MRQ : MegaRobo
 
     //!U8,ENUM
     //![CHANNUM],TRIG1|TRIG2|TRIG3|TRIG4|TRIG5
-    //!MRQ_MOTIONPLAN_OOSLINERESPONSE_1
+    //!MRQ_TRIGGER_LEVELRESP_1
     //!val2
     public int getTRIGGER_LEVELRESP(  byte val0, string val1 ,  out string val2 )
     {
@@ -5040,6 +5040,51 @@ public class CS_MRQ : MegaRobo
         if ( paras.Length < 1 )
         { return -1; } 
         val2 = Convert.ToSingle( paras[0] );
+        return 0;
+    }
+
+    //!U8,ENUM,ENUM
+    //![CHANNUM],TRIG1|TRIG2|TRIG3|TRIG4|TRIG5,MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8
+    public int setTRIGGER_LEVELRUNWAVE(  byte val0, string val1, string val2 )
+    {
+        //!设置电平触发响应为RUN时执行的波表
+        //!TRIGGER LEVELRUNWAVE
+        string args;
+        args = string.Format("TRIGGER:LEVELRUNWAVE {0},{1},{2}" , val0,val1,val2);
+        int ret;
+        ret = miSend( args );
+        return ret;
+    }
+
+    //!U8,ENUM
+    //![CHANNUM],TRIG1|TRIG2|TRIG3|TRIG4|TRIG5
+    //!MRQ_MOTION_SWITCH_1
+    //!val2
+    public int getTRIGGER_LEVELRUNWAVE(  byte val0, string val1 ,  out string val2 )
+    {
+        //!查询电平触发响应为RUN时执行的波表
+        //!TRIGGER LEVELRUNWAVE
+
+        //! init the out
+        val2=null;
+
+        string args;
+        args = string.Format("TRIGGER:LEVELRUNWAVE? {0},{1}" , val0,val1);
+        int ret;
+        ret = miSend( args );
+        if ( ret != 0 ){ return ret; }
+        ret = miWaitRead();
+        if ( ret != 0 ){ return ret; }
+
+        string strRecv;
+        int retCount;
+        ret = miRecv( out strRecv, out retCount);
+        if ( ret != 0 ){ return ret; }
+        if ( retCount < 1 ){ return -1; }
+        string [] paras=strRecv.Split(',');
+        if ( paras.Length < 1 )
+        { return -1; } 
+        val2 = paras[0];
         return 0;
     }
 
@@ -6507,6 +6552,190 @@ public class CS_MRQ : MegaRobo
         val3 = Convert.ToByte( paras[1] );
         val4 = Convert.ToByte( paras[2] );
         val5 = Convert.ToByte( paras[3] );
+        return 0;
+    }
+
+    //!U8,ENUM
+    //![CHANNUM],OFF|ON
+    public int setTUNING_STATE(  byte val0, string val1 )
+    {
+        //!设置驱动开关状态
+        //!TUNING STATE
+        string args;
+        args = string.Format("TUNING:STATE {0},{1}" , val0,val1);
+        int ret;
+        ret = miSend( args );
+        return ret;
+    }
+
+    //!U8
+    //![CHANNUM]
+    //!MRQ_SYSTEM_REVMOTION
+    //!val1
+    public int getTUNING_STATE(  byte val0 ,  out string val1 )
+    {
+        //!查询驱动开关状态
+        //!TUNING STATE
+
+        //! init the out
+        val1=null;
+
+        string args;
+        args = string.Format("TUNING:STATE? {0}" , val0);
+        int ret;
+        ret = miSend( args );
+        if ( ret != 0 ){ return ret; }
+        ret = miWaitRead();
+        if ( ret != 0 ){ return ret; }
+
+        string strRecv;
+        int retCount;
+        ret = miRecv( out strRecv, out retCount);
+        if ( ret != 0 ){ return ret; }
+        if ( retCount < 1 ){ return -1; }
+        string [] paras=strRecv.Split(',');
+        if ( paras.Length < 1 )
+        { return -1; } 
+        val1 = paras[0];
+        return 0;
+    }
+
+    //!U8,ENUM
+    //![CHANNUM],1/2|1/4
+    public int setTUNING_MINICURRRATIO(  byte val0, string val1 )
+    {
+        //!设置运行过程中的最低电流比
+        //!TUNING MINICURRRATIO
+        string args;
+        args = string.Format("TUNING:MINICURRRATIO {0},{1}" , val0,val1);
+        int ret;
+        ret = miSend( args );
+        return ret;
+    }
+
+    //!U8
+    //![CHANNUM]
+    //!MRQ_DRIVER_MINICURRRATIO
+    //!val1
+    public int getTUNING_MINICURRRATIO(  byte val0 ,  out string val1 )
+    {
+        //!查询运行过程中的最低电流比
+        //!TUNING MINICURRRATIO
+
+        //! init the out
+        val1=null;
+
+        string args;
+        args = string.Format("TUNING:MINICURRRATIO? {0}" , val0);
+        int ret;
+        ret = miSend( args );
+        if ( ret != 0 ){ return ret; }
+        ret = miWaitRead();
+        if ( ret != 0 ){ return ret; }
+
+        string strRecv;
+        int retCount;
+        ret = miRecv( out strRecv, out retCount);
+        if ( ret != 0 ){ return ret; }
+        if ( retCount < 1 ){ return -1; }
+        string [] paras=strRecv.Split(',');
+        if ( paras.Length < 1 )
+        { return -1; } 
+        val1 = paras[0];
+        return 0;
+    }
+
+    //!U8,U16,U16
+    //![CHANNUM]
+    public int setTUNING_ENERGYEFFIC(  byte val0, UInt16 val1, UInt16 val2 )
+    {
+        //!设置运行过程中能效的上下限，上下限一起设置，上限在前，下限在后，千分之
+        //!TUNING ENERGYEFFIC
+        string args;
+        args = string.Format("TUNING:ENERGYEFFIC {0},{1},{2}" , val0,val1,val2);
+        int ret;
+        ret = miSend( args );
+        return ret;
+    }
+
+    //!U8
+    //![CHANNUM]
+    //!uint16,uint16
+    //!val1,val2
+    public int getTUNING_ENERGYEFFIC(  byte val0 ,  out UInt16 val1, out UInt16 val2 )
+    {
+        //!查询运行过程中能效的上下限
+        //!TUNING ENERGYEFFIC
+
+        //! init the out
+        val1=0;
+        val2=0;
+
+        string args;
+        args = string.Format("TUNING:ENERGYEFFIC? {0}" , val0);
+        int ret;
+        ret = miSend( args );
+        if ( ret != 0 ){ return ret; }
+        ret = miWaitRead();
+        if ( ret != 0 ){ return ret; }
+
+        string strRecv;
+        int retCount;
+        ret = miRecv( out strRecv, out retCount);
+        if ( ret != 0 ){ return ret; }
+        if ( retCount < 1 ){ return -1; }
+        string [] paras=strRecv.Split(',');
+        if ( paras.Length < 2 )
+        { return -1; } 
+        val1 = Convert.ToUInt16( paras[0] );
+        val2 = Convert.ToUInt16( paras[1] );
+        return 0;
+    }
+
+    //!U8,ENUM,ENUM
+    //![CHANNUM],1|2|4|8,32|8|2|1
+    public int setTUNING_CURRREGULATE(  byte val0, string val1, string val2 )
+    {
+        //!设置电流调节的速度，上升速度和下降速度
+        //!TUNING CURRREGULATE
+        string args;
+        args = string.Format("TUNING:CURRREGULATE {0},{1},{2}" , val0,val1,val2);
+        int ret;
+        ret = miSend( args );
+        return ret;
+    }
+
+    //!U8
+    //!
+    //!MRQ_TUNING_CURRREGULATE,MRQ_TUNING_CURRREGULATE_1
+    //!val1,val2
+    public int getTUNING_CURRREGULATE(  byte val0 ,  out string val1, out string val2 )
+    {
+        //!查询电流调节的速度，上升速度和下降速度
+        //!TUNING CURRREGULATE
+
+        //! init the out
+        val1=null;
+        val2=null;
+
+        string args;
+        args = string.Format("TUNING:CURRREGULATE? {0}" , val0);
+        int ret;
+        ret = miSend( args );
+        if ( ret != 0 ){ return ret; }
+        ret = miWaitRead();
+        if ( ret != 0 ){ return ret; }
+
+        string strRecv;
+        int retCount;
+        ret = miRecv( out strRecv, out retCount);
+        if ( ret != 0 ){ return ret; }
+        if ( retCount < 1 ){ return -1; }
+        string [] paras=strRecv.Split(',');
+        if ( paras.Length < 2 )
+        { return -1; } 
+        val1 = paras[0];
+        val2 = paras[1];
         return 0;
     }
 

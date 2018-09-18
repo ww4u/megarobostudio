@@ -19,4 +19,6 @@ int MRQ_setLED( ViSession vi, int ax, int duty, int freq );
 int MRQ_getZeroValid( ViSession vi, int *val );
 int MRQ_getZeros( ViSession, int ax, float *val );
 
+int MRQ_getSensorUartData( ViSession vi, char *pu, char *ps, char * ary, int len );
+
 #endif

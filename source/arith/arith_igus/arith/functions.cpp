@@ -56,13 +56,6 @@ extern "C" __declspec(dllexport) int  GetIgusPvtLen(Igus *systemParam, double* p
 	{
 		deltArm[i] = igusParam.offset[i];
 	}
-	//坐标系转换
-	for (int i = 0; i < len; i++)
-	{
-		posIn[3 * i] = posIn[3 * i] - igusParam.P0[0];
-		posIn[3 * i + 1] = posIn[3 * i+1] - igusParam.P0[1];
-		posIn[3 * i + 2] = posIn[3 * i+2] - igusParam.P0[2];
-	}
 	// 正解
 	if (igusParam.mode == 0)
 	{
@@ -77,10 +70,17 @@ extern "C" __declspec(dllexport) int  GetIgusPvtLen(Igus *systemParam, double* p
 	}
 	else
 	{
+		//坐标系转换
+		for (int i = 0; i < len; i++)
+		{
+			posIn[3 * i] = posIn[3 * i] - igusParam.P0[0];
+			posIn[3 * i + 1] = posIn[3 * i + 1] - igusParam.P0[1];
+			posIn[3 * i + 2] = posIn[3 * i + 2] - igusParam.P0[2];
+		}
 		int res = GetPvtData(posIn, vIn, tIn, len, igusParam.mode);
 		if (res != 0)
 		{
-                        return res;
+			return -1;
 		}
 	}
 	// 添加
@@ -130,14 +130,14 @@ int GetPvtData(double* pIn, double* vIn, double* tIn, int len, int index)
 		int res = CalPosition(tempP, pOut, index);
 		if (res < 0)
 		{
-                        return -10;
+			return -1;
 		}
 		double vOut[3];
 		memset(&vOut, 0, 3 * sizeof(double));
 		res = CalV(pOut, tempP, tempV, vOut, index);
 		if (res < 0)
 		{
-                        return -11;
+			return -1;
 		}
 		if (index == 1)
 		{
@@ -146,7 +146,7 @@ int GetPvtData(double* pIn, double* vIn, double* tIn, int len, int index)
 			{
 				if (fabs(vOut[k]) > vMax)
 				{
-                                        return -12;
+					return -1;
 				}
 			}
 		}
@@ -319,7 +319,7 @@ int CalV(double* p1, double* p2, double* vIn, double* vOut, int index)
 	double D2 = 2 * p1[1] + (-sqr / 6 * d1 + p2[0] - sqr*(0.5*d1 + p2[1]))*c + 2 * p2[2] * s;
 
 	double A3 = -p1[2] * c + sqr / 3 * d1 - 2 * p2[0];
-        double B3 = -(sqr*p1[2] * c - d1 + 2 * p2[1]);
+	double B3 = -(sqr*p1[2] * c - d1 + 2 * p2[1]);
 	double C3 = -2 * (p1[2] * s + p2[2]);
 	double D3 = 2 * p1[2] + (-sqr / 6 * d1 + p2[0] - sqr*(0.5*d1 - p2[1]))*c + 2 * p2[2] * s;
 

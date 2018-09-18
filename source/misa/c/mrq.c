@@ -48,3 +48,44 @@ int MRQ_getZero( ViSession vi, int ax, float *val0 )
 {
     _robo_get_float( sprintf( args, "ENCODER:ZERO? %d", ax ) );
 }
+
+int MRQ_getSensorUartData( ViSession vi, char *pu, char *ps, char * ary, int len )
+{
+    char args[SEND_BUF];
+    sprintf( args, "SENSORUART:DATA? %s,%s", pu, ps );
+
+    int ret;
+    ret = miSend( vi, args, strlen(args) );
+    if ( ret != 0 ){ return ret; }
+    ret = miWaitRead(vi);
+    if ( ret != 0 ){ return ret; }
+
+    char recvBuf[RECV_BUF];
+    int retCount;
+    ret = miRecv( vi, recvBuf, sizeof(recvBuf), &retCount);
+    if ( ret != 0 ){ return ret; }
+    if ( retCount < 2 ){ return -1; }
+
+    //! split the para
+    if ( recvBuf[0] != '#' )
+    { return -1; }
+    int headLen;
+    headLen = recvBuf[1] - '0';
+    if ( headLen > 0 && headLen <=9 )
+    {}
+    else
+    { return -2; }
+
+    char header[ headLen + 1];
+    strncpy( header, recvBuf+2, headLen );
+    header[ headLen ] = 0;
+
+    int padLen = atoi( header );
+
+    if (  padLen <= 0 || padLen > len )
+    { return -2; }
+
+    memcpy( ary, recvBuf + 2 + headLen, padLen );
+
+    return padLen;
+}

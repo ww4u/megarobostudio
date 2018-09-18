@@ -124,6 +124,16 @@ void VRobot::setEncoderAble( bool b )
 bool VRobot::encoderAble( )
 { return mbEncoderAble; }
 
+void VRobot::setRunWaveAble( bool b )
+{ mbRunWaveAble = b; }
+bool VRobot::runWaveAble()
+{ return mbRunWaveAble; }
+
+void VRobot::setTunningAble( bool b )
+{ mbTunningAble = b; }
+bool VRobot::tunningAble()
+{ return mbTunningAble; }
+
 void VRobot::setDriverId( int id )
 { mDriverId = id; }
 int VRobot::driverId()
@@ -166,6 +176,10 @@ void VRobot::setTrigSrcs( int srcs )
 {
     mTrigSrcs = srcs;
 
+    mTrigIdsList.clear();
+    for ( int i = 0; i < srcs; i++ )
+    { mTrigIdsList<<i; }
+
 }
 int VRobot::trigSrcs()
 { return mTrigSrcs; }
@@ -174,6 +188,9 @@ QString VRobot::trigSrcAlias( int ax, int iTrig )
 {
     return QString("TRIG%1").arg( iTrig + 1 );
 }
+
+QList<int> VRobot::trigSrcIdList()
+{ return mTrigIdsList; }
 
 void VRobot::setJointZeroCcw( int jId, bool b )
 {

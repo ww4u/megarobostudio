@@ -371,6 +371,36 @@ int deviceMRQ::setSN( const QString &sn )
     return 0;
 }
 
+int deviceMRQ::loadSensorUartData( MRQ_SENSORUART_BAUD u,
+                        MRQ_IDENTITY_LABEL_1 s,
+                        QByteArray &ary )
+{
+    int ret;
+
+    //! write
+    ret = m_pBus->write(DEVICE_RECEIVE_ID, (byte)MRQ_mc_SENSORUART,
+                                           (byte)MRQ_sc_SENSORUART_DATA_Q,
+                                           (byte)u,
+                                           (byte)s );
+    if (ret != 0)
+    { return -1; }
+
+    byte buf[128];
+    int retLen;
+    ret = m_pBus->doSplitRead(DEVICE_RECEIVE_ID, 4, buf, sizeof(buf), &retLen );
+    if (ret != 0)
+    { return -1; }
+
+    //! enugh
+    if ( retLen < sizeof_array(buf) && retLen > 0 )
+    {
+        ary.append( (const char*)buf, retLen );
+        return 0;
+    }
+    else
+    { return -1; }
+}
+
 int deviceMRQ::uploadSetting()
 {
     int ret;

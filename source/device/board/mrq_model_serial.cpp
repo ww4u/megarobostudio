@@ -739,11 +739,14 @@ int MRQ_model::saveSubTrigger( int sub, QXmlStreamWriter &writer )
     writer.writeTextElement( "mTRIGGER_PATTSMODE", toString(mTRIGGER_PATTSMODE[sub]) );
     writer.writeTextElement( "mTRIGGER_PATTSPERIOD", DeviceModel::toString(mTRIGGER_PATTSPERIOD[sub]) );
 
+    int trigId;
     for ( int j = 0; j < mTrigSrcs; j++ )
     {
         writer.writeStartElement("channel");
 
-        saveSubTriggerChannel( sub, j, writer );
+        trigId = mTrigIdsList.at( j );
+
+        saveSubTriggerChannel( sub, trigId, writer );
 
         writer.writeEndElement();
     }
@@ -772,7 +775,7 @@ int MRQ_model::loadSubTrigger( int ax, QXmlStreamReader &reader )
         else if ( reader.name() == "mTRIGGER_PATTSPERIOD" )
         { DeviceModel::toValue( reader.readElementText(), &mTRIGGER_PATTSPERIOD[ax]); }
         else if ( reader.name() == "channel" )
-        { loadSubTriggerChannel( ax, ch++, reader ); }
+        { loadSubTriggerChannel( ax, mTrigIdsList.at( ch ), reader ); ch++; }
         else
         { reader.skipCurrentElement(); }
     }
@@ -788,6 +791,8 @@ int MRQ_model::saveSubTriggerChannel( int sub, int ch, QXmlStreamWriter &writer 
     writer.writeTextElement( "mTRIGGER_LEVELRESP", toString(mTRIGGER_LEVELRESP[sub][ch]) );
     writer.writeTextElement( "mTRIGGER_LEVELSMODE", DeviceModel::toString(mTRIGGER_LEVELSMODE[sub][ch]) );
     writer.writeTextElement( "mTRIGGER_LEVELSPERIOD", DeviceModel::toString(mTRIGGER_LEVELSPERIOD[sub][ch]) );
+
+    writer.writeTextElement( "mTRIGGER_LEVELRUNWAVE", toString(mTRIGGER_LEVELRUNWAVE[sub][ch]) );
 
     return 0;
 }
@@ -806,7 +811,8 @@ int MRQ_model::loadSubTriggerChannel( int ax, int ch, QXmlStreamReader &reader )
         { toValue( reader.readElementText(), &mTRIGGER_LEVELSMODE[ax][ch]); }
         else if ( reader.name() == "mTRIGGER_LEVELSPERIOD" )
         { DeviceModel::toValue( reader.readElementText(), &mTRIGGER_LEVELSPERIOD[ax][ch]); }
-
+        else if ( reader.name() == "mTRIGGER_LEVELRUNWAVE" )
+        { toValue( reader.readElementText(), &mTRIGGER_LEVELRUNWAVE[ax][ch]); }
         else
         { reader.skipCurrentElement(); }
     }
@@ -1167,6 +1173,68 @@ int MRQ_model::loadSubUARTSensor( int sub, int subSens, QXmlStreamReader &reader
     }
 
     return 0;
+}
+
+int MRQ_model::saveTunning( QXmlStreamWriter &writer )
+{
+    for ( int i = 0; i < axes(); i++ )
+    {
+        writer.writeStartElement("axes");
+
+        saveSubTunning( i, writer );
+
+        writer.writeEndElement();
+    }
+}
+int MRQ_model::loadTunning( QXmlStreamReader &reader )
+{
+    int axes =0;
+    while( reader.readNextStartElement() )
+    {
+        if ( reader.name() == "axes" )
+        {
+            loadSubTunning( axes, reader );
+            axes++;
+        }
+        else
+        {
+            reader.skipCurrentElement();
+        }
+    }
+}
+
+int MRQ_model::saveSubTunning( int ax, QXmlStreamWriter &writer )
+{
+    writer.writeTextElement( "state", toString( mTUNING_STATE[ax] ) );
+    writer.writeTextElement( "mini_ratio", toString( mTUNING_MINICURRRATIO[ax] ) );
+
+    writer.writeTextElement( "energy", DeviceModel::toString( mTUNING_ENERGYEFFIC[ax] ) );
+    writer.writeTextElement( "energy1", DeviceModel::toString( mTUNING_ENERGYEFFIC1[ax] ) );
+
+    writer.writeTextElement( "regulate", toString( mTUNING_CURRREGULATE[ax] ) );
+    writer.writeTextElement( "regulate1", toString( mTUNING_CURRREGULATE1[ax] ) );
+
+    return 0;
+}
+int MRQ_model::loadSubTunning( int ax, QXmlStreamReader &reader )
+{
+    while( reader.readNextStartElement() )
+    {
+        if ( reader.name() == "state" )
+        { toValue( reader.readElementText(), mTUNING_STATE + ax ); }
+        else if ( reader.name() == "mini_ratio" )
+        { toValue( reader.readElementText(), mTUNING_MINICURRRATIO + ax ); }
+        else if ( reader.name() == "energy" )
+        { DeviceModel::toValue( reader.readElementText(), mTUNING_ENERGYEFFIC + ax ); }
+        else if ( reader.name() == "energy1" )
+        { DeviceModel::toValue( reader.readElementText(), mTUNING_ENERGYEFFIC1 + ax ); }
+        else if ( reader.name() == "regulate")
+        { toValue( reader.readElementText(), mTUNING_CURRREGULATE + ax ); }
+        else if ( reader.name() == "regulate1" )
+        { toValue( reader.readElementText(), mTUNING_CURRREGULATE1 + ax ); }
+        else
+        { reader.skipCurrentElement(); }
+    }
 }
 
 int MRQ_model::saveISOi( QXmlStreamWriter &writer )

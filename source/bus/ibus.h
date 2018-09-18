@@ -488,6 +488,13 @@ public :
                     f32 * v1,
                     bool bQuery = true );
 
+        int read( DeviceId &id, byte mainCode,
+                    byte subCode,
+                    byte v0,
+                    uint16 * v1,
+                    uint16 * v2,
+                    bool bQuery = true );
+
         //! 2 para
         int read( DeviceId &id, byte mainCode,
                     byte subCode,
@@ -731,6 +738,13 @@ public :
                     byte subCode,
                     UInt16 v0,
                     f32 * v1,
+                    bool bQuery = true );
+
+        int _read( DeviceId &id, byte mainCode,
+                    byte subCode,
+                    byte v0,
+                    uint16 * v1,
+                    uint16 * v2,
                     bool bQuery = true );
 
         //! 2 para

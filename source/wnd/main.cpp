@@ -184,10 +184,23 @@ int __main(int argc, char *argv[])
     return 0;
 }
 
-//int serviceProc( int argc, char *argv[] )
+
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+
+    //! single exist
+    QSharedMemory shareMem("share_megarobo_studio");
+    if ( shareMem.create(64) )
+    {}
+    else
+    {
+        QMessageBox::information( NULL,
+                                  QObject::tr("Info"),
+                                  QObject::tr("MEGAROBO Studio is in running!") );
+        return 0;
+    }
+
 //    a.setApplicationVersion(  );
 //    a.setOrganizationName( tr("MEGAROBO") );
 //    a.setApplicationName( tr("MegaRobo Studio") );

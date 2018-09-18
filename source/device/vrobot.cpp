@@ -79,13 +79,17 @@ VRobot::VRobot()
     mDistanceAlarms = 0;
     mAlarms = 0;
 
-    mTrigSrcs = 2;
+    //! config
+    setTrigSrcs( 2 );
 
     mPoseCount = 0;
     mAbsCount = 0;
 
     mbInterpAble = false;
     mbEncoderAble = true;
+    mbRunWaveAble = false;
+    mbTunningAble = false;
+
     mDriverId = 0;
 
     mMicrostepsList<<"256"<<"128"<<"64"<<"32"<<"16"<<"8"<<"4"<<"2"<<"1";

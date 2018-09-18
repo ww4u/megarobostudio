@@ -14,6 +14,8 @@
 #include "mrqdcaxes.h"
 #include "mrqalarm.h"
 
+#include "mrqtune.h"
+
 #include "../../model/mcmodelobj.h"
 
 namespace Ui {

@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include "modelview.h"
+#include "pageoption.h"
 namespace Ui {
 class MrqTrigChan;
 }
@@ -12,6 +13,7 @@ class trigLevelConfig
 public:
     bool mbOnOff;
     int mTypeIndex, mRespIndex;
+    int mRunIndex;
     float mPeriod;
 };
 
@@ -38,6 +40,9 @@ public:
                     trigPatternConfig &pattConifg );
 protected:
     void spyEdited();
+private slots:
+    void on_cmbLevelResponse_currentIndexChanged(int index);
+
 private:
     Ui::MrqTrigChan *ui;
 };

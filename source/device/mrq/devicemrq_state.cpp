@@ -259,7 +259,7 @@ void IdleMrqUnit::proc( int msg, RoboMsg &detail )
 
     //! device status
     else if ( msg == mrq_msg_idle )
-    { }
+    { /*toState( mrq_state_unk, detail );*/ }
 
     else if ( msg == mrq_msg_calcing )
     { toState( mrq_state_calcing, detail ); }

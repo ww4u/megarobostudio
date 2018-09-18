@@ -10,6 +10,7 @@ namespace MegaDevice
 
 enum mrqState
 {
+    mrq_state_unk = -1,          //! unknown state
     mrq_state_idle,
     mrq_state_run_reqed,
     mrq_state_program,
@@ -22,7 +23,7 @@ enum mrqState
     mrq_state_running,
     mrq_state_prestop,
 
-    mrq_state_unk,          //! unknown state
+
 };
 
 class deviceMRQ;

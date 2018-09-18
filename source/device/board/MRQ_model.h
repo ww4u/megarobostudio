@@ -126,6 +126,12 @@ protected:
     int saveSubUARTSensor( int sub, int subSens, QXmlStreamWriter &writer );
     int loadSubUARTSensor( int sub, int subSens, QXmlStreamReader &reader );
 
+    int saveTunning( QXmlStreamWriter &writer );
+    int loadTunning( QXmlStreamReader &reader );
+
+    int saveSubTunning( int ax, QXmlStreamWriter &writer );
+    int loadSubTunning( int ax, QXmlStreamReader &reader );
+
     int saveISOi( QXmlStreamWriter &writer );
     int loadISOi( QXmlStreamReader &reader );
 

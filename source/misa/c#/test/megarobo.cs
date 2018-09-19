@@ -36,14 +36,10 @@ namespace mega_device
             val0 = null;
 
             int ret;
-            ret = miSend(args);
-            if (ret != 0) { return ret; }
-            ret = miWaitRead();
-            if (ret != 0) { return ret; }
-
+            
             string strRecv;
             int retCount;
-            ret = miRecv(out strRecv, out retCount);
+            ret = miQuery( args, out strRecv, out retCount);
             if (ret != 0) { return ret; }
             if (retCount < 1) { return -1; }
             string[] paras = strRecv.Split(',');
@@ -58,14 +54,11 @@ namespace mega_device
             val0 = 0;
 
             int ret;
-            ret = miSend(args);
-            if (ret != 0) { return ret; }
-            ret = miWaitRead();
-            if (ret != 0) { return ret; }
-
             string strRecv;
             int retCount;
-            ret = miRecv(out strRecv, out retCount);
+            
+            ret = miQuery(args, out strRecv, out retCount);
+
             if (ret != 0) { return ret; }
             if (retCount < 1) { return -1; }
             string[] paras = strRecv.Split(',');
@@ -80,14 +73,9 @@ namespace mega_device
             val0 = 0;
 
             int ret;
-            ret = miSend(args);
-            if (ret != 0) { return ret; }
-            ret = miWaitRead();
-            if (ret != 0) { return ret; }
-
             string strRecv;
             int retCount;
-            ret = miRecv(out strRecv, out retCount);
+            ret = miQuery( args, out strRecv, out retCount);
             if (ret != 0) { return ret; }
             if (retCount < 1) { return -1; }
             string[] paras = strRecv.Split(',');
@@ -110,14 +98,10 @@ namespace mega_device
             val3 = 0;
 
             int ret;
-            ret = miSend(args);
-            if (ret != 0) { return ret; }
-            ret = miWaitRead();
-            if (ret != 0) { return ret; }
-
+            
             string strRecv;
             int retCount;
-            ret = miRecv(out strRecv, out retCount);
+            ret = miQuery( args, out strRecv, out retCount);
             if (ret != 0) { return ret; }
             if (retCount < 1) { return -1; }
             string[] paras = strRecv.Split(',');
@@ -138,14 +122,10 @@ namespace mega_device
             ary = null; 
 
             int ret;
-            ret = miSend(args);
-            if (ret != 0) { return ret; }
-            ret = miWaitRead();
-            if (ret != 0) { return ret; }
 
             string strRecv;
             int retCount;
-            ret = miRecv(out strRecv, out retCount);
+            ret = miQuery( args, out strRecv, out retCount);
             if (ret != 0) { return ret; }
             if (retCount < 2 ) { return -1; }
 

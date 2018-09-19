@@ -758,25 +758,39 @@ logDbg();
 
     //! 0. can intf
     DeviceId broadId( CAN_BROAD_ID );
-    //byte buf0[] = { MRQ_mc_LINK, MRQ_sc_LINK_INTFC, MRQ_LINK_INTFC_CAN };
     byte buf0[] = { MRQ_mc_LINK, MRQ_sc_LINK_INTFC, mLinkType };
-    ret = doWrite( broadId, buf0, sizeof(buf0) );logDbg()<<mLinkType;
+    ret = doWrite( broadId, buf0, sizeof(buf0) );
     if ( ret != 0 )
     { return ret; }
 
-    //! 1. broadcast
+    //! 1. close report
+    byte bufReport[]={ MRQ_mc_MOTION, MRQ_sc_MOTION_STATEREPORT, CAN_BROAD_CHAN, MRQ_MOTION_STATEREPORT_QUERY };
+    ret = doWrite( broadId, bufReport, sizeof(bufReport) );
+    if ( ret != 0 )
+    { return ret; }
+
+    byte bufDataReport[]={ MRQ_mc_REPORT, MRQ_sc_REPORT_STATE, CAN_BROAD_CHAN, 0, MRQ_SYSTEM_REVMOTION_OFF };
+    for ( int i = MRQ_REPORT_STATE_TORQUE; i <= MRQ_REPORT_STATE_ABSENC; i++ )
+    {
+        bufDataReport[ 3 ] = i;
+        ret = doWrite( broadId, bufDataReport, sizeof(bufDataReport) );
+        if ( ret != 0 )
+        { return ret; }
+    }
+
+    //! 2. broadcast
     ret = doWrite( broadId, buf, sizeof(buf) );
     if ( ret != 0 )
     { return ret; }
 
     wait_us( mEnumerateTmo );
 logDbg();
-    //! 2. frame count
+    //! 3. frame count
     int frame = size();logDbg()<<frame;
     if ( frame < 1 )
     { /*sysLog( QString::number(frame), QString::number(__LINE__) );*/ logDbg(); return -1; }
 
-    //! 3. read all frame
+    //! 4. read all frame
     int collectFrameSize = 6;
     byte readBuf[ collectFrameSize * frame ];
     int frameIds[ frame ];
@@ -832,13 +846,27 @@ int CANBus::collectHash( QMap< int, quint32 > &sendHashMap )
 logDbg();
     //! 0. can intf
     DeviceId broadId( CAN_BROAD_ID );
-//    byte buf0[] = { MRQ_mc_LINK, MRQ_sc_LINK_INTFC, MRQ_LINK_INTFC_CAN };
     byte buf0[] = { MRQ_mc_LINK, MRQ_sc_LINK_INTFC, mLinkType };
     ret = doWrite( broadId, buf0, sizeof(buf0) );logDbg();
     if ( ret != 0 )
     { return ret; }
-logDbg();
-    //! 1. broadcast
+
+    //! 1. close report
+    byte bufReport[]={ MRQ_mc_MOTION, MRQ_sc_MOTION_STATEREPORT, CAN_BROAD_CHAN, MRQ_MOTION_STATEREPORT_QUERY };
+    ret = doWrite( broadId, bufReport, sizeof(bufReport) );
+    if ( ret != 0 )
+    { return ret; }
+
+    byte bufDataReport[]={ MRQ_mc_REPORT, MRQ_sc_REPORT_STATE, CAN_BROAD_CHAN, 0, MRQ_SYSTEM_REVMOTION_OFF };
+    for ( int i = MRQ_REPORT_STATE_TORQUE; i <= MRQ_REPORT_STATE_ABSENC; i++ )
+    {
+        bufDataReport[ 3 ] = i;
+        ret = doWrite( broadId, bufDataReport, sizeof(bufDataReport) );
+        if ( ret != 0 )
+        { return ret; }
+    }
+
+    //! 2. broadcast
     byte buf[] = { MRQ_mc_CAN, MRQ_sc_CAN_NETMANAGEHASH_Q };
     ret = doWrite( broadId, buf, sizeof(buf) );
     if ( ret != 0 )
@@ -846,12 +874,12 @@ logDbg();
 logDbg();
     wait_us( mEnumerateTmo );
 logDbg();
-    //! 2. frame count
+    //! 3. frame count
     int frame = size();logDbg()<<frame;
     if ( frame < 1 )
     { logDbg(); return -1; }
 
-    //! 3. read all frame
+    //! 4. read all frame
     int collectFrameSize = 6;
     byte readBuf[ collectFrameSize * frame ];
     int frameIds[ frame ];
@@ -860,7 +888,7 @@ logDbg();
     if ( ret != frame )
     { return -1; }
 
-    //! 4. all frames
+    //! 5. all frames
     uint32 hashId;
     for ( int i = 0; i < frame; i++ )
     {

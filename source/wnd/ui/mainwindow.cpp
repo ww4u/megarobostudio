@@ -620,7 +620,7 @@ void MainWindow::stopService()
     m_pInterruptThread = NULL;
 
     //! sample
-    m_pSampleThread->terminate();
+    m_pSampleThread->requestInterruption();
     m_pSampleThread->wait();
     delete m_pSampleThread;
     m_pSampleThread = NULL;

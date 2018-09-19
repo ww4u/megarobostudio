@@ -19,10 +19,16 @@
 #define sleep_ms    Sleep
 
 
+//int _doSend( ViSession vi, char *buf, int len );
+//int _doRecv( ViSession vi, char *pBuf, int capCount, int *pRetCount );
+
 int miSend( ViSession vi, char *buf, int len );
 int miWaitRead( ViSession vi );
 int miRecv( ViSession vi, char *pBuf, int capCount, int *pRetCount );
 
+//! send + read
+int miQuery( ViSession vi, char *buf, int len,
+                           char *pBuf, int capCount, int *pRetCount );
 
 typedef struct 
 {
@@ -56,14 +62,13 @@ int parasDeInit( struPara *pCon );
 #define _robo_get_str( fmt )        char args[SEND_BUF];\
                                     fmt;\
                                     int ret;\
-                                    ret = miSend( vi, args, strlen(args) );\
-                                    if ( ret != 0 ){ return ret; }\
-                                    ret = miWaitRead(vi);\
-                                    if ( ret != 0 ){ return ret; }\
                                     \
                                     char recvBuf[RECV_BUF+1];\
                                     int retCount;\
-                                    ret = miRecv( vi, recvBuf, RECV_BUF, &retCount);\
+                                    \
+                                    ret = miQuery( vi, args, strlen(args), \
+                                                   recvBuf, RECV_BUF, &retCount ); \
+                                    \
                                     if ( ret != 0 ){ return ret; }\
                                     if ( retCount < 1 ){ return -1; }\
                                     struPara para;\
@@ -81,14 +86,13 @@ int parasDeInit( struPara *pCon );
 #define _robo_get_int( fmt )        char args[SEND_BUF];\
                                     fmt;\
                                     int ret;\
-                                    ret = miSend( vi, args, strlen(args) );\
-                                    if ( ret != 0 ){ return ret; }\
-                                    ret = miWaitRead(vi);\
-                                    if ( ret != 0 ){ return ret; }\
                                     \
-                                    char recvBuf[RECV_BUF];\
+                                    char recvBuf[RECV_BUF+1];\
                                     int retCount;\
-                                    ret = miRecv( vi, recvBuf, sizeof(recvBuf), &retCount);\
+                                    \
+                                    ret = miQuery( vi, args, strlen(args), \
+                                                   recvBuf, RECV_BUF, &retCount ); \
+                                    \
                                     if ( ret != 0 ){ return ret; }\
                                     if ( retCount < 1 ){ return -1; }\
                                     struPara para;\
@@ -105,14 +109,13 @@ int parasDeInit( struPara *pCon );
 #define _robo_get_float( fmt )        char args[SEND_BUF];\
                                     fmt;\
                                     int ret;\
-                                    ret = miSend( vi, args, strlen(args) );\
-                                    if ( ret != 0 ){ return ret; }\
-                                    ret = miWaitRead(vi);\
-                                    if ( ret != 0 ){ return ret; }\
                                     \
-                                    char recvBuf[RECV_BUF];\
+                                    char recvBuf[RECV_BUF+1];\
                                     int retCount;\
-                                    ret = miRecv( vi, recvBuf, sizeof(recvBuf), &retCount);\
+                                    \
+                                    ret = miQuery( vi, args, strlen(args), \
+                                                   recvBuf, RECV_BUF, &retCount ); \
+                                    \
                                     if ( ret != 0 ){ return ret; }\
                                     if ( retCount < 1 ){ return -1; }\
                                     struPara para;\
@@ -129,14 +132,13 @@ int parasDeInit( struPara *pCon );
 #define _robo_get_float_4( fmt )        char args[SEND_BUF];\
                                     fmt;\
                                     int ret;\
-                                    ret = miSend( vi, args, strlen(args) );\
-                                    if ( ret != 0 ){ return ret; }\
-                                    ret = miWaitRead(vi);\
-                                    if ( ret != 0 ){ return ret; }\
                                     \
-                                    char recvBuf[RECV_BUF];\
+                                    char recvBuf[RECV_BUF+1];\
                                     int retCount;\
-                                    ret = miRecv( vi, recvBuf, sizeof(recvBuf), &retCount);\
+                                    \
+                                    ret = miQuery( vi, args, strlen(args), \
+                                                   recvBuf, RECV_BUF, &retCount ); \
+                                    \
                                     if ( ret != 0 ){ return ret; }\
                                     if ( retCount < 1 ){ return -1; }\
                                     struPara para;\

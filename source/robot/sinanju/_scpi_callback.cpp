@@ -20,13 +20,13 @@ static scpi_result_t _scpi_idn( scpi_t * context )
     // read
     DEF_LOCAL_VAR();
 
-    logDbg();
+//    logDbg();
 
     QString str;
 
     str = ((robotSinanju*)context->user_context)->getName();
 
-    logDbg()<<str;
+//    logDbg()<<str;
     SCPI_ResultText( context, str.toLatin1().data() );
 
     return SCPI_RES_OK;

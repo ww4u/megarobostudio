@@ -63,6 +63,12 @@ int MrqTune::apply()
     pDevice = getDevice();
     Q_ASSERT( NULL != pDevice );
 
+    //! tune able
+    if ( pDevice->tunningAble() )
+    {}
+    else
+    { return 0; }
+
     pDevice->setTUNING_STATE( mAxesId, (MRQ_SYSTEM_REVMOTION)ui->chkOnOff->isChecked() );
     pDevice->setTUNING_MINICURRRATIO( mAxesId, (MRQ_DRIVER_MINICURRRATIO)ui->cmbMiniRatio->currentIndex() );
 

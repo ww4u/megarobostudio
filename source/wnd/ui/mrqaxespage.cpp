@@ -74,8 +74,7 @@ void MrqAxesPage::modelChanged()
 
     mrqView::modelChanged();
 
-    ui->pageTune->setVisible( m_pMrqModel->tunningAble() );
-
+    ui->tabWidget->setTabEnabled( 3, m_pMrqModel->tunningAble() );
 }
 
 void MrqAxesPage::spyEdited()

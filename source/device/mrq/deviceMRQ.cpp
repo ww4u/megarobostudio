@@ -515,7 +515,8 @@ void deviceMRQ::terminate( pvt_region )
     tpvDownloader *pLoader;
     pLoader = downloader( region );
 
-    pLoader->terminate();
+//    pLoader->terminate();
+    pLoader->requestInterruption();
     pLoader->wait();
 
 

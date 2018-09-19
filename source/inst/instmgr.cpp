@@ -883,7 +883,7 @@ QStringList InstMgr::robots()
         {
             Q_ASSERT( NULL != pDev );
 
-            resrc<<pDev->getName();
+            resrc<<QString("%1(%2)").arg( pDev->getName()).arg(pDev->getClass());
         }
     }
 

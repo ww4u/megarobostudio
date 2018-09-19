@@ -4,7 +4,15 @@
 #include "ctype.h"  //! isspace
 #include "stdlib.h" //! malloc
 
-int miSend( ViSession vi, char *buf, int len )
+#define LOCK()      ViStatus viSta = viLock( vi, VI_EXCLUSIVE_LOCK, UINT_MAX, VI_NULL, VI_NULL );\
+                    if ( viSta != VI_SUCCESS \
+                         && viSta != VI_SUCCESS_NESTED_EXCLUSIVE \
+                         && viSta != VI_SUCCESS_NESTED_SHARED ) \
+                    { return -1; }
+#define UNLOCK()    viUnlock( vi );
+
+//! private
+int _doSend( ViSession vi, char *buf, int len )
 {
     ViUInt32 retCount;
     ViStatus viSta;
@@ -23,9 +31,8 @@ int miSend( ViSession vi, char *buf, int len )
 
     return 0;
 }
-int miWaitRead( ViSession vi )
-{ return 0; }
-int miRecv( ViSession vi, char *pBuf, int capCount, int *pRetCount )
+
+int _doRecv( ViSession vi, char *pBuf, int capCount, int *pRetCount )
 {
     ViStatus viSta;
 
@@ -48,6 +55,61 @@ int miRecv( ViSession vi, char *pBuf, int capCount, int *pRetCount )
     }
 
     *pRetCount = seqCnt;
+
+    return 0;
+}
+
+int _doQuery( ViSession vi, char *buf, int len,
+                           char *pBuf, int capCount, int *pRetCount )
+{
+    int ret;
+
+    ret = _doSend( vi, buf, len );
+    if ( ret != 0 )
+    { return ret; }
+
+    ret = _doRecv( vi, pBuf, capCount, pRetCount );
+    if ( ret != 0 )
+    { return ret; }
+
+    return 0;
+}
+
+int miSend( ViSession vi, char *buf, int len )
+{
+    int ret;
+
+    LOCK();
+        ret = _doSend( vi, buf, len );
+    UNLOCK();
+
+    return ret;
+}
+
+int miWaitRead( ViSession vi )
+{ return 0; }
+
+int miRecv( ViSession vi, char *pBuf, int capCount, int *pRetCount )
+{
+    int ret;
+
+    LOCK();
+        ret = _doRecv( vi, pBuf, capCount, pRetCount );
+    UNLOCK();
+
+    return ret;
+}
+
+int miQuery( ViSession vi, char *buf, int len,
+                           char *pBuf, int capCount, int *pRetCount )
+{
+    int ret;
+
+    LOCK();
+        ret = _doQuery( vi, buf, len,
+                        pBuf, capCount, pRetCount
+                        );
+    UNLOCK();
 
     return 0;
 }

@@ -86,6 +86,9 @@ void sampleThread::run()
 {
     Q_FOREVER
     {
+        if ( isInterruptionRequested() )
+        { break; }
+
         mThreadMutex.lock();
 
         mSampleMgr.sampleProc( mSampleInterval, this );
@@ -94,6 +97,5 @@ void sampleThread::run()
 
         QThread::usleep( mSampleInterval );
 
-//        logDbg()<<mSampleMgr.getCount();
     }
 }

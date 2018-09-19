@@ -1,4 +1,6 @@
 
+using System.Text;
+
 namespace mega_device
 {
 	public class miDevice
@@ -56,7 +58,7 @@ namespace mega_device
             return 0;
         }
 		
-		public int miSend( string send )
+		protected int _miSend( string send )
 		{
             if (mVi == 0)
             { return -1; }
@@ -75,7 +77,7 @@ namespace mega_device
         public int miWaitRead()
         { return 0;  }
 
-        public int miRecv(out string recv, out int retCount)
+        protected int _miRecv(out string recv, out int retCount)
         {
             recv = "";
             retCount = 0;
@@ -110,5 +112,66 @@ namespace mega_device
 
             return 0;
         }
-	}
+
+        public int miSend(string send)
+        {
+            int viSta;
+            StringBuilder builder = new StringBuilder();
+            viSta = visa32.viLock(mVi, visa32.VI_EXCLUSIVE_LOCK, int.MaxValue, string.Empty, builder );
+            if (viSta != visa32.VI_SUCCESS)
+            { return -1; }
+
+                int ret;
+                ret = _miSend(send);
+
+            visa32.viUnlock(mVi);
+
+            return 0;
+        }
+
+        public int miRecv(out string recv, out int retCount)
+        {
+            recv = null;
+            retCount = 0;
+
+            int viSta;
+            StringBuilder builder = new StringBuilder();
+            viSta = visa32.viLock(mVi, visa32.VI_EXCLUSIVE_LOCK, int.MaxValue, string.Empty, builder);
+            if (viSta != visa32.VI_SUCCESS)
+            { return -1; }
+
+                int ret;
+                ret = _miRecv( out recv, out retCount );
+
+            visa32.viUnlock(mVi);
+
+            return 0;
+        }
+
+        public int miQuery(string send, out string recv, out int retCount)
+        {
+            recv = null;
+            retCount = 0;
+
+            int viSta;
+            StringBuilder builder = new StringBuilder();
+            viSta = visa32.viLock(mVi, visa32.VI_EXCLUSIVE_LOCK, int.MaxValue, string.Empty, builder);
+            if (viSta != visa32.VI_SUCCESS)
+            { return -1; }
+
+                int ret;
+
+                ret = _miSend(send);
+                if (ret != 0)
+                { return ret; }
+
+                ret = _miRecv(out recv, out retCount);
+                if (ret != 0)
+                { return ret; }
+
+            visa32.viUnlock(mVi);
+
+            return 0; 
+        }
+    }
 }

@@ -12,6 +12,7 @@ namespace test
     {
         static void Main(string[] args)
         {
+            int ret;
             MRQ dev = new MRQ();
 
             dev.miOpen("device1");
@@ -23,8 +24,9 @@ namespace test
             else
             { }
 
-            //string link;
-            //dev.getLINK_INTFC(out link);
+            string link;
+            dev.getLINK_INTFC(out link);
+            Console.WriteLine(link);
 
             //UInt32 sTime;
             //dev.getSENSORUART_SWITCHTIME("UART1", "S1", out sTime);
@@ -41,22 +43,21 @@ namespace test
             //dev.setSENSORUART_SWITCHTIME("UART1", "S2", 140);
             //dev.getSENSORUART_SWITCHTIME("UART1", "S2", out sTime);
 
-            //Console.WriteLine(link);
+            //dev.move(0, 0, 1, 20, 0);
+            //ret = dev.waitIdle(0, 0, 6000);
+            //Console.WriteLine(ret);
 
-            //dev.move(0, 0, 1, -20, 0);
-            //dev.waitIdle(0, 0, 2000);
-
-            //dev.call(0, 0, 1, -1 );
+            //dev.call(0, 0, 1, -1);
             //dev.waitIdle(0, 0, 2000);
 
             //Sinanju sinanju = new Sinanju();
             //sinanju.miOpen("MRX-T4");
             //string recvStr;
             //sinanju.getIdn(out recvStr);
-            //Console.WriteLine("IDN:{0}", recvStr );
+            //Console.WriteLine("IDN:{0}", recvStr);
 
             //sinanju.fold();
-            //sinanju.waitIdle(0, 0, 2000 );
+            //sinanju.waitIdle(0, 0, 6000);
 
             //Motors mot;
             //mot = new Motors();

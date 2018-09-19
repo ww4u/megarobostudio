@@ -17,5 +17,5 @@ typedef struct
 	int mode;
 }Igus;
 
-extern "C" __declspec(dllexport) int  GetIgusPvtLen(Igus *systemParam,double* posIn, double* vIn, double* tIn,int len,int* resLen);
-extern "C" __declspec(dllexport) int  GetIgusPvtInfo(double* resOut);
+/*extern "C" __declspec(dllexport) */int  GetIgusPvtLen(Igus *systemParam,double* posIn, double* vIn, double* tIn,int len,int* resLen);
+/*extern "C" __declspec(dllexport) */int  GetIgusPvtInfo(double* resOut);

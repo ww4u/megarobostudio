@@ -27,7 +27,7 @@ int TransMotion(double* pIn, double* vIn, int len, int index, double* pout, doub
 int GetPvtData(double* pIn, double* vIn, double* tIn, int len, int index);
 int CalPosition(double* pIn, double* pOut, int index);
 int CalV(double* p1, double* p2, double* vIn, double* vOut, int index);
-extern "C" __declspec(dllexport) int  GetIgusPvtInfo(double* resOut)
+/*extern "C" __declspec(dllexport)*/ int  GetIgusPvtInfo(double* resOut)
 {
 	for (int i = 0; i < resInfo.size(); i++)
 	{
@@ -41,7 +41,7 @@ extern "C" __declspec(dllexport) int  GetIgusPvtInfo(double* resOut)
 	}
 	return 0;
 }
-extern "C" __declspec(dllexport) int  GetIgusPvtLen(Igus *systemParam, double* posIn, double* vIn, double* tIn, int len, int* resLen)
+/*extern "C" __declspec(dllexport)*/ int  GetIgusPvtLen(Igus *systemParam, double* posIn, double* vIn, double* tIn, int len, int* resLen)
 {
 	igusParam = *systemParam;
 	armLengthArray = igusParam.armLength;

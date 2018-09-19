@@ -598,6 +598,7 @@ void pvtEdit::slot_download_cancel()
 
     MegaDevice::deviceMRQ *pMrq = m_pmcModel->m_pInstMgr->findDevice( str, id );
     pMrq->terminate( tpvRegion(mAgentAxes, m_pmcModel->mConn.devicePage() ) );
+
 }
 
 void pvtEdit::on_spinLoop_valueChanged(int arg1)

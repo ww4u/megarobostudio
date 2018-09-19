@@ -23,18 +23,54 @@ static int testPara()
     return 0;
 }
 
+#include <QThread>
+class myThread : public QThread
+{
+protected:
+    ViSession mVi;
+
+public:
+    myThread( ViSession vi, QObject *p=NULL ) : QThread( p )
+    {
+        mVi = vi;
+    }
+
+protected:
+    virtual void run()
+    {
+        char buf[64];
+        int retCnt;
+        int ret;
+        for ( int i = 0; i <  1000; i++ )
+        {
+            ret = miQuery( mVi, "*idn?\n", 6, buf, 64, &retCnt );
+            msleep( 1 );
+        }
+    }
+
+};
+
 static int testDevice()
 {
     ViSession vi = miOpen( "Device1" );
     if ( vi == 0 )
     { return -1; }
 
-    int ret;
-    char buf[128];
-    ret = MRQ_getSensorUartData( vi, "UART1", "S1", buf, 128 );
-    printf( "%d\n", ret );
+    myThread t1( vi );
+    myThread t2( vi );
 
-//    viPrintf( vi, "*IDN?\n" );
+    t1.start();
+    t2.start();
+
+    t1.wait();
+    t2.wait();
+
+//    int ret;
+//    char buf[128];
+//    ret = MRQ_getSensorUartData( vi, "UART1", "S1", buf, 128 );
+//    printf( "%d\n", ret );
+
+//    miSend( vi, "*IDN?\n", 6 );
 
 //    char buf[64];
 //    int retCount;

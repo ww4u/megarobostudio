@@ -32,6 +32,9 @@ robotSinanju::robotSinanju()
 
     setAbsCount( 4 );
 
+    //! \note for 28
+    setTunningAble( false );
+
     mDetail = QString::fromLocal8Bit( (char*)_detail, sizeof_array(_detail) );
 
     //! joint name

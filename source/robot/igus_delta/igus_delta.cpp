@@ -13,7 +13,7 @@ static quint8 _detail[]=
 
 robotIgusDelta::robotIgusDelta()
 {
-    mClass = QObject::tr("igus-drylin");
+    mClass = QObject::tr("IGUS-DRYLIN");
     mId = robot_igus_delta;
 
     //! default gpid

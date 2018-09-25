@@ -29,6 +29,9 @@ int robo_call( ViSession vi, int ax, int page, int cycle, int mode );
 int robo_run( ViSession vi, int ax, int page );
 int robo_stop( ViSession vi, int ax, int page );
 
+int robo_center( ViSession vi, int ax, int page );
+int robo_zero( ViSession vi, int ax, int page );
+
 int robo_getState( ViSession vi, int ax, int page, int *state );
 
 int robo_waitx( ViSession vi, int ax, int page, int dst, int tmo, int tick );

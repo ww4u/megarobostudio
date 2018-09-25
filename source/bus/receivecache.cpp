@@ -515,7 +515,7 @@ int receiveCache::readAFrame( MegaDevice::DeviceId &nodeId,
     Q_ASSERT( NULL != m_pBus );
 //    logDbg()<<tmous<<m_pBus->rdTick()<<nodeId.sendId()<<tmous;
 
-    QThread::usleep( 100 );     //! wait a little
+//    QThread::usleep( 100 );     //! wait a little
     int loopCount = 0;
 
     do

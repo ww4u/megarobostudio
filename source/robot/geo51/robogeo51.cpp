@@ -33,6 +33,8 @@ roboGeo51::roboGeo51()
     setAbsEncAlarms( 4 );
     setDistanceAlarms( 4 );
 
+    setTunningAble( true );
+
     mImage = QImage::fromData( _megaimage, sizeof(_megaimage) );
 }
 

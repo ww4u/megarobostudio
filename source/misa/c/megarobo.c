@@ -43,6 +43,12 @@ int robo_stop( ViSession vi, int ax, int page )
     _robo_set( sprintf( args, "STOP %d,%d" , ax, page ) )
 }
 
+int robo_center( ViSession vi, int ax, int page )
+{ _robo_set( sprintf( args, "CENTER %d,%d" , ax, page ) ); }
+
+int robo_zero( ViSession vi, int ax, int page )
+{ _robo_set( sprintf( args, "ZERO %d,%d" , ax, page ) ); }
+
 int robo_getState( ViSession vi, int ax, int page, int *val0 )
 {
     _robo_get_int( sprintf( args, "STATE? %d,%d", ax, page ) )

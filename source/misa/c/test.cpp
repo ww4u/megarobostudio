@@ -120,6 +120,19 @@ static int testT4()
     return 0;
 }
 
+static int testH2()
+{
+    ViSession vi = miOpen( "MRX-H2");
+
+    h2_move( vi, 0,0, 0,0,10,100, 10 );
+
+    float pos[2];
+    h2_getPose( vi,pos, pos+1 );
+    printf("%g,%g\n", pos[0],pos[1]);
+
+    return 0;
+}
+
 static int TestMgr()
 {
     ViSession vi = miOpen( "localhost");
@@ -147,11 +160,13 @@ int main()
 {
 //    testPara();
 
-    testDevice();
+//    testDevice();
 
 //    testT4();
 
 //    TestMgr();
+
+    testH2();
 
     return 0;
 }

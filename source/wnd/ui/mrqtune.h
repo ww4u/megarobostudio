@@ -28,6 +28,11 @@ protected:
     int apply();
     int updateUi();
 
+private slots:
+    void on_spinUp_valueChanged(double arg1);
+
+    void on_spinDown_valueChanged(double arg1);
+
 private:
     Ui::MrqTune *ui;
 };

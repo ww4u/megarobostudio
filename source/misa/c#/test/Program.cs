@@ -10,7 +10,8 @@ namespace test
 {
     class Program
     {
-        static void Main(string[] args)
+
+        static void testMrq()
         {
             int ret;
             MRQ dev = new MRQ();
@@ -49,7 +50,10 @@ namespace test
 
             //dev.call(0, 0, 1, -1);
             //dev.waitIdle(0, 0, 2000);
+        }
 
+        static void testSinanju()
+        {
             //Sinanju sinanju = new Sinanju();
             //sinanju.miOpen("MRX-T4");
             //string recvStr;
@@ -67,6 +71,32 @@ namespace test
 
             //mot.call(0, 1);
             //mot.waitIdle(0, 1);
+        }
+
+        static void testH2()
+        {
+            H2 roboH2 = new H2();
+            roboH2.miOpen("MRX-H2");
+
+            roboH2.move(0, 0, 100, 100, 10 );
+
+            float[] vals = roboH2.pose();
+            if (vals != null)
+            {
+                Console.WriteLine("{0},{1}", vals[0], vals[1]);
+            }
+
+            //string[] vals = roboH2.GetH2Posi();
+            //if (vals != null)
+            //{
+            //    Console.WriteLine("{0},{1}", vals[0], vals[1]);
+            //}
+
+        }
+
+        static void Main(string[] args)
+        {
+            testH2();
         }
     }
 }

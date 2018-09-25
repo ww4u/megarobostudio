@@ -129,6 +129,55 @@ int parasDeInit( struPara *pCon );
                                     parasDeInit(&para);\
                                     return 0;
 
+#define _robo_get_float_2( fmt )        char args[SEND_BUF];\
+                                    fmt;\
+                                    int ret;\
+                                    \
+                                    char recvBuf[RECV_BUF+1];\
+                                    int retCount;\
+                                    \
+                                    ret = miQuery( vi, args, strlen(args), \
+                                                   recvBuf, RECV_BUF, &retCount ); \
+                                    \
+                                    if ( ret != 0 ){ return ret; }\
+                                    if ( retCount < 1 ){ return -1; }\
+                                    struPara para;\
+                                    if ( parasInit( &para, recvBuf) != 0 ) { return -1; }\
+                                    if ( parasCount( &para) < 2 )\
+                                    {\
+                                         parasDeInit(&para);\
+                                         return -1;\
+                                    }\
+                                    *val0 = atof( paraAt( &para, 0) );\
+                                    *val1 = atof( paraAt( &para, 1) );\
+                                    parasDeInit(&para);\
+                                    return 0;
+
+#define _robo_get_float_3( fmt )        char args[SEND_BUF];\
+                                    fmt;\
+                                    int ret;\
+                                    \
+                                    char recvBuf[RECV_BUF+1];\
+                                    int retCount;\
+                                    \
+                                    ret = miQuery( vi, args, strlen(args), \
+                                                   recvBuf, RECV_BUF, &retCount ); \
+                                    \
+                                    if ( ret != 0 ){ return ret; }\
+                                    if ( retCount < 1 ){ return -1; }\
+                                    struPara para;\
+                                    if ( parasInit( &para, recvBuf) != 0 ) { return -1; }\
+                                    if ( parasCount( &para) < 3 )\
+                                    {\
+                                         parasDeInit(&para);\
+                                         return -1;\
+                                    }\
+                                    *val0 = atof( paraAt( &para, 0) );\
+                                    *val1 = atof( paraAt( &para, 1) );\
+                                    *val2 = atof( paraAt( &para, 2) );\
+                                    parasDeInit(&para);\
+                                    return 0;
+
 #define _robo_get_float_4( fmt )        char args[SEND_BUF];\
                                     fmt;\
                                     int ret;\
@@ -143,7 +192,7 @@ int parasDeInit( struPara *pCon );
                                     if ( retCount < 1 ){ return -1; }\
                                     struPara para;\
                                     if ( parasInit( &para, recvBuf) != 0 ) { return -1; }\
-                                    if ( parasCount( &para) < 1 )\
+                                    if ( parasCount( &para) < 4 )\
                                     {\
                                          parasDeInit(&para);\
                                          return -1;\

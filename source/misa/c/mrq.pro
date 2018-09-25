@@ -25,11 +25,13 @@ SOURCES = \
           midevice.c \
           megarobo.c \
           sinanju.c \
+          h2.c \
           mimgr.c \
           test.cpp
 		  
 HEADERS = visa_adapter.h \
     megarobo.h \
     sinanju.h \
+    h2.h \
     misa.h
 

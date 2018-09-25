@@ -15,6 +15,7 @@ extern "C"
 #include "mrq.h"
 
 #include "sinanju.h"
+#include "h2.h"
 
 #include "mimgr.h"
 

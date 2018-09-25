@@ -97,3 +97,19 @@ int MrqTune::updateUi()
 
     return 0;
 }
+
+void MrqTune::on_spinUp_valueChanged(double arg1)
+{
+    if ( arg1 <= ui->spinDown->value() )
+    { ui->spinUp->setValue( ui->spinDown->value() + 1 ); }
+    else
+    { }
+}
+
+void MrqTune::on_spinDown_valueChanged(double arg1)
+{
+    if ( arg1 >= ui->spinUp->value() )
+    { ui->spinDown->setValue( ui->spinUp->value() - 1); }
+    else
+    {}
+}

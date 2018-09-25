@@ -24,6 +24,8 @@ roboQuebeley::roboQuebeley( robotEnum id )
     setAxesDefName( 1 );
     setJointName( 1 );
 
+    setTunningAble( true );
+
     mOutputs = 1;
     mInputs = 1;
 
@@ -56,7 +58,7 @@ void roboQuebeley::postCtor()
 {
     deviceMRQ::postCtor();
 
-    if ( mId==robot_qubeley_s ) //! 1.0
+    if ( mId==robot_qubeley_d ) //! 1.0
     {
         mOutputs = 1;
         mInputs = 0;

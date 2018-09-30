@@ -95,8 +95,14 @@ void roboAxes::slot_timeout()
     //! sample the angle for joint 0~3
     int subAx;
     MegaDevice::deviceMRQ *pMrq;
-    for ( int jointId = 0; jointId < pRobo->absCount(); jointId++ )
+//    for ( int jointId = 0; jointId < pRobo->absCount(); jointId++ )
+    for ( int jointId = 0; jointId < pRobo->mJointAngleMask.size(); jointId++ )
     {
+        if ( pRobo->mJointAngleMask.at(jointId) )
+        {}
+        else
+        { continue; }
+
         pMrq = pRobo->jointDevice( jointId, &subAx );
         if ( NULL == pMrq )
         {
@@ -106,7 +112,15 @@ void roboAxes::slot_timeout()
 
         //! now for angle
         float angle;
-        angle = pMrq->getAbsAngle( subAx );
+        if ( pRobo->angleType() == robo_angle_abs )
+        { angle = pMrq->getAbsAngle( subAx ); }
+        else if ( pRobo->angleType() == robo_angle_inc )
+        { angle = pMrq->getIncAngle( subAx ); }
+        else
+        {
+            sysError( tr("Invalid angle") );
+            return;
+        }
 
         Q_ASSERT( jointId < mJoints.size() );
         mJoints.at( jointId )->setAngle( angle );
@@ -120,7 +134,7 @@ void roboAxes::slot_timeout()
         if ( pRobo->getPOSE( pos ) == 0 )
         {
             for ( int i = 0; i < pRobo->poseCount(); i++ )
-            { mPoseLcds.at(i)->display( pos[i]); }
+            { mPoseLcds.at(i)->display( /*QString::number*/( pos[i] ) ); }
         }
         else
         {}

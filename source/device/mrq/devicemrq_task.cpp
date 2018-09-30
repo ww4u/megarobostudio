@@ -7,6 +7,7 @@ ArgLightCoupZero::ArgLightCoupZero()
 {
     mAx = 0;
     mPage = 0;
+    mZOp = axes_zero_op_none;
 
     mT = 0;
     mAngle = 0;

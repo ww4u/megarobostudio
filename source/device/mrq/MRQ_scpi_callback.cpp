@@ -450,6 +450,7 @@ static scpi_result_t _scpi_task( _scpi_t * context )
     LOCALMRQ()->lightCouplingZero( tpvRegion(ax,page),
                                    vals[0], vals[1], vals[2],
                                    vals[3], vals[4],
+                                   axes_zero_op_none,
                                    vals[5]*time_s(1),vals[6]*time_s(1)
                                     );
 

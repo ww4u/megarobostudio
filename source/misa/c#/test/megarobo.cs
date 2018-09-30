@@ -179,7 +179,7 @@ namespace mega_device
 
         public int program( int ax, int page, string file )
         {
-            return roboSet(string.Format("PROGRMA {0},{1},\"{2}\"", ax, page, file));
+            return roboSet(string.Format("PROGRAM {0},{1},\"{2}\"", ax, page, file));
         }
 
         public int call(int ax, int page, int cycle=1, int mode=-1)

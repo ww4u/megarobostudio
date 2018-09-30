@@ -567,8 +567,6 @@ int deviceMRQ::call( int n, const tpvRegion &region )
 
 int deviceMRQ::rotate( pvt_region, float t, float ang, float endV )
 {
-    run( pvt_region_p );
-
     //! set loop 1
     setMOTIONPLAN_CYCLENUM( region.axes(),
                             (MRQ_MOTION_SWITCH_1)region.page(),
@@ -576,6 +574,8 @@ int deviceMRQ::rotate( pvt_region, float t, float ang, float endV )
 
     Q_ASSERT( mMrqFsms.contains( region) );
     mMrqFsms[ region ]->setState( mrq_state_run_reqed );
+
+    run( pvt_region_p );
 
     return pvtWrite( pvt_region_p, t, ang, endV );
 }
@@ -652,6 +652,8 @@ int deviceMRQ::lightCouplingZero( pvt_region, float t, float angle, float endV )
 int deviceMRQ::lightCouplingZero( pvt_region,
                                   float t, float angle, float endV,
                                   float invT, float invAngle,
+//                                  bool bClrCnt,
+                                  AxesZeroOp zOp,
                                   int tmous, int tickus )
 {
     Q_ASSERT( mTaskThread.at(region.axes()) != NULL );
@@ -671,6 +673,8 @@ int deviceMRQ::lightCouplingZero( pvt_region,
     //! arg
     pArg->mAx = region.axes();
     pArg->mPage = region.page();
+//    pArg->mbClrCnt = bClrCnt;
+    pArg->mZOp = zOp;
 
     pArg->mT = t;
     pArg->mAngle = angle;
@@ -702,7 +706,7 @@ int deviceMRQ::lightCouplingZero( pvt_region,
 
 int deviceMRQ::taskLightCouplingZero( void *pArg )
 {
-    int ret;
+    int ret, retRot;
     Q_ASSERT( NULL != pArg );
 
     ArgLightCoupZero *pLightZero;
@@ -712,14 +716,36 @@ int deviceMRQ::taskLightCouplingZero( void *pArg )
     do
     {
         tpvRegion region( pLightZero->mAx, pLightZero->mPage );
+
+        //! 0. lose step
+        if ( is_mask( pLightZero->mZOp, axes_zero_lose_step) )
+        {
+            ret = setMOTIONPLAN_OOSLINESTATE( pLightZero->mAx,
+                                        (MRQ_MOTION_SWITCH_1)pLightZero->mPage,
+                                        MRQ_SYSTEM_REVMOTION_ON );
+            if ( ret != 0 )
+            { return -1; }
+        }
+
         //! 1. rotate
-        ret = syncRotate( region,
+        retRot = syncRotate( region,
                           pLightZero->mT, pLightZero->mAngle, pLightZero->mEndV,
                           pLightZero->mTmo, pLightZero->mTick );
-        if ( ret != 0 )
+
+        //! 2. lose step
+        if ( is_mask( pLightZero->mZOp, axes_zero_lose_step) )
+        {
+            ret = setMOTIONPLAN_OOSLINESTATE( pLightZero->mAx,
+                                        (MRQ_MOTION_SWITCH_1)pLightZero->mPage,
+                                        MRQ_SYSTEM_REVMOTION_OFF );
+            if ( ret != 0 )
+            { return -1; }
+        }
+
+        if ( retRot != 0 )
         { break; }
 
-        //! 2. inverse rotate
+        //! 3. inverse rotate
         if ( pLightZero->mInvAngle != 0 )
         {
             ret = syncRotate( region,
@@ -727,6 +753,14 @@ int deviceMRQ::taskLightCouplingZero( void *pArg )
                               pLightZero->mTmo, pLightZero->mTick );
             if ( ret != 0 )
             { break; }
+        }
+
+        //! 4. clr cnt
+        if ( is_mask( pLightZero->mZOp, axes_zero_clr_cnt ) )
+        {
+            ret = setMOTION_ABCOUNTCLEAR( region.axes() );
+            if ( ret != 0 )
+            { return ret; }
         }
 
     }while( 0 );

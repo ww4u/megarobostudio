@@ -23,7 +23,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-VERSION = 0.1.0.16
+VERSION = 0.1.0.17
 
 OBJECTS_DIR = ./obj
 MOC_DIR = ./obj
@@ -104,8 +104,6 @@ message( "rasp" )
 #message( "mrhe" )
 #}
 #}
-
-
 
 
 # arith
@@ -302,7 +300,9 @@ SOURCES += \
     ../ui/pageoption.cpp \
     ../ui/igusconfig.cpp \
     ../ui/igusdeltapref.cpp \
-    ../ui/mrqtune.cpp
+    ../ui/mrqtune.cpp \
+    ../ui/igusdrylinpanel.cpp \
+    ../ui/megalcdnumber.cpp
 
 HEADERS += \
         ../ui/mainwindow.h \
@@ -470,7 +470,9 @@ HEADERS += \
     ../ui/pageoption.h \
     ../ui/igusconfig.h \
     ../ui/igusdeltapref.h \
-    ../ui/mrqtune.h
+    ../ui/mrqtune.h \
+    ../ui/igusdrylinpanel.h \
+    ../ui/megalcdnumber.h
 
 FORMS += \
         ../ui/mainwindow.ui \
@@ -572,7 +574,8 @@ FORMS += \
     ../ui/pageoption.ui \
     ../ui/igusconfig.ui \
     ../ui/igusdrylinpref.ui \
-    ../ui/mrqtune.ui
+    ../ui/mrqtune.ui \
+    ../ui/igusdrylinpanel.ui
 
 
 RESOURCES = ../res/res.qrc

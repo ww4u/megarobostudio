@@ -18,16 +18,18 @@ namespace test
 
             dev.miOpen("device1");
 
-            byte[] ary;
-            dev.getSensorUartData("UART1", "s1", out ary);
-            if (ary == null)
-            { }
-            else
-            { }
+            dev.program(0, 0, "tulun.csv");
 
-            string link;
-            dev.getLINK_INTFC(out link);
-            Console.WriteLine(link);
+            //byte[] ary;
+            //dev.getSensorUartData("UART1", "s1", out ary);
+            //if (ary == null)
+            //{ }
+            //else
+            //{ }
+
+            //string link;
+            //dev.getLINK_INTFC(out link);
+            //Console.WriteLine(link);
 
             //UInt32 sTime;
             //dev.getSENSORUART_SWITCHTIME("UART1", "S1", out sTime);
@@ -78,7 +80,7 @@ namespace test
             H2 roboH2 = new H2();
             roboH2.miOpen("MRX-H2");
 
-            roboH2.move(0, 0, 100, 100, 10 );
+            roboH2.move(0, 0, 10, 100, 10 );
 
             float[] vals = roboH2.pose();
             if (vals != null)
@@ -96,7 +98,9 @@ namespace test
 
         static void Main(string[] args)
         {
-            testH2();
+            //testH2();
+
+            testMrq();
         }
     }
 }

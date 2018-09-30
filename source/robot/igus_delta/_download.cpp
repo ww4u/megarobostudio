@@ -13,7 +13,7 @@ int robotIgusDelta::downloadTrace( const tpvRegion &region )
 
     QList<int> jointsTabList;
     //! left/right/plate/end
-    jointsTabList<<0<<1<<2<<3;
+    jointsTabList<<0<<1<<2;
     ret = download( mJointsGroup, jointsTabList, region );
     if ( ret != 0 )
     { return ret; }

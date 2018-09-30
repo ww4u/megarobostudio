@@ -30,7 +30,8 @@ robotSinanju::robotSinanju()
     mPoseTitles.clear();
     mPoseTitles<<"X"<<"Y"<<"Z";
 
-    setAbsCount( 4 );
+//    setAbsCount( 4 );
+    setAngleType( robo_angle_abs );
 
     //! \note for 28
     setTunningAble( false );
@@ -142,6 +143,18 @@ robotSinanju::robotSinanju()
     mbHandAble = true;
     mJointFactoryList.clear();
     mJointFactoryList<<0<<-20<<-65<<100;  //! \ref to the zero
+
+    //! transfer
+    mbTransferable = false;
+    for ( int i = 0; i < sizeof_array(mTransferR); i++ )
+    { mTransferR[i] = 0; }
+
+    for ( int i = 0; i < sizeof_array(mTransferS); i++ )
+    { mTransferS[i] = 0; }
+
+    mTransferR[0*3+0] = 1;
+    mTransferR[1*3+1] = 1;
+    mTransferR[2*3+2] = 1;
 }
 
 robotSinanju::~robotSinanju()
@@ -298,4 +311,23 @@ void robotSinanju::setJointFactoryAngle( int id, double angle )
 double robotSinanju::jointFactoryAngle( int id )
 {
     return mJointFactoryList.at(id);
+}
+
+void robotSinanju::setTransfer( bool bEn,
+                  double rot[3*3],
+                  double shift[3*1] )
+{
+    mbTransferable = bEn;
+
+    memcpy( mTransferR, rot, sizeof(mTransferR) );
+    memcpy( mTransferS, shift, sizeof(mTransferS) );
+}
+void robotSinanju::transfer( bool &bEn,
+               double rot[3*3],
+               double shift[3*1] )
+{
+    bEn = mbTransferable;
+
+    memcpy( rot, mTransferR, sizeof(mTransferR) );
+    memcpy( shift, mTransferS, sizeof(mTransferS) );
 }

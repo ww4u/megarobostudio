@@ -23,6 +23,17 @@ TraceKeyPoint::TraceKeyPoint( float pt, float px, float py, float pz, float phan
 //    set_bit( iMask, BIT_INTERP );
 }
 
+void TraceKeyPoint::clear()
+{
+    t = 0;
+    x = 0;
+    y = 0;
+    z = 0;
+
+    hand = 0;
+    iMask = 0;
+}
+
 MegatronKeyPoint::MegatronKeyPoint( float pt,
                   float tfx, float tly, float tfz,
                   float tbx, float tRy, float tbz )

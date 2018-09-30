@@ -68,6 +68,7 @@ int robotDelta::goZero( const tpvRegion &region,
                                  bCcw ? (-mZeroSpeed) : ( mZeroSpeed ),
                                  mInitT,
                                  bCcw ? ( initV ) : (-initV),
+                                 axes_zero_op_none,
                                  mZeroTmo,
                                  mZeroTick
                                  );
@@ -81,6 +82,7 @@ int robotDelta::goZero( const tpvRegion &region,
                                  bCcw ? (-mZeroSpeed) : ( mZeroSpeed ),
                                  mInitT,
                                  bCcw ? (mInitY) : (-mInitY),
+                                 axes_zero_op_none,
                                  mZeroTmo,
                                  mZeroTick
                                  );

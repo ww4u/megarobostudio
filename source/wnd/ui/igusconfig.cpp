@@ -36,6 +36,7 @@ void IgusConfig::spyEdited()
 {
     QCheckBox *checkBoxes[]=
     {
+        ui->chkInvert,
     };
     QRadioButton *radBoxes[] = {
     };
@@ -65,6 +66,8 @@ void IgusConfig::spyEdited()
 
         ui->spinScal,
         ui->spinvM,
+
+        ui->spinAngleToDist,
     };
 
     QComboBox *comboxes[]={
@@ -99,6 +102,9 @@ void IgusConfig::updateData()
 
     pRobo->mScal = ui->spinScal->value();
     pRobo->mVm = ui->spinvM->value();
+
+    pRobo->mInvert = ui->chkInvert->isChecked();
+    pRobo->mAngleToDist = ui->spinAngleToDist->value();
 }
 void IgusConfig::updateUi()
 {
@@ -126,4 +132,7 @@ void IgusConfig::updateUi()
 
     ui->spinScal->setValue( pRobo->mScal );
     ui->spinvM->setValue( pRobo->mVm );
+
+    ui->chkInvert->setChecked( pRobo->mInvert );
+    ui->spinAngleToDist->setValue( pRobo->mAngleToDist );
 }

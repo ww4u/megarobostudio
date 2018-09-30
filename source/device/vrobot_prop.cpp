@@ -220,10 +220,15 @@ int VRobot::poseCount()
 QStringList & VRobot::poseTitles()
 { return mPoseTitles; }
 
-void VRobot::setAbsCount( int cnt )
-{ mAbsCount = cnt; }
-int VRobot::absCount()
-{ return mAbsCount; }
+//void VRobot::setAbsCount( int cnt )
+//{ mAbsCount = cnt; }
+//int VRobot::absCount()
+//{ return mAbsCount; }
+
+void VRobot::setAngleType( eRoboAngle angMode )
+{ mAngleType = angMode; }
+eRoboAngle VRobot::angleType()
+{ return mAngleType; }
 
 bool VRobot::interpAble()
 { return mbInterpAble; }

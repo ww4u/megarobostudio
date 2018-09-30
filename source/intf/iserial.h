@@ -22,6 +22,13 @@ public:
     virtual int serialIn( QXmlStreamReader &reader );
 
 protected:
+    bool toBool( QXmlStreamReader &reader );
+    int toInt( QXmlStreamReader &reader );
+    float toFloat( QXmlStreamReader &reader );
+    double toDouble( QXmlStreamReader &reader );
+
+
+protected:
     int mVersion;
 
 };

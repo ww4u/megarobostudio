@@ -146,7 +146,6 @@ void roboProp::setupUi( int id )
     }
     else if (
               VRobot::robot_slide == id
-
               )
     {
         m_pAxnPref = new_widget( AxnPref, ":/res/image/icon2/settings_light.png", tr("Pref") );

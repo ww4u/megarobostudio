@@ -190,10 +190,14 @@ void UnkMrqUnit::proc( int msg, RoboMsg &detail )
 {
     //! ops
 /*    if ( msg == mrq_msg_run )
-    { toState( mrq_state_run_reqed, detail ); }
+    { selfFsm()->reqRun(true); }
 
     else */if ( msg == mrq_msg_stop )
-    { }
+    {
+        selfFsm()->Mrq()->setMOTION_SWITCH( selfFsm()->axes(),
+                                          MRQ_MOTION_SWITCH_STOP,
+                                          (MRQ_MOTION_SWITCH_1)selfFsm()->page() );
+    }
 
     else if ( msg == mrq_msg_rst )
     { }
@@ -242,7 +246,11 @@ void IdleMrqUnit::proc( int msg, RoboMsg &detail )
     { toState( mrq_state_run_reqed, detail ); }
 
     else */if ( msg == mrq_msg_stop )
-    { }
+    {
+        selfFsm()->Mrq()->setMOTION_SWITCH( selfFsm()->axes(),
+                                            MRQ_MOTION_SWITCH_STOP,
+                                            (MRQ_MOTION_SWITCH_1)selfFsm()->page() );
+    }
 
     else if ( msg == mrq_msg_rst )
     { }
@@ -298,10 +306,16 @@ void RunReqedMrqUnit::proc( int msg, RoboMsg &detail )
 {
     //! ops
     if ( msg == mrq_msg_run )
-    { }
+    { selfFsm()->reqRun(true); }
 
     else if ( msg == mrq_msg_stop )
-    { toState(mrq_state_idle, detail ); sysLog( __FUNCTION__, QString::number(__LINE__) ); }
+    {
+        selfFsm()->Mrq()->setMOTION_SWITCH( selfFsm()->axes(),
+                                            MRQ_MOTION_SWITCH_STOP,
+                                            (MRQ_MOTION_SWITCH_1)selfFsm()->page() );
+
+        toState(mrq_state_idle, detail ); sysLog( __FUNCTION__, QString::number(__LINE__) );
+    }
 
     else if ( msg == mrq_msg_rst )
     { toState(mrq_state_idle, detail ); sysLog( __FUNCTION__, QString::number(__LINE__) ); }
@@ -354,6 +368,10 @@ void ProgramMrqUnit::proc( int msg, RoboMsg &detail )
 
     else if ( msg == mrq_msg_stop )
     {
+        selfFsm()->Mrq()->setMOTION_SWITCH( selfFsm()->axes(),
+                                            MRQ_MOTION_SWITCH_STOP,
+                                            (MRQ_MOTION_SWITCH_1)selfFsm()->page() );
+
         toState(mrq_state_idle, detail ); sysLog( __FUNCTION__, QString::number(__LINE__) );
 
         //! \todo stop downloading
@@ -408,6 +426,10 @@ void CalcingMrqUnit::proc( int msg, RoboMsg &detail )
 
     else if ( msg == mrq_msg_stop )
     {
+        selfFsm()->Mrq()->setMOTION_SWITCH( selfFsm()->axes(),
+                                            MRQ_MOTION_SWITCH_STOP,
+                                            (MRQ_MOTION_SWITCH_1)selfFsm()->page() );
+
         toState(mrq_state_idle, detail ); sysLog( __FUNCTION__, QString::number(__LINE__) );
 
         //! \todo stop downloading
@@ -474,7 +496,12 @@ void CalcendMrqUnit::proc( int msg, RoboMsg &detail )
     }
 
     else if ( msg == mrq_msg_stop )
-    {sysLog( __FUNCTION__, QString::number(__LINE__) );
+    {
+        selfFsm()->Mrq()->setMOTION_SWITCH( selfFsm()->axes(),
+                                            MRQ_MOTION_SWITCH_STOP,
+                                            (MRQ_MOTION_SWITCH_1)selfFsm()->page() );
+
+        sysLog( __FUNCTION__, QString::number(__LINE__) );
         toState(mrq_state_idle, detail );
 
         //! \todo stop downloading
@@ -606,6 +633,10 @@ void StandbyMrqUnit::proc( int msg, RoboMsg &detail )
 
     else if ( msg == mrq_msg_stop )
     {
+        selfFsm()->Mrq()->setMOTION_SWITCH( selfFsm()->axes(),
+                                            MRQ_MOTION_SWITCH_STOP,
+                                            (MRQ_MOTION_SWITCH_1)selfFsm()->page() );
+
         toState(mrq_state_idle, detail ); sysLog( __FUNCTION__, QString::number(__LINE__) );
         //! \todo stop downloading
     }
@@ -795,9 +826,13 @@ void PreStopMrqUnit::proc( int msg, RoboMsg &detail )
 
     else if ( msg == mrq_msg_stop )
     {
+        selfFsm()->Mrq()->setMOTION_SWITCH( selfFsm()->axes(),
+                                            MRQ_MOTION_SWITCH_STOP,
+                                            (MRQ_MOTION_SWITCH_1)selfFsm()->page() );
+
         toState(mrq_state_idle, detail ); sysLog( __FUNCTION__, QString::number(__LINE__) );
 
-        //! \todo stop downloading
+        //! \todo stop downloading 
     }
 
     else if ( msg == mrq_msg_rst )

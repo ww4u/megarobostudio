@@ -83,7 +83,8 @@ VRobot::VRobot()
     setTrigSrcs( 2 );
 
     mPoseCount = 0;
-    mAbsCount = 0;
+//    mAbsCount = 0;
+    mAngleType = robo_angle_none;
 
     mbInterpAble = false;
     mbEncoderAble = true;

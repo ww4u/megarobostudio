@@ -429,17 +429,17 @@ static scpi_result_t _scpi_zero( scpi_t * context )
     { scpi_ret( SCPI_RES_ERR ); }
 
     QList<int> jList;
-    jList<<0<<1<<2<<3;
+    jList<<0<<1<<2;
     LOCAL_ROBO()->goZero( tpvRegion( ax, page ),
                           jList, LOCAL_ROBO()->jointZeroCcwList() );
 
     return SCPI_RES_OK;
 }
 
-//static scpi_result_t _scpi_pose( scpi_t * context )
-//{
-//    // read
-//    DEF_LOCAL_VAR();
+static scpi_result_t _scpi_pose( scpi_t * context )
+{
+    // read
+    DEF_LOCAL_VAR();
 
 //    int ax, page;
 
@@ -449,16 +449,26 @@ static scpi_result_t _scpi_zero( scpi_t * context )
 //    if ( SCPI_ParamInt32(context, &page, true) != true )
 //    { scpi_ret( SCPI_RES_ERR ); }
 
-//    //! robo op
-//    DEF_ROBO();
+    //! robo op
+    DEF_ROBO();
 
-//    CHECK_LINK();
+    CHECK_LINK();
 
-////    pRobo->call( tpvRegion( ax, page) );
+//    pRobo->call( tpvRegion( ax, page) );
 
-//    return SCPI_RES_OK;
-//}
+    float xyzs[3];
+    int ret;
+    ret = pRobo->getPOSE( xyzs );
+    if ( ret != 0 )
+    { scpi_ret( SCPI_RES_ERR ); }
 
+    //! pose out
+    SCPI_ResultFloat( context, xyzs[0] );
+    SCPI_ResultFloat( context, xyzs[1] );
+    SCPI_ResultFloat( context, xyzs[2] );
+
+    return SCPI_RES_OK;
+}
 
 //static scpi_result_t _scpi_angle( scpi_t * context )
 //{
@@ -543,7 +553,7 @@ static scpi_command_t _scpi_cmds[]=
 
     CMD_ITEM( "CENTER", _scpi_zero ),
 
-//    CMD_ITEM( "POSE?", _scpi_pose ),    //! x,y,z,h
+    CMD_ITEM( "POSE?", _scpi_pose ),    //! x,y,z
 //    CMD_ITEM( "ANGLE?", _scpi_angle ),
 
     CMD_ITEM( "TEST1", _scpi_test1 ),

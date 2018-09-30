@@ -19,9 +19,13 @@ robotIgusDelta::robotIgusDelta()
     //! default gpid
     mCanGroupId = group_id_from + (mId - robot_complex)*group_segment;
 
-    setAxes( 4 );
-    setAxesDefName( 4 );
-    setJointName( 4 );
+    setAxes( 3 );
+    setAxesDefName( 3 );
+    setJointName( 3 );
+
+    setPoseCount( 3 );   //! x,y,z
+    mPoseTitles.clear();
+    mPoseTitles<<"X"<<"Y"<<"Z";
 
     mDetail = QString::fromLocal8Bit( (char*)_detail, sizeof_array(_detail) );
 
@@ -35,20 +39,22 @@ robotIgusDelta::robotIgusDelta()
     mImage = QImage::fromData( _megaimage, sizeof(_megaimage) );
 
     //! angles
-    mJointAngleMask[0]=false;
-    mJointAngleMask[1]=false;
-    mJointAngleMask[2]=false;
-    mJointAngleMask[3]=false;
+    mJointAngleMask[0]=true;
+    mJointAngleMask[1]=true;
+    mJointAngleMask[2]=true;
+
+    setAngleType( robo_angle_inc );
+//    mJointAngleMask[3]=false;
 
     //! angle dir
     mAngleDir.clear();
-    mAngleDir<<true<<true<<true<<true;
+    mAngleDir<<true<<true<<true;
 
     mJointCcwMask.clear();
-    mJointCcwMask<<true<<true<<true<<true;
+    mJointCcwMask<<true<<true<<true;
 
     mJointZeroCcw.clear();
-    mJointZeroCcw<<false<<true<<true<<false;
+    mJointZeroCcw<<false<<false<<false;
 
     //! init angle
     mInitAngles.clear();
@@ -71,21 +77,30 @@ robotIgusDelta::robotIgusDelta()
     mScal = 70;
     mVm = 2*360*2;
 
+    mInvert = false;
+    mAngleToDist = 146/740.0;       //! 146mm/740deg
+                                    //! 0.197297
+
     //! connection name
     //! debug used
     //! alter the axes name
-    mAxesConnectionName[0] = "CH2@device1"; //! LS
-    mAxesConnectionName[1] = "CH1@device1"; //! RS
+    mAxesConnectionName[0] = "CH1@device1"; //! LS
+    mAxesConnectionName[1] = "CH2@device1"; //! RS
     mAxesConnectionName[2] = "CH3@device1"; //! Plate
-    mAxesConnectionName[3] = "CH4@device1"; //! Hand
+//    mAxesConnectionName[3] = "CH4@device1"; //! Hand
 
     mZeroTime = 5;
-    mZeroSpeed = 5;
+    mZeroSpeed = 50;
     mZeroAngle = 100;
 
-    mInitL = 23;
-    mInitR = 21;
-    mInitY = 5;
+    mLimitOpt = 0;
+
+    mZeroTmo = 60;
+
+    mInitLeg = 5;
+//    mInitL = 23;
+//    mInitR = 21;
+//    mInitY = 5;
     mInitH = 0.5;
     mInitT = 1;
 

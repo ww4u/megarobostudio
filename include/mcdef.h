@@ -21,6 +21,8 @@
 #define is_bit1( val, bitN )     ( (val & (1<<(bitN)) ) == (1<<(bitN)) )
 #define is_bit0( val, bitN )     ( (val & (1<<(bitN)) ) != (1<<(bitN)) )
 
+#define is_mask( val, mask )     ( ( (val) & (mask) ) == (mask) )
+
 #define checked_call( call )            ret = call;\
                                         if ( ret != 0 ){ return ret; }
 
@@ -39,6 +41,8 @@
 
 
 #define has_attr( val, attr )       ( ( (val) & (attr) ) == (attr) )
+
+#define double_to_float( dv )       ( ( (dv) > -FLT_MIN && (dv) < FLT_MIN ) ? (0) : (dv) )
 
 #define delete_all( container )     { qDeleteAll( container ); container.clear(); }
 

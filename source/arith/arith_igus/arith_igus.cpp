@@ -2,10 +2,16 @@
 #include "../../com/basetype.h"
 #include "arith_igus.h"
 #include "../../../source/sys/sysapi.h"
+
+#include "float.h"  //! FLT_MIN
+#include "../../../include/mcdef.h"
+
 namespace arith_igus {
 
 #include "./arith/params.h"
 #include "./arith/functions.cpp"
+
+#include "./arith/patch.cpp"
 
 
 struct ResInfoAlist
@@ -14,6 +20,13 @@ struct ResInfoAlist
     double v[3];
     double t;
 };
+
+int cwSlove( igusConfig &cfg,
+             float ps[3],
+             float xyzs[3] )
+{
+    return getPos( cfg, ps, xyzs );
+}
 
 int ccwSlove( igusConfig &cfg,
               QList<D4Point> & pts,
@@ -114,7 +127,7 @@ int ccwSlove( igusConfig &cfg,
     ResInfoAlist *pBase = planeCache.data();
 
     deltaPoint outPt;
-    for ( int i = 0; i < outLen / (sizeof(ResInfo)/sizeof(double) ) ; i++ )
+    for ( int i = 0; i < outLen / (int)(sizeof(ResInfo)/sizeof(double) ) ; i++ )
     {
         outPt.t = pBase[i].t;
         for ( int j = 0; j < 3; j++ )

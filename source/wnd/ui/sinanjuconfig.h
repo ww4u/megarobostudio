@@ -28,6 +28,9 @@ protected:
 
 private:
     Ui::SinanjuConfig *ui;
+
+    QDoubleSpinBox *mRots[3*3];
+    QDoubleSpinBox *mShifts[3*1];
 };
 
 #endif // SINANJUCONFIG_H

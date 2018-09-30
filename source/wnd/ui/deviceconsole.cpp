@@ -105,7 +105,6 @@ void deviceConsole::slot_device_changed()
 
 void deviceConsole::slot_classname_changed()
 {
-
     mCommandsetFullName = QCoreApplication::applicationDirPath()
             + QDir::separator()
             + QStringLiteral("doc")

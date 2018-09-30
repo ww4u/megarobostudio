@@ -14,6 +14,7 @@
 #include "t4panel.h"
 #include "h2panel.h"
 #include "h2zpanel.h"
+#include "igusdrylinpanel.h"
 
 deviceMgr::deviceMgr(QWidget *parent) :
     modelView(parent),
@@ -781,6 +782,12 @@ void deviceMgr::context_robo_panel()
                                    roboName,
                                    this );
     }
+    else if ( rId == VRobot::robot_igus_delta )
+    {
+        pRoboPanel = new IgusDrylinPanel( m_pmcModel,
+                                          roboName,
+                                          this );
+    }
     else
     { return; }
 
@@ -792,7 +799,6 @@ void deviceMgr::context_robo_panel()
              pRoboPanel, SLOT(slot_device_changed()) );
     pRoboPanel->show();
 }
-
 
 void deviceMgr::context_robo_prop()
 {
@@ -902,6 +908,7 @@ void deviceMgr::contextMenuEvent(QContextMenuEvent *event)
                  || m_pRobo->getId() == VRobot::robot_h2
                  || m_pRobo->getId() == VRobot::robot_h2_m
                  || m_pRobo->getId() == VRobot::robot_h2z
+                 || m_pRobo->getId() == VRobot::robot_igus_delta
                                     )
             { m_pRoboPanelAction->setVisible(true); }
             else

@@ -89,24 +89,28 @@ void InstMgr::dataIn(  QTcpSocket *socket,
     //! wait lpc idle
     RoboMsgQueue::waitIdle();
 
-    pShell->setObjPara( name, socket );
+    pShell->lock();
 
-    pShell->write( ary.data(), ary.length() );
+        pShell->setObjPara( name, socket );
 
-    int retSize = pShell->size();
-    if ( retSize > 0 )
-    {
-        char retData[ retSize + 1];
-        retData[ retSize ] = 0;
-        int rdSize;
-        rdSize = pShell->read( retData, retSize );
+        pShell->write( ary.data(), ary.length() );
 
-        dataOut( socket, retData, rdSize );
-//        logDbg()<<rdSize<<retData;
-//        for ( int i = 0; i < rdSize; i++ )
-//        { logDbg()<<QString::number( retData[i],16); }
-    }
-//    logDbg()<<retSize;
+        int retSize = pShell->size();
+        if ( retSize > 0 )
+        {
+            char retData[ retSize + 1];
+            retData[ retSize ] = 0;
+            int rdSize;
+            rdSize = pShell->read( retData, retSize );
+
+            dataOut( socket, retData, rdSize );
+        //        logDbg()<<rdSize<<retData;
+        //        for ( int i = 0; i < rdSize; i++ )
+        //        { logDbg()<<QString::number( retData[i],16); }
+        }
+
+    pShell->unlock();
+
 }
 
 void InstMgr::setMainModel( mcModel *pModel )

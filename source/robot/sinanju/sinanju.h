@@ -100,8 +100,6 @@ public:
     int program( const QString &fileName,
                  const tpvRegion &region );
     int loadProgram( const QString &fileName );
-//    int loadProgram2( const QString &fileName );
-//    int loadProgram3( const QString &fileName );
 
     int program( QList<TraceKeyPoint> &curve,
                  const tpvRegion &region );
@@ -173,6 +171,12 @@ protected:
     int serialInJointFactory( QXmlStreamReader &reader );
     int serialOutJointFactory( QXmlStreamWriter &writer );
 
+    int serialInTransfer( QXmlStreamReader &reader );
+    int serialOutTransfer( QXmlStreamWriter &writer );
+
+    int serialInTransferR( QXmlStreamReader &reader );
+    int serialInTransferS( QXmlStreamReader &reader );
+
 protected:
     void exportPlan( const QString &fileName, xxxGroup<tracePoint> &tracePlan );
     void exportJoints( const QString &fileName, xxxGroup<jointsTrace> &jointsPlan );
@@ -190,12 +194,23 @@ public:
     void setJointFactoryAngle( int id, double angle );
     double jointFactoryAngle( int id );
 
+    void setTransfer( bool bEn,
+                      double rot[3*3],
+                      double shift[3*1] );
+    void transfer( bool &bEn,
+                   double rot[3*3],
+                   double shift[3*1] );
+
 protected:
     double mHandZeroTime, mHandZeroAngle;
     double mGapTime, mGapAngle;
 
     bool mbHandAble;
     QList< double > mJointFactoryList;
+
+    bool mbTransferable;
+    double mTransferR[3*3];
+    double mTransferS[3*1];
 };
 
 #endif

@@ -12,12 +12,12 @@ IgusDeltaPref::IgusDeltaPref(QWidget *parent) :
     mCcwChecks.append( ui->chkLSCcw );
     mCcwChecks.append( ui->chkRSCcw );
     mCcwChecks.append( ui->chkPlateCcw );
-    mCcwChecks.append( ui->chkHandCcw );
+//    mCcwChecks.append( ui->chkHandCcw );
 
     mBodyChecks.append( ui->chkLSBody );
     mBodyChecks.append( ui->chkRSBody );
     mBodyChecks.append( ui->chkPlateBody );
-    mBodyChecks.append( ui->chkHandBody );
+//    mBodyChecks.append( ui->chkHandBody );
 
     foreach( QCheckBox *pCheck, mBodyChecks )
     {
@@ -89,18 +89,13 @@ void IgusDeltaPref::spyEdited()
         ui->spinZeroTime,
         ui->spinZeroAngle,
 
-//        ui->spinAngleRS,
-//        ui->spinAngleLS,
-
         ui->spinInitT,
-        ui->spinInitL,
-        ui->spinInitR,
-        ui->spinInitY,
-        ui->spinInitH,
+        ui->spinInitLeg,
+//        ui->spinInitH,
     };
 
     QComboBox *comboxes[]={
-
+        ui->cmbLimit
     };
 
     install_spy();
@@ -112,17 +107,20 @@ void IgusDeltaPref::updateData()
     VRobot *pBase = ( VRobot *)m_pModelObj;
     Q_ASSERT( NULL != pBase );
 
-    robotDelta *pRobo = (robotDelta*)pBase;
+    robotIgusDelta *pRobo = (robotIgusDelta*)pBase;
     Q_ASSERT( NULL != pRobo );
     pRobo->setZeroAttr( ui->spinZeroTime->value(),
-                        ui->spinZeroAngle->value() );
+                        ui->spinZeroAngle->value(),
+                        ui->cmbLimit->currentIndex() );
 
     //! init
     pRobo->setInitAttr( ui->spinInitT->value(),
-                        ui->spinInitL->value(),
-                        ui->spinInitR->value(),
-                        ui->spinInitY->value(),
-                        ui->spinInitH->value() );
+                        ui->spinInitLeg->value(),
+                        0 );
+
+    pRobo->setJointZeroCcw( 0, ui->chkLSCcw->isChecked() );
+    pRobo->setJointZeroCcw( 1, ui->chkRSCcw->isChecked() );
+    pRobo->setJointZeroCcw( 0, ui->chkPlateCcw->isChecked() );
 }
 
 void IgusDeltaPref::updateUi()
@@ -131,26 +129,25 @@ void IgusDeltaPref::updateUi()
     VRobot *pBase = ( VRobot *)m_pModelObj;
     Q_ASSERT( NULL != pBase );
 
-    robotDelta *pRobo = (robotDelta*)pBase;
+    robotIgusDelta *pRobo = (robotIgusDelta*)pBase;
     Q_ASSERT( NULL != pRobo );
 
     //! zero
     double time, angle;
-    pRobo->zeroAttr( time, angle );
+    int limitOpt;
+    pRobo->zeroAttr( time, angle, limitOpt );
 
     ui->spinZeroTime->setValue( time );
     ui->spinZeroAngle->setValue( angle );
-
+    ui->cmbLimit->setCurrentIndex( limitOpt );
 
     //! init
-    double initT, initL, initR, initY, initH;
-    pRobo->initAttr( initT, initL, initR, initY, initH );
+    double initT, initLeg, initH;
+    pRobo->initAttr( initT, initLeg, initH );
     ui->spinInitT->setValue( initT );
 
-    ui->spinInitL->setValue( initL );
-    ui->spinInitR->setValue( initR );
-    ui->spinInitY->setValue( initY );
-    ui->spinInitH->setValue( initH );
+    ui->spinInitLeg->setValue( initLeg );
+//    ui->spinInitH->setValue( initH );
 
     //! zero ccw
     QList<bool> zeroCcw = pRobo->jointZeroCcwList();
@@ -231,10 +228,10 @@ void IgusDeltaPref::on_btnZeroRS_clicked()
     sig_joint( 1, chkRSCcw )
 }
 
-void IgusDeltaPref::on_btnZeroHand_clicked()
-{
-    sig_joint( 3, chkHandCcw )
-}
+//void IgusDeltaPref::on_btnZeroHand_clicked()
+//{
+//    sig_joint( 3, chkHandCcw )
+//}
 
 void IgusDeltaPref::on_btnZeroPlate_clicked()
 {

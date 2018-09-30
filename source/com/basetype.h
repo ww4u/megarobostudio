@@ -41,6 +41,8 @@ public:
         e_req_add_t4_key_point,
         e_req_add_h2_key_point,
         e_req_add_h2z_key_point,
+
+//        e_req_add_igus_drylin_key_point,
     };
 
     enum EnumParaType

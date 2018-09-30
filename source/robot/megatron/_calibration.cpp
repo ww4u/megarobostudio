@@ -111,6 +111,7 @@ int robotMegatron::goZero( const tpvRegion &region,
                              bCcw ? (-mZeroSpeed) : ( mZeroSpeed ),
                              mGapTime,
                              bCcw ? (mGapDistance) : (-mGapDistance),
+                             axes_zero_op_none,
                              mZeroTmo, mZeroTick );
 
     return 0;

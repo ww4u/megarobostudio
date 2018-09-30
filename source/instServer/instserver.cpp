@@ -13,10 +13,10 @@ instServer::instServer( QObject *parent ) : QObject( parent )
 
 //! data to device
 void instServer::dataIn( QTcpSocket *pSocket,
-                           const QString &name,
-                           QByteArray &ary )
+                         const QString &name,
+                         QByteArray &ary )
 {
-    qDebug()<<__FUNCTION__<<__LINE__<<ary;
+//    qDebug()<<__FUNCTION__<<__LINE__<<ary;
     pSocket->write( ary );
 }
 
@@ -40,7 +40,7 @@ void instServer::slot_newConnection()
     pSocket = mServer.nextPendingConnection();
     pSocket->setObjectName("");
 
-    qDebug()<<__FUNCTION__<<__LINE__<<pSocket->peerAddress()<<pSocket->peerName();
+//    qDebug()<<__FUNCTION__<<__LINE__<<pSocket->peerAddress()<<pSocket->peerName();
 
     //! ready ready
     connect( pSocket,

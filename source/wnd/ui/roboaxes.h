@@ -7,6 +7,7 @@
 #include <QLCDNumber>
 #include "../../device/vrobot.h"
 #include "dlgview.h"
+#include "megalcdnumber.h"
 
 namespace Ui {
 class roboAxes;
@@ -67,7 +68,7 @@ private:
     QTimer mTimer;
 
     QList< RoboJoint* > mJoints;
-    QList< QLCDNumber *> mPoseLcds;
+    QList< MegaLcdnumber *> mPoseLcds;
 };
 
 #endif // ROBOAXES_H

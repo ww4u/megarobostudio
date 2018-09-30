@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>504</width>
-    <height>384</height>
+    <height>399</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -69,7 +69,7 @@
          <string>PushButton</string>
         </property>
         <property name="icon">
-         <iconset>
+         <iconset resource="../res/res.qrc">
           <normaloff>:/res/image/icon/addition.png</normaloff>:/res/image/icon/addition.png</iconset>
         </property>
         <property name="iconSize">
@@ -123,9 +123,9 @@
          </widget>
         </item>
         <item>
-         <widget class="QLCDNumber" name="lcdX">
+         <widget class="MegaLcdnumber" name="lcdX">
           <property name="digitCount">
-           <number>6</number>
+           <number>9</number>
           </property>
          </widget>
         </item>
@@ -137,9 +137,9 @@
          </widget>
         </item>
         <item>
-         <widget class="QLCDNumber" name="lcdY">
+         <widget class="MegaLcdnumber" name="lcdY">
           <property name="digitCount">
-           <number>6</number>
+           <number>9</number>
           </property>
          </widget>
         </item>
@@ -214,7 +214,7 @@
             <double>1000.000000000000000</double>
            </property>
            <property name="value">
-            <double>250.000000000000000</double>
+            <double>10.000000000000000</double>
            </property>
           </widget>
          </item>
@@ -232,6 +232,9 @@
            </property>
            <property name="maximum">
             <double>1000.000000000000000</double>
+           </property>
+           <property name="value">
+            <double>10.000000000000000</double>
            </property>
           </widget>
          </item>
@@ -253,7 +256,7 @@
             <string>Mark</string>
            </property>
            <property name="icon">
-            <iconset>
+            <iconset resource="../res/res.qrc">
              <normaloff>:/res/image/icon/addition.png</normaloff>:/res/image/icon/addition.png</iconset>
            </property>
            <property name="iconSize">
@@ -279,7 +282,7 @@
             <string>GO</string>
            </property>
            <property name="icon">
-            <iconset>
+            <iconset resource="../res/res.qrc">
              <normaloff>:/res/image/icon/skip.png</normaloff>:/res/image/icon/skip.png</iconset>
            </property>
            <property name="iconSize">
@@ -306,7 +309,7 @@
             <double>1000.000000000000000</double>
            </property>
            <property name="value">
-            <double>0.000000000000000</double>
+            <double>10.000000000000000</double>
            </property>
           </widget>
          </item>
@@ -379,7 +382,7 @@
                <string>...</string>
               </property>
               <property name="icon">
-               <iconset>
+               <iconset resource="../res/res.qrc">
                 <normaloff>:/res/image/icon/c_less.png</normaloff>:/res/image/icon/c_less.png</iconset>
               </property>
               <property name="iconSize">
@@ -405,7 +408,7 @@
                <string>...</string>
               </property>
               <property name="icon">
-               <iconset>
+               <iconset resource="../res/res.qrc">
                 <normaloff>:/res/image/icon/c_subtract.png</normaloff>:/res/image/icon/c_subtract.png</iconset>
               </property>
               <property name="iconSize">
@@ -431,7 +434,7 @@
                <string>...</string>
               </property>
               <property name="icon">
-               <iconset>
+               <iconset resource="../res/res.qrc">
                 <normaloff>:/res/image/icon/c_more_unfold.png</normaloff>:/res/image/icon/c_more_unfold.png</iconset>
               </property>
               <property name="iconSize">
@@ -457,7 +460,7 @@
                <string>...</string>
               </property>
               <property name="icon">
-               <iconset>
+               <iconset resource="../res/res.qrc">
                 <normaloff>:/res/image/icon/c_back.png</normaloff>:/res/image/icon/c_back.png</iconset>
               </property>
               <property name="iconSize">
@@ -480,7 +483,7 @@
                <string>...</string>
               </property>
               <property name="icon">
-               <iconset>
+               <iconset resource="../res/res.qrc">
                 <normaloff>:/res/image/icon3/address.png</normaloff>:/res/image/icon3/address.png</iconset>
               </property>
               <property name="iconSize">
@@ -519,7 +522,7 @@
                <string>...</string>
               </property>
               <property name="icon">
-               <iconset>
+               <iconset resource="../res/res.qrc">
                 <normaloff>:/res/image/icon/c_more.png</normaloff>:/res/image/icon/c_more.png</iconset>
               </property>
               <property name="iconSize">
@@ -542,7 +545,7 @@
                <string/>
               </property>
               <property name="pixmap">
-               <pixmap>:/res/image/joint/mrx-h2z_geo.png</pixmap>
+               <pixmap resource="../res/res.qrc">:/res/image/joint/mrx-h2z_geo.png</pixmap>
               </property>
               <property name="scaledContents">
                <bool>true</bool>
@@ -564,7 +567,7 @@
                <string>...</string>
               </property>
               <property name="icon">
-               <iconset>
+               <iconset resource="../res/res.qrc">
                 <normaloff>:/res/image/icon/c_add.png</normaloff>:/res/image/icon/c_add.png</iconset>
               </property>
               <property name="iconSize">
@@ -601,7 +604,7 @@
              <number>3</number>
             </property>
             <property name="topMargin">
-             <number>3</number>
+             <number>6</number>
             </property>
             <property name="rightMargin">
              <number>3</number>
@@ -681,12 +684,19 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>MegaLcdnumber</class>
+   <extends>QLCDNumber</extends>
+   <header>megalcdnumber.h</header>
+  </customwidget>
+  <customwidget>
    <class>PageOption</class>
    <extends>QWidget</extends>
    <header>pageoption.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="../res/res.qrc"/>
+ </resources>
  <connections/>
 </ui>

@@ -136,6 +136,7 @@ int robotSinanju::goZero( const tpvRegion &region,
                                  bCcw ? (-mZeroSpeed) : ( mZeroSpeed ),
                                  mGapTime,
                                  bCcw ? (mGapAngle) : (-mGapAngle),
+                                 axes_zero_op_none,
                                  mZeroTmo, mZeroTick );
 
         sysLog( QString::number( bCcw ? (-mHandZeroAngle) : ( mHandZeroAngle ) ) );

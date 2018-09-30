@@ -43,7 +43,7 @@ private slots:
 
     void on_btnZeroRS_clicked();
 
-    void on_btnZeroHand_clicked();
+//    void on_btnZeroHand_clicked();
 
     void on_btnZeroPlate_clicked();
 

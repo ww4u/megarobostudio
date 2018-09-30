@@ -20,6 +20,10 @@ struct igusConfig
     double vM;
 };
 
+int cwSlove( igusConfig &cfg,
+             float ps[3],
+             float xyzs[3] );
+
 int ccwSlove( igusConfig &cfg,
               QList<D4Point> & points,
               QList<deltaPoint> & deltaPoints );

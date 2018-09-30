@@ -190,7 +190,6 @@ void motionEdit::onMotionStatus( int axes,
     { Q_ASSERT(false); }
 }
 
-
 void motionEdit::onRequest( RpcRequest &req )
 {
     //! check type

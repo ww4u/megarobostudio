@@ -1,5 +1,6 @@
 #include "h2_split.h"
-
+#include "../../../include/mcdef.h"
+#include <float.h>
 
 namespace h2_split {
 
@@ -179,8 +180,8 @@ int h2Pose( const QList<double> &armLengthes,
                                     xys
                                       );
 
-    x = xys[0];
-    y = xys[1];
+    x = double_to_float( xys[0] );
+    y = double_to_float( xys[1] );
 
     return ret;
 }

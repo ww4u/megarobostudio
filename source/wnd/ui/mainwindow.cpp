@@ -283,20 +283,19 @@ void MainWindow::setupToolbar()
     ui->mainToolBar->addAction( ui->actionpref );
 
     //! device conn
-    m_pToolbarAxesConn = new QToolBar();
+    m_pToolbarAxesConn = new QToolBar( tr("Device") );
     m_pAxesConnTool = new axesConnection();
     m_pToolbarAxesConn->addWidget( m_pAxesConnTool );
     addToolBar( m_pToolbarAxesConn );
 
     //! robo conn
-    m_pToolbarRoboConn = new QToolBar();
+    m_pToolbarRoboConn = new QToolBar( tr("Robot") );
     m_pRoboConnTool = new roboConnection();
     m_pToolbarRoboConn->addWidget( m_pRoboConnTool );
     addToolBar( m_pToolbarRoboConn );
 
-
     //! op tool
-    m_pToolbarQuickOp = new QToolBar();    
+    m_pToolbarQuickOp = new QToolBar( tr("Quick") );
     m_pToolbarQuickOp->addAction( ui->actionEvent_E );
     m_pToolbarQuickOp->addWidget( new QuickTool() );        //! for the spacer
     m_pToolbarQuickOp->addAction( ui->actionReset );

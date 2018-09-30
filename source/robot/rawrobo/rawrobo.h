@@ -46,6 +46,7 @@ struct TraceKeyPoint
     };
 
     TraceKeyPoint( float pt = 0, float px=0, float py=0, float pz=0, float phand=0 );
+    void clear();
 };
 typedef QList<TraceKeyPoint>    TraceKeyPointList;
 

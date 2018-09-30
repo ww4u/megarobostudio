@@ -44,6 +44,13 @@ enum eRoboPlanMode
     plan_5rd,
 };
 
+enum eRoboAngle
+{
+    robo_angle_none,
+    robo_angle_abs,
+    robo_angle_inc,
+};
+
 struct PlanAttr
 {
     eRoboPlanMode mMode;
@@ -325,8 +332,11 @@ public:
 
     QStringList & poseTitles();
 
-    void setAbsCount( int cnt );
-    int absCount();
+//    void setAbsCount( int cnt );
+//    int absCount();
+
+    void setAngleType( eRoboAngle angMode );
+    eRoboAngle angleType();
 
     bool interpAble();
 
@@ -407,7 +417,8 @@ protected:
     int mPoseCount;                     //! 0,3..
     QStringList mPoseTitles;
 
-    int mAbsCount;
+//    int mAbsCount;
+    eRoboAngle mAngleType;
 
     bool mbInterpAble;
     bool mbEncoderAble;

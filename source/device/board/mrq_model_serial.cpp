@@ -1185,6 +1185,8 @@ int MRQ_model::saveTunning( QXmlStreamWriter &writer )
 
         writer.writeEndElement();
     }
+
+    return 0;
 }
 int MRQ_model::loadTunning( QXmlStreamReader &reader )
 {
@@ -1201,6 +1203,8 @@ int MRQ_model::loadTunning( QXmlStreamReader &reader )
             reader.skipCurrentElement();
         }
     }
+
+    return 0;
 }
 
 int MRQ_model::saveSubTunning( int ax, QXmlStreamWriter &writer )
@@ -1235,6 +1239,8 @@ int MRQ_model::loadSubTunning( int ax, QXmlStreamReader &reader )
         else
         { reader.skipCurrentElement(); }
     }
+
+    return 0;
 }
 
 int MRQ_model::saveISOi( QXmlStreamWriter &writer )

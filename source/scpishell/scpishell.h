@@ -2,6 +2,7 @@
 #define SCPISHELL_H
 
 #include <QtCore>
+#include <QMutex>
 #include "../model/mcmodelobj.h"
 
 #define DEF_IN_SIZE     1024
@@ -78,6 +79,9 @@ public:
     void setOpc( int v );
     int opc();
 
+    void lock();
+    void unlock();
+
 public:
 //    scpi_interface_t scpi_interface;
 //    char *p_scpi_input_buffer;
@@ -99,6 +103,8 @@ protected:
 
     void *m_pUserPara;
     int mOpc;
+
+    QMutex *m_pMutex;
 };
 
 #define scpi_ret( ret )         sysError( __FUNCTION__, QString::number(__LINE__)); \

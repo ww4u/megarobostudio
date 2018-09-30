@@ -1,5 +1,6 @@
 #include "igus_delta.h"
 #include "../../com/comassist.h"
+#include "../../arith/arith_igus/arith_igus.h"
 //! load the data from the file
 int robotIgusDelta::program( const QString &fileName,
                          const tpvRegion &region )
@@ -204,4 +205,56 @@ int robotIgusDelta::moveTest2( const tpvRegion &region )
     curve.append( pt1 );
 
     return move( curve, region );
+}
+
+int robotIgusDelta::pose( float xyz[3] )
+{
+    //! get angle
+    float angles[3];
+
+    MegaDevice::deviceMRQ *pMrq;
+    int ax,dir;
+
+    dir = mInvert ? 1 : -1;
+
+    for ( int i = 0; i < 3; i++ )
+    {
+        pMrq = jointDevice( i, &ax );
+        if ( NULL == pMrq )
+        { return -1; }
+
+        angles[i] = pMrq->getIncAngle( ax );
+
+        //! convert the angles
+        angles[ i ] *= ( mAngleToDist * dir );
+
+//        sysLog( QString::number( angles[i]) );
+    }
+
+    //! cfg
+    //! config para
+    arith_igus::igusConfig cfg;
+    for ( int i = 0; i < 4; i++ )
+    { cfg.armLength[i] = mArmLengths[i]; /*sysLog(QString::number(mArmLengths[i]));*/ }
+    for ( int i = 0; i < 2; i++ )
+    { cfg.offset[i] = mOffset[i]; /*sysLog(QString::number(mOffset[i]));*/}
+    for ( int i = 0; i < 3; i++ )
+    { cfg.P0[i] = mP0[i]; /*sysLog(QString::number(mP0[i]));*/}
+    for ( int i = 0; i < 2; i++ )
+    { cfg.posLim[i] = mPosLim[i]; /*sysLog(QString::number(mPosLim[i]))*/;}
+    cfg.scal = mScal;/*sysLog(QString::number(mScal));*/
+    cfg.vM = mVm;/*sysLog(QString::number(mVm));*/
+
+    //! cw
+    int ret;
+    ret = arith_igus::cwSlove( cfg, angles, xyz );
+    if ( ret != 0 )
+    { return ret; }
+
+//    sysLog( QString::number(xyz[0]),
+//            QString::number(xyz[1]),
+//            QString::number(xyz[2])
+//            );
+
+    return 0;
 }

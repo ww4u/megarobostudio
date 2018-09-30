@@ -104,7 +104,7 @@
        <widget class="LRButton" name="btnLr01" native="true"/>
       </item>
       <item row="0" column="6">
-       <widget class="QLCDNumber" name="lcdNumber">
+       <widget class="MegaLcdnumber" name="lcdNumber">
         <property name="digitCount">
          <number>6</number>
         </property>
@@ -116,6 +116,11 @@
   </layout>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>MegaLcdnumber</class>
+   <extends>QLCDNumber</extends>
+   <header>megalcdnumber.h</header>
+  </customwidget>
   <customwidget>
    <class>LRButton</class>
    <extends>QWidget</extends>

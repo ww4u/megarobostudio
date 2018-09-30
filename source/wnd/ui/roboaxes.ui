@@ -20,7 +20,7 @@
    <string>Robot</string>
   </property>
   <property name="windowIcon">
-   <iconset>
+   <iconset resource="../res/res.qrc">
     <normaloff>:/res/image/icon/23.png</normaloff>:/res/image/icon/23.png</iconset>
   </property>
   <property name="sizeGripEnabled">
@@ -105,7 +105,7 @@
                <string/>
               </property>
               <property name="pixmap">
-               <pixmap>:/res/image/icon3/time.png</pixmap>
+               <pixmap resource="../res/res.qrc">:/res/image/icon3/time.png</pixmap>
               </property>
               <property name="scaledContents">
                <bool>true</bool>
@@ -158,38 +158,43 @@
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_2">
             <item>
-             <widget class="QLCDNumber" name="lcdPosX">
+             <widget class="MegaLcdnumber" name="lcdPosX">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
               <property name="digitCount">
-               <number>6</number>
+               <number>9</number>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QLCDNumber" name="lcdPosY">
+             <widget class="MegaLcdnumber" name="lcdPosY">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
               <property name="digitCount">
-               <number>6</number>
+               <number>9</number>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QLCDNumber" name="lcdPosZ">
+             <widget class="MegaLcdnumber" name="lcdPosZ">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
               <property name="digitCount">
-               <number>6</number>
+               <number>9</number>
               </property>
              </widget>
-            </item>
-            <item>
-             <spacer name="horizontalSpacer_3">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
             </item>
            </layout>
           </widget>
@@ -273,7 +278,7 @@
                <string>...</string>
               </property>
               <property name="icon">
-               <iconset>
+               <iconset resource="../res/res.qrc">
                 <normaloff>:/res/image/icon/332.png</normaloff>:/res/image/icon/332.png</iconset>
               </property>
               <property name="iconSize">
@@ -309,10 +314,10 @@
                <string>Step Time</string>
               </property>
               <property name="minimum">
-               <double>1.000000000000000</double>
+               <double>0.010000000000000</double>
               </property>
               <property name="maximum">
-               <double>100.000000000000000</double>
+               <double>1000.000000000000000</double>
               </property>
              </widget>
             </item>
@@ -360,7 +365,7 @@
            <number>0</number>
           </property>
           <property name="topMargin">
-           <number>0</number>
+           <number>6</number>
           </property>
           <property name="rightMargin">
            <number>0</number>
@@ -410,6 +415,11 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>MegaLcdnumber</class>
+   <extends>QLCDNumber</extends>
+   <header>megalcdnumber.h</header>
+  </customwidget>
+  <customwidget>
    <class>PageOption</class>
    <extends>QWidget</extends>
    <header>pageoption.h</header>
@@ -425,6 +435,8 @@
  <tabstops>
   <tabstop>btnZero</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="../res/res.qrc"/>
+ </resources>
  <connections/>
 </ui>

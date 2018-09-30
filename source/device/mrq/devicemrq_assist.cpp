@@ -37,7 +37,7 @@ float deviceMRQ::slowRatio( int ax )
     //! lead
     else
     {
-        return mMOTOR_LEAD[ax];
+        return  360.0f / mMOTOR_LEAD[ax];
     }
 }
 float deviceMRQ::stepAngle( int ax )

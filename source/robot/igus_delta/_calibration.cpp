@@ -1,45 +1,46 @@
 #include "igus_delta.h"
 #include "../../com/comassist.h"
 
-void robotIgusDelta::setZeroAttr( double zeroTime, double zeroAngle )
+void robotIgusDelta::setZeroAttr( double zeroTime, double zeroAngle, int zMode )
 {
     mZeroTime = zeroTime;
     mZeroAngle = zeroAngle;
 
+    mLimitOpt = zMode;
+
 }
-void robotIgusDelta::zeroAttr( double &zeroTime, double &zeroAngle )
+void robotIgusDelta::zeroAttr( double &zeroTime, double &zeroAngle, int &zMode )
 {
     zeroTime = mZeroTime;
     zeroAngle = mZeroAngle;
+
+    zMode = mLimitOpt;
 }
 
-void robotIgusDelta::setInitAttr( double t, double l, double r, double y, double h )
+void robotIgusDelta::setInitAttr( double t, double leg, double h )
 {
     mInitT = t;
-    mInitL = l;
-    mInitR = r;
-    mInitY = y;
+    mInitLeg = leg;
     mInitH = h;
 }
-void robotIgusDelta::initAttr( double &t, double &l, double &r, double &y, double &h )
+void robotIgusDelta::initAttr( double &t, double &leg, double &h )
 {
     t = mInitT;
-    l = mInitL;
-    r = mInitR;
-    y = mInitY;
+    leg = mInitLeg;
     h = mInitH;
 }
 
 int robotIgusDelta::goZero( const tpvRegion &region )
 {
     QList<int> jList;
-    jList<<0<<1<<2<<3;
+//    jList<<0<<1<<2<<3;
+    jList<<0<<1<<2;
 
     return goZero( region, jList, mJointZeroCcw );
 }
 
 int robotIgusDelta::goZero( const tpvRegion &region,
-                        int jTabId, bool bCcw )
+                            int jTabId, bool bCcw )
 {
     MegaDevice::deviceMRQ *pMrq;
     int subAx;
@@ -55,40 +56,32 @@ int robotIgusDelta::goZero( const tpvRegion &region,
     setLoop( 1 );
 
     int ret;
-    if ( jTabId == 0 || jTabId == 1 ) //! l,r
-    {
-        //! get v
-        float initV;
-        initV = jTabId == 0 ? mInitL : mInitR;
+    if ( jTabId == 0 || jTabId == 1 || jTabId == 2 ) //! legs
+    {        
+        AxesZeroOp zOp;
+
+        if ( mLimitOpt == 0 )
+        { zOp = combine_zero_op2( axes_zero_clr_cnt, axes_zero_lose_step );}
+        else
+        { zOp = ( axes_zero_clr_cnt ); }
 
         //! zero && init
-        pMrq->lightCouplingZero( tpvRegion(subAx,region.page()),
+        ret = pMrq->lightCouplingZero( tpvRegion(subAx,region.page()),
                                  mZeroTime,
                                  bCcw ? (-mZeroAngle) : ( mZeroAngle ),
                                  bCcw ? (-mZeroSpeed) : ( mZeroSpeed ),
                                  mInitT,
-                                 bCcw ? ( initV ) : (-initV),
+                                 bCcw ? ( mInitLeg ) : (-mInitLeg),
+                                 zOp,
                                  mZeroTmo,
                                  mZeroTick
                                  );
 
-    }
-    else if ( jTabId == 2 )
-    {
-        pMrq->lightCouplingZero( tpvRegion(subAx,region.page() ),
-                                 mZeroTime,
-                                 bCcw ? (-mZeroAngle) : ( mZeroAngle ),
-                                 bCcw ? (-mZeroSpeed) : ( mZeroSpeed ),
-                                 mInitT,
-                                 bCcw ? (mInitY) : (-mInitY),
-                                 mZeroTmo,
-                                 mZeroTick
-                                 );
     }
     else if ( jTabId == 3 )
     {
         //! \note no init op
-        pMrq->lightCouplingZero( tpvRegion(subAx,region.page() ),
+        ret = pMrq->lightCouplingZero( tpvRegion(subAx,region.page() ),
                                  mZeroTime,
                                  bCcw ? (-mZeroAngle) : ( mZeroAngle ),
                                  0
@@ -97,7 +90,7 @@ int robotIgusDelta::goZero( const tpvRegion &region,
     else
     { Q_ASSERT(false); }
 
-    return 0;
+    return ret;
 }
 
 int robotIgusDelta::goZero( const tpvRegion &region,
@@ -105,14 +98,6 @@ int robotIgusDelta::goZero( const tpvRegion &region,
                         const QList<bool> &ccwList )
 {
     Q_ASSERT( jointList.size() == ccwList.size() );
-
-//    int ret=0;
-//    for ( int i = 0; i < jointList.size(); i++ )
-//    {
-//        ret = goZero( region, jointList.at(i), ccwList.at(i) );
-//        if ( ret != 0 )
-//        { return ret; }
-//    }
 
     RoboTaskRequest *pReq;
     pReq = new RoboTaskRequest();
@@ -133,19 +118,19 @@ int robotIgusDelta::goZero( const tpvRegion &region,
         {
             pArg->mZDistList<<mZeroAngle;
             pArg->mZVList<<mZeroSpeed;
-            pArg->mGapDistList<<mInitL;
+            pArg->mGapDistList<<mInitLeg;
         }
         else if ( jointList.at(i) == 1 )
         {
             pArg->mZDistList<<mZeroAngle;
             pArg->mZVList<<mZeroSpeed;
-            pArg->mGapDistList<<mInitR;
+            pArg->mGapDistList<<mInitLeg;
         }
         else if ( jointList.at(i) == 2 )
         {
             pArg->mZDistList<<mZeroAngle;
             pArg->mZVList<<mZeroSpeed;
-            pArg->mGapDistList<<mInitY;
+            pArg->mGapDistList<<mInitLeg;
         }
         else if ( jointList.at(i) == 3 )
         {
@@ -171,6 +156,11 @@ int robotIgusDelta::goZero( const tpvRegion &region,
     return 0;
 }
 
+int robotIgusDelta::getPOSE(float pos[])
+{
+    return pose( pos );
+}
+
 int robotIgusDelta::zeroAxesTask( void *pArg )
 {
     Q_ASSERT( NULL != pArg );
@@ -183,20 +173,41 @@ int robotIgusDelta::zeroAxesTask( void *pArg )
 
         fsm( pZArg->mRegion )->setState( MegaDevice::mrq_state_calcend );
 
-        //! foreach axes
-        for ( int i = 0; i < pZArg->mJList.size(); i++ )
+        MegaDevice::deviceMRQ *pMrq;
+        int subAx;
+
+        //! lose step on
+        if ( mLimitOpt == 0 )
         {
-            ret = jMove( pZArg->mRegion,
-                   pZArg->mJList[i], pZArg->mCcwList[i],
-                   mZeroTime,
-                   pZArg->mZDistList[i],
-                   pZArg->mZVList[i] );
-            if ( ret != 0 )
-            { return ret; }
+            for( int i = 0; i < pZArg->mJList.size(); i++ )
+            {
+                pMrq = jointDevice( pZArg->mJList[i], &subAx );
+                if ( NULL == pMrq )
+                { return -1; }
+
+                pMrq->setMOTIONPLAN_OOSLINESTATE( subAx,
+                                                  (MRQ_MOTION_SWITCH_1)pZArg->mRegion.page(),
+                                                  MRQ_SYSTEM_REVMOTION_ON );
+            }
         }
 
-        //! wait idle
-        ret = waitFsm( pZArg->mRegion, MegaDevice::mrq_state_idle, mZeroTmo, mZeroTick );
+        ret = onZArg( pArg );
+
+        //! lose step off
+        if ( mLimitOpt == 0 )
+        {
+            for ( int i = 0; i < pZArg->mJList.size(); i++ )
+            {
+                pMrq = jointDevice( pZArg->mJList[i], &subAx );
+                if ( NULL == pMrq )
+                { return -1; }
+
+                pMrq->setMOTIONPLAN_OOSLINESTATE( subAx,
+                                                  (MRQ_MOTION_SWITCH_1)pZArg->mRegion.page(),
+                                                  MRQ_SYSTEM_REVMOTION_OFF );
+            }
+        }
+
         if ( ret != 0 )
         { return ret; }
     }
@@ -223,7 +234,48 @@ int robotIgusDelta::zeroAxesTask( void *pArg )
         ret = waitFsm( pZArg->mRegion, MegaDevice::mrq_state_idle, mZeroTmo, mZeroTick );
         if ( ret != 0 )
         { return ret; }
+
+        //! clear the encoder
+        int ax;
+        MegaDevice::deviceMRQ *pMrq;
+        for ( int i = 0; i < pZArg->mJList.size(); i++ )
+        {
+            pMrq = jointDevice( i, &ax );
+            if ( NULL == pMrq )
+            { return -1; }
+
+            ret = pMrq->setMOTION_ABCOUNTCLEAR( ax );
+            if ( ret != 0 )
+            { return ret; }
+        }
     }
+
+    return 0;
+}
+
+int robotIgusDelta::onZArg( void *pArg )
+{
+    Q_ASSERT( NULL != pArg );
+
+    int ret;
+    IgusDeltaZeroArg *pZArg = (IgusDeltaZeroArg*)pArg;
+
+    //! foreach axes
+    for ( int i = 0; i < pZArg->mJList.size(); i++ )
+    {
+        ret = jMove( pZArg->mRegion,
+               pZArg->mJList[i], pZArg->mCcwList[i],
+               mZeroTime,
+               pZArg->mZDistList[i],
+               pZArg->mZVList[i] );
+        if ( ret != 0 )
+        { return ret; }
+    }
+
+    //! wait idle
+    ret = waitFsm( pZArg->mRegion, MegaDevice::mrq_state_idle, mZeroTmo, mZeroTick );
+    if ( ret != 0 )
+    { return ret; }
 
     return 0;
 }

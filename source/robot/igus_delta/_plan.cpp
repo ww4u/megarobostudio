@@ -166,28 +166,28 @@ int robotIgusDelta::convertTrace(  QList<TraceKeyPoint> &curve,
     if ( ret != 0 )
     { return ret; }
 
-    //! tail
-    //! for hand
-    tpvGroup *pGroup = new tpvGroup();
-    if ( NULL == pGroup )
-    { return ERR_ALLOC_FAIL; }
+    //! \note no tail
+//    //! tail
+//    //! for hand
+//    tpvGroup *pGroup = new tpvGroup();
+//    if ( NULL == pGroup )
+//    { return ERR_ALLOC_FAIL; }
 
-    for ( int i = 0; i < curve.size(); i++ )
-    {
-        ret = pGroup->addItem( curve.at(i).t, curve.at(i).hand, 0 );
-        if ( ret != 0 )
-        {
-            delete pGroup;
-            return ERR_FAIL_ADD_TPV;
-        }
-    }
-
-    gp.append( pGroup );
+//    for ( int i = 0; i < curve.size(); i++ )
+//    {
+//        ret = pGroup->addItem( curve.at(i).t, curve.at(i).hand, 0 );
+//        if ( ret != 0 )
+//        {
+//            delete pGroup;
+//            return ERR_FAIL_ADD_TPV;
+//        }
+//    }
+//    gp.append( pGroup );
 
     //! sections
     //! x,y,z
-    //! h
-    sectionList<<0<<3<<3<<1;
+//    ! h
+    sectionList<<0<<3;
 
 //    //! log joint group
 //    foreach ( tpvGroup *pGp, mJointsGroup )

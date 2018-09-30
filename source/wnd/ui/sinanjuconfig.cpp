@@ -1,6 +1,9 @@
 #include "sinanjuconfig.h"
 #include "ui_sinanjuconfig.h"
 
+
+#define set_rot_r( r, c )   mRots[ r * 3 + c ] = ui->spinR##r##c;
+#define set_rot_s( r, c )   mShifts[ r * 1 + c ] = ui->spinS##r##c;
 SinanjuConfig::SinanjuConfig(QWidget *parent) :
     modelView(parent),
     ui(new Ui::SinanjuConfig)
@@ -8,6 +11,24 @@ SinanjuConfig::SinanjuConfig(QWidget *parent) :
     ui->setupUi(this);
 
     spyEdited();
+
+    //! rot
+    set_rot_r( 0, 0 );
+    set_rot_r( 0, 1 );
+    set_rot_r( 0, 2 );
+
+    set_rot_r( 1, 0 );
+    set_rot_r( 1, 1 );
+    set_rot_r( 1, 2 );
+
+    set_rot_r( 2, 0 );
+    set_rot_r( 2, 1 );
+    set_rot_r( 2, 2 );
+
+    //! shifts
+    set_rot_s( 0, 0 );
+    set_rot_s( 1, 0 );
+    set_rot_s( 2, 0 );
 }
 
 SinanjuConfig::~SinanjuConfig()
@@ -84,6 +105,25 @@ void SinanjuConfig::updateData()
     pRobo->setJointFactoryAngle( 1, ui->angleFactBa->value() );
     pRobo->setJointFactoryAngle( 2, ui->angleFactLa->value() );
     pRobo->setJointFactoryAngle( 3, ui->angleFactWr->value() );
+
+    //! set data
+    double rot[ sizeof_array(mRots) ], shift[ sizeof_array(mShifts) ];
+    //! rot
+    for ( int i = 0; i < sizeof_array( rot ); i++ )
+    {
+        Q_ASSERT( i < sizeof_array(mRots) );
+        rot[i] = mRots[i]->value();
+    }
+    //! shift
+    for ( int i = 0; i < sizeof_array( shift ); i++ )
+    {
+        Q_ASSERT( i < sizeof_array(mShifts) );
+        shift[i] = mShifts[i]->value();
+    }
+
+    pRobo->setTransfer( ui->gpTransfer->isChecked(),
+                        rot,
+                        shift );
 }
 void SinanjuConfig::updateUi()
 {
@@ -105,4 +145,23 @@ void SinanjuConfig::updateUi()
     ui->angleFactBa->setValue( pRobo->jointFactoryAngle(1) );
     ui->angleFactLa->setValue( pRobo->jointFactoryAngle(2) );
     ui->angleFactWr->setValue( pRobo->jointFactoryAngle(3) );
+
+    //! transfer
+    bool bEn;
+    double rot[ sizeof_array(mRots) ], shift[ sizeof_array(mShifts) ];
+    pRobo->transfer( bEn, rot, shift );
+
+    ui->gpTransfer->setChecked( bEn );
+    //! rot
+    for ( int i = 0; i < sizeof_array( rot ); i++ )
+    {
+        Q_ASSERT( i < sizeof_array(mRots) );
+        mRots[i]->setValue( rot[i]);
+    }
+    //! shift
+    for ( int i = 0; i < sizeof_array( shift ); i++ )
+    {
+        Q_ASSERT( i < sizeof_array(mShifts) );
+        mShifts[i]->setValue( shift[i]);
+    }
 }

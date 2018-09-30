@@ -50,6 +50,17 @@
 
 #define MRQ_DATA_DISTANCE   16
 
+//! bit
+enum AxesZeroOp
+{
+    axes_zero_op_none = 0,
+    axes_zero_clr_cnt = 1,
+    axes_zero_lose_step = 2,
+};
+
+#define combine_zero_op2( a, b )        (AxesZeroOp)( (a) | (b) )
+#define combine_zero_op3( a, b, c )     (AxesZeroOp)( (a) | (b) | (c) )
+
 namespace MegaDevice
 {
 
@@ -266,6 +277,8 @@ public:
     int lightCouplingZero( pvt_region,
                            float t, float angle, float endV,
                            float invT, float invAngle,
+//                           bool bClrCnt,
+                           AxesZeroOp zOp,
                            int tmous, int tickus );
 
     int taskLightCouplingZero( void *pArg );
@@ -331,6 +344,8 @@ protected:
 struct ArgLightCoupZero : public RoboTaskArgument
 {
     int mAx, mPage;
+//    bool mbClrCnt;
+    AxesZeroOp mZOp;
     float mT, mAngle, mEndV;
     float mInvT, mInvAngle;
 

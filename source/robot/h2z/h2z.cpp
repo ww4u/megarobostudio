@@ -45,6 +45,9 @@ robotH2Z::robotH2Z()
 //    mJointCcwMask[0] = false;
 //    mJointCcwMask[1] = false;
 
+    mJointAngleMask.clear();
+    mJointAngleMask<<true<<true<<false;
+
     mJointCcwMask[0] = true;
     mJointCcwMask[1] = true;
     mJointCcwMask[2] = true;

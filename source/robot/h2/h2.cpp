@@ -48,6 +48,10 @@ robotH2::robotH2()
     mJointZeroCcw.clear();
     mJointZeroCcw<<false<<false;
 
+    mJointAngleMask.clear();
+    mJointAngleMask<<true<<true;
+    setAngleType( robo_angle_inc );
+
     mZeroX = 32.7;
     mZeroY = 0;
 

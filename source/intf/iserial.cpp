@@ -19,3 +19,12 @@ int ISerial::serialOut( QXmlStreamWriter &writer )
 { return 0; }
 int ISerial::serialIn( QXmlStreamReader &reader )
 { return 0; }
+
+bool ISerial::toBool( QXmlStreamReader &reader )
+{  return reader.readElementText().toInt() > 0; }
+int ISerial::toInt( QXmlStreamReader &reader )
+{ return reader.readElementText().toInt(); }
+float ISerial::toFloat( QXmlStreamReader &reader )
+{ return reader.readElementText().toFloat(); }
+double ISerial::toDouble( QXmlStreamReader &reader )
+{ return reader.readElementText().toDouble(); }

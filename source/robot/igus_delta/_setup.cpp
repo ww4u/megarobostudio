@@ -74,6 +74,8 @@ int robotIgusDelta::serialOutZero( QXmlStreamWriter &writer)
 {
     writer.writeTextElement( "time", QString::number(mZeroTime) );
     writer.writeTextElement( "angle", QString::number(mZeroAngle) );
+
+    writer.writeTextElement( "limit_opt", QString::number(mLimitOpt ) );
 //    writer.writeTextElement( "speed", QString::number(mZeroSpeed) );
 
     return 0;
@@ -87,6 +89,8 @@ int robotIgusDelta::serialInZero( QXmlStreamReader &reader )
         { mZeroTime = reader.readElementText().toDouble(); }
         else if ( reader.name() == "angle" )
         { mZeroAngle = reader.readElementText().toDouble(); }
+        else if ( reader.name() == "limit_opt" )
+        { mLimitOpt = reader.readElementText().toInt(); }
 //        else if ( reader.name() == "speed" )
 //        { mZeroSpeed = reader.readElementText().toDouble(); }
         else
@@ -123,9 +127,9 @@ int robotIgusDelta::serialInZero( QXmlStreamReader &reader )
 int robotIgusDelta::serialOutInit( QXmlStreamWriter &writer)
 {
     writer.writeTextElement( "t", QString::number(mInitT) );
-    writer.writeTextElement( "l", QString::number(mInitL) );
-    writer.writeTextElement( "r", QString::number(mInitR) );
-    writer.writeTextElement( "y", QString::number(mInitY) );
+    writer.writeTextElement( "leg", QString::number(mInitLeg) );
+//    writer.writeTextElement( "r", QString::number(mInitR) );
+//    writer.writeTextElement( "y", QString::number(mInitY) );
     writer.writeTextElement( "h", QString::number(mInitH) );
 
 
@@ -137,12 +141,12 @@ int robotIgusDelta::serialInInit( QXmlStreamReader &reader )
     {
         if ( reader.name() == "t" )
         { mInitT = reader.readElementText().toDouble(); }
-        else if ( reader.name() == "l" )
-        { mInitL = reader.readElementText().toDouble(); }
-        else if ( reader.name() == "r" )
-        { mInitR = reader.readElementText().toDouble(); }
-        else if ( reader.name() == "y" )
-        { mInitY = reader.readElementText().toDouble(); }
+        else if ( reader.name() == "leg" )
+        { mInitLeg = reader.readElementText().toDouble(); }
+//        else if ( reader.name() == "r" )
+//        { mInitR = reader.readElementText().toDouble(); }
+//        else if ( reader.name() == "y" )
+//        { mInitY = reader.readElementText().toDouble(); }
         else if ( reader.name() == "h" )
         { mInitH = reader.readElementText().toDouble(); }
         else
@@ -257,6 +261,9 @@ int robotIgusDelta::serialOutMisc( QXmlStreamWriter &writer)
     {
         writer.writeTextElement( "scal", QString::number( mScal ) );
         writer.writeTextElement( "vm", QString::number( mVm ) );
+
+        writer.writeTextElement( "invert", QString::number( mInvert) );
+        writer.writeTextElement( "angle_to_dist", QString::number( mAngleToDist));
     }
 
     return 0;
@@ -273,6 +280,10 @@ int robotIgusDelta::serialInMisc( QXmlStreamReader &reader )
         {
             mVm = reader.readElementText().toDouble();
         }
+        else if ( reader.name() == "invert" )
+        { mInvert = reader.readElementText().toInt() > 0; }
+        else if ( reader.name() == "angle_to_dist" )
+        { mAngleToDist = reader.readElementText().toDouble(); }
         else
         { reader.skipCurrentElement(); }
     }

@@ -21,6 +21,8 @@ int robotSinanju::serialIn( QXmlStreamReader &reader )
         { ret = serialInJointCcw(reader); }
         else if ( reader.name() == "joint_factory" )
         { ret = serialInJointFactory(reader); }
+        else if ( reader.name() == "transfer" )
+        { ret = serialInTransfer( reader ); }
         else
         { reader.skipCurrentElement(); }
     }
@@ -56,6 +58,10 @@ int robotSinanju::serialOut( QXmlStreamWriter &writer )
 
     writer.writeStartElement("joint_factory");
     ret = serialOutJointFactory( writer );
+    writer.writeEndElement();
+
+    writer.writeStartElement("transfer");
+    ret = serialOutTransfer( writer );
     writer.writeEndElement();
 
     return ret;
@@ -298,6 +304,92 @@ int robotSinanju::serialOutJointFactory( QXmlStreamWriter &writer )
     for ( int i = 0; i < 4; i++ )
     {
         writer.writeTextElement( "angle", QString::number(mJointFactoryList.at(i)) );
+    }
+
+    return 0;
+}
+
+int robotSinanju::serialInTransfer( QXmlStreamReader &reader )
+{
+    int ret;
+    while ( reader.readNextStartElement() )
+    {
+        if ( reader.name() == "enable" )
+        { mbTransferable = toBool( reader ); }
+        else if ( reader.name() == "rotate" )
+        {
+            ret = serialInTransferR( reader );
+            if ( ret != 0 )
+            { return ret; }
+        }
+        else if ( reader.name() == "shift" )
+        {
+            ret = serialInTransferS( reader );
+            if ( ret != 0 )
+            { return ret; }
+        }
+        else
+        {
+            reader.skipCurrentElement();
+        }
+    }
+
+    return 0;
+}
+
+int robotSinanju::serialOutTransfer( QXmlStreamWriter &writer )
+{
+    writer.writeTextElement( "enable", QString::number(mbTransferable) );
+
+    writer.writeStartElement( "rotate" );
+        for ( int i = 0; i < sizeof_array( mTransferR ); i++ )
+        {
+            writer.writeTextElement( "r", QString::number( mTransferR[i] ) );
+        }
+    writer.writeEndElement();
+
+    writer.writeStartElement( "shift" );
+        for ( int i = 0; i < sizeof_array( mTransferS ); i++ )
+        {
+            writer.writeTextElement( "r", QString::number( mTransferS[i] ) );
+        }
+    writer.writeEndElement();
+
+    return 0;
+}
+
+int robotSinanju::serialInTransferR( QXmlStreamReader &reader )
+{
+    int index = 0;
+    while ( reader.readNextStartElement() )
+    {
+        if ( reader.name() == "r" )
+        {
+            Q_ASSERT( index < sizeof_array(mTransferR) );
+            mTransferR[index++] = toDouble(reader);
+        }
+        else
+        {
+            reader.skipCurrentElement();
+        }
+    }
+
+    return 0;
+}
+int robotSinanju::serialInTransferS( QXmlStreamReader &reader )
+{
+    int index = 0;
+    while ( reader.readNextStartElement() )
+    {
+        if ( reader.name() == "s" )
+        {
+            Q_ASSERT( index < sizeof_array(mTransferS) );
+            mTransferS[index++] = toDouble(reader);
+        }
+        else
+        {
+            reader.skipCurrentElement();
+        }
     }
 
     return 0;

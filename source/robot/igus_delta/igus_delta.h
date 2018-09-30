@@ -56,11 +56,15 @@ public:
     virtual int goZero( const tpvRegion &region,
                         const QList<int> &jointList,
                         const QList<bool> &ccwList );  
+
+    virtual int getPOSE(float pos[]);
+
     int zMove( const tpvRegion &region,
                int jId,
                float t, float p, float ev );
 
     int zeroAxesTask( void *pArg );
+    int onZArg( void *pArg );
 
     //! plan
 public:
@@ -103,12 +107,15 @@ public:
     int moveTest1( const tpvRegion &region=0 );
     int moveTest2( const tpvRegion &region=0 );
 
-public:
-    void setZeroAttr( double zeroTime, double zeroAngle );
-    void zeroAttr( double &zeroTime, double &zeroAngle );
+protected:
+    int pose( float xyz[3] );
 
-    void setInitAttr( double t, double x, double y, double z, double h );
-    void initAttr( double &t, double &x, double &y, double &z, double &h );
+public:
+    void setZeroAttr( double zeroTime, double zeroAngle, int zMode );
+    void zeroAttr( double &zeroTime, double &zeroAnglem, int &zMode );
+
+    void setInitAttr( double t, double x, double h );
+    void initAttr( double &t, double &x, double &h );
 
     int serialOutZero( QXmlStreamWriter &writer);
     int serialInZero( QXmlStreamReader &reader );
@@ -137,9 +144,16 @@ public:
     QList<double> mOffset;
     double mScal, mVm;
 
+    bool mInvert;
+    double mAngleToDist;
+
     //! zero && init
     double mZeroTime, mZeroAngle;
-    double mInitT, mInitL, mInitR, mInitY, mInitH;
+    double mInitT, /*mInitL, mInitR, mInitY,*/ mInitH;
+    double mInitLeg;
+
+    int mLimitOpt;      //! 0 -- lose step
+                        //! 1 -- light
 };
 
 #endif

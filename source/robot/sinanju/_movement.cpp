@@ -1,5 +1,6 @@
 #include "sinanju.h"
 #include "../../com/comassist.h"
+#include <float.h>
 int robotSinanju::call( int n, const tpvRegion &region )
 {
     onLine();
@@ -379,9 +380,9 @@ int robotSinanju::angleToPos( float angles[4],
 
     //! export
     pos.hand = 0;
-    pos.x = xyz[0];
-    pos.y = xyz[1];
-    pos.z = xyz[2];
+    pos.x = double_to_float( xyz[0] );
+    pos.y = double_to_float( xyz[1] );
+    pos.z = double_to_float( xyz[2] );
     pos.t = 0;
 
     return 0;

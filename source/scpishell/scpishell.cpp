@@ -73,11 +73,11 @@ static scpi_result_t SCPI_Reset(scpi_t * context) {
     return (scpi_result_t)scpi_shell(context)->SCPI_Reset( context );
 }
 
-static scpi_result_t SCPI_SystemCommTcpipControlQ(scpi_t * context) {
+//static scpi_result_t SCPI_SystemCommTcpipControlQ(scpi_t * context) {
 
 
-    return SCPI_RES_ERR;
-}
+//    return SCPI_RES_ERR;
+//}
 
 static scpi_interface_t _scpi_interface = {
     /*.error = */   SCPI_Error,
@@ -106,10 +106,15 @@ scpiShell::scpiShell()
     m_pUserPara = NULL;
 
     mOpc = 1;
+
+    m_pMutex = new QMutex( QMutex::Recursive );
+    Q_ASSERT( NULL != m_pMutex );
 }
 
 scpiShell::~scpiShell()
 {
+    delete m_pMutex;
+
     gc();
 }
 
@@ -172,11 +177,13 @@ int scpiShell::write( const char *p, int len )
 //    qDebug()<<len<<__FUNCTION__<<__LINE__;
     Q_ASSERT( NULL != p_scpi_context );
 
-    //! data in
-    scpi_bool_t ret;
-    ret = SCPI_Input( (scpi_t*)p_scpi_context, p, len );
-    if ( !ret )
-    { qDebug()<<"!!!"<<__FUNCTION__<<__LINE__<<QByteArray( p, len ); }
+    lock();
+        //! data in
+        scpi_bool_t ret;
+        ret = SCPI_Input( (scpi_t*)p_scpi_context, p, len );
+        if ( !ret )
+        { qDebug()<<"!!!"<<__FUNCTION__<<__LINE__<<QByteArray( p, len ); }
+    unlock();
 
     return SCPI_RES_OK;
 }
@@ -306,4 +313,9 @@ void scpiShell::setOpc( int v )
 { mOpc = v; }
 int scpiShell::opc()
 { return mOpc; }
+
+void scpiShell::lock()
+{ m_pMutex->lock(); }
+void scpiShell::unlock()
+{ m_pMutex->unlock(); }
 

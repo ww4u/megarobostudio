@@ -32,7 +32,8 @@ protected Q_SLOTS:
     void on_sampleTimer_valueChanged( int val );
 
     void slot_timeout();
-    void slot_joint_action( int id, float dt, float angle );
+    void slot_joint_action( int id, float dt, float angle, float ev );
+    void slot_joint_stop( int id );
     void slot_joint_zero( int id, bool bCcw );
 
     void slot_robo_changed( const QString &roboName );
@@ -47,7 +48,9 @@ protected:
 
     void rotate( int jointId,
                  float t1, float a1,
-                 float t2, float a2 );
+                 float t2, float a2,
+                 float ev=0.0f );
+    void stop( int jointId );
 
     void zero( int jointId,
                bool bCcw );
@@ -62,6 +65,8 @@ private slots:
     void slot_comboBox_currentIndexChanged(int index);
 
     void on_toolButton_clicked();
+
+    void on_chkSingle_clicked(bool checked);
 
 private:
     Ui::roboAxes *ui;

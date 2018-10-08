@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>369</width>
+    <width>385</width>
     <height>385</height>
    </rect>
   </property>
@@ -97,7 +97,7 @@
          <string>PushButton</string>
         </property>
         <property name="icon">
-         <iconset resource="../res/res.qrc">
+         <iconset>
           <normaloff>:/res/image/icon/addition.png</normaloff>:/res/image/icon/addition.png</iconset>
         </property>
         <property name="iconSize">
@@ -236,6 +236,9 @@
            </item>
            <item row="0" column="1">
             <widget class="QDoubleSpinBox" name="spinT">
+             <property name="decimals">
+              <number>3</number>
+             </property>
              <property name="minimum">
               <double>0.010000000000000</double>
              </property>
@@ -256,11 +259,14 @@
            </item>
            <item row="1" column="1">
             <widget class="QDoubleSpinBox" name="spinX">
+             <property name="decimals">
+              <number>3</number>
+             </property>
              <property name="minimum">
-              <double>-1000.000000000000000</double>
+              <double>-1000000.000000000000000</double>
              </property>
              <property name="maximum">
-              <double>1000.000000000000000</double>
+              <double>1000000.000000000000000</double>
              </property>
              <property name="value">
               <double>250.000000000000000</double>
@@ -276,11 +282,14 @@
            </item>
            <item row="2" column="1">
             <widget class="QDoubleSpinBox" name="spinY">
+             <property name="decimals">
+              <number>3</number>
+             </property>
              <property name="minimum">
-              <double>-1000.000000000000000</double>
+              <double>-1000000.000000000000000</double>
              </property>
              <property name="maximum">
-              <double>1000.000000000000000</double>
+              <double>1000000.000000000000000</double>
              </property>
             </widget>
            </item>
@@ -293,11 +302,14 @@
            </item>
            <item row="4" column="1">
             <widget class="QDoubleSpinBox" name="spinZ">
+             <property name="decimals">
+              <number>3</number>
+             </property>
              <property name="minimum">
-              <double>-1000.000000000000000</double>
+              <double>-1000000.000000000000000</double>
              </property>
              <property name="maximum">
-              <double>1000.000000000000000</double>
+              <double>1000000.000000000000000</double>
              </property>
              <property name="value">
               <double>512.000000000000000</double>
@@ -322,7 +334,7 @@
               <string>Mark</string>
              </property>
              <property name="icon">
-              <iconset resource="../res/res.qrc">
+              <iconset>
                <normaloff>:/res/image/icon/addition.png</normaloff>:/res/image/icon/addition.png</iconset>
              </property>
              <property name="iconSize">
@@ -348,7 +360,7 @@
               <string>GO</string>
              </property>
              <property name="icon">
-              <iconset resource="../res/res.qrc">
+              <iconset>
                <normaloff>:/res/image/icon/skip.png</normaloff>:/res/image/icon/skip.png</iconset>
              </property>
              <property name="iconSize">
@@ -428,7 +440,7 @@
                  <string>...</string>
                 </property>
                 <property name="icon">
-                 <iconset resource="../res/res.qrc">
+                 <iconset>
                   <normaloff>:/res/image/icon/c_less.png</normaloff>:/res/image/icon/c_less.png</iconset>
                 </property>
                 <property name="iconSize">
@@ -436,6 +448,9 @@
                   <width>32</width>
                   <height>32</height>
                  </size>
+                </property>
+                <property name="shortcut">
+                 <string>PgUp</string>
                 </property>
                </widget>
               </item>
@@ -454,7 +469,7 @@
                  <string>...</string>
                 </property>
                 <property name="icon">
-                 <iconset resource="../res/res.qrc">
+                 <iconset>
                   <normaloff>:/res/image/icon/c_more_unfold.png</normaloff>:/res/image/icon/c_more_unfold.png</iconset>
                 </property>
                 <property name="iconSize">
@@ -462,6 +477,9 @@
                   <width>32</width>
                   <height>32</height>
                  </size>
+                </property>
+                <property name="shortcut">
+                 <string>PgDown</string>
                 </property>
                </widget>
               </item>
@@ -480,7 +498,7 @@
                  <string>...</string>
                 </property>
                 <property name="icon">
-                 <iconset resource="../res/res.qrc">
+                 <iconset>
                   <normaloff>:/res/image/icon/c_subtract.png</normaloff>:/res/image/icon/c_subtract.png</iconset>
                 </property>
                 <property name="iconSize">
@@ -488,6 +506,9 @@
                   <width>32</width>
                   <height>32</height>
                  </size>
+                </property>
+                <property name="shortcut">
+                 <string>Down</string>
                 </property>
                </widget>
               </item>
@@ -506,7 +527,7 @@
                  <string>...</string>
                 </property>
                 <property name="icon">
-                 <iconset resource="../res/res.qrc">
+                 <iconset>
                   <normaloff>:/res/image/icon3/address.png</normaloff>:/res/image/icon3/address.png</iconset>
                 </property>
                 <property name="iconSize">
@@ -514,6 +535,9 @@
                   <width>32</width>
                   <height>32</height>
                  </size>
+                </property>
+                <property name="shortcut">
+                 <string>Home</string>
                 </property>
                </widget>
               </item>
@@ -532,7 +556,7 @@
                  <string>...</string>
                 </property>
                 <property name="icon">
-                 <iconset resource="../res/res.qrc">
+                 <iconset>
                   <normaloff>:/res/image/icon/c_back.png</normaloff>:/res/image/icon/c_back.png</iconset>
                 </property>
                 <property name="iconSize">
@@ -540,6 +564,9 @@
                   <width>32</width>
                   <height>32</height>
                  </size>
+                </property>
+                <property name="shortcut">
+                 <string>Left</string>
                 </property>
                </widget>
               </item>
@@ -558,7 +585,7 @@
                  <string>...</string>
                 </property>
                 <property name="icon">
-                 <iconset resource="../res/res.qrc">
+                 <iconset>
                   <normaloff>:/res/image/icon/c_more.png</normaloff>:/res/image/icon/c_more.png</iconset>
                 </property>
                 <property name="iconSize">
@@ -566,6 +593,9 @@
                   <width>32</width>
                   <height>32</height>
                  </size>
+                </property>
+                <property name="shortcut">
+                 <string>Right</string>
                 </property>
                </widget>
               </item>
@@ -584,7 +614,7 @@
                  <string>...</string>
                 </property>
                 <property name="icon">
-                 <iconset resource="../res/res.qrc">
+                 <iconset>
                   <normaloff>:/res/image/icon/c_add.png</normaloff>:/res/image/icon/c_add.png</iconset>
                 </property>
                 <property name="iconSize">
@@ -592,6 +622,9 @@
                   <width>32</width>
                   <height>32</height>
                  </size>
+                </property>
+                <property name="shortcut">
+                 <string>Up</string>
                 </property>
                </widget>
               </item>
@@ -607,7 +640,7 @@
                  <string/>
                 </property>
                 <property name="pixmap">
-                 <pixmap resource="../res/res.qrc">:/res/image/joint/mrx-t4_geo.png</pixmap>
+                 <pixmap>:/res/image/joint/mrx-t4_geo.png</pixmap>
                 </property>
                 <property name="scaledContents">
                  <bool>true</bool>
@@ -680,6 +713,9 @@
               </item>
               <item row="1" column="1">
                <widget class="QDoubleSpinBox" name="spinStepV">
+                <property name="decimals">
+                 <number>3</number>
+                </property>
                 <property name="minimum">
                  <double>0.010000000000000</double>
                 </property>
@@ -719,19 +755,17 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>MegaLcdnumber</class>
-   <extends>QLCDNumber</extends>
-   <header>megalcdnumber.h</header>
-  </customwidget>
-  <customwidget>
    <class>PageOption</class>
    <extends>QWidget</extends>
    <header>pageoption.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>MegaLcdnumber</class>
+   <extends>QLCDNumber</extends>
+   <header>megalcdnumber.h</header>
+  </customwidget>
  </customwidgets>
- <resources>
-  <include location="../res/res.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

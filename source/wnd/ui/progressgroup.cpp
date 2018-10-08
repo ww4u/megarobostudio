@@ -2,7 +2,8 @@
 #include "ui_progressgroup.h"
 
 ProgressGroup::ProgressGroup(QWidget *parent) :
-    QDialog(parent),
+//    QDialog(parent),
+    QWidget( parent ),
     ui(new Ui::ProgressGroup)
 {
     ui->setupUi(this);

@@ -322,6 +322,12 @@ int robotSinanju::serialInTransfer( QXmlStreamReader &reader )
             if ( ret != 0 )
             { return ret; }
         }
+        else if ( reader.name() == "rotate_inv" )
+        {
+            ret = serialInTransferRInv( reader );
+            if ( ret != 0 )
+            { return ret; }
+        }
         else if ( reader.name() == "shift" )
         {
             ret = serialInTransferS( reader );
@@ -345,6 +351,13 @@ int robotSinanju::serialOutTransfer( QXmlStreamWriter &writer )
         for ( int i = 0; i < sizeof_array( mTransferR ); i++ )
         {
             writer.writeTextElement( "r", QString::number( mTransferR[i] ) );
+        }
+    writer.writeEndElement();
+
+    writer.writeStartElement( "rotate_inv" );
+        for ( int i = 0; i < sizeof_array( mTransferRInv ); i++ )
+        {
+            writer.writeTextElement( "r", QString::number( mTransferRInv[i] ) );
         }
     writer.writeEndElement();
 
@@ -376,12 +389,32 @@ int robotSinanju::serialInTransferR( QXmlStreamReader &reader )
 
     return 0;
 }
+
+int robotSinanju::serialInTransferRInv( QXmlStreamReader &reader )
+{
+    int index = 0;
+    while ( reader.readNextStartElement() )
+    {
+        if ( reader.name() == "r" )
+        {
+            Q_ASSERT( index < sizeof_array(mTransferRInv) );
+            mTransferRInv[index++] = toDouble(reader);
+        }
+        else
+        {
+            reader.skipCurrentElement();
+        }
+    }
+
+    return 0;
+}
+
 int robotSinanju::serialInTransferS( QXmlStreamReader &reader )
 {
     int index = 0;
     while ( reader.readNextStartElement() )
     {
-        if ( reader.name() == "s" )
+        if ( reader.name() == "r" )
         {
             Q_ASSERT( index < sizeof_array(mTransferS) );
             mTransferS[index++] = toDouble(reader);

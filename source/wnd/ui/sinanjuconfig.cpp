@@ -3,6 +3,7 @@
 
 
 #define set_rot_r( r, c )   mRots[ r * 3 + c ] = ui->spinR##r##c;
+#define set_rot_ir( r, c )   mRotInvs[ r * 3 + c ] = ui->spinR##r##c##_2;
 #define set_rot_s( r, c )   mShifts[ r * 1 + c ] = ui->spinS##r##c;
 SinanjuConfig::SinanjuConfig(QWidget *parent) :
     modelView(parent),
@@ -29,6 +30,19 @@ SinanjuConfig::SinanjuConfig(QWidget *parent) :
     set_rot_s( 0, 0 );
     set_rot_s( 1, 0 );
     set_rot_s( 2, 0 );
+
+    //! inv
+    set_rot_ir( 0, 0 );
+    set_rot_ir( 0, 1 );
+    set_rot_ir( 0, 2 );
+
+    set_rot_ir( 1, 0 );
+    set_rot_ir( 1, 1 );
+    set_rot_ir( 1, 2 );
+
+    set_rot_ir( 2, 0 );
+    set_rot_ir( 2, 1 );
+    set_rot_ir( 2, 2 );
 }
 
 SinanjuConfig::~SinanjuConfig()
@@ -107,7 +121,7 @@ void SinanjuConfig::updateData()
     pRobo->setJointFactoryAngle( 3, ui->angleFactWr->value() );
 
     //! set data
-    double rot[ sizeof_array(mRots) ], shift[ sizeof_array(mShifts) ];
+    double rot[ sizeof_array(mRots) ], rotInv[ sizeof_array(mRots) ], shift[ sizeof_array(mShifts) ];
     //! rot
     for ( int i = 0; i < sizeof_array( rot ); i++ )
     {
@@ -121,9 +135,17 @@ void SinanjuConfig::updateData()
         shift[i] = mShifts[i]->value();
     }
 
+    //! rotInv
+    for ( int i = 0; i < sizeof_array( rotInv ); i++ )
+    {
+        Q_ASSERT( i < sizeof_array(mRotInvs) );
+        rotInv[i] = mRotInvs[i]->value();
+    }
+
     pRobo->setTransfer( ui->gpTransfer->isChecked(),
                         rot,
-                        shift );
+                        shift,
+                        rotInv );
 }
 void SinanjuConfig::updateUi()
 {
@@ -148,8 +170,8 @@ void SinanjuConfig::updateUi()
 
     //! transfer
     bool bEn;
-    double rot[ sizeof_array(mRots) ], shift[ sizeof_array(mShifts) ];
-    pRobo->transfer( bEn, rot, shift );
+    double rot[ sizeof_array(mRots) ], rotInv[ sizeof_array(mRotInvs) ], shift[ sizeof_array(mShifts) ];
+    pRobo->transfer( bEn, rot, shift, rotInv );
 
     ui->gpTransfer->setChecked( bEn );
     //! rot
@@ -163,5 +185,11 @@ void SinanjuConfig::updateUi()
     {
         Q_ASSERT( i < sizeof_array(mShifts) );
         mShifts[i]->setValue( shift[i]);
+    }
+    //! rotInv
+    for ( int i = 0; i < sizeof_array( rot ); i++ )
+    {
+        Q_ASSERT( i < sizeof_array(mRotInvs) );
+        mRotInvs[i]->setValue( rotInv[i]);
     }
 }

@@ -1,6 +1,9 @@
 #include "robojoint.h"
 #include "ui_robojoint.h"
 #include "../widget/megamessagebox.h"
+
+#include "../../include/mcstd.h"
+
 RoboJoint::RoboJoint(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::RoboJoint)
@@ -9,11 +12,16 @@ RoboJoint::RoboJoint(QWidget *parent) :
 
     ui->btnLr01->setStep( 1.0f );
 
+    connect( ui->btnLr01, SIGNAL(signal_step(float, bool)),
+             this, SLOT(slot_step(float, bool)));
+
     connect( ui->btnLr01, SIGNAL(signal_step(float)),
              this, SLOT(slot_step(float)));
 
+
     mId = 0;
     mStepTime = 1.0f;
+    mbSingle = true;
 }
 
 RoboJoint::~RoboJoint()
@@ -55,6 +63,11 @@ void RoboJoint::setStepTime( float t )
 float RoboJoint::stepTime()
 { return mStepTime; }
 
+void RoboJoint::setSingle( bool b )
+{ mbSingle = b; }
+bool RoboJoint::single()
+{ return mbSingle; }
+
 void RoboJoint::actionChanged( const QDateTime &endTime, int endVal )
 {
     float dt = mPressTime.msecsTo( endTime );
@@ -66,15 +79,18 @@ void RoboJoint::actionChanged( const QDateTime &endTime, int endVal )
     ui->label_2->setText( strInfo );
 }
 
-void RoboJoint::rotate( float ang, float ts )
+void RoboJoint::rotate( float ang, float ts, float ev )
 {
     QString strInfo;
     strInfo = QString( "%2%3 %1ms" ).arg( ts * 1000 ).arg( ang ).arg(QChar(0x00B0));
     ui->label_2->setText( strInfo );
 
     //! move
-    emit signal_actionChanged( mId, ts, ang );
+    emit signal_actionChanged( mId, ts, ang, ev );
 }
+
+void RoboJoint::stop()
+{ emit signal_stop( mId ); }
 
 void RoboJoint::on_doubleSpinBox_valueChanged(double arg1)
 {
@@ -99,8 +115,6 @@ void RoboJoint::on_horizontalSlider_sliderReleased()
     float dT = mPressTime.msecsTo( QDateTime::currentDateTime() );
 
     //! only emit on release
-//    emit signal_actionChanged( mId, dT, (ui->horizontalSlider->value() - mPressValue) );
-
     rotate( (ui->horizontalSlider->value() - mPressValue), dT / 1000.0 );
 }
 
@@ -119,10 +133,38 @@ void RoboJoint::on_pushButton_clicked()
     }
 }
 
+//! step by click
 void RoboJoint::slot_step( float stp )
 {
+    //! only valid in single
+    if ( mbSingle )
+    {}
+    else
+    { return; }
+
     //! slider value changed
     ui->doubleSpinBox->setValue( ui->doubleSpinBox->value() + stp );
 
     rotate( stp, mStepTime );
 }
+
+void RoboJoint::slot_step( float stp, bool b )
+{
+    //! invalid in single mode
+    if ( mbSingle )
+    { return; }
+    else
+    {}
+
+    if ( b )
+    {
+        //! slider value changed
+        ui->doubleSpinBox->setValue( ui->doubleSpinBox->value() + stp );
+
+        rotate( stp, mStepTime, stp/mStepTime );
+    }
+    else
+    { stop(); }
+}
+
+

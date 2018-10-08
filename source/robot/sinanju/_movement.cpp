@@ -385,6 +385,9 @@ int robotSinanju::angleToPos( float angles[4],
     pos.z = double_to_float( xyz[2] );
     pos.t = 0;
 
+    //! coord i rotate
+    coordIRotate( pos );
+
     return 0;
 }
 

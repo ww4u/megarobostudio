@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>ProgressGroup</class>
- <widget class="QDialog" name="ProgressGroup">
+ <widget class="QWidget" name="ProgressGroup">
   <property name="geometry">
    <rect>
     <x>0</x>

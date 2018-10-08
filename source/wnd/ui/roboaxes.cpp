@@ -41,8 +41,12 @@ roboAxes::roboAxes(mcModel *pModel,
     //! connection
     foreach( RoboJoint *p, mJoints )
     {
-        connect( p, SIGNAL(signal_actionChanged(int,float,float)),
-                 this, SLOT(slot_joint_action(int,float,float)) );
+        connect( p, SIGNAL(signal_actionChanged(int,float,float, float)),
+                 this, SLOT(slot_joint_action(int,float,float,float)) );
+
+        connect( p, SIGNAL(signal_stop(int)),
+                 this, SLOT(slot_joint_stop(int)) );
+
         connect( p, SIGNAL(signal_zeroClicked(int,bool)),
                  this, SLOT(slot_joint_zero(int,bool)));
     }
@@ -95,7 +99,6 @@ void roboAxes::slot_timeout()
     //! sample the angle for joint 0~3
     int subAx;
     MegaDevice::deviceMRQ *pMrq;
-//    for ( int jointId = 0; jointId < pRobo->absCount(); jointId++ )
     for ( int jointId = 0; jointId < pRobo->mJointAngleMask.size(); jointId++ )
     {
         if ( pRobo->mJointAngleMask.at(jointId) )
@@ -141,12 +144,18 @@ void roboAxes::slot_timeout()
     }
 }
 
-void roboAxes::slot_joint_action( int id, float dt, float angle )
+void roboAxes::slot_joint_action( int id, float dt, float angle, float ev )
 {
     rotate( id,
             0, 0,
-            dt, angle );
+            dt, angle, ev );
 }
+
+void roboAxes::slot_joint_stop( int id )
+{
+    stop( id );
+}
+
 void roboAxes::slot_joint_zero( int id, bool bCcw )
 {
 //    logDbg()<<id<<bCcw;
@@ -239,6 +248,11 @@ void roboAxes::adapteUiToRobot( VRobot *pRobo )
         for ( int i = pRobo->poseCount(); i < mPoseLcds.size(); i++ )
         { mPoseLcds.at(i)->setVisible( false ); }
     }
+
+
+    //! adapt ui
+    on_chkSingle_clicked( ui->chkSingle->isChecked() );
+    on_spinStepTime_valueChanged( ui->spinStepTime->value() );
 }
 
 void roboAxes::buildConnection()
@@ -251,9 +265,10 @@ void roboAxes::buildConnection()
 #define time_to_s( t )  ((t)/1000.0)
 void roboAxes::rotate( int jointId,
                        float t1, float a1,
-                       float t2, float a2 )
+                       float t2, float a2,
+                       float ev )
 {
-    logDbg()<<jointId<<t1<<a1<<t2<<a2;
+//    logDbg()<<jointId<<t1<<a1<<t2<<a2;
 
     VRobot *pRobo = Robot();
     if ( NULL == pRobo )
@@ -275,13 +290,37 @@ void roboAxes::rotate( int jointId,
     logDbg()<<subAx<<pMrq->name();
 
     //! only one time
-    pMrq->setMOTIONPLAN_CYCLENUM( subAx, MRQ_MOTION_SWITCH_1_MAIN, 1 );
+    pMrq->setMOTIONPLAN_CYCLENUM( subAx, (MRQ_MOTION_SWITCH_1)ui->widget->page(), 1 );
 
     pMrq->pvtWrite( tpvRegion(subAx,ui->widget->page() ),
                     (t1), a1,
-                    (t2), a2
+                    (t2), a2,
+                    ev
                     );
+
     pMrq->run( tpvRegion(subAx, ui->widget->page() ) );
+}
+
+void roboAxes::stop( int jointId )
+{
+    VRobot *pRobo = Robot();
+    if ( NULL == pRobo )
+    {
+        sysError( tr("Invalid robot") );
+        return;
+    }
+
+    Q_ASSERT( NULL != pRobo );
+
+    int subAx;
+    MegaDevice::deviceMRQ *pMrq = pRobo->jointDevice( jointId, &subAx );
+    if ( NULL == pMrq )
+    {
+        sysError( tr("Invalid device"), __FUNCTION__,QString::number(__LINE__) );
+        return;
+    }
+
+    pMrq->stop( tpvRegion(subAx, ui->widget->page() ) );
 }
 
 void roboAxes::zero( int jointId,
@@ -353,4 +392,13 @@ void roboAxes::slot_comboBox_currentIndexChanged(int index)
 void roboAxes::on_toolButton_clicked()
 {
     slot_comboBox_currentIndexChanged( ui->widget->page() );
+}
+
+void roboAxes::on_chkSingle_clicked(bool checked)
+{
+    foreach (RoboJoint*pJ, mJoints)
+    {
+        Q_ASSERT( NULL != pJ );
+        pJ->setSingle( checked );
+    }
 }

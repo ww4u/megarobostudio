@@ -30,3 +30,23 @@ void LRButton::on_btnRight_clicked()
 {
     emit signal_step( step() );
 }
+
+void LRButton::on_btnLeft_pressed()
+{
+    emit signal_step( -step(), true );
+}
+
+void LRButton::on_btnLeft_released()
+{
+    emit signal_step( -step(), false );
+}
+
+void LRButton::on_btnRight_pressed()
+{
+    emit signal_step( step(), true );
+}
+
+void LRButton::on_btnRight_released()
+{
+    emit signal_step( step(), false );
+}

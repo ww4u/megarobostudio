@@ -28,11 +28,18 @@ public:
 
     void setStepTime( float );
     float stepTime();
+
+    void setSingle( bool b );
+    bool single();
+
 protected:
     void actionChanged( const QDateTime &time, int valEnd  );
-    void rotate( float ang, float ts );
+    void rotate( float ang, float ts, float ev=0.0f );
+    void stop();
+
 Q_SIGNALS:
-    void signal_actionChanged( int id, float time, float val );
+    void signal_actionChanged( int id, float time, float val, float ev );
+    void signal_stop( int id );
     void signal_zeroClicked( int id, bool bCcw );
 
 private slots:
@@ -49,12 +56,15 @@ private slots:
     void on_pushButton_clicked();
 
     void slot_step( float stp );
+    void slot_step( float stp, bool b );
 
 private:
     Ui::RoboJoint *ui;
 
     QDateTime mPressTime;
     float mStepTime;
+    bool mbSingle;
+
     int mPressValue, mCurValue;
     int mId;
 };

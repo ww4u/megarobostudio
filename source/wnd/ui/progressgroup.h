@@ -9,7 +9,8 @@ namespace Ui {
 class ProgressGroup;
 }
 
-class ProgressGroup : public QDialog
+//class ProgressGroup : public QDialog
+class ProgressGroup : public QWidget
 {
     Q_OBJECT
 

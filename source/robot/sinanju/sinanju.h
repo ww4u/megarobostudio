@@ -75,7 +75,7 @@ protected:
              float handT, float handP, float handV,
              bool bStick=false);
     int toAim( const tpvRegion &region,
-                const QList<double> &aimAngles,
+               const QList<double> &aimAngles,
                bool bStick=false );
     int toAimd( const tpvRegion &region,
                 const QList<double> &aimAngles,
@@ -136,6 +136,12 @@ protected:
 
     void interpTune( QList<TraceKeyPoint> &curve );
 
+    void coordRotate( QList<TraceKeyPoint> &curve );
+    void coordRotate( TraceKeyPoint &pt, double rot[3*3], double shift[3*1] );
+
+    void coordIRotate( TraceKeyPoint &pt );
+    void coordIRotate( TraceKeyPoint &pt, double rot[3*3], double shift[3*1] );
+
     int planTrace( QList<TraceKeyPoint> &curve,
                    xxxGroup<tracePoint> &tracePoints );
 
@@ -175,6 +181,7 @@ protected:
     int serialOutTransfer( QXmlStreamWriter &writer );
 
     int serialInTransferR( QXmlStreamReader &reader );
+    int serialInTransferRInv( QXmlStreamReader &reader );
     int serialInTransferS( QXmlStreamReader &reader );
 
 protected:
@@ -196,10 +203,12 @@ public:
 
     void setTransfer( bool bEn,
                       double rot[3*3],
-                      double shift[3*1] );
+                      double shift[3*1],
+                      double rotInv[3*3] );
     void transfer( bool &bEn,
                    double rot[3*3],
-                   double shift[3*1] );
+                   double shift[3*1],
+                   double rotInv[3*3] );
 
 protected:
     double mHandZeroTime, mHandZeroAngle;
@@ -209,7 +218,7 @@ protected:
     QList< double > mJointFactoryList;
 
     bool mbTransferable;
-    double mTransferR[3*3];
+    double mTransferR[3*3], mTransferRInv[3*3];
     double mTransferS[3*1];
 };
 

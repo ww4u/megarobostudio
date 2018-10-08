@@ -302,7 +302,8 @@ SOURCES += \
     ../ui/igusdeltapref.cpp \
     ../ui/mrqtune.cpp \
     ../ui/igusdrylinpanel.cpp \
-    ../ui/megalcdnumber.cpp
+    ../ui/megalcdnumber.cpp \
+    ../ui/rotmat3_3.cpp
 
 HEADERS += \
         ../ui/mainwindow.h \
@@ -472,7 +473,8 @@ HEADERS += \
     ../ui/igusdeltapref.h \
     ../ui/mrqtune.h \
     ../ui/igusdrylinpanel.h \
-    ../ui/megalcdnumber.h
+    ../ui/megalcdnumber.h \
+    ../ui/rotmat3_3.h
 
 FORMS += \
         ../ui/mainwindow.ui \
@@ -575,10 +577,11 @@ FORMS += \
     ../ui/igusconfig.ui \
     ../ui/igusdrylinpref.ui \
     ../ui/mrqtune.ui \
-    ../ui/igusdrylinpanel.ui
+    ../ui/igusdrylinpanel.ui \
+    ../ui/rotmat3_3.ui
 
 
-RESOURCES = ../res/res.qrc
+#RESOURCES = ../res/res.qrc
 
 RC_ICONS = ../res/image/logo/megarobo.ico
 

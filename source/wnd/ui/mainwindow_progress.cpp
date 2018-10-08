@@ -11,7 +11,8 @@ ProgressGroup *MainWindow::progress()
     { }
     else
     {
-        m_pProgress = new ProgressGroup(this);
+//        m_pProgress = new ProgressGroup(this);
+        m_pProgress = new ProgressGroup();
 
         connect( m_pProgress,
                  SIGNAL(sigCancel( const QString &, int)),

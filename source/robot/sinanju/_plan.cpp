@@ -10,6 +10,9 @@ int robotSinanju::buildTrace( QList<TraceKeyPoint> &curve,
     if ( ret != 0 )
     { return ret; }
 
+    //! coord rotate
+    coordRotate( curve );
+
     //! interp
     interpTune( curve );
 
@@ -82,6 +85,83 @@ void robotSinanju::interpTune( QList<TraceKeyPoint> &curve )
             unset_bit( curve[i].iMask, BIT_INTERP );
         }
     }
+}
+
+void robotSinanju::coordRotate( QList<TraceKeyPoint> &curve )
+{
+    if ( mbTransferable )
+    {
+        TraceKeyPoint localPoint;
+        for ( int i = 0; i < curve.size(); i++ )
+        {
+            localPoint = curve.at(i);
+
+            coordRotate( localPoint, mTransferR, mTransferS );
+
+            curve[ i ] = localPoint;
+        }
+    }
+}
+
+//! A = rot * pt + shift
+void robotSinanju::coordRotate( TraceKeyPoint &pt, double rot[3*3], double shift[3*1] )
+{
+    TraceKeyPoint localPt;
+
+    localPt = pt;
+
+    //! out
+    pt.x = rot[0*3+0] * localPt.x
+                    + rot[0*3+1] * localPt.y
+                    + rot[0*3+2] * localPt.z
+                    + shift[0*1+0];
+
+    pt.y = rot[1*3+0] * localPt.x
+                    + rot[1*3+1] * localPt.y
+                    + rot[1*3+2] * localPt.z
+                    + shift[1*1+0];
+
+    pt.z = rot[2*3+0] * localPt.x
+                    + rot[2*3+1] * localPt.y
+                    + rot[2*3+2] * localPt.z
+                    + shift[2*1+0];
+
+    logDbg()<<localPt.t<<localPt.x<<localPt.y<<localPt.z<<pt.x<<pt.y<<pt.z;
+}
+
+void robotSinanju::coordIRotate( TraceKeyPoint &pt )
+{
+    if ( mbTransferable )
+    { coordIRotate( pt, mTransferRInv, mTransferS ); }
+    else
+    {  }
+}
+
+//! pt = rot * (A - shift)
+void robotSinanju::coordIRotate( TraceKeyPoint &pt, double rot[3*3], double shift[3*1] )
+{
+    TraceKeyPoint localPt;
+
+    localPt = pt;
+
+    //! -
+    localPt.x = pt.x - shift[0*1+0];
+    localPt.y = pt.y - shift[1*1+0];
+    localPt.z = pt.z - shift[2*1+0];
+
+    //! out
+    pt.x = rot[0*3+0] * localPt.x
+                    + rot[0*3+1] * localPt.y
+                    + rot[0*3+2] * localPt.z;
+
+    pt.y = rot[1*3+0] * localPt.x
+                    + rot[1*3+1] * localPt.y
+                    + rot[1*3+2] * localPt.z;
+
+    pt.z = rot[2*3+0] * localPt.x
+                    + rot[2*3+1] * localPt.y
+                    + rot[2*3+2] * localPt.z;
+
 }
 
 int robotSinanju::planTrace( QList<TraceKeyPoint> &curve,

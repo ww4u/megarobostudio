@@ -20,11 +20,20 @@ public:
 
 Q_SIGNALS:
     void signal_step( float step );
+    void signal_step( float step, bool b );
 
 private slots:
     void on_btnLeft_clicked();
 
     void on_btnRight_clicked();
+
+    void on_btnLeft_pressed();
+
+    void on_btnLeft_released();
+
+    void on_btnRight_pressed();
+
+    void on_btnRight_released();
 
 private:
     Ui::LRButton *ui;

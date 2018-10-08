@@ -155,6 +155,12 @@ robotSinanju::robotSinanju()
     mTransferR[0*3+0] = 1;
     mTransferR[1*3+1] = 1;
     mTransferR[2*3+2] = 1;
+
+    //! inv = transfer
+    //! 1 0 0
+    //! 0 1 0
+    //! 0 0 1
+    memcpy( mTransferRInv, mTransferR, sizeof(mTransferR) );
 }
 
 robotSinanju::~robotSinanju()
@@ -315,19 +321,23 @@ double robotSinanju::jointFactoryAngle( int id )
 
 void robotSinanju::setTransfer( bool bEn,
                   double rot[3*3],
-                  double shift[3*1] )
+                  double shift[3*1],
+                  double rotInv[3*3] )
 {
     mbTransferable = bEn;
 
     memcpy( mTransferR, rot, sizeof(mTransferR) );
     memcpy( mTransferS, shift, sizeof(mTransferS) );
+    memcpy( mTransferRInv, rotInv, sizeof(mTransferRInv) );
 }
 void robotSinanju::transfer( bool &bEn,
                double rot[3*3],
-               double shift[3*1] )
+               double shift[3*1],
+               double rotInv[3*3] )
 {
     bEn = mbTransferable;
 
     memcpy( rot, mTransferR, sizeof(mTransferR) );
     memcpy( shift, mTransferS, sizeof(mTransferS) );
+    memcpy( rotInv, mTransferRInv, sizeof(mTransferRInv) );
 }

@@ -31,6 +31,7 @@ private:
 
     QDoubleSpinBox *mRots[3*3];
     QDoubleSpinBox *mShifts[3*1];
+    QDoubleSpinBox *mRotInvs[3*3];
 };
 
 #endif // SINANJUCONFIG_H

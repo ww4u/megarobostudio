@@ -184,7 +184,8 @@ static scpi_result_t _scpi_premove( scpi_t * context )
 //! tj + t + tj
 //! | ------ |
 //! |        |
-static scpi_result_t _scpi_movej( scpi_t * context )
+//! rectangle
+static scpi_result_t _scpi_mover( scpi_t * context )
 {
     DEF_LOCAL_VAR();
 
@@ -232,7 +233,7 @@ static scpi_result_t _scpi_movej( scpi_t * context )
 
 //! premovej ch,page, motionMode
 //! x1,y1,z1,h1, x2,y2,z2,h2, t, j
-static scpi_result_t _scpi_premovej( scpi_t * context )
+static scpi_result_t _scpi_premover( scpi_t * context )
 {
     DEF_LOCAL_VAR();
 
@@ -280,7 +281,8 @@ static scpi_result_t _scpi_premovej( scpi_t * context )
 
 //! movej ch,page, motionMode
 //! x1,y1,z1,h1, x2,y2,z2,h2, xl,yl,zl,hl, t
-static scpi_result_t _scpi_movel( scpi_t * context )
+//! triangle
+static scpi_result_t _scpi_movet( scpi_t * context )
 {
     DEF_LOCAL_VAR();
 
@@ -326,7 +328,7 @@ static scpi_result_t _scpi_movel( scpi_t * context )
 
 //! premovej ch,page, motionMode
 //! x1,y1,z1,h1, x2,y2,z2,h2, xl,yl,zl,hl, t
-static scpi_result_t _scpi_premovel( scpi_t * context )
+static scpi_result_t _scpi_premovet( scpi_t * context )
 {
     DEF_LOCAL_VAR();
 
@@ -422,7 +424,7 @@ static scpi_result_t _scpi_goto( scpi_t * context )
 
 //! goto ax,page,motionMode
 //! x1,y1,z1,t, j, tj
-static scpi_result_t _scpi_gotoj( scpi_t * context )
+static scpi_result_t _scpi_gotor( scpi_t * context )
 {
     DEF_LOCAL_VAR();
 
@@ -476,7 +478,7 @@ static scpi_result_t _scpi_gotoj( scpi_t * context )
 
 //! goto ax,page,motionMode
 //! x1,y1,z1,t, xl,yl,zl
-static scpi_result_t _scpi_gotol( scpi_t * context )
+static scpi_result_t _scpi_gotot( scpi_t * context )
 {
     DEF_LOCAL_VAR();
 
@@ -1146,15 +1148,24 @@ static scpi_command_t _scpi_cmds[]=
     CMD_ITEM( "MOVE", _scpi_move ),
     CMD_ITEM( "PREMOVE", _scpi_premove ),
 
-    CMD_ITEM( "MOVEJ", _scpi_movej ),
-    CMD_ITEM( "PREMOVEJ", _scpi_premovej ),
+    CMD_ITEM( "MOVEJ", _scpi_move ),
+    CMD_ITEM( "PREMOVEJ", _scpi_premove ),
 
-    CMD_ITEM( "MOVEL", _scpi_movel ),
-    CMD_ITEM( "PREMOVEL", _scpi_premovel ),
+    CMD_ITEM( "MOVEL", _scpi_move ),
+    CMD_ITEM( "PREMOVEL", _scpi_premove ),
+
+    CMD_ITEM( "MOVER", _scpi_mover ),
+    CMD_ITEM( "PREMOVER", _scpi_premover ),
+
+    CMD_ITEM( "MOVET", _scpi_movet ),
+    CMD_ITEM( "PREMOVET", _scpi_premovet ),
 
     CMD_ITEM( "GOTO", _scpi_goto ),
-    CMD_ITEM( "GOTOJ", _scpi_gotoj ),
-    CMD_ITEM( "GOTOL", _scpi_gotol ),
+    CMD_ITEM( "GOTOJ", _scpi_goto ),
+    CMD_ITEM( "GOTOL", _scpi_goto ),
+
+    CMD_ITEM( "GOTOR", _scpi_gotor ),
+    CMD_ITEM( "GOTOT", _scpi_gotot ),
 
     CMD_ITEM( "STEP:X", _scpi_stepx ),
     CMD_ITEM( "STEP:Y", _scpi_stepy ),

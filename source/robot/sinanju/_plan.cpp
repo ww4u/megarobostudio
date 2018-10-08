@@ -126,7 +126,7 @@ void robotSinanju::coordRotate( TraceKeyPoint &pt, double rot[3*3], double shift
                     + rot[2*3+2] * localPt.z
                     + shift[2*1+0];
 
-    logDbg()<<localPt.t<<localPt.x<<localPt.y<<localPt.z<<pt.x<<pt.y<<pt.z;
+//    logDbg()<<localPt.t<<localPt.x<<localPt.y<<localPt.z<<pt.x<<pt.y<<pt.z;
 }
 
 void robotSinanju::coordIRotate( TraceKeyPoint &pt )

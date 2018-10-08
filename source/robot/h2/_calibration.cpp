@@ -45,3 +45,29 @@ void robotH2::center( float &x, float &y )
     x = mZeroX;
     y = mZeroY;
 }
+
+void robotH2::setTransferAble( bool b)
+{ mbTransferAble = b; }
+bool robotH2::transferAble()
+{ return mbTransferAble; }
+
+void robotH2::setTransfer( bool b,
+                           double t[2*2],
+                           double s[2*1],
+                           double invt[2*2] )
+{
+    mbTransferAble = b;
+    memcpy( mTransferR, t, sizeof(mTransferR) );
+    memcpy( mTransferS, s, sizeof(mTransferS) );
+    memcpy( mTransferRInv, invt, sizeof(mTransferRInv) );
+}
+void robotH2::transfer( bool &b,
+                        double t[2*2],
+                        double s[2*1],
+                        double invt[2*2] )
+{
+    b = mbTransferAble;
+    memcpy( t, mTransferR, sizeof(mTransferR) );
+    memcpy( s, mTransferS, sizeof(mTransferS) );
+    memcpy( invt, mTransferRInv, sizeof(mTransferRInv) );
+}

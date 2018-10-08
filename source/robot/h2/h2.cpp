@@ -81,6 +81,22 @@ robotH2::robotH2()
 
     mLines = 1000;
     mEncoderDirs<<1<<1;
+
+    mbTransferAble = false;
+    mTransferR[0*2+0] = 1.0;
+    mTransferR[0*2+1] = 0.0;
+
+    mTransferR[1*2+0] = 0.0;
+    mTransferR[1*2+1] = 1.0;
+
+    mTransferS[0*1+0] = 0;
+    mTransferS[1*1+0] = 0;
+
+    mTransferRInv[0*2+0] = 1.0;
+    mTransferRInv[0*2+1] = 0.0;
+
+    mTransferRInv[1*2+0] = 0.0;
+    mTransferRInv[1*2+1] = 1.0;
 }
 
 robotH2::~robotH2()
@@ -98,6 +114,8 @@ int robotH2::serialIn( QXmlStreamReader &reader )
         { serialInZero(reader); }
         else if ( reader.name() == "arm" )
         { serialInArm(reader); }
+        else if ( reader.name() == "transfer" )
+        { serialInTransfer(reader); }
         else
         { reader.skipCurrentElement(); }
     }
@@ -116,6 +134,10 @@ int robotH2::serialOut( QXmlStreamWriter &writer )
 
     writer.writeStartElement("arm");
     serialOutArm( writer );
+    writer.writeEndElement();
+
+    writer.writeStartElement("transfer");
+    serialOutTransfer( writer );
     writer.writeEndElement();
 
     return 0;
@@ -184,6 +206,125 @@ int robotH2::serialInArm( QXmlStreamReader &reader )
         }
         else
         { reader.skipCurrentElement(); }
+    }
+
+    return 0;
+}
+
+int robotH2::serialOutTransfer( QXmlStreamWriter &writer)
+{
+    writer.writeTextElement( "enable", QString::number( mbTransferAble ) );
+
+    writer.writeStartElement("rotate");
+        for ( int i = 0; i < sizeof_array( mTransferR ); i++ )
+        {
+            writer.writeTextElement( "r", QString::number( mTransferR[i] ) );
+        }
+    writer.writeEndElement();
+
+    writer.writeStartElement("shift");
+        for ( int i = 0; i < sizeof_array( mTransferS ); i++ )
+        {
+            writer.writeTextElement( "r", QString::number( mTransferS[i] ) );
+        }
+    writer.writeEndElement();
+
+    writer.writeStartElement("rotate_inv");
+        for ( int i = 0; i < sizeof_array( mTransferRInv ); i++ )
+        {
+            writer.writeTextElement( "r", QString::number( mTransferRInv[i] ) );
+        }
+    writer.writeEndElement();
+
+    return 0;
+}
+
+int robotH2::serialInTransfer( QXmlStreamReader &reader)
+{
+    int ret;
+    while ( reader.readNextStartElement() )
+    {
+        if ( reader.name() == "enable" )
+        { mbTransferAble = toBool( reader ); }
+        else if ( reader.name() == "rotate" )
+        {
+            ret = serialInTransferR( reader );
+            if ( ret != 0 )
+            { return ret; }
+        }
+        else if ( reader.name() == "shift" )
+        {
+            ret = serialInTransferS( reader );
+            if ( ret != 0 )
+            { return ret; }
+        }
+        else if ( reader.name() == "rotate_inv" )
+        {
+            ret = serialInTransferRInv( reader );
+            if ( ret != 0 )
+            { return ret; }
+        }
+        else
+        {
+            reader.skipCurrentElement();
+        }
+    }
+
+    return 0;
+}
+
+int robotH2::serialInTransferR( QXmlStreamReader &reader)
+{
+    int index = 0;
+    while ( reader.readNextStartElement() )
+    {
+        if ( reader.name() == "r" )
+        {
+            Q_ASSERT( index < sizeof_array(mTransferR) );
+            mTransferR[index++] = toDouble(reader);
+        }
+        else
+        {
+            reader.skipCurrentElement();
+        }
+    }
+
+    return 0;
+}
+
+int robotH2::serialInTransferRInv( QXmlStreamReader &reader)
+{
+    int index = 0;
+    while ( reader.readNextStartElement() )
+    {
+        if ( reader.name() == "r" )
+        {
+            Q_ASSERT( index < sizeof_array(mTransferRInv) );
+            mTransferRInv[index++] = toDouble(reader);
+        }
+        else
+        {
+            reader.skipCurrentElement();
+        }
+    }
+
+    return 0;
+}
+
+int robotH2::serialInTransferS( QXmlStreamReader &reader)
+{
+    int index = 0;
+    while ( reader.readNextStartElement() )
+    {
+        if ( reader.name() == "r" )
+        {
+            Q_ASSERT( index < sizeof_array(mTransferS) );
+            mTransferS[index++] = toDouble(reader);
+        }
+        else
+        {
+            reader.skipCurrentElement();
+        }
     }
 
     return 0;

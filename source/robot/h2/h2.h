@@ -87,8 +87,22 @@ public:
 
     int zeroAxesTask( void *pArg );
 
+    int zeroX( H2ZeroArg *pZArg );
+    int zeroY( H2ZeroArg *pZArg );
+
+    int gapX( H2ZeroArg *pZArg );
+    int gapY( H2ZeroArg *pZArg );
+
+    int clrAngle();
+
     int angle( int jId, float &fAng );
     int pose( float &x, float &y );
+
+    void coordRotate( QList<H2KeyPoint> &curve );
+    void coordRotate( H2KeyPoint &pt, double rot[2*2], double shift[2*1] );
+
+    void coordIRotate( H2KeyPoint &pt );
+    void coordIRotate( H2KeyPoint &pt, double rot[2*2], double shift[2*1] );
 
     int moveTest1( const tpvRegion &region=0 );
     int moveTest2( const tpvRegion &region=0 );
@@ -106,11 +120,31 @@ public:
     void setCenter( float x, float y );
     void center( float &x, float &y );
 
+    //! transfer
+    void setTransferAble( bool b);
+    bool transferAble();
+
+    void setTransfer( bool b,
+                      double t[2*2],
+                      double s[2*1],
+                      double invt[2*2] );
+    void transfer( bool &b,
+                   double t[2*2],
+                   double s[2*1],
+                   double invt[2*2] );
+
     int serialOutZero( QXmlStreamWriter &writer);
     int serialInZero( QXmlStreamReader &reader );
 
     int serialOutArm( QXmlStreamWriter &writer);
     int serialInArm( QXmlStreamReader &reader);
+
+    int serialOutTransfer( QXmlStreamWriter &writer);
+    int serialInTransfer( QXmlStreamReader &reader);
+
+    int serialInTransferR( QXmlStreamReader &reader);
+    int serialInTransferS( QXmlStreamReader &reader);
+    int serialInTransferRInv( QXmlStreamReader &reader);
 
 protected:
     int verifyTrace( QList<H2KeyPoint> &curve );
@@ -119,11 +153,6 @@ protected:
                     QList< int > &sectionList );
     int downloadTrace( const tpvRegion &region,
                        QList< tpvGroup *> &jointsGroup );
-
-//    int waitFsm( pvt_region,
-//                 int dstState,
-//                 int tmous,
-//                 int tick );
 
 protected:
     double mZeroTime, mZeroDistance;
@@ -135,6 +164,12 @@ protected:
 
     QList<int> mEncoderDirs;    //! 1 or -1
     int mLines;
+
+                                //! transfer matrix
+    bool mbTransferAble;
+    double mTransferR[2*2], mTransferS[2*1];
+
+    double mTransferRInv[2*2];  //! deduced by mT
 };
 
 #endif

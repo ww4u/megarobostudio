@@ -31,11 +31,14 @@
    </property>
    <item>
     <widget class="QDoubleSpinBox" name="doubleSpinBox">
+     <property name="decimals">
+      <number>6</number>
+     </property>
      <property name="minimum">
       <double>0.010000000000000</double>
      </property>
      <property name="maximum">
-      <double>360.000000000000000</double>
+      <double>360000.000000000000000</double>
      </property>
      <property name="value">
       <double>1.000000000000000</double>
@@ -57,7 +60,7 @@
       <string>...</string>
      </property>
      <property name="icon">
-      <iconset resource="../res/res.qrc">
+      <iconset>
        <normaloff>:/res/image/icon/arrow-left.png</normaloff>:/res/image/icon/arrow-left.png</iconset>
      </property>
      <property name="iconSize">
@@ -83,7 +86,7 @@
       <string>...</string>
      </property>
      <property name="icon">
-      <iconset resource="../res/res.qrc">
+      <iconset>
        <normaloff>:/res/image/icon/arrow-right.png</normaloff>:/res/image/icon/arrow-right.png</iconset>
      </property>
      <property name="iconSize">
@@ -96,8 +99,6 @@
    </item>
   </layout>
  </widget>
- <resources>
-  <include location="../res/res.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

@@ -39,10 +39,7 @@ int robotH2::buildTrace( QList<H2KeyPoint> &curve,
     for ( int i = 0; i < curve.size(); i++ )
     {
         endPoints.data()[i].t = curve.at(i).t;
-//        endPoints.data()[i].x = curve.at(i).x;      //! convert x , y
-//        endPoints.data()[i].y = curve.at(i).y;
-//mArmLengths<<13.4<<13.4<<802<<494<<52<<38;
-//        mAxesDirs<<-1<<-1;
+
         dir = ( mAngleDir.at(0) ? 1 : -1 );
         endPoints.data()[i].x = dir * curve.at(i).x + mAxesDirs.at(0) * ( mArmLengths.at(3) - mArmLengths.at(4) ) /2;    //! 409/2
         dir = ( mAngleDir.at(1) ? 1 : -1 );

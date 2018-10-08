@@ -281,7 +281,6 @@ int robotSinanju::stop( const tpvRegion &region  )
 int robotSinanju::loopNow()
 { return 0; }
 
-
 void robotSinanju::setHandZeroAttr( double zeroTime, double zeroAngle )
 {
     mHandZeroTime = zeroTime;

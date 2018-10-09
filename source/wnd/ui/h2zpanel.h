@@ -25,26 +25,25 @@ protected:
     robotH2Z *Robot();
 
     //! move delta
-    void moveD( float dx, float dy, float dz );
+    void moveD( float dx, float dy, float dz, bool bKeep = false );
     //! move aim
     void moveA( float x, float y, float z, float dt );
 
+    void stop();
 private slots:
     void slot_timeout();
 
     void on_spinBox_valueChanged(int arg1);
     void on_chkOnOff_clicked(bool checked);
 
+    //! click
     void on_btnZP_clicked();
-
     void on_btnZN_clicked();
 
     void on_btnYN_clicked();
-
     void on_btnYP_clicked();
 
     void on_btnXP_clicked();
-
     void on_btnXN_clicked();
 
     void on_btnCenter_clicked();
@@ -54,6 +53,22 @@ private slots:
     void on_btnMarkNow_clicked();
 
     void on_btnMarkUser_clicked();
+
+    //! press & release
+    void on_btnZP_pressed();
+    void on_btnZP_released();
+    void on_btnZN_pressed();
+    void on_btnZN_released();
+
+    void on_btnXP_pressed();
+    void on_btnXP_released();
+    void on_btnXN_pressed();
+    void on_btnXN_released();
+
+    void on_btnYP_pressed();
+    void on_btnYP_released();
+    void on_btnYN_pressed();
+    void on_btnYN_released();
 
 private:
     Ui::H2ZPanel *ui;

@@ -38,7 +38,7 @@ robotH2Z *H2ZPanel::Robot()
 }
 
 //! move delta
-void H2ZPanel::moveD( float dx, float dy, float dz )
+void H2ZPanel::moveD( float dx, float dy, float dz, bool bKeep )
 {
     do
     {
@@ -46,8 +46,21 @@ void H2ZPanel::moveD( float dx, float dy, float dz )
         if ( NULL == pRobo )
         { break; }
 
-        pRobo->move( dx, dy, dz,
-                     ui->spinStepT->value(), 0, 0, 0, tpvRegion(0,ui->widget->page()) );
+        if ( bKeep )
+        {
+            pRobo->move( dx, dy, dz,
+                         ui->spinStepT->value(),
+                         dx/ui->spinStepT->value(),
+                         dy/ui->spinStepT->value(),
+                         dz/ui->spinStepT->value(),
+                         tpvRegion(0,ui->widget->page())
+                         );
+        }
+        else
+        {
+            pRobo->move( dx, dy, dz,
+                         ui->spinStepT->value(), 0, 0, 0, tpvRegion(0,ui->widget->page()) );
+        }
 
     }while( 0 );
 }
@@ -84,6 +97,15 @@ void H2ZPanel::moveA( float x, float y, float z, float dt )
         pRobo->move( curve, tpvRegion(0,ui->widget->page()) );
 
     }while( 0 );
+}
+
+void H2ZPanel::stop()
+{
+    robotH2Z *pRobo = Robot();
+    if ( NULL == pRobo )
+    { return; }
+
+    pRobo->stop( tpvRegion(0,ui->widget->page()) );
 }
 
 void H2ZPanel::slot_timeout()
@@ -126,32 +148,38 @@ void H2ZPanel::on_chkOnOff_clicked(bool checked)
 
 void H2ZPanel::on_btnZP_clicked()
 {
-    moveD( 0, 0, ui->spinStepV->value() );
+    if ( ui->chkSingle->isChecked() )
+    { moveD( 0, 0, ui->spinStepV->value() ); }
 }
 
 void H2ZPanel::on_btnZN_clicked()
 {
-    moveD( 0, 0, -ui->spinStepV->value() );
+    if ( ui->chkSingle->isChecked() )
+    { moveD( 0, 0, -ui->spinStepV->value() ); }
 }
 
 void H2ZPanel::on_btnYN_clicked()
 {
-    moveD( 0, -ui->spinStepV->value(), 0 );
+    if ( ui->chkSingle->isChecked() )
+    { moveD( 0, -ui->spinStepV->value(), 0 ); }
 }
 
 void H2ZPanel::on_btnYP_clicked()
 {
-    moveD( 0, ui->spinStepV->value(), 0 );
+    if ( ui->chkSingle->isChecked() )
+    { moveD( 0, ui->spinStepV->value(), 0 ); }
 }
 
 void H2ZPanel::on_btnXP_clicked()
 {
-    moveD( ui->spinStepV->value(), 0, 0 );
+    if ( ui->chkSingle->isChecked() )
+    { moveD( ui->spinStepV->value(), 0, 0 ); }
 }
 
 void H2ZPanel::on_btnXN_clicked()
 {
-    moveD( -ui->spinStepV->value(), 0, 0 );
+    if ( ui->chkSingle->isChecked() )
+    { moveD( -ui->spinStepV->value(), 0, 0 ); }
 }
 
 void H2ZPanel::on_btnCenter_clicked()
@@ -194,3 +222,54 @@ void H2ZPanel::on_btnMarkUser_clicked()
 
     sysRpc( h2zRpc );
 }
+
+#define check_press()       if ( ui->chkSingle->isChecked() ) { return; }
+
+#define on_xxx_released()   if ( ui->chkSingle->isChecked() ) { return; }\
+                            stop();
+
+void H2ZPanel::on_btnZP_pressed()
+{
+    if ( ui->chkSingle->isChecked() ) { return; }
+
+    moveD( 0,0, ui->spinStepV->value(), true );
+}
+void H2ZPanel::on_btnZP_released()
+{ on_xxx_released(); }
+void H2ZPanel::on_btnZN_pressed()
+{
+    check_press();
+    moveD( 0,0, -ui->spinStepV->value(), true );
+}
+void H2ZPanel::on_btnZN_released()
+{ on_xxx_released(); }
+
+void H2ZPanel::on_btnXP_pressed()
+{
+    check_press();
+    moveD( ui->spinStepV->value(),0,0, true );
+}
+void H2ZPanel::on_btnXP_released()
+{ on_xxx_released(); }
+void H2ZPanel::on_btnXN_pressed()
+{
+    check_press();
+    moveD( -ui->spinStepV->value(),0,0, true );
+}
+void H2ZPanel::on_btnXN_released()
+{ on_xxx_released(); }
+
+void H2ZPanel::on_btnYP_pressed()
+{
+    check_press();
+    moveD( 0, ui->spinStepV->value(),0, true );
+}
+void H2ZPanel::on_btnYP_released()
+{ on_xxx_released(); }
+void H2ZPanel::on_btnYN_pressed()
+{
+    check_press();
+    moveD( 0, -ui->spinStepV->value(),0, true );
+}
+void H2ZPanel::on_btnYN_released()
+{ on_xxx_released(); }

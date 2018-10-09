@@ -25,9 +25,11 @@ protected:
     robotH2 *Robot();
 
     //! move delta
-    void moveD( float dx, float dy );
+    void moveD( float dx, float dy, bool bKeep = false );
     //! move aim
     void moveA( float x, float y, float dt );
+
+    void stop();
 
 private slots:
     void slot_timeout();
@@ -53,6 +55,18 @@ private slots:
     void on_btnMarkUser_clicked();
 
     void on_btnMarkNow_clicked();
+
+    void on_btnXP_pressed();
+    void on_btnXP_released();
+
+    void on_btnXN_pressed();
+    void on_btnXN_released();
+
+    void on_btnYP_pressed();
+    void on_btnYP_released();
+
+    void on_btnYN_pressed();
+    void on_btnYN_released();
 
 private:
     Ui::H2Panel *ui;

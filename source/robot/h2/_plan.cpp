@@ -26,7 +26,8 @@ int robotH2::verifyTrace( QList<H2KeyPoint> &curve )
 
 int robotH2::buildTrace( QList<H2KeyPoint> &curve,
                          QList< tpvGroup *> &jointsGroup,
-                         QList< int > &sectionList )
+                         QList< int > &sectionList
+                         )
 {
 
     xxxGroup< h2_split::endPoint > endPoints;
@@ -65,7 +66,7 @@ int robotH2::buildTrace( QList<H2KeyPoint> &curve,
 
     if ( ret != 0 )
     {
-        logDbg()<<mZeroX<<mZeroY;
+//        logDbg()<<mZeroX<<mZeroY;
         sysLog( "desolve fail" );
         h2_split::h2Gc( splitDataSet );
         return ret;
@@ -95,13 +96,13 @@ int robotH2::buildTrace( QList<H2KeyPoint> &curve,
                                 splitDataSet.at(i)->at(j)->mT,
                                 splitDataSet.at(i)->at(j)->mP,
                                 splitDataSet.at(i)->at(j)->mV
-                        );
+                                );
             if ( ret != 0 )
             { break; }
 
-            logDbg()<<splitDataSet.at(i)->at(j)->mT
-                    <<splitDataSet.at(i)->at(j)->mP
-                    <<splitDataSet.at(i)->at(j)->mV;
+//            logDbg()<<splitDataSet.at(i)->at(j)->mT
+//                    <<splitDataSet.at(i)->at(j)->mP
+//                    <<splitDataSet.at(i)->at(j)->mV;
         }
     }
 

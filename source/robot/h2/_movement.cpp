@@ -3,7 +3,7 @@
 #include "../../arith/h2_split/h2_split.h"
 
 int robotH2::program( QList<H2KeyPoint> &curve,
-             const tpvRegion &region )
+                      const tpvRegion &region )
 {
     int ret;
 

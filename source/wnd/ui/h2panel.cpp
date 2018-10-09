@@ -38,7 +38,7 @@ robotH2 *H2Panel::Robot()
     return pRealRobo;
 }
 
-void H2Panel::moveD( float dx, float dy )
+void H2Panel::moveD( float dx, float dy, bool bKeep )
 {
     do
     {
@@ -46,7 +46,20 @@ void H2Panel::moveD( float dx, float dy )
         if ( NULL == pRobo )
         { break; }
 
-        pRobo->move( dx, dy, ui->spinStepT->value(), 0,0, tpvRegion(0,ui->widget->page()));
+        if ( bKeep )
+        {
+            pRobo->move( dx, dy, ui->spinStepT->value(),
+                         dx / ui->spinStepT->value(),
+                         dy / ui->spinStepT->value(),
+                         tpvRegion(0,ui->widget->page()));
+        }
+        else
+        {
+            pRobo->move( dx, dy, ui->spinStepT->value(),
+                         0,
+                         0,
+                         tpvRegion(0,ui->widget->page()));
+        }
 
     }while( 0 );
 }
@@ -81,6 +94,15 @@ void H2Panel::moveA( float x, float y, float dt )
         pRobo->move( curve, tpvRegion(0,ui->widget->page()) );
 
     }while( 0 );
+}
+
+void H2Panel::stop()
+{
+    robotH2 *pRobo = Robot();
+    if ( NULL == pRobo )
+    { return; }
+
+    pRobo->stop( tpvRegion(0,ui->widget->page()) );
 }
 
 void H2Panel::slot_timeout()
@@ -123,22 +145,26 @@ void H2Panel::on_chkOnOff_clicked(bool checked)
 
 void H2Panel::on_btnYN_clicked()
 {
-    moveD( 0, -ui->spinStepV->value() );
+    if ( ui->chkSingle->isChecked() )
+    { moveD( 0, -ui->spinStepV->value() ); }
 }
 
 void H2Panel::on_btnYP_clicked()
 {
-    moveD( 0, ui->spinStepV->value() );
+    if ( ui->chkSingle->isChecked() )
+    { moveD( 0, ui->spinStepV->value() ); }
 }
 
 void H2Panel::on_btnXP_clicked()
 {
-    moveD( ui->spinStepV->value(), 0 );
+    if ( ui->chkSingle->isChecked() )
+    { moveD( ui->spinStepV->value(), 0 ); }
 }
 
 void H2Panel::on_btnXN_clicked()
 {
-    moveD( -ui->spinStepV->value(), 0 );
+    if ( ui->chkSingle->isChecked() )
+    { moveD( -ui->spinStepV->value(), 0 ); }
 }
 
 void H2Panel::on_btnCenter_clicked()
@@ -177,4 +203,68 @@ void H2Panel::on_btnMarkNow_clicked()
     h2Rpc.push( (float)ui->lcdY->value() );
 
     sysRpc( h2Rpc );
+}
+
+void H2Panel::on_btnXP_pressed()
+{
+    if ( ui->chkSingle->isChecked() )
+    { return; }
+
+    moveD( ui->spinStepV->value(), 0, true );
+}
+
+void H2Panel::on_btnXP_released()
+{
+    if ( ui->chkSingle->isChecked() )
+    { return; }
+
+    stop();
+}
+
+void H2Panel::on_btnXN_pressed()
+{
+    if ( ui->chkSingle->isChecked() )
+    { return; }
+
+    moveD( -ui->spinStepV->value(), 0, true );
+}
+
+void H2Panel::on_btnXN_released()
+{
+    if ( ui->chkSingle->isChecked() )
+    { return; }
+
+    stop();
+}
+
+void H2Panel::on_btnYP_pressed()
+{
+    if ( ui->chkSingle->isChecked() )
+    { return; }
+
+    moveD( 0, ui->spinStepV->value(), true );
+}
+
+void H2Panel::on_btnYP_released()
+{
+    if ( ui->chkSingle->isChecked() )
+    { return; }
+
+    stop();
+}
+
+void H2Panel::on_btnYN_pressed()
+{
+    if ( ui->chkSingle->isChecked() )
+    { return; }
+
+    moveD( 0, -ui->spinStepV->value(), true );
+}
+
+void H2Panel::on_btnYN_released()
+{
+    if ( ui->chkSingle->isChecked() )
+    { return; }
+
+    stop();
 }

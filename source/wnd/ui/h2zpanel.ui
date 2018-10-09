@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>H2ZPanel</class>
- <widget class="QDialog" name="H2ZPanel">
+ <widget class="QWidget" name="H2ZPanel">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -69,7 +69,7 @@
          <string>PushButton</string>
         </property>
         <property name="icon">
-         <iconset resource="../res/res.qrc">
+         <iconset>
           <normaloff>:/res/image/icon/addition.png</normaloff>:/res/image/icon/addition.png</iconset>
         </property>
         <property name="iconSize">
@@ -154,6 +154,9 @@
       <string/>
      </property>
      <layout class="QGridLayout" name="gridLayout_4">
+      <item row="0" column="0" colspan="2">
+       <widget class="PageOption" name="widget" native="true"/>
+      </item>
       <item row="1" column="0">
        <widget class="QGroupBox" name="groupBox_3">
         <property name="title">
@@ -256,7 +259,7 @@
             <string>Mark</string>
            </property>
            <property name="icon">
-            <iconset resource="../res/res.qrc">
+            <iconset>
              <normaloff>:/res/image/icon/addition.png</normaloff>:/res/image/icon/addition.png</iconset>
            </property>
            <property name="iconSize">
@@ -282,7 +285,7 @@
             <string>GO</string>
            </property>
            <property name="icon">
-            <iconset resource="../res/res.qrc">
+            <iconset>
              <normaloff>:/res/image/icon/skip.png</normaloff>:/res/image/icon/skip.png</iconset>
            </property>
            <property name="iconSize">
@@ -316,7 +319,20 @@
         </layout>
        </widget>
       </item>
-      <item row="1" column="1">
+      <item row="0" column="2">
+       <widget class="QCheckBox" name="chkSingle">
+        <property name="layoutDirection">
+         <enum>Qt::RightToLeft</enum>
+        </property>
+        <property name="text">
+         <string>Single</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1" colspan="2">
        <widget class="QGroupBox" name="groupBox_6">
         <property name="title">
          <string/>
@@ -382,7 +398,7 @@
                <string>...</string>
               </property>
               <property name="icon">
-               <iconset resource="../res/res.qrc">
+               <iconset>
                 <normaloff>:/res/image/icon/c_less.png</normaloff>:/res/image/icon/c_less.png</iconset>
               </property>
               <property name="iconSize">
@@ -408,7 +424,7 @@
                <string>...</string>
               </property>
               <property name="icon">
-               <iconset resource="../res/res.qrc">
+               <iconset>
                 <normaloff>:/res/image/icon/c_subtract.png</normaloff>:/res/image/icon/c_subtract.png</iconset>
               </property>
               <property name="iconSize">
@@ -434,7 +450,7 @@
                <string>...</string>
               </property>
               <property name="icon">
-               <iconset resource="../res/res.qrc">
+               <iconset>
                 <normaloff>:/res/image/icon/c_more_unfold.png</normaloff>:/res/image/icon/c_more_unfold.png</iconset>
               </property>
               <property name="iconSize">
@@ -460,7 +476,7 @@
                <string>...</string>
               </property>
               <property name="icon">
-               <iconset resource="../res/res.qrc">
+               <iconset>
                 <normaloff>:/res/image/icon/c_back.png</normaloff>:/res/image/icon/c_back.png</iconset>
               </property>
               <property name="iconSize">
@@ -483,7 +499,7 @@
                <string>...</string>
               </property>
               <property name="icon">
-               <iconset resource="../res/res.qrc">
+               <iconset>
                 <normaloff>:/res/image/icon3/address.png</normaloff>:/res/image/icon3/address.png</iconset>
               </property>
               <property name="iconSize">
@@ -522,7 +538,7 @@
                <string>...</string>
               </property>
               <property name="icon">
-               <iconset resource="../res/res.qrc">
+               <iconset>
                 <normaloff>:/res/image/icon/c_more.png</normaloff>:/res/image/icon/c_more.png</iconset>
               </property>
               <property name="iconSize">
@@ -545,7 +561,7 @@
                <string/>
               </property>
               <property name="pixmap">
-               <pixmap resource="../res/res.qrc">:/res/image/joint/mrx-h2z_geo.png</pixmap>
+               <pixmap>:/res/image/joint/mrx-h2z_geo.png</pixmap>
               </property>
               <property name="scaledContents">
                <bool>true</bool>
@@ -567,7 +583,7 @@
                <string>...</string>
               </property>
               <property name="icon">
-               <iconset resource="../res/res.qrc">
+               <iconset>
                 <normaloff>:/res/image/icon/c_add.png</normaloff>:/res/image/icon/c_add.png</iconset>
               </property>
               <property name="iconSize">
@@ -661,9 +677,6 @@
         </layout>
        </widget>
       </item>
-      <item row="0" column="0" colspan="2">
-       <widget class="PageOption" name="widget" native="true"/>
-      </item>
      </layout>
     </widget>
    </item>
@@ -695,8 +708,6 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources>
-  <include location="../res/res.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

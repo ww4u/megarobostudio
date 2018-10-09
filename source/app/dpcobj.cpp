@@ -18,7 +18,6 @@ dpcObj::dpcObj()
 void dpcObj::tlsProgress( int now, int from, int to )
 {
     emit sig_prog_do( mTlsContext, now, from, to );
-    logDbg();
 }
 
 void dpcObj::slot_post_do( appWidget::servContext context

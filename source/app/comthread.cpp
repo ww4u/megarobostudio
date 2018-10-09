@@ -16,8 +16,7 @@ void ComThread::run()
     mPort.setStopBits( QSerialPort::OneStop );
     mPort.setParity( QSerialPort::NoParity );
     mPort.setFlowControl( QSerialPort::NoFlowControl );
-//sysLog( QString::number(mPort.readBufferSize()) );
-//    mPort.setReadBufferSize( 8 );
+
     //! open success
     if ( mPort.open( QIODevice::ReadWrite ) )
     { sysLog( mPortName, tr("Open Success") ); }
@@ -55,11 +54,6 @@ void ComThread::run()
             { }
         }
 
-//        //! can read
-//        if ( mPort.size() > 0 )
-//        {
-
-//        }
     }
 
     mPort.close();

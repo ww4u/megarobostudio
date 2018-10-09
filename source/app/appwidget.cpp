@@ -41,13 +41,12 @@ void appWidget::slot_prog_do( appWidget::servContext context,
                             int from,
                             int to )
 {
-logDbg();
     Q_ASSERT( NULL != context.m_pBase );
-logDbg();
+
     //! pointer
     if ( context.m_pBase != this )
     { return; }
-logDbg();
+
     //! api null
     if ( context.mGroup.mProgDo == NULL )
     { return; }

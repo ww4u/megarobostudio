@@ -28,7 +28,6 @@ protected:
     QSerialPort mPort;
     QString mPortName;
 
-
 };
 
 #endif // COMTHREAD_H

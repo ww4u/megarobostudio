@@ -15,6 +15,8 @@ public:
     int mEncoderLines;
     int mSlowRatio;
 
+    int mAcc, mDec;
+
 public:
     modelPvtPref();
 };
@@ -36,6 +38,10 @@ public:
 
 private slots:
     void on_PvtPref_accepted();
+
+    void on_spinAcc_valueChanged(double arg1);
+
+    void on_spinDec_valueChanged(double arg1);
 
 private:
     Ui::PvtPref *ui;

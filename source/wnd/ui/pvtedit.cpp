@@ -238,6 +238,20 @@ int pvtEdit::postDownload( appMsg msg, void *pPara )
     if ( ret != 0 )
     { return ret; }
 
+    //! plan mode
+    ret = pMrq->setMOTIONPLAN_PLANMODE( axesId,
+                                        (MRQ_MOTION_SWITCH_1)page,
+                                        (MRQ_MOTIONPLAN_PLANMODE_1)ui->cmbPlanMode->currentIndex() );
+    if ( ret != 0 )
+    { return ret; }
+
+    //! motion mode
+    ret = pMrq->setMOTIONPLAN_MOTIONMODE( axesId,
+                                        (MRQ_MOTION_SWITCH_1)page,
+                                        (MRQ_MOTIONPLAN_MOTIONMODE_1)ui->cmbMotionMode->currentIndex() );
+    if ( ret != 0 )
+    { return ret; }
+
     QList<tpvRow*> tpvRows;
     mTpvGroup->getRows( tpvRows );
 
@@ -398,29 +412,41 @@ int pvtEdit::compileLine()
 
     //! copy data
     tpvItem *pItem;
-    QList< QPointF > ends;
+    QList< QVector3D > ends;
+
     for ( int i = 0; i < dotLine; i++ )
     {
         pItem = pRows->at( i );
         Q_ASSERT( NULL != pItem );
         if ( pItem->getValid() )
-        { ends.append( QPointF( pItem->getT(), pItem->getP() ) ); }
+        {
+            ends.append( QVector3D( pItem->getT(),
+                                    pItem->getP(),
+                                    pItem->getV()
+                                  ) );
+        }
     }
 
     //! compile
     int ret;
     interpConfig config;
+    config.mMotionMode = ui->cmbMotionMode->currentIndex();
+
     config.mEncoderLines = mPvtPref.mEncoderLines;
     config.mSlowRatio = mPvtPref.mSlowRatio;
     config.mSteps = mPvtPref.mSteps;
     config.mVernierStep = mPvtPref.mVernierStep;
 
+    config.mAcc = mPvtPref.mAcc;
+    config.mDec = mPvtPref.mDec;
+
+    QList<QVector3D> tpvs;
     ret = pvtInterp( (enumInterpMode)ui->cmbPlanMode->value(),
                      ends,
                      config,
 
-                     mTPs,
-                     mTVs );
+                     tpvs
+                      );
     if ( ret != 0 )
     {
         sysError( tr("build fail") );
@@ -428,6 +454,13 @@ int pvtEdit::compileLine()
     }
     else
     { }
+
+    //! out
+    for ( int i = 0; i < tpvs.size(); i++ )
+    {
+        mTPs.append( QPointF( tpvs.at(i).x(), tpvs.at(i).y() ) );
+        mTVs.append( QPointF( tpvs.at(i).x(), tpvs.at(i).z() ) );
+    }
 
     return 0;
 }
@@ -482,6 +515,14 @@ void pvtEdit::updatePlot()
     }while( 0 );
 
     gc_array3( pT, pP, pV );
+}
+
+//! need setting again
+void pvtEdit::stateIdle()
+{
+    ui->btnDown->setEnabled( false );
+    ui->btnStart->setEnabled( false );
+    ui->btnStop->setEnabled( false );
 }
 
 void pvtEdit::on_btnBuild_clicked()
@@ -600,23 +641,14 @@ void pvtEdit::on_spinLoop_valueChanged(int arg1)
                                   arg1 );
 }
 
-void pvtEdit::on_comboBox_currentIndexChanged(int index)
+void pvtEdit::on_cmbPlanMode_currentIndexChanged(int index)
 {
-    if ( !checkChan() )
-    { return; }
+    stateIdle();
+}
 
-    QString str;
-    int axesId;
-    str = m_pmcModel->getConnection().getDeviceName();
-    axesId = m_pmcModel->getConnection().getDeviceCH();
-
-    MegaDevice::deviceMRQ *pMrq = m_pmcModel->m_pInstMgr->findDevice( str,
-                                                                      axesId );
-    Q_ASSERT( NULL != pMrq );
-
-    pMrq->setMOTIONPLAN_CYCLENUM( axesId,
-                                  MRQ_MOTION_SWITCH_1_MAIN,
-                                  (MRQ_MOTIONPLAN_ENDSTATE_1)index );
+void pvtEdit::on_cmbMotionMode_currentIndexChanged(int index)
+{
+    stateIdle();
 }
 
 void pvtEdit::on_btnPref_clicked()

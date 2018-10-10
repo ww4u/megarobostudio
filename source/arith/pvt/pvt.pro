@@ -1,5 +1,5 @@
 TEMPLATE=lib
-QT       -= gui
+QT       += gui
 CONFIG += static
 
 

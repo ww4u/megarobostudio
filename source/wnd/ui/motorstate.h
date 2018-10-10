@@ -17,8 +17,7 @@ public:
 
     virtual QSize sizeHint() const;
 
-//    virtual QSize minimumSizeHint() const;
-
+public:
     void setName( const QString &name );
     QString name();
 
@@ -36,9 +35,6 @@ private:
     Ui::MotorState *ui;
 
     QMap<int,QString> mStates;
-
-//    QTime mRunningTime;
-//    bool mbTimerRunning;
 
     QList< QTime *> mRunningTimes;
     QList< bool > mTimerRunnings;

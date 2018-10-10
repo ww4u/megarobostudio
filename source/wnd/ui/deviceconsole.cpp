@@ -75,6 +75,12 @@ void deviceConsole::on_btnWrite_clicked()
     {
         ui->comboBox->removeItem( ui->comboBox->count() - 1 );
     }
+
+    //! auto read
+    if ( ui->chkSmart->isChecked() && str.contains( QRegExp("\\w+\\?")) )
+    {
+        QTimer::singleShot( 2000, this, SLOT(on_btnRead_clicked()) );
+    }
 }
 
 void deviceConsole::on_btnRead_clicked()

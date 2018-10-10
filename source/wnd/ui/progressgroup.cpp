@@ -1,8 +1,7 @@
 #include "progressgroup.h"
 #include "ui_progressgroup.h"
-
+#include "../../include/mydebug.h"
 ProgressGroup::ProgressGroup(QWidget *parent) :
-//    QDialog(parent),
     QWidget( parent ),
     ui(new Ui::ProgressGroup)
 {
@@ -31,7 +30,9 @@ void ProgressGroup::progressShow( const QString &name, int id, bool b )
 {
     //! show
     if ( b )
-    { show(); }
+    { /*show();*/ }
+    else
+    { hide(); }
 
     progress( name, id )->setVisible(b);
 
@@ -42,7 +43,38 @@ void ProgressGroup::progressShow( const QString &name, int id, bool b )
         { return; }
     }
 
+    //! hide all
     hide();
+}
+
+bool ProgressGroup::progressSnap( int &min,
+               int &max,
+               int &now )
+{
+    //! init
+    min = INT_MAX;
+    max = INT_MIN;
+    now = INT_MAX;
+
+    int iterMin, iterMax, iterNow;
+
+    foreach ( ProgressElement *pg, *m_pProgList )
+    {
+        Q_ASSERT( NULL != pg );
+
+        if ( pg->progress( iterMax, iterMin, iterNow) )
+        {
+            min = qMin( min, iterMin );
+            max = qMax( max, iterMax );
+            now = qMin( now, iterNow );
+        }
+    }
+
+    //! visible?
+    if ( min != INT_MAX )
+    { return true; }
+    else
+    { return false; }
 }
 
 ProgressElement * ProgressGroup::progress( const QString &name, int id )

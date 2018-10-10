@@ -16,12 +16,21 @@ axesKnob::axesKnob( mcModel *pMcModel,
     ui->btnLr1->setStep( 1.0f );
     ui->btnLr10->setStep( 10.0f );
 
+    //! single
     connect( ui->btnLr01, SIGNAL(signal_step(float)),
              this, SLOT(slot_step(float)) );
     connect( ui->btnLr1, SIGNAL(signal_step(float)),
              this, SLOT(slot_step(float)) );
     connect( ui->btnLr10, SIGNAL(signal_step(float)),
              this, SLOT(slot_step(float)) );
+
+    //! keep moving
+    connect( ui->btnLr01, SIGNAL(signal_step(float,bool)),
+             this, SLOT(slot_step(float,bool)) );
+    connect( ui->btnLr1, SIGNAL(signal_step(float,bool)),
+             this, SLOT(slot_step(float,bool)) );
+    connect( ui->btnLr10, SIGNAL(signal_step(float,bool)),
+             this, SLOT(slot_step(float,bool)) );
 
     ui->labConnection->setText( connStr );
 
@@ -53,7 +62,7 @@ void axesKnob::actionChanged( const QDateTime &endTime, int valEnd  )
     ui->label->setText( strInfo );
 }
 
-void axesKnob::rotate( float angle, float t )
+void axesKnob::rotate( float angle, float t, bool bKeep )
 {
     int ax;
     MegaDevice::deviceMRQ *pMrq = currentDevice( ax );
@@ -74,7 +83,7 @@ void axesKnob::rotate( float angle, float t )
     }
     else
     {
-        QMessageBox::warning( this, tr("Warning"), tr("Device is not idle now, try later!") );
+        QMessageBox::warning( this, tr("Warning"), tr("Device is not idle now, try later or STOP!") );
         return;
     }
 
@@ -87,12 +96,23 @@ void axesKnob::rotate( float angle, float t )
     { return; }
 
     //! run the device
-    ret = pMrq->pvtWrite( tpvRegion( ax,
-                                     ui->pageOption->page()),
-                        0,0,
-                        t,
-                        angle
-                        );
+    if ( bKeep )
+    {
+        ret = pMrq->pvtWrite( tpvRegion( ax,
+                                         ui->pageOption->page()),
+                                t,
+                                angle,
+                                angle/t
+                                );
+    }
+    else
+    {
+        ret = pMrq->pvtWrite( tpvRegion( ax,
+                                         ui->pageOption->page()),
+                            t,
+                            angle
+                            );
+    }
     if ( ret != 0 )
     { return; }
 
@@ -104,6 +124,19 @@ void axesKnob::rotate( float angle, float t )
     ui->label->setText( QString("%2%3 %1ms").arg( t*1000 )
                                             .arg( angle ).arg( char_deg ) );
 
+}
+
+void axesKnob::stop()
+{
+    int ax;
+    MegaDevice::deviceMRQ *pMrq = currentDevice( ax );
+    if ( NULL == pMrq )
+    {
+        sysError( tr("Invalid device") );
+        return;
+    }
+
+    pMrq->stop( tpvRegion(ax, ui->pageOption->page() ) );
 }
 
 void axesKnob::slot_device_changed()
@@ -143,6 +176,25 @@ void axesKnob::on_sliderValue_sliderMoved(int position)
 
 void axesKnob::slot_step( float step )
 {
-    rotate( step, ui->spinStepTime->value() );
-    ui->spinNow->setValue( ui->spinNow->value() + step );
+    if ( ui->chkSingle->isChecked() )
+    {
+        rotate( step, ui->spinStepTime->value() );
+        ui->spinNow->setValue( ui->spinNow->value() + step );
+    }
+}
+
+void axesKnob::slot_step( float step, bool bKeep )
+{
+    if ( ui->chkSingle->isChecked() )
+    { return; }
+    else
+    {  }
+
+    if ( bKeep )
+    {
+        rotate( step, ui->spinStepTime->value(), true );
+        ui->spinNow->setValue( ui->spinNow->value() + step );
+    }
+    else
+    { stop(); }
 }

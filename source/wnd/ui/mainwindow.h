@@ -124,6 +124,8 @@ Q_SIGNALS:
     void sig_com_send( const QByteArray &str );
 
 protected Q_SLOTS:
+    void slot_downloadbar_clicked();
+
     void slot_post_load_prj();
     void cfgTab_tabCloseRequested( int index );
 

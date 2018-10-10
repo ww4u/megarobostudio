@@ -190,7 +190,7 @@ typedef struct
 
 
 /******************************************º¯ÊýÉùÃ÷*******************************************/
-u8 pvtSegmentCalc(PvtCalcStruct *pPvtCalcData, u8 chanNum);
+//u8 pvtSegmentCalc(PvtCalcStruct *pPvtCalcData, u8 chanNum);
 
 
 

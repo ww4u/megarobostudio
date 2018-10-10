@@ -29,7 +29,8 @@ protected:
 
     void actionChanged( const QDateTime &time, int valEnd  );
 
-    void rotate( float angle, float t );
+    void rotate( float angle, float t, bool bKeep = false );
+    void stop();
 
 private slots:
     void slot_device_changed();
@@ -45,6 +46,7 @@ private slots:
     void on_sliderValue_sliderMoved(int position);
 
     void slot_step( float step );
+    void slot_step( float step, bool bKeep );
 
 private:
     Ui::axesKnob *ui;

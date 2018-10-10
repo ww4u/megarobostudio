@@ -7,6 +7,8 @@ ProgressElement::ProgressElement(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::ProgressElement)
 {
+    mbStateVisible = false;
+
     mId = 0;
 
     ui->setupUi(this);
@@ -24,6 +26,15 @@ void ProgressElement::hideEvent(QHideEvent *event )
     mLatestProg = -1;
 
     ui->labelProg->clear();
+
+    mbStateVisible = false;
+}
+
+void ProgressElement::setVisible( bool b )
+{
+    QWidget::setVisible( b );
+
+    mbStateVisible = b;
 }
 
 void ProgressElement::set( const QString &name, int id )
@@ -49,6 +60,7 @@ void ProgressElement::progressInfo( const QString &str )
 void ProgressElement::progressProg( int n )
 {
     ui->progress->setValue( n );
+    mbStateVisible = true;
 
     //! set the time
     if ( mLatestProg == -1 )
@@ -61,9 +73,7 @@ void ProgressElement::progressProg( int n )
         float gTime = ( ui->progress->maximum() - n ) * mLatestTime.elapsed() / ( n - mLatestProg );
 
         if ( gTime > 0 )
-        {
-            ui->labelProg->setText( ( comAssist::msToHmsz(gTime) ) );
-        }
+        { ui->labelProg->setText( ( comAssist::msToHmsz(gTime) ) ); }
     }
 
     mLatestProg = n;
@@ -72,7 +82,17 @@ void ProgressElement::progressProg( int n )
 void ProgressElement::progressRange( int a, int b )
 { ui->progress->setRange( a, b ); }
 
+bool ProgressElement::progress( int &max, int &min, int &now )
+{
+    max = ui->progress->maximum();
+    min = ui->progress->minimum();
+    now = ui->progress->value();
+
+    return mbStateVisible;
+}
+
 void ProgressElement::on_btnCancel_clicked()
 {
     emit sigCancel( mName, mId );
+    mbStateVisible = false;
 }

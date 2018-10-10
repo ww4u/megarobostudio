@@ -77,6 +77,8 @@ protected:
 
     void updatePlot();
 
+    void stateIdle();
+
 Q_SIGNALS:
     void sigLineChanged();
 
@@ -95,12 +97,16 @@ protected Q_SLOTS:
     void slot_download_cancel();
 
     void on_spinLoop_valueChanged(int arg1);
-    void on_comboBox_currentIndexChanged(int index);
+    void on_cmbPlanMode_currentIndexChanged(int index);
+    void on_cmbMotionMode_currentIndexChanged(int index);
 
     void on_btnPref_clicked();
 
     void slot_data_changed();
     void slot_line_changed();
+
+private slots:
+
 
 private:
     Ui::pvtEdit *ui;

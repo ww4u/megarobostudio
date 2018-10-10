@@ -48,6 +48,9 @@
    </item>
    <item row="3" column="0" colspan="2">
     <layout class="QHBoxLayout" name="horizontalLayout">
+     <property name="spacing">
+      <number>3</number>
+     </property>
      <item>
       <spacer name="horizontalSpacer">
        <property name="orientation">
@@ -62,6 +65,19 @@
       </spacer>
      </item>
      <item>
+      <widget class="QCheckBox" name="chkSmart">
+       <property name="layoutDirection">
+        <enum>Qt::RightToLeft</enum>
+       </property>
+       <property name="text">
+        <string>Smart</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QPushButton" name="btnWrite">
        <property name="toolTip">
         <string>Send to device</string>
@@ -70,7 +86,7 @@
         <string>Write</string>
        </property>
        <property name="icon">
-        <iconset resource="../res/res.qrc">
+        <iconset>
          <normaloff>:/res/image/icon/218.png</normaloff>:/res/image/icon/218.png</iconset>
        </property>
       </widget>
@@ -84,7 +100,7 @@
         <string>Read</string>
        </property>
        <property name="icon">
-        <iconset resource="../res/res.qrc">
+        <iconset>
          <normaloff>:/res/image/icon/219.png</normaloff>:/res/image/icon/219.png</iconset>
        </property>
       </widget>
@@ -138,7 +154,7 @@
         <string>Clear</string>
        </property>
        <property name="icon">
-        <iconset resource="../res/res.qrc">
+        <iconset>
          <normaloff>:/res/image/icon/empty.png</normaloff>:/res/image/icon/empty.png</iconset>
        </property>
       </widget>
@@ -147,9 +163,7 @@
    </item>
   </layout>
  </widget>
- <resources>
-  <include location="../res/res.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>btnClr</sender>

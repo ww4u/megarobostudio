@@ -323,6 +323,10 @@ void MainWindow::buildConnection()
     connect( this, SIGNAL(sig_post_load_prj()),
              this, SLOT(slot_post_load_prj()) );
 
+    //! status bar
+    connect( m_pStateBar->downloadBar(), SIGNAL( signal_clicked() ),
+             this, SLOT( slot_downloadbar_clicked() ) );
+
     //! prop
     connect( m_pDeviceMgr,
              SIGNAL(itemXActivated( mcModelObj *)),
@@ -655,6 +659,13 @@ void MainWindow::regSysVar()
 void MainWindow::statusShow( const QString &str )
 {
     m_pStateBar->showState( str );
+}
+
+void MainWindow::slot_downloadbar_clicked()
+{
+    Q_ASSERT( NULL != m_pProgress );
+
+    m_pProgress->setVisible( !m_pProgress->isVisible() );
 }
 
 void MainWindow::slot_post_load_prj()

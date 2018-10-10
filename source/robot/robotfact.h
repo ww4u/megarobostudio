@@ -21,13 +21,10 @@
 #include "./motor/motor.h"
 #include "./motors/motors.h"
 
-//#include "./slide/slide.h"
-
 #include "./igus_delta/igus_delta.h"
 
 #include "./quebeley/roboquebeley.h"
 #include "./geogoog/robogeogoog.h"
-#include "./geo8/robogeo8.h"
 #include "./geo10/robogeo10.h"
 #include "./geo51/robogeo51.h"
 

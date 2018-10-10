@@ -28,6 +28,11 @@ public:
 
     void progressShow( const QString &name, int id, bool b=true );
 
+    //! get the least one
+    bool progressSnap( int &min,
+                   int &max,
+                   int &now );
+
 protected:
     ProgressElement * progress( const QString &name, int id );
 

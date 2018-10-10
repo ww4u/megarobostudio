@@ -23,7 +23,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-VERSION = 0.1.0.17
+VERSION = 0.1.0.18
 
 OBJECTS_DIR = ./obj
 MOC_DIR = ./obj
@@ -304,7 +304,8 @@ SOURCES += \
     ../ui/mrqtune.cpp \
     ../ui/igusdrylinpanel.cpp \
     ../ui/megalcdnumber.cpp \
-    ../ui/rotmat3_3.cpp
+    ../ui/rotmat3_3.cpp \
+    ../../widget/mprogressbar.cpp
 
 
 HEADERS += \
@@ -477,7 +478,8 @@ HEADERS += \
     ../ui/igusdrylinpanel.h \
     ../ui/megalcdnumber.h \
     ../ui/rotmat3_3.h \
-    ../../../include/myassert.h
+    ../../../include/myassert.h \
+    ../../widget/mprogressbar.h
 
 FORMS += \
         ../ui/mainwindow.ui \

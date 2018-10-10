@@ -2,7 +2,7 @@
 #define STATEBAR_H
 
 #include <QtWidgets>
-
+#include "mprogressbar.h"
 namespace Ui {
 class stateBar;
 }
@@ -21,9 +21,12 @@ public:
                        const QString &info="" );
     void showState( const QString &str );
 
+    void downloadProgress( bool b, int from=0, int to=0 , int now=0 );
+
     QProgressBar *progressBar();
     QLabel *progressInfo();
     QLabel *statusLabel();
+    MProgressBar* downloadBar();
 
 private:
     Ui::stateBar *ui;

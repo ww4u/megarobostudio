@@ -5,6 +5,9 @@
 
 int MRQ_move( ViSession vi, int ax, int page, float t, float angle, float endV );
 int MRQ_preMove( ViSession vi, int ax, int page, float t, float angle, float endV );
+int MRQ_preMoveT( ViSession vi, int ax, int page,
+                  float t1, float angle1,
+                  float t2, float angle2 );
 
 int MRQ_getIncAngle( ViSession vi, int ax, float *val );
 int MRQ_getAbsAngle( ViSession vi, int ax, float *val );

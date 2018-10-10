@@ -28,7 +28,7 @@
         <string>...</string>
        </property>
        <property name="icon">
-        <iconset resource="../res/res.qrc">
+        <iconset>
          <normaloff>:/res/image/icon/218.png</normaloff>:/res/image/icon/218.png</iconset>
        </property>
        <property name="iconSize">
@@ -51,7 +51,7 @@
         <string/>
        </property>
        <property name="pixmap">
-        <pixmap resource="../res/res.qrc">:/res/image/icon/332.png</pixmap>
+        <pixmap>:/res/image/icon/332.png</pixmap>
        </property>
        <property name="scaledContents">
         <bool>true</bool>
@@ -95,7 +95,7 @@
         <string>...</string>
        </property>
        <property name="icon">
-        <iconset resource="../res/res.qrc">
+        <iconset>
          <normaloff>:/res/image/icon/playon.png</normaloff>:/res/image/icon/playon.png</iconset>
        </property>
        <property name="iconSize">
@@ -118,7 +118,7 @@
         <string>...</string>
        </property>
        <property name="icon">
-        <iconset resource="../res/res.qrc">
+        <iconset>
          <normaloff>:/res/image/icon/stop.png</normaloff>:/res/image/icon/stop.png</iconset>
        </property>
        <property name="iconSize">
@@ -148,7 +148,7 @@
         <string>Build</string>
        </property>
        <property name="icon">
-        <iconset resource="../res/res.qrc">
+        <iconset>
          <normaloff>:/res/image/icon/stealth.png</normaloff>:/res/image/icon/stealth.png</iconset>
        </property>
        <property name="iconSize">
@@ -171,7 +171,7 @@
         <string>...</string>
        </property>
        <property name="icon">
-        <iconset resource="../res/res.qrc">
+        <iconset>
          <normaloff>:/res/image/icon/dynamic.png</normaloff>:/res/image/icon/dynamic.png</iconset>
        </property>
        <property name="iconSize">
@@ -230,7 +230,7 @@
         <string>Clear</string>
        </property>
        <property name="icon">
-        <iconset resource="../res/res.qrc">
+        <iconset>
          <normaloff>:/res/image/icon/empty.png</normaloff>:/res/image/icon/empty.png</iconset>
        </property>
        <property name="iconSize">
@@ -250,7 +250,7 @@
         <string/>
        </property>
        <property name="icon">
-        <iconset resource="../res/res.qrc">
+        <iconset>
          <normaloff>:/res/image/icon/addition.png</normaloff>:/res/image/icon/addition.png</iconset>
        </property>
        <property name="iconSize">
@@ -270,7 +270,7 @@
         <string>-</string>
        </property>
        <property name="icon">
-        <iconset resource="../res/res.qrc">
+        <iconset>
          <normaloff>:/res/image/icon/delete.png</normaloff>:/res/image/icon/delete.png</iconset>
        </property>
        <property name="iconSize">
@@ -300,7 +300,7 @@
         <string/>
        </property>
        <property name="pixmap">
-        <pixmap resource="../res/res.qrc">:/res/image/icon/54.png</pixmap>
+        <pixmap>:/res/image/icon/54.png</pixmap>
        </property>
        <property name="scaledContents">
         <bool>true</bool>
@@ -336,7 +336,7 @@
         <string>...</string>
        </property>
        <property name="icon">
-        <iconset resource="../res/res.qrc">
+        <iconset>
          <normaloff>:/res/image/icon/205.png</normaloff>:/res/image/icon/205.png</iconset>
        </property>
        <property name="iconSize">
@@ -395,8 +395,6 @@
    </item>
   </layout>
  </widget>
- <resources>
-  <include location="../res/res.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

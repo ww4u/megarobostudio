@@ -611,6 +611,9 @@ int deviceMRQ::movej( pvt_region, float ang, float t, float angJ, float tj, floa
     return preMovej( pvt_region_p, ang, t, angJ, tj, endV );
 }
 
+//! 0, 0
+//! t, ang
+//! t+tj, angJ
 int deviceMRQ::preMovej( pvt_region, float ang, float t, float angJ, float tj, float endV )
 {
     tpvRow row;

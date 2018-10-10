@@ -24,15 +24,12 @@ Q_SIGNALS:
 
 private slots:
     void on_btnLeft_clicked();
-
     void on_btnRight_clicked();
 
     void on_btnLeft_pressed();
-
     void on_btnLeft_released();
 
     void on_btnRight_pressed();
-
     void on_btnRight_released();
 
 private:

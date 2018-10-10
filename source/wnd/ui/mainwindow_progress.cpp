@@ -2,6 +2,7 @@
 
 void MainWindow::slot_download_cancel( const QString &name, int id )
 {
+    //! \note cancel all
     DeviceDownloader::cancelActives();
 }
 
@@ -66,6 +67,13 @@ bool MainWindow::progressProc(  const QString &name,
     }
     else
     { return false; }
+
+    //! progress in status bar
+    int localMin, localMax, localNow;
+    if ( progress()->progressSnap( localMin, localMax, localNow ) )
+    { m_pStateBar->downloadProgress( true, localMin, localMax, localNow ); }
+    else
+    { m_pStateBar->downloadProgress( false ); }
 
     return true;
 }

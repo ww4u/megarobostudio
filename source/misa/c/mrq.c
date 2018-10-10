@@ -8,6 +8,18 @@ int MRQ_preMove( ViSession vi, int ax, int page, float t, float angle, float end
 {
     _robo_set( sprintf( args, "PREMOVE %d,%d,%g,%g,%g", ax, page, t, angle, endV ))
 }
+//! 0,0
+//! t1, angle1
+//! t2, angle2
+int MRQ_preMoveT( ViSession vi, int ax, int page,
+                  float t1, float angle1,
+                  float t2, float angle2 )
+{
+    _robo_set( sprintf( args, "PREMOVEJ %d,%d,%g,%g,%g,%g",
+                                ax, page,
+                                t1, angle1,
+                                t2 - t1, angle2 ) );
+}
 
 int MRQ_getIncAngle( ViSession vi, int ax, float *val0 )
 {

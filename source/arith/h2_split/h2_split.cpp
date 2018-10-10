@@ -6,7 +6,6 @@ namespace h2_split {
 
 #include "./arith/functions.cpp"
 
-//! no memory check
 int _h2Split( const QList<double> &armLengthes,
               const QList<double> &zeroXy,
               QList< endPoint *> & points,

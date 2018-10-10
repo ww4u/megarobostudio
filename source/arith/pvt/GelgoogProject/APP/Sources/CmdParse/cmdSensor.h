@@ -49,16 +49,6 @@ void cmdReportCmdProc(CmdParseFrameStruct *pCmdStackFrame);
 void cmdReportTorqueTimerCB(void *timeOutPara);
 void cmdReportTempTimerCB(void *timeOutPara);
 void cmdReportCycleTimerCB(void *timeOutPara);
-void cmdReportXAngleTimerCB(void *timeOutPara);
-void cmdReportYAngleTimerCB(void *timeOutPara);
-void cmdReportZAngleTimerCB(void *timeOutPara);
-void cmdReportXVelocityTimerCB(void *timeOutPara);
-void cmdReportYVelocityTimerCB(void *timeOutPara);
-void cmdReportZVelocityTimerCB(void *timeOutPara);
-void cmdReportXAccTimerCB(void *timeOutPara);
-void cmdReportYAccTimerCB(void *timeOutPara);
-void cmdReportZAccTimerCB(void *timeOutPara);
-void cmdReportAngleSensorTimerCB(void *timeOutPara);
 
 void cmdReportSgAllTimerCB(void *timeOutPara);
 void cmdReportSgSeTimerCB(void *timeOutPara);
@@ -72,6 +62,15 @@ void cmdReportVelorityTimerCB(void *timeOutPara);
 
 void cmdSensorUartCmdInit(void);
 void cmdSensorUartCmdProc(CmdParseFrameStruct *pCmdStackFrame);
+
+#if GELGOOG_SINANJU
+void cmdAbsEncAlarmCmdInit(void);
+void cmdAbsEncAlarmCmdProc(CmdParseFrameStruct *pCmdStackFrame);
+void cmdDistAlarmCmdInit(void);
+void cmdDistAlarmCmdProc(CmdParseFrameStruct *pCmdStackFrame);
+void cmdPdmCmdInit(void);
+void cmdPdmCmdProc(CmdParseFrameStruct *pCmdStackFrame);
+#endif
 
 
 

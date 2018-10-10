@@ -1,6 +1,7 @@
 #include "igus_delta.h"
 #include "../../com/comassist.h"
 #include "../../arith/arith_igus/arith_igus.h"
+
 //! load the data from the file
 int robotIgusDelta::program( const QString &fileName,
                          const tpvRegion &region )
@@ -22,7 +23,6 @@ int robotIgusDelta::program( const QString &fileName,
     return 0;
 }
 
-//! \todo for each axis
 int robotIgusDelta::loadProgram( const QString &fileName )
 {
     //!  0  1  2   3  4  5  6   7
@@ -90,16 +90,6 @@ int robotIgusDelta::loadProgram( const QString &fileName )
         mJointsGroup.append( pGroup );
     }
 
-        //! log joint group
-        foreach ( tpvGroup *pGp, mJointsGroup )
-        {
-            logDbg()<<"*******";
-            foreach(  tpvItem *pItem, pGp->mItems )
-            {
-                logDbg()<<pItem->mT<<pItem->mP<<pItem->mV;
-            }
-        }
-
     return 0;
 }
 
@@ -160,53 +150,6 @@ int robotIgusDelta::preMove( QList<TraceKeyPoint> &curve,
     return ret;
 }
 
-int robotIgusDelta::moveTest1( const tpvRegion &region )
-{
-    TraceKeyPoint pt1,pt2;
-    pt1.t = 0;
-    pt1.x = 0;
-    pt1.y = -230.8074;
-    pt1.z = 0;
-    pt1.hand = 10;
-
-    pt2.t = 2;
-    pt2.x = 113.7092;
-    pt2.y = -187.3488;
-    pt2.z = 10;
-    pt2.hand = 20;
-
-    QList<TraceKeyPoint> curve;
-    curve.append( pt1 );
-    curve.append( pt2 );
-//    return moveTest( pt1, pt2, dt );
-// MOVE 280,21.5,452.75,0,250,0,502,90,1
-// MOVE 250,0,502,90,280,21.5,452.75,0,1
-    return move( curve, region );
-}
-
-int robotIgusDelta::moveTest2( const tpvRegion &region )
-{
-    TraceKeyPoint pt1,pt2;
-    pt1.t = 2;
-    pt1.x = 0;
-    pt1.y = -230.8074;
-    pt1.z = 0;
-    pt1.hand = 10;
-
-    pt2.t = 0;
-    pt2.x = 113.7092;
-    pt2.y = -187.3488;
-    pt2.z = 10;
-    pt2.hand = 20;
-
-    //! p2 -> p1
-    QList<TraceKeyPoint> curve;
-    curve.append( pt2 );
-    curve.append( pt1 );
-
-    return move( curve, region );
-}
-
 int robotIgusDelta::pose( float xyz[3] )
 {
     //! get angle
@@ -227,34 +170,27 @@ int robotIgusDelta::pose( float xyz[3] )
 
         //! convert the angles
         angles[ i ] *= ( mAngleToDist * dir );
-
-//        sysLog( QString::number( angles[i]) );
     }
 
     //! cfg
     //! config para
     arith_igus::igusConfig cfg;
     for ( int i = 0; i < 4; i++ )
-    { cfg.armLength[i] = mArmLengths[i]; /*sysLog(QString::number(mArmLengths[i]));*/ }
+    { cfg.armLength[i] = mArmLengths[i]; }
     for ( int i = 0; i < 2; i++ )
-    { cfg.offset[i] = mOffset[i]; /*sysLog(QString::number(mOffset[i]));*/}
+    { cfg.offset[i] = mOffset[i]; }
     for ( int i = 0; i < 3; i++ )
-    { cfg.P0[i] = mP0[i]; /*sysLog(QString::number(mP0[i]));*/}
+    { cfg.P0[i] = mP0[i]; }
     for ( int i = 0; i < 2; i++ )
-    { cfg.posLim[i] = mPosLim[i]; /*sysLog(QString::number(mPosLim[i]))*/;}
-    cfg.scal = mScal;/*sysLog(QString::number(mScal));*/
-    cfg.vM = mVm;/*sysLog(QString::number(mVm));*/
+    { cfg.posLim[i] = mPosLim[i]; }
+    cfg.scal = mScal;
+    cfg.vM = mVm;
 
     //! cw
     int ret;
     ret = arith_igus::cwSlove( cfg, angles, xyz );
     if ( ret != 0 )
     { return ret; }
-
-//    sysLog( QString::number(xyz[0]),
-//            QString::number(xyz[1]),
-//            QString::number(xyz[2])
-//            );
 
     return 0;
 }

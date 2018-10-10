@@ -25,8 +25,6 @@ void INTRThread::slot_event( eventId id, frameData dat )
 {
     receiveCache::decEvent();       //! dec
 
-//    receiveCache::dequeueEvent();
-
     emit sig_event( id, dat );
 }
 
@@ -79,12 +77,10 @@ void InstMgr::dataIn(  QTcpSocket *socket,
                        const QString &name,
                        QByteArray &ary )
 {
-//    logDbg()<<ary.length()<<name;
     //! find the name
     scpiShell *pShell = findShell( name );
     if ( NULL == pShell )
     { return; }
-//    logDbg()<<ary.length();
 
     //! wait lpc idle
     RoboMsgQueue::waitIdle();
@@ -104,9 +100,6 @@ void InstMgr::dataIn(  QTcpSocket *socket,
             rdSize = pShell->read( retData, retSize );
 
             dataOut( socket, retData, rdSize );
-        //        logDbg()<<rdSize<<retData;
-        //        for ( int i = 0; i < rdSize; i++ )
-        //        { logDbg()<<QString::number( retData[i],16); }
         }
 
     pShell->unlock();
@@ -140,15 +133,13 @@ logDbg();
     QThread::msleep( 1000 );        //! USB-CAN can not enumerate on close - open
 logDbg();
     ret = probeCanBus();
-logDbg();
-//    ret = -1;
 
     postProbeBus();
 
     if ( ret != 0 )
     { return ret; }
 
-    return 0;
+    return ret;
 }
 
 int InstMgr::probeCanBus()
@@ -297,7 +288,7 @@ int InstMgr::probeCanBus()
 
         //! not set name
         if ( pRobo->getName().length() < 1 )
-        {logDbg();
+        {
             devSig = pRobo->getSignature();
 
             //! check
@@ -317,7 +308,6 @@ int InstMgr::probeCanBus()
                     strDevName = QString("%1%2").arg(pRobo->typeString()).arg(deviceSeq);
 
                     Q_ASSERT( deviceSeq < 256 );
-
                 }
 
                 pRobo->setName( strDevName );
@@ -362,8 +352,6 @@ int InstMgr::probeCanBus()
 
 int InstMgr::probeRs232Bus()
 {
-
-
     return 0;
 }
 
@@ -371,7 +359,6 @@ int InstMgr::probeRs232Bus()
 int InstMgr::emergencyStop()
 {
     byte bufstp[] = { MRQ_mc_MOTION, MRQ_sc_MOTION_SWITCH, CAN_BROAD_CHAN, MRQ_MOTION_SWITCH_EMERGSTOP, 0 };
-//    byte bufrst[] = { MRQ_mc_MOTION, MRQ_sc_MOTION_SWITCH, CAN_BROAD_CHAN, MRQ_MOTION_SWITCH_RESET, 0 };
     int ret;
 
     //! 1. broadcast
@@ -384,8 +371,6 @@ int InstMgr::emergencyStop()
         {
             Q_ASSERT( NULL != pBus );
             ret = pBus->doWrite( broadId, bufstp, sizeof(bufstp) );
-
-//            ret = pBus->doWrite( broadId, bufrst, sizeof(bufrst) );
         }
     }
 
@@ -497,7 +482,7 @@ void InstMgr::clearFileDeviceTree()
             mDevices.removeAll( pDev );
         }
     }
-logDbg();
+
     delete_all( mFileDeviceTree );
     delete_all( mFileBusList );
 }
@@ -590,7 +575,6 @@ VRobot * InstMgr::findRobot( const QString &name, int axesId  )
         {
             Q_ASSERT( NULL != pDev );
 
-//            if ( QString::compare( pDev->name(), name, Qt::CaseInsensitive ) == 0)
             if ( str_is( pDev->getName(), name ) )
             {
                 //! check axes
@@ -645,8 +629,6 @@ VRobot * InstMgr::findRobot( const QString &name, const QString &bus )
     foreach( VRobot *pRobo, *pList )
     {
         Q_ASSERT( NULL != pRobo );
-//        if ( pRobo->name() == name )
-//        if ( QString::compare( pRobo->name(), name, Qt::CaseInsensitive) == 0 )
         if ( str_is( pRobo->getName(), name ) )
         { return pRobo; }
     }
@@ -658,7 +640,7 @@ VRobot * InstMgr::findRobot( const QString &fullname )
     QStringList strList = fullname.split( "@", QString::SkipEmptyParts );
     if ( strList.size() == 0 )
     { return NULL; }
-//    logDbg()<<strList;
+
     Q_ASSERT( strList.size() >  1 );
     return findRobot( strList[0], strList[1] );
 }
@@ -677,7 +659,6 @@ VRobot * InstMgr::findAbbRobot( const QString &abbName )
 
     foreach( VRoboList *pList, mFileDeviceTree )
     {
-
         lRobo = findRobot( abbName, pList->bus()->name() );
         if ( NULL != lRobo )
         { return lRobo; }
@@ -824,9 +805,6 @@ QString InstMgr::sendIdToName( int devId, int sendId)
             }
             else
             { continue; }
-
-
-
         }
     }
 
@@ -907,29 +885,6 @@ QStringList InstMgr::resources()
 
     resrc<<phyRsrc<<roboRsrc;
 
-//    foreach( VRoboList *pRoboList, mDeviceTree )
-//    {
-//        Q_ASSERT( NULL != pRoboList );
-//        foreach( VRobot * pDev, *pRoboList )
-//        {
-//            Q_ASSERT( NULL != pDev );
-
-//            resrc<<pDev->getName();
-//        }
-//    }
-
-//    //! robot
-//    foreach( VRoboList *pRoboList, mFileDeviceTree )
-//    {
-//        Q_ASSERT( NULL != pRoboList );
-//        foreach( VRobot * pDev, *pRoboList )
-//        {
-//            Q_ASSERT( NULL != pDev );
-
-//            resrc<<pDev->getName();
-//        }
-//    }
-
     return resrc;
 }
 
@@ -940,8 +895,6 @@ void InstMgr::setTPVBase( float t, float p, float v )
 
 int InstMgr::openBus()
 {
-
-
     return 0;
 }
 int InstMgr::closeBus()
@@ -984,6 +937,7 @@ int InstMgr::probeCANBus( IBus *pNewBus,
                        VCI_MR_USBTMC };
 
     Q_ASSERT( NULL != m_pMainModel );
+
     //! bus prop.
     pNewBus->setPId( m_pMainModel->mSysPref.mPort );
     pNewBus->setSpeed( m_pMainModel->mSysPref.mSpeed );
@@ -1008,9 +962,9 @@ int InstMgr::probeCANBus( IBus *pNewBus,
 
     //! enumerate
     ret = pNewBus->enumerate( m_pMainModel->mSysPref );
-    logDbg()<<ret;
     if ( ret != 0 )
-    { logDbg(); return ret; }
+    { logDbg()<<ret; return ret; }
+
     sysProgress( 30, tr("enumerate") );
 
     //! create the device
@@ -1198,10 +1152,6 @@ void InstMgr::gc()
 
 void InstMgr::gcPhyBus()
 {
-//    Q_ASSERT( NULL != m_pReceiveCache );
-//    m_pReceiveCache->detachBus();
-//    mCanBus.close();
-
     //! collect the current device map
     mDeviceMap.clear();
     foreach( VRoboList *pList, mDeviceTree )
@@ -1223,15 +1173,11 @@ void InstMgr::gcPhyBus()
     delete_all( mBuses );
 
     delete_all( mDeviceTree );
-
-    logDbg();
 }
 void InstMgr::gcFileBus()
 {
     delete_all( mFileDeviceTree );
     delete_all( mFileBusList );
-
-    logDbg();
 }
 
 scpiShell *InstMgr::findShell( const QString &name )
@@ -1243,7 +1189,6 @@ scpiShell *InstMgr::findShell( const QString &name )
         foreach( scpiShell * pDev, *pRoboList )
         {
             Q_ASSERT( NULL != pDev );
-//            if ( QString::compare( pDev->getName(), name, Qt::CaseInsensitive)==0 )
             if ( str_is( pDev->getName(), name ) )
             { return pDev; }
         }
@@ -1256,7 +1201,6 @@ scpiShell *InstMgr::findShell( const QString &name )
         foreach( scpiShell * pDev, *pRoboList )
         {
             Q_ASSERT( NULL != pDev );
-//            if ( QString::compare( pDev->getName(), name, Qt::CaseInsensitive)==0 )
             if ( str_is( pDev->getName(), name ) )
             { return pDev; }
         }
@@ -1264,10 +1208,8 @@ scpiShell *InstMgr::findShell( const QString &name )
 
     //! for mgr
     QString str = QHostInfo::localHostName();
-//    if ( QString::compare(str, name, Qt::CaseInsensitive) == 0 )
     if ( str_is( str, name ) )
     { return m_pMainShell; }
-//    else if ( QString::compare( "localhost", name, Qt::CaseInsensitive) == 0 )
     else if ( str_is( "localhost", name ) )
     { return m_pMainShell; }
     else

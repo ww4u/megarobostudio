@@ -16,6 +16,7 @@ Copyright (C) 2016，北京镁伽机器人科技有限公司
 #include "cmdMainParse.h"
 #include "servCommIntfc.h"
 #include "servSystemPara.h"
+#include "servSoftTimer.h"
 
 
 
@@ -25,6 +26,8 @@ extern SystemStateStruct g_systemState;
 extern EventSrcBmpStruct g_eventSrcBmp;
 
 extern bool g_bCmdPostSemToEvent;
+
+extern SoftTimerStruct g_paraSaveTimer;
 
 
 
@@ -65,7 +68,7 @@ void cmdIdentityGroupSet(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -80,14 +83,14 @@ void cmdIdentityGroupSet(u8 cmdDataLen, u8 *pCmdData)
     //进行参数验证 
     if (PARA_VERIFY_NO_ERROR == pvrfIdentityGroupVerify(cmdDataLen, pCmdData, (void *)&groupNum, &groupIndex))
     {    
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if (bConfig[i])
             {
                 g_systemInfo.group[i][groupIndex] = groupNum;
             }
         }
-        servSystemInfoWrite(&g_systemInfo);
+        servStimerAdd(&g_paraSaveTimer);
     }
 }
 
@@ -128,7 +131,7 @@ void cmdIdentityGroupQuery(u8 cmdDataLen, u8 *pCmdData)
         }
         else
         {
-            for (i = 0;i < g_systemState.chanNum;i++)
+            for (i = 0;i < CH_TOTAL;i++)
             {
                 if ((CH_ALL == chanNum) ||
                     (chanNum == g_systemInfo.group[i][0]) ||
@@ -210,7 +213,7 @@ void cmdIdentityLabelSet(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -225,7 +228,7 @@ void cmdIdentityLabelSet(u8 cmdDataLen, u8 *pCmdData)
     //进行参数验证 
     if (PARA_VERIFY_NO_ERROR == pvrfIdentityLabelVerify(cmdDataLen, pCmdData, (void *)&mainLabel, (void *)&subLabel))
     {    
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if (bConfig[i])
             {
@@ -233,7 +236,7 @@ void cmdIdentityLabelSet(u8 cmdDataLen, u8 *pCmdData)
                 g_systemInfo.subLabel[i]  = subLabel;
             }
         }
-        servSystemInfoWrite(&g_systemInfo);
+        servStimerAdd(&g_paraSaveTimer);
     }
 }
 
@@ -264,7 +267,7 @@ void cmdIdentityLabelQuery(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||

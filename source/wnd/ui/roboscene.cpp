@@ -18,6 +18,7 @@ roboScene::roboScene(QWidget *parent) :
     buildConnection();
 
     m_pLayout = new FlowLayout( this );
+    Q_ASSERT( NULL != m_pLayout );
 }
 
 roboScene::~roboScene()

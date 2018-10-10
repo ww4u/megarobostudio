@@ -1,14 +1,5 @@
 #include "h2motiongroup.h"
 
-//QStringLiteral("Enable"),
-//QStringLiteral("Name"),
-
-//QStringLiteral("t(s)"),
-//QStringLiteral("x(mm)"),
-//QStringLiteral("y(mm)"),
-
-//QStringLiteral("Comment"),
-
 H2MotionGroup::H2MotionGroup( const QString &className, const QString &fileName )
                              : MegaTableModel( className, fileName)
 {
@@ -117,7 +108,7 @@ bool H2MotionGroup::setData(const QModelIndex &index, const QVariant &value, int
 Qt::ItemFlags H2MotionGroup::flags(const QModelIndex &index) const
 {
     if (!index.isValid())
-          return Qt::ItemIsEnabled;
+    { return Qt::ItemIsEnabled; }
 
     return QAbstractItemModel::flags(index) | Qt::ItemIsEditable;
 }
@@ -259,7 +250,7 @@ int H2MotionGroup::load( const QString &fileName )
                       index(mItems.count(),
                       mHeaderList.size() - 1
                        ) );
-    logDbg()<<mItems.size();
+
     return 0;
 }
 

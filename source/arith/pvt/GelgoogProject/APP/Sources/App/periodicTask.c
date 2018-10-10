@@ -26,6 +26,7 @@ extern OS_SEM g_semPeriodicTask;
 extern OS_SEM g_semFunctionTask;
 extern OS_SEM g_semCmdParseTask;
 extern OS_SEM g_semEventManageTask;
+extern OS_SEM g_semParaSaveTask;
 
 extern SoftTimerStruct g_ciUartDmaRecTimer;
 extern SoftTimerStruct g_senUartDmaRecTimer[UARTNUM_RESERVE];
@@ -33,17 +34,37 @@ extern SoftTimerStruct g_senUartSwitchTimer[UARTNUM_RESERVE];
 extern SoftTimerStruct g_reportTimer[CH_TOTAL][REPTTYPE_RESERVE];
 extern SoftTimerStruct g_motionStateTimer[CH_TOTAL];
 extern SoftTimerStruct g_motionMonitorTimer[CH_TOTAL];
+extern SoftTimerStruct g_driverCurrTimer[CH_TOTAL];
+
+extern SoftTimerStruct g_runTimeCountTimer[CH_TOTAL];
+
+extern SoftTimerStruct g_paraSaveTimer;
+
+#if GELGOOG_AXIS_10
+extern SoftTimerStruct g_driverFaultTimer;
+#else
+extern SoftTimerStruct g_drvStateReadTimer[CH_TOTAL];
+#endif
+
 
 #ifdef PROJECT_QUBELEY
 extern SoftTimerStruct g_analogInTimer;
 #endif
 
+
 #ifdef PROJECT_GELGOOG
+
+#if !GELGOOG_SINANJU
 extern SoftTimerStruct g_isolatorInTimer;
+
+#else
+extern SoftTimerStruct g_distAlarmLedTimer;
 #endif
 
-extern SoftTimerStruct g_ledTimer;
+#endif
 
+
+extern SoftTimerStruct   g_ledTimer;
 extern SensorDataStruct  g_sensorData;
 extern SystemStateStruct g_systemState; 
 
@@ -68,6 +89,7 @@ extern u16           dirNum;
 bool g_bPerdPostSemToFunc  = false;
 bool g_bPerdPostSemToCmd   = false;
 bool g_bPerdPostSemToEvent = false;
+bool g_bPerdPostSemToPara  = false;
 
 
 
@@ -94,8 +116,19 @@ void PeriodicTask(void *p_arg)
     bool bHaveClear = false;
 
 #if DRIVE_FROM_ARM
-    u32 tmcState;
-    BitAction BitVal = Bit_SET;
+    GPIO_InitTypeDef GPIO_InitStructure;
+
+  
+    RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);    
+
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_15;         
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+    GPIO_Init(GPIOA, &GPIO_InitStructure);
+    
+    //GPIO_SetBits(GPIOA, GPIO_Pin_15);
 #endif
     
     while (1)
@@ -133,13 +166,13 @@ void PeriodicTask(void *p_arg)
 
                     if (DDR_NOINIT == ddrState)    //初始化未完成
                     {
-                        g_systemState.errorCode[1] = FPGA_DDR_VERIFY_ERROR;    //第一个元素放测试状态: 0xFF-测试未结束; 0-测试完成
+                        g_systemState.eventCode[1] = FPGA_DDR_VERIFY_ERROR;    //第一个元素放测试状态: 0xFF-测试未结束; 0-测试完成
                         
                         servLedSet(LED_ERROR);
                     }
                     else if (DDR_TESTERROR == ddrState)    //自测有错
                     {
-                        g_systemState.errorCode[1] = FPGA_DDR_TEST_ERROR;    //第一个元素放测试状态: 0xFF-测试未结束; 0-测试完成
+                        g_systemState.eventCode[1] = FPGA_DDR_TEST_ERROR;    //第一个元素放测试状态: 0xFF-测试未结束; 0-测试完成
                         
                         servLedSet(LED_ERROR1);
                     }
@@ -149,7 +182,7 @@ void PeriodicTask(void *p_arg)
                 {
                     readCount = 0;
                     g_systemState.EnginMode = ENGINMODE_NONE;
-                    g_systemState.errorCode[0] = 0;
+                    g_systemState.eventCode[0] = 0;
                 }
             }
             else if (ENGINMODE_DRIVETEST == g_systemState.EnginMode)
@@ -157,9 +190,7 @@ void PeriodicTask(void *p_arg)
                 runState = servFpgaRunStateGet(CH1);    //FOR MODIFY NICK
                 if (RUNSTETE_NORUN == runState)
                 {
-                    //通过CAN总线查询测试结果
-                    servFrameSend(CMD_FACTORY, FACTORYCMD_DRIVERENDQ, 0, NULL, LINK_CAN);
-                    g_bPerdPostSemToCmd = true;
+                    //
                 }
             }
             else if (ENGINMODE_ENCODERTEST == g_systemState.EnginMode)
@@ -188,32 +219,38 @@ void PeriodicTask(void *p_arg)
             //UART DMA接收定时器
             servStimerExamine(&g_ciUartDmaRecTimer, NULL);
 
+            servStimerExamine(&g_paraSaveTimer, NULL);
+
             for (i = 0;i < UARTNUM_RESERVE;i++)
             {
                 servStimerExamine(&g_senUartDmaRecTimer[i], (void *)&i);
                 servStimerExamine(&g_senUartSwitchTimer[i], (void *)&i);
             }
             
-            if (SENSOR_ON == g_systemState.reportSwitch)
+            for (i = 0;i < CH_TOTAL;i++)
             {
-                for (i = 0;i < g_systemState.chanNum;i++)
-                {
-                    //运动状态
-                    servStimerExamine(&g_motionStateTimer[i], (void *)&i);
+                //运动状态
+                servStimerExamine(&g_motionStateTimer[i], (void *)&i);
 
-                    //运动监控
-                    servStimerExamine(&g_motionMonitorTimer[i], (void *)&i);
+                //运动监控
+                servStimerExamine(&g_motionMonitorTimer[i], (void *)&i);
 
-                    //上报数据
-                    for (j = 0;j < REPTTYPE_RESERVE;j++)    //REPTTYPE_ANGLESEN数量和通道数量不等同
-                    {
-                        servStimerExamine(&g_reportTimer[i][j], (void *)&i);
-                    }
-                }
-                
-                for (i = 0;i < ANGLE_SENSOR_NUM;i++)
+#if !GELGOOG_AXIS_10
+#if TUNING_SUPPORT
+                //驱动状态
+                servStimerExamine(&g_drvStateReadTimer[i], (void *)&i);
+#endif
+#endif
+
+                servStimerExamine(&g_runTimeCountTimer[i], (void *)&i);
+
+                //电流切换
+                servStimerExamine(&g_driverCurrTimer[i], (void *)&i);
+
+                //上报数据
+                for (j = 0;j < REPTTYPE_RESERVE;j++)    //REPTTYPE_ANGLESEN数量和通道数量不等同
                 {
-                    servStimerExamine(&g_reportTimer[i][REPTTYPE_ANGLESEN], (void *)&i);
+                    servStimerExamine(&g_reportTimer[i][j], (void *)&i);
                 }
             }
             
@@ -223,8 +260,20 @@ void PeriodicTask(void *p_arg)
 #endif
 
 #ifdef PROJECT_GELGOOG
+
+#if !GELGOOG_SINANJU
             //隔离输入
             servStimerExamine(&g_isolatorInTimer, NULL);
+
+#else
+
+            servStimerExamine(&g_distAlarmLedTimer, NULL);
+#endif
+
+#if GELGOOG_AXIS_10
+            servStimerExamine(&g_driverFaultTimer, NULL);
+#endif
+
 #endif
         }
 
@@ -249,30 +298,21 @@ void PeriodicTask(void *p_arg)
             OSSemPost(&g_semEventManageTask, OS_OPT_POST_ALL, &os_err);
         }
 
+        if (g_bPerdPostSemToPara)
+        {
+            g_bPerdPostSemToPara = false;
+            
+            OSSemPost(&g_semParaSaveTask, OS_OPT_POST_ALL, NULL);
+        }
+
 
 
         
-#if DRIVE_FROM_ARM
-        GPIO_WriteBit(dirGpio, dirNum, BitVal);
-        
-        GPIO_WriteBit(stepGpio, stepPin, Bit_SET);
+#if DRIVE_FROM_ARM        
+        GPIO_SetBits(GPIOA, GPIO_Pin_15);
         bspDelayUs(500);
-        GPIO_WriteBit(stepGpio, stepPin, Bit_RESET);
+        GPIO_ResetBits(GPIOA, GPIO_Pin_15);
         bspDelayUs(500);
-        GPIO_WriteBit(stepGpio, stepPin, Bit_SET);
-        bspDelayUs(500);
-        GPIO_WriteBit(stepGpio, stepPin, Bit_RESET);
-        bspDelayUs(500);
-        GPIO_WriteBit(stepGpio, stepPin, Bit_SET);
-        bspDelayUs(500);
-        GPIO_WriteBit(stepGpio, stepPin, Bit_RESET);
-        bspDelayUs(500);
-        GPIO_WriteBit(stepGpio, stepPin, Bit_SET);
-        bspDelayUs(500);
-        GPIO_WriteBit(stepGpio, stepPin, Bit_RESET);
-        bspDelayUs(500);
-
-        //servTMC_Reg_Read(RDSEL_MICRO_POS, &tmcState);
 #endif
     }
 }

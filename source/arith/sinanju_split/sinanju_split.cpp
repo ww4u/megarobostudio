@@ -1,7 +1,6 @@
 
 #include "sinanju_split.h"
 
-
 namespace ns_sinanju {
 
 #define PI 3.1415926
@@ -92,19 +91,15 @@ static void normalize_pis(double *p, int n)
 //! return: 0 -- no error
 int MEGA_EXPORT GetEndPosition(
     double* armLengthArray,     //! foreach arm
-    int armCount,		//! arm count: 6
-
-//    double* deltAngles,		//! delta angle: degree
-//    double*
+    int armCount,               //! arm count: 6
 
     double *rotAngles,
     double *archAngles,
     double *deltaAngles,
 
-//    double* angles,		//! current angle 0~360
     int angleCount,             //! 4
 
-    double* res)		//! out: x, y, z
+    double* res)                //! out: x, y, z
 {
     if (NULL == armLengthArray
         || NULL == rotAngles
@@ -125,7 +120,7 @@ int MEGA_EXPORT GetEndPosition(
                                                         //! Ms Builder can not variable array
                                                         //! compensation
 
-    degToRad(localRads, angleCount, localRads);       //! convert angle to rad
+    degToRad(localRads, angleCount, localRads);         //! convert angle to rad
 
     normalize_pis( localRads, angleCount );
                                                         //! const vars
@@ -142,7 +137,6 @@ int MEGA_EXPORT GetEndPosition(
 
                                                         //! end pos
     double endOut[4][4];
-    //	double endX, endY, endZ;
 
     //	endOut[0][0] = c1 * c2a3a4;   						// 计算位姿矩阵
     //	endOut[0][1] = -c1 * s2a3a4;
@@ -166,7 +160,6 @@ int MEGA_EXPORT GetEndPosition(
 
     return 0;
 }
-
 
 #include "../megaarith.h"
 

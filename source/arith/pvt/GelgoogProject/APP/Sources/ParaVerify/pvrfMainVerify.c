@@ -60,7 +60,15 @@ void pvrfParaLimitInit(void)
     g_paraLimit.upLimit.canRadioId = 0x1FFFFFFF;
     g_paraLimit.upLimit.motorGearRatio = 250;
     g_paraLimit.upLimit.motorVolt = 250;
-    g_paraLimit.upLimit.motorCurr = 250;
+    
+#if GELGOOG_AXIS_10
+    g_paraLimit.upLimit.motorCurr = 15;    //最大1.5A
+#elif QUBELEY_HARDVER_1
+    g_paraLimit.upLimit.motorCurr = 80;    //最大8A
+#else
+    g_paraLimit.upLimit.motorCurr = 50;    //最大5A    
+#endif
+
     g_paraLimit.upLimit.motorPeakSpeed = 1024000;
     g_paraLimit.upLimit.motorLead = 1024000;
     g_paraLimit.upLimit.pvtStartPoint = PVT_POINT_BUFFER_SIZE - 1;
@@ -95,8 +103,19 @@ void pvrfParaLimitInit(void)
     g_paraLimit.upLimit.encoderLineNum = 100000;
     g_paraLimit.upLimit.feedbackRatio = 255;
 
-    g_paraLimit.upLimit.speedScale = 500;
+    g_paraLimit.upLimit.sgLimit = 101;
     
+    g_paraLimit.upLimit.lineOutNum = 32768;    //占比不做验证了，丢步的上限需要验证
+
+    g_paraLimit.upLimit.switchTime = 10000;
+
+    g_paraLimit.upLimit.fanDuty = 100;
+
+    g_paraLimit.upLimit.absEncValue = 262143;    //0x3FFFF
+
+    g_paraLimit.upLimit.alarmDist = 1000;     //1000mm
+    
+    g_paraLimit.upLimit.ledFlickerFreq = 5000;    //5000ms
     
     //下限
     g_paraLimit.downLimit.otpThr = 0;
@@ -141,7 +160,19 @@ void pvrfParaLimitInit(void)
     g_paraLimit.downLimit.encoderLineNum = 1;
     g_paraLimit.downLimit.feedbackRatio = 0;
 
+    g_paraLimit.downLimit.sgLimit = -1;
+
     g_paraLimit.downLimit.speedScale = 1;
+    
+    g_paraLimit.downLimit.switchTime = 0;
+    
+    g_paraLimit.downLimit.absEncValue = 0;
+
+    g_paraLimit.downLimit.alarmDist = 10;     //10mm
+
+#if GELGOOG_SINANJU    
+    g_paraLimit.downLimit.ledFlickerFreq = LED_FLICKER_FREQ_MIN;    //100ms
+#endif
 }
 
 

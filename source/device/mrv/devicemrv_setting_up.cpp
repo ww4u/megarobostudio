@@ -9,7 +9,6 @@ int deviceMRV::_uploadSetting()
 MRV_PROGRESS( 0, ("LINK") );
 
     checked_call( getLINK_INTFC(&mLINK_INTFC) );
-//    checked_call( getSYSTEM_WORKMODE(&mSYSTEM_WORKMODE) );
     checked_call( getSYSTEM_POWERON(&mSYSTEM_POWERON));
 
     checked_call( getRS232_BAUD(&mRS232_BAUD) );
@@ -63,7 +62,6 @@ MRV_PROGRESS( 30, "PVT" );
 
 MRV_PROGRESS( 40, "THRESHOLD" );
     for ( int i=0; i < axes(); i++ )
-//for ( int i=0; i < 0; i++ )
     {
         checked_call( getTHRESHOLD_HIGHPRESSURE( i, mTHRESHOLD_HIGHPRESSURE + i ) );
         checked_call( getTHRESHOLD_HIPRESSUREACTION( i, mTHRESHOLD_HIPRESSUREACTION + i ) );

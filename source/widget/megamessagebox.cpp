@@ -1,6 +1,8 @@
 #include "megamessagebox.h"
 #include "../../source/sys/sysapi.h"
+
 bool MegaMessageBox::_bZeroAffirm = false;
+
 void MegaMessageBox::setZeroAffirm( bool b)
 { MegaMessageBox::_bZeroAffirm = b; }
 bool MegaMessageBox::zeroAffirm()

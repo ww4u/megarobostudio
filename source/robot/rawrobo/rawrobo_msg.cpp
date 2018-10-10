@@ -32,9 +32,6 @@ void RawRobo::onMsg( int subAxes, RoboMsg &msg )
     }
 
     //! for some region
-//    tpvRegion region = msg.at(0).value<tpvRegion>();
-//    region.set( subAxes, region.page() );
-//    tpvRegion region;
     tpvRegion region;
     if ( msg.getMsg() == e_robot_member_state )     //! subax, region, ax
     {
@@ -48,7 +45,6 @@ void RawRobo::onMsg( int subAxes, RoboMsg &msg )
         region = msg.at(0).value<tpvRegion>();
     }
 
-//    logDbg()<<region.axes()<<region.page();
     Q_ASSERT( region.page() >= 0 && region.page() < regions() );
 
     //! to some region

@@ -3,7 +3,6 @@
 #include "../../device/mrq/devicemrq_state.h"
 #include "../../device/board/_MRQ_enum.h"
 
-
 D1Point::D1Point( float pt, float pp, float pv )
 {
     t = pt;
@@ -20,7 +19,6 @@ TraceKeyPoint::TraceKeyPoint( float pt, float px, float py, float pz, float phan
 
     hand = phand;
     iMask = 0;
-//    set_bit( iMask, BIT_INTERP );
 }
 
 void TraceKeyPoint::clear()
@@ -160,7 +158,7 @@ int RawRobo::state( const tpvRegion &region, int inTask )
     //! in task
     //! real status
     else
-    { return fsm( region )->state();}
+    { return fsm( region )->state(); }
 }
 
 void RawRobo::onTimer( void *pContext, int id )
@@ -172,10 +170,6 @@ void RawRobo::onTimer( void *pContext, int id )
     Q_ASSERT( NULL != pFsm );
 
     pFsm->onTimer( id );
-//    if ( pFsm == &mFsm )
-//    { mFsm.onTimer( id ); }
-
-//    logDbg()<<id;
 }
 
 void RawRobo::attachCondition(
@@ -194,7 +188,7 @@ bool RawRobo::waitCondition(
 }
 
 RawRoboFsm * RawRobo::fsm( const tpvRegion &region )
-{//logDbg()<<region.axes()<<region.page()<<mFsms.size();
+{
     Q_ASSERT( mFsms.contains( region) );
     Q_ASSERT( NULL != mFsms[region] );
 

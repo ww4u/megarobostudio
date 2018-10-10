@@ -174,6 +174,7 @@ public:
 private slots:
     void on_toolState_clicked();
     void on_chkOnLine_clicked(bool checked);
+
 };
 
 #endif // DEVICEMGR_H

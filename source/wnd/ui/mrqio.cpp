@@ -37,28 +37,6 @@ void mrqIo::modelChanged()
 
 void mrqIo::spyEdited()
 {
-//    QCheckBox *checkBoxes[]=
-//    {
-//        ui->chkLevel,
-//    };
-//    QRadioButton *radBoxes[] = {
-//    };
-//    QLineEdit *edits[]={
-//    };
-
-//    QSpinBox *spinBoxes[]={
-//    };
-//    QDoubleSpinBox *doubleSpinBoxes[]={
-//        ui->spinLevelPeriod,
-//    };
-
-//    QComboBox *comboxes[]={
-//        ui->cmbLevelMode,
-//        ui->cmbLevelResponse,
-//    };
-
-//    install_spy();
-
     modelView *pView;
     for ( int i = 0; i < ui->tabWidget->count(); i++ )
     {
@@ -137,10 +115,6 @@ int mrqIo::apply()
 
 int mrqIo::updateUi()
 {
-//    MegaDevice::deviceMRQ *pDevice;
-//    pDevice = getDevice();
-//    Q_ASSERT( NULL != pDevice );
-
     //! for yo apply
     for ( int i = 0; i < m_pMrqModel->isos(); i++ )
     {

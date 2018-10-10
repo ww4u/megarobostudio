@@ -1,7 +1,6 @@
 #include "aboutdlg.h"
 #include "ui_aboutdlg.h"
 
-
 aboutDlg::aboutDlg(SysPara *pPara,
                    QWidget *parent) :
     QDialog(parent),

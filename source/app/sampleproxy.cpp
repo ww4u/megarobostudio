@@ -189,13 +189,6 @@ bool sampleProxy::sample( int tickus,
     pItem->mMs = QDateTime::currentMSecsSinceEpoch();
     pItem->mVal.clear();
 
-    //! debug rand data
-//    val = qrand();
-//    static int _rand_id = 0;
-//    val = (_rand_id++ & 0xff);
-
-//    val = qrand()*10.0/RAND_MAX;
-
     //! \note to big endian
     for ( int i = 0; i < size; i++ )
     {

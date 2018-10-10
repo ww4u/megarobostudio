@@ -92,6 +92,7 @@ bool TpGroup::insertRows(int position, int rows, const QModelIndex &parent)
     for (int row = 0; row < rows; ++row)
     {
         pItem = new TpItem();
+        Q_ASSERT( NULL != pItem );
         mItems.insert( position+row, pItem );
     }
 
@@ -208,16 +209,7 @@ int TpGroup::remove( int id )
 
 int TpGroup::clear()
 {
-//    foreach( TpItem *pItem, mItems )
-//    {
-//        Q_ASSERT( NULL != pItem );
-//        delete pItem;
-//    }
-
-//    mItems.clear();
-
     delete_all( mItems );
-
     return 0;
 }
 

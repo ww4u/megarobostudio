@@ -51,7 +51,6 @@ robotMegatron::robotMegatron()
     mAxesConnectionName[4] = "CH3@device1"; //! ly
     mAxesConnectionName[5] = "CH4@device1"; //! ry
 
-
     m_pRoboTask = new MegatronTask();
     Q_ASSERT( NULL != m_pRoboTask );
 
@@ -118,12 +117,12 @@ void robotMegatron::onMsg( int subAxes, RoboMsg &msg )
 int robotMegatron::download( QList<tpvGroup*> &groups,
                              QList<int> &joints,
                              const tpvRegion &region )
-{logDbg();
+{
     Q_ASSERT( groups.size() == joints.size() );
 
     MegaDevice::deviceMRQ *pMrq;
     int axes;
-logDbg();
+
     int ret;
     tpvRegion localRegion = region;
     for ( int i = 0; i < groups.size(); i++ )
@@ -135,14 +134,14 @@ logDbg();
 
         QList<tpvRow*> rows;
         groups[i]->getRows( rows );
-logDbg();
+
         localRegion.setAx( axes );
 
         ret = pMrq->pvtWrite( localRegion, rows );
         if ( ret != 0 )
         { return ret; }
     }
-logDbg();
+
     return 0;
 }
 

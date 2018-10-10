@@ -341,7 +341,7 @@ int robotSinanju::jointMove( int jointId, int subPage, float angle, float t )
 int robotSinanju::angleToPos( float angles[4],
                                TraceKeyPoint &pos )
 {
-//    //! convert
+    //! convert
     jointsAngle rotAngles={ rot_angles(0,1,2,3) };
     jointsAngle archAngles={ mArchAngles.at(0),
                              mArchAngles.at(1),
@@ -355,9 +355,7 @@ int robotSinanju::angleToPos( float angles[4],
 
     //! ref the the zero
     diffAngle( angles, dAngles );
-//logDbg()<<dAngles[0]<<dAngles[1]<<dAngles[2]<<dAngles[3];
-//logDbg()<<angles[0]<<angles[1]<<angles[2]<<angles[3];
-//logDbg()<<mInitAngles[0]<<mInitAngles[1]<<mInitAngles[2]<<mInitAngles[3];
+
     ret = ns_sinanju::GetEndPosition( armLength,sizeof_array(armLength),
                                         rotAngles.angles,
                                         archAngles.angles,
@@ -367,16 +365,6 @@ int robotSinanju::angleToPos( float angles[4],
                                         );
     if ( ret != 0 )
     { return -1; }
-
-//    double archAngles[]={0,90,180,180};
-//    ret = ns_sinanju::GetEndPosition(  armLength,
-//                                        archAngles,
-
-//                                        dAngles,    //! convert angle
-//                                        xyz
-//                                        );
-//    if ( ret != 1 )
-//    { return -1; }
 
     //! export
     pos.hand = 0;
@@ -407,11 +395,6 @@ void robotSinanju::diffAngle( float angles[4],
     //! direction
     for ( int i = 0; i < 4; i++ )
     {
-//        if ( mAngleDir.at(i) )
-//        {}
-//        else
-//        { anglesOut[i] = -anglesOut[i]; }
-
         anglesOut[i] = signs[i] * anglesOut[i];
 
         anglesOut[i] = comAssist::normalizeDegree360( anglesOut[i] );

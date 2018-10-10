@@ -9,6 +9,7 @@ Copyright (C) 2016，北京镁伽机器人科技有限公司
 完成日期:  2016.12.19;
 历史版本:  无;
 *********************************************************************************************/
+#include <string.h>
 #include "pvrfMotor.h"
 
 
@@ -51,7 +52,8 @@ u8 pvrfMotorGearRatioVerify(u8 dataLen, u8 *pData, void *pParaValue)
     
     if (sizeof(u16) == dataLen)    //长度先要正确
     {
-        tempValue = *pData;
+        //tempValue = *pData;
+        memcpy(&tempValue, pData, dataLen);
         if (tempValue <= g_paraLimit.upLimit.motorGearRatio)
         {
             if (tempValue >= g_paraLimit.downLimit.motorGearRatio)
@@ -73,7 +75,7 @@ u8 pvrfMotorGearRatioVerify(u8 dataLen, u8 *pData, void *pParaValue)
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -124,7 +126,7 @@ u8 pvrfMotorStepAngleVerify(u8 dataLen, u8 *pData, void *pParaValue)
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -146,7 +148,8 @@ u8 pvrfMotorPeakSpeedVerify(u8 dataLen, u8 *pData, void *pParaValue)
     
     if (sizeof(f32) == dataLen)    //长度先要正确
     {
-        tempValue = *(f32 *)pData;
+        //tempValue = *(f32 *)pData;
+        memcpy(&tempValue, pData, dataLen);
         if (tempValue <= g_paraLimit.upLimit.motorPeakSpeed)
         {
             if (tempValue >= g_paraLimit.downLimit.motorPeakSpeed)
@@ -168,7 +171,7 @@ u8 pvrfMotorPeakSpeedVerify(u8 dataLen, u8 *pData, void *pParaValue)
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -190,7 +193,8 @@ u8 pvrfMotorPeakAccVerify(u8 dataLen, u8 *pData, void *pParaValue)
     
     if (sizeof(f32) == dataLen)    //长度先要正确
     {
-        tempValue = *(f32 *)pData;
+        //tempValue = *(f32 *)pData;
+        memcpy(&tempValue, pData, dataLen);
         if (tempValue <= g_paraLimit.upLimit.motorPeakAcc)
         {
             if (tempValue >= g_paraLimit.downLimit.motorPeakAcc)
@@ -212,7 +216,7 @@ u8 pvrfMotorPeakAccVerify(u8 dataLen, u8 *pData, void *pParaValue)
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -255,7 +259,7 @@ u8 pvrfMotorTypeVerify(u8 dataLen, u8 *pData, void *pParaValue)
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -301,7 +305,7 @@ u8 pvrfMotorPosnUnitVerify(u8 dataLen, u8 *pData, void *pParaValue)
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -360,7 +364,7 @@ u8 pvrfMotorSizeVerify(u8 dataLen, u8 *pData, void *pParaValue)
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -382,7 +386,8 @@ u8 pvrfMotorLeadVerify(u8 dataLen, u8 *pData, void *pParaValue)
     
     if (sizeof(f32) == dataLen)    //长度先要正确
     {
-        tempValue = *(f32 *)pData;
+        //tempValue = *(f32 *)pData;
+        memcpy(&tempValue, pData, dataLen);
         if (tempValue <= g_paraLimit.upLimit.motorLead)
         {
             if (tempValue >= g_paraLimit.downLimit.motorLead)
@@ -404,7 +409,7 @@ u8 pvrfMotorLeadVerify(u8 dataLen, u8 *pData, void *pParaValue)
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -448,7 +453,7 @@ u8 pvrfMotorVoltVerify(u8 dataLen, u8 *pData, void *pParaValue)
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -492,7 +497,7 @@ u8 pvrfMotorCurrVerify(u8 dataLen, u8 *pData, void *pParaValue)
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -514,7 +519,8 @@ u8 pvrfMotorBacklashVerify(u8 dataLen, u8 *pData, void *pParaValue)
     
     if (sizeof(f32) == dataLen)    //长度先要正确
     {
-        tempValue = *(f32 *)pData;
+        //tempValue = *(f32 *)pData;
+        memcpy(&tempValue, pData, dataLen);
         if (tempValue <= g_paraLimit.upLimit.motorBacklash)
         {
             if (tempValue >= g_paraLimit.downLimit.motorBacklash)
@@ -536,7 +542,7 @@ u8 pvrfMotorBacklashVerify(u8 dataLen, u8 *pData, void *pParaValue)
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -558,7 +564,8 @@ u8 pvrfEncoderLineNumVerify(u8 dataLen, u8 *pData, void *pParaValue)
     
     if (sizeof(u32) == dataLen)    //长度先要正确
     {
-        tempValue = *(u32 *)pData;
+        //tempValue = *(u32 *)pData;
+        memcpy(&tempValue, pData, dataLen);
         if (tempValue <= g_paraLimit.upLimit.encoderLineNum)
         {
             if (tempValue >= g_paraLimit.downLimit.encoderLineNum)
@@ -580,7 +587,7 @@ u8 pvrfEncoderLineNumVerify(u8 dataLen, u8 *pData, void *pParaValue)
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -623,7 +630,7 @@ u8 pvrfEncoderChanNumVerify(u8 dataLen, u8 *pData, void *pParaValue)
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -666,7 +673,7 @@ u8 pvrfEncoderTypeVerify(u8 dataLen, u8 *pData, void *pParaValue)
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -713,7 +720,7 @@ u8 pvrfEncoderMultipleVerify(u8 dataLen, u8 *pData, void *pParaValue)
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -738,9 +745,10 @@ u8 pvrfEncoderStateVerify(u8 dataLen, u8 *pData, void *pParaValue)
         tempValue = *pData;
         switch (tempValue)
         {
-            case 0:
+            //不支持设置为NONE----NONE代表不支持编码器
+            /*case 0:
                 *(IntfcStateEnum *)pParaValue = INTFC_NONE;
-              break;
+              break;*/
     
             case 1:
                 *(IntfcStateEnum *)pParaValue = INTFC_OFF;
@@ -760,7 +768,38 @@ u8 pvrfEncoderStateVerify(u8 dataLen, u8 *pData, void *pParaValue)
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+
+    return verifyResult;
+}
+
+
+/*********************************************************************************************
+函 数 名: pvrfEncoderFeedbackRatioVerify;
+实现功能: 无; 
+输入参数: 无;
+输出参数: 无;
+返 回 值: 无;
+说    明: 无;
+*********************************************************************************************/
+u8 pvrfEncoderFeedbackRatioVerify(u8 dataLen, u8 *pData, void *pParaValue)
+{
+    u8 tempValue;
+    u8 verifyResult = PARA_VERIFY_NO_ERROR;
+
+    
+    if (sizeof(u8) == dataLen)    //长度先要正确
+    {
+        tempValue = *(u8 *)pData;
+        
+        *(u8 *)pParaValue = tempValue;
+    }
+    else
+    {
+        verifyResult = PARA_VERIFY_ERROR_LEN;
+    }
+
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }

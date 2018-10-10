@@ -4,16 +4,10 @@
 
 mrqView::mrqView( QWidget *parent ) : mrxView( parent )
 {
-//    mAxesId = 0;
     mPage = MRQ_MOTION_SWITCH_1_MAIN;
     m_pMrqModel = NULL;
     m_pModelObj = NULL;
 }
-
-//void mrqView::setAxesId( int id )
-//{ mAxesId = id; }
-//int mrqView::getAxesId()
-//{ return mAxesId; }
 
 void mrqView::setPage( MRQ_AX_PAGE pg )
 { mPage  = pg; }

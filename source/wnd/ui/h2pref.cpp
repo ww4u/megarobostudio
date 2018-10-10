@@ -12,11 +12,6 @@ H2Pref::H2Pref(QWidget *parent) :
     connect( this, SIGNAL(signal_joint_zero(int, bool)),
              this, SLOT(slot_joint_zero(int,bool)) );
 
-
-    //! post change
-//    slot_body_changed();
-//    slot_ccw_changed();
-
     spyEdited();
 }
 
@@ -62,7 +57,6 @@ void H2Pref::spyEdited()
     QDoubleSpinBox *doubleSpinBoxes[]={
         ui->spinZeroTime,
         ui->spinZeroAngle,
-//        ui->spinZeroSpeed,
 
         ui->spinGapTime,
         ui->spinGapDist,
@@ -230,7 +224,6 @@ void H2Pref::on_btnZeroBody_clicked()
     if ( ui->chkCcw->isVisible() )
     {
         jList<<0<<1<<2;
-//        ccwList<<false<<false<<ui->chkCcw->isChecked();
 
         ccwList<<ui->chkCcwX->isChecked()
                <<ui->chkCcwY->isChecked()
@@ -239,7 +232,6 @@ void H2Pref::on_btnZeroBody_clicked()
     else
     {
         jList<<0<<1;
-//        ccwList<<false<<false;
 
         ccwList<<ui->chkCcwX->isChecked()
                <<ui->chkCcwY->isChecked();

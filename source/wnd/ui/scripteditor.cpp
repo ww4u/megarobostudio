@@ -27,7 +27,6 @@ void scriptEditor::setModelObj( mcModelObj *pObj )
     ui->plainTextEdit->setFont( QFont( m_pmcModel->mSysPref.mFontFamily,
                                        m_pmcModel->mSysPref.mPointSize ) );
 
-    logDbg()<<pObj->getPath()<<pObj->getName();
     QString fullName = pObj->getPath() + QDir::separator() + pObj->getName();
     fullName = QDir::toNativeSeparators( fullName );
     //! reload the file

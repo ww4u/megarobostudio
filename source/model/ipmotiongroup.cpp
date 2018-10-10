@@ -8,7 +8,7 @@ IPMotionGroup::IPMotionGroup( const QString &className,
     mHeaderList<<QObject::tr("Enable")
                <<QObject::tr("Name")
                <<QObject::tr("t(s)")
-               <<QObject::tr("Valve") + "(" + QChar(0x00b0) + ")"
+               <<QObject::tr("Valve") + "(" + char_deg + ")"
                <<QObject::tr("Injection(mm)")
                <<QObject::tr("Comment");
 

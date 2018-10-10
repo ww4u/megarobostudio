@@ -24,7 +24,7 @@ sysPref::sysPref(QWidget *parent) :
     for ( int i = 0; i < ui->cmbPort->count(); i++ )
     { ui->cmbPort->setItemData( i, i ); }
 
-    ui->label_43->setText( tr("Angle") + "(" + QChar(0x00B0) + ")" );
+    ui->label_43->setText( tr("Angle") + "(" + char_deg + ")" );
 
     //! db changed
     connect( ui->edtHost, SIGNAL(textChanged(const QString &)),
@@ -56,7 +56,6 @@ sysPref::sysPref(QWidget *parent) :
     ui->tabWidget_2->removeTab(1);
     ui->tabWidget_2->removeTab(0);
 
-
     //! for com port
     QList<QSerialPortInfo> portList = QSerialPortInfo::availablePorts();
     foreach( QSerialPortInfo info, portList )
@@ -80,7 +79,6 @@ sysPref::sysPref(QWidget *parent) :
     ui->cmbPort->setCurrentIndex( 0 );
     ui->cmbPort->setEnabled( false );
 #endif
-
 
 #ifdef ARCH_RASPBERRY
     ui->cmbPort->setCurrentIndex( e_can_mcp );
@@ -238,8 +236,6 @@ void sysPref::updateUi()
 
 void sysPref::updateData()
 {
-//    m_pPref->mPort = ui->cmbPort->currentIndex();
-
     m_pPref->mPort = ui->cmbPort->currentData().toInt();
 
     m_pPref->mSpeed = ui->cmbSpeed->currentText().toInt();
@@ -330,7 +326,6 @@ void sysPref::updateData()
     m_pPref->mAngleResolution = ui->spinAngleError->value();
     m_pPref->mOmitEn = ui->chkOmit->isChecked();
     m_pPref->mOmitThreshold = ui->spinOmit->value();
-
 }
 
 bool sysPref::validateDb()
@@ -364,8 +359,6 @@ bool sysPref::validateDb()
         str = QString( "SELECT * from %1" ).arg( ui->edtTableName->text() );
         logDbg()<<str;
         bRet = query.exec( str );
-
-
     }while( 0 );
 
     //! remove the database
@@ -395,48 +388,6 @@ bool sysPref::updateValidateEn()
     return true;
 }
 
-//bool sysPref::validateVisaRsrc( QString &strIdn )
-//{
-//#ifdef NI_VISA
-//    ViStatus stat;
-//    ViSession viDef, viSes;
-
-//    stat = viOpenDefaultRM( &viDef );
-//    if ( stat != VI_SUCCESS )
-//    { return false; }
-
-//    QString strRsrc = ui->edtVisa->text();
-//    stat = viOpen( viDef, strRsrc.toLatin1().data(), 0, ui->spinVisaTmo->value(), &viSes );
-//    if ( stat != VI_SUCCESS )
-//    { return false; }
-
-//    //! check idn?
-//    stat = viPrintf( viSes, "*IDN?\n" );
-//    if ( stat != VI_SUCCESS )
-//    { return false; }
-
-//    ViByte buf[128];
-//    ViUInt32 retCount;
-//    stat = viRead( viSes, buf, 128, &retCount );
-//    if ( stat != VI_SUCCESS && stat != VI_SUCCESS_MAX_CNT && stat != VI_SUCCESS_TERM_CHAR )
-//    { return false; }
-
-//    if( retCount < 16 )
-//    { return false; }
-
-//    strIdn = QString::fromLocal8Bit( (char*)buf, retCount );
-
-//    stat = viClose( viSes );
-//    if ( stat != VI_SUCCESS )
-//    { return false; }
-
-//    stat = viClose( viDef );
-//    if ( stat != VI_SUCCESS )
-//    { return false; }
-//#endif
-//    return true;
-//}
-
 void sysPref::on_buttonBox_clicked(QAbstractButton *button)
 {
     if ( ui->buttonBox->buttonRole( button ) == QDialogButtonBox::ResetRole )
@@ -456,15 +407,6 @@ void sysPref::on_buttonBox_clicked(QAbstractButton *button)
     }
 }
 
-//#define port_can_mrh_e  "MRH-E"
-//#define port_usb_ii     "USB-CAN II"
-//#define port_mrh_t      "MRH-T"
-//#define port_mrh_u      "MRH-U"
-
-//#define port_mcp        "MCP"
-//#define port_rs232      "RS232"
-//#define port_usb        "USB"
-//#define str_is( )
 void sysPref::on_cmbPort_currentIndexChanged(const QString &arg1)
 {
     //! remove tab
@@ -551,7 +493,7 @@ void sysPref::on_btnDetail_clicked()
     str.replace("/","\\");
     args<<str;
     //! \todo linux
-    logDbg()<<str;
+
     QProcess::execute( "explorer.exe", args );
 }
 
@@ -597,14 +539,12 @@ void sysPref::slot_toolbar_clr()
     int ret = msgBox.exec();
     if ( ret == QMessageBox::Ok )
     {
-//        model_.removeRows( 0, m_pPref->mAlias.mItems.size() );
         model_.removeRows( 0, model_.mItems.size(), QModelIndex() );
     }
 }
 
 void sysPref::on_gpAlias_toggled(bool arg1)
 {
-//    ui->gpAlias->setEnabled( arg1 );
     ui->aliasToolBar->setEnabled( arg1 );
     ui->tableView->setEnabled( arg1 );
 }

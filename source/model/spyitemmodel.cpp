@@ -135,8 +135,6 @@ void spyItemModel::setViewFmt( spyItem::viewFormat fmt )
 {
     mViewFmt = fmt;
 
-//    submit();
-
     emit headerDataChanged( Qt::Horizontal, 0, 0 );
 }
 spyItem::viewFormat spyItemModel::getViewFmt()

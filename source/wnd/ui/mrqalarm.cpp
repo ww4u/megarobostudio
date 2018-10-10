@@ -82,7 +82,6 @@ void MrqAlarm::updateUi()
         encAlarmConfig.mZero = m_pMrqModel->mABSENCALARM_ZEROVALUE[i];
 
         encAlarmConfig.mZeroPos = m_pMrqModel->mABSENCALARM_ZEROPOSITION[i];
-//logDbg()<<encAlarmConfig.mUpLimit<<encAlarmConfig.mDownLimit<<encAlarmConfig.mZero;
         mAnglePages.at(i)->setData( encAlarmConfig );
 
         if ( m_pmcModel->mSysPref.mSysMode == sys_normal )

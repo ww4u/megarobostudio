@@ -64,8 +64,6 @@ scriptMgr::scriptMgr(QWidget *parent) :
     m_pFileSysModel = new QFileSystemModel(this);
     m_pFileSysModel->setRootPath( QDir::currentPath() );
 
-    logDbg()<<QDir::currentPath();
-
     ui->setupUi(this);
 
     setupUi();
@@ -97,11 +95,6 @@ void scriptMgr::contextMenuEvent(QContextMenuEvent *event)
         { return; }
 
         //! is root?
-//        if ( )
-//             == m_pRootModel->rootNode() )
-//        { m_pRemoveAction->setEnabled( false ); }
-//        else
-
         scriptNode *pNode = static_cast<scriptNode*>(index.internalPointer());
         Q_ASSERT( NULL != pNode );
         m_pRemoveAction->setVisible( pNode->getParent() != 0 );
@@ -215,7 +208,7 @@ int scriptMgr::openFile( const QString &path,
         return openTpv( path, file );
     }
     else if ( comAssist::fileSuffixMatch( ext, pt_ext) )
-    {logDbg();
+    {
         return openTp( path, file );
     }
     else if ( comAssist::fileSuffixMatch( ext, setup_ext) )
@@ -271,7 +264,6 @@ int scriptMgr::openMotionGroup( const QString &path, const QString &file )
         return ret;
     }
 
-//    logDbg()<<pModel->mItems.size();
     pModel->setPath( path );
     pModel->setName( comAssist::pureFileName(file) );
     pModel->setFile( true );
@@ -301,8 +293,6 @@ int scriptMgr::openTpv( const QString &path, const QString &file )
         return ret;
     }
 
-    logDbg()<<pGroup->mItems.size();
-
     pGroup->setPath( path );
     pGroup->setName( comAssist::pureFileName(file) );
     pGroup->setFile( true );
@@ -323,7 +313,7 @@ int scriptMgr::openTp( const QString &path, const QString &file )
     pGroup = new TpGroup();
     Q_ASSERT( NULL != pGroup );
     pGroup->setGc( true );
-logDbg()<<file;
+
     int ret = pGroup->load( file );
     if ( ret != 0 )
     {
@@ -331,8 +321,6 @@ logDbg()<<file;
         delete pGroup;
         return ret;
     }
-
-    logDbg()<<pGroup->mItems.size();
 
     pGroup->setPath( path );
     pGroup->setName( comAssist::pureFileName(file) );
@@ -619,21 +607,6 @@ roboSceneModel *scriptMgr::createScene( const QString &path,
 
 void scriptMgr::iterAllItems()
 {
-//    scriptModel *pRoot;
-
-//    scriptModel *pRoot = m_pRootModel;
-//    Q_ASSERT( NULL != pRoot );
-
-//    QModelIndex index;
-
-//    if ( pRoot->hasChildren() )
-//    {
-//        int rowCount = pRoot->rowCount();
-
-
-//        index = pRoot->index( 0, 0 );
-
-//    }
 }
 
 void scriptMgr::setupUi()
@@ -648,20 +621,15 @@ void scriptMgr::setupUi()
 
     //! model
     ui->scriptView->setModel( m_pRootModel );
-
-    //! file system
-//    ui->fileView->setModel( m_pFileSysModel );
-//    ui->fileView->setRootIndex( m_pFileSysModel->index( QDir::currentPath() ) );
 }
 void scriptMgr::buildConnection()
 {
-//    connect( ui->scriptView, SIGNAL())
 }
 
 bool scriptMgr::isExist( const QString &fullName )
 {
     QStringList fullFileList = fileList();
-logDbg()<<fullFileList;
+
     if( fullFileList.contains( fullName, Qt::CaseInsensitive ) )
     { return true; }
     else
@@ -682,11 +650,6 @@ void scriptMgr::on_scriptView_activated(const QModelIndex &index)
     { return; }
     else
     {
-        logDbg()<<pFile->getName();
-
-        QString path = m_pRootModel->getPath() + QDir::separator() + pFile->getPath() + pFile->getName();
-
-        logDbg()<<path;
     }
 
     QString path = m_pRootModel->getPath() + QDir::separator() + pFile->getPath();
@@ -704,17 +667,6 @@ void scriptMgr::on_scriptView_activated(const QModelIndex &index)
     { logDbg(); }
 }
 
-//void scriptMgr::slot_context_newfile()
-//{
-//    bool ok;
-//    QString text = QInputDialog::getText(this,
-//                                         tr("File name"),
-//                                         tr("File name:"),
-//                                         QLineEdit::Normal,
-//                                         defaultName(), &ok);
-//    if (ok && !text.isEmpty())
-//    { newFile( getPath(), text ); }
-//}
 void scriptMgr::slot_context_newgroup()
 {
     bool ok;

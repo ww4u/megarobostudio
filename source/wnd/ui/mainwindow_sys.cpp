@@ -39,7 +39,7 @@ void sysLog( const QString &str,
                          const QString &str4
                           )
 {
-    _sysLog( "", str, str1, str2, str3, str4 );
+    _sysLog( "Info:", str, str1, str2, str3, str4 );
 }
 
 void sysWarn( const QString &str,
@@ -49,7 +49,7 @@ void sysWarn( const QString &str,
                          const QString &str4
                           )
 {
-    _sysLog( "!!!Warnning", str, str1, str2, str3, str4 );
+    _sysLog( "!Warning", str, str1, str2, str3, str4 );
 }
 
 void sysError( const QString &str,
@@ -108,7 +108,10 @@ void attachSysQueue( RoboMsgThread* pQueue )
 }
 
 RoboMsgThread* sysQueue()
-{ return _sysRunTime.m_pSysQueue; }
+{
+    Q_ASSERT( NULL != _sysRunTime.m_pSysQueue );
+    return _sysRunTime.m_pSysQueue;
+}
 
 quint64 sysTimeStamp()
 { return receiveCache::timeStamp(); }

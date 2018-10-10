@@ -17,22 +17,7 @@ robotH2M::robotH2M()
     //! default gpid
     mCanGroupId = group_id_from + (mId - robot_complex)*group_segment;
 
-//    setAxes( 2 );
-//    setAxesDefName( 2 );
-//    setJointName( 2 );
-
-//    setPoseCount( 2 );
-//    mPoseTitles.clear();
-//    mPoseTitles<<"X"<<"Y";
-
     mDetail = QString::fromLocal8Bit( (char*)_detail, sizeof_array(_detail) );
-
-    //! joint name
-//    mJointName.clear();
-//    mJointName<<QObject::tr("Left")
-//              <<QObject::tr("Right");
-
-//    mImage = QImage::fromData( _megaimage, sizeof(_megaimage) );
 
     mArmLengths.clear();
     mArmLengths<<13.4<<13.4<<580<<494<<52<<38;

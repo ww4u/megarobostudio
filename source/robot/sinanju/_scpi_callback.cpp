@@ -17,16 +17,12 @@
 
 static scpi_result_t _scpi_idn( scpi_t * context )
 {
-    // read
     DEF_LOCAL_VAR();
-
-//    logDbg();
 
     QString str;
 
     str = ((robotSinanju*)context->user_context)->getName();
 
-//    logDbg()<<str;
     SCPI_ResultText( context, str.toLatin1().data() );
 
     return SCPI_RES_OK;
@@ -65,7 +61,7 @@ static scpi_result_t _scpi_stop( scpi_t * context )
 
     CHECK_LINK();
 
-    pRobo->stop( tpvRegion(ax,page) );logDbg();
+    pRobo->stop( tpvRegion(ax,page) );
 
     return SCPI_RES_OK;
 }
@@ -112,9 +108,6 @@ static scpi_result_t _scpi_move( scpi_t * context )
         { scpi_ret( SCPI_RES_ERR ); }
     }
 
-    for ( int i = 0; i < sizeof_array(vals); i++ )
-    { logDbg()<<vals[i]; }
-
     //! robo op
     DEF_ROBO();
 
@@ -155,9 +148,6 @@ static scpi_result_t _scpi_premove( scpi_t * context )
         if ( SCPI_RES_OK != SCPI_ParamFloat( context, vals+i, true ) )
         { scpi_ret( SCPI_RES_ERR ); }
     }
-
-    for ( int i = 0; i < sizeof_array(vals); i++ )
-    { logDbg()<<vals[i]; }
 
     //! robo op
     DEF_ROBO();
@@ -206,9 +196,6 @@ static scpi_result_t _scpi_mover( scpi_t * context )
         { scpi_ret( SCPI_RES_ERR ); }
     }
 
-    for ( int i = 0; i < sizeof_array(vals); i++ )
-    { logDbg()<<vals[i]; }
-
     //! robo op
     DEF_ROBO();
 
@@ -253,9 +240,6 @@ static scpi_result_t _scpi_premover( scpi_t * context )
         if ( SCPI_RES_OK != SCPI_ParamFloat( context, vals+i, true ) )
         { scpi_ret( SCPI_RES_ERR ); }
     }
-
-    for ( int i = 0; i < sizeof_array(vals); i++ )
-    { logDbg()<<vals[i]; }
 
     //! robo op
     DEF_ROBO();
@@ -303,9 +287,6 @@ static scpi_result_t _scpi_movet( scpi_t * context )
         { scpi_ret( SCPI_RES_ERR ); }
     }
 
-    for ( int i = 0; i < sizeof_array(vals); i++ )
-    { logDbg()<<vals[i]; }
-
     //! robo op
     DEF_ROBO();
 
@@ -348,9 +329,6 @@ static scpi_result_t _scpi_premovet( scpi_t * context )
         if ( SCPI_RES_OK != SCPI_ParamFloat( context, vals+i, true ) )
         { scpi_ret( SCPI_RES_ERR ); }
     }
-
-    for ( int i = 0; i < sizeof_array(vals); i++ )
-    { logDbg()<<vals[i]; }
 
     //! robo op
     DEF_ROBO();
@@ -395,9 +373,6 @@ static scpi_result_t _scpi_goto( scpi_t * context )
         { scpi_ret( SCPI_RES_ERR ); }
     }
 
-    for ( int i = 0; i < sizeof_array(vals); i++ )
-    { logDbg()<<vals[i]; }
-
     //! robo op
     DEF_ROBO();
 
@@ -408,7 +383,7 @@ static scpi_result_t _scpi_goto( scpi_t * context )
     int ret = pRobo->nowPose( pose );
     if ( ret != 0 )
     { scpi_ret( SCPI_RES_ERR ); }
-    logDbg()<<pose.x<<pose.y<<pose.z;
+
     //! default interp
     TraceKeyPoint pt1( 0, pose.x, pose.y, pose.z, 0 );
     TraceKeyPoint pt2( vals[3], vals[0], vals[1], vals[2], 0 );
@@ -445,9 +420,6 @@ static scpi_result_t _scpi_gotor( scpi_t * context )
         { scpi_ret( SCPI_RES_ERR ); }
     }
 
-    for ( int i = 0; i < sizeof_array(vals); i++ )
-    { logDbg()<<vals[i]; }
-
     //! robo op
     DEF_ROBO();
 
@@ -458,7 +430,7 @@ static scpi_result_t _scpi_gotor( scpi_t * context )
     int ret = pRobo->nowPose( pose );
     if ( ret != 0 )
     { scpi_ret( SCPI_RES_ERR ); }
-    logDbg()<<pose.x<<pose.y<<pose.z;
+
     //! default interp
     TraceKeyPoint pt1( 0, pose.x, pose.y, pose.z, 0 );
     TraceKeyPoint pt1z( vals[5], pose.x, pose.y, pose.z+vals[4], 0 );
@@ -499,9 +471,6 @@ static scpi_result_t _scpi_gotot( scpi_t * context )
         { scpi_ret( SCPI_RES_ERR ); }
     }
 
-    for ( int i = 0; i < sizeof_array(vals); i++ )
-    { logDbg()<<vals[i]; }
-
     //! robo op
     DEF_ROBO();
 
@@ -512,7 +481,7 @@ static scpi_result_t _scpi_gotot( scpi_t * context )
     int ret = pRobo->nowPose( pose );
     if ( ret != 0 )
     { scpi_ret( SCPI_RES_ERR ); }
-    logDbg()<<pose.x<<pose.y<<pose.z;
+
     //! default interp
     TraceKeyPoint pt1( 0, pose.x, pose.y, pose.z, 0 );
     TraceKeyPoint ptl( vals[3]/2, vals[4], vals[5], vals[6], 0 );
@@ -549,9 +518,6 @@ static scpi_result_t _scpi_stepx( scpi_t * context )
         if ( SCPI_RES_OK != SCPI_ParamFloat( context, vals+i, true ) )
         { scpi_ret( SCPI_RES_ERR ); }
     }
-
-    for ( int i = 0; i < sizeof_array(vals); i++ )
-    { logDbg()<<vals[i]; }
 
     //! robo op
     DEF_ROBO();
@@ -648,9 +614,6 @@ static scpi_result_t _scpi_stepz( scpi_t * context )
         { scpi_ret( SCPI_RES_ERR ); }
     }
 
-    for ( int i = 0; i < sizeof_array(vals); i++ )
-    { logDbg()<<vals[i]; }
-
     //! robo op
     DEF_ROBO();
 
@@ -696,9 +659,6 @@ static scpi_result_t _scpi_steph( scpi_t * context )
         if ( SCPI_RES_OK != SCPI_ParamFloat( context, vals+i, true ) )
         { scpi_ret( SCPI_RES_ERR ); }
     }
-
-    for ( int i = 0; i < sizeof_array(vals); i++ )
-    { logDbg()<<vals[i]; }
 
     //! robo op
     DEF_ROBO();
@@ -819,43 +779,6 @@ static scpi_result_t _scpi_program( scpi_t * context )
 
     return SCPI_RES_OK;
 }
-
-#define server_path1     QCoreApplication::applicationDirPath() + QString( QDir::separator() )
-#define server_path2     "G:\\work\\mc\\develope\\installer" + QString( QDir::separator() )
-//static int _sloveFile( const QString &fileIn,
-//                        const QString &fileOut )
-//{
-//    QStringList args;
-//    QString program;
-//    QString serverPath;
-
-//    //! try path
-//    program = server_path1 + QStringLiteral("deltaslove.exe");
-//    if ( QFile::exists(program) )
-//    { serverPath = server_path1; }
-//    else
-//    { serverPath = server_path2; }
-
-//    QString cfgFile;
-//    cfgFile = serverPath + QStringLiteral("deltaslove_config.txt");
-
-//    QString inFile,outFile,configFile;
-//    inFile = fileIn;
-//    outFile = fileOut;
-//    configFile = cfgFile;
-//    args<<inFile<<outFile<<configFile;
-
-//    logDbg()<<program<<args;
-
-//    QProcess process;
-
-//    process.start( program, args );
-
-//    if ( process.waitForFinished( 120000 ) )
-//    { return 0; }
-//    else
-//    { return -1; }
-//}
 
 //! ax, page, file
 static scpi_result_t _scpi_download( scpi_t * context )
@@ -1051,7 +974,6 @@ static scpi_result_t _scpi_gozero( scpi_t * context )
         pRobo->goZero( tpvRegion(ax,page) );
     }
     //! some joint
-    //! \todo by change
     else
     {
         pRobo->goZero( tpvRegion(ax,page),

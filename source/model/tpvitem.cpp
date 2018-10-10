@@ -4,7 +4,7 @@ static QString _headers[]=
 {
     QStringLiteral("chk"),
     QStringLiteral("t(s)"),
-    QString("p(" + QString( QChar(0x00B0)) + ")"),
+    QString("p(" + QString( char_deg ) + ")"),
     QStringLiteral("v"),
     QStringLiteral("Comment"),
 };
@@ -22,7 +22,7 @@ QString tpvItem::header( int col )
     else if ( col == 1 )
     { return QObject::tr("t(s)"); }
     else if ( col == 2 )
-    { return QObject::tr("p(%1)").arg( QChar(0x00B0) ); }
+    { return QObject::tr("p(%1)").arg( char_deg ); }
     else if ( col == 3 )
     { return QObject::tr("v"); }
     else

@@ -60,9 +60,6 @@ int deviceMRV::tpBeginSend( int ax )
     checked_call( setMOTION_STATEREPORT( ax, MRV_MOTION_STATEREPORT_QUERY ) );
     checked_call( setMOTION_SWITCH( ax, MRV_MOTION_SWITCH_RESET, MRV_MOTION_SWITCH_1_MAIN ) );
 
-//    checked_call( setPVT_HOLD( ax, MRV_PVT_HOLD_TRUE ) );
-//    checked_call( setPVT_SAVE( ax ) );
-
     checked_call( setPVT_RESET( ax) );
 
     //! set cycle
@@ -86,12 +83,6 @@ int deviceMRV::tpSend( TpRow *row, int ax )
 
     checked_call( setPVT_TDATA( mTpIndexes[ax], (row->mTL) ) );
     checked_call( setPVT_PDATA( mTpIndexes[ax], alignP( ax, row->mP ) ) );
-
-//    uint32 val;
-//    float fVal;
-//    getPVT_PDATA( mTpIndexes[ax], &val );
-//    checked_call( setPVT_TDATA( mTpIndexes[ax], (row->mT) ) );
-//    getPVT_TDATA( mTpIndexes[ax], &fVal );
 
     mTpIndexes[ ax ]++;
 

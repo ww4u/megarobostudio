@@ -32,7 +32,7 @@ Copyright (C) 2016，北京镁伽机器人科技有限公司
 #define    ADC_HARDVER_ACD_GPIO_PORT         GPIOC
 #define    ADC_HARDVER_ACD_GPIO_CLK          RCC_AHB1Periph_GPIOC
 
-#define    ADC_DATA_TIMEOUT      ((uint32_t)0x200B200)    //根据DELAY_COUNT_MS = 33600，此超时时间大约为1s
+#define    ADC_DATA_TIMEOUT      3200    //根据DELAY_COUNT_US = 32，此超时时间大约为100us
 
 
 

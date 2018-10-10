@@ -89,15 +89,15 @@ int robotDelta::loadProgram( const QString &fileName )
         mJointsGroup.append( pGroup );
     }
 
-        //! log joint group
-        foreach ( tpvGroup *pGp, mJointsGroup )
-        {
-            logDbg()<<"*******";
-            foreach(  tpvItem *pItem, pGp->mItems )
-            {
-                logDbg()<<pItem->mT<<pItem->mP<<pItem->mV;
-            }
-        }
+//    //! log joint group
+//    foreach ( tpvGroup *pGp, mJointsGroup )
+//    {
+//        logDbg()<<"*******";
+//        foreach(  tpvItem *pItem, pGp->mItems )
+//        {
+//            logDbg()<<pItem->mT<<pItem->mP<<pItem->mV;
+//        }
+//    }
 
     return 0;
 }

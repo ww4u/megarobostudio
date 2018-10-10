@@ -233,7 +233,7 @@ int H2ZMotionGroup::load( const QString &fileName )
 
     emit dataChanged( index(0,0),
                       index(mItems.count(), H2ZMotionItem::columns() - 1) );
-//    logDbg()<<mItems.size();
+
     return 0;
 }
 

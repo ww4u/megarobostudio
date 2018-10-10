@@ -8,6 +8,8 @@
 
 #include "tpedit.h"
 
+#include "quicktool.h"
+
 MainWindow::MainWindow(dpcObj *pObj, QWidget *parent) :
     QMainWindow(parent),
      m_pDpcObj(pObj)
@@ -267,7 +269,6 @@ void MainWindow::setupUi_docks()
     Q_ASSERT( NULL != m_pMotorMonitor );
 }
 
-#include "quicktool.h"
 void MainWindow::setupToolbar()
 {
     //! file tool
@@ -552,6 +553,8 @@ void MainWindow::applyConfigs()
 
 void MainWindow::postSetup()
 {
+    mMcModel.postload();
+
     //! load prj
     if ( mMcModel.mSysPref.mbAutoLoadPrj )
     { emit sig_post_load_prj(); }
@@ -559,8 +562,8 @@ void MainWindow::postSetup()
 
 void MainWindow::setupService()
 {
-    //! load
-    mMcModel.postload();
+//    //! load
+//    mMcModel.postload();
 
     //! thread
     m_pInterruptThread = new interruptThread();
@@ -604,7 +607,6 @@ void MainWindow::setupService()
              this, SLOT(slot_com_receive(const QString &)) );
     connect( this, SIGNAL(sig_com_send( const QByteArray &)),
              m_pComThread, SLOT(slot_transmit( const QByteArray &)));
-
 
     slot_pref_changed();
 }
@@ -670,7 +672,7 @@ void MainWindow::slot_post_load_prj()
     }
     else
     {
-        sysError( fullName, "not exist" );
+        sysError( fullName, tr("not exist") );
     }
 }
 
@@ -703,21 +705,15 @@ void MainWindow::on_itemXActivated( mcModelObj *pObj )
     if ( NULL == pObj )
     { return; }
 
-//    logDbg()<<QString::number( (quint32)pObj, 16 );
-
     //! find view
     modelView *pView = findView( pObj );logDbg();
-//    modelView *pView = NULL;
     if ( NULL != pView )
     {
-//        logDbg()<<QString::number( (quint32)pView, 16 );
-
         int index;
         index = ui->widget->indexOf( pView );
         if ( index >= 0 )
         {
             ui->widget->setCurrentWidget( pView );
-//            pView->setActive();
             return;
         }
         //! no view
@@ -732,7 +728,7 @@ void MainWindow::on_itemXActivated( mcModelObj *pObj )
 
     //! tpv
     if ( pObj->getType() == mcModelObj::model_tpv )
-    {logDbg();
+    {
         pvtEdit *pEdit;
         pEdit = new pvtEdit();
         Q_ASSERT( NULL != pEdit );
@@ -741,7 +737,7 @@ void MainWindow::on_itemXActivated( mcModelObj *pObj )
     }
 
     else if ( pObj->getType() == mcModelObj::model_tp )
-    {logDbg();
+    {
         TpEdit *pEdit;
         pEdit = new TpEdit();
         Q_ASSERT( NULL != pEdit );
@@ -751,7 +747,7 @@ void MainWindow::on_itemXActivated( mcModelObj *pObj )
 
     //! motion
     else if ( pObj->getType() == mcModelObj::model_motion_file )
-    {logDbg();
+    {
         motionEdit *pMotionEdit;
         pMotionEdit = new motionEdit();logDbg();
         Q_ASSERT( NULL != pMotionEdit );logDbg();
@@ -765,7 +761,7 @@ void MainWindow::on_itemXActivated( mcModelObj *pObj )
 
     //! from robo mgr
     else if ( pObj->getType() == mcModelObj::model_robot )
-    {logDbg();
+    {
         roboScene *pRoboScene = currentRoboScene();
         if ( NULL != pRoboScene )
         {
@@ -810,7 +806,7 @@ void MainWindow::on_itemXActivated( mcModelObj *pObj )
 
     //! py file
     else if ( pObj->getType() == mcModelObj::model_py_file )
-    {logDbg();
+    {
         scriptEditor *pScriptEditor;
         pScriptEditor = new scriptEditor();
         Q_ASSERT( NULL != pScriptEditor );
@@ -819,7 +815,6 @@ void MainWindow::on_itemXActivated( mcModelObj *pObj )
     }
     else
     {}
-
 }
 
 //! model updated
@@ -834,9 +829,7 @@ void MainWindow::slot_itemModelUpdated( mcModelObj *pObj )
         if ( pObj == ((modelView*)ui->widget->widget(i))->getModelObj() )
         {
             ((modelView*)ui->widget->widget(i))->updateScreen();
-            logDbg();
         }
-
     }
 }
 
@@ -845,21 +838,15 @@ void MainWindow::on_signalReport( int err, const QString &str )
     m_pStateBar->showState( QString("%1:%2").arg(err).arg(str) );
 }
 
-
-
 void MainWindow::slot_action_plugin( QAction *pAction )
 {
-//   logDbg()<<pAction->text()<<pAction->data().toString();
-
    QStringList args;
    QString str = pAction->data().toString();
    str.replace("/", QDir::separator() );
    args<<"/c";
    args<<str;
-   //! \todo linux
-   logDbg()<<args;
-//   QProcess::execute( "cmd", args );
 
+   //! \todo linux
    RpcThread *pThread = new RpcThread( "cmd", args );
    if ( NULL != pThread )
    {
@@ -888,11 +875,6 @@ void MainWindow::modelview_closed( QWidget *pObj )
     index = ui->widget->indexOf( pObj );
 
     cfgTab_tabCloseRequested( index );
-//    if ( index >= 0 )
-//    {
-//        ui->widget->widget( index )->close();
-//        ui->widget->removeTab( index );
-//    }
 }
 
 void MainWindow::slot_modelView_modified( modelView *pView,
@@ -920,7 +902,6 @@ void MainWindow::slot_modelView_modified( modelView *pView,
 //! sample thread do not use the direct pointer
 void MainWindow::slot_instmgr_changed( bool bEnd, MegaDevice::InstMgr *pMgr )
 {
-    logDbg()<<bEnd;
     Q_ASSERT( NULL != pMgr );
 
     //! close robo/device setting tab
@@ -958,7 +939,7 @@ void MainWindow::slot_instmgr_changed( bool bEnd, MegaDevice::InstMgr *pMgr )
 
 //! device changed
 void MainWindow::slot_device_active_changed( const QString &name )
-{logDbg()<<name;
+{
     //! change the device name
     if ( name.length() > 0 )
     {
@@ -1023,7 +1004,6 @@ void MainWindow::slot_progress_visible( bool b )
 
     m_pStateBar->progressBar()->setVisible( b );
     m_pStateBar->progressInfo()->setVisible( b );
-
 }
 
 void MainWindow::slot_status( const QString &str )
@@ -1067,13 +1047,11 @@ void MainWindow::slot_robo_page_changed( int page )
 void MainWindow::slot_device_name_changed( const QString &name )
 {
     mMcModel.mConn.setDeviceName( name );
-    logDbg()<<name;
 }
 
 void MainWindow::slot_device_ch_index_changed( int id )
 {
     mMcModel.mConn.setDeviceCH( id );
-    logDbg()<<id;
 }
 
 void MainWindow::slot_device_page_changed( int page )
@@ -1170,7 +1148,6 @@ modelView *MainWindow::createModelView( modelView *pView,
 
     ui->widget->addTab( pView, comAssist::pureFileName(pObj->getName()) );
     ui->widget->setCurrentWidget( pView );
-//    pView->setActive();
 
     //! wnd manage
     connect( pView,
@@ -1216,7 +1193,7 @@ void MainWindow::destroyModelView( modelView *pView )
     Q_ASSERT( NULL != pView );
     mModelViews.removeAll( pView );
 }
-#include "testprop.h"
+
 modelView *MainWindow::createRoboProp( mcModelObj *pObj )
 {
     Q_ASSERT( NULL != pObj );
@@ -1261,7 +1238,7 @@ modelView *MainWindow::createRoboProp( mcModelObj *pObj )
         //! set instmgr
         ((VRobot*)pObj)->setInstMgr( mMcModel.m_pInstMgr );
 
-        createModelView( pProp, pObj );logDbg();
+        createModelView( pProp, pObj );
 
         return pProp;
     }
@@ -1290,7 +1267,6 @@ void MainWindow::on_actionSpy_triggered()
     if ( NULL == m_pSpyCfgModel )
     {
         m_pSpyCfgModel = new spyCfgModel;
-//        m_pSpyCfgModel->fillDbgData();
 
         m_pSpyMgrView = new queryMgr(this);
         m_pSpyMgrView->setModal( m_pSpyCfgModel );
@@ -1445,7 +1421,6 @@ void MainWindow::on_actionForceStop_triggered()
 
     Q_ASSERT( NULL != m_pSysTimerThread );
     m_pSysTimerThread->stopAll();
-
 }
 
 void MainWindow::on_actionReset_triggered()
@@ -1511,20 +1486,24 @@ void MainWindow::on_actionMotor_Panel_triggered()
     if ( NULL == m_pMotorMonitor )
     { return; }
 
-    m_pMotorMonitor->show();
-    m_pMotorMonitor->activateWindow();
+    if ( m_pMotorMonitor->isVisible() )
+    {
+        m_pMotorMonitor->hide();
+    }
+    else
+    {
+        m_pMotorMonitor->show();
+//        m_pMotorMonitor->activateWindow();
+    }
 }
 
-void MainWindow::on_actionCamera_triggered()
-{
-    QString app;
-    app = QCoreApplication::applicationDirPath() + QDir::separator() + QStringLiteral("camera.exe");
-    //! \todo linux
-//    app.replace("/", QDir::separator() );
-//    app.replace("/", "\\" );
-//    sysLog( app );
-    QProcess::execute( "\"" + app + "\"" );
-}
+//void MainWindow::on_actionCamera_triggered()
+//{
+//    QString app;
+//    app = QCoreApplication::applicationDirPath() + QDir::separator() + QStringLiteral("camera.exe");
+//    //! \todo linux
+//    QProcess::execute( "\"" + app + "\"" );
+//}
 
 void MainWindow::on_actionClose_All_triggered()
 {
@@ -1569,23 +1548,26 @@ logDbg();
 }
 
 void MainWindow::slot_com_receive( const QString &str )
-{logDbg()<<str;
+{
     //! find device and do
     if ( str.length() < 3 )
-    { sysError( tr("Invalid cmd"), str );
+    {
+        sysError( tr("Invalid cmd"), str );
         return;
     }
 
     //! get name
     QStringList secList = str.split( " ", QString::SkipEmptyParts );
     if ( secList.size() < 2 )
-    { sysError( tr("Invalid cmd"), str );
+    {
+        sysError( tr("Invalid cmd: format"), str );
         return;
     }
 
     scpiShell *pShell = mMcModel.m_pInstMgr->findShell( secList.at(0) );
     if ( NULL == pShell )
-    { sysError( tr("Invalid cmd"), str );
+    {
+        sysError( tr("Invalid cmd: device name"), str );
         return;
     }
 
@@ -1593,7 +1575,7 @@ void MainWindow::slot_com_receive( const QString &str )
     QString strFullCmd = str;
     strFullCmd = strFullCmd.remove( 0, secList.at(0).size() );
     strFullCmd.append( "\r\n" );
-    logDbg()<<strFullCmd;
+
     pShell->write( strFullCmd.toUtf8().data(), strFullCmd.length() );
     //! read
     {
@@ -1635,7 +1617,6 @@ void MainWindow::slot_pref_changed()
 void MainWindow::slot_process_output()
 {
     Q_ASSERT( NULL != m_pProcess );
-
     {
         sysLog( m_pProcess->readAll() );
     }

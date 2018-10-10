@@ -2,7 +2,6 @@
 
 #include "../../include/mcstd.h"
 
-
 modelRobotMgr::modelRobotMgr()
 {
     mVersion = 0;

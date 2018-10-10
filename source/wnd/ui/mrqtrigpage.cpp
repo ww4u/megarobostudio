@@ -10,23 +10,6 @@ MrqTrigPage::MrqTrigPage(QWidget *parent) :
     ui(new Ui::MrqTrigPage)
 {
     ui->setupUi(this);
-
-    //! sub chans
-//    mTrigChans.append( ui->tabLeft );
-//    mTrigChans.append( ui->tabRight );
-
-//    MrqTrigChan *pTrigChan;
-//    for ( int i = 0; i < 5; i++ )
-//    {
-//        pTrigChan = new MrqTrigChan();
-//        Q_ASSERT( NULL != pTrigChan );
-
-//        mTrigChans.append( pTrigChan );
-
-//        ui->tabWidget->addTab( pTrigChan, QString("TRIG%1").arg(i+1) );
-//    }
-
-//    spyEdited();
 }
 
 MrqTrigPage::~MrqTrigPage()

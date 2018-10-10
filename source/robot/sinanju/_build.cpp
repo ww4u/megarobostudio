@@ -23,11 +23,11 @@ int robotSinanju::build( MegaTableModel *pModel,
         //! check enable
         if ( pGroup->mItems.at(i)->enable() )
         {
-            keyP.t = pGroup->mItems.at(i)->T();
-            keyP.x = pGroup->mItems.at(i)->X();
-            keyP.y = pGroup->mItems.at(i)->Y();
-            keyP.z = pGroup->mItems.at(i)->Z();
-            keyP.hand = pGroup->mItems.at(i)->H();
+            keyP.t = pGroup->mItems.at(i)->T() ;
+            keyP.x = pGroup->mItems.at(i)->X() ;
+            keyP.y = pGroup->mItems.at(i)->Y() ;
+            keyP.z = pGroup->mItems.at(i)->Z() ;
+            keyP.hand = pGroup->mItems.at(i)->H() ;
 
             keyP.iMask = pGroup->mItems.at(i)->IAttr();
 
@@ -40,12 +40,11 @@ int robotSinanju::build( MegaTableModel *pModel,
     ret = buildTrace( curve, tracePlan, jointsPlan );
     if ( ret != 0 )
     { return ret; }
-logDbg();
+
     //! convert
     ret = convertTrace( curve, jointsPlan, tpvGroups, sectionList );
     if ( ret != 0 )
     { return ret; }
-logDbg();
 
 //    //! export
 //    int lastPt = curve.size() - 1;
@@ -68,7 +67,6 @@ void robotSinanju::exportPlan( const QString &fileName,
     { return; }
 
     QTextStream stream( &file );
-//    stream.setRealNumberNotation( QTextStream::SmartNotation );
     stream.setRealNumberPrecision( 8 );
     stream<<"t"<<COL_SEP
           <<"x"<<COL_SEP

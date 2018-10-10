@@ -2,6 +2,7 @@
 #include "ui_progresselement.h"
 
 #include "../../com/comassist.h"
+
 ProgressElement::ProgressElement(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::ProgressElement)

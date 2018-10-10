@@ -9,6 +9,7 @@ Copyright (C) 2016，北京镁伽机器人科技有限公司
 完成日期:  2017.04.12;
 历史版本:  无;
 *********************************************************************************************/
+#include <string.h>
 #include "pvrfClockSync.h"
 
 
@@ -48,36 +49,17 @@ u8 pvrfClockFrequencyVerify(u8 dataLen, u8 *pData, void *pParaValue)
     
     if (sizeof(u32) == dataLen)    //长度先要正确
     {
-        tempValue = *(u32 *)pData;
+        //tempValue = *(u32 *)pData;
+        memcpy(&tempValue, pData, dataLen);
 
-#if PVT_CALC_USE_FPGA_CLOCK_ERROR
         *(u32 *)pParaValue = tempValue;
-        
-#else
-
-        if (tempValue <= g_paraLimit.upLimit.fpgaPwmClock)
-        {
-            if (tempValue >= g_paraLimit.downLimit.fpgaPwmClock)
-            {
-                *(u32 *)pParaValue = tempValue;
-            }
-            else
-            {
-                verifyResult = PARA_VERIFY_LESS_LOWER_LIMIT;
-            }
-        }
-        else
-        {
-            verifyResult = PARA_VERIFY_GREAT_UPER_LIMIT;
-        }
-#endif
     }
     else
     {
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -120,7 +102,7 @@ u8 pvrfClockSyncRegVerify(u8 dataLen, u8 *pData, void *pParaValue)
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -163,7 +145,7 @@ u8 pvrfClockSyncStateVerify(u8 dataLen, u8 *pData, void *pParaValue)
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -214,7 +196,7 @@ u8 pvrfClockSyncStartTypeVerify(u8 dataLen, u8 *pData, void *pParaValue)
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }

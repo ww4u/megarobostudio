@@ -14,8 +14,6 @@ roboGeo51::roboGeo51()
     setAxesDefName( 5 );
     setJointName( 5 );
 
-//    setDcAxes( 1 );
-
     mOutputs = 0;
     mInputs = 0;
 

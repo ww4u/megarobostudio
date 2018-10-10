@@ -9,6 +9,7 @@ Copyright (C) 2016，北京镁伽机器人科技有限公司
 完成日期:  2016.12.19;
 历史版本:  无;
 *********************************************************************************************/
+#include <string.h>
 #include "project.h"
 #include "pvrfMotion.h"
 
@@ -73,7 +74,7 @@ u8 pvrfMotionEmergEndSpeedVerify(u8 dataLen, u8 *pData, void *pParaValue)
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -116,7 +117,7 @@ u8 pvrfMotionStateReportVerify(u8 dataLen, u8 *pData, void *pParaValue)
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -167,7 +168,7 @@ u8 pvrfMotionStartSrcVerify(u8 dataLen, u8 *pData, void *pParaValue)
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -218,7 +219,7 @@ u8 pvrfMotionStartTypeVerify(u8 dataLen, u8 *pData, void *pParaValue)
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -240,7 +241,8 @@ u8 pvrfMotionMaxSpeedVerify(u8 dataLen, u8 *pData, void *pParaValue)
     
     if (sizeof(f32) == dataLen)    //长度先要正确
     {
-        tempValue = *(f32 *)pData;
+        //tempValue = *(f32 *)pData;
+        memcpy(&tempValue, pData, dataLen);
         if (tempValue <= g_paraLimit.upLimit.motionMaxSpeed)
         {
             if (tempValue > g_motionInfo.motion[CH1].minSpeed)    //要比设定的最小速度大
@@ -262,7 +264,7 @@ u8 pvrfMotionMaxSpeedVerify(u8 dataLen, u8 *pData, void *pParaValue)
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -284,7 +286,8 @@ u8 pvrfMotionMinSpeedVerify(u8 dataLen, u8 *pData, void *pParaValue)
     
     if (sizeof(f32) == dataLen)    //长度先要正确
     {
-        tempValue = *(f32 *)pData;
+        //tempValue = *(f32 *)pData;
+        memcpy(&tempValue, pData, dataLen);
         if (tempValue < g_motionInfo.motion[CH1].maxSpeed)    //上限是最大速度
         {
             if (tempValue >= g_paraLimit.downLimit.motionMinSpeed)
@@ -302,7 +305,7 @@ u8 pvrfMotionMinSpeedVerify(u8 dataLen, u8 *pData, void *pParaValue)
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -324,7 +327,8 @@ u8 pvrfMotionMaxPosnVerify(u8 dataLen, u8 *pData, void *pParaValue)
     
     if (sizeof(f32) == dataLen)    //长度先要正确
     {
-        tempValue = *(f32 *)pData;
+        //tempValue = *(f32 *)pData;
+        memcpy(&tempValue, pData, dataLen);
         if (tempValue <= g_paraLimit.upLimit.motionMaxPosn)
         {
             if (tempValue > g_motionInfo.motion[CH1].minPosn)
@@ -346,7 +350,7 @@ u8 pvrfMotionMaxPosnVerify(u8 dataLen, u8 *pData, void *pParaValue)
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -368,7 +372,8 @@ u8 pvrfMotionMinPosnVerify(u8 dataLen, u8 *pData, void *pParaValue)
     
     if (sizeof(f32) == dataLen)    //长度先要正确
     {
-        tempValue = *(f32 *)pData;
+        //tempValue = *(f32 *)pData;
+        memcpy(&tempValue, pData, dataLen);
         if (tempValue < g_motionInfo.motion[CH1].maxPosn)
         {
             if (tempValue >= g_paraLimit.downLimit.motionMinPosn)
@@ -390,7 +395,7 @@ u8 pvrfMotionMinPosnVerify(u8 dataLen, u8 *pData, void *pParaValue)
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -412,7 +417,8 @@ u8 pvrfMotionMaxTorqueVerify(u8 dataLen, u8 *pData, void *pParaValue)
     
     if (sizeof(f32) == dataLen)    //长度先要正确
     {
-        tempValue = *(f32 *)pData;
+        //tempValue = *(f32 *)pData;
+        memcpy(&tempValue, pData, dataLen);
         if (tempValue <= g_paraLimit.upLimit.motionMaxTorque)
         {
             if (tempValue > g_motionInfo.motion[CH1].minTorque)
@@ -434,7 +440,7 @@ u8 pvrfMotionMaxTorqueVerify(u8 dataLen, u8 *pData, void *pParaValue)
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -456,7 +462,8 @@ u8 pvrfMotionMinTorqueVerify(u8 dataLen, u8 *pData, void *pParaValue)
     
     if (sizeof(f32) == dataLen)    //长度先要正确
     {
-        tempValue = *(f32 *)pData;
+        //tempValue = *(f32 *)pData;
+        memcpy(&tempValue, pData, dataLen);
         if (tempValue < g_motionInfo.motion[CH1].maxTorque)
         {
             if (tempValue >= g_paraLimit.downLimit.motionMinTorque)
@@ -478,7 +485,7 @@ u8 pvrfMotionMinTorqueVerify(u8 dataLen, u8 *pData, void *pParaValue)
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -500,7 +507,8 @@ u8 pvrfMotionMaxAccVerify(u8 dataLen, u8 *pData, void *pParaValue)
     
     if (sizeof(f32) == dataLen)    //长度先要正确
     {
-        tempValue = *(f32 *)pData;
+        //tempValue = *(f32 *)pData;
+        memcpy(&tempValue, pData, dataLen);
         if (tempValue <= g_paraLimit.upLimit.motionMaxAcc)
         {
             if (tempValue > g_motionInfo.motion[CH1].minAcc)
@@ -522,7 +530,7 @@ u8 pvrfMotionMaxAccVerify(u8 dataLen, u8 *pData, void *pParaValue)
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -544,7 +552,8 @@ u8 pvrfMotionMinAccVerify(u8 dataLen, u8 *pData, void *pParaValue)
     
     if (sizeof(f32) == dataLen)    //长度先要正确
     {
-        tempValue = *(f32 *)pData;
+        //tempValue = *(f32 *)pData;
+        memcpy(&tempValue, pData, dataLen);
         if (tempValue < g_motionInfo.motion[CH1].maxAcc)
         {
             if (tempValue >= g_paraLimit.downLimit.motionMinAcc)
@@ -566,7 +575,7 @@ u8 pvrfMotionMinAccVerify(u8 dataLen, u8 *pData, void *pParaValue)
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -609,50 +618,7 @@ u8 pvrfMotionOffsetStateVerify(u8 dataLen, u8 *pData, void *pParaValue)
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
-
-    return verifyResult;
-}
-
-
-/*********************************************************************************************
-函 数 名: pvrfMotionReverseMotionVerify;
-实现功能: 无; 
-输入参数: 无;
-输出参数: 无;
-返 回 值: 无;
-说    明: 无;
-*********************************************************************************************/
-u8 pvrfMotionReverseMotionVerify(u8 dataLen, u8 *pData, void *pParaValue)
-{
-    u8 tempValue;
-    u8 verifyResult = PARA_VERIFY_NO_ERROR;
-
-    
-    if (sizeof(SensorStateEnum) == dataLen)    //长度先要正确
-    {
-        tempValue = *pData;
-        switch (tempValue)
-        {
-            case 0:
-                *(SensorStateEnum *)pParaValue = SENSOR_OFF;
-              break;
-              
-            case 1:
-                *(SensorStateEnum *)pParaValue = SENSOR_ON;
-              break;
-
-            default:
-                verifyResult = PARA_VERIFY_ERROR_TYPE;
-              break;
-        }
-    }
-    else
-    {
-        verifyResult = PARA_VERIFY_ERROR_LEN;
-    }
-
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }

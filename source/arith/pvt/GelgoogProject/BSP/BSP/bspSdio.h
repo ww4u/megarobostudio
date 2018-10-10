@@ -34,9 +34,6 @@ typedef enum
     SDIO_CLK_DIV_400KHz = 118   
 }euSDIO_CLK_DIV;
 
-
-
-
 typedef enum 
 {
     SDIO_BLK_1_Byte = SDIO_DataBlockSize_1b,
@@ -69,8 +66,9 @@ typedef enum
 /******************************************º¯ÊýÉùÃ÷*******************************************/
 void bspSdioInit(void);
 u8   bspSdioCmdSend(u16 addr, u16 length, unsigned char needDelay);
-void bspSdioDataSend(u8 *dataBuff, u32 dataLen, u16 dataBlock);
-void bspSdioDataReceive(u8 *dataBuff, u16 dataLen, u8 dataBlock);
+u8   bspSdioDataSend(u8 *dataBuff, u32 dataLen, u16 dataBlock);
+void bspSdioDataReceiveSet(u8 *dataBuff, u16 dataLen, u8 dataBlock);
+u8   bspSdioDataTxComplete(void);
 
 
 

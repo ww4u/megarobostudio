@@ -70,7 +70,6 @@ int robotDelta::serialOutZero( QXmlStreamWriter &writer)
 {
     writer.writeTextElement( "time", QString::number(mZeroTime) );
     writer.writeTextElement( "angle", QString::number(mZeroAngle) );
-//    writer.writeTextElement( "speed", QString::number(mZeroSpeed) );
 
     return 0;
 }
@@ -83,34 +82,9 @@ int robotDelta::serialInZero( QXmlStreamReader &reader )
         { mZeroTime = reader.readElementText().toDouble(); }
         else if ( reader.name() == "angle" )
         { mZeroAngle = reader.readElementText().toDouble(); }
-//        else if ( reader.name() == "speed" )
-//        { mZeroSpeed = reader.readElementText().toDouble(); }
+
         else
         { reader.skipCurrentElement(); }
-
-//        if ( reader.name() == "time" )
-//        {
-//            str = reader.readElementText();
-//            mZeroTime = str.toDouble();
-//            logDbg()<<str;
-//        }
-//        else if ( reader.name() == "angle" )
-//        {
-//            str = reader.readElementText();
-//            mZeroAngle = str.toDouble();
-//            logDbg()<<str;
-
-////            mZeroAngle = reader.readElementText().toDouble();
-//        }
-//        else if ( reader.name() == "speed" )
-//        {
-//            str = reader.readElementText();
-//            mZeroSpeed = str.toDouble();
-//            logDbg()<<str;
-////            mZeroSpeed = reader.readElementText().toDouble();
-//        }
-//        else
-//        { reader.skipCurrentElement(); }
     }
 
     return 0;
@@ -123,7 +97,6 @@ int robotDelta::serialOutInit( QXmlStreamWriter &writer)
     writer.writeTextElement( "r", QString::number(mInitR) );
     writer.writeTextElement( "y", QString::number(mInitY) );
     writer.writeTextElement( "h", QString::number(mInitH) );
-
 
     return 0;
 }
@@ -150,23 +123,11 @@ int robotDelta::serialInInit( QXmlStreamReader &reader )
 
 int robotDelta::serialOutAngle( QXmlStreamWriter &writer)
 {
-//    writer.writeTextElement( "value", QString::number(mInitAngles.at(0)) );
-//    writer.writeTextElement( "value", QString::number(mInitAngles.at(1)) );
 
     return 0;
 }
 int robotDelta::serialInAngle( QXmlStreamReader &reader )
 {
-//    int id = 0;
-//    while(reader.readNextStartElement())
-//    {
-//        if ( reader.name() == "value" )
-//        {
-//            mInitAngles[id++] = reader.readElementText().toDouble();
-//        }
-//        else
-//        {}
-//    }
 
     return 0;
 }

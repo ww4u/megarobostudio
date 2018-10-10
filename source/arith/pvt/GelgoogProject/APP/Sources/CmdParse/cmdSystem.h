@@ -37,6 +37,8 @@ Copyright (C) 2016，北京镁伽机器人科技有限公司
 
 
 /******************************************函数声明*******************************************/
+void cmdDioRefReadTimerCB(void *timeOutPara);
+
 void cmdSystemCmdInit(void);
 void cmdSystemCmdProc(CmdParseFrameStruct *pCmdStackFrame);
 

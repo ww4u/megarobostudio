@@ -18,7 +18,6 @@
 
 static scpi_result_t _scpi_idn( scpi_t * context )
 {
-    // read
     DEF_LOCAL_VAR();
 
     logDbg();
@@ -29,7 +28,6 @@ static scpi_result_t _scpi_idn( scpi_t * context )
 
     str = LOCAL_ROBO()->getName();
 
-    logDbg()<<str;
     SCPI_ResultText( context, str.toLatin1().data() );
 
     return SCPI_RES_OK;
@@ -94,9 +92,6 @@ static scpi_result_t _scpi_move( scpi_t * context )
         { scpi_ret( SCPI_RES_ERR ); }
     }
 
-    for ( int i = 0; i < sizeof_array(vals); i++ )
-    { logDbg()<<vals[i]; }
-
     //! robo op
     DEF_ROBO();
 
@@ -120,7 +115,6 @@ static scpi_result_t _scpi_move( scpi_t * context )
     return SCPI_RES_OK;
 }
 
-
 //! move ch, page
 //! x1,y1,z1, x2,y2,z2,
 //! t
@@ -141,9 +135,6 @@ static scpi_result_t _scpi_preMove( scpi_t * context )
         if ( SCPI_RES_OK != SCPI_ParamFloat( context, vals+i, true ) )
         { scpi_ret( SCPI_RES_ERR ); }
     }
-
-    for ( int i = 0; i < sizeof_array(vals); i++ )
-    { logDbg()<<vals[i]; }
 
     //! robo op
     DEF_ROBO();
@@ -275,7 +266,6 @@ static scpi_result_t _scpi_call( scpi_t * context )
         { break; }
     }while( 0 );
 
-
     //! robo op
     DEF_ROBO();
 
@@ -322,41 +312,17 @@ static scpi_result_t _scpi_gozero( scpi_t * context )
     { scpi_ret( SCPI_RES_ERR ); }
 
     int joint;
-logDbg();
+
     //! robo
     if ( SCPI_ParamInt32(context, &joint, true) != true )
-    {logDbg();
+    {
         pRobo->goZero( tpvRegion(ax,page) );
     }
     //! some joint
     else
-    {logDbg();
+    {
         pRobo->goZero( tpvRegion(ax,page), joint, true );
     }
-
-    return SCPI_RES_OK;
-}
-
-static scpi_result_t _scpi_distance( scpi_t * context )
-{
-//    DEF_LOCAL_VAR();
-//    DEF_ROBO();
-
-//    CHECK_LINK();
-
-//    int joint;
-
-//    //! robo
-//    if ( SCPI_ParamInt32(context, &joint, true) != true )
-//    {
-//        pRobo->goZero();
-//    }
-//    //! some joint
-//    //! \todo by change
-//    else
-//    {
-//        pRobo->goZero( joint, true );
-//    }
 
     return SCPI_RES_OK;
 }
@@ -486,8 +452,6 @@ static scpi_command_t _scpi_cmds[]=
 
     CMD_ITEM( "POSE?", _scpi_pose ),        //! center + absangle
                                             //! center default = (32.7,0)
-    CMD_ITEM( "DISTANCE?", _scpi_distance ),
-//    CMD_ITEM( "ABSANGLE?", _scpi_angle ),   //!
     CMD_ITEM( "ANGLE?", _scpi_angle ),
 
     CMD_ITEM( "CENTER", _scpi_center ),      //! set center

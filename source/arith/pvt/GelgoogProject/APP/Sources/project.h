@@ -63,15 +63,24 @@ Copyright (C) 2016，北京镁伽机器人科技有限公司
 /***************************************GELGOOG****************************************/
 #ifdef PROJECT_GELGOOG
 
-//这两个定义只能同时有一个被define，4轴或者8轴
-#define    GELGOOG_HARDWARE_AXIS_4
+//Gelgoog目前有四个版本: 4轴、8轴、5+1轴(Sinanju用)以及10轴
+//4轴的每轴支持增量编码器，左右触发
+//8轴的每轴只有左右触发
+//5轴的前4轴支持增量编码器，另外也支持绝对值编码器
+//10轴的每轴只有左右触发，同时驱动芯片有262改为820
+
+//#define    GELGOOG_HARDWARE_AXIS_4
 //#define    GELGOOG_HARDWARE_AXIS_8
-//#define    GELGOOG_HARDWARE_SINANJU
+//#define    GELGOOG_HARDWARE_AXIS_10
+#define    GELGOOG_HARDWARE_SINANJU
 
 
 #if (defined (GELGOOG_HARDWARE_AXIS_4) && defined (GELGOOG_HARDWARE_AXIS_8))  || \
+    (defined (GELGOOG_HARDWARE_AXIS_4) && defined (GELGOOG_HARDWARE_AXIS_10)) || \
     (defined (GELGOOG_HARDWARE_AXIS_4) && defined (GELGOOG_HARDWARE_SINANJU)) || \
-    (defined (GELGOOG_HARDWARE_AXIS_8) && defined (GELGOOG_HARDWARE_SINANJU))
+    (defined (GELGOOG_HARDWARE_AXIS_8) && defined (GELGOOG_HARDWARE_AXIS_10)) || \
+    (defined (GELGOOG_HARDWARE_AXIS_8) && defined (GELGOOG_HARDWARE_SINANJU)) || \
+    (defined (GELGOOG_HARDWARE_AXIS_10) && defined (GELGOOG_HARDWARE_SINANJU))
 
     #error "Only one Gelgoog hardware version can be defined at the same time!!!"
     
@@ -83,6 +92,12 @@ Copyright (C) 2016，北京镁伽机器人科技有限公司
 
 #ifdef GELGOOG_HARDWARE_AXIS_8
  #define    GELGOOG_AXIS_8    1
+#endif
+
+#ifdef GELGOOG_HARDWARE_AXIS_10
+ #define    GELGOOG_AXIS_10   1
+ 
+ #define    DRIVER_USE_STSPIN820   1
 #endif
 
 #ifdef GELGOOG_HARDWARE_SINANJU

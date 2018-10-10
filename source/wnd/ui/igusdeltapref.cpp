@@ -36,7 +36,6 @@ IgusDeltaPref::IgusDeltaPref(QWidget *parent) :
     connect( this, SIGNAL(signal_joint_zero(int,bool)),
              this, SLOT(slot_joint_zero(int,bool)) );
 
-
     //! post change
     slot_body_changed();
     slot_ccw_changed();

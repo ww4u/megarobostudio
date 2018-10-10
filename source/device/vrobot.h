@@ -37,6 +37,10 @@ class RoboTask;
 #define robot_is_mrv( id )          ( ( (id) >= VRobot::robot_mrv ) && ( (id) < VRobot::robot_mrv_max ) )
 #define robot_is_robot( id )        ( ( (id) >= VRobot::robot_complex ) && ( (id) < VRobot::robot_user ) )
 
+#define scale_t( t )    ( (t)*(VRobot::_mTBase) )
+#define scale_p( p )    ( (p)*(VRobot::_mPBase) )
+#define scale_v( v )    ( (v)*(VRobot::_mVBase) )
+
 enum eRoboPlanMode
 {
     plan_linear = 0,

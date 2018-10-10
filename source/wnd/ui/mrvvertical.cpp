@@ -25,8 +25,6 @@ int MrvVertical::setApply()
 
 void MrvVertical::modelChanged()
 {
-//    adaptUi();
-
     updateUi();
 }
 

@@ -18,7 +18,6 @@
 
 static scpi_result_t _scpi_idn( scpi_t * context )
 {
-    // read
     DEF_LOCAL_VAR();
 
     logDbg();
@@ -27,7 +26,6 @@ static scpi_result_t _scpi_idn( scpi_t * context )
 
     str = ((robotMegatron*)context->user_context)->getName();
 
-    logDbg()<<str;
     SCPI_ResultText( context, str.toLatin1().data() );
 
     return SCPI_RES_OK;
@@ -93,9 +91,6 @@ static scpi_result_t _scpi_move( scpi_t * context )
         { scpi_ret( SCPI_RES_ERR ); }
     }
 
-    for ( int i = 0; i < sizeof_array(vals); i++ )
-    { logDbg()<<vals[i]; }
-
     //! robo op
     DEF_ROBO();
 
@@ -138,9 +133,6 @@ static scpi_result_t _scpi_preMove( scpi_t * context )
         if ( SCPI_RES_OK != SCPI_ParamFloat( context, vals+i, true ) )
         { scpi_ret( SCPI_RES_ERR ); }
     }
-
-    for ( int i = 0; i < sizeof_array(vals); i++ )
-    { logDbg()<<vals[i]; }
 
     //! robo op
     DEF_ROBO();
@@ -285,7 +277,6 @@ static scpi_result_t _scpi_call( scpi_t * context )
         if ( SCPI_ParamInt32(context, &motionMode, true) != true )
         { break; }
     }while( 0 );
-
 
     //! robo op
     DEF_ROBO();

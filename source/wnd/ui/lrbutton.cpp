@@ -13,7 +13,6 @@ LRButton::~LRButton()
     delete ui;
 }
 
-
 void LRButton::setStep( float stp )
 {
     ui->doubleSpinBox->setValue( stp );

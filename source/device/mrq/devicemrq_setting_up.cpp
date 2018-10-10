@@ -8,7 +8,7 @@ int deviceMRQ::_uploadSetting()
 {
     int ret=-1;
 
-MRQ_PROGRESS( 0, ("LINK") );
+    MRQ_PROGRESS( 0, ("LINK") );
 
     checked_call( getLINK_INTFC(&mLINK_INTFC) );
     checked_call( getSYSTEM_WORKMODE(&mSYSTEM_WORKMODE) );
@@ -24,13 +24,6 @@ MRQ_PROGRESS( 0, ("LINK") );
     checked_call( getCAN_BAUD(&mCAN_BAUD) );
     checked_call( getCAN_GROUP(&mCAN_GROUP) );
 
-//    checked_call( getCAN_SENDID(&mCAN_SENDID) );
-//    checked_call( getCAN_RECEIVEID(&mCAN_RECEIVEID) );
-
-//    checked_call( getCAN_GROUPID1(&mCAN_GROUPID1) );
-//    checked_call( getCAN_GROUPID2(&mCAN_GROUPID2) );
-//    checked_call( getCAN_BROADCASTID(&mCAN_BROADCASTID) );
-
     checked_call( getCAN_NETMANAGESTATE(&mCAN_NETMANAGESTATE) );
     checked_call( getCAN_NETMANAGEHASH(&mCAN_NETMANAGEHASH) );
 
@@ -41,7 +34,7 @@ MRQ_PROGRESS( 0, ("LINK") );
     checked_call( getCLOCK_SYNCSTATE(&mCLOCK_SYNCSTATE) );
     checked_call( getCLOCK_COUNT(&mCLOCK_COUNT) );
 
-MRQ_PROGRESS( 10, ("MOTION") );
+    MRQ_PROGRESS( 10, ("MOTION") );
 
     //! state
     foreach_page()
@@ -75,16 +68,9 @@ MRQ_PROGRESS( 10, ("MOTION") );
         checked_call( getMOTION_ORIGIN( i, mMOTION_ORIGIN+i) );
 
         checked_call( getMOTION_OFFSETSTATE( i, mMOTION_OFFSETSTATE+i) );
-//        checked_call( getMOTION_PVTSTEPS( i, mMOTION_PVTSTEPS+i) );
-//        checked_call( getMOTION_COUNTSTEPS( i, mMOTION_COUNTSTEPS+i) );
-//        checked_call( getMOTION_PVTCIRCLE( i, mMOTION_PVTCIRCLE+i) );
-
-//        checked_call( getMOTION_COUNTCIRCLE( i, mMOTION_COUNTCIRCLE+i) );
-//        checked_call( getMOTION_ABCOUNT( i, mMOTION_ABCOUNT+i) );
-//        checked_call( getMOTION_REVMOTION( i, mMOTION_REVMOTION+i) );
     }
 
-MRQ_PROGRESS( 20, ("MOTOR") );
+    MRQ_PROGRESS( 20, ("MOTOR") );
 
     checked_call( getIDENTITY_DISTDEVICE( &mIDENTITY_DISTDEVICE ) );
     for ( int i = 0; i < axes(); i++ )
@@ -126,15 +112,10 @@ MRQ_PROGRESS( 20, ("MOTOR") );
         }
     }
 
-MRQ_PROGRESS( 30, ("MOTORPLAN") );
+    MRQ_PROGRESS( 30, ("MOTORPLAN") );
 
     foreach_page()
     {
-//        checked_call( getMOTIONPLAN_PVTCONFIG( _i, _axPage, mMOTIONPLAN_PVTCONFIG[_i]+_j ) );
-//        checked_call( getMOTIONPLAN_PRESETSTATE( _i,
-//                                                 (MRQ_MOTIONPLAN_PRESETSTATE)_axPage,
-//                                                 mMOTIONPLAN_PRESETSTATE[_i]+_j ) );
-
         checked_call( getMOTIONPLAN_EXECUTEMODE( _i, _axPage, mMOTIONPLAN_EXECUTEMODE[_i]+_j ) );
 
         checked_call( getMOTIONPLAN_PLANMODE( _i, _axPage, mMOTIONPLAN_PLANMODE[_i]+_j ) );
@@ -166,7 +147,7 @@ MRQ_PROGRESS( 30, ("MOTORPLAN") );
     }
     end_foreach_page()
 
-MRQ_PROGRESS( 50, ("TRIGGER") );
+    MRQ_PROGRESS( 50, ("TRIGGER") );
 
     for ( int i = 0; i < axes(); i++ )
     {
@@ -177,19 +158,6 @@ MRQ_PROGRESS( 50, ("TRIGGER") );
         }
         Q_ASSERT( i < sizeof_array(mTRIGGER_MODE) );
         checked_call( getTRIGGER_MODE( i, mTRIGGER_MODE+i) );
-//        checked_call( getTRIGGER_PATTSTATE( i, mTRIGGER_PATTSTATE+i) );
-
-//        checked_call( getTRIGGER_PATTERN( i,
-//                                          mTRIGGER_PATTERN+i,
-//                                          mTRIGGER_PATTERN1+i,
-//                                          mTRIGGER_PATTERN2+i,
-//                                          mTRIGGER_PATTERN3+i,
-//                                          mTRIGGER_PATTERN4+i
-//                                          ) ); U16?
-
-//        checked_call( getTRIGGER_PATTRESP( i, mTRIGGER_PATTRESP+i) );
-//        checked_call( getTRIGGER_PATTSMODE( i, mTRIGGER_PATTSMODE+i) );
-//        checked_call( getTRIGGER_PATTSPERIOD( i, mTRIGGER_PATTSPERIOD+i) );
 
         int trigId;
         for( int j = 0; j < mTrigSrcs; j++ )
@@ -235,7 +203,7 @@ MRQ_PROGRESS( 50, ("TRIGGER") );
         { Q_ASSERT(false); }
     }
 
-MRQ_PROGRESS( 60, ("DO") );
+    MRQ_PROGRESS( 60, ("DO") );
 
     for ( int i = 0; i < mDOs; i++ )
     {
@@ -250,7 +218,7 @@ MRQ_PROGRESS( 60, ("DO") );
         checked_call( getDIGITALOUTPUT_DUTY( (MRQ_DIGITALOUTPUT_STATE)i, mDIGITALOUTPUT_DUTY + i) );
     }
 
-MRQ_PROGRESS( 65, ("ISO") );
+    MRQ_PROGRESS( 65, ("ISO") );
 
     for( int i = 0; i < mISOs; i++ )
     {
@@ -260,7 +228,7 @@ MRQ_PROGRESS( 65, ("ISO") );
         checked_call( getISOLATOROUTPUT_CONDITION( (MRQ_ISOLATOROUTPUT_STATE)i, mISOLATOROUTPUT_CONDITION + i) );
         checked_call( getISOLATOROUTPUT_RESPONSE( (MRQ_ISOLATOROUTPUT_STATE)i, mISOLATOROUTPUT_RESPONSE + i) );
     }
-MRQ_PROGRESS( 70, ("SENSOR") );
+    MRQ_PROGRESS( 70, ("SENSOR") );
 
     //! sensor uart
     for ( int i = 0; i < uarts(); i++ )
@@ -299,7 +267,7 @@ MRQ_PROGRESS( 70, ("SENSOR") );
         }
     }
 
-MRQ_PROGRESS( 75, ("ISI") );
+    MRQ_PROGRESS( 75, ("ISI") );
 
     for ( int i = 0; i < mISIs; i++ )
     {
@@ -374,7 +342,7 @@ MRQ_PROGRESS( 75, ("ISI") );
         checked_call( getOTP_PERIOD( &mOTP_PERIOD ) );
     }
 
-MRQ_PROGRESS_HIDE();
+    MRQ_PROGRESS_HIDE();
 
     return ret;
 }

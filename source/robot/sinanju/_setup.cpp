@@ -6,7 +6,7 @@ int robotSinanju::serialIn( QXmlStreamReader &reader )
     int ret;
 
     while(reader.readNextStartElement())
-    {logDbg()<<reader.name();
+    {
         if ( reader.name() == "raw" )
         { ret = serialInRaw( reader ); }
         else if ( reader.name() == "angle" )
@@ -69,61 +69,54 @@ int robotSinanju::serialOut( QXmlStreamWriter &writer )
 
 int robotSinanju::serialInAngle( QXmlStreamReader &reader )
 {
-//    while(reader.readNextStartElement())
+    while(reader.readNextStartElement())
     {
-//        if ( reader.name() == "angle" )
+        if ( reader.name() == "init" )
         {
+            float fVal;
             while(reader.readNextStartElement())
             {
-                if ( reader.name() == "init" )
+                if ( reader.name() == "count" )
                 {
-                    float fVal;
-                    while(reader.readNextStartElement())
-                    {
-                        if ( reader.name() == "count" )
-                        {
-                            reader.readElementText();
-                            mInitAngles.clear();
-                        }
-                        else if ( reader.name() == "value" )
-                        {
-                            fVal = reader.readElementText().toFloat();
-                            mInitAngles.append( fVal );
-                        }
-                        else
-                        { reader.skipCurrentElement(); }
-                    }
+                    reader.readElementText();
+                    mInitAngles.clear();
                 }
-                else if ( reader.name() == "invert" )
+                else if ( reader.name() == "value" )
                 {
-                    int iVal;
-                    while(reader.readNextStartElement())
-                    {
-                        if ( reader.name() == "count" )
-                        {
-                            reader.readElementText();
-                            mAngleDir.clear();
-                        }
-                        else if ( reader.name() == "value" )
-                        {
-                            iVal = reader.readElementText().toInt();
-                            mAngleDir.append( iVal > 0 );
-                        }
-                        else
-                        { reader.skipCurrentElement(); }
-                    }
+                    fVal = reader.readElementText().toFloat();
+                    mInitAngles.append( fVal );
                 }
                 else
                 { reader.skipCurrentElement(); }
             }
         }
+        else if ( reader.name() == "invert" )
+        {
+            int iVal;
+            while(reader.readNextStartElement())
+            {
+                if ( reader.name() == "count" )
+                {
+                    reader.readElementText();
+                    mAngleDir.clear();
+                }
+                else if ( reader.name() == "value" )
+                {
+                    iVal = reader.readElementText().toInt();
+                    mAngleDir.append( iVal > 0 );
+                }
+                else
+                { reader.skipCurrentElement(); }
+            }
+        }
+        else
+        { reader.skipCurrentElement(); }
     }
 
     return 0;
 }
 int robotSinanju::serialOutAngle( QXmlStreamWriter &writer )
 {
-
     //! init
     writer.writeStartElement("init");
 

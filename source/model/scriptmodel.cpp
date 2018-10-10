@@ -35,7 +35,6 @@ QModelIndex scriptModel::index(int row, int column, const QModelIndex &parent) c
     //! valid parent
     else
     {
-
     }
 
     //! parent node
@@ -56,7 +55,6 @@ QModelIndex scriptModel::index(int row, int column, const QModelIndex &parent) c
 
 QModelIndex scriptModel::parent(const QModelIndex &index) const
 {
-//    return QModelIndex();
     if (index.isValid())
     {  }
     else
@@ -162,9 +160,8 @@ bool scriptModel::setData(const QModelIndex &index, const QVariant &value, int r
     if ( !index.isValid() )
     { return false; }
 
-    if (data(index, role) != value) {
-        // FIXME: Implement me!
-
+    if (data(index, role) != value)
+    {
         scriptNode *pNode = getItem( index );
         QString str = value.toString();
         //! check
@@ -250,9 +247,7 @@ QMimeData *scriptModel::mimeData(const QModelIndexList &indexes) const
          {
              scriptNode *pNode = getItem( index );
              encodedData = QByteArray::number( (quintptr)pNode, 16 );
-             logDbg()<<pNode->getName();
-
-
+//             logDbg()<<pNode->getName();
          }
     }
 
@@ -268,11 +263,10 @@ bool scriptModel::canDropMimeData(const QMimeData *data,
     Q_UNUSED(parent);
 
     if (!data->hasFormat("application/robo_script"))
-     return false;
+    { return false; }
 
     if (column > 0)
-     return false;
-logDbg();
+    { return false; }
 
     scriptNode *pNode = getItem(parent);
     if ( pNode->getNodeType() != scriptNode::node_group )
@@ -286,10 +280,10 @@ bool scriptModel::dropMimeData(const QMimeData *data,
 {
     if (!canDropMimeData(data, action, row, column, parent))
     { return false; }
-logDbg();
+
     if (action == Qt::IgnoreAction)
      return true;
-logDbg();
+
     int beginRow;
 
     if (row != -1)
@@ -302,12 +296,12 @@ logDbg();
     QByteArray encodedData = data->data("application/robo_script");
     if ( encodedData.size() != 8 )
     { return false; }
-logDbg();
+
     quint32 ptrData = encodedData.toUInt(NULL,16);
     scriptNode *pNode = (scriptNode*)ptrData;
     if ( NULL == pNode )
     { return false; }
-logDbg()<<beginRow;
+
     insertRows( beginRow, 1 );
 
     scriptNode *pParent = getItem( parent );
@@ -430,8 +424,6 @@ scriptNode *scriptModel::getItem( const QModelIndex &index ) const
     if (index.isValid())
     {
         scriptNode *item = static_cast<scriptNode *>(index.internalPointer());
-//        if (item)
-//        { return item; }
 
         return item;
     }

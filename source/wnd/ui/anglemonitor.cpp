@@ -2,6 +2,7 @@
 #include "ui_anglemonitor.h"
 #include "anglewidget.h"
 #include "../widget/megamessagebox.h"
+
 AngleMonitor::AngleMonitor(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::AngleMonitor)
@@ -101,9 +102,7 @@ void AngleMonitor::sampleProc()
         { logDbg();continue; }
 
         //! sample
-
         val = sampleUnit( pAngleWig->connection(), err );
-
         if ( err != 0 )
         {
             sysError( tr("sample fail") );
@@ -198,13 +197,9 @@ void AngleMonitor::on_toolButton_clicked()
 void AngleMonitor::slot_anglewidget_changed()
 {
     ui->toolButton->setEnabled( mAngleWidgets.size() > 0 );
-
-//    adjustSize();
-//    ui->verticalLayout->update();
 }
 
 void AngleMonitor::on_comboBox_activated(int index )
 {
-//    logDbg();
     mDataId = ui->comboBox->value();
 }

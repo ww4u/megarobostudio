@@ -16,28 +16,28 @@ int robotSinanju::buildTrace( QList<TraceKeyPoint> &curve,
     //! interp
     interpTune( curve );
 
-logDbg()<<curve.size();
     ret = planTrace( curve, tracePlan );
     if ( ret != 0 )
     {
         sysError( QObject::tr("interp fail") );
         return ret;
     }
-logDbg()<<tracePlan.size();
-for ( int i = 0; i < tracePlan.size(); i++ )
-{
-    logDbg()<<tracePlan.data()[i].t
-            <<tracePlan.data()[i].x
-            <<tracePlan.data()[i].y
-            <<tracePlan.data()[i].z;
-}
+
+//    for ( int i = 0; i < tracePlan.size(); i++ )
+//    {
+//        logDbg()<<tracePlan.data()[i].t
+//                <<tracePlan.data()[i].x
+//                <<tracePlan.data()[i].y
+//                <<tracePlan.data()[i].z;
+//    }
+
     ret = splitTrace( tracePlan, jointsPlan );
     if ( ret != 0 )
     {
-        sysError( QObject::tr("deslove fail") );
+        sysError( QObject::tr("desolve fail") );
         return ret;
     }
-logDbg();
+
     return 0;
 }
 
@@ -79,7 +79,7 @@ void robotSinanju::interpTune( QList<TraceKeyPoint> &curve )
         dist = comAssist::eulcidenDistance( curve.at(i).x, curve.at(i).y, curve.at(i).z,
                                             curve.at(i+1).x, curve.at(i+1).y, curve.at(i+1).z
                                             );
-        //! todo by out
+        //! \todo by out
         if ( dist < 5 )
         {
             unset_bit( curve[i].iMask, BIT_INTERP );
@@ -189,10 +189,10 @@ int robotSinanju::planTrace( QList<TraceKeyPoint> &curve,
     //! xyzt
     for( int i = 0; i < curve.size(); i++ )
     {
-        endPoints.data()[i].x = curve.at( i ).x;
-        endPoints.data()[i].y = curve.at( i ).y;
+        endPoints.data()[i].x = ( curve.at( i ).x );
+        endPoints.data()[i].y = ( curve.at( i ).y );
         endPoints.data()[i].z = curve.at( i ).z;
-        endPoints.data()[i].t = curve.at( i ).t;
+        endPoints.data()[i].t = scale_t( curve.at( i ).t );
     }
 
     int xyzResLen;

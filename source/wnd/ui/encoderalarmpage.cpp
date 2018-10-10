@@ -10,9 +10,9 @@ EncoderAlarmPage::EncoderAlarmPage(QWidget *parent) :
     ui->setupUi(this);
 
     //! set name
-    ui->label_2->setText( tr("Upper") + "(" + QChar(0x00B0) + ")" );
-    ui->label_3->setText( tr("Lower") + "(" + QChar(0x00B0) + ")" );
-    ui->label_4->setText( tr("Zero") + "(" + QChar(0x00B0) + ")" );
+    ui->label_2->setText( tr("Upper") + "(" + char_deg + ")" );
+    ui->label_3->setText( tr("Lower") + "(" + char_deg + ")" );
+    ui->label_4->setText( tr("Zero") + "(" + char_deg + ")" );
 
     spyEdited();
 }
@@ -47,7 +47,7 @@ void EncoderAlarmPage::setData( EncoderAlarmConfig &config )
 
     //! convert
     limitToRange( valDown, valUp, zero, config.mZeroPos == 1, rangeL, rangeU );
-//logDbg()<<valDown<<valUp<<rangeL<<rangeU;
+
     ui->checkBox->setChecked( config.mbEn );
     ui->doubleSpinBox->setValue(  rangeU );
     ui->doubleSpinBox_2->setValue(  rangeL );

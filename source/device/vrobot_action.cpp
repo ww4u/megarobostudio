@@ -22,13 +22,7 @@ int VRobot::download( tpvGroup *pGroup,
 
     return 0;
 }
-//int VRobot::download( motionGroup *pGroup,
-//                      const tpvRegion &region )
-//{
-//    Q_ASSERT( NULL != pGroup );
 
-//    return 0;
-//}
 int VRobot::download( QList<tpvGroup*> &groups,
                       QList<int> &joints,
                       const tpvRegion &region )
@@ -109,16 +103,3 @@ bool VRobot::waitCondition( const tpvRegion &region,
 {
    return false;
 }
-
-//void VRobot::attachCondition(
-//                              MegaDevice::RoboCondition *pCond )
-//{
-
-//}
-
-//bool VRobot::waitCondition(
-//                            MegaDevice::RoboCondition *pCond,
-//                            int tmoms )
-//{
-//   return false;
-//}

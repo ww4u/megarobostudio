@@ -42,12 +42,6 @@ int deviceMRQ::loadTpvCap( )
     }
     end_foreach_page()
 
-//    foreach_page()
-//    {
-//        logDbg()<<mTpvCaps[ tpvRegion(_i,_j) ];
-//    }
-//    end_foreach_page()
-
     return 0;
 }
 
@@ -106,7 +100,6 @@ int deviceMRQ::loadMotorBasic()
     return 0;
 }
 
-
 int deviceMRQ::beginTpvDownload( const tpvRegion &region )
 {
     int ret;
@@ -121,15 +114,12 @@ int deviceMRQ::beginTpvDownload( const tpvRegion &region )
                                     MRQ_MOTION_SWITCH_RESET,
                                     (MRQ_MOTION_SWITCH_1)region.page()) );
 
-    //! force to idle
-//    ((MrqFsm*)Fsm( region ))->setState( MegaDevice::mrq_state_idle );
+    //! force to program
     ((MrqFsm*)Fsm( region ))->setState( MegaDevice::mrq_state_program );
 
     //! \errant exec mode to cycle
     checked_call( setMOTIONPLAN_EXECUTEMODE( pvt_page_p,
                                              MRQ_MOTIONPLAN_EXECUTEMODE_1_CYCLE) );
-//    checked_call( getMOTIONPLAN_REMAINPOINT( pvt_page_p, mMOTIONPLAN_REMAINPOINT[ax]+page ) );
-
     checked_call( setMOTION_STATEREPORT( ax, MRQ_MOTION_STATEREPORT_QUERY ) );
 
     setTpvIndex( pvt_region_p, 0 );
@@ -185,7 +175,7 @@ int deviceMRQ::tpvDownload(
     framePackage.append( (byte)ax );
     framePackage.append( (byte)page );
     framePackage.append( (byte)index );
-    val = p * _mPBase;
+    val = p ;
     framePackage.append( (const char*)&val, sizeof(val) );
     tpvPacks.append( framePackage );
 
@@ -196,7 +186,7 @@ int deviceMRQ::tpvDownload(
     framePackage.append( (byte)ax );
     framePackage.append( (byte)page );
     framePackage.append( (byte)index );
-    val = v * _mVBase;
+    val = v;
     framePackage.append( (const char*)&val, sizeof(val) );
     tpvPacks.append( framePackage );
 
@@ -207,13 +197,12 @@ int deviceMRQ::tpvDownload(
     framePackage.append( (byte)ax );
     framePackage.append( (byte)page );
     framePackage.append( (byte)index );
-    val = t * _mTBase;
+    val = t;
     framePackage.append( (const char*)&val, sizeof(val) );
     tpvPacks.append( framePackage );
 
     ret = m_pBus->doWrite( tpvPacks );
 
-//logWarning()<<axesId<<index<<p<<v<<t;
     return ret;
 }
 int deviceMRQ::tpvDownload( const tpvRegion &region,
@@ -297,8 +286,7 @@ int deviceMRQ::pvtWrite( pvt_region,
               QList<tpvRow *> &list,
               int from,
               int len )
-{logDbg()<<region.axes()<<region.page()<<list.size()<<name();
-
+{
     //! verify the memory
     if( pvtVerify( region, list ) )
     { }
@@ -320,7 +308,9 @@ int deviceMRQ::pvtWrite( pvt_region,
         sysError( QString::number(region.axes()), QString::number(region.page()) );
         return ERR_CAN_NOT_RUN;
     }
-    // else
+    else
+    {}
+
     int ret;
     {
         //! check end state
@@ -383,7 +373,6 @@ int deviceMRQ::pvtWrite( pvt_region,
 {
     DELOAD_REGION();
 
-//    logDbg()<<t1<<p1<<t2<<p2;
     //! point 1
     tpvRow *pRow1 = new tpvRow();
     if ( NULL == pRow1 )
@@ -476,7 +465,6 @@ int deviceMRQ::pvtWrite( pvt_region,
     return pvtWrite( pvt_region_p, transRows );
 }
 
-
 void deviceMRQ::setTpvIndex( pvt_region, int index )
 {
     DELOAD_REGION();
@@ -529,7 +517,7 @@ bool deviceMRQ::pvtVerify( pvt_region,
     //! sum the dist
     if ( list.size() < 2 )
     {
-        sysError( QObject::tr("inefficient data %1").arg( list.size()) );
+        sysError( QObject::tr("Inefficient data %1").arg( list.size()) );
         return false;
     }
 
@@ -555,7 +543,7 @@ bool deviceMRQ::pvtVerify( pvt_region,
 
     if ( memDot > getTpvBuf( region ) )
     {
-        sysError( QObject::tr("over pvt memory"), QString::number(memDot), QString::number( getTpvBuf(region) ) );
+        sysError( QObject::tr("Over pvt memory"), QString::number(memDot), QString::number( getTpvBuf(region) ) );
         return false;
     }
     else

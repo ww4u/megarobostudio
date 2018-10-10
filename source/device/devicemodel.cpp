@@ -1,6 +1,5 @@
 #include "devicemodel.h"
 
-
 const char* enum_toString( int val, value_desc pDescs[], int32 cnt )
 {
     for( int i = 0; i < cnt; i++ )
@@ -55,23 +54,6 @@ DeviceModel::DeviceModel()
 {
 
 }
-
-
-//void DeviceModel::setAlias( const QString &str, int id )
-//{
-//    //! fill the pad
-//    for( int i = mAlias.length(); i < id_to_index(id) + 1; i++ )
-//    { mAlias.append(""); }
-
-//    mAlias[ id_to_index(id) ] = str;
-//}
-//QString DeviceModel::getAlias( int id )
-//{
-//    if ( id_to_index(id) >= mAlias.size() )
-//    { return ""; }
-//    else
-//    { return mAlias[ id_to_index(id) ]; }
-//}
 
 QString DeviceModel::toString( int val, value_desc pDescs[], int32 cnt )
 {

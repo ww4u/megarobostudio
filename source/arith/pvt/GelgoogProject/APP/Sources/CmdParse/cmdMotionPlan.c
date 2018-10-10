@@ -15,7 +15,7 @@ Copyright (C) 2016，北京镁伽机器人科技有限公司
 #include "pvrfMotionPlan.h"
 #include "servSoftTimer.h"
 #include "cmdMainParse.h"
-#include "pvtAlgorithm.h"
+#include "servAlgorithm.h"
 #include "servSystemPara.h"
 
 
@@ -29,12 +29,15 @@ extern MotorInfoStruct   g_motorInfo;
 
 extern SystemStateStruct g_systemState;
 extern SystemInfoStruct  g_systemInfo;
+extern DebugInfoStruct   g_debugInfo;
 
 extern bool g_bCmdPostSemToPvt;
 extern bool g_bCmdPostSemToFunc;
 
 extern ChanCfgBmpStruct g_chanCfgBmp[CH_TOTAL];
 extern WaveTableStruct  g_waveTable[CH_TOTAL][WTTYPE_RESERVE];
+
+extern SoftTimerStruct g_paraSaveTimer;
 
 
 
@@ -48,6 +51,8 @@ extern WaveTableStruct  g_waveTable[CH_TOTAL][WTTYPE_RESERVE];
 
 /******************************************局部变量*******************************************/
 SubCmdProFunc pPvtCmdFunc[PVTCMD_RESERVE];
+u16 lastAccScale = 300;    //默认30%占比
+u16 lastDecScale = 300;    //默认30%占比
 
 
 
@@ -75,7 +80,7 @@ void cmdPvtConfigSet(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -96,7 +101,7 @@ void cmdPvtConfigSet(u8 cmdDataLen, u8 *pCmdData)
             switch ((ConfigStateEnum)*pCmdData)
             {
                 case CONFIG_END:
-                    for (i = 0;i < g_systemState.chanNum;i++)
+                    for (i = 0;i < CH_TOTAL;i++)
                     {
                         if (bConfig[i])
                         {
@@ -112,7 +117,7 @@ void cmdPvtConfigSet(u8 cmdDataLen, u8 *pCmdData)
                   break;
 
                 case CONFIG_CLEAR:
-                    for (i = 0;i < g_systemState.chanNum;i++)
+                    for (i = 0;i < CH_TOTAL;i++)
                     {
                         if (bConfig[i])
                         {
@@ -125,6 +130,17 @@ void cmdPvtConfigSet(u8 cmdDataLen, u8 *pCmdData)
                             g_systemState.pvtManage[i][waveTable].pointIndex = 0;
                             g_systemState.pvtManage[i][waveTable].bRewind = false;
                             g_systemState.pvtManage[i][waveTable].bClear  = true;
+                            
+                            //For PVT Debug
+                            g_debugInfo.pvtPosnCount[chanNum] = 0;
+                            g_debugInfo.pvtVelcCount[chanNum] = 0;
+                            g_debugInfo.pvtTimeCount[chanNum] = 0;
+                            
+                            g_debugInfo.vefyPosnCount[chanNum] = 0;
+                            g_debugInfo.vefyVelcCount[chanNum] = 0;
+                            g_debugInfo.vefyTimeCount[chanNum] = 0;
+                            
+                            g_debugInfo.calcPvtCount[chanNum] = 0;
                         }
                     }
                   break;
@@ -144,7 +160,7 @@ void cmdPvtConfigSet(u8 cmdDataLen, u8 *pCmdData)
         errorCode = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = errorCode;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = errorCode;
 }
 
 
@@ -185,7 +201,7 @@ void cmdPvtConfigQuery(u8 cmdDataLen, u8 *pCmdData)
         }
         else
         {
-            for (i = 0;i < g_systemState.chanNum;i++)
+            for (i = 0;i < CH_TOTAL;i++)
             {
                 if ((CH_ALL == chanNum) ||
                     (chanNum == g_systemInfo.group[i][0]) ||
@@ -257,7 +273,7 @@ void cmdPvtExecModeSet(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -272,7 +288,7 @@ void cmdPvtExecModeSet(u8 cmdDataLen, u8 *pCmdData)
     //进行参数验证
     if (PARA_VERIFY_NO_ERROR == pvrfPvtExecModeVerify(cmdDataLen, pCmdData, (void *)&pvtExecMode, (void *)&waveTable))
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if (bConfig[i])
             {
@@ -320,7 +336,7 @@ void cmdPvtExecModeQuery(u8 cmdDataLen, u8 *pCmdData)
         }
         else
         {
-            for (i = 0;i < g_systemState.chanNum;i++)
+            for (i = 0;i < CH_TOTAL;i++)
             {
                 if ((CH_ALL == chanNum) ||
                     (chanNum == g_systemInfo.group[i][0]) ||
@@ -364,7 +380,7 @@ void cmdPvtPlanModeSet(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -379,7 +395,7 @@ void cmdPvtPlanModeSet(u8 cmdDataLen, u8 *pCmdData)
     //进行参数验证
     if (PARA_VERIFY_NO_ERROR == pvrfPvtPlanModeVerify(cmdDataLen, pCmdData, (void *)&pvtPlanMode, (void *)&waveTable))
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if (bConfig[i])
             {
@@ -427,7 +443,7 @@ void cmdPvtPlanModeQuery(u8 cmdDataLen, u8 *pCmdData)
         }
         else
         {
-            for (i = 0;i < g_systemState.chanNum;i++)
+            for (i = 0;i < CH_TOTAL;i++)
             {
                 if ((CH_ALL == chanNum) ||
                     (chanNum == g_systemInfo.group[i][0]) ||
@@ -471,7 +487,7 @@ void cmdPvtMotionModeSet(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -486,7 +502,7 @@ void cmdPvtMotionModeSet(u8 cmdDataLen, u8 *pCmdData)
     //进行参数验证
     if (PARA_VERIFY_NO_ERROR == pvrfPvtMotionModeVerify(cmdDataLen, pCmdData, (void *)&motionMode, (void *)&waveTable))
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if (bConfig[i])
             {
@@ -534,7 +550,7 @@ void cmdPvtMotionModeQuery(u8 cmdDataLen, u8 *pCmdData)
         }
         else
         {
-            for (i = 0;i < g_systemState.chanNum;i++)
+            for (i = 0;i < CH_TOTAL;i++)
             {
                 if ((CH_ALL == chanNum) ||
                     (chanNum == g_systemInfo.group[i][0]) ||
@@ -578,7 +594,7 @@ void cmdPvtModifyDutySet(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -593,11 +609,13 @@ void cmdPvtModifyDutySet(u8 cmdDataLen, u8 *pCmdData)
     //进行参数验证
     if (PARA_VERIFY_NO_ERROR == pvrfPvtModifyDutyVerify(cmdDataLen, pCmdData, (void *)&modifyDuty, (void *)&waveTable))
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if (bConfig[i])
             {
                 g_planInfo.plan[i][waveTable].modifyDuty = modifyDuty;
+                
+                servStimerAdd(&g_paraSaveTimer);
             }
         }
     }
@@ -641,7 +659,7 @@ void cmdPvtModifyDutyQuery(u8 cmdDataLen, u8 *pCmdData)
         }
         else
         {
-            for (i = 0;i < g_systemState.chanNum;i++)
+            for (i = 0;i < CH_TOTAL;i++)
             {
                 if ((CH_ALL == chanNum) ||
                     (chanNum == g_systemInfo.group[i][0]) ||
@@ -689,7 +707,14 @@ void cmdPvtRemainPointQuery(u8 cmdDataLen, u8 *pCmdData)
         dataLen = sizeof(remainPoint) + sizeof(waveTable) + sizeof(chanNum);
         if (chanNum <= CH_MAX)
         {
-            remainPoint = PVT_POINT_BUFFER_SIZE - g_systemState.pvtManage[chanNum][waveTable].tailPoint;
+            if (PVT_POINT_BUFFER_SIZE < g_systemState.pvtManage[chanNum][waveTable].tailPoint)
+            {
+                remainPoint = 0;
+            }
+            else
+            {
+                remainPoint = PVT_POINT_BUFFER_SIZE - g_systemState.pvtManage[chanNum][waveTable].tailPoint;
+            }
             pData = (u8 *)&remainPoint;
             data[0] = chanNum;
             data[1] = waveTable;
@@ -701,13 +726,20 @@ void cmdPvtRemainPointQuery(u8 cmdDataLen, u8 *pCmdData)
         }
         else
         {
-            for (i = 0;i < g_systemState.chanNum;i++)
+            for (i = 0;i < CH_TOTAL;i++)
             {
                 if ((CH_ALL == chanNum) ||
                     (chanNum == g_systemInfo.group[i][0]) ||
                     (chanNum == g_systemInfo.group[i][1]))
                 {
-                    remainPoint = PVT_POINT_BUFFER_SIZE - g_systemState.pvtManage[i][waveTable].tailPoint;
+                    if (PVT_POINT_BUFFER_SIZE < g_systemState.pvtManage[chanNum][waveTable].tailPoint)
+                    {
+                        remainPoint = 0;
+                    }
+                    else
+                    {
+                        remainPoint = PVT_POINT_BUFFER_SIZE - g_systemState.pvtManage[i][waveTable].tailPoint;
+                    }
                     pData = (u8 *)&remainPoint;
                     data[0] = i;
                     data[1] = waveTable;
@@ -746,7 +778,7 @@ void cmdPvtNcyclesSet(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -761,7 +793,7 @@ void cmdPvtNcyclesSet(u8 cmdDataLen, u8 *pCmdData)
     //进行参数验证
     if (PARA_VERIFY_NO_ERROR == pvrfPvtNcyclesVerify(cmdDataLen, pCmdData, (void *)&cycleNum, (void *)&waveTable))
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if (bConfig[i])
             {
@@ -809,7 +841,7 @@ void cmdPvtNcyclesQuery(u8 cmdDataLen, u8 *pCmdData)
         }
         else
         {
-            for (i = 0;i < g_systemState.chanNum;i++)
+            for (i = 0;i < CH_TOTAL;i++)
             {
                 if ((CH_ALL == chanNum) ||
                     (chanNum == g_systemInfo.group[i][0]) ||
@@ -853,7 +885,7 @@ void cmdPvtWarnPointSet(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -868,11 +900,13 @@ void cmdPvtWarnPointSet(u8 cmdDataLen, u8 *pCmdData)
     //进行参数验证
     if (PARA_VERIFY_NO_ERROR == pvrfPvtWarnPointVerify(cmdDataLen, pCmdData, (void *)&warnPoint, (void *)&waveTable))
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if (bConfig[i])
             {
                 g_planInfo.plan[i][waveTable].warnPoint = warnPoint;
+                
+                servStimerAdd(&g_paraSaveTimer);
             }
         }
     }
@@ -916,7 +950,7 @@ void cmdPvtWarnPointQuery(u8 cmdDataLen, u8 *pCmdData)
         }
         else
         {
-            for (i = 0;i < g_systemState.chanNum;i++)
+            for (i = 0;i < CH_TOTAL;i++)
             {
                 if ((CH_ALL == chanNum) ||
                     (chanNum == g_systemInfo.group[i][0]) ||
@@ -960,7 +994,7 @@ void cmdPvtEndStateSet(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -975,7 +1009,7 @@ void cmdPvtEndStateSet(u8 cmdDataLen, u8 *pCmdData)
     //进行参数验证
     if (PARA_VERIFY_NO_ERROR == pvrfPvtEndStateVerify(cmdDataLen, pCmdData, (void *)&endState, (void *)&waveTable))
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if (bConfig[i])
             {
@@ -1023,7 +1057,7 @@ void cmdPvtEndStateQuery(u8 cmdDataLen, u8 *pCmdData)
         }
         else
         {
-            for (i = 0;i < g_systemState.chanNum;i++)
+            for (i = 0;i < CH_TOTAL;i++)
             {
                 if ((CH_ALL == chanNum) ||
                     (chanNum == g_systemInfo.group[i][0]) ||
@@ -1081,7 +1115,7 @@ void cmdPvtBufferSizeQuery(u8 cmdDataLen, u8 *pCmdData)
         }
         else
         {
-            for (i = 0;i < g_systemState.chanNum;i++)
+            for (i = 0;i < CH_TOTAL;i++)
             {
                 if ((CH_ALL == chanNum) ||
                     (chanNum == g_systemInfo.group[i][0]) ||
@@ -1095,220 +1129,6 @@ void cmdPvtBufferSizeQuery(u8 cmdDataLen, u8 *pCmdData)
                         data[2 + j] = *pData++;
                     }
                     cmdFrameSend(CMD_PVT, PVTCMD_BUFFERSIZEQ, dataLen, data);
-                }
-            }
-        }
-    }
-}
-
-
-/*********************************************************************************************
-函 数 名: cmdPvtAccScaleSet;
-实现功能: 无; 
-输入参数: 无;
-输出参数: 无;
-返 回 值: 无;
-说    明: 无;
-*********************************************************************************************/
-void cmdPvtAccScaleSet(u8 cmdDataLen, u8 *pCmdData)
-{
-    u16  accScale;
-    WaveTableTypeEnum waveTable;
-    u8   i;
-    bool bConfig[CH_TOTAL] = {0};
-    u8   chanNum = *pCmdData++;
-
-    
-    if (chanNum <= CH_MAX)
-    {
-        bConfig[chanNum] = true;
-    }
-    else
-    {
-        for (i = 0;i < g_systemState.chanNum;i++)
-        {
-            if ((CH_ALL == chanNum) ||
-                (chanNum == g_systemInfo.group[i][0]) ||
-                (chanNum == g_systemInfo.group[i][1]))
-            {
-                bConfig[i] = true;
-            }
-        }
-    }
-    cmdDataLen -= 1;
-    
-    //进行参数验证
-    if (PARA_VERIFY_NO_ERROR == pvrfPvtSpeedScaleVerify(cmdDataLen, pCmdData, (void *)&accScale, (void *)&waveTable))
-    {
-        for (i = 0;i < g_systemState.chanNum;i++)
-        {
-            if (bConfig[i])
-            {
-                g_planInfo.plan[i][waveTable].accScale = accScale;
-            }
-        }
-    }
-}
-
-
-/*********************************************************************************************
-函 数 名: cmdPvtAccScaleQuery;
-实现功能: 无; 
-输入参数: 无;
-输出参数: 无;
-返 回 值: 无;
-说    明: 无;
-*********************************************************************************************/
-void cmdPvtAccScaleQuery(u8 cmdDataLen, u8 *pCmdData)
-{
-    u8 dataLen;
-    u8 *pData;
-    u8 data[6];
-    u8 i, j;
-    u8 chanNum = *pCmdData++;
-    WaveTableTypeEnum waveTable;
-
-
-    if (((sizeof(WaveTableTypeEnum) + sizeof(chanNum)) == cmdDataLen) &&
-        (*(WaveTableTypeEnum *)pCmdData  < WTTYPE_RESERVE))
-    {
-        waveTable = *(WaveTableTypeEnum *)pCmdData;
-        
-        dataLen = sizeof(g_planInfo.plan[CH1][WTTYPE_MAIN].accScale) + sizeof(waveTable) + sizeof(chanNum);
-        if (chanNum <= CH_MAX)
-        {
-            pData = (u8 *)&g_planInfo.plan[chanNum][waveTable].accScale;
-            data[0] = chanNum;
-            data[1] = waveTable;
-            for (i = 0;i < sizeof(g_planInfo.plan[chanNum][waveTable].accScale);i++)
-            {
-                data[2 + i] = *pData++;
-            }
-            cmdFrameSend(CMD_PVT, PVTCMD_ACCSCALEQ, dataLen, data);
-        }
-        else
-        {
-            for (i = 0;i < g_systemState.chanNum;i++)
-            {
-                if ((CH_ALL == chanNum) ||
-                    (chanNum == g_systemInfo.group[i][0]) ||
-                    (chanNum == g_systemInfo.group[i][1]))
-                {
-                    pData = (u8 *)&g_planInfo.plan[i][waveTable].accScale;
-                    data[0] = i;
-                    data[1] = waveTable;
-                    for (j = 0;j < sizeof(g_planInfo.plan[i][waveTable].accScale);j++)
-                    {
-                        data[2 + j] = *pData++;
-                    }
-                    cmdFrameSend(CMD_PVT, PVTCMD_ACCSCALEQ, dataLen, data);
-                }
-            }
-        }
-    }
-}
-
-
-/*********************************************************************************************
-函 数 名: cmdPvtDecScaleSet;
-实现功能: 无; 
-输入参数: 无;
-输出参数: 无;
-返 回 值: 无;
-说    明: 无;
-*********************************************************************************************/
-void cmdPvtDecScaleSet(u8 cmdDataLen, u8 *pCmdData)
-{
-    u16  decScale;
-    WaveTableTypeEnum waveTable;
-    u8   i;
-    bool bConfig[CH_TOTAL] = {0};
-    u8   chanNum = *pCmdData++;
-
-    
-    if (chanNum <= CH_MAX)
-    {
-        bConfig[chanNum] = true;
-    }
-    else
-    {
-        for (i = 0;i < g_systemState.chanNum;i++)
-        {
-            if ((CH_ALL == chanNum) ||
-                (chanNum == g_systemInfo.group[i][0]) ||
-                (chanNum == g_systemInfo.group[i][1]))
-            {
-                bConfig[i] = true;
-            }
-        }
-    }
-    cmdDataLen -= 1;
-    
-    //进行参数验证
-    if (PARA_VERIFY_NO_ERROR == pvrfPvtSpeedScaleVerify(cmdDataLen, pCmdData, (void *)&decScale, (void *)&waveTable))
-    {
-        for (i = 0;i < g_systemState.chanNum;i++)
-        {
-            if (bConfig[i])
-            {
-                g_planInfo.plan[i][waveTable].decScale = decScale;
-            }
-        }
-    }
-}
-
-
-/*********************************************************************************************
-函 数 名: cmdPvtDecScaleQuery;
-实现功能: 无; 
-输入参数: 无;
-输出参数: 无;
-返 回 值: 无;
-说    明: 无;
-*********************************************************************************************/
-void cmdPvtDecScaleQuery(u8 cmdDataLen, u8 *pCmdData)
-{
-    u8 dataLen;
-    u8 *pData;
-    u8 data[6];
-    u8 i, j;
-    u8 chanNum = *pCmdData++;
-    WaveTableTypeEnum waveTable;
-
-
-    if (((sizeof(WaveTableTypeEnum) + sizeof(chanNum)) == cmdDataLen) &&
-        (*(WaveTableTypeEnum *)pCmdData  < WTTYPE_RESERVE))
-    {
-        waveTable = *(WaveTableTypeEnum *)pCmdData;
-        
-        dataLen = sizeof(g_planInfo.plan[CH1][WTTYPE_MAIN].decScale) + sizeof(waveTable) + sizeof(chanNum);
-        if (chanNum <= CH_MAX)
-        {
-            pData = (u8 *)&g_planInfo.plan[chanNum][waveTable].decScale;
-            data[0] = chanNum;
-            data[1] = waveTable;
-            for (i = 0;i < sizeof(g_planInfo.plan[chanNum][waveTable].decScale);i++)
-            {
-                data[2 + i] = *pData++;
-            }
-            cmdFrameSend(CMD_PVT, PVTCMD_DECSCALEQ, dataLen, data);
-        }
-        else
-        {
-            for (i = 0;i < g_systemState.chanNum;i++)
-            {
-                if ((CH_ALL == chanNum) ||
-                    (chanNum == g_systemInfo.group[i][0]) ||
-                    (chanNum == g_systemInfo.group[i][1]))
-                {
-                    pData = (u8 *)&g_planInfo.plan[i][waveTable].decScale;
-                    data[0] = i;
-                    data[1] = waveTable;
-                    for (j = 0;j < sizeof(g_planInfo.plan[i][waveTable].decScale);j++)
-                    {
-                        data[2 + j] = *pData++;
-                    }
-                    cmdFrameSend(CMD_PVT, PVTCMD_DECSCALEQ, dataLen, data);
                 }
             }
         }
@@ -1339,7 +1159,7 @@ void cmdPvtStopDecelModeSet(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -1354,11 +1174,13 @@ void cmdPvtStopDecelModeSet(u8 cmdDataLen, u8 *pCmdData)
     //进行参数验证
     if (PARA_VERIFY_NO_ERROR == pvrfPvtStopDecelModeVerify(cmdDataLen, pCmdData, (void *)&stopMode, (void *)&waveTable))
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if (bConfig[i])
             {
                 g_planInfo.plan[i][waveTable].stopDecelInfo.stopMode = stopMode;
+                
+                servStimerAdd(&g_paraSaveTimer);
             }
         }
     }
@@ -1402,7 +1224,7 @@ void cmdPvtStopDecelModeQuery(u8 cmdDataLen, u8 *pCmdData)
         }
         else
         {
-            for (i = 0;i < g_systemState.chanNum;i++)
+            for (i = 0;i < CH_TOTAL;i++)
             {
                 if ((CH_ALL == chanNum) ||
                     (chanNum == g_systemInfo.group[i][0]) ||
@@ -1446,7 +1268,7 @@ void cmdPvtStopDecelDistanceSet(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -1461,11 +1283,13 @@ void cmdPvtStopDecelDistanceSet(u8 cmdDataLen, u8 *pCmdData)
     //进行参数验证
     if (PARA_VERIFY_NO_ERROR == pvrfPvtStopDecelDistanceVerify(cmdDataLen, pCmdData, (void *)&distance, (void *)&waveTable))
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if (bConfig[i])
             {
                 g_planInfo.plan[i][waveTable].stopDecelInfo.distance = distance;
+                
+                servStimerAdd(&g_paraSaveTimer);
             }
         }
     }
@@ -1509,7 +1333,7 @@ void cmdPvtStopDecelDistanceQuery(u8 cmdDataLen, u8 *pCmdData)
         }
         else
         {
-            for (i = 0;i < g_systemState.chanNum;i++)
+            for (i = 0;i < CH_TOTAL;i++)
             {
                 if ((CH_ALL == chanNum) ||
                     (chanNum == g_systemInfo.group[i][0]) ||
@@ -1553,7 +1377,7 @@ void cmdPvtStopDecelTimeSet(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -1568,11 +1392,13 @@ void cmdPvtStopDecelTimeSet(u8 cmdDataLen, u8 *pCmdData)
     //进行参数验证
     if (PARA_VERIFY_NO_ERROR == pvrfPvtStopDecelTimeVerify(cmdDataLen, pCmdData, (void *)&time, (void *)&waveTable))
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if (bConfig[i])
             {
                 g_planInfo.plan[i][waveTable].stopDecelInfo.time = time;
+                
+                servStimerAdd(&g_paraSaveTimer);
             }
         }
     }
@@ -1616,7 +1442,7 @@ void cmdPvtStopDecelTimeQuery(u8 cmdDataLen, u8 *pCmdData)
         }
         else
         {
-            for (i = 0;i < g_systemState.chanNum;i++)
+            for (i = 0;i < CH_TOTAL;i++)
             {
                 if ((CH_ALL == chanNum) ||
                     (chanNum == g_systemInfo.group[i][0]) ||
@@ -1660,7 +1486,7 @@ void cmdPvtLineOutOfStepStateSet(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -1675,11 +1501,13 @@ void cmdPvtLineOutOfStepStateSet(u8 cmdDataLen, u8 *pCmdData)
     //进行参数验证
     if (PARA_VERIFY_NO_ERROR == pvrfPvtOOSStateVerify(cmdDataLen, pCmdData, (void *)&lineState, (void *)&waveTable))
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if (bConfig[i])
             {
                 g_planInfo.plan[i][waveTable].outOfStepInfo.lineState = lineState;
+                
+                servStimerAdd(&g_paraSaveTimer);
             }
         }
     }
@@ -1723,7 +1551,7 @@ void cmdPvtLineOutOfStepStateQuery(u8 cmdDataLen, u8 *pCmdData)
         }
         else
         {
-            for (i = 0;i < g_systemState.chanNum;i++)
+            for (i = 0;i < CH_TOTAL;i++)
             {
                 if ((CH_ALL == chanNum) ||
                     (chanNum == g_systemInfo.group[i][0]) ||
@@ -1767,7 +1595,7 @@ void cmdPvtLineOutOfStepOutNumSet(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -1782,11 +1610,13 @@ void cmdPvtLineOutOfStepOutNumSet(u8 cmdDataLen, u8 *pCmdData)
     //进行参数验证
     if (PARA_VERIFY_NO_ERROR == pvrfPvtOOSLineOutNumVerify(cmdDataLen, pCmdData, (void *)&lineOutNum, (void *)&waveTable))
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if (bConfig[i])
             {
                 g_planInfo.plan[i][waveTable].outOfStepInfo.lineOutNum = lineOutNum;
+
+                servStimerAdd(&g_paraSaveTimer);
             }
         }
     }
@@ -1830,7 +1660,7 @@ void cmdPvtLineOutOfStepOutNumQuery(u8 cmdDataLen, u8 *pCmdData)
         }
         else
         {
-            for (i = 0;i < g_systemState.chanNum;i++)
+            for (i = 0;i < CH_TOTAL;i++)
             {
                 if ((CH_ALL == chanNum) ||
                     (chanNum == g_systemInfo.group[i][0]) ||
@@ -1874,7 +1704,7 @@ void cmdPvtLineOutOfStepResponseSet(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -1889,11 +1719,13 @@ void cmdPvtLineOutOfStepResponseSet(u8 cmdDataLen, u8 *pCmdData)
     //进行参数验证
     if (PARA_VERIFY_NO_ERROR == pvrfPvtOOSResponseVerify(cmdDataLen, pCmdData, (void *)&lineResp, (void *)&waveTable))
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if (bConfig[i])
             {
                 g_planInfo.plan[i][waveTable].outOfStepInfo.lineResp = lineResp;
+
+                servStimerAdd(&g_paraSaveTimer);
             }
         }
     }
@@ -1938,7 +1770,7 @@ void cmdPvtLineOutOfStepResponseQuery(u8 cmdDataLen, u8 *pCmdData)
         }
         else
         {
-            for (i = 0;i < g_systemState.chanNum;i++)
+            for (i = 0;i < CH_TOTAL;i++)
             {
                 if ((CH_ALL == chanNum) ||
                     (chanNum == g_systemInfo.group[i][0]) ||
@@ -1982,7 +1814,7 @@ void cmdPvtTotalOutOfStepStateSet(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -1997,11 +1829,13 @@ void cmdPvtTotalOutOfStepStateSet(u8 cmdDataLen, u8 *pCmdData)
     //进行参数验证
     if (PARA_VERIFY_NO_ERROR == pvrfPvtOOSStateVerify(cmdDataLen, pCmdData, (void *)&totalState, (void *)&waveTable))
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if (bConfig[i])
             {
                 g_planInfo.plan[i][waveTable].outOfStepInfo.totalState = totalState;
+   
+                servStimerAdd(&g_paraSaveTimer);
             }
         }
     }
@@ -2046,7 +1880,7 @@ void cmdPvtTotalOutOfStepStateQuery(u8 cmdDataLen, u8 *pCmdData)
         }
         else
         {
-            for (i = 0;i < g_systemState.chanNum;i++)
+            for (i = 0;i < CH_TOTAL;i++)
             {
                 if ((CH_ALL == chanNum) ||
                     (chanNum == g_systemInfo.group[i][0]) ||
@@ -2090,7 +1924,7 @@ void cmdPvtTotalOutOfStepOutNumSet(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -2105,11 +1939,13 @@ void cmdPvtTotalOutOfStepOutNumSet(u8 cmdDataLen, u8 *pCmdData)
     //进行参数验证
     if (PARA_VERIFY_NO_ERROR == pvrfPvtOOSLineOutNumVerify(cmdDataLen, pCmdData, (void *)&totalOutNum, (void *)&waveTable))
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if (bConfig[i])
             {
                 g_planInfo.plan[i][waveTable].outOfStepInfo.totalOutNum = totalOutNum;
+
+                servStimerAdd(&g_paraSaveTimer);
             }
         }
     }
@@ -2153,7 +1989,7 @@ void cmdPvtTotalOutOfStepOutNumQuery(u8 cmdDataLen, u8 *pCmdData)
         }
         else
         {
-            for (i = 0;i < g_systemState.chanNum;i++)
+            for (i = 0;i < CH_TOTAL;i++)
             {
                 if ((CH_ALL == chanNum) ||
                     (chanNum == g_systemInfo.group[i][0]) ||
@@ -2197,7 +2033,7 @@ void cmdPvtTotalOutOfStepResponseSet(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -2212,11 +2048,13 @@ void cmdPvtTotalOutOfStepResponseSet(u8 cmdDataLen, u8 *pCmdData)
     //进行参数验证
     if (PARA_VERIFY_NO_ERROR == pvrfPvtOOSResponseVerify(cmdDataLen, pCmdData, (void *)&totalResp, (void *)&waveTable))
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if (bConfig[i])
             {
                 g_planInfo.plan[i][waveTable].outOfStepInfo.totalResp = totalResp;
+
+                servStimerAdd(&g_paraSaveTimer);
             }
         }
     }
@@ -2261,7 +2099,7 @@ void cmdPvtTotalOutOfStepResponseQuery(u8 cmdDataLen, u8 *pCmdData)
         }
         else
         {
-            for (i = 0;i < g_systemState.chanNum;i++)
+            for (i = 0;i < CH_TOTAL;i++)
             {
                 if ((CH_ALL == chanNum) ||
                     (chanNum == g_systemInfo.group[i][0]) ||
@@ -2317,11 +2155,6 @@ void cmdPvtCmdInit(void)
     pPvtCmdFunc[PVTCMD_ENDSTATEQ]    = cmdPvtEndStateQuery;
     pPvtCmdFunc[PVTCMD_BUFFERSIZEQ]  = cmdPvtBufferSizeQuery;
 
-    pPvtCmdFunc[PVTCMD_ACCSCALE]  = cmdPvtAccScaleSet;
-    pPvtCmdFunc[PVTCMD_ACCSCALEQ] = cmdPvtAccScaleQuery;
-    pPvtCmdFunc[PVTCMD_DECSCALE]  = cmdPvtDecScaleSet;
-    pPvtCmdFunc[PVTCMD_DECSCALEQ] = cmdPvtDecScaleQuery;
-
     pPvtCmdFunc[PVTCMD_STOPMODE]  = cmdPvtStopDecelModeSet;
     pPvtCmdFunc[PVTCMD_STOPMODEQ] = cmdPvtStopDecelModeQuery;
     pPvtCmdFunc[PVTCMD_STOPDIST]  = cmdPvtStopDecelDistanceSet;
@@ -2340,7 +2173,7 @@ void cmdPvtCmdInit(void)
     pPvtCmdFunc[PVTCMD_TOTALOUTNUM]    = cmdPvtTotalOutOfStepOutNumSet;
     pPvtCmdFunc[PVTCMD_TOTALOUTNUMQ]   = cmdPvtTotalOutOfStepOutNumQuery;
     pPvtCmdFunc[PVTCMD_TOTALRESPONSE]  = cmdPvtTotalOutOfStepResponseSet;
-    pPvtCmdFunc[PVTCMD_TOTALRESPONSEQ] = cmdPvtTotalOutOfStepResponseQuery;    
+    pPvtCmdFunc[PVTCMD_TOTALRESPONSEQ] = cmdPvtTotalOutOfStepResponseQuery;
 }
 
             
@@ -2391,10 +2224,13 @@ void cmdPvtPositionSetCmdProc(CmdParseFrameStruct *pCmdStackFrame)
     if (chanNum <= CH_MAX)
     {
         bConfig[chanNum] = true;
+
+        //For PVT Debug
+        g_debugInfo.pvtPosnCount[chanNum]++;
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -2408,11 +2244,18 @@ void cmdPvtPositionSetCmdProc(CmdParseFrameStruct *pCmdStackFrame)
     //进行参数验证
     if (PARA_VERIFY_NO_ERROR == pvrfPvtPositionVerify(cmdDataLen, pCmdData, (void *)&position, &index, &waveTable))
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if (bConfig[i])
             {
                 g_systemState.pvtManage[i][waveTable].pvtPoint[index].position = position;
+
+                //更新下占比(懒得判断规划方式了，直接更新)
+                g_systemState.pvtManage[i][waveTable].pvtPoint[index].accScale = lastAccScale;
+                g_systemState.pvtManage[i][waveTable].pvtPoint[index].decScale = lastDecScale;
+
+                //For PVT Debug
+                g_debugInfo.vefyPosnCount[i]++;
             }
         }
     }
@@ -2430,51 +2273,52 @@ void cmdPvtPositionSetCmdProc(CmdParseFrameStruct *pCmdStackFrame)
 void cmdPvtPositionQueryCmdProc(CmdParseFrameStruct *pCmdStackFrame)
 {
     u8 chanNum    = pCmdStackFrame->subType;
-    u8 cmdDataLen = pCmdStackFrame->dataLen;
+    u8 cmdDataLen = pCmdStackFrame->dataLen + 1;    //长度中不包含子命令号(通道号)
     u8 *pCmdData  = pCmdStackFrame->payload;
     
     u8 dataLen;
     u8 *pData;
     u8 data[6];
     u8 i, j;
-    u8 index   = *pCmdData;
+    u8 index;
     WaveTableTypeEnum waveTable;
 
 
     if (((sizeof(WaveTableTypeEnum) + sizeof(index) + sizeof(chanNum)) == cmdDataLen) &&
         (*(WaveTableTypeEnum *)pCmdData  < WTTYPE_RESERVE))
     {
-        waveTable = *(WaveTableTypeEnum *)pCmdData;
+        waveTable = *(WaveTableTypeEnum *)pCmdData++;
+        index     = *pCmdData;
         
         //长度不包含通道号，通道号放在子命令号里
-        dataLen = sizeof(g_systemState.pvtManage[CH1][WTTYPE_MAIN].pvtPoint[0].position) + sizeof(index);
+        dataLen = sizeof(g_systemState.pvtManage[CH1][WTTYPE_MAIN].pvtPoint[0].position) + sizeof(index) + sizeof(waveTable);
         if (chanNum <= CH_MAX)
         {
             pData = (u8 *)&g_systemState.pvtManage[chanNum][waveTable].pvtPoint[index].position;
-            data[0] = index;
-            data[1] = waveTable;
+            data[0] = waveTable;
+            data[1] = index;
             for (i = 0;i < sizeof(g_systemState.pvtManage[chanNum][waveTable].pvtPoint[index].position);i++)
             {
                 data[2 + i] = *pData++;
             }
-            cmdFrameSend(CMD_PVT, chanNum, dataLen, data);
+            cmdFrameSend(CMD_PVTPOSNQ, chanNum, dataLen, data);
         }
         else
         {
-            for (i = 0;i < g_systemState.chanNum;i++)
+            for (i = 0;i < CH_TOTAL;i++)
             {
                 if ((CH_ALL == chanNum) ||
                     (chanNum == g_systemInfo.group[i][0]) ||
                     (chanNum == g_systemInfo.group[i][1]))
                 {
                     pData = (u8 *)&g_systemState.pvtManage[i][waveTable].pvtPoint[index].position;
-                    data[0] = index;
-                    data[1] = waveTable;
+                    data[0] = waveTable;
+                    data[1] = index;
                     for (j = 0;j < sizeof(g_systemState.pvtManage[i][waveTable].pvtPoint[index].position);j++)
                     {
                         data[2 + j] = *pData++;
                     }
-                    cmdFrameSend(CMD_PVT, i, dataLen, data);
+                    cmdFrameSend(CMD_PVTPOSNQ, i, dataLen, data);
                 }
             }
         }
@@ -2506,10 +2350,13 @@ void cmdPvtSpeedSetCmdProc(CmdParseFrameStruct *pCmdStackFrame)
     if (chanNum <= CH_MAX)
     {
         bConfig[chanNum] = true;
+
+        //For PVT Debug
+        g_debugInfo.pvtVelcCount[chanNum]++;
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -2523,11 +2370,14 @@ void cmdPvtSpeedSetCmdProc(CmdParseFrameStruct *pCmdStackFrame)
     //进行参数验证
     if (PARA_VERIFY_NO_ERROR == pvrfPvtSpeedVerify(cmdDataLen, pCmdData, (void *)&speed, &index, &waveTable))
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if (bConfig[i])
             {
                 g_systemState.pvtManage[i][waveTable].pvtPoint[index].speed = speed;
+
+                //For PVT Debug
+                g_debugInfo.vefyVelcCount[i]++;
             }
         }
     }
@@ -2545,51 +2395,52 @@ void cmdPvtSpeedSetCmdProc(CmdParseFrameStruct *pCmdStackFrame)
 void cmdPvtSpeedQueryCmdProc(CmdParseFrameStruct *pCmdStackFrame)
 {
     u8 chanNum    = pCmdStackFrame->subType;
-    u8 cmdDataLen = pCmdStackFrame->dataLen;
+    u8 cmdDataLen = pCmdStackFrame->dataLen + 1;    //长度中不包含子命令号(通道号)
     u8 *pCmdData  = pCmdStackFrame->payload;
     
     u8 dataLen;
     u8 *pData;
     u8 data[6];
     u8 i, j;
-    u8 index   = *pCmdData;
+    u8 index;
     WaveTableTypeEnum waveTable;
 
 
     if (((sizeof(WaveTableTypeEnum) + sizeof(index) + sizeof(chanNum)) == cmdDataLen) &&
         (*(WaveTableTypeEnum *)pCmdData  < WTTYPE_RESERVE))
     {
-        waveTable = *(WaveTableTypeEnum *)pCmdData;
+        waveTable = *(WaveTableTypeEnum *)pCmdData++;
+        index     = *pCmdData;
         
         //长度不包含通道号，通道号放在子命令号里
-        dataLen = sizeof(g_systemState.pvtManage[CH1][WTTYPE_MAIN].pvtPoint[0].speed) + sizeof(index);
+        dataLen = sizeof(g_systemState.pvtManage[CH1][WTTYPE_MAIN].pvtPoint[0].speed) + sizeof(index) + sizeof(waveTable);
         if (chanNum <= CH_MAX)
         {
             pData = (u8 *)&g_systemState.pvtManage[chanNum][waveTable].pvtPoint[index].speed;
-            data[0] = index;
-            data[1] = waveTable;
+            data[0] = waveTable;
+            data[1] = index;
             for (i = 0;i < sizeof(g_systemState.pvtManage[chanNum][waveTable].pvtPoint[index].speed);i++)
             {
                 data[2 + i] = *pData++;
             }
-            cmdFrameSend(CMD_PVT, chanNum, dataLen, data);
+            cmdFrameSend(CMD_PVTVELCQ, chanNum, dataLen, data);
         }
         else
         {
-            for (i = 0;i < g_systemState.chanNum;i++)
+            for (i = 0;i < CH_TOTAL;i++)
             {
                 if ((CH_ALL == chanNum) ||
                     (chanNum == g_systemInfo.group[i][0]) ||
                     (chanNum == g_systemInfo.group[i][1]))
                 {
                     pData = (u8 *)&g_systemState.pvtManage[i][waveTable].pvtPoint[index].speed;
-                    data[0] = index;
-                    data[1] = waveTable;
+                    data[0] = waveTable;
+                    data[1] = index;
                     for (j = 0;j < sizeof(g_systemState.pvtManage[i][waveTable].pvtPoint[index].speed);j++)
                     {
                         data[2 + j] = *pData++;
                     }
-                    cmdFrameSend(CMD_PVT, i, dataLen, data);
+                    cmdFrameSend(CMD_PVTVELCQ, i, dataLen, data);
                 }
             }
         }
@@ -2622,10 +2473,13 @@ void cmdPvtTimeSetCmdProc(CmdParseFrameStruct *pCmdStackFrame)
     if (chanNum <= CH_MAX)
     {
         bConfig[chanNum] = true;
+
+        //For PVT Debug
+        g_debugInfo.pvtTimeCount[chanNum]++;
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -2639,18 +2493,22 @@ void cmdPvtTimeSetCmdProc(CmdParseFrameStruct *pCmdStackFrame)
     //进行参数验证
     if (PARA_VERIFY_NO_ERROR == pvrfPvtTimeVerify(cmdDataLen, pCmdData, (void *)&time, &index, &waveTable))
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if (bConfig[i])
             {                
                 g_systemState.pvtManage[i][waveTable].pvtPoint[index].time = time;
 
+                //For PVT Debug
+                g_debugInfo.vefyTimeCount[i]++;
+
                 if (index == g_systemState.pvtManage[i][waveTable].pointIndex)    //保证上位机按顺序发送，且重复发送的话不会导致再次给解算线程发送信号量
                 {
                     g_systemState.pvtManage[i][waveTable].pointIndex++;
-                    if (0 == g_systemState.pvtManage[i][waveTable].pointIndex)
+                    if (g_systemState.pvtManage[i][waveTable].pointIndex >= PVT_POINT_BUFFER_SIZE)
                     {
                         g_systemState.pvtManage[i][waveTable].bRewind = true;
+                        g_systemState.pvtManage[i][waveTable].pointIndex = 0;
                     }
                     g_systemState.pvtManage[i][waveTable].tailPoint++;
 
@@ -2684,16 +2542,23 @@ void cmdPvtTimeSetCmdProc(CmdParseFrameStruct *pCmdStackFrame)
                                     g_systemState.tailIndex[i] = 0;
                                 }
                             }
-                            
+
+#if !GELGOOG_AXIS_10                            
                             //重新计算下位置到微步和编码器线的转换系数
-                            pvtPosnConvCoeffCalc(g_motorInfo.motor[i], 
-                                                 g_driverInfo.driver[i].DRVCTRL.stepDirMode.MRES,
-                                                 &g_systemState.posnConvertInfo[i]);
+                            servPosnConvCoeffCalc(g_motorInfo.motor[i], 
+                                                  g_driverInfo.driver[i].DRVCTRL.stepDirMode.MRES,
+                                                  &g_systemState.posnConvertInfo[i]);
+#else
+                            //重新计算下位置到微步和编码器线的转换系数
+                            servPosnConvCoeffCalc(g_motorInfo.motor[i], 
+                                                  g_driverInfo.microStep,
+                                                  &g_systemState.posnConvertInfo[i]);
+#endif
                         }
                     }
                 }    //if (index == g_planInfo.pvtInfo[i].pointIndex)
             }    //if (bConfig[i])
-        }    //for (i = 0;i < g_systemState.chanNum;i++)
+        }    //for (i = 0;i < CH_TOTAL;i++)
     }
 }
 
@@ -2709,55 +2574,185 @@ void cmdPvtTimeSetCmdProc(CmdParseFrameStruct *pCmdStackFrame)
 void cmdPvtTimeQueryCmdProc(CmdParseFrameStruct *pCmdStackFrame)
 {
     u8 chanNum    = pCmdStackFrame->subType;
-    u8 cmdDataLen = pCmdStackFrame->dataLen;
+    u8 cmdDataLen = pCmdStackFrame->dataLen + 1;    //长度中不包含子命令号(通道号)
     u8 *pCmdData  = pCmdStackFrame->payload;
     
     u8 dataLen;
     u8 *pData;
     u8 data[6];
     u8 i, j;
-    u8 index   = *pCmdData;
+    u8 index;
     WaveTableTypeEnum waveTable;
 
 
     if (((sizeof(WaveTableTypeEnum) + sizeof(index) + sizeof(chanNum)) == cmdDataLen) &&
         (*(WaveTableTypeEnum *)pCmdData  < WTTYPE_RESERVE))
     {
-        waveTable = *(WaveTableTypeEnum *)pCmdData;
+        waveTable = *(WaveTableTypeEnum *)pCmdData++;
+        index     = *pCmdData;
         
         //长度不包含通道号，通道号放在子命令号里
-        dataLen = sizeof(g_systemState.pvtManage[CH1][WTTYPE_MAIN].pvtPoint[0].time) + sizeof(index);
+        dataLen = sizeof(g_systemState.pvtManage[CH1][WTTYPE_MAIN].pvtPoint[0].time) + sizeof(index) + sizeof(waveTable);
         if (chanNum <= CH_MAX)
         {
             pData = (u8 *)&g_systemState.pvtManage[chanNum][waveTable].pvtPoint[index].time;
-            data[0] = index;
-            data[1] = waveTable;
+            data[0] = waveTable;
+            data[1] = index;
             for (i = 0;i < sizeof(g_systemState.pvtManage[chanNum][waveTable].pvtPoint[index].time);i++)
             {
                 data[2 + i] = *pData++;
             }
-            cmdFrameSend(CMD_PVT, chanNum, dataLen, data);
+            cmdFrameSend(CMD_PVTTIMEQ, chanNum, dataLen, data);
         }
         else
         {
-            for (i = 0;i < g_systemState.chanNum;i++)
+            for (i = 0;i < CH_TOTAL;i++)
             {
                 if ((CH_ALL == chanNum) ||
                     (chanNum == g_systemInfo.group[i][0]) ||
                     (chanNum == g_systemInfo.group[i][1]))
                 {
                     pData = (u8 *)&g_systemState.pvtManage[i][waveTable].pvtPoint[index].time;
-                    data[0] = index;
-                    data[1] = waveTable;
+                    data[0] = waveTable;
+                    data[1] = index;
                     for (j = 0;j < sizeof(g_systemState.pvtManage[i][waveTable].pvtPoint[index].time);j++)
                     {
                         data[2 + j] = *pData++;
                     }
-                    cmdFrameSend(CMD_PVT, i, dataLen, data);
+                    cmdFrameSend(CMD_PVTTIMEQ, i, dataLen, data);
                 }
             }
         }
     }    //if ((sizeof(chanNum) + sizeof(index)) == cmdDataLen)
+}
+
+
+/*********************************************************************************************
+函 数 名: cmdPvtTimeScaleSetCmdProc;
+实现功能: 无; 
+输入参数: 无;
+输出参数: 无;
+返 回 值: 无;
+说    明: 无;
+*********************************************************************************************/
+void cmdPvtTimeScaleSetCmdProc(CmdParseFrameStruct *pCmdStackFrame)
+{
+    u8 chanNum    = pCmdStackFrame->subType;
+    u8 cmdDataLen = pCmdStackFrame->dataLen;
+    u8 *pCmdData  = pCmdStackFrame->payload;
+    
+    WaveTableTypeEnum waveTable;
+    u16  accScale;
+    u16  decScale;
+    u8   index;
+    u8   i;
+    bool bConfig[CH_TOTAL] = {0};
+
+    
+    if (chanNum <= CH_MAX)
+    {
+        bConfig[chanNum] = true;
+    }
+    else
+    {
+        for (i = 0;i < CH_TOTAL;i++)
+        {
+            if ((CH_ALL == chanNum) ||
+                (chanNum == g_systemInfo.group[i][0]) ||
+                (chanNum == g_systemInfo.group[i][1]))
+            {
+                bConfig[i] = true;
+            }
+        }
+    }
+
+    //进行参数验证
+    if (PARA_VERIFY_NO_ERROR == pvrfPvtTimeScaleVerify(cmdDataLen, pCmdData, &accScale, &decScale, &index, &waveTable))
+    {
+        for (i = 0;i < CH_TOTAL;i++)
+        {
+            if (bConfig[i])
+            {
+                lastAccScale = accScale;
+                lastDecScale = decScale;
+                
+                g_systemState.pvtManage[i][waveTable].pvtPoint[index].accScale = accScale;
+                g_systemState.pvtManage[i][waveTable].pvtPoint[index].decScale = decScale;
+            }
+        }
+    }
+}
+
+
+/*********************************************************************************************
+函 数 名: cmdPvtTimeScaleQueryCmdProc;
+实现功能: 无; 
+输入参数: 无;
+输出参数: 无;
+返 回 值: 无;
+说    明: 无;
+*********************************************************************************************/
+void cmdPvtTimeScaleQueryCmdProc(CmdParseFrameStruct *pCmdStackFrame)
+{
+    u8 chanNum    = pCmdStackFrame->subType;
+    u8 cmdDataLen = pCmdStackFrame->dataLen + 1;    //长度中不包含子命令号(通道号)
+    u8 *pCmdData  = pCmdStackFrame->payload;
+    
+    u8 dataLen;
+    u8 data[6];
+    u8 i;
+    u8 index;
+    u8 *pdata;
+    WaveTableTypeEnum waveTable;
+
+
+    if (((sizeof(WaveTableTypeEnum) + sizeof(index) + sizeof(chanNum)) == cmdDataLen) &&
+        (*(WaveTableTypeEnum *)pCmdData  < WTTYPE_RESERVE))
+    {
+        waveTable = *(WaveTableTypeEnum *)pCmdData++;
+        index     = *pCmdData;
+        
+        //长度不包含通道号，通道号放在子命令号里
+        dataLen = sizeof(g_systemState.pvtManage[CH1][WTTYPE_MAIN].pvtPoint[0].accScale) + 
+                  sizeof(g_systemState.pvtManage[CH1][WTTYPE_MAIN].pvtPoint[0].decScale) + 
+                  sizeof(index) + 
+                  sizeof(waveTable);
+        if (chanNum <= CH_MAX)
+        {
+            data[0] = waveTable;
+            data[1] = index;
+            pdata = (u8 *)&g_systemState.pvtManage[chanNum][waveTable].pvtPoint[index].accScale;
+            data[2] = *pdata++;    //低8位
+            data[3] = *pdata;      //高8位
+            
+            pdata = (u8 *)&g_systemState.pvtManage[chanNum][waveTable].pvtPoint[index].decScale;
+            data[4] = *pdata++;    //低8位
+            data[5] = *pdata;      //高8位
+            
+            cmdFrameSend(CMD_TIMESCALEQ, chanNum, dataLen, data);
+        }
+        else
+        {
+            for (i = 0;i < CH_TOTAL;i++)
+            {
+                if ((CH_ALL == chanNum) ||
+                    (chanNum == g_systemInfo.group[i][0]) ||
+                    (chanNum == g_systemInfo.group[i][1]))
+                {
+                    data[0] = waveTable;
+                    data[1] = index;
+                    pdata = (u8 *)&g_systemState.pvtManage[i][waveTable].pvtPoint[index].accScale;
+                    data[2] = *pdata++;    //低8位
+                    data[3] = *pdata;      //高8位
+                    
+                    pdata = (u8 *)&g_systemState.pvtManage[i][waveTable].pvtPoint[index].decScale;
+                    data[4] = *pdata++;    //低8位
+                    data[5] = *pdata;      //高8位
+                    cmdFrameSend(CMD_TIMESCALEQ, i, dataLen, data);
+                }
+            }
+        }
+    }
 }
 
 

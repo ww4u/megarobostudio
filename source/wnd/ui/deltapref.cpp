@@ -141,7 +141,6 @@ void DeltaPref::updateUi()
     ui->spinZeroTime->setValue( time );
     ui->spinZeroAngle->setValue( angle );
 
-
     //! init
     double initT, initL, initR, initY, initH;
     pRobo->initAttr( initT, initL, initR, initY, initH );

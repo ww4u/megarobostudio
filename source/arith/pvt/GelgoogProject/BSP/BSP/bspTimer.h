@@ -41,10 +41,31 @@ typedef enum
     
 }EncoderDirEnum;
 
+/*--------------ARM LED枚举----------------*/
+typedef enum
+{
+    ARMLED_BASE = 0,    //基座LED
+    ARMLED_BIGARM,      //大臂
+    ARMLED_SMALLARM,    //小臂
+    ARMLED_WRIST,       //腕
+    
+    ARMLED_RESERVE
+    
+}ArmLedEnum;
+
 
 
 /*******************************************宏定义********************************************/
-#define    ENCODER_SUPPORT_NUM    4
+#define    ENCODER_SUPPORT_NUM       4
+
+#define    FAN_CTRL_TIME_FREQUENCY   21000000    //84000000Hz 4分频
+
+#define    DRIVER_CTRL_TIME_FREQUENCY   2100000    //168000000Hz 80分频
+
+#define    BASE_LED_CTRL_TIME_FREQUENCY        2100000
+#define    BIGARM_LED_CTRL_TIME_FREQUENCY      2100000    //168000000Hz 80分频
+#define    SMALLARM_LED_CTRL_TIME_FREQUENCY    2100000    //84000000Hz  40分频
+#define    WRIST_LED_CTRL_TIME_FREQUENCY       2100000
 
 
 
@@ -65,6 +86,15 @@ s32  bspEncoderABCountGet(u8 chanNum);
 s16  bspEncoderCircleCountGet(u8 chanNum);
 void irqChanZProcess(u8 chanNum);
 void irqChanABProcess(u8 chanNum, EncoderDirEnum encoderDir);
+
+void bspFanTimerInit(void);
+void bspFanTimerSet(u32 frequency, u8 duty);
+
+void bspArmLedTimerInit(void);
+void bspArmLedTimerSet(ArmLedEnum armLed, u32 frequency, u8 duty);
+
+void bspDriverTimerInit(void);
+void bspDriverTimerSet(u32 frequency, u8 duty);
 
 
 

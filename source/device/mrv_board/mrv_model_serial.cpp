@@ -132,19 +132,6 @@ int MRV_model::loadCan( QXmlStreamReader &reader )
         { toValue( reader.readElementText(), &mCAN_TYPE ); }
         else if ( reader.name() == "mCAN_BAUD" )
         { toValue( reader.readElementText(), &mCAN_BAUD ); }
-//        else if ( reader.name() == "mCAN_GROUP" )
-//        { DeviceModel::toValue( reader.readElementText(), &mCAN_GROUP ); }
-//        else if ( reader.name() == "mCAN_SENDID" )
-//        { DeviceModel::toValue( reader.readElementText(), &mCAN_SENDID ); }
-
-//        else if ( reader.name() == "mCAN_RECEIVEID" )
-//        { DeviceModel::toValue( reader.readElementText(), &mCAN_RECEIVEID ); }
-//        else if ( reader.name() == "mCAN_GROUPID1" )
-//        { DeviceModel::toValue( reader.readElementText(), &mCAN_GROUPID1 ); }
-//        else if ( reader.name() == "mCAN_GROUPID2" )
-//        { DeviceModel::toValue( reader.readElementText(), &mCAN_GROUPID2 ); }
-//        else if ( reader.name() == "mCAN_BROADCASTID" )
-//        { DeviceModel::toValue( reader.readElementText(), &mCAN_BROADCASTID ); }
 
         else if ( reader.name() == "mCAN_NETMANAGESTATE" )
         { toValue( reader.readElementText(), &mCAN_NETMANAGESTATE ); }
@@ -236,7 +223,6 @@ int MRV_model::loadGlobal( QXmlStreamReader &reader )
 
 int MRV_model::saveSubGlobal( int iSub, QXmlStreamWriter &writer )
 {
-//    writer.writeTextElement( "mGLOBAL_GROUP", toString( mGLOBAL_GROUP[iSub]) ) ;
     writer.writeTextElement( "mGLOBAL_DISTINGUISH", toString( mGLOBAL_DISTINGUISH[iSub]) ) ;
 
     return 0;
@@ -245,9 +231,7 @@ int MRV_model::loadSubGlobal( int iSub, QXmlStreamReader &reader )
 {
     while( reader.readNextStartElement() )
     {
-/*        if (reader.name() == "mGLOBAL_GROUP" )
-        { toValue( reader.readElementText(), &mGLOBAL_GROUP[iSub]); }
-        else */if (reader.name() == "mGLOBAL_DISTINGUISH" )
+        if (reader.name() == "mGLOBAL_DISTINGUISH" )
         { toValue( reader.readElementText(), &mGLOBAL_DISTINGUISH[iSub]); }
 
         else

@@ -13,10 +13,11 @@ Copyright (C) 2016，北京镁伽机器人科技有限公司
 #include <os.h>
 #include "project.h"
 #include "functiontask.h"
-#include "comInterface.h"
+#include "servCommIntfc.h"
 #include "servFpga.h"
 #include "servDriver.h"
 #include "servSoftTimer.h"
+#include "eventManageTask.h"
 
 #ifdef PROJECT_QUBELEY
 #include "servPT100.h"
@@ -28,11 +29,14 @@ Copyright (C) 2016，北京镁伽机器人科技有限公司
 extern OS_SEM g_semFunctionTask;
 extern OS_SEM g_semEventManageTask;
 
+extern OS_MUTEX  g_mutexSdioInterface;
+
 extern CommIntfcStruct   g_commIntfc;
 extern OutputDataStruct  g_outputData[CH_TOTAL];
 extern SystemInfoStruct  g_systemInfo;
 extern SystemStateStruct g_systemState;
 extern EventSrcBmpStruct g_eventSrcBmp;
+extern DebugInfoStruct   g_debugInfo;
 
 extern TrigInInfoStruct  g_trigInInfo;
 
@@ -60,6 +64,8 @@ extern SystemCfgBmpStruct g_systemCfgBmp;
 
 extern PlanInfoStruct    g_planInfo;
 
+extern SoftTimerStruct g_runTimeCountTimer[CH_TOTAL];
+
 
 
 /*****************************************局部宏定义******************************************/
@@ -68,9 +74,7 @@ extern PlanInfoStruct    g_planInfo;
 
 /*************************************局部常量和类型定义**************************************/
 typedef struct
-{
-    u8 chanNum;
-    
+{    
     StartSourceEnum  startSrc[CH_TOTAL];         //启动源
     ReceiveTypeEnum  startType[CH_TOTAL];        //接收ID类型
     
@@ -80,11 +84,19 @@ typedef struct
     EncoderMultiEnum encoderMult[CH_TOTAL];
     EncoderChanEnum  encoderChan[CH_TOTAL];
 
-    SensorStateEnum     revMotion[CH_TOTAL];    //反向运行
-    DriverManageStruct  driverManage[CH_TOTAL];
-    TrigInManageStruct  triggerInfo[CH_TOTAL];
-    DriverMonitorStruct driverMont[CH_TOTAL];
+    SensorStateEnum    revMotion;    //反向运行
 
+    WaveTableTypeEnum  calcWaveTable[CH_TOTAL];    //当前解算的波表
+    WaveTableTypeEnum  outpWaveTable[CH_TOTAL];    //当前输出的波表
+
+#if !GELGOOG_AXIS_10 
+    DriverManageStruct  driverManage[CH_TOTAL];
+    DriverMonitorStruct driverMont[CH_TOTAL];
+#else
+    DriverInfoStruct driverInfo;
+#endif
+
+    TrigInManageStruct  triggerInfo[CH_TOTAL];
     
     DigitalOutManageStruct  digitalIO[DIO_RESERVE];
     IsolatorOutManageStruct isolatorIO[YOUT_RESERVE];
@@ -96,6 +108,10 @@ typedef struct
 
 #ifdef PROJECT_QUBELEY
     AnalogInfoStruct asensorInfo;
+#endif
+
+#if GELGOOG_SINANJU
+    PdmInfoStruct pdmInfo[CH_TOTAL];
 #endif
 
     CanIntfcStruct    canIntfc;
@@ -132,10 +148,9 @@ void FuncCfgInfoGet(void)
 
     memcpy(&funcSystemCfgBmp, &g_systemCfgBmp, sizeof(SystemCfgBmpStruct));
     memset(&g_systemCfgBmp, 0, sizeof(SystemCfgBmpStruct));
+    
 
-    funcCfgInfo.chanNum = g_systemState.chanNum;
-
-    for (i = 0;i < funcCfgInfo.chanNum;i++)
+    for (i = 0;i < CH_TOTAL;i++)
     {
         memcpy(&funcChanCfgBmp[i], &g_chanCfgBmp[i], sizeof(ChanCfgBmpStruct));
         memset(&g_chanCfgBmp[i], 0, sizeof(ChanCfgBmpStruct));
@@ -147,7 +162,9 @@ void FuncCfgInfoGet(void)
 
         funcCfgInfo.startSrc[i]  = g_motionInfo.motion[i].startSrc;
         funcCfgInfo.startType[i] = g_motionInfo.motion[i].startType;
-        funcCfgInfo.revMotion[i] = g_motionInfo.motion[i].revMotion;
+        
+        funcCfgInfo.calcWaveTable[i] = g_systemState.calcWaveTable[i];
+        funcCfgInfo.outpWaveTable[i] = g_systemState.outpWaveTable[i];
         
         //是否用本地变量代替? 但是状态切换时还是需要修改全局变量中的值...
         funcCfgInfo.pCalcWaveTable[i] = &g_waveTable[i][g_systemState.calcWaveTable[i]];
@@ -158,6 +175,8 @@ void FuncCfgInfoGet(void)
         funcCfgInfo.posnConvertInfo[i] = g_systemState.posnConvertInfo[i];
         
         funcCfgInfo.triggerInfo[i]  = g_trigInInfo.trigIn[i];
+
+#if !GELGOOG_AXIS_10
         funcCfgInfo.driverManage[i] = g_driverInfo.driver[i];
 
         
@@ -166,13 +185,18 @@ void FuncCfgInfoGet(void)
         funcCfgInfo.driverMont[i].sgseState   = g_reportInfo.report[i].state[REPTTYPE_DRVSGSE];
 
         funcCfgInfo.driverMont[i].csValue   = g_driverInfo.driver[i].SGCSCONF.regBitFiled.CS;
-        funcCfgInfo.driverMont[i].sgUpLimit = g_driverInfo.driver[i].sgUpLimit;
-        funcCfgInfo.driverMont[i].sgDnLimit = g_driverInfo.driver[i].sgDnLimit;
-        funcCfgInfo.driverMont[i].sgZero    = g_driverInfo.driver[i].sgZero;
 
         funcCfgInfo.driverMont[i].energyValue = &g_sensorData.reporterData[i][REPTTYPE_TORQUE];
         funcCfgInfo.driverMont[i].sgAllValue  = &g_sensorData.reporterData[i][REPTTYPE_DRVSGALL]; 
         funcCfgInfo.driverMont[i].sgseValue   = &g_sensorData.reporterData[i][REPTTYPE_DRVSGSE]; 
+
+#else
+        funcCfgInfo.driverInfo = g_driverInfo;
+#endif 
+
+#if GELGOOG_SINANJU
+        funcCfgInfo.pdmInfo[i] = g_systemState.pdmInfo[i];
+#endif
     }
     
     memcpy(funcCfgInfo.digitalIO, g_digitalOut.output, sizeof(g_digitalOut.output));
@@ -184,6 +208,8 @@ void FuncCfgInfoGet(void)
 #ifdef PROJECT_QUBELEY
     funcCfgInfo.asensorInfo = g_analogInfo;
 #endif
+
+    funcCfgInfo.revMotion = g_systemInfo.revMotion;
 
     funcCfgInfo.canIntfc = g_commIntfc.canIntfc; 
 }
@@ -212,29 +238,39 @@ void FuncCfgTask(void)
     CPU_IntEn();
 
 
-    for (i = 0;i < funcCfgInfo.chanNum;i++)
+    //等待互斥信号量
+    OSMutexPend(&g_mutexSdioInterface, 0, OS_OPT_PEND_BLOCKING, NULL, NULL);
+
+    /************************************通道相关********************************************/
+    for (i = 0;i < CH_TOTAL;i++)
     {
+        //写波表
         if (funcChanCfgBmp[i].bWaveTableData)
         {
             if ((MTSTATE_IDLE == funcCfgInfo.pCalcWaveTable[i]->waveState) &&
                 (CHSTATE_POWERON != g_systemState.chanState[i]))
             {
+                g_systemState.bStateSwitch[i][funcCfgInfo.calcWaveTable[i]] = true;
+
                 //通知事件管理发生了状态切换
-                g_eventSrcBmp.bStateSwitch[i] = true;
+                g_eventSrcBmp.bStateMonitor[i] = true;
                 bFuncPostSemToEvent = true;
             }
             
             servFpgaWaveDataWrite(i, &g_outputData[i], funcCfgInfo.pCalcWaveTable[i]);
         }
         
+        //解算并发送波表结束
         if (funcChanCfgBmp[i].bQryReady)    //CJ 2017.06.19 Modify
         {
             bspDelayMs(5);  //等待5ms保证最后的数据下载到内存中
             
             funcCfgInfo.pCalcWaveTable[i]->waveState = MTSTATE_CALCEND;
 
-            //通知事件管理发生了状态切换
-            g_eventSrcBmp.bStateSwitch[i] = true;
+            g_systemState.bStateSwitch[i][funcCfgInfo.calcWaveTable[i]] = true;
+
+            //触发状态监控事件
+            g_eventSrcBmp.bStateMonitor[i] = true;
             bFuncPostSemToEvent = true;
         }
 
@@ -246,6 +282,8 @@ void FuncCfgTask(void)
             //置位循环数计数
             g_sensorData.reporterData[i][REPTTYPE_CYCLE] = 1;
 
+            g_debugInfo.runTime[i] = 0;
+
             //删除运动监控定时器
             servStimerDelete(&g_motionMonitorTimer[i]);
 
@@ -254,6 +292,9 @@ void FuncCfgTask(void)
                                       funcCfgInfo.pOutpWaveTable[i], 
                                       funcCfgInfo.wavePlanInfo[i], 
                                       funcCfgInfo.posnConvertInfo[i]);
+
+            //配置下驱动电流
+            eventDriverCurrProcess(i, SENSOR_ON);
 
             //开始预取
             if (servFpgaReadyQuery(i, *funcCfgInfo.pOutpWaveTable[i]))
@@ -276,20 +317,22 @@ void FuncCfgTask(void)
                 g_systemState.chanState[i] = CHSTATE_ERROR;
             }
 
-            //通知事件管理发生了状态切换
-            g_eventSrcBmp.bStateSwitch[i] = true;
-            bFuncPostSemToEvent = true;
-        }
+            g_systemState.bStateSwitch[i][funcCfgInfo.outpWaveTable[i]] = true;
 
-        if (funcChanCfgBmp[i].bStop)
-        {
-            servFpgaWaveStop(i, funcCfgInfo.pOutpWaveTable[i]->stopConfigInfo);
+            //触发状态监控事件
+            g_eventSrcBmp.bStateMonitor[i] = true;
+            bFuncPostSemToEvent = true;
         }
 
         if (funcChanCfgBmp[i].bEmergStop)
         {
             //紧急停止
             servFpgaWaveEmergStop(i);    //FOR MODIFY NICK
+        }
+
+        if (funcChanCfgBmp[i].bStop)
+        {
+            servFpgaWaveStop(i, funcCfgInfo.pOutpWaveTable[i]->stopConfigInfo);
         }
 
         if (funcChanCfgBmp[i].bCycleQry)
@@ -328,10 +371,7 @@ void FuncCfgTask(void)
             servFpgaStartSourceSet(i, funcCfgInfo.startSrc[i]);
         }
 
-        if (funcChanCfgBmp[i].bRevMotion)
-        {
-            servFpgaReverseMotionSet(i, funcCfgInfo.revMotion[i]);
-        }
+#if !GELGOOG_AXIS_10
 
         if (funcChanCfgBmp[i].bDriverState)
         {
@@ -378,6 +418,30 @@ void FuncCfgTask(void)
             servDriverRegWrite(i, ADDR_TMC_DRVCONF, funcCfgInfo.driverManage[i].DRVCONF.regValue);
         }
 
+#else
+        if (funcChanCfgBmp[i].bDriverState)
+        {
+            servDriverSwitch(i, funcCfgInfo.driverInfo.state[i]);
+        }
+#endif
+
+        if (funcChanCfgBmp[i].bBlReset)
+        {
+            servFpgaBackLashReset((BackLashChanEnum)i);
+        }
+
+#if GELGOOG_SINANJU
+        if (funcChanCfgBmp[i].bPdmSample)
+        {
+            servFpgaPdmSampleStateSet((SampleChanEnum)i, funcCfgInfo.pdmInfo[i]);
+        }
+
+        if (funcChanCfgBmp[i].bPdmDataRead)
+        {
+            servFpgaPdmMstepDataProcess((SampleChanEnum)i, funcCfgInfo.pdmInfo[i]);
+        }
+#endif
+
 #if 0    //暂时屏蔽了，统一在预取时配置
         if (funcChanCfgBmp[i].bMotnMode)   
         {
@@ -395,12 +459,13 @@ void FuncCfgTask(void)
         }
 #endif
     }
-
+    /************************************通道相关********************************************/
+    
     if (funcSystemCfgBmp.bRun)
     {
         servFpgaWaveStart(); 
         
-        for (i = 0;i < funcCfgInfo.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if (MTSTATE_STANDBY == funcCfgInfo.pOutpWaveTable[i]->waveState)
             {
@@ -422,10 +487,14 @@ void FuncCfgTask(void)
                     {
                         servStimerAdd(&g_reportTimer[i][REPTTYPE_CYCLE]);
                     }
+
+                    servStimerAdd(&g_runTimeCountTimer[i]);
                 }
-                 
-                //通知事件管理发生了状态切换
-                g_eventSrcBmp.bStateSwitch[i] = true;
+                
+                g_systemState.bStateSwitch[i][funcCfgInfo.outpWaveTable[i]] = true;
+
+                //触发状态监控事件
+                g_eventSrcBmp.bStateMonitor[i] = true;
                 bFuncPostSemToEvent = true;
             }
             else
@@ -467,16 +536,6 @@ void FuncCfgTask(void)
         servFpgaIsolatorOutSet(YOUT_YO2, funcCfgInfo.isolatorIO[YOUT_YO2]);
     }
 
-    if (funcSystemCfgBmp.bSensorUart1)
-    {
-        bspSensor1UartInit(funcCfgInfo.sensorUart[UARTNUM_U1]);
-    }
-    
-    if (funcSystemCfgBmp.bSensorUart2)
-    {
-        bspSensor2UartInit(funcCfgInfo.sensorUart[UARTNUM_U2]);
-    }
-
     if (funcSystemCfgBmp.bClockReg)    //配置时钟同步寄存器
     {
         servFpgaClockSyncSet(g_systemState.clockSyncReg, 
@@ -490,7 +549,42 @@ void FuncCfgTask(void)
         g_systemState.clockCount     = servFpgaClockSyncCountRead();
         g_systemState.clockSyncState = CLOCKSYNC_END;
     }
+
+    if (funcSystemCfgBmp.bRevMotion)
+    {
+        servFpgaReverseMotionSet(funcCfgInfo.revMotion);
+    }
+
+#if GELGOOG_AXIS_10
+    if (funcSystemCfgBmp.bDriverMode)
+    {
+        //驱动芯片细分
+        servFpgaDriverModeSet(funcCfgInfo.driverInfo.microStep);
+    }
     
+    if (funcSystemCfgBmp.bDriverCurr)
+    {
+        //驱动芯片电流
+        servDriverCurrentConfig(funcCfgInfo.driverInfo.curr);
+    }
+#endif
+
+    //释放互斥信号量
+    OSMutexPost(&g_mutexSdioInterface, OS_OPT_POST_FIFO, NULL);
+
+
+    if (funcSystemCfgBmp.bSensorUart1)
+    {
+        servSensor1UartConfig(funcCfgInfo.sensorUart[UARTNUM_U1]);
+    }
+
+#if !(GELGOOG_AXIS_4 || GELGOOG_AXIS_10)    //4轴和10轴只支持1路    
+    if (funcSystemCfgBmp.bSensorUart2)
+    {
+        servSensor2UartConfig(funcCfgInfo.sensorUart[UARTNUM_U2]);
+    }
+#endif
+
     if (funcSystemCfgBmp.bAnalogIn)
     {
 #ifdef PROJECT_QUBELEY
@@ -504,14 +598,6 @@ void FuncCfgTask(void)
         g_sensorData.temperature = servGetPT100Value();    //温度精度0.01°
 #endif
     }
-
-#if 0    //DEBUG_MOTOR
-    //xyzheng add
-    if(funcCfgBmp.bDebugMotor)
-    {
-        cmdDebugMotorStart();  //xyzheng
-    }
-#endif
 }
 
 

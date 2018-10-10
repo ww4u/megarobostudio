@@ -42,15 +42,11 @@ robotH2Z::robotH2Z()
     mArmLengths.clear();
     mArmLengths<<13.4<<13.4<<580<<494<<52<<38;
 
-//    mJointCcwMask[0] = false;
-//    mJointCcwMask[1] = false;
-
     mJointAngleMask.clear();
     mJointAngleMask<<true<<true<<false;
 
-    mJointCcwMask[0] = true;
-    mJointCcwMask[1] = true;
-    mJointCcwMask[2] = true;
+    mJointCcwMask.clear();
+    mJointCcwMask<<true<<true<<true;
 
     mJointZeroCcw.clear();
     mJointZeroCcw<<false<<false<<false;

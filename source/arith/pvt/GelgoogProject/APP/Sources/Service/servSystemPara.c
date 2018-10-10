@@ -619,86 +619,6 @@ int servAnalogInInfoRead(AnalogInfoStruct *info)
 #endif
 
 
-#ifdef PROJECT_GELGOOG
-/*********************************************************************************************
-函 数 名: servIsolatorInInfoWrite
-实现功能: 向EEPROM的地址上写入隔离输入信息
-输入参数: 无;
-输出参数: 无;
-返 回 值: 无;
-说    明: CJ 2017.05.24 Add
-*********************************************************************************************/
-int servIsolatorInInfoStore(IsolatorInStruct *info)
-{
-    u32 crc;
-
-    
-    crc = bspCRC32((u8*)info, (sizeof(IsolatorInStruct) - sizeof(info->crc)));
-    
-    if (info->crc != crc)
-    {  
-        info->crc = crc;
-    
-        return bspAT24CxxWrite(EEPROM_ISOL_IN_INFO_ADDR, (u8*)info, sizeof(IsolatorInStruct));
-    }
-    else
-    {
-        return VERIFY_SUCCESSFUL;
-    }
-}
-
-
-/*********************************************************************************************
-函 数 名: servIsolatorInInfoRead
-实现功能: 从EEPROM的地址上读取隔离输入信息
-输入参数: 无;
-输出参数: 无;
-返 回 值: 无;
-说    明: CJ 2017.05.24 Add
-*********************************************************************************************/
-int servIsolatorInInfoRead(IsolatorInStruct *info)
-{
-    u32 crc;
-
-    
-    bspAT24CxxRead(EEPROM_ISOL_IN_INFO_ADDR, (u8*)info, sizeof(IsolatorInStruct));
-    crc = bspCRC32((u8*)info, sizeof(IsolatorInStruct) - sizeof(info->crc));
-    
-    if (crc == info->crc)
-    {
-        return VERIFY_SUCCESSFUL;
-    }
-    else
-    {
-        return VERIFY_FAILED;
-    }
-}
-#endif
-
-
-/*********************************************************************************************
-函 数 名: servPlanInfoWrite
-实现功能: 向EEPROM的地址上写入PVT信息
-输入参数: 无;
-输出参数: 无;
-返 回 值: 无;
-说    明: CJ 2017.05.24 Add
-*********************************************************************************************/
-int servPlanInfoWrite(PlanInfoStruct *info)
-{
-#if 0
-    u32 crc = 0;
-
-    
-    crc = bspCRC32((u8*)info, (sizeof(PlanInfoStruct) - sizeof(info->crc)));
-    info->crc = crc;
-    
-    return bspAT24CxxWrite(EEPROM_PVT_INFO_ADDR, (u8*)info, sizeof(PlanInfoStruct));
-#endif
-    return VERIFY_SUCCESSFUL;
-}
-
-
 /*********************************************************************************************
 函 数 名: servPlanInfoRead
 实现功能: 从EEPROM的地址上读取PVT信息
@@ -709,11 +629,10 @@ int servPlanInfoWrite(PlanInfoStruct *info)
 *********************************************************************************************/
 int servPlanInfoRead(PlanInfoStruct *info)
 {
-#if 0
-    u32 crc = 0;
+    u32 crc;
 
     
-    bspAT24CxxRead(EEPROM_PVT_INFO_ADDR, (u8*)info, sizeof(PlanInfoStruct));
+    bspAT24CxxRead(EEPROM_MOTION_PLAY_INFO_ADDR, (u8*)info, sizeof(PlanInfoStruct));
     crc = bspCRC32((u8*)info, sizeof(PlanInfoStruct) - sizeof(info->crc));
     
     if (crc == info->crc)
@@ -724,8 +643,34 @@ int servPlanInfoRead(PlanInfoStruct *info)
     {
         return VERIFY_FAILED;
     }
-#endif
-    return VERIFY_FAILED;
+}
+
+
+/*********************************************************************************************
+函 数 名: servPlanInfoStore
+实现功能: 向EEPROM的地址上写入PVT信息
+输入参数: 无;
+输出参数: 无;
+返 回 值: 无;
+说    明: CJ 2017.05.24 Add
+*********************************************************************************************/
+int servPlanInfoStore(PlanInfoStruct *info)
+{
+    u32 crc;
+
+    
+    crc = bspCRC32((u8*)info, (sizeof(PlanInfoStruct) - sizeof(info->crc)));
+    
+    if (info->crc != crc)
+    {   
+        info->crc = crc;
+    
+        return bspAT24CxxWrite(EEPROM_MOTION_PLAY_INFO_ADDR, (u8*)info, sizeof(PlanInfoStruct));
+    }
+    else
+    {
+        return VERIFY_SUCCESSFUL;
+    }
 }
 
 
@@ -837,6 +782,123 @@ int servDriverInfoRead(DriverInfoStruct *info)
         return VERIFY_FAILED;
     }
 }
+
+
+#ifdef PROJECT_GELGOOG
+#if GELGOOG_SINANJU
+/*********************************************************************************************
+函 数 名: servSensorAlarmInfoRead
+实现功能: 从EEPROM的地址上读取传感器告警信息
+输入参数: 无;
+输出参数: 无;
+返 回 值: 无;
+说    明: CJ 2018.03.22 Add
+*********************************************************************************************/
+int servSensorAlarmInfoRead(SensorAlarmStruct *info)
+{
+    u32 crc;
+
+    
+    bspAT24CxxRead(EEPROM_SENSOR_ALARM_ADDR, (u8*)info, sizeof(SensorAlarmStruct));
+    crc = bspCRC32((u8*)info, sizeof(SensorAlarmStruct) - sizeof(info->crc));
+    
+    if (crc == info->crc)
+    {
+        return VERIFY_SUCCESSFUL;
+    }
+    else
+    {
+        return VERIFY_FAILED;
+    }
+}
+
+
+/*********************************************************************************************
+函 数 名: servSensorAlarmInfoStore
+实现功能: 向EEPROM的地址上写入传感器告警信息
+输入参数: 无;
+输出参数: 无;
+返 回 值: 无;
+说    明: CJ 2018.03.22 Add
+*********************************************************************************************/
+int servSensorAlarmInfoStore(SensorAlarmStruct *info)
+{
+    u32 crc;
+
+    
+    crc = bspCRC32((u8*)info, (sizeof(SensorAlarmStruct) - sizeof(info->crc)));
+    
+    if (info->crc != crc)
+    {   
+        info->crc = crc;
+    
+        return bspAT24CxxWrite(EEPROM_SENSOR_ALARM_ADDR, (u8*)info, sizeof(SensorAlarmStruct));
+    }
+    else
+    {
+        return VERIFY_SUCCESSFUL;
+    }
+}
+
+
+#else
+
+
+/*********************************************************************************************
+函 数 名: servIsolatorInInfoWrite
+实现功能: 向EEPROM的地址上写入隔离输入信息
+输入参数: 无;
+输出参数: 无;
+返 回 值: 无;
+说    明: CJ 2017.05.24 Add
+*********************************************************************************************/
+int servIsolatorInInfoStore(IsolatorInStruct *info)
+{
+    u32 crc;
+
+    
+    crc = bspCRC32((u8*)info, (sizeof(IsolatorInStruct) - sizeof(info->crc)));
+    
+    if (info->crc != crc)
+    {  
+        info->crc = crc;
+    
+        return bspAT24CxxWrite(EEPROM_ISOL_IN_INFO_ADDR, (u8*)info, sizeof(IsolatorInStruct));
+    }
+    else
+    {
+        return VERIFY_SUCCESSFUL;
+    }
+}
+
+
+/*********************************************************************************************
+函 数 名: servIsolatorInInfoRead
+实现功能: 从EEPROM的地址上读取隔离输入信息
+输入参数: 无;
+输出参数: 无;
+返 回 值: 无;
+说    明: CJ 2017.05.24 Add
+*********************************************************************************************/
+int servIsolatorInInfoRead(IsolatorInStruct *info)
+{
+    u32 crc;
+
+    
+    bspAT24CxxRead(EEPROM_ISOL_IN_INFO_ADDR, (u8*)info, sizeof(IsolatorInStruct));
+    crc = bspCRC32((u8*)info, sizeof(IsolatorInStruct) - sizeof(info->crc));
+    
+    if (crc == info->crc)
+    {
+        return VERIFY_SUCCESSFUL;
+    }
+    else
+    {
+        return VERIFY_FAILED;
+    }
+}
+#endif
+#endif
 
 
 

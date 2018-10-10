@@ -12,8 +12,6 @@ int _megatronSplit(
     if ( points.size() < 2 )
     { return -1; }
 
-//    int ret = 0;
-
     //! create 6 list
     tpvList *pList;
     for ( int i = 0; i < 6; i++ )

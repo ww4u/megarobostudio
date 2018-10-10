@@ -1,24 +1,22 @@
 /*********************************************************************************************
 Copyright (C) 2016，北京镁伽机器人科技有限公司
-文 件 名:  pvtUniformSolution.h;
+文 件 名:  servAlgorithm.h;
 功能描述:  ;
 函数列表:  ;
 当前版本:  1.0.0;
 版本改动:  ;
 作    者:  CJ;
-完成日期:  2017.11.23;
+完成日期:  2018.05.31;
 历史版本:  无;
 *********************************************************************************************/
-#ifndef __PVT_UNIFORM_SOLUTION_H
-#define __PVT_UNIFORM_SOLUTION_H
+#ifndef __SERV_ALGORITHM_H
+#define __SERV_ALGORITHM_H
 
 
 
 /******************************************包含文件*******************************************/
 #include "comDatatype.h"
 #include "comStruct.h"
-#include "comEnum.h"
-#include "pvtAlgorithm.h"
 
 
 
@@ -39,7 +37,7 @@ Copyright (C) 2016，北京镁伽机器人科技有限公司
 
 
 /******************************************函数声明*******************************************/
-u8 pvtUniformCurveCalc(u8 chanNum, PvtCalcStruct *pPvtCalcData);
+void servPosnConvCoeffCalc(MotorManageStruct motorInfo, u8 drvMres, PosnConvertInfoStruct *pPosnConvertInfo);
 
 
 

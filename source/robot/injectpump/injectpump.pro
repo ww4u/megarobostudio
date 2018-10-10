@@ -18,7 +18,8 @@ SOURCES = \
     _calibration.cpp \
     _build.cpp \
     injectpump_task.cpp \
-    _action.cpp
+    _action.cpp \
+    _serial.cpp
 
 HEADERS = \
     injectpump.h

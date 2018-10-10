@@ -60,15 +60,19 @@ extern DriverInfoStruct   g_driverInfo;
 分支版本号 + 大版本号 + 小版本号 + 编译版本号，编译版本号不对外*/  
 #if QUBELEY_HARDVER_1
 
-u8 softwareVersion[SOFTWARE_VER_LEN] = {5, 0, 1, 14};    //软件版本号    每次发布新版本时需要修改此变量
+u8 softwareVersion[SOFTWARE_VER_LEN] = {0, 0, 1, 21};    //Qubeley软件版本号    每次发布新版本时需要修改此变量
 
-#elif QUBELEY_HARDVER_2
+#elif GELGOOG_AXIS_4
 
-u8 softwareVersion[SOFTWARE_VER_LEN] = {2, 0, 1, 13};    //Qubeley第二版软件版本号    每次发布新版本时需要修改此变量
+u8 softwareVersion[SOFTWARE_VER_LEN] = {0, 0, 1, 21};    //Gelgoog-M4软件版本号 每次发布新版本时需要修改此变量
 
-#else
+#elif GELGOOG_SINANJU
 
-u8 softwareVersion[SOFTWARE_VER_LEN] = {5, 0, 1, 14};    //Gelgoog软件版本号    每次发布新版本时需要修改此变量
+u8 softwareVersion[SOFTWARE_VER_LEN] = {0, 0, 1, 29};    //Sinanju软件版本号    每次发布新版本时需要修改此变量
+
+#elif GELGOOG_AXIS_10
+
+u8 softwareVersion[SOFTWARE_VER_LEN] = {0, 0, 1, 23};    //Gelgoog-MC软件版本号 每次发布新版本时需要修改此变量
 
 #endif
 
@@ -76,16 +80,31 @@ u8 softwareVersion[SOFTWARE_VER_LEN] = {5, 0, 1, 14};    //Gelgoog软件版本号    
 
 #if GELGOOG_AXIS_4
 SubDeviceModelEnum devcModel = SDMODEL_M2304;
-char deviceSn[DEVICE_SN_LEN] = "MRQM10040018220001";
+char deviceSn[DEVICE_SN_LEN] = "MRQM10040018810001";
+
 #elif GELGOOG_AXIS_8
 SubDeviceModelEnum devcModel = SDMODEL_M2308;
-char deviceSn[DEVICE_SN_LEN] = "MRQM10080018220001";
+char deviceSn[DEVICE_SN_LEN] = "MRQM10080018810001";
+
+#elif GELGOOG_SINANJU
+//SINANJU暂时不分配    NICK TO MODIFY
+SubDeviceModelEnum devcModel = SDMODEL_MV;
+char deviceSn[DEVICE_SN_LEN] = "MRXT00040018810001";
+
+#elif GELGOOG_AXIS_10
+SubDeviceModelEnum devcModel = SDMODEL_M2310;
+char deviceSn[DEVICE_SN_LEN] = "MRQM10100018810001";
 #endif
 
 #else
 
+//序列号构成: 公司代码(2位)，系列类型(3位)+版本代码(1位)，轴数(2位)，工厂代码(2位)
+//            年(2位)，月(1位)，日(1位)，流水码(4位)
 SubDeviceModelEnum devcModel = SDMODEL_C23D;
-char deviceSn[DEVICE_SN_LEN] = "MRQC01010000000000";
+char deviceSn[DEVICE_SN_LEN] = "MRQC12010018810001";
+
+SubDeviceModelEnum devcC23SModel = SDMODEL_C23S;
+char deviceC23SSn[DEVICE_SN_LEN] = "MRQC13010018810001";
 
 #endif
 
@@ -589,22 +608,46 @@ void servDevicePortModelandVerRead(DeviceInfoStruct *deviceInfo)
 
     deviceInfo->hardware[0] = 1;
     deviceInfo->hardware[1] = 0;
-#endif
+    
+#elif GELGOOG_SINANJU
+
+    //5轴
+    deviceInfo->sDevcModel = SDMODEL_MV;
+
+    deviceInfo->driverBoardDn[0] = 5;    //8轴，1.0版
+    deviceInfo->driverBoardDn[1] = 1;
+    deviceInfo->driverBoardDn[2] = 0;
+    
+    deviceInfo->driverBoardUp[0] = 5;
+    deviceInfo->driverBoardUp[1] = 1;
+    deviceInfo->driverBoardUp[2] = 0;
+
+    deviceInfo->hardware[0] = 1;
+    deviceInfo->hardware[1] = 0;
+
+#elif GELGOOG_AXIS_10
+
+    //10轴
+    deviceInfo->sDevcModel = SDMODEL_M2310;
+
+    deviceInfo->driverBoardDn[0] = 10;    //10轴，1.0版
+    deviceInfo->driverBoardDn[1] = 1;
+    deviceInfo->driverBoardDn[2] = 0;
+    
+    deviceInfo->driverBoardUp[0] = 10;
+    deviceInfo->driverBoardUp[1] = 1;
+    deviceInfo->driverBoardUp[2] = 0;
+
+    deviceInfo->hardware[0] = 1;
+    deviceInfo->hardware[1] = 0;
 
 #endif
 
-#else    //PROJECT_QUBELEY
-
-
-#if QUBELEY_HARDVER_2
-
-#if DRIVE_BOARD_TYPE_CONFIG_262
-    deviceInfo->sDevcModel = SDMODEL_C23S;
-#else
-    deviceInfo->sDevcModel = SDMODEL_C17S;
 #endif
 
-#else
+#else    //end of #if PROJECT_GELGOOG
+
+//PROJECT_QUBELEY
 
     bspModelGpioInit();
 
@@ -615,11 +658,7 @@ void servDevicePortModelandVerRead(DeviceInfoStruct *deviceInfo)
     {
         //MRQ-C-D
         case 0:
-            if (DRIVER_2660 == driveType)
-            {
-                deviceInfo->sDevcModel = SDMODEL_C17D;
-            }
-            else if (DRIVER_262 == driveType)
+            if (DRIVER_262 == driveType)
             {
                 deviceInfo->sDevcModel = SDMODEL_C23D;
             }
@@ -631,11 +670,7 @@ void servDevicePortModelandVerRead(DeviceInfoStruct *deviceInfo)
 
         //MRQ-C-S
         case 1:
-            if (DRIVER_2660 == driveType)
-            {
-                deviceInfo->sDevcModel = SDMODEL_C17S;
-            }
-            else if (DRIVER_262 == driveType)
+            if (DRIVER_262 == driveType)
             {
                 deviceInfo->sDevcModel = SDMODEL_C23S;
             }
@@ -654,13 +689,17 @@ void servDevicePortModelandVerRead(DeviceInfoStruct *deviceInfo)
     //判断的详细规则见《MRQ硬件型号及版本规则》
     if (versionVolt < DIGITAL_HARD_WERSION_2)
     {
-        //目前就1.0版本
         deviceInfo->hardware[0] = 1;
         deviceInfo->hardware[1] = 0;
     }
-    /*else if (DIGITAL_HARD_WERSION_2 <= versionVolt < DIGITAL_HARD_WERSION_3)
+    else if (DIGITAL_HARD_WERSION_2 <= versionVolt < DIGITAL_HARD_WERSION_3)
     {
-        //目前就1.0版本，后续再添加
+        deviceInfo->hardware[0] = 1;
+        deviceInfo->hardware[1] = 1;
+    }
+    /*else if (DIGITAL_HARD_WERSION_3 <= versionVolt < DIGITAL_HARD_WERSION_4)
+    {
+        //TO ADD
     }*/
     else if (DIGITAL_HARD_WERSION_10 <= versionVolt)
     {
@@ -675,7 +714,6 @@ void servDevicePortModelandVerRead(DeviceInfoStruct *deviceInfo)
         deviceInfo->hardware[1] = 0;
     }
     
-#endif    //#if QUBELEY_HARDVER_2
 #endif    //#ifdef PROJECT_GELGOOG
 }
 
@@ -699,8 +737,12 @@ void servDeviceInfoInit(DeviceInfoStruct *deviceInfo, u8 *bootVer)
 
     if (deviceInfo != NULL)
     {
+        //硬件端口设置的型号和硬件版本号
+        deviceInfo->mDevcModel = MDMODEL_MRQ;
+        servDevicePortModelandVerRead(deviceInfo);
+        
         //存储的型号和SN
-        if (servDeviceInfoRead(&storageInfo)!= VERIFY_SUCCESSFUL)    //EEPROM中的数据错误
+        if (servDeviceInfoRead(&storageInfo) != VERIFY_SUCCESSFUL)    //EEPROM中的数据错误
         {
             //读FLASH中的数据
             if (0)
@@ -709,18 +751,25 @@ void servDeviceInfoInit(DeviceInfoStruct *deviceInfo, u8 *bootVer)
             }
             else    //使用默认值
             {
-                deviceInfo->storageInfo.sDevcModel = devcModel;
-                memcpy(deviceInfo->storageInfo.deviceSn, deviceSn, DEVICE_SN_LEN);
+#ifdef PROJECT_QUBELEY
+                //根据子型号处理下
+                if (SDMODEL_C23S == deviceInfo->sDevcModel)
+                {
+                    deviceInfo->storageInfo.sDevcModel = devcC23SModel;
+                    memcpy(deviceInfo->storageInfo.deviceSn, deviceC23SSn, DEVICE_SN_LEN);
+                }
+                else
+#endif
+                {
+                    deviceInfo->storageInfo.sDevcModel = devcModel;
+                    memcpy(deviceInfo->storageInfo.deviceSn, deviceSn, DEVICE_SN_LEN);
+                }
             }
         }
         else
         {
             deviceInfo->storageInfo = storageInfo;
         }
-        
-        //硬件端口设置的型号和硬件版本号
-        deviceInfo->mDevcModel = MDMODEL_MRQ;
-        servDevicePortModelandVerRead(deviceInfo);
         
         //逻辑版本号
         deviceInfo->fpga.verStruct = servFpgaVersionGet();
@@ -797,66 +846,52 @@ void servSystemInfoInit(SubDeviceModelEnum sDevcModel)
     //根据型号设定通道号，各个接口数量g_deviceInfo.sDevcModel
     switch (sDevcModel)
     {
-        case SDMODEL_C17D:
-        case SDMODEL_C17S:
-            type = DRIVER_2660;
-            g_systemState.chanNum = 1;
-          break;
-            
         case SDMODEL_C23D:
+            type = DRIVER_262;
+            g_systemState.chanNum = 1;
+            g_systemState.doutNum = DIO_RESERVE;
+            g_systemState.youtNum = YOUT_RESERVE;
+          break;
+          
         case SDMODEL_C23S:
             type = DRIVER_262;
             g_systemState.chanNum = 1;
-          break;
-
-        case SDMODEL_M1703:
-            type = DRIVER_2660;
-            g_systemState.chanNum = 3;
-          break;
-          
-        case SDMODEL_M2303:
-            type = DRIVER_262;
-            g_systemState.chanNum = 3;
-          break;
-
-        case SDMODEL_M1704:
-            type = DRIVER_2660;
-            g_systemState.chanNum = 4;
+            g_systemState.doutNum = DIO_DO2;     //-S只支持1路
+            g_systemState.youtNum = YOUT_YO2;    //-S只支持1路
           break;
           
         case SDMODEL_M2304:
             type = DRIVER_262;
             g_systemState.chanNum = 4;
-          break;
-
-        case SDMODEL_M1706:
-            type = DRIVER_2660;
-            g_systemState.chanNum = 6;
+            g_systemState.doutNum = DIO_RESERVE;
+            g_systemState.youtNum = YOUT_RESERVE;
           break;
           
-        case SDMODEL_M2306:
+        case SDMODEL_MV:
             type = DRIVER_262;
-            g_systemState.chanNum = 6;
-          break;
+            
+#if MRV_SUPPORT
+            g_systemState.chanNum = 5 + MRV_CH_TOTAL_NUM;
+#else
+            g_systemState.chanNum = 5;
+#endif
 
-        case SDMODEL_M1707:
-            type = DRIVER_2660;
-            g_systemState.chanNum = 7;
+            g_systemState.doutNum = DIO_RESERVE;
+            g_systemState.youtNum = YOUT_RESERVE;
           break;
           
-        case SDMODEL_M2307:
-            type = DRIVER_262;
-            g_systemState.chanNum = 7;
-          break;
-
-        case SDMODEL_M1708:
-            type = DRIVER_2660;
-            g_systemState.chanNum = 8;
+        case SDMODEL_M2310:
+            type = DRIVER_820;
+            g_systemState.chanNum = 10;
+            g_systemState.doutNum = DIO_RESERVE;
+            g_systemState.youtNum = YOUT_RESERVE;
           break;
           
         case SDMODEL_M2308:
             type = DRIVER_262;
             g_systemState.chanNum = 8;
+            g_systemState.doutNum = DIO_RESERVE;
+            g_systemState.youtNum = YOUT_RESERVE;
           break;
 
         case SDMODEL_ERROR:
@@ -865,9 +900,13 @@ void servSystemInfoInit(SubDeviceModelEnum sDevcModel)
           break;
     }
 
-    for (i = 0;i < g_systemState.chanNum;i++)
+    for (i = 0;i < CH_TOTAL;i++)
     {
+#if !GELGOOG_AXIS_10
         g_driverInfo.driver[i].type = type;
+#else
+        g_driverInfo.type[i] = type;
+#endif
     }
 }
 

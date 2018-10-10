@@ -44,8 +44,8 @@ void servStimerExamine(SoftTimerStruct * ptSoftTimer, void *timeOutPara);
 void servStimerAdd(SoftTimerStruct *ptSoftTimer);
 void servStimerDelete(SoftTimerStruct *ptSoftTimer);
 void servStimerAllInit(void);
-void bspDelayMs(u32 milliSeconds);
-void bspDelayUs(u32 microSeconds);
+void servStimerManage(SoftTimerStateStruct softTimer);
+void servSoftDelayMs(u32 delayMs);
 
 
 

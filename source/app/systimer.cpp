@@ -95,7 +95,7 @@ void SysTimerThread::sysStartTimer( VRobot *pRobot,
         SysTimerThread::mTimerMutex.unlock();//logDbg()<<id;
     }
 
-    pTimer->start(tmous);//logDbg()<<SysTimerThread::_sys_timer_->mTimers.size();
+    pTimer->start(tmous);
 }
 void SysTimerThread::sysStopTimer( VRobot *pRobot,
                               void *pContext,
@@ -115,7 +115,7 @@ void SysTimerThread::sysStopTimer( VRobot *pRobot,
         SysTimerThread::_sys_timer_->mTimers.removeAll( pTimer );
         delete pTimer;
 
-        SysTimerThread::mTimerMutex.unlock();//logDbg()<<SysTimerThread::_sys_timer_->mTimers.size();
+        SysTimerThread::mTimerMutex.unlock();
     }
 }
 
@@ -159,7 +159,6 @@ roboTimer * SysTimerThread::sysFindTimer( VRobot *pRobot,
 
 SysTimerThread::SysTimerThread( QObject *obj ) : QThread( obj )
 {
-//    mTickTimer.moveToThread( this );
     SysTimerThread::_pTickTimer = new QTimer( );
     Q_ASSERT( NULL != SysTimerThread::_pTickTimer );
 
@@ -171,30 +170,24 @@ SysTimerThread::SysTimerThread( QObject *obj ) : QThread( obj )
 
 SysTimerThread::~SysTimerThread()
 {
-//    mTickTimer.stop();
-
-//    mTickTimer.moveToThread( qApp->thread() );
-
-    qDeleteAll( mTimers );
+    delete_all( mTimers );
 }
 
 void SysTimerThread::run()
 {
     SysTimerThread::_pTickTimer->connect( SysTimerThread::_pTickTimer, SIGNAL(timeout()),
-                        this, SLOT(slotTimeout()) );
+                                          this, SLOT(slotTimeout()) );
 
     connect( this, SIGNAL(sigExit()),
              this, SLOT(slotExit()) );
 
     SysTimerThread::_pTickTimer->start( tick_ms );
 
-//    QThread::run();
     QThread::exec();
 
     SysTimerThread::_pTickTimer->stop();
     delete SysTimerThread::_pTickTimer;
     SysTimerThread::_pTickTimer = NULL;
-//    logDbg();
 }
 
 void SysTimerThread::slotTimeout()
@@ -227,11 +220,7 @@ void SysTimerThread::slotTimeout()
 
 void SysTimerThread::slotExit()
 {
-//    m_pTickTimer->stop();
-
     QThread::exit();
-
-//    logDbg();
 }
 
 void SysTimerThread::stopAll()

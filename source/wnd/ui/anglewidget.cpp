@@ -38,5 +38,4 @@ float AngleWidget::value()
 void AngleWidget::on_btnClose_clicked()
 {
     emit signal_close( this );
-
 }

@@ -6,5 +6,6 @@
 #include "mydebug.h"
 #include "mcerror.h"
 #include "mccfg.h"
+#include "myassert.h"
 
 #endif

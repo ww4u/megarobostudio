@@ -57,9 +57,6 @@ int MrvSystem::apply()
     Q_ASSERT( NULL != m_pMRV );
 
     int ret;
-//    if ( ui->edtAlias->text().length() > 0 )
-//    { m_pMRV->setName( ui->edtAlias->text() ); }
-
     checked_call( m_pMRV->setSYSTEM_POWERON( (MRV_SYSTEM_POWERON)ui->cmbPwr->currentIndex() ) );
     checked_call( m_pMRV->setVALVECTRL_PWMFREQ( (uint32)ui->spinPwm->value() ) );
 

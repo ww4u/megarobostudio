@@ -13,7 +13,6 @@ namespace arith_igus {
 
 #include "./arith/patch.cpp"
 
-
 struct ResInfoAlist
 {
     double p[3];

@@ -1,6 +1,8 @@
 #include <QApplication>
 #include "comassist.h"
 #include "../../source/sys/sysapi.h"    //! sysLog
+
+
 QStringList comAssist::_mRemotePath;
 
 void comAssist::setRemotePath( const QStringList &path )
@@ -189,12 +191,6 @@ bool comAssist::convertDataset( const QStringList &line,
     { return false; }
 
     bool bOk;
-//    for ( int i = 0; i < cols; i++ )
-//    {
-//        pData[i] = line.at(i).toFloat( &bOk );
-//        if ( !bOk )
-//        { logDbg()<<line;return false; }
-//    }
 
     int aCol;
     for ( int i = 0; i < dataCols.size(); i++ )
@@ -202,13 +198,13 @@ bool comAssist::convertDataset( const QStringList &line,
         aCol = dataCols.at( i );
         pData[ aCol ] = line.at( aCol ).toFloat( &bOk );
         if ( !bOk )
-        { logDbg()<<line;return false; }
+        { logDbg()<<line; return false; }
     }
 
     return true;
 }
 
-bool    comAssist::ammendFileName( QString &fileName )
+bool comAssist::ammendFileName( QString &fileName )
 {
     //! file file in each dir
     do
@@ -296,7 +292,7 @@ int comAssist::loadDataset( const QString &fileName,
     QFile file(realFileName);
     if ( !file.open(QIODevice::ReadOnly) )
     { return ERR_FILE_OPEN_FAIL; }
-logDbg()<<realFileName;
+
     //! read all
     QByteArray ary = file.readAll();
     QList<QByteArray> lines = ary.split( lineSep );
@@ -333,7 +329,6 @@ logDbg()<<realFileName;
 
     return 0;
 }
-
 
 comAssist::comAssist()
 {

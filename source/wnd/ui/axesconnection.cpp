@@ -59,8 +59,3 @@ QComboBox *axesConnection::getCombPage()
     return ui->widget->getComb();
 }
 
-//! check name
-void axesConnection::on_cmbDeviceName_currentIndexChanged(const QString &arg1)
-{
-
-}

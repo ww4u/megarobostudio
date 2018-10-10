@@ -10,11 +10,6 @@ RoboHand::RoboHand(QWidget *parent) :
 {
     ui->setupUi(this);
 
-//    //! debug
-//    handActionModel *pModel;
-//    pModel = new handActionModel();
-//    ui->tableView->setModel( pModel );
-
     SET_INFO_ATTR();
 
     spyEdited();

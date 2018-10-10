@@ -58,6 +58,19 @@ u8 pvrfSensorUartFrameLenVerify(u8 dataLen, u8 *pData, void *pParaValue, u8 *pSe
 u8 pvrfSensorUartRecvNumVerify(u8 dataLen, u8 *pData, void *pParaValue, u8 *pSensorIndex, u8 *pUartIndex);
 u8 pvrfSensorUartSwTimeVerify(u8 dataLen, u8 *pData, void *pParaValue, u8 *pSensorIndex, u8 *pUartIndex);
 
+#if GELGOOG_SINANJU
+u8 pvrfAbsEncAlarmStateVerify(u8 dataLen, u8 *pData, void *pParaValue, u8 *pSensorIndex);
+u8 pvrfAbsEncAlarmZeroPostVerify(u8 dataLen, u8 *pData, void *pParaValue, u8 *pSensorIndex);
+u8 pvrfAbsEncAlarmLimitVerify(u8 dataLen, u8 *pData, void *pParaValue, u8 *pSensorIndex);
+u8 pvrfAbsEncAlarmResponseVerify(u8 dataLen, u8 *pData, void *pParaValue);
+
+u8 pvrfDistAlarmStateVerify(u8 dataLen, u8 *pData, void *pParaValue, u8 *pSensorIndex);
+u8 pvrfDistAlarmDistVerify(u8 dataLen, u8 *pData, void *pParaValue, u8 *pSensorIndex);
+
+u8 pvrfPdmSampleStateVerify(u8 dataLen, u8 *pData, void *pParaValue);
+u8 pvrfPdmMstepDataVerify(u8 dataLen, u8 *pData, u16 *pReadOffset, u16 *pReadLen);
+#endif
+
 
 
 /*****************************************头文件保护******************************************/

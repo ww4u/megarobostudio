@@ -58,7 +58,6 @@ void roboProp::setMcModel( mcModel *pMcModel )
         Q_ASSERT( NULL != pView );
         pView->setMcModel( pMcModel );
     }
-
 }
 
 int roboProp::save( QString &outFileName )

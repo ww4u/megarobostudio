@@ -27,7 +27,6 @@ robotMotor::robotMotor()
 
     mDetail = QString::fromLocal8Bit( (char*)_detail, sizeof_array(_detail) );
 
-
     //! joint name
     mJointName.clear();
     mJointName<<QObject::tr("Motor");

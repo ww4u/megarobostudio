@@ -7,8 +7,6 @@
 namespace MegaDevice
 {
 
-
-
 deviceMRV::deviceMRV()
 {
 }
@@ -278,20 +276,5 @@ MRV_model *deviceMRV::getModel()
 {
     return this;
 }
-
-//QString deviceMRV::loadSeqVer()
-//{
-//    byte v0, v1, v2, v3;
-
-//    int ret;
-
-//    ret = getSeqVer( &v0, &v1, &v2, &v3 );
-//    if ( ret == 0 )
-//    {
-//        mSeqVer = QString( "%1.%2.%3.%4").arg(v0).arg(v1).arg(v2).arg(v3);
-//    }
-
-//    return mSeqVer;
-//}
 
 }

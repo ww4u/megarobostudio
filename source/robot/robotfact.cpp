@@ -57,7 +57,6 @@ VRobot *robotFact::createRobot( const QString &str )
         if ( str_is( str, "mrx-motors") )
         {
             pRobo = new robotMotors();
-//            pRobo = new robotMotor();
             break;
         }
 

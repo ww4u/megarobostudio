@@ -227,7 +227,7 @@ int MegatronMotionGroup::load( const QString &fileName )
 
     emit dataChanged( index(0,0),
                       index(mItems.count(), MegatronMotionItem::columns() - 1) );
-    logDbg()<<mItems.size();
+
     return 0;
 }
 

@@ -19,6 +19,7 @@ Copyright (C) 2016，北京镁伽机器人科技有限公司
 #include "servCommIntfc.h"
 #include "servSystemPara.h"
 #include "servStreamBuffer.h"
+#include "servFpga.h"
 
 
 
@@ -35,6 +36,7 @@ extern EventSrcBmpStruct  g_eventSrcBmp;
 
 #ifdef PROJECT_QUBELEY
 extern AnalogInfoStruct g_analogInfo;
+extern DeviceInfoStruct g_deviceInfo;
 #endif
 
 extern bool g_bCmdPostSemToFunc;
@@ -49,10 +51,17 @@ extern StreamBufferStruct g_senUartRxBuffer[UARTNUM_RESERVE][SENSOR_RESERVE];
 
 extern TrigInInfoStruct   g_trigInInfo;
 
+#if GELGOOG_SINANJU
+extern SensorAlarmStruct g_sensorAlarm;
+#endif
+
+extern SoftTimerStruct g_paraSaveTimer;
+
 
 
 /*****************************************局部宏定义******************************************/
 #define    UART_SENSOR_FRAME_DATA_LEN_MAX    3    //每帧最大发送的数据长度
+#define    UART_SENSOR_FRAME_DATA_INDEX      3    //数据索引
 
 
 
@@ -63,6 +72,12 @@ extern TrigInInfoStruct   g_trigInInfo;
 /******************************************局部变量*******************************************/
 SubCmdProFunc pReportCmdFunc[REPORTCMD_RESERVE];
 SubCmdProFunc pSensorUartCmdFunc[SNUARTCMD_RESERVE];
+
+#if GELGOOG_SINANJU
+SubCmdProFunc pAbsEncAlarmCmdFunc[ENCALARMCMD_RESERVE];
+SubCmdProFunc pDistAlarmCmdFunc[DISTALARMCMD_RESERVE];
+SubCmdProFunc pPdmCmdFunc[FACTORYCMD_RESERVE];
+#endif
 
 #ifdef PROJECT_QUBELEY
 SubCmdProFunc pOtpCmdFunc[OTPCMD_RESERVE];
@@ -130,7 +145,7 @@ void cmdOtpStateSet(u8 cmdDataLen, u8 *pCmdData)
         g_systemInfo.otpInfo.state = state;
 
         //存到EEPROM中
-        servSystemInfoWrite(&g_systemInfo);
+        servStimerAdd(&g_paraSaveTimer);
 
         if (SENSOR_ON == state)
         {
@@ -183,7 +198,7 @@ void cmdOtpThresholdSet(u8 cmdDataLen, u8 *pCmdData)
         g_systemInfo.otpInfo.threshold = threshold;
 
         //存到EEPROM中
-        servSystemInfoWrite(&g_systemInfo);
+        servStimerAdd(&g_paraSaveTimer);
     }
 }
 
@@ -227,7 +242,7 @@ void cmdOtpResponseSet(u8 cmdDataLen, u8 *pCmdData)
         g_systemInfo.otpInfo.response = response;
 
         //存到EEPROM中
-        servSystemInfoWrite(&g_systemInfo);
+        servStimerAdd(&g_paraSaveTimer);
     }
 }
 
@@ -270,7 +285,7 @@ void cmdOtpPeriodSet(u8 cmdDataLen, u8 *pCmdData)
     {
         g_systemInfo.otpInfo.period = period;
 
-        servSystemInfoWrite(&g_systemInfo);
+        servStimerAdd(&g_paraSaveTimer);
 
         servStimerInit(&g_otpTimer, period, cmdOtpTempTimerCB);
     }
@@ -355,7 +370,9 @@ void cmdOtpCmdProc(CmdParseFrameStruct *pCmdStackFrame)
     u8 *pData = pCmdStackFrame->payload;
 
     
-    if ((pCmdStackFrame->subType < OTPCMD_RESERVE) && (pOtpCmdFunc[pCmdStackFrame->subType] != NULL))
+    if ((pCmdStackFrame->subType < OTPCMD_RESERVE) && 
+        (pOtpCmdFunc[pCmdStackFrame->subType] != NULL) &&
+        (SDMODEL_C23D == g_deviceInfo.sDevcModel))    //-D才有AI和OTP
     {    
         pOtpCmdFunc[pCmdStackFrame->subType](dataLen, pData);
     }
@@ -381,7 +398,7 @@ void cmdAnalogInStateSet(u8 cmdDataLen, u8 *pCmdData)
         g_analogInfo.state = state;
 
         //存到EEPROM中
-        servAnalogInInfoWrite(&g_analogInfo);
+        servStimerAdd(&g_paraSaveTimer);
         
         //给FUNC发信号量
         g_systemCfgBmp.bAnalogIn = true;
@@ -432,7 +449,7 @@ void cmdAnalogInThresholdHSet(u8 cmdDataLen, u8 *pCmdData)
         //g_analogInfo.adcCodeH = ;
 
         //存到EEPROM中
-        servAnalogInInfoWrite(&g_analogInfo);
+        servStimerAdd(&g_paraSaveTimer);
         
         if (SENSOR_ON == g_analogInfo.state)
         {
@@ -486,7 +503,7 @@ void cmdAnalogInThresholdLSet(u8 cmdDataLen, u8 *pCmdData)
         //g_analogInfo.adcCodeL = ;
 
         //存到EEPROM中
-        servAnalogInInfoWrite(&g_analogInfo);
+        servStimerAdd(&g_paraSaveTimer);
         
         if (SENSOR_ON == g_analogInfo.state)
         {
@@ -537,7 +554,7 @@ void cmdAnalogInResponseHSet(u8 cmdDataLen, u8 *pCmdData)
         g_analogInfo.responseH = response;
 
         //存到EEPROM中
-        servAnalogInInfoWrite(&g_analogInfo);
+        servStimerAdd(&g_paraSaveTimer);
     }
 }
 
@@ -581,7 +598,7 @@ void cmdAnalogInResponseLSet(u8 cmdDataLen, u8 *pCmdData)
         g_analogInfo.responseL = response;
 
         //存到EEPROM中
-        servAnalogInInfoWrite(&g_analogInfo);
+        servStimerAdd(&g_paraSaveTimer);
     }
 }
 
@@ -645,7 +662,9 @@ void cmdAnalogInCmdProc(CmdParseFrameStruct *pCmdStackFrame)
     u8 *pData = pCmdStackFrame->payload;
 
     
-    if ((pCmdStackFrame->subType < ANALOGINCMD_RESERVE) && (pAnalogInCmdFunc[pCmdStackFrame->subType] != NULL))
+    if ((pCmdStackFrame->subType < ANALOGINCMD_RESERVE) && 
+        (pAnalogInCmdFunc[pCmdStackFrame->subType] != NULL) &&
+        (SDMODEL_C23D == g_deviceInfo.sDevcModel))    //-D才有AI和OTP
     {    
         pAnalogInCmdFunc[pCmdStackFrame->subType](dataLen, pData);
     }
@@ -741,375 +760,6 @@ void cmdReportCycleTimerCB(void *timeOutPara)
     if (g_reportTimer[chanNum][REPTTYPE_CYCLE].bUsed)
     {
         servStimerAdd(&g_reportTimer[chanNum][REPTTYPE_CYCLE]);
-    }
-}
-
-
-/*********************************************************************************************
-函 数 名: cmdReportXAngleTimerCB;
-实现功能: 无; 
-输入参数: 无;
-输出参数: 无;
-返 回 值: 无;
-说    明: 无;
-*********************************************************************************************/
-void cmdReportXAngleTimerCB(void *timeOutPara)
-{   
-    u8 dataLen, i;
-    u8 *pData;
-    u8 data[6];
-    u8 chanNum = *(u8 *)timeOutPara;
-    u8 index = (u8)REPTTYPE_XANGLE;
-
-    
-    dataLen = sizeof(g_sensorData.reporterData[chanNum][REPTTYPE_XANGLE]) + sizeof(index) + sizeof(chanNum);
-    pData = (u8 *)&g_sensorData.reporterData[chanNum][REPTTYPE_XANGLE];
-    data[0] = chanNum;
-    data[1] = index;
-    for (i = 0;i < sizeof(g_sensorData.reporterData[chanNum][REPTTYPE_XANGLE]);i++)
-    {
-        data[2 + i] = *pData++;
-    }
-    cmdFrameSend(CMD_REPORT, REPORTCMD_DATAQ, dataLen, data);
-
-    //回调函数都是在周期性线程中调用，所以是周期性给命令处理发送信号量
-    g_bPerdPostSemToCmd = true;
-    
-    //继续开启定时器，直到收到关闭命令
-    if (g_reportTimer[chanNum][REPTTYPE_XANGLE].bUsed)
-    {
-        servStimerAdd(&g_reportTimer[chanNum][REPTTYPE_XANGLE]);
-    }
-}
-
-
-/*********************************************************************************************
-函 数 名: cmdReportYAngleTimerCB;
-实现功能: 无; 
-输入参数: 无;
-输出参数: 无;
-返 回 值: 无;
-说    明: 无;
-*********************************************************************************************/
-void cmdReportYAngleTimerCB(void *timeOutPara)
-{    
-    u8 dataLen, i;
-    u8 *pData;
-    u8 data[6];
-    u8 chanNum = *(u8 *)timeOutPara;
-    u8 index = (u8)REPTTYPE_YANGLE;
-
-    
-    dataLen = sizeof(g_sensorData.reporterData[chanNum][REPTTYPE_YANGLE]) + sizeof(index) + sizeof(chanNum);
-    pData = (u8 *)&g_sensorData.reporterData[chanNum][REPTTYPE_YANGLE];
-    data[0] = chanNum;
-    data[1] = index;
-    for (i = 0;i < sizeof(g_sensorData.reporterData[chanNum][REPTTYPE_YANGLE]);i++)
-    {
-        data[2 + i] = *pData++;
-    }
-    cmdFrameSend(CMD_REPORT, REPORTCMD_DATAQ, dataLen, data);
-
-    //回调函数都是在周期性线程中调用，所以是周期性给命令处理发送信号量
-    g_bPerdPostSemToCmd = true;
-    
-    //继续开启定时器，直到收到关闭命令
-    if (g_reportTimer[chanNum][REPTTYPE_YANGLE].bUsed)
-    {
-        servStimerAdd(&g_reportTimer[chanNum][REPTTYPE_YANGLE]);
-    }
-}
-
-
-/*********************************************************************************************
-函 数 名: cmdReportZAngleTimerCB;
-实现功能: 无; 
-输入参数: 无;
-输出参数: 无;
-返 回 值: 无;
-说    明: 无;
-*********************************************************************************************/
-void cmdReportZAngleTimerCB(void *timeOutPara)
-{    
-    u8 dataLen, i;
-    u8 *pData;
-    u8 data[6];
-    u8 chanNum = *(u8 *)timeOutPara;
-    u8 index = (u8)REPTTYPE_ZANGLE;
-
-    
-    dataLen = sizeof(g_sensorData.reporterData[chanNum][REPTTYPE_ZANGLE]) + sizeof(index) + sizeof(chanNum);
-    pData = (u8 *)&g_sensorData.reporterData[chanNum][REPTTYPE_ZANGLE];
-    data[0] = chanNum;
-    data[1] = index;
-    for (i = 0;i < sizeof(g_sensorData.reporterData[chanNum][REPTTYPE_ZANGLE]);i++)
-    {
-        data[2 + i] = *pData++;
-    }
-    cmdFrameSend(CMD_REPORT, REPORTCMD_DATAQ, dataLen, data);
-
-    //回调函数都是在周期性线程中调用，所以是周期性给命令处理发送信号量
-    g_bPerdPostSemToCmd = true;
-    
-    //继续开启定时器，直到收到关闭命令
-    if (g_reportTimer[chanNum][REPTTYPE_ZANGLE].bUsed)
-    {
-        servStimerAdd(&g_reportTimer[chanNum][REPTTYPE_ZANGLE]);
-    }
-}
-
-
-/*********************************************************************************************
-函 数 名: cmdReportXVelocityTimerCB;
-实现功能: 无; 
-输入参数: 无;
-输出参数: 无;
-返 回 值: 无;
-说    明: 无;
-*********************************************************************************************/
-void cmdReportXVelocityTimerCB(void *timeOutPara)
-{    
-    u8 dataLen, i;
-    u8 *pData;
-    u8 data[6];
-    u8 chanNum = *(u8 *)timeOutPara;
-    u8 index = (u8)REPTTYPE_XVELOC;
-
-    
-    dataLen = sizeof(g_sensorData.reporterData[chanNum][REPTTYPE_XVELOC]) + sizeof(index) + sizeof(chanNum);
-    pData = (u8 *)&g_sensorData.reporterData[chanNum][REPTTYPE_XVELOC];
-    data[0] = chanNum;
-    data[1] = index;
-    for (i = 0;i < sizeof(g_sensorData.reporterData[chanNum][REPTTYPE_XVELOC]);i++)
-    {
-        data[2 + i] = *pData++;
-    }
-    cmdFrameSend(CMD_REPORT, REPORTCMD_DATAQ, dataLen, data);
-
-    //回调函数都是在周期性线程中调用，所以是周期性给命令处理发送信号量
-    g_bPerdPostSemToCmd = true;
-    
-    //继续开启定时器，直到收到关闭命令
-    if (g_reportTimer[chanNum][REPTTYPE_XVELOC].bUsed)
-    {
-        servStimerAdd(&g_reportTimer[chanNum][REPTTYPE_XVELOC]);
-    }
-}
-
-
-/*********************************************************************************************
-函 数 名: cmdReportYVelocityTimerCB;
-实现功能: 无; 
-输入参数: 无;
-输出参数: 无;
-返 回 值: 无;
-说    明: 无;
-*********************************************************************************************/
-void cmdReportYVelocityTimerCB(void *timeOutPara)
-{           
-    u8 dataLen, i;
-    u8 *pData;
-    u8 data[6];
-    u8 chanNum = *(u8 *)timeOutPara;
-    u8 index = (u8)REPTTYPE_YVELOC;
-
-    
-    dataLen = sizeof(g_sensorData.reporterData[chanNum][REPTTYPE_YVELOC]) + sizeof(index) + sizeof(chanNum);
-    pData = (u8 *)&g_sensorData.reporterData[chanNum][REPTTYPE_YVELOC];
-    data[0] = chanNum;
-    data[1] = index;
-    for (i = 0;i < sizeof(g_sensorData.reporterData[chanNum][REPTTYPE_YVELOC]);i++)
-    {
-        data[2 + i] = *pData++;
-    }
-    cmdFrameSend(CMD_REPORT, REPORTCMD_DATAQ, dataLen, data);
-
-    //回调函数都是在周期性线程中调用，所以是周期性给命令处理发送信号量
-    g_bPerdPostSemToCmd = true;
-    
-    //继续开启定时器，直到收到关闭命令
-    if (g_reportTimer[chanNum][REPTTYPE_YVELOC].bUsed)
-    {
-        servStimerAdd(&g_reportTimer[chanNum][REPTTYPE_YVELOC]);
-    }
-}
-
-
-/*********************************************************************************************
-函 数 名: cmdReportZVelocityTimerCB;
-实现功能: 无; 
-输入参数: 无;
-输出参数: 无;
-返 回 值: 无;
-说    明: 无;
-*********************************************************************************************/
-void cmdReportZVelocityTimerCB(void *timeOutPara)
-{           
-    u8 dataLen, i;
-    u8 *pData;
-    u8 data[6];
-    u8 chanNum = *(u8 *)timeOutPara;
-    u8 index = (u8)REPTTYPE_ZVELOC;
-
-    
-    dataLen = sizeof(g_sensorData.reporterData[chanNum][REPTTYPE_ZVELOC]) + sizeof(index) + sizeof(chanNum);
-    pData = (u8 *)&g_sensorData.reporterData[chanNum][REPTTYPE_ZVELOC];
-    data[0] = chanNum;
-    data[1] = index;
-    for (i = 0;i < sizeof(g_sensorData.reporterData[chanNum][REPTTYPE_ZVELOC]);i++)
-    {
-        data[2 + i] = *pData++;
-    }
-    cmdFrameSend(CMD_REPORT, REPORTCMD_DATAQ, dataLen, data);
-
-    //回调函数都是在周期性线程中调用，所以是周期性给命令处理发送信号量
-    g_bPerdPostSemToCmd = true;
-    
-    //继续开启定时器，直到收到关闭命令
-    if (g_reportTimer[chanNum][REPTTYPE_ZVELOC].bUsed)
-    {
-        servStimerAdd(&g_reportTimer[chanNum][REPTTYPE_ZVELOC]);
-    }
-}
-
-
-/*********************************************************************************************
-函 数 名: cmdReportXAccTimerCB;
-实现功能: 无; 
-输入参数: 无;
-输出参数: 无;
-返 回 值: 无;
-说    明: 无;
-*********************************************************************************************/
-void cmdReportXAccTimerCB(void *timeOutPara)
-{    
-    u8 dataLen, i;
-    u8 *pData;
-    u8 data[6];
-    u8 chanNum = *(u8 *)timeOutPara;
-    u8 index = (u8)REPTTYPE_XACC;
-
-    
-    dataLen = sizeof(g_sensorData.reporterData[chanNum][REPTTYPE_XACC]) + sizeof(index) + sizeof(chanNum);
-    pData = (u8 *)&g_sensorData.reporterData[chanNum][REPTTYPE_XACC];
-    data[0] = chanNum;
-    data[1] = index;
-    for (i = 0;i < sizeof(g_sensorData.reporterData[chanNum][REPTTYPE_XACC]);i++)
-    {
-        data[2 + i] = *pData++;
-    }
-    cmdFrameSend(CMD_REPORT, REPORTCMD_DATAQ, dataLen, data);
-
-    //回调函数都是在周期性线程中调用，所以是周期性给命令处理发送信号量
-    g_bPerdPostSemToCmd = true;
-    
-    //继续开启定时器，直到收到关闭命令
-    if (g_reportTimer[chanNum][REPTTYPE_XACC].bUsed)
-    {
-        servStimerAdd(&g_reportTimer[chanNum][REPTTYPE_XACC]);
-    }
-}
-
-
-/*********************************************************************************************
-函 数 名: cmdReportYAccTimerCB;
-实现功能: 无; 
-输入参数: 无;
-输出参数: 无;
-返 回 值: 无;
-说    明: 无;
-*********************************************************************************************/
-void cmdReportYAccTimerCB(void *timeOutPara)
-{    
-    u8 dataLen, i;
-    u8 *pData;
-    u8 data[6];
-    u8 chanNum = *(u8 *)timeOutPara;
-    u8 index = (u8)REPTTYPE_YACC;
-
-    
-    dataLen = sizeof(g_sensorData.reporterData[chanNum][REPTTYPE_YACC]) + sizeof(index) + sizeof(chanNum);
-    pData = (u8 *)&g_sensorData.reporterData[chanNum][REPTTYPE_YACC];
-    data[0] = chanNum;
-    data[1] = index;
-    for (i = 0;i < sizeof(g_sensorData.reporterData[chanNum][REPTTYPE_YACC]);i++)
-    {
-        data[2 + i] = *pData++;
-    }
-    cmdFrameSend(CMD_REPORT, REPORTCMD_DATAQ, dataLen, data);
-
-    //回调函数都是在周期性线程中调用，所以是周期性给命令处理发送信号量
-    g_bPerdPostSemToCmd = true;
-    
-    //继续开启定时器，直到收到关闭命令
-    if (g_reportTimer[chanNum][REPTTYPE_YACC].bUsed)
-    {
-        servStimerAdd(&g_reportTimer[chanNum][REPTTYPE_YACC]);
-    }
-}
-
-
-/*********************************************************************************************
-函 数 名: cmdReportZAccTimerCB;
-实现功能: 无; 
-输入参数: 无;
-输出参数: 无;
-返 回 值: 无;
-说    明: 无;
-*********************************************************************************************/
-void cmdReportZAccTimerCB(void *timeOutPara)
-{    
-    u8 dataLen, i;
-    u8 *pData;
-    u8 data[6];
-    u8 chanNum = *(u8 *)timeOutPara;
-    u8 index = (u8)REPTTYPE_ZACC;
-
-    
-    dataLen = sizeof(g_sensorData.reporterData[chanNum][REPTTYPE_ZACC]) + sizeof(index) + sizeof(chanNum);
-    pData = (u8 *)&g_sensorData.reporterData[chanNum][REPTTYPE_ZACC];
-    data[0] = chanNum;
-    data[1] = index;
-    for (i = 0;i < sizeof(g_sensorData.reporterData[chanNum][REPTTYPE_ZACC]);i++)
-    {
-        data[2 + i] = *pData++;
-    }
-    cmdFrameSend(CMD_REPORT, REPORTCMD_DATAQ, dataLen, data);
-
-    //回调函数都是在周期性线程中调用，所以是周期性给命令处理发送信号量
-    g_bPerdPostSemToCmd = true;
-    
-    //继续开启定时器，直到收到关闭命令
-    if (g_reportTimer[chanNum][REPTTYPE_ZACC].bUsed)
-    {
-        servStimerAdd(&g_reportTimer[chanNum][REPTTYPE_ZACC]);
-    }
-}
-
-
-/*********************************************************************************************
-函 数 名: cmdReportAngleSensorTimerCB;
-实现功能: 无; 
-输入参数: 无;
-输出参数: 无;
-返 回 值: 无;
-说    明: 无;
-*********************************************************************************************/
-void cmdReportAngleSensorTimerCB(void *timeOutPara)
-{
-    u8 chanNum = *(u8 *)timeOutPara;
-
-
-    if (chanNum < ANGLE_SENSOR_NUM)
-    {
-        g_eventSrcBmp.bAngleSen[chanNum] = true;
-
-        g_bPerdPostSemToEvent = true;
-
-        if (g_reportTimer[chanNum][REPTTYPE_ANGLESEN].bUsed)
-        {
-            servStimerAdd(&g_reportTimer[chanNum][REPTTYPE_ANGLESEN]);
-        }
     }
 }
 
@@ -1219,9 +869,9 @@ void cmdReportDistanceTimerCB(void *timeOutPara)
         }
         cmdFrameSend(CMD_REPORT, REPORTCMD_DATAQ, dataLen, data);
 
-        g_eventSrcBmp.bDistSen[chanNum] = true;
+        /*g_eventSrcBmp.bDistSen[chanNum] = true;
 
-        g_bPerdPostSemToEvent = true;
+        g_bPerdPostSemToEvent = true;*/
 
         //回调函数都是在周期性线程中调用，所以是周期性给命令处理发送信号量
         g_bPerdPostSemToCmd = true;
@@ -1272,6 +922,7 @@ void cmdReportDriveMonitorTimerCB(void *timeOutPara)
 *********************************************************************************************/
 void cmdReportAbsEncoderTimerCB(void *timeOutPara)
 {
+#if GELGOOG_SINANJU
     u8 dataLen, i;
     u8 data[6];
     u8 *pData;
@@ -1304,6 +955,7 @@ void cmdReportAbsEncoderTimerCB(void *timeOutPara)
             servStimerAdd(&g_reportTimer[chanNum][REPTTYPE_ABSENC]);
         }  
     }
+#endif
 }
 
 
@@ -1445,7 +1097,7 @@ void cmdReportStateSet(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -1460,7 +1112,7 @@ void cmdReportStateSet(u8 cmdDataLen, u8 *pCmdData)
     //进行参数验证
     if (PARA_VERIFY_NO_ERROR == pvrfReportStateVerify(cmdDataLen, pCmdData, (void *)&state, &index))
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if (bConfig[i])
             {
@@ -1491,87 +1143,6 @@ void cmdReportStateSet(u8 cmdDataLen, u8 *pCmdData)
                                     g_systemState.cycleNumCount[i] = g_sensorData.reporterData[i][REPTTYPE_CYCLE];
                                     servStimerAdd(&g_reportTimer[i][REPTTYPE_CYCLE]);
                                 }
-                            }
-                          break;
-
-                        case REPTTYPE_XANGLE:
-                            servStimerAdd(&g_reportTimer[i][REPTTYPE_XANGLE]);
-
-                            if (!g_reportTimer[i][REPTTYPE_ANGLESEN].bUsed)
-                            {
-                                servStimerAdd(&g_reportTimer[i][REPTTYPE_ANGLESEN]);
-                            }
-                          break;
-
-                        case REPTTYPE_YANGLE:
-                            servStimerAdd(&g_reportTimer[i][REPTTYPE_YANGLE]);
-
-                            if (!g_reportTimer[i][REPTTYPE_ANGLESEN].bUsed)
-                            {
-                                servStimerAdd(&g_reportTimer[i][REPTTYPE_ANGLESEN]);
-                            }
-                          break;
-
-                        case REPTTYPE_ZANGLE:
-                            servStimerAdd(&g_reportTimer[i][REPTTYPE_ZANGLE]);
-
-                            if (!g_reportTimer[i][REPTTYPE_ANGLESEN].bUsed)
-                            {
-                                servStimerAdd(&g_reportTimer[i][REPTTYPE_ANGLESEN]);
-                            }
-                          break;
-
-                        case REPTTYPE_XVELOC:
-                            servStimerAdd(&g_reportTimer[i][REPTTYPE_XVELOC]);
-
-                            if (!g_reportTimer[i][REPTTYPE_ANGLESEN].bUsed)
-                            {
-                                servStimerAdd(&g_reportTimer[i][REPTTYPE_ANGLESEN]);
-                            }
-                          break;
-
-                        case REPTTYPE_YVELOC:
-                            servStimerAdd(&g_reportTimer[i][REPTTYPE_YVELOC]);
-
-                            if (!g_reportTimer[i][REPTTYPE_ANGLESEN].bUsed)
-                            {
-                                servStimerAdd(&g_reportTimer[i][REPTTYPE_ANGLESEN]);
-                            }
-                          break;
-
-                        case REPTTYPE_ZVELOC:
-                            servStimerAdd(&g_reportTimer[i][REPTTYPE_ZVELOC]);
-
-                            if (!g_reportTimer[i][REPTTYPE_ANGLESEN].bUsed)
-                            {
-                                servStimerAdd(&g_reportTimer[i][REPTTYPE_ANGLESEN]);
-                            }
-                          break;
-
-                        case REPTTYPE_XACC:
-                            servStimerAdd(&g_reportTimer[i][REPTTYPE_XACC]);
-
-                            if (!g_reportTimer[i][REPTTYPE_ANGLESEN].bUsed)
-                            {
-                                servStimerAdd(&g_reportTimer[i][REPTTYPE_ANGLESEN]);
-                            }
-                          break;
-
-                        case REPTTYPE_YACC:
-                            servStimerAdd(&g_reportTimer[i][REPTTYPE_YACC]);
-
-                            if (!g_reportTimer[i][REPTTYPE_ANGLESEN].bUsed)
-                            {
-                                servStimerAdd(&g_reportTimer[i][REPTTYPE_ANGLESEN]);
-                            }
-                          break;
-
-                        case REPTTYPE_ZACC:
-                            servStimerAdd(&g_reportTimer[i][REPTTYPE_ZACC]);
-
-                            if (!g_reportTimer[i][REPTTYPE_ANGLESEN].bUsed)
-                            {
-                                servStimerAdd(&g_reportTimer[i][REPTTYPE_ANGLESEN]);
                             }
                           break;
 
@@ -1640,159 +1211,6 @@ void cmdReportStateSet(u8 cmdDataLen, u8 *pCmdData)
                             servStimerDelete(&g_reportTimer[i][REPTTYPE_CYCLE]);
                             g_systemState.cycleNumCount[i] = 0;
                           break;
-
-                        case REPTTYPE_XANGLE:
-                            servStimerDelete(&g_reportTimer[i][REPTTYPE_XANGLE]);
-
-                            if ((SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_XANGLE]) &&
-                                (SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_YANGLE]) &&
-                                (SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_ZANGLE]) &&
-                                (SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_XVELOC]) &&
-                                (SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_YVELOC]) &&
-                                (SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_ZVELOC]) &&
-                                (SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_XACC]) &&
-                                (SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_YACC]) &&
-                                (SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_ZACC]))
-                            {
-                                servStimerDelete(&g_reportTimer[i][REPTTYPE_ANGLESEN]);
-                            }
-                          break;
-
-                        case REPTTYPE_YANGLE:
-                            servStimerDelete(&g_reportTimer[i][REPTTYPE_YANGLE]);
-
-                            if ((SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_XANGLE]) &&
-                                (SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_YANGLE]) &&
-                                (SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_ZANGLE]) &&
-                                (SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_XVELOC]) &&
-                                (SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_YVELOC]) &&
-                                (SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_ZVELOC]) &&
-                                (SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_XACC]) &&
-                                (SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_YACC]) &&
-                                (SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_ZACC]))
-                            {
-                                servStimerDelete(&g_reportTimer[i][REPTTYPE_ANGLESEN]);
-                            }
-                          break;
-
-                        case REPTTYPE_ZANGLE:
-                            servStimerDelete(&g_reportTimer[i][REPTTYPE_ZANGLE]);
-
-                            if ((SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_XANGLE]) &&
-                                (SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_YANGLE]) &&
-                                (SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_ZANGLE]) &&
-                                (SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_XVELOC]) &&
-                                (SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_YVELOC]) &&
-                                (SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_ZVELOC]) &&
-                                (SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_XACC]) &&
-                                (SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_YACC]) &&
-                                (SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_ZACC]))
-                            {
-                                servStimerDelete(&g_reportTimer[i][REPTTYPE_ANGLESEN]);
-                            }
-                          break;
-
-                        case REPTTYPE_XVELOC:
-                            servStimerDelete(&g_reportTimer[i][REPTTYPE_XVELOC]);
-
-                            if ((SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_XANGLE]) &&
-                                (SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_YANGLE]) &&
-                                (SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_ZANGLE]) &&
-                                (SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_XVELOC]) &&
-                                (SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_YVELOC]) &&
-                                (SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_ZVELOC]) &&
-                                (SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_XACC]) &&
-                                (SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_YACC]) &&
-                                (SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_ZACC]))
-                            {
-                                servStimerDelete(&g_reportTimer[i][REPTTYPE_ANGLESEN]);
-                            }
-                          break;
-
-                        case REPTTYPE_YVELOC:
-                            servStimerDelete(&g_reportTimer[i][REPTTYPE_YVELOC]);
-
-                            if ((SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_XANGLE]) &&
-                                (SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_YANGLE]) &&
-                                (SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_ZANGLE]) &&
-                                (SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_XVELOC]) &&
-                                (SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_YVELOC]) &&
-                                (SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_ZVELOC]) &&
-                                (SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_XACC]) &&
-                                (SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_YACC]) &&
-                                (SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_ZACC]))
-                            {
-                                servStimerDelete(&g_reportTimer[i][REPTTYPE_ANGLESEN]);
-                            }
-                          break;
-
-                        case REPTTYPE_ZVELOC:
-                            servStimerDelete(&g_reportTimer[i][REPTTYPE_ZVELOC]);
-
-                            if ((SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_XANGLE]) &&
-                                (SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_YANGLE]) &&
-                                (SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_ZANGLE]) &&
-                                (SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_XVELOC]) &&
-                                (SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_YVELOC]) &&
-                                (SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_ZVELOC]) &&
-                                (SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_XACC]) &&
-                                (SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_YACC]) &&
-                                (SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_ZACC]))
-                            {
-                                servStimerDelete(&g_reportTimer[i][REPTTYPE_ANGLESEN]);
-                            }
-                          break;
-
-                        case REPTTYPE_XACC:
-                            servStimerDelete(&g_reportTimer[i][REPTTYPE_XACC]);
-
-                            if ((SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_XANGLE]) &&
-                                (SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_YANGLE]) &&
-                                (SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_ZANGLE]) &&
-                                (SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_XVELOC]) &&
-                                (SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_YVELOC]) &&
-                                (SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_ZVELOC]) &&
-                                (SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_XACC]) &&
-                                (SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_YACC]) &&
-                                (SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_ZACC]))
-                            {
-                                servStimerDelete(&g_reportTimer[i][REPTTYPE_ANGLESEN]);
-                            }
-                          break;
-
-                        case REPTTYPE_YACC:
-                            servStimerDelete(&g_reportTimer[i][REPTTYPE_YACC]);
-
-                            if ((SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_XANGLE]) &&
-                                (SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_YANGLE]) &&
-                                (SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_ZANGLE]) &&
-                                (SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_XVELOC]) &&
-                                (SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_YVELOC]) &&
-                                (SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_ZVELOC]) &&
-                                (SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_XACC]) &&
-                                (SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_YACC]) &&
-                                (SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_ZACC]))
-                            {
-                                servStimerDelete(&g_reportTimer[i][REPTTYPE_ANGLESEN]);
-                            }
-                          break;
-
-                        case REPTTYPE_ZACC:
-                            servStimerDelete(&g_reportTimer[i][REPTTYPE_ZACC]);
-
-                            if ((SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_XANGLE]) &&
-                                (SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_YANGLE]) &&
-                                (SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_ZANGLE]) &&
-                                (SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_XVELOC]) &&
-                                (SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_YVELOC]) &&
-                                (SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_ZVELOC]) &&
-                                (SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_XACC]) &&
-                                (SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_YACC]) &&
-                                (SENSOR_OFF == g_reportInfo.report[i].state[REPTTYPE_ZACC]))
-                            {
-                                servStimerDelete(&g_reportTimer[i][REPTTYPE_ANGLESEN]);
-                            }
-                          break;
                           
                         case REPTTYPE_DRVSGALL:
                             servStimerDelete(&g_reportTimer[i][REPTTYPE_DRVSGALL]);
@@ -1845,7 +1263,7 @@ void cmdReportStateSet(u8 cmdDataLen, u8 *pCmdData)
             }
         }
 
-        servReportInfoWrite(&g_reportInfo);
+        servStimerAdd(&g_paraSaveTimer);
     }
 }
 
@@ -1885,7 +1303,7 @@ void cmdReportStateQuery(u8 cmdDataLen, u8 *pCmdData)
         }
         else
         {
-            for (j = 0;j < g_systemState.chanNum;j++)
+            for (j = 0;j < CH_TOTAL;j++)
             {
                 if ((CH_ALL == chanNum) ||
                     (chanNum == g_systemInfo.group[j][0]) ||
@@ -1930,7 +1348,7 @@ void cmdReportPeriodSet(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -1945,7 +1363,7 @@ void cmdReportPeriodSet(u8 cmdDataLen, u8 *pCmdData)
     //进行参数验证
     if (PARA_VERIFY_NO_ERROR == pvrfReportPeriodVerify(cmdDataLen, pCmdData, (void *)&reptPeriod, &index))
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if (bConfig[i])
             {
@@ -1975,42 +1393,6 @@ void cmdReportPeriodSet(u8 cmdDataLen, u8 *pCmdData)
 
                     case REPTTYPE_CYCLE:
                         //
-                      break;
-
-                    case REPTTYPE_XANGLE:
-                        servStimerInit(&g_reportTimer[i][REPTTYPE_XANGLE], reptPeriod, cmdReportXAngleTimerCB);
-                      break;
-
-                    case REPTTYPE_YANGLE:
-                        servStimerInit(&g_reportTimer[i][REPTTYPE_YANGLE], reptPeriod, cmdReportYAngleTimerCB); 
-                      break;
-
-                    case REPTTYPE_ZANGLE:
-                        servStimerInit(&g_reportTimer[i][REPTTYPE_ZANGLE], reptPeriod, cmdReportZAngleTimerCB); 
-                      break;
-
-                    case REPTTYPE_XVELOC:
-                        servStimerInit(&g_reportTimer[i][REPTTYPE_XVELOC], reptPeriod, cmdReportXVelocityTimerCB);
-                      break;
-
-                    case REPTTYPE_YVELOC:
-                        servStimerInit(&g_reportTimer[i][REPTTYPE_YVELOC], reptPeriod, cmdReportYVelocityTimerCB); 
-                      break;
-
-                    case REPTTYPE_ZVELOC:
-                        servStimerInit(&g_reportTimer[i][REPTTYPE_ZVELOC], reptPeriod, cmdReportZVelocityTimerCB); 
-                      break;
-
-                    case REPTTYPE_XACC:
-                        servStimerInit(&g_reportTimer[i][REPTTYPE_XACC], reptPeriod, cmdReportXAccTimerCB); 
-                      break;
-
-                    case REPTTYPE_YACC:
-                        servStimerInit(&g_reportTimer[i][REPTTYPE_YACC], reptPeriod, cmdReportYAccTimerCB); 
-                      break;
-
-                    case REPTTYPE_ZACC:
-                        servStimerInit(&g_reportTimer[i][REPTTYPE_ZACC], reptPeriod, cmdReportZAccTimerCB); 
                       break;
 
                     case REPTTYPE_DRVSGALL:  
@@ -2077,7 +1459,7 @@ void cmdReportPeriodSet(u8 cmdDataLen, u8 *pCmdData)
             }
         }
 
-        servReportInfoWrite(&g_reportInfo);
+        servStimerAdd(&g_paraSaveTimer);
     }
 }
 
@@ -2117,7 +1499,7 @@ void cmdReportPeriodQuery(u8 cmdDataLen, u8 *pCmdData)
         }
         else
         {
-            for (j = 0;j< g_systemState.chanNum;j++)
+            for (j = 0;j< CH_TOTAL;j++)
             {
                 if ((CH_ALL == chanNum) ||
                     (chanNum == g_systemInfo.group[j][0]) ||
@@ -2170,69 +1552,10 @@ void cmdReportDataQuery(u8 cmdDataLen, u8 *pCmdData)
                 data[2 + i] = *pData++;
             }
             cmdFrameSend(CMD_REPORT, REPORTCMD_DATAQ, dataLen, data);
-
-            switch ((ReportTypeEnum)index)
-            {
-                case REPTTYPE_TORQUE:
-                case REPTTYPE_DRVSGALL:  
-                case REPTTYPE_DRVSGSE:
-                    g_chanCfgBmp[chanNum].bDriverQuery = true;
-                  break;
-
-                case REPTTYPE_CYCLE:
-                    //
-                  break;
-
-                case REPTTYPE_XANGLE:
-                case REPTTYPE_YANGLE:
-                case REPTTYPE_ZANGLE:
-                case REPTTYPE_XVELOC:
-                case REPTTYPE_YVELOC:
-                case REPTTYPE_ZVELOC:
-                case REPTTYPE_XACC:
-                case REPTTYPE_YACC:
-                case REPTTYPE_ZACC:
-                    if (chanNum < ANGLE_SENSOR_NUM)
-                    {
-                        g_eventSrcBmp.bAngleSen[chanNum] = true;
-                    }
-                  break;
-
-                case REPTTYPE_DISTANCE:  
-                    if (chanNum < DIST_SENSOR_NUM)
-                    {
-                        g_eventSrcBmp.bDistSen[chanNum] = true;
-                    }
-                  break;
-
-                case REPTTYPE_ABSENC:  
-#if GELGOOG_SINANJU
-                    if (chanNum < ABS_ENCODER_NUM)
-                    {
-                        g_eventSrcBmp.bAbsEncoder[chanNum] = true;
-                    }
-#endif
-                  break;
-                  
-                case REPTTYPE_OUTNUM:
-                    //
-                  break;
-
-                case REPTTYPE_STEPS:
-                    //
-                  break;
-
-                case REPTTYPE_VELOCITY:  
-                    //
-                  break;
-
-                default:
-                  break;
-            }
         }
         else
         {
-            for (j = 0;j < g_systemState.chanNum;j++)
+            for (j = 0;j < CH_TOTAL;j++)
             {
                 if ((CH_ALL == chanNum) ||
                     (chanNum == g_systemInfo.group[j][0]) ||
@@ -2246,65 +1569,6 @@ void cmdReportDataQuery(u8 cmdDataLen, u8 *pCmdData)
                         data[2 + i] = *pData++;
                     }
                     cmdFrameSend(CMD_REPORT, REPORTCMD_DATAQ, dataLen, data);
-
-                    switch ((ReportTypeEnum)index)
-                    {
-                        case REPTTYPE_TORQUE:
-                        case REPTTYPE_DRVSGALL:  
-                        case REPTTYPE_DRVSGSE:
-                            g_chanCfgBmp[j].bDriverQuery = true;
-                          break;
-
-                        case REPTTYPE_CYCLE:
-                            //
-                          break;
-
-                        case REPTTYPE_XANGLE:
-                        case REPTTYPE_YANGLE:
-                        case REPTTYPE_ZANGLE:
-                        case REPTTYPE_XVELOC:
-                        case REPTTYPE_YVELOC:
-                        case REPTTYPE_ZVELOC:
-                        case REPTTYPE_XACC:
-                        case REPTTYPE_YACC:
-                        case REPTTYPE_ZACC:
-                            if (j < ANGLE_SENSOR_NUM)
-                            {
-                                g_eventSrcBmp.bAngleSen[j] = true;
-                            }
-                          break;
-
-                        case REPTTYPE_DISTANCE:  
-                            if (j < DIST_SENSOR_NUM)
-                            {
-                                g_eventSrcBmp.bDistSen[j] = true;
-                            }
-                          break;
-
-                        case REPTTYPE_ABSENC:  
-#if GELGOOG_SINANJU
-                            if (chanNum < ABS_ENCODER_NUM)
-                            {
-                                g_eventSrcBmp.bAbsEncoder[chanNum] = true;
-                            }
-#endif
-                          break;
-                          
-                        case REPTTYPE_OUTNUM:
-                            //
-                          break;
-
-                        case REPTTYPE_STEPS:
-                            //
-                          break;
-
-                        case REPTTYPE_VELOCITY:  
-                            //
-                          break;
-
-                        default:
-                          break;
-                    }
                 }
             }
         }
@@ -2654,8 +1918,8 @@ void cmdSensorUartApply(u8 cmdDataLen, u8 *pCmdData)
     if (index < UARTNUM_RESERVE)
     {
         memcpy(&g_sensorUart.uartIntfc[index], &g_sensorUartIntfc[index], sizeof(UartIntfcStruct));
-
-        servSensorUartInfoStore(&g_sensorUart);
+ 
+        servStimerAdd(&g_paraSaveTimer);
 
         //给FUNC发信号量
         if (UARTNUM_U1 == index)
@@ -2684,10 +1948,6 @@ void cmdSensorUartStateSet(u8 cmdDataLen, u8 *pCmdData)
     SensorStateEnum state;
     u8 uartIndex;
     u8 sensorIndex;
-#ifdef PROJECT_GELGOOG
-    u8 dataLen;
-    u8 data[6];
-#endif
     
 
     //进行参数验证
@@ -2695,7 +1955,7 @@ void cmdSensorUartStateSet(u8 cmdDataLen, u8 *pCmdData)
     {
         g_sensorUart.sensor[uartIndex][sensorIndex].state = state;
 
-        servSensorUartInfoStore(&g_sensorUart);
+        servStimerAdd(&g_paraSaveTimer);
 
         if (SENSOR_ON == state)
         {
@@ -2703,107 +1963,12 @@ void cmdSensorUartStateSet(u8 cmdDataLen, u8 *pCmdData)
             {
                 servSensor1UartReciveOn(g_sensorUart.sensor[UARTNUM_U1][sensorIndex], (SensorNumEnum)sensorIndex);
             }
+#if !(GELGOOG_AXIS_4 || GELGOOG_AXIS_10)    //4轴和10轴只支持1路
             else
             {
                 servSensor2UartReciveOn(g_sensorUart.sensor[UARTNUM_U2][sensorIndex], (SensorNumEnum)sensorIndex);
-
-#ifdef PROJECT_GELGOOG
-
-                //U2_S1和CH4触发的L互斥
-                if (SENSOR_S1 == sensorIndex)
-                {
-                    if (SENSOR_ON == g_trigInInfo.trigIn[CH4].levelState[TRIGPIN_DIL])
-                    {
-                        g_trigInInfo.trigIn[CH4].levelState[TRIGPIN_DIL] = SENSOR_OFF;
-                        
-                        //通知上位机IO状态变化了
-                        dataLen = sizeof(g_trigInInfo.trigIn[CH4].levelState[TRIGPIN_DIL]) + sizeof(CH4) + sizeof(TRIGPIN_DIL);
-                        data[0] = CH4;            //通道号
-                        data[1] = TRIGPIN_DIL;    //Trig编号
-                        data[2] = g_trigInInfo.trigIn[CH4].levelState[TRIGPIN_DIL];
-                        cmdFrameSend(CMD_TRIGIN, TRIGINCMD_LEVELSTATEQ, dataLen, data);
-                
-                        //g_chanCfgBmp[CH4].bTrigIn = true;
-                    
-                        servTrigInInfoWrite(&g_trigInInfo);
-                    }
-                }
-                else if (SENSOR_S2 == sensorIndex)
-                {
-                    //U2_S2和CH4触发的R、CH4的三通道编码器Z通道互斥
-                    if (SENSOR_ON == g_trigInInfo.trigIn[CH4].levelState[TRIGPIN_DIR])
-                    {
-                        g_trigInInfo.trigIn[CH4].levelState[TRIGPIN_DIR] = SENSOR_OFF;
-                        
-                        //通知上位机IO状态变化了
-                        dataLen = sizeof(g_trigInInfo.trigIn[CH4].levelState[TRIGPIN_DIR]) + sizeof(CH4) + sizeof(TRIGPIN_DIR);
-                        data[0] = CH4;            //通道号
-                        data[1] = TRIGPIN_DIR;    //Trig编号
-                        data[2] = g_trigInInfo.trigIn[CH4].levelState[TRIGPIN_DIR];
-                        cmdFrameSend(CMD_TRIGIN, TRIGINCMD_LEVELSTATEQ, dataLen, data);
-                
-                        //g_chanCfgBmp[CH4].bTrigIn = true;
-                    
-                        servTrigInInfoWrite(&g_trigInInfo);
-                    }
-                    //目前只跟TrigR互斥    NICK MARK
-                    /*else if ((INTFC_ON  == g_motorInfo.motor[CH4].encoderState) &&
-                             (ECCHAN_3  == g_motorInfo.motor[CH4].encoderChanNum))
-                    {
-                        g_motorInfo.motor[CH4].encoderState = INTFC_OFF;
-                        
-                        //通知上位机编码器状态变化了
-                        dataLen = sizeof(g_motorInfo.motor[CH4].encoderState) + sizeof(CH4);
-                        data[0] = CH4;
-                        data[1] = g_motorInfo.motor[CH4].encoderState;
-                        cmdFrameSend(CMD_ENCODER, ENCODERCMD_STATEQ, dataLen, data);
-
-                        //g_chanCfgBmp[CH4].bEncoder = true;
-                        
-                        servMotorInfoWrite(&g_motorInfo);
-                    }*/
-                }
-                else if (SENSOR_S3 == sensorIndex)    //U2_S3和CH4的编码器互斥
-                {
-                    if (INTFC_ON  == g_motorInfo.motor[CH4].encoderState)
-                    {
-                        g_motorInfo.motor[CH4].encoderState = INTFC_OFF;
-                        
-                        //通知上位机编码器状态变化了
-                        dataLen = sizeof(g_motorInfo.motor[CH4].encoderState) + sizeof(CH4);
-                        data[0] = CH4;
-                        data[1] = g_motorInfo.motor[CH4].encoderState;
-                        cmdFrameSend(CMD_ENCODER, ENCODERCMD_STATEQ, dataLen, data);
-
-                        //g_chanCfgBmp[CH4].bEncoder = true;
-                        
-                        servMotorInfoWrite(&g_motorInfo);
-                    }
-                }
-                else    //U2_S4和CH4的三通道编码器互斥
-                {
-                    if ((INTFC_ON  == g_motorInfo.motor[CH4].encoderState) &&
-                        (ECCHAN_3  == g_motorInfo.motor[CH4].encoderChanNum))
-                    {
-                        g_motorInfo.motor[CH4].encoderState = INTFC_OFF;
-                        
-                        //通知上位机编码器状态变化了
-                        dataLen = sizeof(g_motorInfo.motor[CH4].encoderState) + sizeof(CH4);
-                        data[0] = CH4;
-                        data[1] = g_motorInfo.motor[CH4].encoderState;
-                        cmdFrameSend(CMD_ENCODER, ENCODERCMD_STATEQ, dataLen, data);
-
-                        //g_chanCfgBmp[CH4].bEncoder = true;
-                        
-                        servMotorInfoWrite(&g_motorInfo);
-                    }
-                }
-                
-                //给FUNC发信号量
-                g_bCmdPostSemToFunc = true;
-                
-#endif
             }
+#endif
         }
         else
         {
@@ -2821,6 +1986,7 @@ void cmdSensorUartStateSet(u8 cmdDataLen, u8 *pCmdData)
                     servSensor1UartReciveOff();
                 }
             }
+#if !(GELGOOG_AXIS_4 || GELGOOG_AXIS_10)    //4轴和10轴只支持1路
             else
             {
 #ifdef PROJECT_GELGOOG
@@ -2835,6 +2001,7 @@ void cmdSensorUartStateSet(u8 cmdDataLen, u8 *pCmdData)
                     servSensor2UartReciveOff();
                 }
             }
+#endif
         }
     }
 }
@@ -2893,7 +2060,7 @@ void cmdSensorUartSofSet(u8 cmdDataLen, u8 *pCmdData)
     {
         g_sensorUart.sensor[uartIndex][sensorIndex].SOF = sof;
 
-        servSensorUartInfoStore(&g_sensorUart);
+        servStimerAdd(&g_paraSaveTimer);
     }
 }
 
@@ -2951,7 +2118,7 @@ void cmdSensorUartFrameLenSet(u8 cmdDataLen, u8 *pCmdData)
     {
         g_sensorUart.sensor[uartIndex][sensorIndex].frameLen = frameLen;
 
-        servSensorUartInfoStore(&g_sensorUart);
+        servStimerAdd(&g_paraSaveTimer);
     }
 }
 
@@ -3009,7 +2176,7 @@ void cmdSensorUartRecvNumSet(u8 cmdDataLen, u8 *pCmdData)
     {
         g_sensorUart.sensor[uartIndex][sensorIndex].recvNum = recvNum;
 
-        servSensorUartInfoStore(&g_sensorUart);
+        servStimerAdd(&g_paraSaveTimer);
     }
 }
 
@@ -3066,7 +2233,7 @@ void cmdSensorUartSwTimeSet(u8 cmdDataLen, u8 *pCmdData)
     {
         g_sensorUart.sensor[uartIndex][sensorIndex].swTime = swTime;
 
-        servSensorUartInfoStore(&g_sensorUart);
+        servStimerAdd(&g_paraSaveTimer);
     }
 }
 
@@ -3123,6 +2290,10 @@ void cmdSensorUartDataQuery(u8 cmdDataLen, u8 *pCmdData)
     u8 uartIndex = *pCmdData++;
     u8 sensorIndex = *pCmdData++;
 
+#if 1    //CJ 2018.07.10 Modify In Flex
+    bool bRemainder = false;
+#endif
+
     
     if ((sensorIndex < SENSOR_RESERVE) && (uartIndex < UARTNUM_RESERVE))
     {
@@ -3133,7 +2304,55 @@ void cmdSensorUartDataQuery(u8 cmdDataLen, u8 *pCmdData)
 
             if (pUartPhyFrame->frameLen > 0)
             {
-                frameLen = pUartPhyFrame->frameLen - sizeof(pUartPhyFrame->frameLen);    //长度里面包含了pUartPhyFrame->frameLen本身
+                frameLen = pUartPhyFrame->frameLen;
+
+#if 1    //CJ 2018.07.10 Modify In Flex
+                frameNum = frameLen / UART_SENSOR_FRAME_DATA_LEN_MAX;
+                
+                if ((frameLen % UART_SENSOR_FRAME_DATA_LEN_MAX) != 0)
+                {
+                    bRemainder = true;    //多发一帧，最后一帧不满UART_SENSOR_FRAME_DATA_LEN_MAX个字节
+                    frameNum++;
+                }
+                
+                pData = (u8 *)&pUartPhyFrame->SOF;
+                
+                for (i = 1;i < frameNum;i++)
+                {
+                    dataLen = UART_SENSOR_FRAME_DATA_LEN_MAX;
+                    memcpy(&data[UART_SENSOR_FRAME_DATA_INDEX], pData, dataLen);
+                    pData += dataLen;
+
+                    data[0] = uartIndex;      //串口号
+                    data[1] = sensorIndex;    //传感器号
+
+                    //高4bit代表分子，所以左移4bit，低4bit代表分母
+                    //总共可以发送16 x 5Bytes = 80Bytes(640bits)的数据，目前没有大数据，所以不做frameNum大小的判断了
+                    data[2] = FRACTION(i, frameNum);
+                    dataLen += UART_SENSOR_FRAME_DATA_INDEX;    //加2是为了算上data[0]、data[1]和data[2]
+                    
+                    cmdFrameSend(CMD_SENSORUART, SNUARTCMD_DATAQ, dataLen, data);
+                }
+
+                if (bRemainder)
+                {
+                    dataLen = frameLen % UART_SENSOR_FRAME_DATA_LEN_MAX;
+                    
+                    memcpy(&data[UART_SENSOR_FRAME_DATA_INDEX], pData, dataLen);
+
+                    data[0] = uartIndex;      //串口号
+                    data[1] = sensorIndex;    //传感器号
+
+                    //高4bit代表分子，所以左移4bit，低4bit代表分母
+                    //总共可以发送16 x 5Bytes = 80Bytes(640bits)的数据，目前没有大数据，所以不做frameNum大小的判断了
+                    data[2] = FRACTION(i, frameNum);
+                    dataLen += UART_SENSOR_FRAME_DATA_INDEX;    //加2是为了算上data[0]、data[1]和data[2]
+                    
+                    cmdFrameSend(CMD_SENSORUART, SNUARTCMD_DATAQ, dataLen, data);
+                }
+                
+#else
+
                 if ((frameLen % UART_SENSOR_FRAME_DATA_LEN_MAX) != 0)
                 {
                     frameNum = frameLen / UART_SENSOR_FRAME_DATA_LEN_MAX + 1;    //多发一帧，最后一帧不满UART_SENSOR_FRAME_DATA_LEN_MAX个字节
@@ -3143,7 +2362,7 @@ void cmdSensorUartDataQuery(u8 cmdDataLen, u8 *pCmdData)
                     frameNum = frameLen / UART_SENSOR_FRAME_DATA_LEN_MAX;
                 }
                 pData = (u8 *)&pUartPhyFrame->SOF;
-            
+                
                 for (i = 1;i <= frameNum;i++)
                 {
                     if (i == frameNum)
@@ -3154,7 +2373,7 @@ void cmdSensorUartDataQuery(u8 cmdDataLen, u8 *pCmdData)
                     {
                         dataLen = UART_SENSOR_FRAME_DATA_LEN_MAX;            
                     }
-                    memcpy(&data[2], pData, dataLen);
+                    memcpy(&data[UART_SENSOR_FRAME_DATA_INDEX], pData, dataLen);
                     pData += dataLen;
 
                     data[0] = uartIndex;      //串口号
@@ -3163,10 +2382,11 @@ void cmdSensorUartDataQuery(u8 cmdDataLen, u8 *pCmdData)
                     //高4bit代表分子，所以左移4bit，低4bit代表分母
                     //总共可以发送16 x 5Bytes = 80Bytes(640bits)的数据，目前没有大数据，所以不做frameNum大小的判断了
                     data[2] = FRACTION(i, frameNum);
-                    dataLen += 3;    //加2是为了算上data[0]、data[1]和data[2]
+                    dataLen += UART_SENSOR_FRAME_DATA_INDEX;    //加2是为了算上data[0]、data[1]和data[2]
                     
                     cmdFrameSend(CMD_SENSORUART, SNUARTCMD_DATAQ, dataLen, data);
                 }
+#endif
 
                 servDequeue(&g_senUartRxBuffer[uartIndex][sensorIndex], pUartPhyFrame->frameLen); //处理完成后出队
                 g_senUartRxBuffer[uartIndex][sensorIndex].frameCount--;
@@ -3178,7 +2398,7 @@ void cmdSensorUartDataQuery(u8 cmdDataLen, u8 *pCmdData)
             data[0] = uartIndex;      //串口号
             data[1] = sensorIndex;
             data[2] = 0;
-            cmdFrameSend(CMD_SENSORUART, SNUARTCMD_DATAQ, 3, data);
+            cmdFrameSend(CMD_SENSORUART, SNUARTCMD_DATAQ, UART_SENSOR_FRAME_DATA_INDEX, data);
         }
     }
 }
@@ -3241,6 +2461,1001 @@ void cmdSensorUartCmdProc(CmdParseFrameStruct *pCmdStackFrame)
         pSensorUartCmdFunc[pCmdStackFrame->subType](dataLen, pData);
     }
 }
+
+
+#if GELGOOG_SINANJU
+
+/*********************************************************************************************
+函 数 名: cmdAbsEncAlarmStateSet;
+实现功能: 无; 
+输入参数: 无;
+输出参数: 无;
+返 回 值: 无;
+说    明: 无;
+*********************************************************************************************/
+void cmdAbsEncAlarmStateSet(u8 cmdDataLen, u8 *pCmdData)
+{
+    SensorStateEnum state;
+    u8 index;
+
+    //进行参数验证
+    if (PARA_VERIFY_NO_ERROR == pvrfAbsEncAlarmStateVerify(cmdDataLen, pCmdData, (void *)&state, &index))
+    {
+        g_sensorAlarm.encAlarm[index].state = state;
+
+        servStimerAdd(&g_paraSaveTimer);
+    }
+}
+
+
+/*********************************************************************************************
+函 数 名: cmdAbsEncAlarmStateQuery;
+实现功能: 无; 
+输入参数: 无;
+输出参数: 无;
+返 回 值: 无;
+说    明: 无;
+*********************************************************************************************/
+void cmdAbsEncAlarmStateQuery(u8 cmdDataLen, u8 *pCmdData)
+{
+    u8 dataLen;
+    u8 *pData;
+    u8 data[6];
+    u8 i;
+    u8 index = *pCmdData;
+
+    
+    if (index < ABS_ENCODER_NUM)
+    {
+        dataLen = sizeof(g_sensorAlarm.encAlarm[index].state) + sizeof(index);
+    
+        pData = (u8 *)&g_sensorAlarm.encAlarm[index].state;
+        data[0] = index;
+        for (i = 0;i < sizeof(g_sensorAlarm.encAlarm[index].state);i++)
+        {
+            data[1 + i] = *pData++;
+        }
+        cmdFrameSend(CMD_ENCALARM, ENCALARMCMD_STATEQ, dataLen, data);
+    }
+}
+
+
+/*********************************************************************************************
+函 数 名: cmdAbsEncAlarmZeroPostSet;
+实现功能: 无; 
+输入参数: 无;
+输出参数: 无;
+返 回 值: 无;
+说    明: 无;
+*********************************************************************************************/
+void cmdAbsEncAlarmZeroPostSet(u8 cmdDataLen, u8 *pCmdData)
+{
+    SensorStateEnum zeroPost;
+    u8 index;
+
+    //进行参数验证
+    if (PARA_VERIFY_NO_ERROR == pvrfAbsEncAlarmZeroPostVerify(cmdDataLen, pCmdData, (void *)&zeroPost, &index))
+    {
+        g_sensorAlarm.encAlarm[index].zeroPost = zeroPost;
+
+        servStimerAdd(&g_paraSaveTimer);
+    }
+}
+
+
+/*********************************************************************************************
+函 数 名: cmdAbsEncAlarmZeroPostQuery;
+实现功能: 无; 
+输入参数: 无;
+输出参数: 无;
+返 回 值: 无;
+说    明: 无;
+*********************************************************************************************/
+void cmdAbsEncAlarmZeroPostQuery(u8 cmdDataLen, u8 *pCmdData)
+{
+    u8 dataLen;
+    u8 *pData;
+    u8 data[6];
+    u8 i;
+    u8 index = *pCmdData;
+
+    
+    if (index < ABS_ENCODER_NUM)
+    {
+        dataLen = sizeof(g_sensorAlarm.encAlarm[index].zeroPost) + sizeof(index);
+    
+        pData = (u8 *)&g_sensorAlarm.encAlarm[index].zeroPost;
+        data[0] = index;
+        for (i = 0;i < sizeof(g_sensorAlarm.encAlarm[index].zeroPost);i++)
+        {
+            data[1 + i] = *pData++;
+        }
+        cmdFrameSend(CMD_ENCALARM, ENCALARMCMD_ZEROPOSTQ, dataLen, data);
+    }
+}
+
+
+/*********************************************************************************************
+函 数 名: cmdAbsEncAlarmUplimitSet;
+实现功能: 无; 
+输入参数: 无;
+输出参数: 无;
+返 回 值: 无;
+说    明: 无;
+*********************************************************************************************/
+void cmdAbsEncAlarmUplimitSet(u8 cmdDataLen, u8 *pCmdData)
+{
+    u32 upLimit;
+    u8  index;
+
+    //进行参数验证
+    if (PARA_VERIFY_NO_ERROR == pvrfAbsEncAlarmLimitVerify(cmdDataLen, pCmdData, (void *)&upLimit, &index))
+    {
+        g_sensorAlarm.encAlarm[index].upLimit = upLimit;
+        
+        servStimerAdd(&g_paraSaveTimer);
+    }
+}
+
+
+/*********************************************************************************************
+函 数 名: cmdAbsEncAlarmUplimitQuery;
+实现功能: 无; 
+输入参数: 无;
+输出参数: 无;
+返 回 值: 无;
+说    明: 无;
+*********************************************************************************************/
+void cmdAbsEncAlarmUplimitQuery(u8 cmdDataLen, u8 *pCmdData)
+{
+    u8 dataLen;
+    u8 *pData;
+    u8 data[6];
+    u8 i;
+    u8 index = *pCmdData;
+
+    
+    if (index < ABS_ENCODER_NUM)
+    {
+        dataLen = sizeof(g_sensorAlarm.encAlarm[index].upLimit) + sizeof(index);
+    
+        pData = (u8 *)&g_sensorAlarm.encAlarm[index].upLimit;
+        data[0] = index;
+        for (i = 0;i < sizeof(g_sensorAlarm.encAlarm[index].upLimit);i++)
+        {
+            data[1 + i] = *pData++;
+        }
+        cmdFrameSend(CMD_ENCALARM, ENCALARMCMD_UPLIMITQ, dataLen, data);
+    }
+}
+
+
+/*********************************************************************************************
+函 数 名: cmdAbsEncAlarmDownlimitSet;
+实现功能: 无; 
+输入参数: 无;
+输出参数: 无;
+返 回 值: 无;
+说    明: 无;
+*********************************************************************************************/
+void cmdAbsEncAlarmDownlimitSet(u8 cmdDataLen, u8 *pCmdData)
+{
+    u32 dnLimit;
+    u8  index;
+
+    //进行参数验证
+    if (PARA_VERIFY_NO_ERROR == pvrfAbsEncAlarmLimitVerify(cmdDataLen, pCmdData, (void *)&dnLimit, &index))
+    {
+        g_sensorAlarm.encAlarm[index].dnLimit = dnLimit;
+
+        servStimerAdd(&g_paraSaveTimer);
+    }
+}
+
+
+/*********************************************************************************************
+函 数 名: cmdAbsEncAlarmDownlimitQuery;
+实现功能: 无; 
+输入参数: 无;
+输出参数: 无;
+返 回 值: 无;
+说    明: 无;
+*********************************************************************************************/
+void cmdAbsEncAlarmDownlimitQuery(u8 cmdDataLen, u8 *pCmdData)
+{
+    u8 dataLen;
+    u8 *pData;
+    u8 data[6];
+    u8 i;
+    u8 index = *pCmdData;
+
+    
+    if (index < ABS_ENCODER_NUM)
+    {
+        dataLen = sizeof(g_sensorAlarm.encAlarm[index].dnLimit) + sizeof(index);
+    
+        pData = (u8 *)&g_sensorAlarm.encAlarm[index].dnLimit;
+        data[0] = index;
+        for (i = 0;i < sizeof(g_sensorAlarm.encAlarm[index].dnLimit);i++)
+        {
+            data[1 + i] = *pData++;
+        }
+        cmdFrameSend(CMD_ENCALARM, ENCALARMCMD_DOWNLIMITQ, dataLen, data);
+    }
+}
+
+
+/*********************************************************************************************
+函 数 名: cmdAbsEncAlarmZeroValueSet;
+实现功能: 无; 
+输入参数: 无;
+输出参数: 无;
+返 回 值: 无;
+说    明: 无;
+*********************************************************************************************/
+void cmdAbsEncAlarmZeroValueSet(u8 cmdDataLen, u8 *pCmdData)
+{
+    u32 zeroValue;
+    u8  index;
+
+    //进行参数验证
+    if (PARA_VERIFY_NO_ERROR == pvrfAbsEncAlarmLimitVerify(cmdDataLen, pCmdData, (void *)&zeroValue, &index))
+    {
+        g_sensorAlarm.encAlarm[index].zeroValue = zeroValue;
+
+        servStimerAdd(&g_paraSaveTimer);
+    }
+}
+
+
+/*********************************************************************************************
+函 数 名: cmdAbsEncAlarmZeroValueQuery;
+实现功能: 无; 
+输入参数: 无;
+输出参数: 无;
+返 回 值: 无;
+说    明: 无;
+*********************************************************************************************/
+void cmdAbsEncAlarmZeroValueQuery(u8 cmdDataLen, u8 *pCmdData)
+{
+    u8 dataLen;
+    u8 *pData;
+    u8 data[6];
+    u8 i;
+    u8 index = *pCmdData;
+
+    
+    if (index < ABS_ENCODER_NUM)
+    {
+        dataLen = sizeof(g_sensorAlarm.encAlarm[index].zeroValue) + sizeof(index);
+    
+        pData = (u8 *)&g_sensorAlarm.encAlarm[index].zeroValue;
+        data[0] = index;
+        for (i = 0;i < sizeof(g_sensorAlarm.encAlarm[index].zeroValue);i++)
+        {
+            data[1 + i] = *pData++;
+        }
+        cmdFrameSend(CMD_ENCALARM, ENCALARMCMD_ZEROVALUEQ, dataLen, data);
+    }
+}
+
+
+/*********************************************************************************************
+函 数 名: cmdAbsEncAlarmResponseSet;
+实现功能: 无; 
+输入参数: 无;
+输出参数: 无;
+返 回 值: 无;
+说    明: 无;
+*********************************************************************************************/
+void cmdAbsEncAlarmResponseSet(u8 cmdDataLen, u8 *pCmdData)
+{
+    ResponseTypeEnum response;
+    
+
+    //进行参数验证
+    if (PARA_VERIFY_NO_ERROR == pvrfAbsEncAlarmResponseVerify(cmdDataLen, pCmdData, (void *)&response))
+    {
+        g_sensorAlarm.encAlarmResponse = response;
+
+        servStimerAdd(&g_paraSaveTimer);
+    }
+}
+
+
+/*********************************************************************************************
+函 数 名: cmdAbsEncAlarmResponseQuery;
+实现功能: 无; 
+输入参数: 无;
+输出参数: 无;
+返 回 值: 无;
+说    明: 无;
+*********************************************************************************************/
+void cmdAbsEncAlarmResponseQuery(u8 cmdDataLen, u8 *pCmdData)
+{
+    u8 dataLen;
+    u8 *pData;
+
+
+    dataLen = sizeof(g_sensorAlarm.encAlarmResponse);
+    pData = (u8 *)&g_sensorAlarm.encAlarmResponse;
+    
+    cmdFrameSend(CMD_ENCALARM, ENCALARMCMD_RESPONSEQ, dataLen, pData);
+}
+
+
+/*********************************************************************************************
+函 数 名: cmdAbsEncAlarmCmdInit;
+实现功能: 无; 
+输入参数: 无;
+输出参数: 无;
+返 回 值: 无;
+说    明: 无;
+*********************************************************************************************/
+void cmdAbsEncAlarmCmdInit(void)
+{
+    memset(pAbsEncAlarmCmdFunc, 0, sizeof(pAbsEncAlarmCmdFunc));
+
+    pAbsEncAlarmCmdFunc[ENCALARMCMD_STATE]  = cmdAbsEncAlarmStateSet;
+    pAbsEncAlarmCmdFunc[ENCALARMCMD_STATEQ] = cmdAbsEncAlarmStateQuery;
+    
+    pAbsEncAlarmCmdFunc[ENCALARMCMD_UPLIMIT]    = cmdAbsEncAlarmUplimitSet;
+    pAbsEncAlarmCmdFunc[ENCALARMCMD_UPLIMITQ]   = cmdAbsEncAlarmUplimitQuery;
+    pAbsEncAlarmCmdFunc[ENCALARMCMD_DOWNLIMIT]  = cmdAbsEncAlarmDownlimitSet;
+    pAbsEncAlarmCmdFunc[ENCALARMCMD_DOWNLIMITQ] = cmdAbsEncAlarmDownlimitQuery;
+    
+    pAbsEncAlarmCmdFunc[ENCALARMCMD_ZEROVALUE]  = cmdAbsEncAlarmZeroValueSet;
+    pAbsEncAlarmCmdFunc[ENCALARMCMD_ZEROVALUEQ] = cmdAbsEncAlarmZeroValueQuery;
+    pAbsEncAlarmCmdFunc[ENCALARMCMD_ZEROPOST]   = cmdAbsEncAlarmZeroPostSet;
+    pAbsEncAlarmCmdFunc[ENCALARMCMD_ZEROPOSTQ]  = cmdAbsEncAlarmZeroPostQuery;
+    
+    pAbsEncAlarmCmdFunc[ENCALARMCMD_RESPONSE]  = cmdAbsEncAlarmResponseSet;
+    pAbsEncAlarmCmdFunc[ENCALARMCMD_RESPONSEQ] = cmdAbsEncAlarmResponseQuery;
+}
+
+            
+/*********************************************************************************************
+函 数 名: cmdAbsEncAlarmCmdProc;
+实现功能: 无; 
+输入参数: 无;
+输出参数: 无;
+返 回 值: 无;
+说    明: 无;
+*********************************************************************************************/
+void cmdAbsEncAlarmCmdProc(CmdParseFrameStruct *pCmdStackFrame)
+{    
+    u8 dataLen = pCmdStackFrame->dataLen;
+    u8 *pData = pCmdStackFrame->payload;
+
+    
+    if ((pCmdStackFrame->subType < ENCALARMCMD_RESERVE) && (pAbsEncAlarmCmdFunc[pCmdStackFrame->subType] != NULL))
+    {    
+        pAbsEncAlarmCmdFunc[pCmdStackFrame->subType](dataLen, pData);
+    }
+}
+
+#if 0
+#endif
+
+/*********************************************************************************************
+函 数 名: cmdDistAlarmStateSet;
+实现功能: 无; 
+输入参数: 无;
+输出参数: 无;
+返 回 值: 无;
+说    明: 无;
+*********************************************************************************************/
+void cmdDistAlarmStateSet(u8 cmdDataLen, u8 *pCmdData)
+{
+    SensorStateEnum state;
+    u8 index;
+
+    //进行参数验证
+    if (PARA_VERIFY_NO_ERROR == pvrfDistAlarmStateVerify(cmdDataLen, pCmdData, (void *)&state, &index))
+    {
+        g_sensorAlarm.distAlarm[index].state = state;
+
+        servStimerAdd(&g_paraSaveTimer);
+    }
+}
+
+
+/*********************************************************************************************
+函 数 名: cmdDistAlarmStateQuery;
+实现功能: 无; 
+输入参数: 无;
+输出参数: 无;
+返 回 值: 无;
+说    明: 无;
+*********************************************************************************************/
+void cmdDistAlarmStateQuery(u8 cmdDataLen, u8 *pCmdData)
+{
+    u8 dataLen;
+    u8 *pData;
+    u8 data[6];
+    u8 i;
+    u8 index = *pCmdData;
+
+    
+    if (index < DIST_SENSOR_NUM)
+    {
+        dataLen = sizeof(g_sensorAlarm.distAlarm[index].state) + sizeof(index);
+    
+        pData = (u8 *)&g_sensorAlarm.distAlarm[index].state;
+        data[0] = index;
+        for (i = 0;i < sizeof(g_sensorAlarm.distAlarm[index].state);i++)
+        {
+            data[1 + i] = *pData++;
+        }
+        cmdFrameSend(CMD_DISTALARM, DISTALARMCMD_STATEQ, dataLen, data);
+    }
+}
+
+
+/*********************************************************************************************
+函 数 名: cmdDistAlarm1DistSet;
+实现功能: 无; 
+输入参数: 无;
+输出参数: 无;
+返 回 值: 无;
+说    明: 无;
+*********************************************************************************************/
+void cmdDistAlarm1DistSet(u8 cmdDataLen, u8 *pCmdData)
+{
+    u32 alarm1Dist;
+    u8  index;
+
+    //进行参数验证
+    if (PARA_VERIFY_NO_ERROR == pvrfDistAlarmDistVerify(cmdDataLen, pCmdData, (void *)&alarm1Dist, &index))
+    {
+        g_sensorAlarm.distAlarm[index].alarm1Dist = alarm1Dist;
+
+        servStimerAdd(&g_paraSaveTimer);
+    }
+}
+
+
+/*********************************************************************************************
+函 数 名: cmdDistAlarm1DistQuery;
+实现功能: 无; 
+输入参数: 无;
+输出参数: 无;
+返 回 值: 无;
+说    明: 无;
+*********************************************************************************************/
+void cmdDistAlarm1DistQuery(u8 cmdDataLen, u8 *pCmdData)
+{
+    u8 dataLen;
+    u8 *pData;
+    u8 data[6];
+    u8 i;
+    u8 index = *pCmdData;
+
+    
+    if (index < DIST_SENSOR_NUM)
+    {
+        dataLen = sizeof(g_sensorAlarm.distAlarm[index].alarm1Dist) + sizeof(index);
+    
+        pData = (u8 *)&g_sensorAlarm.distAlarm[index].alarm1Dist;
+        data[0] = index;
+        for (i = 0;i < sizeof(g_sensorAlarm.distAlarm[index].alarm1Dist);i++)
+        {
+            data[1 + i] = *pData++;
+        }
+        cmdFrameSend(CMD_DISTALARM, DISTALARMCMD_ALARM1DISTQ, dataLen, data);
+    }
+}
+
+
+/*********************************************************************************************
+函 数 名: cmdDistAlarm2DistSet;
+实现功能: 无; 
+输入参数: 无;
+输出参数: 无;
+返 回 值: 无;
+说    明: 无;
+*********************************************************************************************/
+void cmdDistAlarm2DistSet(u8 cmdDataLen, u8 *pCmdData)
+{
+    u32 alarm2Dist;
+    u8  index;
+
+    //进行参数验证
+    if (PARA_VERIFY_NO_ERROR == pvrfDistAlarmDistVerify(cmdDataLen, pCmdData, (void *)&alarm2Dist, &index))
+    {
+        g_sensorAlarm.distAlarm[index].alarm2Dist = alarm2Dist;
+
+        servStimerAdd(&g_paraSaveTimer);
+    }
+}
+
+
+/*********************************************************************************************
+函 数 名: cmdDistAlarm2DistQuery;
+实现功能: 无; 
+输入参数: 无;
+输出参数: 无;
+返 回 值: 无;
+说    明: 无;
+*********************************************************************************************/
+void cmdDistAlarm2DistQuery(u8 cmdDataLen, u8 *pCmdData)
+{
+    u8 dataLen;
+    u8 *pData;
+    u8 data[6];
+    u8 i;
+    u8 index = *pCmdData;
+
+    
+    if (index < DIST_SENSOR_NUM)
+    {
+        dataLen = sizeof(g_sensorAlarm.distAlarm[index].alarm2Dist) + sizeof(index);
+    
+        pData = (u8 *)&g_sensorAlarm.distAlarm[index].alarm2Dist;
+        data[0] = index;
+        for (i = 0;i < sizeof(g_sensorAlarm.distAlarm[index].alarm2Dist);i++)
+        {
+            data[1 + i] = *pData++;
+        }
+        cmdFrameSend(CMD_DISTALARM, DISTALARMCMD_ALARM2DISTQ, dataLen, data);
+    }
+}
+
+
+/*********************************************************************************************
+函 数 名: cmdDistAlarm3DistSet;
+实现功能: 无; 
+输入参数: 无;
+输出参数: 无;
+返 回 值: 无;
+说    明: 无;
+*********************************************************************************************/
+void cmdDistAlarm3DistSet(u8 cmdDataLen, u8 *pCmdData)
+{
+    u32 alarm3Dist;
+    u8  index;
+
+    //进行参数验证
+    if (PARA_VERIFY_NO_ERROR == pvrfDistAlarmDistVerify(cmdDataLen, pCmdData, (void *)&alarm3Dist, &index))
+    {
+        g_sensorAlarm.distAlarm[index].alarm3Dist = alarm3Dist;
+        
+        servStimerAdd(&g_paraSaveTimer);
+    }
+}
+
+
+/*********************************************************************************************
+函 数 名: cmdDistAlarm1DistQuery;
+实现功能: 无; 
+输入参数: 无;
+输出参数: 无;
+返 回 值: 无;
+说    明: 无;
+*********************************************************************************************/
+void cmdDistAlarm3DistQuery(u8 cmdDataLen, u8 *pCmdData)
+{
+    u8 dataLen;
+    u8 *pData;
+    u8 data[6];
+    u8 i;
+    u8 index = *pCmdData;
+
+    
+    if (index < DIST_SENSOR_NUM)
+    {
+        dataLen = sizeof(g_sensorAlarm.distAlarm[index].alarm3Dist) + sizeof(index);
+    
+        pData = (u8 *)&g_sensorAlarm.distAlarm[index].alarm3Dist;
+        data[0] = index;
+        for (i = 0;i < sizeof(g_sensorAlarm.distAlarm[index].alarm3Dist);i++)
+        {
+            data[1 + i] = *pData++;
+        }
+        cmdFrameSend(CMD_DISTALARM, DISTALARMCMD_ALARM3DISTQ, dataLen, data);
+    }
+}
+
+
+/*********************************************************************************************
+函 数 名: cmdDistAlarmCmdInit;
+实现功能: 无; 
+输入参数: 无;
+输出参数: 无;
+返 回 值: 无;
+说    明: 无;
+*********************************************************************************************/
+void cmdDistAlarmCmdInit(void)
+{
+    memset(pDistAlarmCmdFunc, 0, sizeof(pDistAlarmCmdFunc));
+
+    pDistAlarmCmdFunc[DISTALARMCMD_STATE]  = cmdDistAlarmStateSet;
+    pDistAlarmCmdFunc[DISTALARMCMD_STATEQ] = cmdDistAlarmStateQuery;
+    
+    pDistAlarmCmdFunc[DISTALARMCMD_ALARM1DIST]  = cmdDistAlarm1DistSet;
+    pDistAlarmCmdFunc[DISTALARMCMD_ALARM1DISTQ] = cmdDistAlarm1DistQuery;
+    pDistAlarmCmdFunc[DISTALARMCMD_ALARM2DIST]  = cmdDistAlarm2DistSet;
+    pDistAlarmCmdFunc[DISTALARMCMD_ALARM2DISTQ] = cmdDistAlarm2DistQuery;
+    pDistAlarmCmdFunc[DISTALARMCMD_ALARM3DIST]  = cmdDistAlarm3DistSet;
+    pDistAlarmCmdFunc[DISTALARMCMD_ALARM3DISTQ] = cmdDistAlarm3DistQuery;
+}
+
+            
+/*********************************************************************************************
+函 数 名: cmdDistAlarmCmdProc;
+实现功能: 无; 
+输入参数: 无;
+输出参数: 无;
+返 回 值: 无;
+说    明: 无;
+*********************************************************************************************/
+void cmdDistAlarmCmdProc(CmdParseFrameStruct *pCmdStackFrame)
+{    
+    u8 dataLen = pCmdStackFrame->dataLen;
+    u8 *pData = pCmdStackFrame->payload;
+
+    
+    if ((pCmdStackFrame->subType < DISTALARMCMD_RESERVE) && (pDistAlarmCmdFunc[pCmdStackFrame->subType] != NULL))
+    {    
+        pDistAlarmCmdFunc[pCmdStackFrame->subType](dataLen, pData);
+    }
+}
+
+#if 0
+#endif
+
+/*********************************************************************************************
+函 数 名: cmdPdmSampleStateSet;
+实现功能: 无; 
+输入参数: 无;
+输出参数: 无;
+返 回 值: 无;
+说     明: 无;
+*********************************************************************************************/
+void cmdPdmSampleStateSet(u8 cmdDataLen, u8 *pCmdData)
+{
+    SensorStateEnum state;
+    u8   i;
+    bool bConfig[CH_TOTAL] = {0};
+    u8   chanNum = *pCmdData++;
+
+    
+    if (chanNum <= CH_MAX)
+    {
+        bConfig[chanNum] = true;
+    }
+    else
+    {
+        for (i = 0;i < CH_TOTAL;i++)
+        {
+            if ((CH_ALL == chanNum) ||
+                (chanNum == g_systemInfo.group[i][0]) ||
+                (chanNum == g_systemInfo.group[i][1]))
+            {
+                bConfig[i] = true;
+            }
+        }
+    }
+    cmdDataLen -= 1;
+
+    
+    //进行参数验证
+    if (PARA_VERIFY_NO_ERROR == pvrfPdmSampleStateVerify(cmdDataLen, pCmdData, (void *)&state))
+    {
+        for (i = 0;i < CH_TOTAL;i++)
+        {
+            if (bConfig[i])
+            {
+                g_systemState.pdmInfo[i].sampleState = state;
+        
+                g_chanCfgBmp[i].bPdmSample = true;
+                g_bCmdPostSemToFunc = true;
+            }
+        }
+    }
+}
+
+
+/*********************************************************************************************
+函 数 名: cmdPdmSampleStateQuery;
+实现功能: 无; 
+输入参数: 无;
+输出参数: 无;
+返 回 值: 无;
+说     明: 无;
+*********************************************************************************************/
+void cmdPdmSampleStateQuery(u8 cmdDataLen, u8 *pCmdData)
+{
+    u8 dataLen;
+    u8 *pData;
+    u8 data[6];
+    u8 i, j;
+    u8 chanNum = *pCmdData++;
+
+    
+    dataLen = sizeof(g_systemState.pdmInfo[CH1].sampleState) + sizeof(chanNum);
+    if (chanNum <= CH_MAX)
+    {
+        pData = (u8 *)&g_systemState.pdmInfo[chanNum].sampleState;
+        data[0] = chanNum;
+        for (i = 0;i < sizeof(g_systemState.pdmInfo[chanNum].sampleState);i++)
+        {
+            data[1 + i] = *pData++;
+        }
+        cmdFrameSend(CMD_PDM, PDMCMD_SAMPLESTATEQ, dataLen, data);
+    }
+    else
+    {
+        for (i = 0;i < CH_TOTAL;i++)
+        {
+            if ((CH_ALL == chanNum) ||
+                (chanNum == g_systemInfo.group[i][0]) ||
+                (chanNum == g_systemInfo.group[i][1]))
+            {
+                pData = (u8 *)&g_systemState.pdmInfo[i].sampleState;
+                data[0] = i;
+                for (j = 0;j < sizeof(g_systemState.pdmInfo[i].sampleState);j++)
+                {
+                    data[1 + j] = *pData++;
+                }
+                cmdFrameSend(CMD_PDM, PDMCMD_SAMPLESTATEQ, dataLen, data);
+            }
+        }
+    }
+}
+
+
+/*********************************************************************************************
+函 数 名: cmdPdmEncDivSet;
+实现功能: 无; 
+输入参数: 无;
+输出参数: 无;
+返 回 值: 无;
+说     明: 无;
+*********************************************************************************************/
+void cmdPdmEncDivSet(u8 cmdDataLen, u8 *pCmdData)
+{
+    u8   encDiv;
+    u8   i;
+    bool bConfig[CH_TOTAL] = {0};
+    u8   chanNum = *pCmdData++;
+
+    
+    if (chanNum <= CH_MAX)
+    {
+        bConfig[chanNum] = true;
+    }
+    else
+    {
+        for (i = 0;i < CH_TOTAL;i++)
+        {
+            if ((CH_ALL == chanNum) ||
+                (chanNum == g_systemInfo.group[i][0]) ||
+                (chanNum == g_systemInfo.group[i][1]))
+            {
+                bConfig[i] = true;
+            }
+        }
+    }
+    cmdDataLen -= 1;
+
+    
+    //进行参数验证
+    //if (PARA_VERIFY_NO_ERROR == pvrfDriverStateVerify(cmdDataLen, pCmdData, (void *)&state))
+    encDiv = *pCmdData;
+    {
+        for (i = 0;i < CH_TOTAL;i++)
+        {
+            if (bConfig[i])
+            {
+                g_systemState.pdmInfo[i].encDiv = encDiv;
+            }
+        }
+    }
+}
+
+
+/*********************************************************************************************
+函 数 名: cmdPdmEncDivQuery;
+实现功能: 无; 
+输入参数: 无;
+输出参数: 无;
+返 回 值: 无;
+说     明: 无;
+*********************************************************************************************/
+void cmdPdmEncDivQuery(u8 cmdDataLen, u8 *pCmdData)
+{
+    u8 dataLen;
+    u8 *pData;
+    u8 data[6];
+    u8 i, j;
+    u8 chanNum = *pCmdData++;
+
+    
+    dataLen = sizeof(g_systemState.pdmInfo[CH1].encDiv) + sizeof(chanNum);
+    if (chanNum <= CH_MAX)
+    {
+        pData = (u8 *)&g_systemState.pdmInfo[chanNum].encDiv;
+        data[0] = chanNum;
+        for (i = 0;i < sizeof(g_systemState.pdmInfo[chanNum].encDiv);i++)
+        {
+            data[1 + i] = *pData++;
+        }
+        cmdFrameSend(CMD_PDM, PDMCMD_ENCDIVQ, dataLen, data);
+    }
+    else
+    {
+        for (i = 0;i < CH_TOTAL;i++)
+        {
+            if ((CH_ALL == chanNum) ||
+                (chanNum == g_systemInfo.group[i][0]) ||
+                (chanNum == g_systemInfo.group[i][1]))
+            {
+                pData = (u8 *)&g_systemState.pdmInfo[i].encDiv;
+                data[0] = i;
+                for (j = 0;j < sizeof(g_systemState.pdmInfo[i].encDiv);j++)
+                {
+                    data[1 + j] = *pData++;
+                }
+                cmdFrameSend(CMD_PDM, PDMCMD_ENCDIVQ, dataLen, data);
+            }
+        }
+    }
+}
+
+
+/*********************************************************************************************
+函 数 名: cmdPdmMstepCountQuery;
+实现功能: 无; 
+输入参数: 无;
+输出参数: 无;
+返 回 值: 无;
+说     明: 无;
+*********************************************************************************************/
+void cmdPdmMstepCountQuery(u8 cmdDataLen, u8 *pCmdData)
+{
+    u8 dataLen;
+    u8 *pData;
+    u8 data[6];
+    u8 i, j;
+    u8 chanNum = *pCmdData++;
+
+    
+    dataLen = sizeof(g_systemState.pdmInfo[CH1].mstepCount) + sizeof(chanNum);
+    if (chanNum <= CH_MAX)
+    {
+        g_systemState.pdmInfo[chanNum].mstepCount = servFpgaPdmMstepCountRead((SampleChanEnum)chanNum);
+        
+        pData = (u8 *)&g_systemState.pdmInfo[chanNum].mstepCount;
+        data[0] = chanNum;
+        for (i = 0;i < sizeof(g_systemState.pdmInfo[chanNum].mstepCount);i++)
+        {
+            data[1 + i] = *pData++;
+        }
+        cmdFrameSend(CMD_PDM, PDMCMD_MSTEPCOUNTQ, dataLen, data);
+    }
+    else
+    {
+        for (i = 0;i < CH_TOTAL;i++)
+        {
+            if ((CH_ALL == chanNum) ||
+                (chanNum == g_systemInfo.group[i][0]) ||
+                (chanNum == g_systemInfo.group[i][1]))
+            {
+                g_systemState.pdmInfo[i].mstepCount = servFpgaPdmMstepCountRead((SampleChanEnum)i);
+                
+                pData = (u8 *)&g_systemState.pdmInfo[i].mstepCount;
+                data[0] = i;
+                for (j = 0;j < sizeof(g_systemState.pdmInfo[i].mstepCount);j++)
+                {
+                    data[1 + j] = *pData++;
+                }
+                cmdFrameSend(CMD_PDM, PDMCMD_MSTEPCOUNTQ, dataLen, data);
+            }
+        }
+    }
+}
+
+
+/*********************************************************************************************
+函 数 名: cmdPdmMstepDataQuery;
+实现功能: 无; 
+输入参数: 无;
+输出参数: 无;
+返 回 值: 无;
+说     明: 无;
+*********************************************************************************************/
+void cmdPdmMstepDataQuery(u8 cmdDataLen, u8 *pCmdData)
+{
+    u8   i;
+    bool bConfig[CH_TOTAL] = {0};
+    u8   chanNum = *pCmdData++;
+    u16  readOffset;
+    u16  readLen;
+
+    
+    if (chanNum <= CH_MAX)
+    {
+        bConfig[chanNum] = true;
+    }
+    else
+    {
+        for (i = 0;i < CH_TOTAL;i++)
+        {
+            if ((CH_ALL == chanNum) ||
+                (chanNum == g_systemInfo.group[i][0]) ||
+                (chanNum == g_systemInfo.group[i][1]))
+            {
+                bConfig[i] = true;
+            }
+        }
+    }
+    cmdDataLen -= 1;
+
+    
+    //进行参数验证
+    if (PARA_VERIFY_NO_ERROR == pvrfPdmMstepDataVerify(cmdDataLen, pCmdData, &readOffset, &readLen))
+    {
+        for (i = 0;i < CH_TOTAL;i++)
+        {
+            if (bConfig[i])
+            {
+                g_systemState.pdmInfo[i].readOffset = readOffset;
+                g_systemState.pdmInfo[i].readLen    = readLen;
+
+                memset(g_systemState.pdmInfo[i].mstepData, 0, PDM_MSTEP_BUFFER_SIZE);
+                
+                g_chanCfgBmp[i].bPdmDataRead = true;
+                g_bCmdPostSemToFunc = true;
+            }
+        }
+    }
+}
+
+
+/*********************************************************************************************
+函 数 名: cmdPdmCmdInit;
+实现功能: 无; 
+输入参数: 无;
+输出参数: 无;
+返 回 值: 无;
+说    明: 无;
+*********************************************************************************************/
+void cmdPdmCmdInit(void)
+{
+    memset(pPdmCmdFunc, 0, sizeof(pPdmCmdFunc));
+
+    pPdmCmdFunc[PDMCMD_SAMPLESTATE]  = cmdPdmSampleStateSet;
+    pPdmCmdFunc[PDMCMD_SAMPLESTATEQ] = cmdPdmSampleStateQuery;
+    
+    pPdmCmdFunc[PDMCMD_ENCDIV]  = cmdPdmEncDivSet;
+    pPdmCmdFunc[PDMCMD_ENCDIVQ] = cmdPdmEncDivQuery;
+    
+    pPdmCmdFunc[PDMCMD_MSTEPCOUNTQ] = cmdPdmMstepCountQuery;
+    pPdmCmdFunc[PDMCMD_MSTEPDATAQ]  = cmdPdmMstepDataQuery;
+}
+
+            
+/*********************************************************************************************
+函 数 名: cmdPdmCmdProc;
+实现功能: 无; 
+输入参数: 无;
+输出参数: 无;
+返 回 值: 无;
+说    明: 无;
+*********************************************************************************************/
+void cmdPdmCmdProc(CmdParseFrameStruct *pCmdStackFrame)
+{    
+    u8 dataLen = pCmdStackFrame->dataLen;
+    u8 *pData = pCmdStackFrame->payload;
+
+    
+    if ((pCmdStackFrame->subType < PDMCMD_RESERVE) && (pPdmCmdFunc[pCmdStackFrame->subType] != NULL))
+    {    
+        pPdmCmdFunc[pCmdStackFrame->subType](dataLen, pData);
+    }
+}
+#endif    //#if GELGOOG_SINANJU
 
 
 

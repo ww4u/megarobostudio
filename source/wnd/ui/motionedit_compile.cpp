@@ -27,7 +27,6 @@ int motionEdit::compileTrace()
 int motionEdit::preCompileTrace()
 {
     delete_all( mJointsTpvGroup );
-//    mJointsTpvGroup.clear();
 
     mTracePlan.clear();
     mJointsPlan.clear();

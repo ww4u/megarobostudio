@@ -16,25 +16,24 @@ DeviceTree MainWindow::sceneRobotTree(
 
     DeviceTree devTree;
     for( int i = 0; i < pathList.size(); i++ )
-    {logDbg()<<pathList[i]<<fileList[i];
+    {
         VRoboList roboList = sceneRobotList( pathList[i],
                                              fileList[i] );
-        logDbg()<<roboList.size();
         //! has robot
         if ( roboList.size() > 0 )
         {
             VRoboList *pList = new VRoboList();
             Q_ASSERT( NULL != pList );
-logDbg();
+
             *pList = roboList;
-logDbg();
+
             MegaDevice::FILEBus *pBus = new MegaDevice::FILEBus();
-            Q_ASSERT( NULL != pBus );logDbg();
+            Q_ASSERT( NULL != pBus );
             pBus->setName( fileList[i] );
-logDbg();
+
             pList->attachBus( pBus );
-logDbg();
-            devTree.append( pList );logDbg();
+
+            devTree.append( pList );
         }
         else
         {
@@ -63,18 +62,18 @@ VRoboList MainWindow::sceneRobotList(
     int ret = scene.load( fullPath, refPath );
     if ( ret != 0 )
     { return complexRoboList; }
-logDbg();
+
     //! get robo list
     QList<VRobot *> roboList = scene.complexRobotList();
     foreach( VRobot *pRobo, roboList )
-    {logDbg();
+    {
         Q_ASSERT( NULL != pRobo);
 
         //! detach from the widget
         pRobo->setGc( false );
         complexRoboList.append( pRobo );
     }
-logDbg();
+
     return complexRoboList;
 }
 
@@ -91,7 +90,7 @@ void MainWindow::updateSceneRobot()
     Q_ASSERT( NULL != mMcModel.m_pInstMgr );
     mMcModel.m_pInstMgr->clearFileDeviceTree();
     mMcModel.m_pInstMgr->appendFileDeviceTree( devTree );
-logDbg()<<devTree.size();
+
     m_pDeviceMgr->updateUi();
 }
 

@@ -76,7 +76,6 @@ int robotIgusDelta::serialOutZero( QXmlStreamWriter &writer)
     writer.writeTextElement( "angle", QString::number(mZeroAngle) );
 
     writer.writeTextElement( "limit_opt", QString::number(mLimitOpt ) );
-//    writer.writeTextElement( "speed", QString::number(mZeroSpeed) );
 
     return 0;
 }
@@ -91,34 +90,10 @@ int robotIgusDelta::serialInZero( QXmlStreamReader &reader )
         { mZeroAngle = reader.readElementText().toDouble(); }
         else if ( reader.name() == "limit_opt" )
         { mLimitOpt = reader.readElementText().toInt(); }
-//        else if ( reader.name() == "speed" )
-//        { mZeroSpeed = reader.readElementText().toDouble(); }
+
         else
         { reader.skipCurrentElement(); }
 
-//        if ( reader.name() == "time" )
-//        {
-//            str = reader.readElementText();
-//            mZeroTime = str.toDouble();
-//            logDbg()<<str;
-//        }
-//        else if ( reader.name() == "angle" )
-//        {
-//            str = reader.readElementText();
-//            mZeroAngle = str.toDouble();
-//            logDbg()<<str;
-
-////            mZeroAngle = reader.readElementText().toDouble();
-//        }
-//        else if ( reader.name() == "speed" )
-//        {
-//            str = reader.readElementText();
-//            mZeroSpeed = str.toDouble();
-//            logDbg()<<str;
-////            mZeroSpeed = reader.readElementText().toDouble();
-//        }
-//        else
-//        { reader.skipCurrentElement(); }
     }
 
     return 0;
@@ -128,8 +103,7 @@ int robotIgusDelta::serialOutInit( QXmlStreamWriter &writer)
 {
     writer.writeTextElement( "t", QString::number(mInitT) );
     writer.writeTextElement( "leg", QString::number(mInitLeg) );
-//    writer.writeTextElement( "r", QString::number(mInitR) );
-//    writer.writeTextElement( "y", QString::number(mInitY) );
+
     writer.writeTextElement( "h", QString::number(mInitH) );
 
 
@@ -143,10 +117,7 @@ int robotIgusDelta::serialInInit( QXmlStreamReader &reader )
         { mInitT = reader.readElementText().toDouble(); }
         else if ( reader.name() == "leg" )
         { mInitLeg = reader.readElementText().toDouble(); }
-//        else if ( reader.name() == "r" )
-//        { mInitR = reader.readElementText().toDouble(); }
-//        else if ( reader.name() == "y" )
-//        { mInitY = reader.readElementText().toDouble(); }
+
         else if ( reader.name() == "h" )
         { mInitH = reader.readElementText().toDouble(); }
         else

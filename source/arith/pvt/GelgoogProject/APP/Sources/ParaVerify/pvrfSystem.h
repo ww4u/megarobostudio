@@ -41,7 +41,14 @@ Copyright (C) 2016，北京镁伽机器人科技有限公司
 /******************************************函数声明*******************************************/
 u8 pvrfSystemModeVerify(u8 dataLen, u8 *pData, void *pParaValue);
 u8 pvrfSystemPowerOnVerify(u8 dataLen, u8 *pData, void *pParaValue);
-u8 pvrfSystemReptSwitchVerify(u8 dataLen, u8 *pData, void *pParaValue);
+u8 pvrfSystemDioRefReadVerify(u8 dataLen, u8 *pData, void *pParaValue);
+u8 pvrfSystemReverseMotionVerify(u8 dataLen, u8 *pData, void *pParaValue);
+
+#if GELGOOG_SINANJU
+u8 pvrfSystemFanParaVerify(u8 dataLen, u8 *pData, void *pParaValue1, void *pParaValue2);
+u8 pvrfSystemArmLedParaVerify(u8 dataLen, u8 *pData, void *pParaValue1, void *pParaValue2, u8 *pIndex);
+u8 pvrfSystemArmLedFreqVerify(u8 dataLen, u8 *pData, SensorStateEnum *pLedState, u16 *pLedFreq);
+#endif
 
 
 

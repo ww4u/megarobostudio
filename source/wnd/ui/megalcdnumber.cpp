@@ -1,4 +1,5 @@
 #include "megalcdnumber.h"
+#include <float.h>
 
 MegaLcdnumber::MegaLcdnumber(QWidget *parent) :
     QLCDNumber(parent)
@@ -13,14 +14,14 @@ MegaLcdnumber::~MegaLcdnumber()
 void MegaLcdnumber::display( float v )
 {
     if ( checkOverflow( v ) )
-    { QLCDNumber::display( "9.9E37" );}
+    { QLCDNumber::display( FLT_MAX );}
     else
     { QLCDNumber::display( v ); }
 }
 void MegaLcdnumber::display( double v )
 {
     if ( checkOverflow( v ) )
-    { QLCDNumber::display( "9.9E37" );}
+    { QLCDNumber::display( FLT_MAX );}
     else
     { QLCDNumber::display( v ); }
 }

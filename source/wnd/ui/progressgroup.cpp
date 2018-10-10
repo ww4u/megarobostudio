@@ -10,6 +10,8 @@ ProgressGroup::ProgressGroup(QWidget *parent) :
 
     m_pProgList = new QList<ProgressElement*>;
     Q_ASSERT( NULL != m_pProgList );
+
+    setWindowFlag( Qt::WindowMaximizeButtonHint, false );
 }
 
 ProgressGroup::~ProgressGroup()

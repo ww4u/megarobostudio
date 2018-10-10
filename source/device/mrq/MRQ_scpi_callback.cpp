@@ -18,7 +18,6 @@
 
 static scpi_result_t _scpi_testAdd( scpi_t * context )
 {
-    // read
     DEF_LOCAL_VAR();
 
     int val1, val2, ret;
@@ -37,7 +36,6 @@ static scpi_result_t _scpi_testAdd( scpi_t * context )
 
 static scpi_result_t _scpi_idn( scpi_t * context )
 {
-    // read
     DEF_LOCAL_VAR();
 
     QString str;
@@ -142,7 +140,6 @@ static scpi_result_t _scpi_qVersion( scpi_t * context )
 //! ax,page
 static scpi_result_t _scpi_run( scpi_t * context )
 {
-    // read
     DEF_LOCAL_VAR();
 
     int ax, page;
@@ -220,7 +217,6 @@ static scpi_result_t _scpi_sync( scpi_t * context )
 //! ax, page, t, angle, endV
 static scpi_result_t _scpi_rotate( scpi_t * context )
 {
-    // read
     DEF_LOCAL_VAR();
 
     int ax, page;
@@ -258,7 +254,6 @@ static scpi_result_t _scpi_rotate( scpi_t * context )
 //! ax, page, t, angle, speed
 static scpi_result_t _scpi_preRotate( scpi_t * context )
 {
-    // read
     DEF_LOCAL_VAR();
 
     int ax, page;
@@ -293,7 +288,6 @@ static scpi_result_t _scpi_preRotate( scpi_t * context )
 //! ax, page, t, angle, tj, j
 static scpi_result_t _scpi_movej( scpi_t * context )
 {
-    // read
     DEF_LOCAL_VAR();
 
     int ax, page;
@@ -324,7 +318,6 @@ static scpi_result_t _scpi_movej( scpi_t * context )
 //! ax, page, t, angle, tj, j
 static scpi_result_t _scpi_preMovej( scpi_t * context )
 {
-    // read
     DEF_LOCAL_VAR();
 
     int ax, page;
@@ -355,7 +348,6 @@ static scpi_result_t _scpi_preMovej( scpi_t * context )
 //! CALL ax, page, cycle, motionMode
 static scpi_result_t _scpi_call( _scpi_t * context )
 {
-    // read
     DEF_LOCAL_VAR();
 
     int ax, page, cycle, motionMode;
@@ -377,7 +369,6 @@ static scpi_result_t _scpi_call( _scpi_t * context )
         { break; }
     }while( 0 );
 
-
     DEF_MRQ();
 
     CHECK_LINK( ax, page );
@@ -390,7 +381,6 @@ static scpi_result_t _scpi_call( _scpi_t * context )
 //! ax, page, t, angle, end speed
 static scpi_result_t _scpi_lightZero( _scpi_t * context )
 {
-    // read
     DEF_LOCAL_VAR();
 
     int ax, page;
@@ -460,8 +450,7 @@ static scpi_result_t _scpi_task( _scpi_t * context )
 //! TPV ax,page,e:/ddd.csv
 //! ax,page,xxx.pvt
 static scpi_result_t _scpi_program( scpi_t * context )
-{logDbg();
-    // read
+{
     DEF_LOCAL_VAR();
 
     int ax, page;
@@ -535,7 +524,6 @@ static scpi_result_t _scpi_program( scpi_t * context )
     }
     else if ( col == 4 )
     {
-
         payloadLen = 0;
         for( int i = 0; i < dotSize; i++ )
         {
@@ -613,7 +601,6 @@ static scpi_result_t _scpi_fsmState( scpi_t * context )
 //! XXX ax
 static scpi_result_t _scpi_incangle( scpi_t * context )
 {
-    // read
     DEF_LOCAL_VAR();
 
     int ax;
@@ -637,7 +624,6 @@ static scpi_result_t _scpi_incangle( scpi_t * context )
 //! ax
 static scpi_result_t _scpi_absangle( scpi_t * context )
 {
-    // read
     DEF_LOCAL_VAR();
 
     int ax;
@@ -661,7 +647,6 @@ static scpi_result_t _scpi_absangle( scpi_t * context )
 //! ax
 static scpi_result_t _scpi_distance( scpi_t * context )
 {
-    // read
     DEF_LOCAL_VAR();
 
     int ax;
@@ -685,7 +670,6 @@ static scpi_result_t _scpi_distance( scpi_t * context )
 //! duty
 static scpi_result_t _scpi_fanduty( scpi_t * context )
 {
-    // read
     DEF_LOCAL_VAR();
 
     int val1;
@@ -705,7 +689,6 @@ static scpi_result_t _scpi_fanduty( scpi_t * context )
 //! i, duty, freq
 static scpi_result_t _scpi_fan( scpi_t * context )
 {
-    // read
     DEF_LOCAL_VAR();
 
     int val1, val2, val3;
@@ -731,7 +714,6 @@ static scpi_result_t _scpi_fan( scpi_t * context )
 //! i, duty, freq
 static scpi_result_t _scpi_led( scpi_t * context )
 {
-    // read
     DEF_LOCAL_VAR();
 
     int val1, val2, val3;
@@ -757,7 +739,6 @@ static scpi_result_t _scpi_led( scpi_t * context )
 //! ax,duty
 static scpi_result_t _scpi_ledduty( scpi_t * context )
 {
-    // read
     DEF_LOCAL_VAR();
 
     int val1, val2;
@@ -779,7 +760,6 @@ static scpi_result_t _scpi_ledduty( scpi_t * context )
 
 static scpi_result_t _scpi_encoderZeroValid( scpi_t * context )
 {
-    // read
     DEF_LOCAL_VAR();
 
     DEF_MRQ();
@@ -795,7 +775,6 @@ static scpi_result_t _scpi_encoderZeroValid( scpi_t * context )
 //! valid, zeroAngle
 static scpi_result_t _scpi_encoderZero( scpi_t * context )
 {
-    // read
     DEF_LOCAL_VAR();
 
     int val1;
@@ -820,9 +799,7 @@ static scpi_result_t _scpi_encoderZero( scpi_t * context )
 
 static scpi_result_t _scpi_busFrames( scpi_t * context )
 {
-    // read
     DEF_LOCAL_VAR();
-
 
     DEF_MRQ();
 
@@ -836,7 +813,6 @@ static scpi_result_t _scpi_busFrames( scpi_t * context )
 //! id,val
 static scpi_result_t _scpi_ioOut( scpi_t * context )
 {
-    // read
     DEF_LOCAL_VAR();
 
     int vals[2];
@@ -920,9 +896,6 @@ static scpi_result_t _scpi_arb_write( scpi_t * context )
     if ( SCPI_ParamArbitraryBlock(context, &pLocalStr, &strLen, true) != true )
     { scpi_ret( SCPI_RES_ERR ); }
 
-    QByteArray stream( pLocalStr, strLen );
-    logDbg()<<stream;
-
     return SCPI_RES_OK;
 }
 
@@ -951,7 +924,6 @@ static scpi_result_t _scpi_arb_read( scpi_t * context )
 
 static scpi_result_t __scpi_getSENSORUART_DATA( scpi_t * context )
 {
-    // read
     DEF_LOCAL_VAR();
 
     MRQ_SENSORUART_BAUD val0;

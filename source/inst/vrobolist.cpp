@@ -7,7 +7,6 @@ VRoboList::VRoboList()
 
 VRoboList::~VRoboList()
 {
-//    qDeleteAll( *this );
 }
 
 void VRoboList::attachBus( MegaDevice::IBus *pBus )

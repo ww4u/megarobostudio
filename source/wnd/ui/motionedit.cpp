@@ -16,16 +16,9 @@ motionEdit::motionEdit(QWidget *parent) : tableEdit(parent),
 
     mFilePattern<<motion_desc<<motion_ext;
 
-//    m_pRoboAxes = NULL;
     m_pPlot = NULL;
 
-//    m_pProgress = NULL;
     m_pActionDelegate = NULL;
-
-    //! delegate
-//    m_pActionDelegate = new comboxDelegate();
-//    Q_ASSERT( NULL != m_pActionDelegate );
-//    ui->tableView->setItemDelegateForColumn( 1, m_pActionDelegate );
 
     //! debug
     setAgent( "test_2" );
@@ -42,8 +35,6 @@ motionEdit::~motionEdit()
 {
     delete ui;
 
-//    delete m_pActionDelegate;
-
     delete_all( mJointsTpvGroup );
 }
 
@@ -55,7 +46,6 @@ void motionEdit::setModelObj( mcModelObj *pObj )
 
     m_pMotionGroup = (MegaTableModel*)(pObj->getObj());
     Q_ASSERT( NULL != m_pMotionGroup );
-    logDbg()<<m_pMotionGroup->getName();
     ui->tableView->setModel( m_pMotionGroup );
 
     //! update ui
@@ -103,13 +93,10 @@ void motionEdit::onNetEvent(const QString &name,
 {
     if ( msg.getMsg() == e_robot_status )
     {
-        logDbg()<<axes;
         int stat;
         stat = msg.at(1).toInt();
 
         onMotionStatus( -1, (MRQ_MOTION_STATE)stat );
-
-        logDbg();
     }
 
     else
@@ -150,7 +137,6 @@ void motionEdit::onMotionStatus( int axes,
     if ( MegaDevice::mrq_state_idle == cvtStat )
     {
         setLink( false );
-        logDbg()<<"dis link";
     }
 
     if ( MegaDevice::mrq_state_idle == cvtStat
@@ -200,8 +186,6 @@ void motionEdit::onRequest( RpcRequest &req )
     { return; }
 
     //! get value
-//    logDbg()<<req.popFloat()<<req.popFloat()<<req.popFloat();
-
     int curRow;
 
     //! current

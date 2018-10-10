@@ -26,7 +26,6 @@ void mrvView::setModel( MegaDevice::deviceMRV *pModel )
 
     Q_ASSERT( NULL != m_pMRV );
     Q_ASSERT( NULL != m_pProxy );
-
 }
 
 MegaDevice::deviceMRV *mrvView::getModel()

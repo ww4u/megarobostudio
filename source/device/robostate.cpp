@@ -56,7 +56,6 @@ void RoboFsm::init( RoboStateUnit *pState )
     //! \init
     RoboMsg msg;
     msg.setMsg( e_robot_init );
-//    m_pNowState->onEnter( msg );
 }
 
 void RoboFsm::proc( int msg, RoboMsg &detail )
@@ -207,8 +206,7 @@ RoboStateUnit::~RoboStateUnit()
 
 void RoboStateUnit::proc( int msg, RoboMsg &detail )
 {}
-//void RoboStateUnit::proc( int msg, int para1, int p2 )
-//{}
+
 void RoboStateUnit::toState( RoboStateUnit *pState, RoboMsg &detail )
 {
     Q_ASSERT( NULL != pState );

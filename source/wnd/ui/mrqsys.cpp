@@ -63,7 +63,6 @@ void mrqSys::setupUi()
 void mrqSys::desetupUi()
 {}
 
-
 int mrqSys::apply()
 {
     MegaDevice::deviceMRQ *pDevice;
@@ -80,11 +79,7 @@ int mrqSys::apply()
                     );
     }
 
-    //! name
-//    pDevice->setName( ui->edtAlias->text() );
-
     return 0;
-
 }
 
 int mrqSys::updateUi()
@@ -98,13 +93,6 @@ int mrqSys::updateUi()
         ui->spinHighT->setValue( ( m_pMrqModel->mOTP_THRESHOLD)*otp_temprature_unit );
         ui->cmbTResp->setCurrentIndex( m_pMrqModel->mOTP_RESPONSE );
     }
-
-//    //! driver
-//    if ( m_pMrqModel->driverId() == VRobot::motor_driver_820 )
-//    {
-//        ui->spin820Current->setValue( m_pMrqModel->mNEWDRIVER_CURRENT * driver_current_unit );
-//        ui->cmb820MicroStep->setValue( m_pMrqModel->mNEWDRIVER_MICROSTEPS );
-//    }
 
     //! name
     ui->edtAlias->setText( m_pMrqModel->getName() );
@@ -121,30 +109,9 @@ void mrqSys::adaptUi()
     else
     { ui->groupBox_2->setVisible( false ); }
 
-//    if ( m_pMrqModel->driverId() == VRobot::motor_driver_820 )
-//    {
-//        ui->gp820->setVisible( true );
-//    }
-//    else
     {
         ui->gp820->setVisible( false );
     }
-
-//    if ( ui->cmb820MicroStep->count() > 0 )
-//    {}
-//    else
-//    {
-//        //! microstep
-//        //! fill the micro step
-//        QStringList microList;
-//        int base;
-
-//        m_pMrqModel->microStepAttr( microList, base );
-//        for ( int i = base; i < microList.size(); i++ )
-//        {
-//            ui->cmb820MicroStep->addItem( microList.at(i), i );
-//        }
-//    }
 }
 
 void mrqSys::on_edtAlias_textEdited(const QString &arg1)

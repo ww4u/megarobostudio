@@ -31,7 +31,6 @@ public:
     QComboBox *getCombPage();
 
 private slots:
-    void on_cmbDeviceName_currentIndexChanged(const QString &arg1);
 
 private:
     Ui::axesConnection *ui;

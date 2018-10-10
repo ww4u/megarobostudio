@@ -47,6 +47,7 @@ typedef enum
 #define    APP_TASK_PRIO_FUNCTION         5u
 #define    APP_TASK_PRIO_PERIODIC         6u
 #define    APP_TASK_PRIO_EVENT_MANAGE     4u
+#define    APP_TASK_PRIO_PARA_SAVE        8u
 
 #define    APP_TASK_STK_SIZE_SYSTEM_INIT    256u
 #define    APP_TASK_STK_SIZE_CMD_PARSE      512u
@@ -54,6 +55,7 @@ typedef enum
 #define    APP_TASK_STK_SIZE_FUNCTION       512u
 #define    APP_TASK_STK_SIZE_PERIODIC       512u
 #define    APP_TASK_STK_SIZE_EVENT_MANAGE   512u
+#define    APP_TASK_STK_SIZE_PARA_SAVE      256u
 
 
 
@@ -66,6 +68,7 @@ void SystemParaReset(void);
 void SystemOSCreate(void * pHCLKFrequency);
 void sysTaskCreate(SystemTaskEnum sysTask);
 void sysTaskDelete(SystemTaskEnum sysTask);
+void sysTaskClear(SystemTaskEnum sysTask);
 
 
 

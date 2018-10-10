@@ -6,7 +6,6 @@ namespace MegaDevice {
 //! msg patterns
 static msg_type _msg_patterns[] =
 {
-    //{ e_robot_timeout, {TPV_REGEION_TYPE_ID, QMetaType::Int} },
     { e_robot_timeout, {QMetaType::Int, QMetaType::Int} },
 
     { mrv_msg_idle, {TPV_REGEION_TYPE_ID, QMetaType::Int} },
@@ -60,8 +59,8 @@ void deviceMRV::setStatus( int stat, const tpvRegion &region, frameData &data  )
 {
     int ch = region.axes();
     MRV::setStatus( stat, region, data );
-//logDbg()<<ch<<stat;
-sysLog( __FUNCTION__, QString::number( __LINE__), QString::number( ch ), QString::number( stat ) );
+
+    //sysLog( __FUNCTION__, QString::number( __LINE__), QString::number( ch ), QString::number( stat ) );
     if ( stat == MRV_MOTION_STATE_1_IDLE )
     {
         lpc( ch )->postMsg( (eRoboMsg)mrv_msg_idle, region, data.timeStamp() ) ;
@@ -120,14 +119,11 @@ int deviceMRV::switchStop( int ax )
 
 void deviceMRV::preSet( int ax )
 {
-//    for( int i = 0; i < axes(); i++ )
-    {
-        setMOTION_SWITCH( ax, MRV_MOTION_SWITCH_STOP, MRV_MOTION_SWITCH_1_MAIN );
-        setMOTION_SWITCH( ax, MRV_MOTION_SWITCH_RESET, MRV_MOTION_SWITCH_1_MAIN );
-        setPVT_RESET( ax );
+    setMOTION_SWITCH( ax, MRV_MOTION_SWITCH_STOP, MRV_MOTION_SWITCH_1_MAIN );
+    setMOTION_SWITCH( ax, MRV_MOTION_SWITCH_RESET, MRV_MOTION_SWITCH_1_MAIN );
+    setPVT_RESET( ax );
 
-        requestMotionState( ax, MRV_MOTION_SWITCH_1_MAIN );
-    }
+    requestMotionState( ax, MRV_MOTION_SWITCH_1_MAIN );
 }
 
 void deviceMRV::postSet( int ax )

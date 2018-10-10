@@ -129,7 +129,6 @@ QString deviceMRQ::loadDesc()
     {
         mDesc = QString("%1-%2").arg( MRQ_model::toString( type ),
                                       MRQ_model::toString( type2 ) );
-        logDbg()<<mDesc;
     }
     //! mrv
     else if ( type == MRQ_LINK_DEVICEINFO_MRV )
@@ -137,7 +136,6 @@ QString deviceMRQ::loadDesc()
         MRV_model mrvModel;
         mDesc = QString("%1-%2").arg( mrvModel.toString( (MRV_LINK_DEVICEINFO)type ),
                                       mrvModel.toString( (MRV_LINK_DEVICEINFO_1)type2 ) );
-        logDbg()<<mDesc;
     }
     else
     {}
@@ -164,7 +162,6 @@ QString deviceMRQ::loadSN()
     if ( retLen < sizeof_array(buf) && retLen > 0 )
     {
         mSN = QByteArray( (const char*)buf, retLen );
-        logDbg()<<mSN;
     }
 
     return mSN;
@@ -269,8 +266,6 @@ int deviceMRQ::loadFanPwm()
     if (ret != 0)
     { return ret; }
 
-//    logDbg()<<mFanInfo.mDuty<<mFanInfo.mFreq;
-
     return 0;
 }
 int deviceMRQ::loadLedPwm()
@@ -286,8 +281,6 @@ int deviceMRQ::loadLedPwm()
                             &mLedInfo[i].mFreq );
         if (ret != 0)
         { return ret; }
-
-//        logDbg()<<mLedInfo[i].mDuty<<mLedInfo[i].mFreq;
     }
     return 0;
 }
@@ -298,13 +291,6 @@ int deviceMRQ::loadEncoderZero()
     int ret;
     for ( int i = 0; i < 4; i++ )
     {
-//        ret = getABSENCALARM_ZEROVALUE(
-//                                        (MRQ_IDENTITY_LABEL_1)(i),
-//                                        &mABSENCALARM_ZEROVALUE[i]
-//                                        );
-//        if ( ret != 0 )
-//        { return ret; }
-
         checked_call( getABSENCALARM_STATE( (MRQ_IDENTITY_LABEL_1)i,
                                             &mABSENCALARM_STATE[i] ) );
         checked_call( getABSENCALARM_UPLIMIT( (MRQ_IDENTITY_LABEL_1)i,
@@ -391,7 +377,7 @@ int deviceMRQ::loadSensorUartData( MRQ_SENSORUART_BAUD u,
     if (ret != 0)
     { return -1; }
 
-    //! enugh
+    //! enough
     if ( retLen < sizeof_array(buf) && retLen > 0 )
     {
         ary.append( (const char*)buf, retLen );
@@ -429,6 +415,5 @@ int deviceMRQ::applySetting()
 
     return ret;
 }
-
 
 }

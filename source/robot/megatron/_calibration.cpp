@@ -123,16 +123,6 @@ int robotMegatron::goZero( const tpvRegion &region,
 {
     Q_ASSERT( jointList.size() == ccwList.size() );
 
-//    int ret=0;
-//    for ( int i = 0; i < jointList.size(); i++ )
-//    {
-//        ret = goZero( region, jointList.at(i), ccwList.at(i) );
-//        if ( ret != 0 )
-//        { return ret; }
-//    }
-
-//    return 0;
-
     //! new
     RoboTaskRequest *pReq;
     pReq = new RoboTaskRequest();
@@ -148,7 +138,6 @@ int robotMegatron::goZero( const tpvRegion &region,
     pArg->mCcwList = ccwList;
 
     //! request
-    //! \todo
     pReq->request( this,
                    (VRobot::apiTaskRequest)(&robotMegatron::zeroAxesTask),
                    pArg );

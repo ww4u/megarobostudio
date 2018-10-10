@@ -132,6 +132,90 @@ Copyright (C) 2016，北京镁伽机器人科技有限公司
 #define    ENC4_CHAN_B_SOURCE       GPIO_PinSource6
 
 
+#define    FAN_CTRL_TIME_CLK      RCC_APB1Periph_TIM14
+
+#define    FAN_CTRL_TIME          TIM14
+
+#define    FAN_CTRL_GPIO_CLK      RCC_AHB1Periph_GPIOF
+#define    FAN_CTRL_GPIO_AF       GPIO_AF_TIM14
+
+#define    FAN_CTRL_GPIO_PORT     GPIOF
+#define    FAN_CTRL_PIN           GPIO_Pin_9
+#define    FAN_CTRL_SOURCE        GPIO_PinSource9
+
+#define    FAN_CTRL_TIME_PERIOD      21000
+#define    FAN_DUTY_AMPLIFICATION    100
+
+#define    LED_CTRL_TIME_PERIOD      21000
+#define    LED_DUTY_AMPLIFICATION    100
+
+
+#define    BASE_LED_CTRL_TIME_CLK      RCC_APB2Periph_TIM1
+
+#define    BASE_LED_CTRL_TIME          TIM1
+
+#define    BASE_LED_CTRL_GPIO_CLK      RCC_AHB1Periph_GPIOE
+#define    BASE_LED_CTRL_GPIO_AF       GPIO_AF_TIM1
+
+#define    BASE_LED_CTRL_GPIO_PORT     GPIOE
+#define    BASE_LED_CTRL_PIN           GPIO_Pin_14
+#define    BASE_LED_CTRL_SOURCE        GPIO_PinSource14
+
+
+#define    BIGARM_LED_CTRL_TIME_CLK      RCC_APB2Periph_TIM1
+
+#define    BIGARM_LED_CTRL_TIME          TIM1
+
+#define    BIGARM_LED_CTRL_GPIO_CLK      RCC_AHB1Periph_GPIOE
+#define    BIGARM_LED_CTRL_GPIO_AF       GPIO_AF_TIM1
+
+#define    BIGARM_LED_CTRL_GPIO_PORT     GPIOE
+#define    BIGARM_LED_CTRL_PIN           GPIO_Pin_13
+#define    BIGARM_LED_CTRL_SOURCE        GPIO_PinSource13
+
+
+#define    SMALLARM_LED_CTRL_TIME_CLK      RCC_APB1Periph_TIM13
+
+#define    SMALLARM_LED_CTRL_TIME          TIM13
+
+#define    SMALLARM_LED_CTRL_GPIO_CLK      RCC_AHB1Periph_GPIOF
+#define    SMALLARM_LED_CTRL_GPIO_AF       GPIO_AF_TIM13
+
+#define    SMALLARM_LED_CTRL_GPIO_PORT     GPIOF
+#define    SMALLARM_LED_CTRL_PIN           GPIO_Pin_8
+#define    SMALLARM_LED_CTRL_SOURCE        GPIO_PinSource8
+
+
+#define    WRIST_LED_CTRL_TIME_CLK      RCC_APB2Periph_TIM10
+
+#define    WRIST_LED_CTRL_TIME          TIM10
+
+#define    WRIST_LED_CTRL_GPIO_CLK      RCC_AHB1Periph_GPIOF
+#define    WRIST_LED_CTRL_GPIO_AF       GPIO_AF_TIM10
+
+#define    WRIST_LED_CTRL_GPIO_PORT     GPIOF
+#define    WRIST_LED_CTRL_PIN           GPIO_Pin_6
+#define    WRIST_LED_CTRL_SOURCE        GPIO_PinSource6
+
+
+#define    DRIVER_CTRL_TIME_CLK      RCC_APB2Periph_TIM8
+
+#define    DRIVER_CTRL_TIME          TIM8
+
+#define    DRIVER_CTRL_GPIO_CLK      RCC_AHB1Periph_GPIOI
+#define    DRIVER_CTRL_GPIO_AF       GPIO_AF_TIM8
+
+#define    DRIVER_CTRL_GPIO_PORT     GPIOI
+#define    DRIVER_CTRL_PIN1          GPIO_Pin_5
+#define    DRIVER_CTRL_SOURCE1       GPIO_PinSource5
+
+#define    DRIVER_CTRL_PIN2          GPIO_Pin_6
+#define    DRIVER_CTRL_SOURCE2       GPIO_PinSource6
+
+#define    DRIVER_CTRL_TIME_PERIOD      2100
+#define    DRIVER_DUTY_AMPLIFICATION    100
+
+
 
 /*************************************局部常量和类型定义**************************************/
 
@@ -139,7 +223,8 @@ Copyright (C) 2016，北京镁伽机器人科技有限公司
 
 /******************************************局部变量*******************************************/
 s32 encoderZCount[ENCODER_SUPPORT_NUM];
-s32 encoderABCount[ENCODER_SUPPORT_NUM];
+s32 encABCountH[ENCODER_SUPPORT_NUM];
+u32 encABCountL[ENCODER_SUPPORT_NUM];
 EncoderMultiEnum encoderMult[ENCODER_SUPPORT_NUM];
 
 
@@ -474,25 +559,29 @@ void bspEncoderCountSet(u8 chanNum, u16 count)
         case 0:    //TIM2
             ENC1_TIME->CNT = count;
             encoderZCount[0] = count;
-            encoderABCount[0] = count;
+            encABCountH[0] = count;
+            encABCountL[0] = count;
           break;
 
         case 1:    //TIM3
             ENC2_TIME->CNT = count;
             encoderZCount[1] = count;
-            encoderABCount[1] = count;
+            encABCountH[1] = count;
+            encABCountL[1] = count;
           break;
 
         case 2:    //TIM5
             ENC3_TIME->CNT = count;
             encoderZCount[2] = count;
-            encoderABCount[2] = count;
+            encABCountH[2] = count;
+            encABCountL[2] = count;
           break;
 
         case 3:    //TIM8
             ENC4_TIME->CNT = count;
             encoderZCount[3] = count;
-            encoderABCount[3] = count;
+            encABCountH[3] = count;
+            encABCountL[3] = count;
           break;
 
         default:
@@ -511,7 +600,7 @@ void bspEncoderCountSet(u8 chanNum, u16 count)
 *********************************************************************************************/
 s32 bspEncoderABCountGet(u8 chanNum)
 {
-    u32 timerCount = 0;
+    s32 timerCount = 0;
     
 
     //根据通道指定对应的TIM
@@ -521,34 +610,34 @@ s32 bspEncoderABCountGet(u8 chanNum)
         switch (chanNum)
         {
             case 0:    //TIM2
-                timerCount  = ENC1_TIME->CNT;    //TIM2和TIM5的寄存器是32位，3和8是16位
+                encABCountL[0] = ENC1_TIME->CNT;    //TIM2和TIM5的寄存器是32位，3和8是16位
               break;
     
             case 1:    //TIM3
-                timerCount = ENC2_TIME->CNT;
+                encABCountL[1] = ENC2_TIME->CNT;
               break;
     
             case 2:    //TIM5
-                timerCount = ENC3_TIME->CNT;
+                encABCountL[2] = ENC3_TIME->CNT;
               break;
     
             case 3:    //TIM8
-                timerCount = ENC4_TIME->CNT;
+                encABCountL[3] = ENC4_TIME->CNT;
               break;
     
             default:
               break;
         }
 
-        encoderABCount[chanNum] += timerCount;
+        timerCount = encABCountH[chanNum] + encABCountL[chanNum];
             
         if (ENCMULT_SINGLE == encoderMult[chanNum])
         {
-            encoderABCount[chanNum] /= 2;    //编码器只支持X2和X4模式，所以在单倍乘模式下需要手动除以2
+            timerCount /= 2;    //编码器只支持X2和X4模式，所以在单倍乘模式下需要手动除以2
         }
     }
 
-    return encoderABCount[chanNum];
+    return timerCount;
 }
 
 
@@ -614,12 +703,434 @@ void irqChanABProcess(u8 chanNum, EncoderDirEnum encoderDir)
     {
         if (ENCDIR_P == encoderDir)
         {
-            encoderABCount[chanNum] += ENC_TIME_PERIOD;
+            encABCountH[chanNum] += ENC_TIME_PERIOD;
         }
         else
         {
-            encoderABCount[chanNum] -= ENC_TIME_PERIOD;
+            encABCountH[chanNum] -= ENC_TIME_PERIOD;
         }
+    }
+}
+
+
+/*********************************************************************************************
+函 数 名: bspFanTimerInit;
+实现功能: 无; 
+输入参数: 无;
+输出参数: 无;
+返 回 值: 无;
+说    明: 无;
+*********************************************************************************************/
+void bspFanTimerInit(void)
+{
+    TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;  
+    TIM_OCInitTypeDef        TIM_OCInitStructure;
+    GPIO_InitTypeDef         GPIO_InitStructure;
+    
+
+    /***************************************TIMX GPIO配置******************************************/
+    RCC_AHB1PeriphClockCmd(FAN_CTRL_GPIO_CLK, ENABLE);
+
+    GPIO_InitStructure.GPIO_Pin   = FAN_CTRL_PIN;         
+    GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_AF;
+    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+    GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_DOWN;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+    GPIO_Init(FAN_CTRL_GPIO_PORT, &GPIO_InitStructure);
+    GPIO_PinAFConfig(FAN_CTRL_GPIO_PORT, FAN_CTRL_SOURCE, FAN_CTRL_GPIO_AF);
+
+
+    /***************************************TIMX 配置******************************************/
+    RCC_APB1PeriphClockCmd(FAN_CTRL_TIME_CLK, ENABLE);    //使能TIMX时钟
+
+    TIM_DeInit(FAN_CTRL_TIME);
+    TIM_TimeBaseStructInit(&TIM_TimeBaseStructure);  
+    TIM_TimeBaseStructure.TIM_Prescaler = 7;    //21MHz
+    TIM_TimeBaseStructure.TIM_Period    = FAN_CTRL_TIME_PERIOD - 1;  //1KHz
+    TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;                           
+    TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;                
+    TIM_TimeBaseInit(FAN_CTRL_TIME, &TIM_TimeBaseStructure);     
+
+    TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
+    TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;                
+    TIM_OCInitStructure.TIM_Pulse = FAN_CTRL_TIME_PERIOD - 1;    //100%Duty 
+    TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
+    TIM_OC1Init(FAN_CTRL_TIME, &TIM_OCInitStructure);
+    
+    TIM_OC1PreloadConfig(FAN_CTRL_TIME, TIM_OCPreload_Enable);
+    
+    TIM_Cmd(FAN_CTRL_TIME, ENABLE);
+}
+
+
+/*********************************************************************************************
+函 数 名: bspFanTimerSet;
+实现功能: 无; 
+输入参数: 无;
+输出参数: 无;
+返 回 值: 无;
+说    明: 无;
+*********************************************************************************************/
+void bspFanTimerSet(u32 frequency, u8 duty)
+{
+    u16 period;
+    u16 pulse;
+    
+
+    if ((frequency <= FAN_CTRL_TIME_FREQUENCY) && (duty <= FAN_DUTY_AMPLIFICATION))
+    {
+        if (0 == duty)
+        {
+            duty = 1;
+        }
+        
+        period = FAN_CTRL_TIME_FREQUENCY / frequency;
+        pulse = period * duty / FAN_DUTY_AMPLIFICATION;
+        
+        TIM_Cmd(FAN_CTRL_TIME, DISABLE);
+
+        TIM_SetAutoreload(FAN_CTRL_TIME, period - 1);    //配给寄存器的值需要减一(从0开始计数)
+        TIM_SetCompare1(FAN_CTRL_TIME, pulse - 1);       //配给寄存器的值需要减一
+        
+        TIM_Cmd(FAN_CTRL_TIME, ENABLE);
+    }
+}
+
+
+/*********************************************************************************************
+函 数 名: bspArmLedTimerInit;
+实现功能: 无; 
+输入参数: 无;
+输出参数: 无;
+返 回 值: 无;
+说    明: 无;
+*********************************************************************************************/
+void bspArmLedTimerInit(void)
+{
+    TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;  
+    TIM_OCInitTypeDef        TIM_OCInitStructure;
+    GPIO_InitTypeDef         GPIO_InitStructure;
+    
+
+    /***************************************TIMX GPIO配置******************************************/
+    RCC_AHB1PeriphClockCmd(BASE_LED_CTRL_GPIO_CLK     |
+                           BIGARM_LED_CTRL_GPIO_CLK   |
+                           SMALLARM_LED_CTRL_GPIO_CLK |
+                           WRIST_LED_CTRL_GPIO_CLK, 
+                           ENABLE);
+
+    GPIO_InitStructure.GPIO_Pin   = BASE_LED_CTRL_PIN;         
+    GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_AF;
+    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+    GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_UP;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+    GPIO_Init(BASE_LED_CTRL_GPIO_PORT, &GPIO_InitStructure);
+    GPIO_PinAFConfig(BASE_LED_CTRL_GPIO_PORT, BASE_LED_CTRL_SOURCE, BASE_LED_CTRL_GPIO_AF);
+
+    GPIO_InitStructure.GPIO_Pin   = BIGARM_LED_CTRL_PIN;         
+    GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_AF;
+    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+    GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_UP;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+    GPIO_Init(BIGARM_LED_CTRL_GPIO_PORT, &GPIO_InitStructure);
+    GPIO_PinAFConfig(BIGARM_LED_CTRL_GPIO_PORT, BIGARM_LED_CTRL_SOURCE, BIGARM_LED_CTRL_GPIO_AF);
+
+    GPIO_InitStructure.GPIO_Pin   = SMALLARM_LED_CTRL_PIN;         
+    GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_AF;
+    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+    GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_UP;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+    GPIO_Init(SMALLARM_LED_CTRL_GPIO_PORT, &GPIO_InitStructure);
+    GPIO_PinAFConfig(SMALLARM_LED_CTRL_GPIO_PORT, SMALLARM_LED_CTRL_SOURCE, SMALLARM_LED_CTRL_GPIO_AF);
+
+    GPIO_InitStructure.GPIO_Pin   = WRIST_LED_CTRL_PIN;         
+    GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_AF;
+    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+    GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_UP;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+    GPIO_Init(WRIST_LED_CTRL_GPIO_PORT, &GPIO_InitStructure);
+    GPIO_PinAFConfig(WRIST_LED_CTRL_GPIO_PORT, WRIST_LED_CTRL_SOURCE, WRIST_LED_CTRL_GPIO_AF);
+
+
+    /***************************************TIMX 配置******************************************/
+    RCC_APB1PeriphClockCmd(SMALLARM_LED_CTRL_TIME_CLK, ENABLE);    //使能TIMX时钟
+    RCC_APB2PeriphClockCmd(BIGARM_LED_CTRL_TIME_CLK |
+                           BASE_LED_CTRL_TIME_CLK   |
+                           WRIST_LED_CTRL_TIME_CLK, 
+                           ENABLE);    //使能TIMX时钟
+
+    //基座
+    TIM_DeInit(BASE_LED_CTRL_TIME);
+    TIM_TimeBaseStructInit(&TIM_TimeBaseStructure);  
+    TIM_TimeBaseStructure.TIM_Prescaler = 79;
+    TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;      
+    TIM_TimeBaseStructure.TIM_Period    = LED_CTRL_TIME_PERIOD - 1;  //100Hz                    
+    TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;                
+    TIM_TimeBaseInit(BASE_LED_CTRL_TIME, &TIM_TimeBaseStructure);     
+
+    TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
+    TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;                
+    TIM_OCInitStructure.TIM_Pulse = LED_CTRL_TIME_PERIOD / 2 - 1;    //50%Duty 
+    TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
+    TIM_OC4Init(BASE_LED_CTRL_TIME, &TIM_OCInitStructure);
+    
+    TIM_OC4PreloadConfig(BASE_LED_CTRL_TIME, TIM_OCPreload_Enable);
+    
+    TIM_Cmd(BASE_LED_CTRL_TIME, ENABLE);
+
+    //大臂
+    /*TIM_DeInit(BIGARM_LED_CTRL_TIME);
+    TIM_TimeBaseStructInit(&TIM_TimeBaseStructure);  
+    TIM_TimeBaseStructure.TIM_Prescaler = 79;
+    TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;    
+    TIM_TimeBaseStructure.TIM_Period    = LED_CTRL_TIME_PERIOD - 1;  //100Hz                     
+    TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;                
+    TIM_TimeBaseInit(BIGARM_LED_CTRL_TIME, &TIM_TimeBaseStructure);*/   
+
+    TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
+    TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;                
+    TIM_OCInitStructure.TIM_Pulse = LED_CTRL_TIME_PERIOD / 2 - 1;    //50%Duty 
+    TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
+    TIM_OC3Init(BIGARM_LED_CTRL_TIME, &TIM_OCInitStructure);
+    
+    TIM_OC3PreloadConfig(BIGARM_LED_CTRL_TIME, TIM_OCPreload_Enable);
+    
+    TIM_Cmd(BIGARM_LED_CTRL_TIME, ENABLE);
+    TIM_CtrlPWMOutputs(BIGARM_LED_CTRL_TIME, ENABLE);
+
+    //小臂
+    TIM_DeInit(SMALLARM_LED_CTRL_TIME);
+    TIM_TimeBaseStructInit(&TIM_TimeBaseStructure);  
+    TIM_TimeBaseStructure.TIM_Prescaler = 39;
+    TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;  
+    TIM_TimeBaseStructure.TIM_Period    = LED_CTRL_TIME_PERIOD - 1;  //100Hz                      
+    TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;                
+    TIM_TimeBaseInit(SMALLARM_LED_CTRL_TIME, &TIM_TimeBaseStructure);     
+
+    TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
+    TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;                
+    TIM_OCInitStructure.TIM_Pulse = LED_CTRL_TIME_PERIOD / 2 - 1;    //50%Duty 
+    TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
+    TIM_OC1Init(SMALLARM_LED_CTRL_TIME, &TIM_OCInitStructure);
+    
+    TIM_OC1PreloadConfig(SMALLARM_LED_CTRL_TIME, TIM_OCPreload_Enable);
+    
+    TIM_Cmd(SMALLARM_LED_CTRL_TIME, ENABLE);
+
+    //腕
+    TIM_DeInit(WRIST_LED_CTRL_TIME);
+    TIM_TimeBaseStructInit(&TIM_TimeBaseStructure);  
+    TIM_TimeBaseStructure.TIM_Prescaler = 79;
+    TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;       
+    TIM_TimeBaseStructure.TIM_Period    = LED_CTRL_TIME_PERIOD - 1;  //100Hz                    
+    TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;                
+    TIM_TimeBaseInit(WRIST_LED_CTRL_TIME, &TIM_TimeBaseStructure);     
+
+    TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
+    TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;                
+    TIM_OCInitStructure.TIM_Pulse = LED_CTRL_TIME_PERIOD / 2 - 1;    //50%Duty 
+    TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
+    TIM_OC1Init(WRIST_LED_CTRL_TIME, &TIM_OCInitStructure);
+    
+    TIM_OC1PreloadConfig(WRIST_LED_CTRL_TIME, TIM_OCPreload_Enable);
+    
+    TIM_Cmd(WRIST_LED_CTRL_TIME, ENABLE);
+}
+
+
+/*********************************************************************************************
+函 数 名: bspArmLedTimerSet;
+实现功能: 无; 
+输入参数: 无;
+输出参数: 无;
+返 回 值: 无;
+说    明: 无;
+*********************************************************************************************/
+void bspArmLedTimerSet(ArmLedEnum armLed, u32 frequency, u8 duty)
+{
+    u16 period;
+    u16 pulse;
+
+    
+    switch (armLed)
+    {
+        case ARMLED_BASE:
+            if ((frequency <= BASE_LED_CTRL_TIME_FREQUENCY) && (duty <= LED_DUTY_AMPLIFICATION))
+            {
+                if (0 == duty)
+                {
+                    duty = 1;
+                }
+                
+                period = BASE_LED_CTRL_TIME_FREQUENCY / frequency;
+                pulse = period * duty / LED_DUTY_AMPLIFICATION;
+                
+                TIM_Cmd(BASE_LED_CTRL_TIME, DISABLE);
+
+                TIM_SetAutoreload(BASE_LED_CTRL_TIME, period - 1);    //配给寄存器的值需要减一(从0开始计数)
+                TIM_SetCompare4(BASE_LED_CTRL_TIME, pulse - 1);       //配给寄存器的值需要减一
+                
+                TIM_Cmd(BASE_LED_CTRL_TIME, ENABLE);
+            }
+          break;
+          
+        case ARMLED_BIGARM:
+            if ((frequency <= BIGARM_LED_CTRL_TIME_FREQUENCY) && (duty <= LED_DUTY_AMPLIFICATION))
+            {                
+                if (0 == duty)
+                {
+                    duty = 1;
+                }
+                
+                period = BIGARM_LED_CTRL_TIME_FREQUENCY / frequency;
+                pulse = period * duty / LED_DUTY_AMPLIFICATION;
+                
+                TIM_CtrlPWMOutputs(BIGARM_LED_CTRL_TIME, DISABLE);
+                TIM_Cmd(BIGARM_LED_CTRL_TIME, DISABLE);
+
+                TIM_SetAutoreload(BIGARM_LED_CTRL_TIME, period - 1);    //配给寄存器的值需要减一(从0开始计数)
+                TIM_SetCompare3(BIGARM_LED_CTRL_TIME, pulse - 1);       //配给寄存器的值需要减一
+                
+                TIM_Cmd(BIGARM_LED_CTRL_TIME, ENABLE);
+                TIM_CtrlPWMOutputs(BIGARM_LED_CTRL_TIME, ENABLE);
+            }
+          break;
+          
+        case ARMLED_SMALLARM:
+            if ((frequency <= SMALLARM_LED_CTRL_TIME_FREQUENCY) && (duty <= LED_DUTY_AMPLIFICATION))
+            {
+                if (0 == duty)
+                {
+                    duty = 1;
+                }
+                
+                period = SMALLARM_LED_CTRL_TIME_FREQUENCY / frequency;
+                pulse = period * duty / LED_DUTY_AMPLIFICATION;
+                
+                TIM_Cmd(SMALLARM_LED_CTRL_TIME, DISABLE);
+
+                TIM_SetAutoreload(SMALLARM_LED_CTRL_TIME, period - 1);    //配给寄存器的值需要减一(从0开始计数)
+                TIM_SetCompare1(SMALLARM_LED_CTRL_TIME, pulse - 1);       //配给寄存器的值需要减一
+                
+                TIM_Cmd(SMALLARM_LED_CTRL_TIME, ENABLE);
+            }
+          break;
+          
+        case ARMLED_WRIST:
+            if ((frequency <= WRIST_LED_CTRL_TIME_FREQUENCY) && (duty <= LED_DUTY_AMPLIFICATION))
+            {
+                if (0 == duty)
+                {
+                    duty = 1;
+                }
+                
+                period = WRIST_LED_CTRL_TIME_FREQUENCY / frequency;
+                pulse = period * duty / LED_DUTY_AMPLIFICATION;
+                
+                TIM_Cmd(WRIST_LED_CTRL_TIME, DISABLE);
+
+                TIM_SetAutoreload(WRIST_LED_CTRL_TIME, period - 1);    //配给寄存器的值需要减一(从0开始计数)
+                TIM_SetCompare1(WRIST_LED_CTRL_TIME, pulse - 1);       //配给寄存器的值需要减一
+                
+                TIM_Cmd(WRIST_LED_CTRL_TIME, ENABLE);
+            }
+          break;
+
+        default:
+          break;
+    }
+}
+
+
+/*********************************************************************************************
+函 数 名: bspDriverTimerInit;
+实现功能: 无; 
+输入参数: 无;
+输出参数: 无;
+返 回 值: 无;
+说    明: 无;
+*********************************************************************************************/
+void bspDriverTimerInit(void)
+{
+    TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;  
+    TIM_OCInitTypeDef        TIM_OCInitStructure;
+    GPIO_InitTypeDef         GPIO_InitStructure;
+    
+
+    /***************************************TIMX GPIO配置******************************************/
+    RCC_AHB1PeriphClockCmd(DRIVER_CTRL_GPIO_CLK, ENABLE);
+
+    GPIO_InitStructure.GPIO_Pin   = DRIVER_CTRL_PIN1 | DRIVER_CTRL_PIN2;         
+    GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_AF;
+    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+    GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_DOWN;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+    GPIO_Init(DRIVER_CTRL_GPIO_PORT, &GPIO_InitStructure);
+    GPIO_PinAFConfig(DRIVER_CTRL_GPIO_PORT, DRIVER_CTRL_SOURCE1, DRIVER_CTRL_GPIO_AF);
+    GPIO_PinAFConfig(DRIVER_CTRL_GPIO_PORT, DRIVER_CTRL_SOURCE2, DRIVER_CTRL_GPIO_AF);
+
+
+    /***************************************TIMX 配置******************************************/
+    RCC_APB2PeriphClockCmd(DRIVER_CTRL_TIME_CLK, ENABLE);    //使能TIMX时钟
+
+    TIM_DeInit(DRIVER_CTRL_TIME);
+    TIM_TimeBaseStructInit(&TIM_TimeBaseStructure);  
+    TIM_TimeBaseStructure.TIM_Prescaler = 79;    //21MHz
+    TIM_TimeBaseStructure.TIM_Period    = DRIVER_CTRL_TIME_PERIOD - 1;  //10KHz
+    TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;                           
+    TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;                
+    TIM_TimeBaseInit(DRIVER_CTRL_TIME, &TIM_TimeBaseStructure);     
+
+    TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
+    TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;                
+    TIM_OCInitStructure.TIM_Pulse = DRIVER_CTRL_TIME_PERIOD - 1;    //100%Duty，因为电路上反向了，所以100%占空比下输出为0 
+    TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
+    
+    TIM_OC1Init(DRIVER_CTRL_TIME, &TIM_OCInitStructure);
+    TIM_OC1PreloadConfig(DRIVER_CTRL_TIME, TIM_OCPreload_Enable);
+    
+    TIM_OC2Init(DRIVER_CTRL_TIME, &TIM_OCInitStructure);
+    TIM_OC2PreloadConfig(DRIVER_CTRL_TIME, TIM_OCPreload_Enable);
+    
+    TIM_Cmd(DRIVER_CTRL_TIME, ENABLE);
+    TIM_CtrlPWMOutputs(DRIVER_CTRL_TIME, ENABLE);
+}
+
+
+/*********************************************************************************************
+函 数 名: bspDriverTimerSet;
+实现功能: 无; 
+输入参数: 无;
+输出参数: 无;
+返 回 值: 无;
+说    明: 无;
+*********************************************************************************************/
+void bspDriverTimerSet(u32 frequency, u8 duty)
+{
+    u16 period;
+    u16 pulse;
+    
+
+    if ((frequency <= DRIVER_CTRL_TIME_FREQUENCY) && (duty <= DRIVER_DUTY_AMPLIFICATION))
+    {
+        duty = DRIVER_DUTY_AMPLIFICATION - duty;    //硬件电路上反向了
+        
+        if (0 == duty)
+        {
+            duty = 1;
+        }
+        
+        period = DRIVER_CTRL_TIME_FREQUENCY / frequency;
+        pulse = period * duty / DRIVER_DUTY_AMPLIFICATION;
+        
+        TIM_Cmd(DRIVER_CTRL_TIME, DISABLE);
+
+        TIM_SetAutoreload(DRIVER_CTRL_TIME, period - 1);    //配给寄存器的值需要减一(从0开始计数)
+        
+        TIM_SetCompare1(DRIVER_CTRL_TIME, pulse - 1);       //配给寄存器的值需要减一
+        TIM_SetCompare2(DRIVER_CTRL_TIME, pulse - 1);       //配给寄存器的值需要减一
+        
+        TIM_Cmd(DRIVER_CTRL_TIME, ENABLE);
     }
 }
 

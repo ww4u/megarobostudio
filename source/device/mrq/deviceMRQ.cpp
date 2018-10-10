@@ -2,18 +2,22 @@
 
 #include "scpi/scpi.h"
 
+#include "../../bus/canbus.h"
 
 #define DEF_TPV_CAP             256
-#define DEF_WAV_BUF_SIZE        (125*1024)      //! bytes
+#define DEF_WAV_BUF_SIZE        (125*1024)                  //! bytes
 
 #define ABS_ANGLE_TO_DEG( angle )   (360.0f*(angle))/((1<<18)-1)
 #define INC_ANGLE_TO_DEG( angle )   (360.0f*(angle))/(1<<18)
 
 #define VALUE_TO_ABS_ANGLE( val )   (quint32)( (val) * ((1<<18)-1) / 360.0f )
 #define VALUE_TO_INC_ANGLE( val )   (quint32)( (val) * ((1<<18)) / 360.0f )
-#include "../../bus/canbus.h"
+
 namespace MegaDevice
 {
+
+QStringList deviceMRQ::_mrqStateList;
+DataUploader *deviceMRQ::_pUploader = NULL;
 
 float deviceMRQ::absAngleToValue( quint32 angle )
 { return ABS_ANGLE_TO_DEG( angle ); }
@@ -36,7 +40,7 @@ quint32 deviceMRQ::valueToIncAngle( float val )
 //mrq_state_prerun,
 //mrq_state_running,
 //mrq_state_prestop,
-QStringList deviceMRQ::_mrqStateList;
+
 QString deviceMRQ::toString( mrqState sta )
 {
     //! init at first
@@ -61,9 +65,6 @@ QString deviceMRQ::toString( mrqState sta )
     return _mrqStateList.at( (int)sta );
 }
 
-DataUploader *deviceMRQ::_pUploader = NULL;
-
-
 deviceMRQ::deviceMRQ()
 {
     //! downloader in ctor
@@ -71,9 +72,6 @@ deviceMRQ::deviceMRQ()
     //! fsm in post ctor
 
     //! proxy motor in post ctor
-
-    //! \note only a sema for one device
-//    mDownloaderSema.release( 1 );
 
     //! uploader
     if ( NULL == deviceMRQ::_pUploader )
@@ -417,7 +415,7 @@ float deviceMRQ::getIncAngle( int ax )
     { getENCODER_LINENUM( ax, mENCODER_LINENUM + ax ); }
     if ( mENCODER_LINENUM[ax] < 1 )
     {
-        sysError( QObject::tr("Invalid encoder line number") );
+        sysWarn( QObject::tr("Invalid encoder line number") );
         return 0;
     }
 
@@ -500,7 +498,6 @@ int deviceMRQ::requestMotionState( pvt_region )
 
     DELOAD_REGION();
 
-
     ret = m_pBus->write( DEVICE_RECEIVE_ID,
                          MRQ_mc_MOTION,
                          MRQ_sc_MOTION_STATE_Q,
@@ -514,11 +511,10 @@ void deviceMRQ::terminate( pvt_region )
 {
     tpvDownloader *pLoader;
     pLoader = downloader( region );
+    Q_ASSERT( NULL != pLoader );
 
-//    pLoader->terminate();
     pLoader->requestInterruption();
     pLoader->wait();
-
 
     sysQueue()->postMsg( e_download_terminated,
                          pLoader->name(),
@@ -541,8 +537,6 @@ int deviceMRQ::call( int n, const tpvRegion &region )
     setMOTIONPLAN_CYCLENUM( region.axes(),
                             (MRQ_MOTION_SWITCH_1)region.page(),
                              n );
-
-
     //! valid
     if ( region.motionMode() >= 0 )
     {
@@ -652,7 +646,6 @@ int deviceMRQ::lightCouplingZero( pvt_region, float t, float angle, float endV )
 int deviceMRQ::lightCouplingZero( pvt_region,
                                   float t, float angle, float endV,
                                   float invT, float invAngle,
-//                                  bool bClrCnt,
                                   AxesZeroOp zOp,
                                   int tmous, int tickus )
 {
@@ -673,7 +666,6 @@ int deviceMRQ::lightCouplingZero( pvt_region,
     //! arg
     pArg->mAx = region.axes();
     pArg->mPage = region.page();
-//    pArg->mbClrCnt = bClrCnt;
     pArg->mZOp = zOp;
 
     pArg->mT = t;
@@ -691,7 +683,6 @@ int deviceMRQ::lightCouplingZero( pvt_region,
     RoboTaskRequest *pReq = new RoboTaskRequest();
     Q_ASSERT( NULL != pReq );
 
-    //! \todo
     pReq->request( this,
                    (VRobot::apiTaskRequest)(&deviceMRQ::taskLightCouplingZero),
                    pArg );

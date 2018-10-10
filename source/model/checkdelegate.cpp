@@ -25,7 +25,7 @@ void checkDelegate::setEditorData(QWidget *editor, const QModelIndex &index) con
     CHECK_WIDGET *pCheckBox = static_cast<CHECK_WIDGET*>(editor);
 
     pCheckBox->setChecked( b );
-    pCheckBox->setText( b ? tr("True"):tr("False") );
+    pCheckBox->setText( b ? tr("true"):tr("false") );
 }
 void checkDelegate::setModelData(QWidget *editor, QAbstractItemModel *model,
                   const QModelIndex &index) const
@@ -51,5 +51,5 @@ myInvertButton::myInvertButton(QWidget *parent ) : QPushButton(parent)
 
 void myInvertButton::slot_toggled( bool bCheck )
 {
-    setText( bCheck ? tr("True"):tr("False") );
+    setText( bCheck ? tr("true"):tr("false") );
 }

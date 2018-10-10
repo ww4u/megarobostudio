@@ -6,9 +6,8 @@
 enum enumInterpMode
 {
     e_interp_cubic = 0,     //! \see PlanModeEnum
-    e_interp_linear = 1,
-
-    e_interp_trapzoid = 3,
+    e_interp_trapzoid = 1,
+    e_interp_sine = 2,
 };
 
 struct interpContext

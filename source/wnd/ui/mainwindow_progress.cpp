@@ -11,8 +11,8 @@ ProgressGroup *MainWindow::progress()
     { }
     else
     {
-//        m_pProgress = new ProgressGroup(this);
         m_pProgress = new ProgressGroup();
+        Q_ASSERT( NULL != m_pProgress );
 
         connect( m_pProgress,
                  SIGNAL(sigCancel( const QString &, int)),
@@ -34,8 +34,6 @@ bool MainWindow::progressProc(  const QString &name,
         progress()->progressInfo( name, axes, QString("%1:CH%2 %3").arg(name).arg(axes+1).arg( tr("started") ) );
         progress()->progressProg( name, axes, 0 );
         progress()->progressShow( name, axes, true );
-
-//        logDbg()<<name<<axes;
     }
     else if ( msg.getMsg() == e_download_processing )
     {
@@ -43,8 +41,6 @@ bool MainWindow::progressProc(  const QString &name,
 
         now = msg.at(2).toInt();
         total = msg.at(3).toInt();
-
-//        logDbg()<<name<<axes;
 
         progress()->progressInfo( name, axes, QString("%1:CH%2 %3").arg(name).arg(axes+1).arg( tr("downloading") ) );
         progress()->progressRange( name, axes, 0, total );

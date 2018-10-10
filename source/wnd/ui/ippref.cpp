@@ -53,7 +53,6 @@ void IPPref::spyEdited()
     QDoubleSpinBox *doubleSpinBoxes[]={
         ui->spinZeroTime,
         ui->spinZeroAngle,
-//        ui->spinZeroSpeed,
 
         ui->spinVGapTime,
         ui->spinVGapDist,

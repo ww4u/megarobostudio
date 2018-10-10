@@ -108,14 +108,6 @@ int robotDelta::goZero( const tpvRegion &region,
 {
     Q_ASSERT( jointList.size() == ccwList.size() );
 
-//    int ret=0;
-//    for ( int i = 0; i < jointList.size(); i++ )
-//    {
-//        ret = goZero( region, jointList.at(i), ccwList.at(i) );
-//        if ( ret != 0 )
-//        { return ret; }
-//    }
-
     RoboTaskRequest *pReq;
     pReq = new RoboTaskRequest();
     Q_ASSERT( NULL != pReq );
@@ -160,7 +152,6 @@ int robotDelta::goZero( const tpvRegion &region,
     }
 
     //! request
-    //! \todo
     pReq->request( this,
                    (VRobot::apiTaskRequest)(&robotDelta::zeroAxesTask),
                    pArg );

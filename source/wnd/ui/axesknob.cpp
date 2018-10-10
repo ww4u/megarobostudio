@@ -49,7 +49,7 @@ void axesKnob::actionChanged( const QDateTime &endTime, int valEnd  )
     QString strInfo;
 
     mStopAngle = valEnd;
-    strInfo = QString( "%2%3 %1ms" ).arg( dt ).arg( mStopAngle-mStartAngle ).arg(QChar(0x00B0));
+    strInfo = QString( "%2%3 %1ms" ).arg( dt ).arg( mStopAngle-mStartAngle ).arg( char_deg );
     ui->label->setText( strInfo );
 }
 
@@ -102,7 +102,7 @@ void axesKnob::rotate( float angle, float t )
 
     //! view connection
     ui->label->setText( QString("%2%3 %1ms").arg( t*1000 )
-                                            .arg( angle ).arg(QChar(0x00B0)) );
+                                            .arg( angle ).arg( char_deg ) );
 
 }
 

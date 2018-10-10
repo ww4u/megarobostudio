@@ -18,12 +18,6 @@ int deviceMRV::_applySetting()
         checked_call( setRS232_PARITY(mRS232_PARITY) );
 
         checked_call( setRS232_STOPBIT(mRS232_STOPBIT) );
-//        checked_call( getCAN_TYPE(&mCAN_TYPE) );
-//        checked_call( getCAN_BAUD(&mCAN_BAUD) );
-//        checked_call( getCAN_GROUP(&mCAN_GROUP) );
-
-//        checked_call( getCAN_NETMANAGESTATE(&mCAN_NETMANAGESTATE) );
-//        checked_call( getCAN_NETMANAGEHASH(&mCAN_NETMANAGEHASH) );
 
     MRV_PROGRESS( 10, ("GLOBAL") );
         for ( int i = 0; i < axes(); i++ )
@@ -55,9 +49,6 @@ int deviceMRV::_applySetting()
             checked_call( setVALVECTRL_OPENTIME( i, mVALVECTRL_OPENTIME[i] ) );
 
             checked_call( setVALVECTRL_RECORDSTATE( i, mVALVECTRL_RECORDSTATE[i] ) );
-//            checked_call( getVALVECTRL_ONNUMS( i, mVALVECTRL_ONNUMS[i] ) );
-//            checked_call( getVALVECTRL_OFFNUMS( i, mVALVECTRL_OFFNUMS[i] ) );
-//            checked_call( getVALVECTRL_TIME( i, mVALVECTRL_TIME[i] ) );
         }
 
     MRV_PROGRESS( 30, "PVT" )

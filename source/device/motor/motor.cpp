@@ -10,12 +10,7 @@ deviceProxyMotor::deviceProxyMotor( deviceMRQ *pMrq, const tpvRegion &region )
 }
 deviceProxyMotor::~deviceProxyMotor()
 {}
-//void deviceMotor::attachCondition( RoboCondition *pCond )
-//{
-//    Q_ASSERT( NULL != m_pMRQ );
 
-//    m_pMRQ->attachCondition( mRegion.axes(), pCond );
-//}
 bool deviceProxyMotor::waitCondition(
                                  RoboCondition *pCond,
                                  int tmous )

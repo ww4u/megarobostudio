@@ -135,7 +135,6 @@ void RawRoboUnit::onTimer( int id )
     if ( status_timer_id == id )
     {
         selfFsm()->Robot()->queryState( selfFsm()->region() );
-//        logDbg();
     }
 }
 
@@ -244,11 +243,6 @@ RunReqedRawRoboUnit::RunReqedRawRoboUnit( MegaDevice::RoboFsm *pFsm,
     mName = "RunReqedRawRoboUnit";
 }
 
-//void RunReqedRawRoboUnit::proc( int msg, RoboMsg &detail )
-//{
-//    RawRoboUnit::proc( msg, detail );
-//}
-
 //! program
 ProgramRawRoboUnit::ProgramRawRoboUnit( MegaDevice::RoboFsm *pFsm,
                      int members ) : RawRoboUnit( pFsm, members )
@@ -256,22 +250,12 @@ ProgramRawRoboUnit::ProgramRawRoboUnit( MegaDevice::RoboFsm *pFsm,
     mName = "ProgramRawRoboUnit";
 }
 
-//void ProgramRawRoboUnit::proc( int msg, RoboMsg &detail )
-//{
-//    RawRoboUnit::proc( msg, subAx, para );
-//}
-
 //! calcing
 CalcingRawRoboUnit::CalcingRawRoboUnit( MegaDevice::RoboFsm *pFsm,
                      int members ) : RawRoboUnit( pFsm, members )
 {
     mName = "CalcingRawRoboUnit";
 }
-
-//void CalcingRawRoboUnit::proc( int msg, int subAx, int para )
-//{
-//    RawRoboUnit::proc( msg, subAx, para );
-//}
 
 //! calcend
 CalcendRawRoboUnit::CalcendRawRoboUnit( MegaDevice::RoboFsm *pFsm,
@@ -334,9 +318,8 @@ void StandbyRawRoboUnit::onEnter( RoboMsg &detail )
 {
     RawRoboUnit::onEnter( detail );
 
-    logDbg()<<selfFsm()->region().page();
     if ( selfFsm()->runReqed() )
-    {logDbg();
+    {
         selfFsm()->Robot()->switchRun( selfFsm()->region() );
         toState( MegaDevice::mrq_state_prerun, detail );
 
@@ -360,11 +343,6 @@ PreRunRawRoboUnit::PreRunRawRoboUnit( MegaDevice::RoboFsm *pFsm,
     mName = "PreRunRawRoboUnit";
 }
 
-//void PreRunRawRoboUnit::proc( int msg, int subAx, int para )
-//{
-//    RawRoboUnit::proc( msg, subAx, para );
-//}
-
 void PreRunRawRoboUnit::onEnter( RoboMsg &detail )
 {
     RawRoboUnit::onEnter( detail );
@@ -378,10 +356,6 @@ RunningRawRoboUnit::RunningRawRoboUnit( MegaDevice::RoboFsm *pFsm,
 {
     mName = "RunningRawRoboUnit";
 }
-//void RunningRawRoboUnit::proc( int msg, int subAx, int para )
-//{
-//    RawRoboUnit::proc( msg, subAx, para );
-//}
 
 void RunningRawRoboUnit::onEnter( RoboMsg &detail )
 {
@@ -396,10 +370,7 @@ PreStopRawRoboUnit::PreStopRawRoboUnit( MegaDevice::RoboFsm *pFsm,
 {    
     mName = "PreStopRawRoboUnit";
 }
-//void PreStopRawRoboUnit::proc( int msg, int subAx, int para )
-//{
-//    RawRoboUnit::proc( msg, subAx, para );
-//}
+
 void PreStopRawRoboUnit::onEnter( RoboMsg &detail )
 {
     RawRoboUnit::onEnter( detail );

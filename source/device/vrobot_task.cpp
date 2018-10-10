@@ -19,7 +19,6 @@ RoboTaskRequest::RoboTaskRequest()
 
 void RoboTaskRequest::request( VRobot *pRobo,
               VRobot::apiTaskRequest pApi,
-//                void *pApi,
               RoboTaskArgument *pArg )
 {
     Q_ASSERT( NULL != pRobo );
@@ -40,14 +39,13 @@ RoboTaskRequest::~RoboTaskRequest()
 QList<RoboTask*> RoboTask::_roboTasks;
 
 void RoboTask::killAll()
-{logDbg()<<RoboTask::_roboTasks.size();
+{
     QList<bool> waitList;
     foreach( RoboTask *pTask, RoboTask::_roboTasks )
     {
         Q_ASSERT( NULL != pTask );
         if ( pTask->isRunning() )
-        {//logDbg();
-//            pTask->terminate();
+        {
             pTask->requestInterruption();
             waitList.append( true );
         }
@@ -56,7 +54,7 @@ void RoboTask::killAll()
             waitList.append( false );
         }
     }
-//logDbg()<<RoboTask::_roboTasks.size();
+
     for ( int i = 0; i < RoboTask::_roboTasks.size(); i++ )
     {
         if ( waitList.at(i) && RoboTask::_roboTasks.at(i)->isRunning() )
@@ -106,7 +104,3 @@ void RoboTask::gc()
         m_pReq =NULL;
     }
 }
-
-
-
-

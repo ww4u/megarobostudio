@@ -31,8 +31,12 @@ extern SystemCfgBmpStruct g_systemCfgBmp;
 extern ChanCfgBmpStruct   g_chanCfgBmp[CH_TOTAL];
 
 #ifdef PROJECT_GELGOOG
+
+#if !GELGOOG_SINANJU
 extern IsolatorInStruct g_isolatorIn;
 extern SoftTimerStruct  g_isolatorInTimer;
+#endif
+
 #endif
 
 extern SensorUartStruct  g_sensorUart;
@@ -40,6 +44,8 @@ extern SensorUartStruct  g_sensorUart;
 extern bool g_bCmdPostSemToFunc;
 extern bool g_bPerdPostSemToFunc;
 extern bool g_bPerdPostSemToCmd;
+
+extern SoftTimerStruct g_paraSaveTimer;
 
 
 
@@ -83,7 +89,7 @@ void cmdTrigInModeSet(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -99,7 +105,7 @@ void cmdTrigInModeSet(u8 cmdDataLen, u8 *pCmdData)
     //进行参数验证
     if (PARA_VERIFY_NO_ERROR == pvrfTrigInModeVerify(cmdDataLen, pCmdData, (void *)&trigMode))
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if (bConfig[i])
             {
@@ -112,7 +118,7 @@ void cmdTrigInModeSet(u8 cmdDataLen, u8 *pCmdData)
         }
 
         //存到EEPROM中
-        servTrigInInfoWrite(&g_trigInInfo);
+        servStimerAdd(&g_paraSaveTimer);
     }
 }
 
@@ -147,7 +153,7 @@ void cmdTrigInModeQuery(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -188,7 +194,7 @@ void cmdTrigInPattStateSet(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -204,7 +210,7 @@ void cmdTrigInPattStateSet(u8 cmdDataLen, u8 *pCmdData)
     //进行参数验证
     if (PARA_VERIFY_NO_ERROR == pvrfTrigInPattStateVerify(cmdDataLen, pCmdData, (void *)&pattState))
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if (bConfig[i])
             {
@@ -216,7 +222,7 @@ void cmdTrigInPattStateSet(u8 cmdDataLen, u8 *pCmdData)
             }
         }
         
-        servTrigInInfoWrite(&g_trigInInfo);
+        servStimerAdd(&g_paraSaveTimer);
     }
 }
 
@@ -251,7 +257,7 @@ void cmdTrigInPattStateQuery(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -292,7 +298,7 @@ void cmdTrigInPattTypeSet(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -308,7 +314,7 @@ void cmdTrigInPattTypeSet(u8 cmdDataLen, u8 *pCmdData)
     //进行参数验证
     if (PARA_VERIFY_NO_ERROR == pvrfTrigInPattTypeVerify(cmdDataLen, pCmdData, (void *)&type))
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if (bConfig[i])
             {
@@ -320,7 +326,7 @@ void cmdTrigInPattTypeSet(u8 cmdDataLen, u8 *pCmdData)
             }
         }
         
-        servTrigInInfoWrite(&g_trigInInfo);
+        servStimerAdd(&g_paraSaveTimer);
     }
 }
 
@@ -355,7 +361,7 @@ void cmdTrigInPattTypeQuery(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -396,7 +402,7 @@ void cmdTrigInPattResponseSet(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -412,7 +418,7 @@ void cmdTrigInPattResponseSet(u8 cmdDataLen, u8 *pCmdData)
     //进行参数验证
     if (PARA_VERIFY_NO_ERROR == pvrfTrigInPattResponseVerify(cmdDataLen, pCmdData, (void *)&pattResponse))
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if (bConfig[i])
             {
@@ -424,7 +430,7 @@ void cmdTrigInPattResponseSet(u8 cmdDataLen, u8 *pCmdData)
             }
         }
         
-        servTrigInInfoWrite(&g_trigInInfo);
+        servStimerAdd(&g_paraSaveTimer);
     }
 }
 
@@ -459,7 +465,7 @@ void cmdTrigInPattResponseQuery(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -500,7 +506,7 @@ void cmdTrigInPattSModeSet(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -516,7 +522,7 @@ void cmdTrigInPattSModeSet(u8 cmdDataLen, u8 *pCmdData)
     //进行参数验证
     if (PARA_VERIFY_NO_ERROR == pvrfTrigInPattSModeVerify(cmdDataLen, pCmdData, (void *)&pattSMode))
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if (bConfig[i])
             {
@@ -528,7 +534,7 @@ void cmdTrigInPattSModeSet(u8 cmdDataLen, u8 *pCmdData)
             }
         }
         
-        servTrigInInfoWrite(&g_trigInInfo);
+        servStimerAdd(&g_paraSaveTimer);
     }
 }
 
@@ -563,7 +569,7 @@ void cmdTrigInPattSModeQuery(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -604,7 +610,7 @@ void cmdTrigInPattSPeriodSet(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -620,7 +626,7 @@ void cmdTrigInPattSPeriodSet(u8 cmdDataLen, u8 *pCmdData)
     //进行参数验证
     if (PARA_VERIFY_NO_ERROR == pvrfTrigInPattSPeriodVerify(cmdDataLen, pCmdData, (void *)&pattSPeriod))
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if (bConfig[i])
             {
@@ -632,7 +638,7 @@ void cmdTrigInPattSPeriodSet(u8 cmdDataLen, u8 *pCmdData)
             }
         }
         
-        servTrigInInfoWrite(&g_trigInInfo);
+        servStimerAdd(&g_paraSaveTimer);
     }
 }
 
@@ -667,7 +673,7 @@ void cmdTrigInPattSPeriodQuery(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -699,11 +705,6 @@ void cmdTrigInLevelStateSet(u8 cmdDataLen, u8 *pCmdData)
     SensorStateEnum state;
     u8   index;
     u8   i;
-#ifdef PROJECT_GELGOOG
-    u8 dataLen;
-    u8 j;
-    u8 data[6];
-#endif
     bool bConfig[CH_TOTAL] = {0};
     u8   chanNum = *pCmdData++;
     
@@ -713,7 +714,7 @@ void cmdTrigInLevelStateSet(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -729,81 +730,11 @@ void cmdTrigInLevelStateSet(u8 cmdDataLen, u8 *pCmdData)
     //进行参数验证
     if (PARA_VERIFY_NO_ERROR == pvrfTrigInLevelStateVerify(cmdDataLen, pCmdData, (void *)&state, &index))
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if (bConfig[i])
             {
                 g_trigInInfo.trigIn[i].levelState[index] = state;
-
-#ifdef PROJECT_GELGOOG
-#if 1
-#if 1
-                //只有TrigR和U2_S2互斥
-                if ((SENSOR_ON == state) && (CH4 == i) && (TRIGPIN_DIR == index) &&
-                    (SENSOR_ON == g_sensorUart.sensor[UARTNUM_U2][SENSOR_S2].state))
-                {
-                    g_sensorUart.sensor[UARTNUM_U2][SENSOR_S2].state = SENSOR_OFF;
-
-                    //通知上位机IO状态变化了
-                    dataLen = sizeof(g_sensorUart.sensor[UARTNUM_U2][SENSOR_S2].state) + sizeof(SenUartNumEnum) + sizeof(SensorNumEnum);
-                    data[0] = UARTNUM_U2;    //UARTNUM_U2
-                    data[1] = SENSOR_S2;     //SENSOR_S2
-                    data[2] = g_sensorUart.sensor[UARTNUM_U2][SENSOR_S2].state;
-                    cmdFrameSend(CMD_SENSORUART, SNUARTCMD_STATEQ, dataLen, data);
-            
-                    servSensor2UartReciveOff();    //临时在这里设置，后续改成在FUNC线程中关闭    NICK MARK
-
-                    servSensorUartInfoStore(&g_sensorUart);
-                }
-#else
-                //互斥修改为CH4编码器和UartSensor2互斥
-                if ((SENSOR_ON == state) && (CH4 == i))
-                {
-                    for (j = 0;j < SENSOR_RESERVE;j++)
-                    {
-                        if (SENSOR_ON == g_sensorUart.sensor[UARTNUM_U2][j].state)
-                        {
-                            g_sensorUart.sensor[UARTNUM_U2][j].state = SENSOR_OFF;
-
-                            //通知上位机IO状态变化了
-                            dataLen = sizeof(g_sensorUart.sensor[UARTNUM_U2][j].state) + sizeof(SenUartNumEnum) + sizeof(SensorNumEnum);
-                            data[0] = UARTNUM_U2;    //UARTNUM_U2
-                            data[1] = j;             //SENSOR_S1
-                            data[2] = g_sensorUart.sensor[UARTNUM_U2][j].state;
-                            cmdFrameSend(CMD_SENSORUART, SNUARTCMD_STATEQ, dataLen, data);
-                    
-                            servSensor2UartReciveOff();    //临时在这里设置，后续改成在FUNC线程中关闭    NICK MARK
-                        }
-                    }
-
-                    servSensorUartInfoStore(&g_sensorUart);
-                }
-#endif
-#else
-
-                //开启的是DIR，且编码器为三通道编码器并处于开启状态则关闭编码器
-                if ((INTFC_ON == g_motorInfo.motor[i].encoderState) && 
-                    (ECCHAN_3 == g_motorInfo.motor[i].encoderChanNum) &&
-                    ((TRIGPIN_DIR == index) && (SENSOR_ON == state)))
-                {
-                    g_motorInfo.motor[i].encoderState = INTFC_OFF;
-                    servMotorInfoWrite(&g_motorInfo);
-                    
-                    //通知上位机编码器状态变化了
-                    dataLen = sizeof(g_motorInfo.motor[i].encoderState) + sizeof(chanNum);
-                    pData = (u8 *)&g_motorInfo.motor[chanNum].encoderState;
-                    data[0] = chanNum;
-                    for (i = 0;i < sizeof(g_motorInfo.motor[chanNum].encoderState);i++)
-                    {
-                        data[1 + i] = *pData++;
-                    }
-                    cmdFrameSend(CMD_ENCODER, ENCODERCMD_STATEQ, dataLen, data);
-
-                    g_chanCfgBmp[i].bEncoder = true;
-                }
-                
-#endif
-#endif
 
                 //给FUNC发信号量
                 g_chanCfgBmp[i].bTrigIn = true;
@@ -811,7 +742,7 @@ void cmdTrigInLevelStateSet(u8 cmdDataLen, u8 *pCmdData)
             }
         }
         
-        servTrigInInfoWrite(&g_trigInInfo);
+        servStimerAdd(&g_paraSaveTimer);
     }
 }
 
@@ -850,7 +781,7 @@ void cmdTrigInLevelStateQuery(u8 cmdDataLen, u8 *pCmdData)
         }
         else
         {
-            for (i = 0;i < g_systemState.chanNum;i++)
+            for (i = 0;i < CH_TOTAL;i++)
             {
                 if ((CH_ALL == chanNum) ||
                     (chanNum == g_systemInfo.group[i][0]) ||
@@ -894,7 +825,7 @@ void cmdTrigInLevelTypeSet(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -910,7 +841,7 @@ void cmdTrigInLevelTypeSet(u8 cmdDataLen, u8 *pCmdData)
     //进行参数验证
     if (PARA_VERIFY_NO_ERROR == pvrfTrigInLevelTypeVerify(cmdDataLen, pCmdData, (void *)&type, &index))
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if (bConfig[i])
             {
@@ -922,7 +853,7 @@ void cmdTrigInLevelTypeSet(u8 cmdDataLen, u8 *pCmdData)
             }
         }
         
-        servTrigInInfoWrite(&g_trigInInfo);
+        servStimerAdd(&g_paraSaveTimer);
     }
 }
 
@@ -956,7 +887,7 @@ void cmdTrigInLevelTypeQuery(u8 cmdDataLen, u8 *pCmdData)
         }
         else
         {
-            for (i = 0;i < g_systemState.chanNum;i++)
+            for (i = 0;i < CH_TOTAL;i++)
             {
                 if ((CH_ALL == chanNum) ||
                     (chanNum == g_systemInfo.group[i][0]) ||
@@ -996,7 +927,7 @@ void cmdTrigInLevelResponseSet(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -1012,7 +943,7 @@ void cmdTrigInLevelResponseSet(u8 cmdDataLen, u8 *pCmdData)
     //进行参数验证
     if (PARA_VERIFY_NO_ERROR == pvrfTrigInLevelResponseVerify(cmdDataLen, pCmdData, (void *)&response, &index))
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if (bConfig[i])
             {
@@ -1024,7 +955,7 @@ void cmdTrigInLevelResponseSet(u8 cmdDataLen, u8 *pCmdData)
             }
         }
         
-        servTrigInInfoWrite(&g_trigInInfo);
+        servStimerAdd(&g_paraSaveTimer);
     }
 }
 
@@ -1063,7 +994,7 @@ void cmdTrigInLevelResponseQuery(u8 cmdDataLen, u8 *pCmdData)
         }
         else
         {
-            for (i = 0;i < g_systemState.chanNum;i++)
+            for (i = 0;i < CH_TOTAL;i++)
             {
                 if ((CH_ALL == chanNum) ||
                     (chanNum == g_systemInfo.group[i][0]) ||
@@ -1107,7 +1038,7 @@ void cmdTrigInLevelSModeSet(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -1123,7 +1054,7 @@ void cmdTrigInLevelSModeSet(u8 cmdDataLen, u8 *pCmdData)
     //进行参数验证
     if (PARA_VERIFY_NO_ERROR == pvrfTrigInLevelSModeVerify(cmdDataLen, pCmdData, (void *)&levelSMode, &index))
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if (bConfig[i])
             {
@@ -1135,7 +1066,7 @@ void cmdTrigInLevelSModeSet(u8 cmdDataLen, u8 *pCmdData)
             }
         }
         
-        servTrigInInfoWrite(&g_trigInInfo);
+        servStimerAdd(&g_paraSaveTimer);
     }
 }
 
@@ -1174,7 +1105,7 @@ void cmdTrigInLevelSModeQuery(u8 cmdDataLen, u8 *pCmdData)
         }
         else
         {
-            for (i = 0;i < g_systemState.chanNum;i++)
+            for (i = 0;i < CH_TOTAL;i++)
             {
                 if ((CH_ALL == chanNum) ||
                     (chanNum == g_systemInfo.group[i][0]) ||
@@ -1218,7 +1149,7 @@ void cmdTrigInLevelSPeriodSet(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -1234,7 +1165,7 @@ void cmdTrigInLevelSPeriodSet(u8 cmdDataLen, u8 *pCmdData)
     //进行参数验证
     if (PARA_VERIFY_NO_ERROR == pvrfTrigInLevelSPeriodVerify(cmdDataLen, pCmdData, (void *)&levelSPeriod, &index))
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if (bConfig[i])
             {
@@ -1246,7 +1177,7 @@ void cmdTrigInLevelSPeriodSet(u8 cmdDataLen, u8 *pCmdData)
             }
         }
         
-        servTrigInInfoWrite(&g_trigInInfo);
+        servStimerAdd(&g_paraSaveTimer);
     }
 }
 
@@ -1285,7 +1216,7 @@ void cmdTrigInLevelSPeriodQuery(u8 cmdDataLen, u8 *pCmdData)
         }
         else
         {
-            for (i = 0;i < g_systemState.chanNum;i++)
+            for (i = 0;i < CH_TOTAL;i++)
             {
                 if ((CH_ALL == chanNum) ||
                     (chanNum == g_systemInfo.group[i][0]) ||
@@ -1367,6 +1298,7 @@ void cmdTrigInCmdProc(CmdParseFrameStruct *pCmdStackFrame)
 
 
 #ifdef PROJECT_GELGOOG
+#if !GELGOOG_SINANJU
 /*********************************************************************************************
 函 数 名: cmdIsolInStateSet;
 实现功能: 无; 
@@ -1385,7 +1317,7 @@ void cmdIsolInStateSet(u8 cmdDataLen, u8 *pCmdData)
     {
         g_isolatorIn.state = state;
         
-        servIsolatorInInfoStore(&g_isolatorIn);
+        servStimerAdd(&g_paraSaveTimer);
 
         if (INTFC_ON == state)
         {
@@ -1435,7 +1367,7 @@ void cmdIsolInTypeSet(u8 cmdDataLen, u8 *pCmdData)
     {
         g_isolatorIn.type = type;
         
-        servIsolatorInInfoStore(&g_isolatorIn);
+        servStimerAdd(&g_paraSaveTimer);
     }
 }
 
@@ -1476,7 +1408,7 @@ void cmdIsolInResponseSet(u8 cmdDataLen, u8 *pCmdData)
     {
         g_isolatorIn.response = response;
         
-        servIsolatorInInfoStore(&g_isolatorIn);
+        servStimerAdd(&g_paraSaveTimer);
     }
 }
 
@@ -1517,7 +1449,7 @@ void cmdIsolInRespChanSet(u8 cmdDataLen, u8 *pCmdData)
     {
         g_isolatorIn.respChan = respChan;
         
-        servIsolatorInInfoStore(&g_isolatorIn);
+        servStimerAdd(&g_paraSaveTimer);
     }
 }
 
@@ -1558,7 +1490,7 @@ void cmdIsolInSModeSet(u8 cmdDataLen, u8 *pCmdData)
     {
         g_isolatorIn.sMode = sMode;
         
-        servIsolatorInInfoStore(&g_isolatorIn);
+        servStimerAdd(&g_paraSaveTimer);
     }
 }
 
@@ -1599,7 +1531,7 @@ void cmdIsolInSPeriodSet(u8 cmdDataLen, u8 *pCmdData)
     {
         g_isolatorIn.sPeriod = sPeriod;
         
-        servIsolatorInInfoStore(&g_isolatorIn);
+        servStimerAdd(&g_paraSaveTimer);
     }
 }
 
@@ -1669,8 +1601,10 @@ void cmdIsolInCmdProc(CmdParseFrameStruct *pCmdStackFrame)
     }
 }
 #endif
+#endif
 
 
+#if !GELGOOG_SINANJU
 /*********************************************************************************************
 函 数 名: cmdTrigOutStateSet;
 实现功能: 无; 
@@ -1715,7 +1649,7 @@ void cmdTrigOutStateSet(u8 cmdDataLen, u8 *pCmdData)
         }
         g_bCmdPostSemToFunc = true;
 
-        servTrigOutInfoWrite(&g_digitalOut);
+        servStimerAdd(&g_paraSaveTimer);
     }
 }
 
@@ -1737,7 +1671,7 @@ void cmdTrigOutStateQuery(u8 cmdDataLen, u8 *pCmdData)
     u8 index = *pCmdData;
 
     
-    if (index < DIO_RESERVE)
+    if (index < g_systemState.doutNum)
     {
         dataLen = sizeof(g_digitalOut.output[index].state) + sizeof(index);
     
@@ -1796,7 +1730,7 @@ void cmdTrigOutSourceSet(u8 cmdDataLen, u8 *pCmdData)
         }
         g_bCmdPostSemToFunc = true;
 
-        servIsolatorOutInfoStore(&g_isolatorOut);
+        servStimerAdd(&g_paraSaveTimer);
     }
 }
 
@@ -1818,7 +1752,7 @@ void cmdTrigOutSourceQuery(u8 cmdDataLen, u8 *pCmdData)
     u8 index = *pCmdData;
 
     
-    if (index < DIO_RESERVE)
+    if (index < g_systemState.doutNum)
     {
         dataLen = sizeof(g_digitalOut.output[index].source) + sizeof(index);
     
@@ -1877,8 +1811,8 @@ void cmdTrigOutConditionSet(u8 cmdDataLen, u8 *pCmdData)
         }
 
         g_bCmdPostSemToFunc = true;
-
-        servTrigOutInfoWrite(&g_digitalOut);
+        
+        servStimerAdd(&g_paraSaveTimer);
     }
 }
 
@@ -1900,7 +1834,7 @@ void cmdTrigOutConditionQuery(u8 cmdDataLen, u8 *pCmdData)
     u8 index = *pCmdData;
 
 
-    if (index < DIO_RESERVE)
+    if (index < g_systemState.doutNum)
     {
         dataLen = sizeof(g_digitalOut.output[index].condition) + sizeof(index);
 
@@ -1960,7 +1894,7 @@ void cmdTrigOutSignalSet(u8 cmdDataLen, u8 *pCmdData)
 
         g_bCmdPostSemToFunc = true;
 
-        servTrigOutInfoWrite(&g_digitalOut);
+        servStimerAdd(&g_paraSaveTimer);
     }
 }
 
@@ -1982,7 +1916,7 @@ void cmdTrigOutSignalQuery(u8 cmdDataLen, u8 *pCmdData)
     u8 index = *pCmdData;
 
     
-    if (index < DIO_RESERVE)
+    if (index < g_systemState.doutNum)
     {
         dataLen = sizeof(g_digitalOut.output[index].signal) + sizeof(index);
         
@@ -2042,7 +1976,7 @@ void cmdTrigOutPolaritySet(u8 cmdDataLen, u8 *pCmdData)
 
         g_bCmdPostSemToFunc = true;
 
-        servTrigOutInfoWrite(&g_digitalOut);
+        servStimerAdd(&g_paraSaveTimer);
     }
 }
 
@@ -2064,7 +1998,7 @@ void cmdTrigOutPolarityQuery(u8 cmdDataLen, u8 *pCmdData)
     u8 index = *pCmdData;
 
     
-    if (index < DIO_RESERVE)
+    if (index < g_systemState.doutNum)
     {
         dataLen = sizeof(g_digitalOut.output[index].polarity) + sizeof(index);
         
@@ -2124,7 +2058,7 @@ void cmdTrigOutPeriodSet(u8 cmdDataLen, u8 *pCmdData)
 
         g_bCmdPostSemToFunc = true;
 
-        servTrigOutInfoWrite(&g_digitalOut);
+        servStimerAdd(&g_paraSaveTimer);
     }
 }
 
@@ -2146,7 +2080,7 @@ void cmdTrigOutPeriodQuery(u8 cmdDataLen, u8 *pCmdData)
     u8 index = *pCmdData;
 
     
-    if (index < DIO_RESERVE)
+    if (index < g_systemState.doutNum)
     {
         dataLen = sizeof(g_digitalOut.output[index].period) + sizeof(index);
         
@@ -2206,7 +2140,7 @@ void cmdTrigOutDutySet(u8 cmdDataLen, u8 *pCmdData)
 
         g_bCmdPostSemToFunc = true;
 
-        servTrigOutInfoWrite(&g_digitalOut);
+        servStimerAdd(&g_paraSaveTimer);
     }
 }
 
@@ -2228,7 +2162,7 @@ void cmdTrigOutDutyQuery(u8 cmdDataLen, u8 *pCmdData)
     u8 index = *pCmdData;
 
     
-    if (index < DIO_RESERVE)
+    if (index < g_systemState.doutNum)
     {
         dataLen = sizeof(g_digitalOut.output[index].duty) + sizeof(index);
         
@@ -2328,7 +2262,7 @@ void cmdIsolatorOutStateSet(u8 cmdDataLen, u8 *pCmdData)
         }
         g_bCmdPostSemToFunc = true;
 
-        servIsolatorOutInfoStore(&g_isolatorOut);
+        servStimerAdd(&g_paraSaveTimer);
     }
 }
 
@@ -2350,7 +2284,7 @@ void cmdIsolatorOutStateQuery(u8 cmdDataLen, u8 *pCmdData)
     u8 index = *pCmdData;
 
     
-    if (index < YOUT_RESERVE)
+    if (index < g_systemState.youtNum)
     {
         dataLen = sizeof(g_isolatorOut.output[index].state) + sizeof(index);
     
@@ -2400,7 +2334,7 @@ void cmdIsolatorOutSourceSet(u8 cmdDataLen, u8 *pCmdData)
         }
         g_bCmdPostSemToFunc = true;
 
-        servIsolatorOutInfoStore(&g_isolatorOut);
+        servStimerAdd(&g_paraSaveTimer);
     }
 }
 
@@ -2422,7 +2356,7 @@ void cmdIsolatorOutSourceQuery(u8 cmdDataLen, u8 *pCmdData)
     u8 index = *pCmdData;
 
     
-    if (index < YOUT_RESERVE)
+    if (index < g_systemState.youtNum)
     {
         dataLen = sizeof(g_isolatorOut.output[index].source) + sizeof(index);
     
@@ -2473,7 +2407,7 @@ void cmdIsolatorOutConditionSet(u8 cmdDataLen, u8 *pCmdData)
 
         g_bCmdPostSemToFunc = true;
 
-        servIsolatorOutInfoStore(&g_isolatorOut);
+        servStimerAdd(&g_paraSaveTimer);
     }
 }
 
@@ -2495,7 +2429,7 @@ void cmdIsolatorOutConditionQuery(u8 cmdDataLen, u8 *pCmdData)
     u8 index = *pCmdData;
 
 
-    if (index < YOUT_RESERVE)
+    if (index < g_systemState.youtNum)
     {
         dataLen = sizeof(g_isolatorOut.output[index].condition) + sizeof(index);
 
@@ -2546,7 +2480,7 @@ void cmdIsolatorOutResponseSet(u8 cmdDataLen, u8 *pCmdData)
 
         g_bCmdPostSemToFunc = true;
 
-        servIsolatorOutInfoStore(&g_isolatorOut);
+        servStimerAdd(&g_paraSaveTimer);
     }
 }
 
@@ -2568,7 +2502,7 @@ void cmdIsolatorOutResponseQuery(u8 cmdDataLen, u8 *pCmdData)
     u8 index = *pCmdData;
 
     
-    if (index < YOUT_RESERVE)
+    if (index < g_systemState.youtNum)
     {
         dataLen = sizeof(g_isolatorOut.output[index].response) + sizeof(index);
         
@@ -2625,6 +2559,7 @@ void cmdIsolatorOutCmdProc(CmdParseFrameStruct *pCmdStackFrame)
         pIsolOutCmdFunc[pCmdStackFrame->subType](dataLen, pData);
     }
 }
+#endif
 
 
 

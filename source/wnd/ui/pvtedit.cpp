@@ -11,7 +11,6 @@
 #include "../../widget/megamessagebox.h"
 
 
-
 pvtEdit::pvtEdit(QWidget *parent) :
     tableEdit(parent),
     ui(new Ui::pvtEdit)
@@ -85,8 +84,6 @@ void pvtEdit::onNetEvent(const QString &name,
                          int axes,
                          RoboMsg &msg)
 {
-//    logDbg()<<msg.getMsg();
-
     //! event id, frame id, byte array
     if ( msg.getMsg() == e_interrupt_occuring )
     {
@@ -103,7 +100,7 @@ void pvtEdit::onNetEvent(const QString &name,
 }
 
 void pvtEdit::onMotionStatus( int axes, MRQ_MOTION_STATE_2 stat )
-{logDbg()<<stat;/*sysLog(__FUNCTION__, QString::number( (int)stat ) );*/
+{
     if ( stat == MRQ_MOTION_STATE_2_IDLE )
     {
         ui->btnDown->setEnabled( true );
@@ -139,9 +136,9 @@ void pvtEdit::onMotionStatus( int axes, MRQ_MOTION_STATE_2 stat )
 void pvtEdit::setupUi()
 {
     //! varialbes
-    ui->cmbPlanMode->addItem( tr("Trapezoid"), ( (int)3 ) );
-    ui->cmbPlanMode->addItem( tr("Linear"), ( (int)1 ) );
     ui->cmbPlanMode->addItem( tr("Cubic"), ( (int)0 ) );
+    ui->cmbPlanMode->addItem( tr("Trapezoid"), ( (int)1 ) );
+    ui->cmbPlanMode->addItem( tr("S curve"), ( (int)2 ) );
 }
 
 void pvtEdit::buildConnection()
@@ -273,14 +270,6 @@ int pvtEdit::postStart( appMsg msg, void *pPara )
     MegaDevice::deviceMRQ *pMrq = m_pmcModel->m_pInstMgr->findDevice( str,
                                                                       axesId );
     Q_ASSERT( NULL != pMrq );
-
-//    MRQ_MOTION_STATE_2 stat;
-
-//    int ret = pMrq->getMOTION_STATE( axesId, MRQ_MOTION_SWITCH_1_MAIN, &stat );
-//    if ( ret != 0 )
-//    { return ret; }
-//    if ( stat != MRQ_MOTION_STATE_2_CALCEND )
-//    { return ERR_CAN_NOT_RUN; }
     int ret;
     ret = pMrq->run( tpvRegion(axesId, m_pmcModel->mConn.devicePage() ) );
 
@@ -325,6 +314,8 @@ QProgressDialog *pvtEdit::progress()
     else
     {
         m_pProgress = new QProgressDialog(this);
+        Q_ASSERT( NULL != m_pProgress );
+
         m_pProgress->setAutoClose( false );
         m_pProgress->setAutoReset( false );
 
@@ -333,8 +324,6 @@ QProgressDialog *pvtEdit::progress()
                  this,
                  SLOT(slot_download_cancel()) );
     }
-
-    Q_ASSERT( NULL != m_pProgress );
 
     return m_pProgress;
 }
@@ -550,14 +539,6 @@ void pvtEdit::on_btnAdd_clicked()
 void pvtEdit::on_btnDel_clicked()
 {
     mTpvGroup->removeRow( ui->tableView->currentIndex().row() );
-
-//    QItemSelectionModel *pModel = ui->tableView->selectionModel();
-
-//    QModelIndexList selectList = pModel->selectedIndexes();
-//    foreach( QModelIndex index, selectList )
-//    {
-//        mTpvGroup->removeRow( index.row() );
-//    }
 }
 
 void pvtEdit::on_btnClr_clicked()
@@ -598,7 +579,6 @@ void pvtEdit::slot_download_cancel()
 
     MegaDevice::deviceMRQ *pMrq = m_pmcModel->m_pInstMgr->findDevice( str, id );
     pMrq->terminate( tpvRegion(mAgentAxes, m_pmcModel->mConn.devicePage() ) );
-
 }
 
 void pvtEdit::on_spinLoop_valueChanged(int arg1)
@@ -686,7 +666,4 @@ void pvtEdit::slot_line_changed()
         ui->btnGraph->setEnabled( false );
     }
 }
-
-
-
 

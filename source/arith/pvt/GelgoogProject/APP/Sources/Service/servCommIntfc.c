@@ -52,7 +52,7 @@ extern EventSrcBmpStruct g_eventSrcBmp;
 StreamBufferStruct g_ciCanRxBuffer;
 StreamBufferStruct g_ciCanTxBuffer;
 u8  canRxBuffer[480];
-u8  canTxBuffer[480];
+u8  canTxBuffer[1536];
 
 SoftTimerStruct    g_ciUartDmaRecTimer;
 StreamBufferStruct g_ciUartRxBuffer;
@@ -97,11 +97,27 @@ void servCommStreamBufferInit(void)
         servStreamBufferInit(&g_senUartRxBuffer[UARTNUM_U1][i], 
                              senUartRxBuffer[UARTNUM_U1][i], 
                              sizeof(senUartRxBuffer[UARTNUM_U1][i]));
-                             
+
+#if !(GELGOOG_AXIS_4 || GELGOOG_AXIS_10)    //4轴和10轴只支持1路                             
         servStreamBufferInit(&g_senUartRxBuffer[UARTNUM_U2][i], 
                              senUartRxBuffer[UARTNUM_U2][i], 
                              sizeof(senUartRxBuffer[UARTNUM_U2][i]));
+#endif
     }
+}
+
+
+/*********************************************************************************************
+函 数 名: servCiCanConfig;
+实现功能: 无; 
+输入参数: 无;
+输出参数: 无;
+返 回 值: 无;
+说    明: 无;
+*********************************************************************************************/
+void servCiCanConfig(CanIntfcStruct canIntfc)
+{
+    bspCiCanConfig(canIntfc);
 }
 
 
@@ -208,7 +224,10 @@ void servCiCanTxFrameProcess(void)
         {
             memcpy(canData, pCanPhyFrame->payload, dataLen);
             bspCiCanSend(pCanPhyFrame->canID, CAN_RTR_DATA, dataLen, canData);
-            bspDelayUs(160);    //短暂延时，不然在高速率下发送会丢帧
+
+            //延时暂时设置为300us, 原因是MRH在延时小于300us时，会接收不到MRQ发送的数据    NICK TO MODIFY
+            //bspDelayUs(160);    //短暂延时，不然在高速率下发送会丢帧
+            bspDelayUs(300);    //短暂延时，不然在高速率下发送会丢帧
         }
 
         servDequeue(&g_ciCanTxBuffer, pCanPhyFrame->frameLen);
@@ -230,6 +249,20 @@ void servCiUartDmaRecTimerCB(void *timeOutPara)
     bspCiUartDmaOff();
     
     servStimerDelete(&g_ciUartDmaRecTimer);
+}
+
+
+/*********************************************************************************************
+函 数 名: servCiUartConfig;
+实现功能: 无; 
+输入参数: 无;
+输出参数: 无;
+返 回 值: 无;
+说    明: 无;
+*********************************************************************************************/
+void servCiUartConfig(UartIntfcStruct uartIntfc)
+{
+    bspCiUartConfig(uartIntfc);
 }
 
 
@@ -371,9 +404,9 @@ void servCiUartTxFrameProcess(void)
 返 回 值: 无;
 说    明: 无;
 *********************************************************************************************/
-void servFrameSend(CmdTypeEnum cmdMainType, u8 cmdSubType, u8 dataLen, u8 *pData, LinkTypeEnum linkType)
+void servFrameSend(u8 cmdMainType, u8 cmdSubType, u8 dataLen, u8 *pData, LinkTypeEnum linkType)
 {
-    u8 sendLen = dataLen + sizeof(CmdTypeEnum) + sizeof(cmdSubType);
+    u8 sendLen = dataLen + sizeof(cmdMainType) + sizeof(cmdSubType);
     u8 *pSendBuffer;
     
     switch (linkType)
@@ -598,6 +631,7 @@ void irqCiUartDmaComplReceive(void)
 
 
 static SensorNumEnum sn1UartCurrNum = SENSOR_S1;
+bool sn1UartHaveRetry = false;
 /*********************************************************************************************
 函 数 名: irqSensor1UartReceive;
 实现功能: 串口接收中断回调函数
@@ -634,7 +668,7 @@ void irqSensor1UartReceive(void)
             //*pReceiveBuffer++ = sn1UartRcvByte;
             
             //启动DMA
-            bspSensor1UartDmaRecive(pReceiveBuffer, sensorUartRecvInfo[UARTNUM_U1].frameLen + sizeof(sensorUartRecvInfo[UARTNUM_U1].frameLen));
+            bspSensor1UartDmaRecive(pReceiveBuffer, sensorUartRecvInfo[UARTNUM_U1].frameLen);
 
             //开启DMA接收超时定时器
             servStimerAdd(&g_senUartDmaRecTimer[UARTNUM_U1]);
@@ -668,7 +702,11 @@ void irqSensor1UartDmaComplReceive(void)
 
         //处理下Buffer中的数据
         pUsartPhyFrame = (SensorUartPhyFrameStruct *)servFastGetTail(g_senUartRxBuffer[UARTNUM_U1][sn1UartCurrNum]);
-        servFastEnqueue(&g_senUartRxBuffer[UARTNUM_U1][sn1UartCurrNum], pUsartPhyFrame->frameLen);
+
+        //servFastEnqueue(&g_senUartRxBuffer[UARTNUM_U1][sn1UartCurrNum], pUsartPhyFrame->frameLen);
+        servFastEnqueue(&g_senUartRxBuffer[UARTNUM_U1][sn1UartCurrNum], 
+                        pUsartPhyFrame->frameLen + sizeof(pUsartPhyFrame->frameLen));
+        
         g_senUartRxBuffer[UARTNUM_U1][sn1UartCurrNum].frameCount++;
 
         //如果recvNum为0了就不再接收数据，直到切换接收后或者下个周期才开启UART接收
@@ -690,6 +728,20 @@ void irqSensor1UartDmaComplReceive(void)
 
 
 /*********************************************************************************************
+函 数 名: servSensor1UartConfig;
+实现功能: 无; 
+输入参数: 无;
+输出参数: 无;
+返 回 值: 无;
+说    明: 无;
+*********************************************************************************************/
+void servSensor1UartConfig(UartIntfcStruct uartIntfc)
+{
+    bspSensor1UartConfig(uartIntfc);
+}
+
+
+/*********************************************************************************************
 函 数 名: servSensor1UartDmaRecTimerCB;
 实现功能: 无; 
 输入参数: 无;
@@ -704,6 +756,17 @@ void servSensor1UartDmaRecTimerCB(void *timeOutPara)
     bspSensor1UartDmaOff();
 
     servStimerDelete(&g_senUartDmaRecTimer[UARTNUM_U1]);
+
+    //超时了把Uart打开再收一次
+    if (!sn1UartHaveRetry)
+    {
+        sn1UartHaveRetry = true;
+        
+        //继续收一帧
+        sensorUartRecvInfo[UARTNUM_U1].recvNum = g_sensorUart.sensor[UARTNUM_U1][sn1UartCurrNum].recvNum;
+
+        bspSensor1UartReciveOn();
+    }
 }
 
 
@@ -751,6 +814,8 @@ void servSensor1UartSwitchTimerCB(void *timeOutPara)
     }
     
     bspSensor1UartReciveOn();
+
+    sn1UartHaveRetry = false;
     
     if (g_senUartSwitchTimer[UARTNUM_U1].bUsed)
     {
@@ -796,10 +861,27 @@ void servSensor1UartReciveOn(SensorManageStruct sensor, SensorNumEnum sensorNum)
         servStimerAdd(&g_senUartSwitchTimer[UARTNUM_U1]);
 
         bspSensor1UartReciveOn();
+
+        sn1UartHaveRetry = false;
     }
 }
 
 
+/*********************************************************************************************
+函 数 名: irqSensor1UartReceive;
+实现功能: 串口接收中断回调函数
+输入参数: 无;
+输出参数: 无;
+返 回 值: 无;
+说    明: 无;
+*********************************************************************************************/
+void servSensor1UartSend(u8 *dataBuff, u8 dataLen)
+{
+    bspSensor1UartSend(dataBuff, dataLen);
+}
+
+
+#if !(GELGOOG_AXIS_4 || GELGOOG_AXIS_10)    //4轴和10轴只支持1路
 
 #if !UART_SN2_UART_USE_DMA
 static u8  *pReceiveBuffer = NULL;
@@ -808,6 +890,7 @@ static bool bsn2UartFrameHeadRcv = false;        //是否收到帧头
 #endif
 
 static SensorNumEnum sn2UartCurrNum = SENSOR_S1; 
+bool sn2UartHaveRetry = false;
 /*********************************************************************************************
 函 数 名: irqSensor2UartReceive;
 实现功能: 串口接收中断回调函数
@@ -846,7 +929,7 @@ void irqSensor2UartReceive(void)
             //*pReceiveBuffer++ = sn2UartRcvByte;
             
             //启动DMA
-            bspSensor2UartDmaRecive(pReceiveBuffer, sensorUartRecvInfo[UARTNUM_U2].frameLen + sizeof(sensorUartRecvInfo[UARTNUM_U2].frameLen));
+            bspSensor2UartDmaRecive(pReceiveBuffer, sensorUartRecvInfo[UARTNUM_U2].frameLen);
 
             //开启DMA接收超时定时器
             servStimerAdd(&g_senUartDmaRecTimer[UARTNUM_U2]);
@@ -956,7 +1039,11 @@ void irqSensor2UartDmaComplReceive(void)
 
         //处理下Buffer中的数据
         pUsartPhyFrame = (SensorUartPhyFrameStruct *)servFastGetTail(g_senUartRxBuffer[UARTNUM_U2][sn2UartCurrNum]);
-        servFastEnqueue(&g_senUartRxBuffer[UARTNUM_U2][sn2UartCurrNum], pUsartPhyFrame->frameLen);
+
+        //servFastEnqueue(&g_senUartRxBuffer[UARTNUM_U2][sn2UartCurrNum], pUsartPhyFrame->frameLen);
+        servFastEnqueue(&g_senUartRxBuffer[UARTNUM_U2][sn2UartCurrNum], 
+                        pUsartPhyFrame->frameLen + sizeof(pUsartPhyFrame->frameLen));
+        
         g_senUartRxBuffer[UARTNUM_U2][sn2UartCurrNum].frameCount++;
 
         //如果recvNum为0了就不再接收数据，直到切换接收后或者下个周期才开启UART接收
@@ -974,6 +1061,20 @@ void irqSensor2UartDmaComplReceive(void)
             OSSemPost(&g_semEventManageTask, OS_OPT_POST_ALL, NULL);
         }
     }
+}
+
+
+/*********************************************************************************************
+函 数 名: servSensor2UartConfig;
+实现功能: 无; 
+输入参数: 无;
+输出参数: 无;
+返 回 值: 无;
+说    明: 无;
+*********************************************************************************************/
+void servSensor2UartConfig(UartIntfcStruct uartIntfc)
+{
+    bspSensor2UartConfig(uartIntfc);
 }
 
 
@@ -1010,6 +1111,22 @@ void servSensor2UartDmaRecTimerCB(void *timeOutPara)
 #endif
 
     servStimerDelete(&g_senUartDmaRecTimer[UARTNUM_U2]);
+
+    //超时了再试一次
+    if (!sn2UartHaveRetry)
+    {
+        sn2UartHaveRetry = true;
+        
+        //继续收一帧
+        sensorUartRecvInfo[UARTNUM_U2].recvNum = g_sensorUart.sensor[UARTNUM_U2][sn2UartCurrNum].recvNum;
+
+        bspSensor2UartReciveOn();
+        
+#if GELGOOG_SINANJU
+        //重新发送查询命令
+        servFpgaAbsEncReadTrig(sn2UartCurrNum);
+#endif
+    }
 }
 
 
@@ -1058,6 +1175,8 @@ void servSensor2UartSwitchTimerCB(void *timeOutPara)
     }
     
     bspSensor2UartReciveOn();
+
+    sn2UartHaveRetry = false;
 
 #if GELGOOG_SINANJU
     //绝对值编码器时需要发送查询命令    CJ 2018.02.28 Add
@@ -1111,13 +1230,15 @@ void servSensor2UartReciveOn(SensorManageStruct sensor, SensorNumEnum sensorNum)
 
         bspSensor2UartReciveOn();
 
+        sn2UartHaveRetry = false;
+
 #if GELGOOG_SINANJU
         //绝对值编码器时需要发送查询命令    CJ 2018.02.28 Add
         servFpgaAbsEncReadTrig(sn2UartCurrNum);
 #endif
     }
 }
-
+#endif
 
 
 /*******************************************文件尾********************************************/

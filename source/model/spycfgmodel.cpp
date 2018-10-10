@@ -56,13 +56,6 @@ int spyCfgModel::rowCount(const QModelIndex &parent) const
 int spyCfgModel::columnCount(const QModelIndex &parent) const
 { return spyCfgItem::columns(); }
 
-//QString mName;
-//bool bOnOff;
-//int mSource;
-//int mType;
-//double mInterval;
-//int cachesize;
-//QString mComment;
 QVariant spyCfgModel::data(const QModelIndex &index, int role) const
 {
     if ( !index.isValid() )
@@ -131,7 +124,6 @@ bool spyCfgModel::setData(const QModelIndex &index, const QVariant &value, int r
     }
     else if ( index.column() == 1 )
     {
-        logDbg() << value.toBool();
         mItems[ row ]->mbOnOff = ( value.toBool() );
     }
     else if ( index.column() == 2 )
@@ -283,13 +275,7 @@ int spyCfgModel::save( const QString &fileName )
         Q_ASSERT( NULL != pItem );
 
         writer.writeStartElement("item");
-//        QString mName;
-//        bool mbOnOff;
-//        QString mSource;
-//        QString mType;
-//        double mInterval;
-//        int mCacheSize;
-//        QString mComment;
+
         writer.writeTextElement( "name", ( pItem->mName) );
         writer.writeTextElement( "on", QString::number( pItem->mbOnOff) );
         writer.writeTextElement( "source", ( pItem->mSource) );
@@ -368,7 +354,6 @@ int spyCfgModel::load( const QString &fileName )
     delete_all( mItems );
     mItems = localItems;
 
-//    dataChanged();
     endResetModel();
 
     return 0;

@@ -14,10 +14,12 @@ Copyright (C) 2016，北京镁伽机器人科技有限公司
 #include "bspCan.h"
 #include "servCommIntfc.h"
 #include "eventManageTask.h"
+#include "bspSdio.h"
 
 
 
 /****************************************外部变量声明*****************************************/
+extern u8 g_sdioDmaTxComplete;
 
 
 
@@ -333,7 +335,9 @@ void DMA1_Stream2_IRQHandler(void)
 {
     if (DMA_GetFlagStatus(DMA1_Stream2, DMA_LISR_TCIF2) != RESET)    //接收到数据引发的中断
     {
+#if !(GELGOOG_AXIS_4 || GELGOOG_AXIS_10)    //4轴和10轴只支持1路
         irqSensor2UartDmaComplReceive();
+#endif
     }
 
     DMA_ClearFlag(DMA1_Stream2, DMA_FLAG_FEIF2 | DMA_FLAG_DMEIF2 | DMA_FLAG_TEIF2 | DMA_FLAG_HTIF2 | DMA_FLAG_TCIF2);
@@ -693,6 +697,27 @@ void SPI2_IRQHandler(void)
 *********************************************************************************************/
 void USART1_IRQHandler(void)
 {
+    /*********这几个中断只能通过查询FLAG的方式进行判断********/
+    if (USART_GetFlagStatus(USART1, USART_FLAG_PE) != RESET)  
+    {  
+        USART_ReceiveData(USART1);  
+        USART_ClearFlag(USART1, USART_FLAG_PE);  
+    }  
+
+    if (USART_GetFlagStatus(USART1, USART_FLAG_ORE) != RESET)  
+    {  
+        USART_ReceiveData(USART1);  
+        USART_ClearFlag(USART1, USART_FLAG_ORE);  
+    }  
+
+    if (USART_GetFlagStatus(USART1, USART_FLAG_FE) != RESET)  
+    {  
+        USART_ReceiveData(USART1);  
+        USART_ClearFlag(USART1, USART_FLAG_FE);  
+    }
+    /*********************************************************/
+    
+    
     if (USART_GetITStatus(USART1, USART_IT_RXNE) != RESET)    //接收到数据引发的中断
     {
         irqCiUartReceive();
@@ -733,6 +758,27 @@ void USART2_IRQHandler(void)
 *********************************************************************************************/
 void USART3_IRQHandler(void)
 {
+    /*********这几个中断只能通过查询FLAG的方式进行判断********/
+    if (USART_GetFlagStatus(USART3, USART_FLAG_PE) != RESET)  
+    {  
+        USART_ReceiveData(USART3);  
+        USART_ClearFlag(USART3, USART_FLAG_PE);  
+    }  
+
+    if (USART_GetFlagStatus(USART3, USART_FLAG_ORE) != RESET)  
+    {  
+        USART_ReceiveData(USART3);  
+        USART_ClearFlag(USART3, USART_FLAG_ORE);  
+    }  
+
+    if (USART_GetFlagStatus(USART3, USART_FLAG_FE) != RESET)  
+    {  
+        USART_ReceiveData(USART3);  
+        USART_ClearFlag(USART3, USART_FLAG_FE);  
+    }
+    /*********************************************************/
+    
+    
     if (USART_GetITStatus(USART3, USART_IT_RXNE) != RESET)    //接收到数据引发的中断
     {
         irqSensor1UartReceive();
@@ -914,6 +960,7 @@ void SDIO_IRQHandler(void)
     else if (SDIO_GetITStatus(SDIO_IT_DCRCFAIL) != RESET)
     {
         SDIO_ClearITPendingBit(SDIO_IT_DCRCFAIL);
+
     }
     else if (SDIO_GetITStatus(SDIO_IT_DTIMEOUT) != RESET)
     {
@@ -992,9 +1039,31 @@ void SPI3_IRQHandler(void)
 *********************************************************************************************/
 void UART4_IRQHandler(void)
 {
+    /*********这几个中断只能通过查询FLAG的方式进行判断********/
+    if (USART_GetFlagStatus(UART4, USART_FLAG_PE) != RESET)  
+    {  
+        USART_ReceiveData(UART4);  
+        USART_ClearFlag(UART4, USART_FLAG_PE);  
+    }  
+
+    if (USART_GetFlagStatus(UART4, USART_FLAG_ORE) != RESET)  
+    {  
+        USART_ReceiveData(UART4);  
+        USART_ClearFlag(UART4, USART_FLAG_ORE);  
+    }  
+
+    if (USART_GetFlagStatus(UART4, USART_FLAG_FE) != RESET)  
+    {  
+        USART_ReceiveData(UART4);  
+        USART_ClearFlag(UART4, USART_FLAG_FE);  
+    }
+    /*********************************************************/
+    
     if (USART_GetITStatus(UART4, USART_IT_RXNE) != RESET)    //接收到数据引发的中断
     {
+#if !(GELGOOG_AXIS_4 || GELGOOG_AXIS_10)    //4轴和10轴只支持1路
         irqSensor2UartReceive();
+#endif
     }
 
     USART_ClearFlag(UART4, USART_FLAG_CTS  |
@@ -1098,7 +1167,16 @@ void DMA2_Stream2_IRQHandler(void)
 *********************************************************************************************/
 void DMA2_Stream3_IRQHandler(void)
 {
-    DMA_ClearFlag(DMA2_Stream3, DMA_FLAG_FEIF3 | DMA_FLAG_DMEIF3 | DMA_FLAG_TEIF3 | DMA_FLAG_HTIF3 | DMA_FLAG_TCIF3);
+    if (DMA_GetFlagStatus(DMA2_Stream3, DMA_LISR_TCIF3) != RESET)
+    {
+        g_sdioDmaTxComplete = true;
+    }
+
+    DMA_ClearFlag(DMA2_Stream3, DMA_FLAG_FEIF3  | 
+                                DMA_FLAG_DMEIF3 | 
+                                DMA_FLAG_TEIF3  | 
+                                DMA_FLAG_HTIF3  | 
+                                DMA_FLAG_TCIF3);
 }
 
 

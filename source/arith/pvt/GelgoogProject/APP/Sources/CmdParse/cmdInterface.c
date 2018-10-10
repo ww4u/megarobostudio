@@ -13,16 +13,19 @@ Copyright (C) 2016，北京镁伽机器人科技有限公司
 #include "cmdInterface.h"
 #include "cmdMainParse.h"
 #include "pvrfInterface.h"
-#include "bspUart.h"
-#include "bspCan.h"
 #include "servSystemPara.h"
 #include "servCanNetManage.h"
+#include "servCommIntfc.h"
+#include "servSoftTimer.h"
 
 
 
 /****************************************外部变量声明*****************************************/
 extern CommIntfcStruct   g_commIntfc;
 extern SystemStateStruct g_systemState;
+extern DeviceInfoStruct  g_deviceInfo;
+
+extern SoftTimerStruct g_paraSaveTimer;
 
 
 
@@ -77,13 +80,13 @@ void cmdLinkIntfcSet(u8 cmdDataLen, u8 *pCmdData)
               break;
 
             default:
-                g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = PARA_VERIFY_ERROR_TYPE;
+                g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = PARA_VERIFY_ERROR_TYPE;
               break;
         }
 
         if (linkType != g_commIntfc.linkType)
         {
-            servInterfaceInfoWrite(&g_commIntfc);
+            servStimerAdd(&g_paraSaveTimer);
         }
     }
 }
@@ -110,6 +113,35 @@ void cmdLinkIntfcQuery(u8 cmdDataLen, u8 *pCmdData)
 
 
 /*********************************************************************************************
+函 数 名: cmdLinkDeviceInfoQuery;
+实现功能: 无; 
+输入参数: 无;
+输出参数: 无;
+返 回 值: 无;
+说    明: 无;
+*********************************************************************************************/
+void cmdLinkDeviceInfoQuery(u8 cmdDataLen, u8 *pCmdData)
+{
+    u8 i;
+    u8 data[6];
+    u8 dataLen;
+    u8 *pData;
+
+    
+    dataLen = sizeof(g_deviceInfo.mDevcModel) + sizeof(g_deviceInfo.sDevcModel) + sizeof(g_ciCanInterface.receiveId);
+    data[0] = g_deviceInfo.mDevcModel;
+    data[1] = g_deviceInfo.sDevcModel;
+    pData = (u8 *)&g_ciCanInterface.receiveId;
+    for (i = 0;i < sizeof(g_ciCanInterface.receiveId);i++)
+    {
+        data[2 + i] = *pData++;
+    }
+    
+    cmdFrameSend(CMD_LINK, LINKCMD_DEVICEINFOQ, dataLen, data);
+}
+
+
+/*********************************************************************************************
 函 数 名: cmdLinkCmdInit;
 实现功能: 无; 
 输入参数: 无;
@@ -123,6 +155,8 @@ void cmdLinkCmdInit(void)
 
     pLinkCmdFunc[LINKCMD_INTFC]  = cmdLinkIntfcSet;
     pLinkCmdFunc[LINKCMD_INTFCQ] = cmdLinkIntfcQuery;
+    
+    pLinkCmdFunc[LINKCMD_DEVICEINFOQ] = cmdLinkDeviceInfoQuery;
 }
 
 
@@ -364,10 +398,10 @@ void cmdUartApplyPara(u8 cmdDataLen, u8 *pCmdData)
 {    
     memcpy(&g_commIntfc.uartIntfc, &g_ciUartInterface, sizeof(UartIntfcStruct));
 
-    bspCiUartInit(g_commIntfc.uartIntfc);
+    servCiUartConfig(g_commIntfc.uartIntfc);
 
     /*存储到EEPROM中*/
-    servInterfaceInfoWrite(&g_commIntfc);
+    servStimerAdd(&g_paraSaveTimer);
 }
 
 
@@ -758,10 +792,10 @@ void cmdCanApplyPara(u8 cmdDataLen, u8 *pCmdData)
 {
     memcpy(&g_commIntfc.canIntfc, &g_ciCanInterface, sizeof(CanIntfcStruct));
     
-    bspCiCanInit(g_commIntfc.canIntfc);
+    servCiCanConfig(g_commIntfc.canIntfc);
 
     /*存储到EEPROM中*/
-    servInterfaceInfoWrite(&g_commIntfc);
+    servStimerAdd(&g_paraSaveTimer);
     
     //修改完CAN口参数后,需要通知逻辑CAN口接收模块复位 xyzheng 20170330
     //servCanBuildFrameRstFpgaCanRecieve();

@@ -1,7 +1,18 @@
 #include <QtCore>
 #include "deltadatacache.h"
 #include "../../../include/mcdef.h"
+
 namespace arith_delta {
+
+#define new_array( buf )      buf = new double[size]; \
+                                    if ( NULL == buf ) \
+                                    { return -1; } \
+                                    memset( buf, 0, size * sizeof(double) );
+#define new_array2( buf1, buf2 )    new_array( buf1 );\
+                                    new_array( buf2 );
+#define new_array3( buf1, buf2, buf3 )    new_array( buf1 );\
+                                          new_array( buf2 ); \
+                                          new_array( buf3 );
 
 DeltaDataCache::DeltaDataCache()
 {
@@ -19,15 +30,6 @@ DeltaDataCache::~DeltaDataCache()
     clean();
 }
 
-#define new_array( buf )      buf = new double[size]; \
-                                    if ( NULL == buf ) \
-                                    { return -1; } \
-                                    memset( buf, 0, size * sizeof(double) );
-#define new_array2( buf1, buf2 )    new_array( buf1 );\
-                                    new_array( buf2 );
-#define new_array3( buf1, buf2, buf3 )    new_array( buf1 );\
-                                          new_array( buf2 ); \
-                                          new_array( buf3 );
 int DeltaDataCache::alloc( int size )
 {
     Q_ASSERT( size > 0 );

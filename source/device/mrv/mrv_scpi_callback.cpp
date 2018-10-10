@@ -19,7 +19,6 @@
 
 static scpi_result_t _scpi_idn( scpi_t * context )
 {
-    // read
     DEF_LOCAL_VAR();
 
     DEF_MRV();
@@ -34,7 +33,6 @@ static scpi_result_t _scpi_idn( scpi_t * context )
 
 static scpi_result_t _scpi_qVersion( scpi_t * context )
 {
-    // read
     DEF_LOCAL_VAR();
 
     DEF_MRV();
@@ -82,7 +80,6 @@ static scpi_result_t _scpi_lrn( scpi_t * context )
 //! int ax
 static scpi_result_t _scpi_fsmState( scpi_t * context )
 {
-    // read
     DEF_LOCAL_VAR();
 
     int ax, page;
@@ -171,8 +168,7 @@ static scpi_result_t _scpi_sync( scpi_t * context )
 
 //! TP ax,page,e:/ddd.csv
 static scpi_result_t _scpi_program( scpi_t * context )
-{logDbg();
-    // read
+{
     DEF_LOCAL_VAR();
 
     int ax, page;
@@ -199,12 +195,6 @@ static scpi_result_t _scpi_program( scpi_t * context )
     int dotSize = dataSets.size()/col;
     if ( (dotSize < 2) )
     { scpi_ret( SCPI_RES_ERR ); }logDbg()<<dotSize;
-
-//    //! t,p
-//    TpRow *pDots = new TpRow[ dotSize ];
-
-//    if ( NULL == pDots )
-//    { logDbg(); scpi_ret( SCPI_RES_ERR ); }
 
     //! move data
     QList<QPointF> dots;
@@ -234,7 +224,6 @@ static scpi_result_t _scpi_program( scpi_t * context )
 //! TP ax,page
 static scpi_result_t _scpi_call( scpi_t * context )
 {
-    // read
     DEF_LOCAL_VAR();
 
     DEF_MRV();
@@ -261,7 +250,6 @@ static scpi_result_t _scpi_arb_write( scpi_t * context )
     { scpi_ret( SCPI_RES_ERR ); }
 
     QByteArray stream( pLocalStr, strLen );
-    logDbg()<<stream;
 
     return SCPI_RES_OK;
 }

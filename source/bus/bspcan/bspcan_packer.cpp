@@ -25,13 +25,6 @@ unsigned int bspcan_InitCAN(unsigned int DeviceType, unsigned int DeviceInd, uns
     return 1;
 }
 
-//unsigned int  VCI_ReadBoardInfo(unsigned int DeviceType, unsigned int DeviceInd, P_BOARD_INFO pInfo);
-//unsigned int VCI_ReadErrInfo(unsigned int DeviceType, unsigned int DeviceInd, unsigned int CANInd, P_ERR_INFO pErrInfo);
-//unsigned int VCI_ReadCANStatus(unsigned int DeviceType, unsigned int DeviceInd, unsigned int CANInd, P_CAN_STATUS pCANStatus);
-
-//unsigned int  VCI_GetReference(unsigned int DeviceType, unsigned int DeviceInd, unsigned int CANInd, unsigned int RefType, void* pData);
-//unsigned int  VCI_SetReference(unsigned int DeviceType, unsigned int DeviceInd, unsigned int CANInd, unsigned int RefType, void* pData);
-
 unsigned int  bspcan_GetReceiveNum(unsigned int DeviceType, unsigned int DeviceInd, unsigned int CANInd)
 {
 //    return bspCanGetRxCount();

@@ -74,7 +74,8 @@ typedef struct
 
 
 /******************************************º¯ÊýÉùÃ÷*******************************************/
-void bspCiCanInit(CanIntfcStruct canIntfc);
+void bspCiCanInit(void);
+void bspCiCanConfig(CanIntfcStruct canIntfc);
 void bspCiCanSend(u32 sendId, u8 canRtr, u8 dataLen, u8 *data);
 void bspCiCanReceive(CanRxMsg* rxMessage);
 void bspCiCanITConfig(FunctionalState funcState);

@@ -30,10 +30,9 @@ robotSinanju::robotSinanju()
     mPoseTitles.clear();
     mPoseTitles<<"X"<<"Y"<<"Z";
 
-//    setAbsCount( 4 );
     setAngleType( robo_angle_abs );
 
-    //! \note for 28
+    //! \note for ver:28
     setTunningAble( false );
 
     mDetail = QString::fromLocal8Bit( (char*)_detail, sizeof_array(_detail) );
@@ -224,12 +223,12 @@ void robotSinanju::onMsg( int subAxes, RoboMsg &msg )
 int robotSinanju::download( QList<tpvGroup*> &groups,
                              QList<int> &joints,
                              const tpvRegion &region )
-{//logDbg();
+{
     Q_ASSERT( groups.size() == joints.size() );
 
     MegaDevice::deviceMRQ *pMrq;
     int axes;
-//logDbg();
+
     int ret;
     tpvRegion mrqRegion;
     for ( int i = 0; i < groups.size(); i++ )
@@ -241,7 +240,7 @@ int robotSinanju::download( QList<tpvGroup*> &groups,
 
         QList<tpvRow*> rows;
         groups[i]->getRows( rows );
-logDbg();
+
         //! \note change to mrq ax
         mrqRegion = region;
         mrqRegion.setAx( axes );
@@ -256,7 +255,7 @@ logDbg();
         if ( ret != 0 )
         { return ret; }
     }
-logDbg();
+
     return 0;
 }
 

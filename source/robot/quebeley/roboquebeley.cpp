@@ -36,7 +36,7 @@ roboQuebeley::roboQuebeley( robotEnum id )
     mISOs = 1;
 
     mUARTs = 1;
-    mUART_Sensors = 1;      //! \todo 2
+    mUART_Sensors = 1;
 
     mTemperatures = 0;      //! otp
     mAINs = 0;
@@ -92,7 +92,7 @@ void roboQuebeley::postCtor()
         mISOs = 1;
 
         mUARTs = 2;
-        mUART_Sensors = 1;      //! \todo 2
+        mUART_Sensors = 1;
 
         mTemperatures = 0;
         mAINs = 0;

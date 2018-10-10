@@ -44,9 +44,7 @@ void RoboMsgQueue::attachMsgThread( RoboMsgThread *pThread )
 void RoboMsgQueue::clear()
 {
     lock();
-
     mQueue.clear();
-
     unlock();
 }
 
@@ -122,7 +120,6 @@ void RoboMsgQueue::postMsg( const RoboMsg &msg, quint64 t )
             m_pMsgThread->start();
         }
     }
-
 }
 
 void RoboMsgQueue::postMsg( eRoboMsg msg, quint64 t )
@@ -180,7 +177,6 @@ void RoboMsgQueue::postMsg( eRoboMsg msg, const RoboMsg &leafMsg, quint64 t  )
 
     postMsg( lMsg, t );
 }
-
 
 void RoboMsgQueue::postMsg( eRoboMsg msg, int p1, quint64 t )
 {
@@ -405,13 +401,8 @@ void RoboMsgQueue::postMsg( eRoboMsg msg,
 void RoboMsgQueue::process( int intervalus,
                        RoboMsgThread *pThread )
 {
-    //! wait the writer
-//    mSemaphore.acquire();
-
     RoboMsg lMsg;
-    //! loop do
-//    while( mQueue.size() > 0 )
-//    while( 1 )
+
     {   
         if( mSemaphore.tryAcquire(1, intervalus/1000 ) )
         {}
@@ -421,13 +412,8 @@ void RoboMsgQueue::process( int intervalus,
         _msgSema.acquire();
 
         lock();
-
         lMsg = mQueue.dequeue();
-
         unlock();
-
-        //! no delay for speed
-//        QThread::usleep( intervalus );
 
         if ( NULL != pThread )
         { pThread->onMsg( lMsg ); }

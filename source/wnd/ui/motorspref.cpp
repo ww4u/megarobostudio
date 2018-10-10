@@ -57,7 +57,6 @@ int MotorsPref::setApply()
     base_->setAxes( ((RelationModel*) model_)->mItems.size() );
     base_->mAxesConnectionName = connectionS;
 
-logDbg()<<connectionS;
     //! apply for each item
     VRobot *pRobo;
 

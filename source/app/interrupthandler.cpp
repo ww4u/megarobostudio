@@ -55,7 +55,6 @@ void interruptHandler::slot_event( eventId id,
                            data.frameId(),      //! frame id
                           (QByteArray)data
                           );
-//    logDbg();
 }
 
 interruptThread::interruptThread( QObject *parent ) : QThread( parent )

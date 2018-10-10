@@ -26,8 +26,6 @@ MegaTableModel::MegaTableModel( const QString &className,
 
     connect( this, SIGNAL(modelReset()),
              this, SIGNAL(signal_data_changed()));
-
-
 }
 
 void MegaTableModel::reverse()
@@ -73,8 +71,3 @@ QStringList MegaTableModel::exportOptList()
 void MegaTableModel::setRpc( int row, RpcRequest &req )
 {}
 
-//bool MegaTableModel::verify()
-//{ return false; }
-
-//int  MegaTableModel::build()
-//{ return 0; }

@@ -32,7 +32,6 @@ void MrqYO::getConfig( YoConfig &cfg )
     cfg.mRespIndex = ui->cmbIsoAction->currentIndex();
 }
 
-
 void MrqYO::setupUi()
 {
     //! hide
@@ -42,16 +41,6 @@ void MrqYO::setupUi()
         ui->label_4,
         ui->cmbIsoSource,
         ui->cmbIsoCondition,
-
-//        ui->label_15,
-//        ui->label_12,
-//        ui->label_2,
-//        ui->label_14,
-
-//        ui->cmbDoSource,
-//        ui->cmbDoCondition,
-//        ui->spinDoPeri,
-//        ui->spinDoDuty,
     };
 
     for ( int i = 0; i < sizeof_array(hideWidgets); i++ )

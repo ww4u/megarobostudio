@@ -1,5 +1,6 @@
 #include "pathplan.h"
 
+//! \todo by outter setting
 #define SPACE_RESOLUTION    5
 
 namespace ns_pathplan {
@@ -39,7 +40,6 @@ static void trimPoints( double *pIn, int length )
         }
     }
 }
-
 
 #include "./arith/functions.cpp"
 

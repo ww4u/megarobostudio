@@ -40,6 +40,11 @@ Copyright (C) 2016，北京镁伽机器人科技有限公司
 void cmdDriverCmdInit(void);
 void cmdDriverCmdProc(CmdParseFrameStruct *pCmdStackFrame);
 
+#if !GELGOOG_AXIS_10
+void cmdTuningCmdInit(void);
+void cmdTuningCmdProc(CmdParseFrameStruct *pCmdStackFrame);
+#endif
+
 
 
 /*****************************************头文件保护******************************************/

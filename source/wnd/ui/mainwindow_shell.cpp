@@ -132,8 +132,6 @@ static scpi_result_t _scpi_to( scpi_t *context )
 
     DEF_MGR();
 
-//    LOCAL_MGR()->on_actionReset_triggered();
-
     scpi_result_t ret;
 
     if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )

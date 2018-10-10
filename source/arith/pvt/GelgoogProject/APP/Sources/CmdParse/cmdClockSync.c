@@ -14,6 +14,7 @@ Copyright (C) 2016，北京镁伽机器人科技有限公司
 #include "pvrfClockSync.h"
 #include "cmdMainParse.h"
 #include "servSystemPara.h"
+#include "servSoftTimer.h"
 
 
 
@@ -23,6 +24,8 @@ extern SystemInfoStruct   g_systemInfo;
 extern SystemCfgBmpStruct g_systemCfgBmp;
 
 extern bool g_bCmdPostSemToFunc;
+
+extern SoftTimerStruct g_paraSaveTimer;
 
 
 
@@ -36,10 +39,7 @@ extern bool g_bCmdPostSemToFunc;
 
 /******************************************局部变量*******************************************/
 SubCmdProFunc pClockCmdFunc[CLOCK_RESERVE];
-
-#if PVT_CALC_USE_FPGA_CLOCK_ERROR
-u32 fpgaClockCount = 0;
-#endif
+u32 fpgaClockCount = FPGA_PWM_CLOCK;
 
 
 
@@ -60,22 +60,16 @@ void cmdClockFrequencySet(u8 cmdDataLen, u8 *pCmdData)
     //进行参数验证
     if (PARA_VERIFY_NO_ERROR == pvrfClockFrequencyVerify(cmdDataLen, pCmdData, (void *)&fpgaPwmClock))
     {
-#if PVT_CALC_USE_FPGA_CLOCK_ERROR
         fpgaClockCount = fpgaPwmClock;
 
         if (fpgaClockCount > 0)
         {
             //计算归一化后的误差
-            g_systemInfo.fpgaPwmClock = ((f64)((s64)g_systemState.clockCount - fpgaClockCount)) * FPGA_PWM_CLOCK / fpgaClockCount;
+            g_systemInfo.fpgaClockOffset = ((f64)((s64)g_systemState.clockCount - fpgaClockCount)) * FPGA_PWM_CLOCK / fpgaClockCount;
         }
-        
-#else
-
-        g_systemInfo.fpgaPwmClock = fpgaPwmClock;
-#endif
 
         //存到EEPROM中
-        servSystemInfoWrite(&g_systemInfo);
+        servStimerAdd(&g_paraSaveTimer);
     }
 }
 
@@ -94,15 +88,8 @@ void cmdClockFrequencyQuery(u8 cmdDataLen, u8 *pCmdData)
     u8 *pData;
 
 
-#if PVT_CALC_USE_FPGA_CLOCK_ERROR
     dataLen = sizeof(fpgaClockCount);
     pData = (u8 *)&fpgaClockCount;
-    
-#else
-
-    dataLen = sizeof(g_systemInfo.fpgaPwmClock);
-    pData = (u8 *)&g_systemInfo.fpgaPwmClock;
-#endif
 
     cmdFrameSend(CMD_CLOCK, CLOCK_FREQUENCYQ, dataLen, pData);
 }

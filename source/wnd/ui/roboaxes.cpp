@@ -137,7 +137,7 @@ void roboAxes::slot_timeout()
         if ( pRobo->getPOSE( pos ) == 0 )
         {
             for ( int i = 0; i < pRobo->poseCount(); i++ )
-            { mPoseLcds.at(i)->display( /*QString::number*/( pos[i] ) ); }
+            { mPoseLcds.at(i)->display( ( pos[i] ) ); }
         }
         else
         {}
@@ -158,7 +158,6 @@ void roboAxes::slot_joint_stop( int id )
 
 void roboAxes::slot_joint_zero( int id, bool bCcw )
 {
-//    logDbg()<<id<<bCcw;
     zero( id, bCcw );
 }
 
@@ -249,7 +248,6 @@ void roboAxes::adapteUiToRobot( VRobot *pRobo )
         { mPoseLcds.at(i)->setVisible( false ); }
     }
 
-
     //! adapt ui
     on_chkSingle_clicked( ui->chkSingle->isChecked() );
     on_spinStepTime_valueChanged( ui->spinStepTime->value() );
@@ -268,8 +266,6 @@ void roboAxes::rotate( int jointId,
                        float t2, float a2,
                        float ev )
 {
-//    logDbg()<<jointId<<t1<<a1<<t2<<a2;
-
     VRobot *pRobo = Robot();
     if ( NULL == pRobo )
     {
@@ -286,8 +282,6 @@ void roboAxes::rotate( int jointId,
         sysError( tr("Invalid device"), __FUNCTION__,QString::number(__LINE__) );
         return;
     }
-
-    logDbg()<<subAx<<pMrq->name();
 
     //! only one time
     pMrq->setMOTIONPLAN_CYCLENUM( subAx, (MRQ_MOTION_SWITCH_1)ui->widget->page(), 1 );
@@ -332,8 +326,6 @@ void roboAxes::zero( int jointId,
         sysError( tr("Invalid robot") );
         return;
     }
-
-    Q_ASSERT( NULL != pRobo );
 
     pRobo->goZero( tpvRegion(0, ui->widget->page() ), jointId, bCcw );
 }

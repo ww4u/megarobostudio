@@ -4,7 +4,6 @@
 #include "deviceMRQ.h"
 #include "../bus/receivecache.h"
 
-
 DataUploader::DataUploader( QObject *pObj ) : QThread( pObj )
 {
     m_pCache = NULL;
@@ -43,6 +42,7 @@ void DataUploader::run()
     sysProgress( true );
 
     //! stop timer
+    //! \todo why comment?
 //    sysPauseTimer();
 
     mCallRet = uploadProc();
@@ -55,7 +55,8 @@ void DataUploader::run()
     //! idle
     mState = 0;
 
-    sysLog( __FUNCTION__, QString::number(__LINE__), QString::number(mCallRet) );
+    if ( mCallRet != 0 )
+    { sysLog( __FUNCTION__, QString::number(__LINE__), QString::number(mCallRet) ); }
 }
 
 void DataUploader::requestLoad(
@@ -106,7 +107,7 @@ int DataUploader::uploadProc()
 
         //! get frame len
         bytes = m_pCache->frameBytes( m_pDev->mCAN_SENDID );
-        sysLog( __FUNCTION__, QString::number(__LINE__), QString::number(bytes) );
+//        sysLog( __FUNCTION__, QString::number(__LINE__), QString::number(bytes) );
 
         sysProgress( bytes, "loading",  totalSize, 0 );
 

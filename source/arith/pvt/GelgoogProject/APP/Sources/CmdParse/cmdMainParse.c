@@ -49,7 +49,7 @@ extern SystemStateStruct  g_systemState;
 
 /******************************************局部变量*******************************************/
 StreamBufferStruct g_CmdParseBuffer;    //命令解析缓冲区
-u8                 CmdParseBuffer[480];
+u8                 CmdParseBuffer[1024];
 CmdParseFunc       pCmdParseFunc[CMD_RESERVE];
 
 
@@ -102,12 +102,24 @@ void cmdMainParseInit()
     pCmdParseFunc[CMD_PVTVELCQ] = cmdPvtSpeedQueryCmdProc;
     pCmdParseFunc[CMD_PVTTIME]  = cmdPvtTimeSetCmdProc;
     pCmdParseFunc[CMD_PVTTIMEQ] = cmdPvtTimeQueryCmdProc;
+    pCmdParseFunc[CMD_TIMESCALE]  = cmdPvtTimeScaleSetCmdProc;
+    pCmdParseFunc[CMD_TIMESCALEQ] = cmdPvtTimeScaleQueryCmdProc;
 
     pCmdParseFunc[CMD_REPORT]     = cmdReportCmdProc;
     pCmdParseFunc[CMD_TRIGIN]     = cmdTrigInCmdProc;
+
+#if !GELGOOG_AXIS_10
     pCmdParseFunc[CMD_DRIVER]     = cmdDriverCmdProc;
+    pCmdParseFunc[CMD_TUNING]     = cmdTuningCmdProc;
+#else
+    pCmdParseFunc[CMD_NEWDRIVER]  = cmdDriverCmdProc;
+#endif
+
+#if !GELGOOG_SINANJU
     pCmdParseFunc[CMD_TRIGOUT]    = cmdTrigOutCmdProc;
     pCmdParseFunc[CMD_ISOLOUT]    = cmdIsolatorOutCmdProc;
+#endif
+
     pCmdParseFunc[CMD_SENSORUART] = cmdSensorUartCmdProc;
     
 #ifdef PROJECT_QUBELEY
@@ -116,15 +128,23 @@ void cmdMainParseInit()
 #endif
 
 #ifdef PROJECT_GELGOOG
+
+#if GELGOOG_SINANJU
+    pCmdParseFunc[CMD_ENCALARM]  = cmdAbsEncAlarmCmdProc;
+    pCmdParseFunc[CMD_DISTALARM] = cmdDistAlarmCmdProc;
+    pCmdParseFunc[CMD_PDM]       = cmdPdmCmdProc;
+    
+#else
+
     pCmdParseFunc[CMD_ISOLIN] = cmdIsolInCmdProc;
+#endif
+
 #endif
 
     //CMD_ADVANCED
 
     pCmdParseFunc[CMD_UPDATE]     = cmdUpdateCmdProc;
     pCmdParseFunc[CMD_FACTORY]    = cmdFactoryCmdProc;
-    /*pCmdParseFunc[CMD_CALIBRATE]  = cmdCalibrateCmdProc;
-    pCmdParseFunc[CMD_DEBUG]      = cmdDebugCmdProc;*/
 
 
     //注册各个子命令模块的回调函数
@@ -145,9 +165,14 @@ void cmdMainParseInit()
     
     cmdReportCmdInit();
     cmdTrigInCmdInit();
+    
     cmdDriverCmdInit();
+
+#if !GELGOOG_SINANJU
     cmdTrigOutCmdInit();
     cmdIsolatorOutCmdInit();
+#endif
+
     cmdSensorUartCmdInit();
 
 #ifdef PROJECT_QUBELEY
@@ -156,15 +181,28 @@ void cmdMainParseInit()
 #endif
 
 #ifdef PROJECT_GELGOOG
+
+#if GELGOOG_SINANJU
+    cmdAbsEncAlarmCmdInit();
+    cmdDistAlarmCmdInit();
+    cmdPdmCmdInit();
+
+#else
+
     cmdIsolInCmdInit();
+#endif
+
 #endif
 
     //CMD_ADVANCED
 
     cmdUpdateCmdInit();
     cmdFactoryCmdInit();
-    /*cmdCalibrateCmdInit();
-    cmdDebugCmdInit();*/
+    
+#if !GELGOOG_AXIS_10
+    cmdTuningCmdInit(); 
+#endif
+
 
     //初始化命令解析Buffer
     servStreamBufferInit(&g_CmdParseBuffer, CmdParseBuffer, sizeof(CmdParseBuffer));  

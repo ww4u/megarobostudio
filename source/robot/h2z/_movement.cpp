@@ -45,7 +45,7 @@ int robotH2Z::move( QList<H2ZKeyPoint> &curve,
 int robotH2Z::move( float dx, float dy, float dz,
                     float dt,
                     float endVx, float endVy, float endVz,
-                   const tpvRegion &region )
+                    const tpvRegion &region )
 {
     QList<H2ZKeyPoint> curve;
 

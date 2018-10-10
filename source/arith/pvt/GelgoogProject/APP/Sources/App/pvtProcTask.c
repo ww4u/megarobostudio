@@ -34,6 +34,7 @@ extern SystemInfoStruct  g_systemInfo;
 extern SystemStateStruct g_systemState;
 extern WaveTableStruct   g_waveTable[CH_TOTAL][WTTYPE_RESERVE];
 extern ReportInfoStruct  g_reportInfo;
+extern DebugInfoStruct   g_debugInfo;
 
 extern EventSrcBmpStruct  g_eventSrcBmp;
 extern SystemCfgBmpStruct g_systemCfgBmp;
@@ -41,21 +42,22 @@ extern ChanCfgBmpStruct   g_chanCfgBmp[CH_TOTAL];
 
 extern SoftTimerStruct  g_reportTimer[CH_TOTAL][REPTTYPE_RESERVE];
 
+extern DebugInfoStruct  g_debugInfo;
+
 
 
 /*****************************************局部宏定义******************************************/
 #define    DATA_TYPE_ACTIVE_FLAG          0x80000000           //输出数据有效标识
 #define    DATA_TYPE_LEFT_SHIFT           27                   //输出数据数据类型左移位数
 #define    WAIT_TIME_HIGH_RIGHT_SHIFT     24                   //等待时间高24位右移位数
-#define    DATA_PERIOD_MASK               0x01FFFFFF           //周期数据掩码
 #define    DATA_WAIT_TIME_MASK            0x00FFFFFF           //等待时间数据掩码
 #define    DATA_WAIT_TIME_HIGH_MASK       0xA8000000           //等待时间高24bit掩码
 #define    DATA_TYPE_WAIT_LOW             4                    //数据类型等待时间低24bit
 #define    DATA_TYPE_WAIT_HIGH            5                    //数据类型等待时间高24bit
 #define    SEND_DATA_LEN_MIN              4                    //发送数据长度的最小值，128bit，对应为4个32bit
 
-#define    OUTPUT_DATA_BYTES_SIZE         4096    //波表Buffer的字节长度，包含了一个u32的发送地址的字节数，(1023 + 1) * 4
-#define    OUTPUT_DATA_BLOCK_SIZE         192     //波表Buffer的块长度，由log2(OUTPUT_DATA_BYTES_SIZE)计算出来，再左移4位
+#define    OUTPUT_DATA_BYTES_SIZE         8192    //波表Buffer的字节长度，包含了一个u32的发送地址的字节数，(1023 + 1) * 4
+#define    OUTPUT_DATA_BLOCK_SIZE         208     //波表Buffer的块长度，由log2(OUTPUT_DATA_BYTES_SIZE)计算出来，再左移4位
 #define    OUTPUT_EMPTY_BYTES_SIZE        16      //波表空数据的字节长度，包含了一个u32的发送地址的字节数，(3 + 1) * 4
 #define    OUTPUT_EMPTY_BLOCK_SIZE        64      //波表空数据的块长度，由log2(OUTPUT_EMPTY_BYTES_SIZE)计算出来，再左移4位
 #define    OUTPUT_BLOCK_SIZE_LEFT_SHIFT   4       //左移4位是因为数据块设置在SDIO_DCTRL寄存器的[4:7]bit
@@ -99,9 +101,83 @@ void OutpBufferFill(u8 chanNum, OutpDataTypeEnum datatype, u32 outpData, BufferO
     WaveTableStruct *pcalcWaveTable = &g_waveTable[chanNum][g_systemState.calcWaveTable[chanNum]];
  
 
-    if (BUFFOPERT_MODIFYEND == bufferOperate)    //修改末尾点
+    if (BUFFOPERT_SYNCSEND == bufferOperate)    //修改末尾点
     {
-        //保留
+        //发送前判断下波表剩余空间是否够
+        if (pcalcWaveTable->writableSize < g_outputData[chanNum].noSendPoints)
+        {
+            if (WTWORKMODE_FIFO == pcalcWaveTable->waveWorkMode)
+            {
+                do
+                {
+                    //查询剩余空间，其实是查询还有多少波表点数没有输出，然后用总的波表大小减去没有输出的点数
+                    pcalcWaveTable->writableSize = servFpgaWaveWritableSizeRead(chanNum, pcalcWaveTable->totalSize);
+
+                    //软延时，释放任务的CPU使用权
+                    servSoftDelayMs(1);
+                    
+                }while (pcalcWaveTable->writableSize < g_outputData[chanNum].noSendPoints);    //直到可写空间大于等于要发送的点数
+            }
+            else
+            {
+                //停止计算，进入ERROR状态    TO ADD NICK MARK
+                pcalcWaveTable->waveState = MTSTATE_ERROR;
+
+                return;
+            }
+        }
+
+        tailSize = pcalcWaveTable->totalSize + pcalcWaveTable->startAddr - pcalcWaveTable->writableAddr;
+        if (tailSize < g_outputData[chanNum].noSendPoints)    //空间够，但是是由头尾两部分组成的，需要把一包数据分次发送
+        {
+            //数据直接按一帧发送，但是有效数据只有tailSize这么多，剩余的数据重新组帧发送
+            bRewind = true;
+            g_outputData[chanNum].validPoints = tailSize;
+            g_outputData[chanNum].validBytes = tailSize * sizeof(g_outputData[chanNum].data[0]) 
+                                               + sizeof(g_outputData[chanNum].writeAddr);
+        }
+        else
+        {
+            g_outputData[chanNum].validPoints = g_outputData[chanNum].noSendPoints;
+            g_outputData[chanNum].validBytes = g_outputData[chanNum].noSendPoints * sizeof(g_outputData[chanNum].data[0]) 
+                                               + sizeof(g_outputData[chanNum].writeAddr);
+        }
+        
+        g_outputData[chanNum].totalPoints += g_outputData[chanNum].validPoints;
+    
+        g_outputData[chanNum].toSendBlkSize = OUTPUT_DATA_BLOCK_SIZE;
+        g_outputData[chanNum].toSendPoints  = OUTPUT_DATA_BUFFER_SIZE;
+        g_outputData[chanNum].toSendBytes   = OUTPUT_DATA_BYTES_SIZE;
+        
+        g_outputData[chanNum].noSendPoints -= g_outputData[chanNum].validPoints;
+        
+        g_chanCfgBmp[chanNum].bWaveTableData = true;
+        OSSemPost(&g_semFunctionTask, OS_OPT_POST_ALL, &os_err);
+
+        if (bRewind)
+        {
+            //因为之前有部分数据被当成无效数据发送了，所以需要把这部分数据重新发送下
+            //重新发送的方式就是把这部分数据放在Buffer头部，再组成一次新的数据
+            for (i = 0;i < g_outputData[chanNum].noSendPoints;i++)
+            {
+                g_outputData[chanNum].data[i] = g_outputData[chanNum].data[g_outputData[chanNum].validPoints + i];
+            }
+
+            g_outputData[chanNum].validPoints = g_outputData[chanNum].noSendPoints;
+            g_outputData[chanNum].validBytes = g_outputData[chanNum].noSendPoints * sizeof(g_outputData[chanNum].data[0]) 
+                                               + sizeof(g_outputData[chanNum].writeAddr);
+            
+            g_outputData[chanNum].totalPoints += g_outputData[chanNum].validPoints;
+        
+            g_outputData[chanNum].toSendBlkSize = OUTPUT_DATA_BLOCK_SIZE;
+            g_outputData[chanNum].toSendPoints  = OUTPUT_DATA_BUFFER_SIZE;
+            g_outputData[chanNum].toSendBytes   = OUTPUT_DATA_BYTES_SIZE;
+            
+            g_outputData[chanNum].noSendPoints  = 0;
+            
+            g_chanCfgBmp[chanNum].bWaveTableData = true;
+            OSSemPost(&g_semFunctionTask, OS_OPT_POST_ALL, &os_err);
+        }
     }
     else if (BUFFOPERT_FORCESEND == bufferOperate)    //强制发送的话肯定是最后一帧
     {       
@@ -123,10 +199,10 @@ void OutpBufferFill(u8 chanNum, OutpDataTypeEnum datatype, u32 outpData, BufferO
                 do
                 {
                     //查询剩余空间，其实是查询还有多少波表点数没有输出，然后用总的波表大小减去没有输出的点数
-                    pcalcWaveTable->writableSize = servFPGA_PWM_FIFO_Left(chanNum, pcalcWaveTable->totalSize);
-                    bspDelayUs(5);
-
-                    //查询太多次数后还是不够是否报错?    NICK MARK
+                    pcalcWaveTable->writableSize = servFpgaWaveWritableSizeRead(chanNum, pcalcWaveTable->totalSize);
+                    
+                    //软延时，释放任务的CPU使用权
+                    servSoftDelayMs(1);
                     
                 }while (pcalcWaveTable->writableSize < toSendPoints);    //直到可写空间大于等于要发送的点数
             }
@@ -134,6 +210,8 @@ void OutpBufferFill(u8 chanNum, OutpDataTypeEnum datatype, u32 outpData, BufferO
             {
                 //停止计算，进入ERROR状态    TO ADD NICK MARK
                 pcalcWaveTable->waveState = MTSTATE_ERROR;
+
+                return;
             }
         }
 
@@ -297,10 +375,10 @@ void OutpBufferFill(u8 chanNum, OutpDataTypeEnum datatype, u32 outpData, BufferO
                         do
                         {
                             //查询剩余空间，其实是查询还有多少波表点数没有输出，然后用总的波表大小减去没有输出的点数
-                            pcalcWaveTable->writableSize = servFPGA_PWM_FIFO_Left(chanNum, pcalcWaveTable->totalSize);
-                            bspDelayUs(5);
+                            pcalcWaveTable->writableSize = servFpgaWaveWritableSizeRead(chanNum, pcalcWaveTable->totalSize);
 
-                            //查询太多次数后还是不够是否报错?    NICK MARK
+                            //软延时，释放任务的CPU使用权
+                            servSoftDelayMs(1);
                             
                         }while (pcalcWaveTable->writableSize < g_outputData[chanNum].noSendPoints);    //直到可写空间大于等于要发送的点数
                     }
@@ -308,6 +386,8 @@ void OutpBufferFill(u8 chanNum, OutpDataTypeEnum datatype, u32 outpData, BufferO
                     {
                         //停止计算，进入ERROR状态    TO ADD NICK MARK
                         pcalcWaveTable->waveState = MTSTATE_ERROR;
+
+                        return;
                     }
                 }
 
@@ -345,6 +425,20 @@ void OutpBufferFill(u8 chanNum, OutpDataTypeEnum datatype, u32 outpData, BufferO
                     {
                         g_outputData[chanNum].data[i] = g_outputData[chanNum].data[g_outputData[chanNum].validPoints + i];
                     }
+
+                    /*g_outputData[chanNum].validPoints = g_outputData[chanNum].noSendPoints;
+                    g_outputData[chanNum].validBytes = OUTPUT_DATA_BYTES_SIZE;
+                    
+                    g_outputData[chanNum].totalPoints += g_outputData[chanNum].validPoints;
+                
+                    g_outputData[chanNum].toSendBlkSize = OUTPUT_DATA_BLOCK_SIZE;
+                    g_outputData[chanNum].toSendPoints  = OUTPUT_DATA_BUFFER_SIZE;
+                    g_outputData[chanNum].toSendBytes   = OUTPUT_DATA_BYTES_SIZE;
+                    
+                    g_outputData[chanNum].noSendPoints  = g_outputData[chanNum].toSendPoints - g_outputData[chanNum].validPoints;
+                    
+                    g_chanCfgBmp[chanNum].bWaveTableData = true;
+                    OSSemPost(&g_semFunctionTask, OS_OPT_POST_ALL, &os_err);*/
                 }
             }    //if (g_outputData[chanNum].noSendPoints >= OUTPUT_DATA_BUFFER_SIZE)
             
@@ -367,10 +461,10 @@ void OutpBufferFill(u8 chanNum, OutpDataTypeEnum datatype, u32 outpData, BufferO
                     do
                     {
                         //查询剩余空间，其实是查询还有多少波表点数没有输出，然后用总的波表大小减去没有输出的点数
-                        pcalcWaveTable->writableSize = servFPGA_PWM_FIFO_Left(chanNum, pcalcWaveTable->totalSize);
-                        bspDelayUs(5);
+                        pcalcWaveTable->writableSize = servFpgaWaveWritableSizeRead(chanNum, pcalcWaveTable->totalSize);
 
-                        //查询太多次数后还是不够是否报错?    NICK MARK
+                        //软延时，释放任务的CPU使用权
+                        servSoftDelayMs(1);
                         
                     }while (pcalcWaveTable->writableSize < g_outputData[chanNum].noSendPoints);    //直到可写空间大于等于要发送的点数
                 }
@@ -437,7 +531,7 @@ void PvtInfoGet(void)
     WaveTableStruct   *pcalcWaveTable;
 
 
-    for (i = 0;i < g_systemState.chanNum;i++)
+    for (i = 0;i < CH_TOTAL;i++)
     {
         waveTable = g_systemState.calcQueue[i][g_systemState.calcIndex[i]];
 
@@ -454,23 +548,41 @@ void PvtInfoGet(void)
                     g_systemState.pvtManage[i][waveTable].bClear = false;
                     
                     memset(&g_outputData[i], 0, sizeof(g_outputData[i]));
-                    g_outputData[i].writeAddr     = ADDR_FPGA_DDR_WAVE_WRITE_DATA;
-                    g_outputData[i].emptyDataAddr = ADDR_FPGA_DDR_WAVE_WRITE_DATA;
+                    g_outputData[i].writeAddr     = SERV_FPGA_CONFIG_REG_26;
+                    g_outputData[i].emptyDataAddr = SERV_FPGA_CONFIG_REG_26;
                     g_outputData[i].minPeriod = FPGA_PWM_CLOCK;
 
                     memset(&pvtCalcData[i], 0, sizeof(pvtCalcData[i]));
                 
-                    pvtCalcData[i].fpgaPwmClock = g_systemInfo.fpgaPwmClock;
+                    pvtCalcData[i].fpgaClockOffset = g_systemInfo.fpgaClockOffset;
+                    
+                    pvtCalcData[i].fpgaPwmClock = FPGA_PWM_CLOCK;
                     pvtCalcData[i].pvtPlanMode  = g_planInfo.plan[i][waveTable].planMode;
                     pvtCalcData[i].motionMode   = g_planInfo.plan[i][waveTable].motionMode;
                     pvtCalcData[i].pvtExecMode  = g_planInfo.plan[i][waveTable].execMode;
                     
-                    pvtCalcData[i].accScale  = g_planInfo.plan[i][waveTable].accScale;
-                    pvtCalcData[i].decScale  = g_planInfo.plan[i][waveTable].decScale;
-                        
-                    pvtCalcData[i].posnConvertInfo = g_systemState.posnConvertInfo[i];
-                    
                     pvtCalcData[i].outpBufferFill  = OutpBufferFill;
+                    
+                    if (MTNMODE_PVT == pvtCalcData[i].motionMode)
+                    {
+                        pvtCalcData[i].posnToStep = g_systemState.posnConvertInfo[i].posnToStep;
+                        
+                        pvtCalcData[i].maxOffset = PVT_TARGET_REAL_OFFSET_P;
+                        pvtCalcData[i].minOffset = PVT_TARGET_REAL_OFFSET_N; 
+                        
+                        pvtCalcData[i].lineStepsInv = 1.0f; 
+                        pvtCalcData[i].lineSteps    = 1.0f;
+                    }
+                    else
+                    {
+                        pvtCalcData[i].posnToStep = g_systemState.posnConvertInfo[i].posnToLine;
+                        
+                        pvtCalcData[i].maxOffset = LVT_TARGET_REAL_OFFSET_P;
+                        pvtCalcData[i].minOffset = LVT_TARGET_REAL_OFFSET_N;  
+                        
+                        pvtCalcData[i].lineStepsInv = 1.0f / g_systemState.posnConvertInfo[i].lineSteps;
+                        pvtCalcData[i].lineSteps    = g_systemState.posnConvertInfo[i].lineSteps;
+                    }
 
                     //初始化要写入的波表(工作模式、运动模式、循环数，是否立即输出)
                     if (EXECMODE_FIFO != pvtCalcData[i].pvtExecMode)
@@ -483,7 +595,7 @@ void PvtInfoGet(void)
                     }
 
                     //初始化相应波表
-                    servFpgaWaveReset(pcalcWaveTable, waveWorkMode);
+                    servFpgaWaveTableInit(pcalcWaveTable, waveWorkMode);
                 }
                 
                 pvtCalcData[i].startPoint = g_systemState.pvtManage[i][waveTable].pvtPoint[pvtCalcData[i].lastPoint];
@@ -525,6 +637,7 @@ void PvtCalcTask(void)
     OS_ERR  os_err;
     u32  motionTime;
     u8   i;
+    u8   errorCode;
     
 
     //关中断
@@ -537,22 +650,30 @@ void PvtCalcTask(void)
     CPU_IntEn();
 
 
-    for (i = 0;i < g_systemState.chanNum;i++)
+    for (i = 0;i < CH_TOTAL;i++)
     {
         if (bPvtCalc[i])
         {
-            if ((CHSTATE_CALCING   != g_systemState.chanState[i]) && 
-                (CHSTATE_OUTPUTING != g_systemState.chanState[i]) &&
-                (CHSTATE_POWERON   != g_systemState.chanState[i]) &&
-                (!pvtCalcData[i].bReportCalcEnd))    //没有上报过计算结束状态，上报过过则不再把状态置回计算中(FIFO模式)    CJ 2017.11.23 Modify
+            /*//进入计算中状态
+            if ((MTSTATE_IDLE    == g_waveTable[i][g_systemState.calcWaveTable[i]].waveState) &&
+                (MTSTATE_POWERON != g_waveTable[i][g_systemState.calcWaveTable[i]].waveState))
             {
-                g_systemState.chanState[i] = CHSTATE_CALCING;
-            }
+                g_systemState.bStateSwitch[i][g_systemState.calcWaveTable[i]] = true;
+            }*/
 
             if (1)    //临时设计    NICK MARK
             {
                 //计算PVT
-                pvtSegmentCalc(&pvtCalcData[i], i);
+                errorCode = pvtSegmentCalc(&pvtCalcData[i], i);
+                if (errorCode)
+                {
+                    g_systemState.eventCode[0] = i;
+                    g_systemState.eventCode[1] = ERROR_CODE_INDEX_PVT_CALC;
+                    g_systemState.eventCode[2] = errorCode;                    
+                }
+
+                //For PVT Debug
+                g_debugInfo.calcPvtCount[i]++;
 
                 if (pvtCalcData[i].bQueryReady)
                 {  
@@ -563,8 +684,6 @@ void PvtCalcTask(void)
 
                     if (WTWORKMODE_CYCLE == g_waveTable[i][g_systemState.calcWaveTable[i]].waveWorkMode)
                     {
-                        g_systemState.pvtSteps[i] = pvtCalcData[i].pvtSteps;
-                        
                         g_systemState.calcQueue[i][g_systemState.calcIndex[i]] = WTTYPE_RESERVE;
 
                         //算完队列中的一个，切换到下一个
@@ -609,6 +728,9 @@ void PvtCalcTask(void)
                         
                         g_chanCfgBmp[i].bQryReady = true;
                         OSSemPost(&g_semFunctionTask, OS_OPT_POST_ALL, &os_err);
+
+                        //For PVT Debug
+                        g_debugInfo.calcTime[i] = pvtCalcData[i].timeCount;
                     }
                 }
             }
@@ -621,22 +743,19 @@ void PvtCalcTask(void)
         }
     }
                 
-    if (g_systemState.pvtCalcTaskSem > 0)
+    /*if (g_systemState.pvtCalcTaskSem > 0)
     {
         g_systemState.pvtCalcTaskSem--;
         if (0 == g_systemState.pvtCalcTaskSem)    //计算完初始化过程中的PVT后将系统状态置为IDLE
         {
-            for (i = 0;i < g_systemState.chanNum;i++)
+            for (i = 0;i < CH_TOTAL;i++)
             {
-                g_systemState.chanState[i] = CHSTATE_IDLE;
-                g_eventSrcBmp.bStateSwitch[i]  = true;
-
                 g_systemState.calcIndex[i] = 0;
                 g_systemState.tailIndex[i] = 0;
             }
             OSSemPost(&g_semEventManageTask, OS_OPT_POST_ALL, &os_err);
         }
-    }
+    }*/
 }
 
 

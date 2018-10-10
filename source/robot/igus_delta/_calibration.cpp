@@ -143,7 +143,6 @@ int robotIgusDelta::goZero( const tpvRegion &region,
     }
 
     //! request
-    //! \todo
     pReq->request( this,
                    (VRobot::apiTaskRequest)(&robotIgusDelta::zeroAxesTask),
                    pArg );

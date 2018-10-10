@@ -27,18 +27,17 @@ INCLUDEPATH += ./GelgoogProject/BSP/HardwareStdlib/Source/STM32F4xx_StdPeriph_Dr
 DEFINES += EXPORT_LIBRARY
 
 DEFINES += ARM_MATH_CM4
-DEFINES += STM32F427_437xx USE_STDPERIPH_DRIVER
-
+DEFINES +=  USE_STDPERIPH_DRIVER STM32F40_41xxx
+#STM32F427_437xx
 OBJECTS_DIR = ../obj
 MOC_DIR = ../obj
 
 SOURCES = \
     ./GelgoogProject/PVT/Sources/pvtAlgorithm.c \
         ./GelgoogProject/PVT/Sources/pvtCubicSolution.c \
-        ./GelgoogProject/PVT/Sources/pvtLinearSolution.c \
         ./GelgoogProject/PVT/Sources/pvtScurveSolution.c \
         ./GelgoogProject/PVT/Sources/pvtTrapezSolution.c \
-        ./GelgoogProject/PVT/Sources/pvtUniformSolution.c \
+#        ./GelgoogProject/PVT/Sources/pvtUniformSolution.c \
         pvt.cpp
 		
 HEADERS = \

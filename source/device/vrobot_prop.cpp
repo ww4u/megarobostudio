@@ -220,11 +220,6 @@ int VRobot::poseCount()
 QStringList & VRobot::poseTitles()
 { return mPoseTitles; }
 
-//void VRobot::setAbsCount( int cnt )
-//{ mAbsCount = cnt; }
-//int VRobot::absCount()
-//{ return mAbsCount; }
-
 void VRobot::setAngleType( eRoboAngle angMode )
 { mAngleType = angMode; }
 eRoboAngle VRobot::angleType()
@@ -238,15 +233,6 @@ void VRobot::microStepAttr( QStringList &stepList, int &base )
     stepList = mMicrostepsList;
     base = mMicrostepBase;
 }
-
-//void VRobot::setZeroSpeed( double spd )
-//{
-//    mZeroSpeed = spd;
-//}
-//double VRobot::zeroSpeed()
-//{
-//    return mZeroSpeed;
-//}
 
 void VRobot::setZeroPref( double spd, int tmo, int tick )
 {

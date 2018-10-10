@@ -9,6 +9,7 @@ Copyright (C) 2016，北京镁伽机器人科技有限公司
 完成日期:  2016.12.19;
 历史版本:  无;
 *********************************************************************************************/
+#include <string.h>
 #include "pvrfTrigger.h"
 
 
@@ -70,7 +71,7 @@ u8 pvrfTrigInModeVerify(u8 dataLen, u8 *pData, void *pParaValue)
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -113,7 +114,7 @@ u8 pvrfTrigInPattStateVerify(u8 dataLen, u8 *pData, void *pParaValue)
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -189,7 +190,7 @@ u8 pvrfTrigInPattTypeVerify(u8 dataLen, u8 *pData, void *pParaValue)
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -244,7 +245,7 @@ u8 pvrfTrigInPattResponseVerify(u8 dataLen, u8 *pData, void *pParaValue)
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -291,7 +292,7 @@ u8 pvrfTrigInPattSModeVerify(u8 dataLen, u8 *pData, void *pParaValue)
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -313,7 +314,8 @@ u8 pvrfTrigInPattSPeriodVerify(u8 dataLen, u8 *pData, void *pParaValue)
     
     if (sizeof(f32) == dataLen)    //长度先要正确
     {
-        tempValue = *(f32 *)pData;
+        //tempValue = *(f32 *)pData;
+        memcpy(&tempValue, pData, dataLen);
         if (tempValue <= g_paraLimit.upLimit.trigInPeriod)
         {
             if (tempValue >= g_paraLimit.downLimit.trigInPeriod)
@@ -335,7 +337,7 @@ u8 pvrfTrigInPattSPeriodVerify(u8 dataLen, u8 *pData, void *pParaValue)
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -388,7 +390,7 @@ u8 pvrfTrigInLevelStateVerify(u8 dataLen, u8 *pData, void *pParaValue, u8 *pInde
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -453,7 +455,7 @@ u8 pvrfTrigInLevelTypeVerify(u8 dataLen, u8 *pData, void *pParaValue, u8 *pIndex
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -518,7 +520,7 @@ u8 pvrfTrigInLevelResponseVerify(u8 dataLen, u8 *pData, void *pParaValue, u8 *pI
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -575,7 +577,7 @@ u8 pvrfTrigInLevelSModeVerify(u8 dataLen, u8 *pData, void *pParaValue, u8 *pInde
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -602,7 +604,8 @@ u8 pvrfTrigInLevelSPeriodVerify(u8 dataLen, u8 *pData, void *pParaValue, u8 *pIn
         if (tempIndex < TRIGPIN_RESERVE)
         {
             *pIndex = tempIndex;
-            tempValue = *(f32 *)pData;
+            //tempValue = *(f32 *)pData;
+            memcpy(&tempValue, pData, sizeof(f32));
             if (tempValue <= g_paraLimit.upLimit.trigInPeriod)
             {
                 if (tempValue >= g_paraLimit.downLimit.trigInPeriod)
@@ -629,12 +632,13 @@ u8 pvrfTrigInLevelSPeriodVerify(u8 dataLen, u8 *pData, void *pParaValue, u8 *pIn
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
 
 
+#if !GELGOOG_SINANJU
 /*********************************************************************************************
 函 数 名: pvrfTrigOutStateVerify;
 实现功能: 无; 
@@ -653,7 +657,7 @@ u8 pvrfTrigOutStateVerify(u8 dataLen, u8 *pData, void *pParaValue, u8 *pIndex)
     if ((sizeof(SensorStateEnum) + sizeof(u8)) == dataLen)    //参数的长度加上下标的长度
     {
         tempIndex = *pData++;
-        if (tempIndex < DIO_RESERVE)
+        if (tempIndex < g_systemState.doutNum)
         {
             *pIndex = tempIndex;
             tempValue = *pData;
@@ -682,7 +686,7 @@ u8 pvrfTrigOutStateVerify(u8 dataLen, u8 *pData, void *pParaValue, u8 *pIndex)
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -706,7 +710,7 @@ u8 pvrfTrigOutSourceVerify(u8 dataLen, u8 *pData, void *pParaValue, u8 *pIndex)
     if ((sizeof(ChannelEnum) + sizeof(u8)) == dataLen)    //参数的长度加上下标的长度
     {
         tempIndex = *pData++;
-        if (tempIndex < DIO_RESERVE)
+        if (tempIndex < g_systemState.doutNum)
         {
             *pIndex = tempIndex;
             tempValue = *pData;
@@ -730,7 +734,7 @@ u8 pvrfTrigOutSourceVerify(u8 dataLen, u8 *pData, void *pParaValue, u8 *pIndex)
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -754,7 +758,7 @@ u8 pvrfTrigOutConditionVerify(u8 dataLen, u8 *pData, void *pParaValue, u8 *pInde
     if ((sizeof(DIOCondtEnum) + sizeof(u8)) == dataLen)    //参数的长度加上下标的长度
     {
         tempIndex = *pData++;
-        if (tempIndex < DIO_RESERVE)
+        if (tempIndex < g_systemState.doutNum)
         {
             *pIndex = tempIndex;
             tempValue = *pData;
@@ -787,7 +791,7 @@ u8 pvrfTrigOutConditionVerify(u8 dataLen, u8 *pData, void *pParaValue, u8 *pInde
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -811,7 +815,7 @@ u8 pvrfTrigOutSignalVerify(u8 dataLen, u8 *pData, void *pParaValue, u8 *pIndex)
     if ((sizeof(DIOSignalEnum) + sizeof(u8)) == dataLen)    //参数的长度加上下标的长度
     {
         tempIndex = *pData++;
-        if (tempIndex < DIO_RESERVE)
+        if (tempIndex < g_systemState.doutNum)
         {
             *pIndex = tempIndex;
             tempValue = *pData;
@@ -844,7 +848,7 @@ u8 pvrfTrigOutSignalVerify(u8 dataLen, u8 *pData, void *pParaValue, u8 *pIndex)
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -868,7 +872,7 @@ u8 pvrfTrigOutPolarityVerify(u8 dataLen, u8 *pData, void *pParaValue, u8 *pIndex
     if ((sizeof(DIOPolarityEnum) + sizeof(u8)) == dataLen)    //参数的长度加上下标的长度
     {
         tempIndex = *pData++;
-        if (tempIndex < DIO_RESERVE)
+        if (tempIndex < g_systemState.doutNum)
         {
             *pIndex = tempIndex;
             tempValue = *pData;
@@ -897,7 +901,7 @@ u8 pvrfTrigOutPolarityVerify(u8 dataLen, u8 *pData, void *pParaValue, u8 *pIndex
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -921,10 +925,11 @@ u8 pvrfTrigOutPeriodVerify(u8 dataLen, u8 *pData, void *pParaValue, u8 *pIndex)
     if ((sizeof(u32) + sizeof(u8)) == dataLen)    //参数的长度加上下标的长度
     {
         tempIndex = *pData++;
-        if (tempIndex < DIO_RESERVE)
+        if (tempIndex < g_systemState.doutNum)
         {
             *pIndex = tempIndex;
-            tempValue = *(u32 *)pData;
+            //tempValue = *(u32 *)pData;
+            memcpy(&tempValue, pData, sizeof(u32));
             if (tempValue <= g_paraLimit.upLimit.trigOutPeriod)
             {
                 if (tempValue >= g_paraLimit.downLimit.trigOutPeriod)
@@ -951,7 +956,7 @@ u8 pvrfTrigOutPeriodVerify(u8 dataLen, u8 *pData, void *pParaValue, u8 *pIndex)
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -975,10 +980,11 @@ u8 pvrfTrigOutDutyVerify(u8 dataLen, u8 *pData, void *pParaValue, u8 *pIndex)
     if ((sizeof(u16) + sizeof(u8)) == dataLen)    //参数的长度加上下标的长度
     {
         tempIndex = *pData++;
-        if (tempIndex < DIO_RESERVE)
+        if (tempIndex < g_systemState.doutNum)
         {
             *pIndex = tempIndex;
-            tempValue = *(u16 *)pData;
+            //tempValue = *(u16 *)pData;
+            memcpy(&tempValue, pData, sizeof(u16));
             if (tempValue <= g_paraLimit.upLimit.trigOutDuty)
             {
                 if (tempValue >= g_paraLimit.downLimit.trigOutDuty)
@@ -1005,13 +1011,15 @@ u8 pvrfTrigOutDutyVerify(u8 dataLen, u8 *pData, void *pParaValue, u8 *pIndex)
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
+#endif
 
 
 #ifdef PROJECT_GELGOOG
+#if !GELGOOG_SINANJU
 /*********************************************************************************************
 函 数 名: pvrfIsolatorInStateVerify;
 实现功能: 无; 
@@ -1031,16 +1039,12 @@ u8 pvrfIsolatorInStateVerify(u8 dataLen, u8 *pData, void *pParaValue)
         tempValue = *pData;
         switch (tempValue)
         {
-            /*case 0:
-                *(IntfcStateEnum *)pParaValue = INTFC_NONE;
-              break;*/
-              
-            case 1:
-                *(IntfcStateEnum *)pParaValue = INTFC_OFF;
+            case 0:
+                *(SensorStateEnum *)pParaValue = SENSOR_OFF;
               break; 
 
-            case 2:
-                *(IntfcStateEnum *)pParaValue = INTFC_ON;
+            case 1:
+                *(SensorStateEnum *)pParaValue = SENSOR_ON;
               break;       
 
             default:
@@ -1053,7 +1057,7 @@ u8 pvrfIsolatorInStateVerify(u8 dataLen, u8 *pData, void *pParaValue)
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -1073,7 +1077,7 @@ u8 pvrfIsolatorInTypeVerify(u8 dataLen, u8 *pData, void *pParaValue)
     u8 verifyResult = PARA_VERIFY_NO_ERROR;
 
     
-    if (sizeof(SensorStateEnum) == dataLen)    //参数的长度
+    if (sizeof(TrigInTypeEnum) == dataLen)    //参数的长度
     {
         tempValue = *pData;
         switch (tempValue)
@@ -1108,7 +1112,7 @@ u8 pvrfIsolatorInTypeVerify(u8 dataLen, u8 *pData, void *pParaValue)
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -1128,7 +1132,7 @@ u8 pvrfIsolatorInResponseVerify(u8 dataLen, u8 *pData, void *pParaValue)
     u8 verifyResult = PARA_VERIFY_NO_ERROR;
 
     
-    if (sizeof(SensorStateEnum) == dataLen)    //参数的长度
+    if (sizeof(ResponseTypeEnum) == dataLen)    //参数的长度
     {
         tempValue = *pData;
         switch (tempValue)
@@ -1163,7 +1167,7 @@ u8 pvrfIsolatorInResponseVerify(u8 dataLen, u8 *pData, void *pParaValue)
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -1200,7 +1204,7 @@ u8 pvrfIsolatorInRespChanVerify(u8 dataLen, u8 *pData, void *pParaValue)
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -1247,7 +1251,7 @@ u8 pvrfIsolatorInSModeVerify(u8 dataLen, u8 *pData, void *pParaValue)
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -1269,7 +1273,8 @@ u8 pvrfIsolatorInSPeriodVerify(u8 dataLen, u8 *pData, void *pParaValue)
     
     if (sizeof(u32) == dataLen)    //参数的长度
     {
-        tempValue = *(u32 *)pData;
+        //tempValue = *(u32 *)pData;
+        memcpy(&tempValue, pData, dataLen);
         if (tempValue <= g_paraLimit.upLimit.trigInPeriod)
         {
             if (tempValue >= g_paraLimit.downLimit.trigInPeriod)
@@ -1291,13 +1296,15 @@ u8 pvrfIsolatorInSPeriodVerify(u8 dataLen, u8 *pData, void *pParaValue)
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
 #endif
+#endif
 
 
+#if !GELGOOG_SINANJU
 /*********************************************************************************************
 函 数 名: pvrfIsolatorOutStateVerify;
 实现功能: 无; 
@@ -1316,7 +1323,7 @@ u8 pvrfIsolatorOutStateVerify(u8 dataLen, u8 *pData, void *pParaValue, u8 *pInde
     if ((sizeof(SensorStateEnum) + sizeof(u8)) == dataLen)    //参数的长度加上下标的长度
     {
         tempIndex = *pData++;
-        if (tempIndex < YOUT_RESERVE)
+        if (tempIndex < g_systemState.youtNum)
         {
             *pIndex = tempIndex;
             tempValue = *pData;
@@ -1345,7 +1352,7 @@ u8 pvrfIsolatorOutStateVerify(u8 dataLen, u8 *pData, void *pParaValue, u8 *pInde
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -1369,7 +1376,7 @@ u8 pvrfIsolatorOutConditionVerify(u8 dataLen, u8 *pData, void *pParaValue, u8 *p
     if ((sizeof(DIOCondtEnum) + sizeof(u8)) == dataLen)    //参数的长度加上下标的长度
     {
         tempIndex = *pData++;
-        if (tempIndex < YOUT_RESERVE)
+        if (tempIndex < g_systemState.youtNum)
         {
             *pIndex = tempIndex;
             tempValue = *pData;
@@ -1402,7 +1409,7 @@ u8 pvrfIsolatorOutConditionVerify(u8 dataLen, u8 *pData, void *pParaValue, u8 *p
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -1426,7 +1433,7 @@ u8 pvrfIsolatorOutSourceVerify(u8 dataLen, u8 *pData, void *pParaValue, u8 *pInd
     if ((sizeof(ChannelEnum) + sizeof(u8)) == dataLen)    //参数的长度加上下标的长度
     {
         tempIndex = *pData++;
-        if (tempIndex < YOUT_RESERVE)
+        if (tempIndex < g_systemState.youtNum)
         {
             *pIndex = tempIndex;
             tempValue = *pData;
@@ -1449,7 +1456,7 @@ u8 pvrfIsolatorOutSourceVerify(u8 dataLen, u8 *pData, void *pParaValue, u8 *pInd
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -1473,7 +1480,7 @@ u8 pvrfIsolatorOutResponseVerify(u8 dataLen, u8 *pData, void *pParaValue, u8 *pI
     if ((sizeof(DIOPolarityEnum) + sizeof(u8)) == dataLen)    //参数的长度加上下标的长度
     {
         tempIndex = *pData++;
-        if (tempIndex < YOUT_RESERVE)
+        if (tempIndex < g_systemState.youtNum)
         {
             *pIndex = tempIndex;
             tempValue = *pData;
@@ -1502,10 +1509,11 @@ u8 pvrfIsolatorOutResponseVerify(u8 dataLen, u8 *pData, void *pParaValue, u8 *pI
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
+#endif
 
 
 

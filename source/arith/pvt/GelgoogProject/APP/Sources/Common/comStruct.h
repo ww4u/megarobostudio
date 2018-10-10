@@ -17,6 +17,7 @@ Copyright (C) 2016，北京镁伽机器人科技有限公司
 /******************************************包含文件*******************************************/
 #include "project.h"
 #include "comEnum.h"
+#include "comDebug.h"
 #include "bspTimer.h"
 #include "comInterface.h"
 
@@ -52,15 +53,6 @@ typedef struct
   
 }SoftTimerStruct;
 
-/*-------------PVT点结构体-------------*/
-typedef struct
-{
-    f32 position;    //位置
-    f32 speed;       //速度
-    f32 time;        //时间
-      
-}PvtPointStruct;
-
 /*-------------急停减速结构体-------------*/
 typedef struct
 {
@@ -92,7 +84,8 @@ typedef struct
     bool bRewind;     //PVT点Buffer是否回绕
     
     u8 pointIndex;    //Buffer中下一个点的写入位置
-    u8 tailPoint;     //Buffer中未计算的点数
+    
+    u16 tailPoint;     //Buffer中未计算的点数
     
     u16 pvtBufferSize;    //PVT点BUFFER的大小，上电初始化后不可修改
     
@@ -107,13 +100,13 @@ typedef struct
 {
     PvtPointStruct mainPvtPoint[PVT_POINT_BUFFER_SIZE];    //PVT点数据
     
-    PvtPointStruct smallPvtPoint[SMALL_PVT_BUFFER_SIZE];    //PVT点数据
+    PvtPointStruct smallPvtPoint[PVT_POINT_BUFFER_SIZE];    //PVT点数据
     
-    PvtPointStruct presetPvtPoint[PRESET_RESERVE][PRESET_PVT_BUFFER_SIZE];    //PVT点数据
+    PvtPointStruct presetPvtPoint[PRESET_RESERVE][PVT_POINT_BUFFER_SIZE];    //PVT点数据
 
     u32 crc;
 
-    //总共12*256+12*4+12*8*32+4 = 6196个字节
+    //总共12*32+12*32+12*8*32+4 = 3844个字节
       
 }PvtInfoStruct;
 
@@ -128,9 +121,6 @@ typedef struct
     EndStateEnum endState;    //运行结束状态
     u8  validPoint;     //Buffer中有效点数
     u8  warnPoint;      //FIFO模式警告点数
-
-    u16 accScale;       //S曲线加速段时间占比
-    u16 decScale;       //S曲线减速段时间占比
     
     u32 cycleNum;       //循环模式的循环数
     
@@ -183,6 +173,8 @@ typedef struct
 
     u32 emptyDataAddr;                          //空数据的地址，由FUNC赋值并使用
     u32 emptyData[OUTPUT_EMPTY_BUFFER_SIZE];    //空数据Buffer，数据用于为0
+
+    //长度等于(9 + OUTPUT_DATA_BUFFER_SIZE + 4(1 + OUTPUT_EMPTY_BUFFER_SIZE)) * 4(F32) = 4144
       
 }OutputDataStruct;
 
@@ -249,7 +241,7 @@ typedef struct
     TrigInPinEnum    initIOPin;        //作为初始位的IO管脚
     SensorStateEnum  offsetState;
 
-    SensorStateEnum  revMotion;    //反向运行
+    u8 reserve;    //运行反向的开关删除了，这里放个保留的保证之前的结构体对齐
     
     StartSourceEnum  startSrc;         //启动源
     ReceiveTypeEnum  startType;        //接收ID类型
@@ -264,7 +256,7 @@ typedef struct
     f32  minAcc;
     u32  origin;
     
-    //总共18*4=72个字节
+    //总共11*4=44个字节
       
 }MotionManageStruct;
 
@@ -273,7 +265,7 @@ typedef struct
 {
     MotionManageStruct motion[CH_TOTAL];
     
-    u32 crc;    //72*CH_TOTAL + 4个字节(单轴为76个，8轴为580)
+    u32 crc;    //44*CH_TOTAL + 4个字节(单轴为76个，8轴为580)
       
 }MotionInfoStruct;
 
@@ -283,7 +275,7 @@ typedef struct
     SensorStateEnum state[REPTTYPE_RESERVE];
     u32             period[REPTTYPE_RESERVE];    //上报周期
 
-    //总共72字节
+    //总共100字节
     
 }ReportManageStruct;
 
@@ -292,7 +284,7 @@ typedef struct
 {
     ReportManageStruct report[CH_TOTAL];
     
-    u32 crc;    //72*CH_TOTAL + 4个字节(单轴为76个，8轴为580)
+    u32 crc;    //100*CH_TOTAL + 4个字节(单轴为104个，8轴为804)
     
 }ReportInfoStruct;
 
@@ -415,9 +407,20 @@ typedef struct
     u8  snUartFrameLen;
     u8  snUartRecvNum;
     u8  feedbackRatio;
+    u8  fanDuty;
+
+    s8  sgLimit;
     
     s16 otpThr;
     s16 canGroup;
+    
+    s16 motorGearRatio;
+    s16 motorVolt;
+    s16 motorCurr;
+
+    u16 alarmDist;
+    u16 ledFlickerFreq;
+    
     s32 canSendId;
     s32 canReceiveId;
     s32 canGroupId;    
@@ -427,10 +430,6 @@ typedef struct
     s32 pvtEndPoint;
     u32 pvtNcycles;
     s32 pvtWarnPoint;
-    
-    s16 motorGearRatio;
-    s16 motorVolt;
-    s16 motorCurr;
     f32 motorPeakSpeed;
     f32 motorPeakAcc;
     f32 motorLead;
@@ -466,10 +465,12 @@ typedef struct
     f32 asensorThr;
 
     u32 fpgaPwmClock;    //CJ 2017.04.12 Add
-
-    u32 sgLimit;
     
-    u16 speedScale;
+    u16 lineOutNum;    //占比不做验证了，丢步的上限需要验证
+    
+    u32 switchTime;
+    
+    u32 absEncValue;
     
 }UpLimitStruct;
 
@@ -479,9 +480,19 @@ typedef struct
     u8  snUartFrameLen;
     u8  snUartRecvNum;
     u8  feedbackRatio;
+
+    s8  sgLimit;
     
     s16 otpThr;
     s16 canGroup;
+    
+    s16 motorGearRatio;
+    s16 motorVolt;
+    s16 motorCurr;
+
+    u16 alarmDist;
+    u16 ledFlickerFreq;
+    
     s32 canSendId;
     s32 canReceiveId;
     s32 canGroupId;    
@@ -491,10 +502,6 @@ typedef struct
     s32 pvtEndPoint;
     u32 pvtNcycles;
     s32 pvtWarnPoint;
-    
-    s16 motorGearRatio;
-    s16 motorVolt;
-    s16 motorCurr;
     f32 motorPeakSpeed;
     f32 motorPeakAcc;
     f32 motorLead;
@@ -530,10 +537,12 @@ typedef struct
     f32 asensorThr;
 
     u32 fpgaPwmClock;    //CJ 2017.04.12 Add
-
-    u32 sgLimit;
     
     u16 speedScale;
+    
+    u32 switchTime;
+    
+    u32 absEncValue;
     
 }DownLimitStruct;
 
@@ -547,10 +556,13 @@ typedef struct
 
 typedef struct
 {
-    u8  hard;
-    u8  major;
-    u8  minor;
-    u8  build;
+    u8  majorType;    //产品主类型
+    u8  minorType;    //产品子类型
+    u8  hardVer;      //硬件版本号
+    
+    u8  majorVer;     //逻辑主版本号
+    u8  minorVer;     //次版本号
+    u8  buildVer;     //修订版本号
     
 }FpgaVersionStruct;
 
@@ -581,9 +593,6 @@ typedef struct
     MainDeviceModelEnum mDevcModel;    //主型号，固定为MDMODEL_MRQ
     SubDeviceModelEnum  sDevcModel;    //子型号，端口读到的值
 
-    DriverBoardTypeEnum drvBoardTypeDn;    //下板的使用类型
-    DriverBoardTypeEnum drvBoardTypeUp;    //上板的使用类型
-
     FpgaVersionUnion fpga;
 
     u8 software[SOFTWARE_VER_LEN];    //分支版本号+大版本号+小版本号+编译版本号, 编译版本号不对外
@@ -600,41 +609,108 @@ typedef struct
 {    
     WorkModeEnum     workMode; 
     PowerOnModeEnum  powerOn;
-
+    SensorStateEnum  revMotion;    //反向运行
+    
     u8 group[CH_TOTAL][GROUP_NUM];    //默认129，用户可设置，范围130-255
 
     MainLabelEnum mainLabel[CH_TOTAL];    //主标签
     SubLabelEnum  subLabel[CH_TOTAL];     //子标签
 
-    OtpInfoStruct otpInfo;    //OTP信息，8字节
-
-#if PVT_CALC_USE_FPGA_CLOCK_ERROR
-    f32 fpgaPwmClock;         //FPGA输出PWM的时钟和标准时钟的误差
+#if GELGOOG_SINANJU
+    u8  fanDuty;
+    u8  armLedDuty[ARMLED_RESERVE];
     
-#else
-
-    u32 fpgaPwmClock;         //FPGA输出PWM的时钟
+    u32 fanFrequency;
+    u32 armLedFreq[ARMLED_RESERVE];
 #endif
 
-    u32 crc;    //总共(单轴24个字节，多轴36个字节)
+    OtpInfoStruct otpInfo;    //OTP信息，8字节
+
+    f32 fpgaClockOffset;         //FPGA输出PWM的时钟和标准时钟的误差
+
+    u32 crc;    //总共(单轴24个字节，GELGOOG 52个字节，SINANJU 64个字节)
     
 }SystemInfoStruct;
 
-/*-------------位置转换信息结构体-----------*/
+/*-------------FPGA中断源结构体-------------*/
 typedef struct
 {
-    f32 posnToStep;      //位置到步数的转换系数
-    f32 posnToLine;      //位置到编码器线数的转换系数 
-    f32 lineSteps;       //线间步
-    u32 lineMult;        //线数的倍乘
+    u16 posState1 :1;    //限位开关状态
+    u16 posState2 :1;    //
+    u16 posState3 :1;    //
+    u16 posState4 :1;    //
+    u16 posState5 :1;    //
+    u16 posState6 :1;    //
+    u16 posState7 :1;    //
+    u16 posState8 :1;    //
     
-}PosnConvertInfoStruct;
+    u16 posState9  :1;    //
+    u16 posState10 :1;    //
+    u16 posState11 :1;    //
+    u16 posState12 :1;    //
+    u16 posState13 :1;    //
+    u16 posState14 :1;    //
+    u16 posState15 :1;    //
+    u16 posState16 :1;    //
+    
+}DioRefStateStruct;
+
+typedef union
+{
+    DioRefStateStruct dioRefState;
+
+    u16 dioRefStateValue;
+    
+}DioRefStateUnion;
+
+/*-------------定时器管理结构体-------------*/
+typedef struct
+{
+    //系统相关
+    SensorStateEnum dioRefRead;
+    SensorStateEnum ledManage;
+
+    //通道相关
+    SensorStateEnum motionState[CH_TOTAL];
+    SensorStateEnum motionMonitor[CH_TOTAL];
+    SensorStateEnum lineOutOfStep[CH_TOTAL];
+    SensorStateEnum driverMonitor[CH_TOTAL]; 
+    //u8 report[CH_TOTAL][REPTTYPE_RESERVE];    //暂时先不支持
+    SensorStateEnum driverCurr[CH_TOTAL];
+    
+    //Gelgoog独有
+    SensorStateEnum isolatorIn;
+    
+    //Qubeley独有
+    SensorStateEnum otp;
+    SensorStateEnum analogIn;
+    
+}SoftTimerStateStruct;
+
+typedef struct
+{
+    //系统相关
+    SensorStateEnum sampleState;
+    u8    chanNum;
+    u8    encDiv;
+
+    u16   readOffset;
+    u16   readLen;
+
+    u16   mstepCount;
+
+    void *mstepData; 
+    
+}PdmInfoStruct;
 
 /*-------------系统状态结构体-----------*/
 typedef struct
 {
     EnginModeEnum    EnginMode;       //工程模式
     u8               chanNum;         //系统支持的通道数
+    u8               doutNum;         //系统支持的数字输出路数
+    u8               youtNum;         //系统支持的隔离输出路数
+    
     SysStateEnum     systemState;     //当前系统模式
     DistingStateEnum distState;       //识别状态
     
@@ -644,7 +720,25 @@ typedef struct
     
     LevelStatusEnum    levelStatus;
 
-    SensorStateEnum    reportSwitch;      //自动上报总开关
+    SensorStateEnum    dioRefRead;       //DIOREF状态读取开关
+    
+    WaveTableTypeEnum  calcQueue[CH_TOTAL][PVT_CALC_QUEUE_SIZE];    //解算队列
+    u8                 calcIndex[CH_TOTAL];                         //解算队列当前解算索引
+    u8                 tailIndex[CH_TOTAL];                         //解算队列队尾索引
+        
+    
+    u8                 eventCode[EVENT_CODE_LEN];    //错误代码
+        
+#if MRV_SUPPORT 
+    ChanStateEnum      chanState[CH_TOTAL + MRV_CH_TOTAL_NUM];        //通道状态
+    ChanStateEnum      lastChanState[CH_TOTAL + MRV_CH_TOTAL_NUM];    //上次通道状态
+    
+    WaveTableTypeEnum  calcWaveTable[CH_TOTAL + MRV_CH_TOTAL_NUM];    //当前解算的波表
+    WaveTableTypeEnum  outpWaveTable[CH_TOTAL + MRV_CH_TOTAL_NUM];    //当前输出的波表
+    
+    u8 bStateSwitch[CH_TOTAL + MRV_CH_TOTAL_NUM][WTTYPE_RESERVE];     //状态切换检测
+    
+#else
         
     ChanStateEnum      chanState[CH_TOTAL];        //通道状态
     ChanStateEnum      lastChanState[CH_TOTAL];    //上次通道状态
@@ -652,25 +746,28 @@ typedef struct
     WaveTableTypeEnum  calcWaveTable[CH_TOTAL];    //当前解算的波表
     WaveTableTypeEnum  outpWaveTable[CH_TOTAL];    //当前输出的波表
     
-    WaveTableTypeEnum  calcQueue[CH_TOTAL][PVT_CALC_QUEUE_SIZE];    //解算队列
-    u8                 calcIndex[CH_TOTAL];                         //解算队列当前解算索引
-    u8                 tailIndex[CH_TOTAL];                         //解算队列队尾索引
-        
+    u8 bStateSwitch[CH_TOTAL][WTTYPE_RESERVE];     //状态切换
+#endif
+
+#if GELGOOG_SINANJU
+    DistAlarmEnum  sysDistAlarm;
+    DistAlarmEnum  chDistAlarm[DIST_SENSOR_NUM];
+
+    SensorStateEnum absEncLimit[ABS_ENCODER_NUM];
     
-    u8                 errorCode[ERROR_CODE_LEN];    //错误代码
+    SensorStateEnum ledFlickerState;
+    u16             ledFlickerFreq;
     
-    DriverTypeEnum     drvType[CH_TOTAL];     //驱动类型
-    u8                 drvState[CH_TOTAL];    //驱动状态
-    
-    SensorStateEnum    revMotion[CH_TOTAL];    //反向运行的开启状态
-    
-    u16  eventValue;
+    PdmInfoStruct pdmInfo[CH_TOTAL];
+#endif
+
+    u16 eventValue;
 
     s16  circleNum[CH_TOTAL];
-    s32  steps[CH_TOTAL];
+    
     s32  abCount[CH_TOTAL];
     s32  lastAbCount[CH_TOTAL];
-    s32  pvtSteps[CH_TOTAL];
+    
     u32  cycleNumCount[CH_TOTAL];
     
     u32  clockCount;        //时钟同步计数
@@ -682,6 +779,8 @@ typedef struct
     
     ConfigStateEnum configState[CH_TOTAL][WTTYPE_RESERVE];   //PVT参数的配置状态
     PvtManageStruct pvtManage[CH_TOTAL][WTTYPE_RESERVE];
+
+    SoftTimerStateStruct softTimer;
     
 }SystemStateStruct;
 
@@ -700,7 +799,9 @@ typedef struct
     
     u8 bTrigIn        :1;    //设置触发输入
     u8 bStartSrc      :1;    //设置启动源
-    u8 bRevMotion     :1;    //设置反向运行状态
+    
+    u8 reserve1       :1;    //暂时保留
+    
     u8 bReportTorque  :1;    //xyzheng 上报力矩 
     u8 bMicroStep     :1;    //电机细分配置
     u8 bCurrent       :1;    //电流配置
@@ -716,7 +817,10 @@ typedef struct
     u8 bModifyDuty    :1;    //
     u8 bLineMult      :1;    //
     
-    u8 reserve        :8;    //预留
+    u8 bBlReset       :1;    //
+    u8 bPdmSample     :1;    //
+    u8 bPdmDataRead   :1;    //
+    u8 reserve        :5;    //预留
     
 }ChanCfgBmpStruct;
 
@@ -740,8 +844,12 @@ typedef struct
     u8 bSensorUart1   :1;    //配置传感器UART1
     u8 bSensorUart2   :1;    //配置传感器UART2
     u8 bIsolatorIn    :1;    //配置隔离输入
+    u8 bDriverMode    :1;    //10轴的驱动细分
     
-    u8 reserve        :1;    //预留
+    u8 bDriverCurr    :1;    //10轴的驱动电流
+    u8 bRevMotion     :1;    //设置反向运行状态
+    
+    u8 reserve        :6;    //预留
     
 }SystemCfgBmpStruct;
 
@@ -821,10 +929,10 @@ typedef struct
 /*-----------传感器UART口结构体-------------*/
 typedef struct
 {
-    UartIntfcStruct    uartIntfc[UARTNUM_RESERVE];   //8*2=16个字节
+    UartIntfcStruct    uartIntfc[UARTNUM_RESERVE];   //5*2=12个字节
     SensorManageStruct sensor[UARTNUM_RESERVE][SENSOR_RESERVE];      //单轴8*2=16个字节，多轴8*2*4=64个字节
     
-    u32 crc;    //单轴16+16+4=36个字节，多轴16+64+4=84个字节
+    u32 crc;    //单轴12+16+4=36个字节，多轴16+64+4=80个字节
     
 }SensorUartStruct;
 
@@ -857,15 +965,13 @@ typedef struct
     
     u16 resv1 :2;
     
-    u16 alarmSwitch      :1;    //告警开关状态
-    u16 di2_x1AlarmState :1;    //
-    u16 di3_x2AlarmState :1;    //
-    u16 di4_x3AlarmState :1;    //
-    u16 di5_x4AlarmState :1;    //
-    u16 chanZAlarmState  :1;    //
+    u16 alarmSwitch     :1;    //告警开关状态
+    u16 sdioCrcError    :1;    //SDIO数据有CRC错误
     
-    u16 outOfStep     :1;    //失步超出阈值
-    u16 waveEndState  :1;    //波表输出结束中断
+    u16 resv2 :4;
+    
+    u16 outOfStep       :1;    //失步超出阈值
+    u16 waveEndState    :1;    //波表输出结束中断
     
 }IntrSourceStruct;
 
@@ -873,23 +979,37 @@ typedef struct
 /*--------事件源位图结构体-------*/
 typedef struct
 {
-    u8 bStateSwitch[CH_TOTAL];         //状态切换
-    u8 bSenUart[UARTNUM_RESERVE][SENSOR_RESERVE];       //传感器Uart接收完成
-    
-    u8 bDistSen[DIST_SENSOR_NUM];      //测距传感器
-
-#if GELGOOG_SINANJU
-    u8 bAbsEncoder[ABS_ENCODER_NUM];   //绝对值编码器
+#if MRV_SUPPORT 
+    u8 bStateMonitor[CH_TOTAL + MRV_CH_TOTAL_NUM];       //状态切换检测
 #else
-    u8 bAngleSen[ANGLE_SENSOR_NUM];    //角度传感器
+    u8 bStateMonitor[CH_TOTAL];       //状态切换检测
 #endif
 
-    u8 bFpgaInt          :1;    //从FPGA来的中断
-    u8 bAnalogInInt      :1;    //模拟输入中断
-    u8 bDeviceId         :1;    //设备识别
-    u8 bXInMatch         :1;    //XIN匹配
     
-    u8 reserve           :4;    //预留
+    u8 bSenUart[UARTNUM_RESERVE][SENSOR_RESERVE];    //传感器Uart接收完成
+    
+    u8 bDistSen[DIST_SENSOR_NUM];      //测距传感器
+#if GELGOOG_SINANJU
+    u8 bAbsEncoder[ABS_ENCODER_NUM];   //绝对值编码器
+#endif
+
+    u8 bDriverCurr[CH_TOTAL];       //电流切换
+
+    u8 bDriverFault;
+
+    u8 bFpgaInt;        //从FPGA来的中断
+    u8 bAnalogInInt;    //模拟输入中断
+    u8 bDeviceId;       //设备识别
+    u8 bXInMatch;       //XIN匹配
+    
+    u8 distAlarmLed;
+
+#if !GELGOOG_AXIS_10
+    u8 drvStateRead[CH_TOTAL];    //驱动状态读取
+#endif
+
+    u8 backLashRead[CH_TOTAL];    //反向间隙读取
+
     
 }EventSrcBmpStruct;
 
@@ -1107,14 +1227,19 @@ typedef struct
     SensorStateEnum  state; 
     DriverTypeEnum   type;
     u8               curr;         //驱动电流，单位0.1mA
+    u8               idleCurr;     //空闲电流，单位0.1mA
 
-    s8  sgUpLimit;    //SG分辨率为32/1024=0.03125，实际存储得是放大100倍的整数值
-    s8  sgDnLimit;
+    SensorStateEnum  tuningState; 
+    CurrRatioEnum    currRatio;
     
-    s16 sgZero;
+    CurrIncreEnum    currIncre;
+    CurrDecreEnum    currDecre;
+    
     s16 sgThreshold;
-    s16 seMax;
-    s16 seMin;
+    u16 energEfficMax;
+    u16 energEfficOffset;    //上限减偏移就是下限
+
+    u32 switchTime;    //驱动电流到空闲电流的切换时间
         
     //DRVCTRL : Driver Control Register
     DriverControlUnion DRVCTRL;
@@ -1131,16 +1256,25 @@ typedef struct
     //DRVCONF : Driver Configuration Register
     DriverConfigUnion DRVCONF;
 
-    //总共36字节
+    //总共40字节
     
 }DriverManageStruct;
 
 /*------------驱动信息结构体-----------*/
 typedef struct
 {
+#if !GELGOOG_AXIS_10
     DriverManageStruct driver[CH_TOTAL]; 
+
+#else
+    SensorStateEnum  state[CH_TOTAL]; 
+    DriverTypeEnum   type[CH_TOTAL];
     
-    u32 crc;    //单轴为28+4=32个，8轴为8*28+4=228
+    MicroStepEnum    microStep;
+    u8               curr;
+#endif
+
+    u32 crc;    //单轴为40+4=44个，8轴为8*40+4=324，10轴28个字节
     
 }DriverInfoStruct;
 
@@ -1162,7 +1296,7 @@ typedef struct
     
     u32 resv_bit20_31 :12;
 
-}DriverReadRespOneStruct;
+}DriverReadRespZeroStruct;
 
 /*------------TMC2660/262 回读寄存器-----------*/
 typedef struct
@@ -1182,7 +1316,7 @@ typedef struct
     
     u32 resv_bit20_31 :12;
 
-}DriverReadRespTwoStruct;
+}DriverReadRespOneStruct;
 
 /*------------TMC2660/262 回读寄存器-----------*/
 typedef struct
@@ -1203,15 +1337,15 @@ typedef struct
     
     u32 resv_bit20_31 :12;
 
-}DriverReadRespThreeStruct;
+}DriverReadRespTwoStruct;
 
 
 /*------------驱动回读寄存器联合体-----------*/
 typedef union
 {
-    DriverReadRespOneStruct   readRespOne; 
-    DriverReadRespTwoStruct   readRespTwo; 
-    DriverReadRespThreeStruct readRespThree;
+    DriverReadRespZeroStruct readResp0; 
+    DriverReadRespOneStruct  readResp1; 
+    DriverReadRespTwoStruct  readResp2;
     
     u32 regValue;
     
@@ -1226,11 +1360,6 @@ typedef struct
     SensorStateEnum sgseState; 
 
     u8  csValue;
-
-    s8  sgUpLimit;
-    s8  sgDnLimit;
-    
-    u16 sgZero;
 
     u32 * energyValue;
     u32 * sgAllValue; 
@@ -1294,6 +1423,82 @@ typedef struct
     u8  crc;      //校验和
     
 }AbsEncoderFrameStruct;
+
+#if GELGOOG_SINANJU
+/*------------绝对值编码器Alarm结构体-----------*/
+typedef struct
+{
+    SensorStateEnum  state;       //状态
+    SensorStateEnum  zeroPost;    //零点位置是否存在
+    u32              zeroValue;   //零位对应的编码器读数
+    u32              upLimit;     //上限
+    u32              dnLimit;     //下限
+
+    //总共16字节
+    
+}AbsEncoderAlarmStruct;
+
+/*------------测距传感器Alarm结构体-----------*/
+typedef struct
+{
+    SensorStateEnum  state;          //状态
+    u16              alarm1Dist;     //当检测到距离小于此值时开始通过总线发送警报
+    u16              alarm2Dist;     //当检测到距离小于此值时开始减速停止并发送警报
+    u16              alarm3Dist;     //当检测到距离小于此值时立即停止并发送警报
+    
+    //总8个字节
+    
+}DistSensorAlarmStruct;
+
+/*-----------传感器Alarm结构体-------------*/
+typedef struct
+{
+    AbsEncoderAlarmStruct encAlarm[ABS_ENCODER_NUM];
+    ResponseTypeEnum      encAlarmResponse;
+    
+    DistSensorAlarmStruct distAlarm[DIST_SENSOR_NUM];
+    
+    u32 crc;    //16*4+4+8*4+4=104
+    
+}SensorAlarmStruct;
+#endif
+
+/*-------------调试信息结构体-----------*/
+typedef struct
+{
+    //接收到的
+    u32 pvtPosnCount[CH_TOTAL];
+    u32 pvtVelcCount[CH_TOTAL];
+    u32 pvtTimeCount[CH_TOTAL];
+    
+    //通过验证的
+    u32 vefyPosnCount[CH_TOTAL];
+    u32 vefyVelcCount[CH_TOTAL];
+    u32 vefyTimeCount[CH_TOTAL];
+    
+    //解算完成的
+    u32 calcPvtCount[CH_TOTAL];
+
+    u64 calcTime[CH_TOTAL];    //解算后的运行时间统计
+
+    u64 runTime[CH_TOTAL];     //实际运行时间统计
+
+    u8 reserve;
+    
+}DebugInfoStruct;
+
+#if MRV_SUPPORT
+/*--------通道配置位图结构体-------*/
+typedef struct
+{
+    u8 bPrepare       :1;    //进行运动准备
+    u8 bStop          :1;    //停止
+    u8 bEmergStop     :1;    //紧急停止
+    
+    u8 reserve        :5;    //预留
+    
+}MrvChanCfgBmpStruct;
+#endif
 
 
 

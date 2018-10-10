@@ -7,29 +7,29 @@
 
 typedef scpi_result_t (*_scpi_cb)( scpi_t * context );
 
-static char * cbToKeyw( scpi_t * context, _scpi_cb pfCb )
-{
-    scpi_command_t *pCmdList;
+//static char * cbToKeyw( scpi_t * context, _scpi_cb pfCb )
+//{
+//    scpi_command_t *pCmdList;
 
-    Q_ASSERT( NULL != context );
-    Q_ASSERT( NULL != pfCb );
+//    Q_ASSERT( NULL != context );
+//    Q_ASSERT( NULL != pfCb );
 
-    pCmdList = (scpi_command_t*)context->cmdlist;
+//    pCmdList = (scpi_command_t*)context->cmdlist;
 
-    do
-    {
-        if ( pCmdList->callback == pfCb )
-        { return (char*)pCmdList->pattern; }
+//    do
+//    {
+//        if ( pCmdList->callback == pfCb )
+//        { return (char*)pCmdList->pattern; }
 
-        if ( pCmdList->pattern == NULL || pCmdList->callback == NULL )
-        { return NULL; }
+//        if ( pCmdList->pattern == NULL || pCmdList->callback == NULL )
+//        { return NULL; }
 
-        pCmdList++;
+//        pCmdList++;
 
-    }while( 1 );
+//    }while( 1 );
 
-    return NULL;
-}
+//    return NULL;
+//}
 
 static scpi_result_t _transfer_write( scpi_t * context,
                                       bool bTrim,
@@ -40,8 +40,7 @@ static scpi_result_t _transfer_write( scpi_t * context,
                             bTrim,
                             v );
     if ( ret != 0 )
-    { logDbg()<<context->buffer.data;
-        scpi_ret( SCPI_RES_ERR ); }
+    { scpi_ret( SCPI_RES_ERR ); }
     else
     { return SCPI_RES_OK; }
 }
@@ -52,7 +51,6 @@ static scpi_result_t _transfer_recv( scpi_t * context )
     byte *pBuf;
     pBuf = _OBJ->recv( retLen );
 
-    //! \todo remove the \0 from mrh-e
     if ( retLen > 0 )
     {
         if ( retLen > 1 && pBuf[retLen-1] == '\0' )
@@ -140,14 +138,6 @@ static scpi_result_t _scpi_idn( scpi_t * context )
 {
     DEF_LOCAL_VAR();
 
-//    QString str;
-
-//    str = _OBJ->getName();
-
-//    SCPI_ResultText( context, str.toLatin1().data() );
-
-//    return SCPI_RES_OK;
-
     return transfer_query( context, false, 0 );
 }
 
@@ -207,7 +197,6 @@ static scpi_result_t _scpi_idn( scpi_t * context )
 
 make_w_api( _scpi_system_mode_switch )
 make_r_api( _scpi_system_mode_switch_q )
-//make_r_api( _scpi_system_boardinfo_q )
 
 make_w_api( _scpi_script_run )
 make_w_api( _scpi_script_run_cycle )
@@ -270,7 +259,7 @@ static scpi_result_t _scpi_read( scpi_t * context )
 
     int ret, retLen;
     ret = LOCAL_OBJ( MegaDevice::Mrh_e )->read( pData, len, tmo, retLen );
-logDbg()<<retLen;
+
     if ( ret != 0 )
     {
         delete []pData;
@@ -298,8 +287,6 @@ static scpi_command_t _scpi_cmds[]=
     CMD_ITEM( "SYSTEM:MODE:SWITCH", _scpi_system_mode_switch ),
     CMD_ITEM( "SYSTEM:MODE:READ?", _scpi_system_mode_switch_q ),
 
-//    CMD_ITEM( "SYSTEM:BOARDINFO?", _scpi_system_boardinfo_q ),
-
     CMD_ITEM( "SCRIPT:RUN", _scpi_script_run ),
     CMD_ITEM( "SCRIPT:RUN:CYCLE", _scpi_script_run_cycle ),
     CMD_ITEM( "SCRIPT:RUN:CYCLE?", _scpi_script_run_cycle_q ),
@@ -319,45 +306,10 @@ static scpi_command_t _scpi_cmds[]=
     CMD_ITEM( "SCRIPT:FILE:SAVE:DATA", _scpi_script_file_data ),
     CMD_ITEM( "SCRIPT:FILE:SAVE:END", _scpi_script_file_end ),
 
-//    CMD_ITEM( "SCRIPT:OFFLINE:SWITCH?", _scpi_idn ),
-//    CMD_ITEM( "SCRIPT:OFFLINE:SWITCH:BIND", _scpi_idn ),
-//    CMD_ITEM( "SCRIPT:OFFLINE:SWITCH:UNBIND", _scpi_idn ),
-//    CMD_ITEM( "SCRIPT:OFFLINE:SWITCH:STOPBIND", _scpi_idn ),
-//    CMD_ITEM( "SCRIPT:OFFLINE:SWITCH:STOPBIND?", _scpi_idn ),
-//    CMD_ITEM( "SCRIPT:OFFLINE:SWITCH:STIOUNBIND", _scpi_idn ),
-//    CMD_ITEM( "SCRIPT:OFFLINE:RESET", _scpi_idn ),
-
-//    CMD_ITEM( "MOTION:ADJUST:RUN", _scpi_idn ),
-//    CMD_ITEM( "MOTION:ADJUST:RUN?", _scpi_idn ),
-//    CMD_ITEM( "MOTION:ADJUST:POINT:START", _scpi_idn ),
-//    CMD_ITEM( "MOTION:ADJUST:POINT:MARK", _scpi_idn ),
-//    CMD_ITEM( "MOTION:ADJUST:POINT?", _scpi_idn ),
-
-//    CMD_ITEM( "MOTION:HOME:RUN", _scpi_idn ),
-//    CMD_ITEM( "MOTION:HOME:RUN?", _scpi_idn ),
-
-//    CMD_ITEM( "ENCODER:LINE", _scpi_idn ),
-//    CMD_ITEM( "ENCODER:LINE?", _scpi_idn ),
-//    CMD_ITEM( "ENCODER:CHAN", _scpi_idn ),
-//    CMD_ITEM( "ENCODER:CHAN?", _scpi_idn ),
-//    CMD_ITEM( "ENCODER:TYPE", _scpi_idn ),
-//    CMD_ITEM( "ENCODER:TYPE?", _scpi_idn ),
-
-//    CMD_ITEM( "REPORT:VALUE?", _scpi_idn ),
-
-//    CMD_ITEM( "BRANCH:VALUE?", _scpi_idn ),
-//    CMD_ITEM( "BRANCH:STATE", _scpi_idn ),
-//    CMD_ITEM( "BRANCH:STATE?", _scpi_idn ),
-
-//    CMD_ITEM( "DEBUG:DATA", _scpi_idn ),
-//    CMD_ITEM( "DEBUG:DATA?", _scpi_idn ),
-
     CMD_ITEM( "DEBUG:FACTORY:IOCONFIG", _scpi_debug_factory_ioconfig ),
     CMD_ITEM( "DEBUG:FACTORY:IOSET", _scpi_debug_factory_ioset ),
     CMD_ITEM( "DEBUG:FACTORY:IOGET", _scpi_debug_factory_ioget ),
     CMD_ITEM( "DEBUG:FACTORY:IOGETALL", _scpi_debug_factory_iogetall ),
-//    CMD_ITEM( "DEBUG:FACTORY:SERIAL", _scpi_idn ),
-//    CMD_ITEM( "DEBUG:FACTORY:RESETSD", _scpi_idn ),
 
     //! base
     CMD_ITEM( "WRITE", _scpi_write ),
@@ -365,7 +317,6 @@ static scpi_command_t _scpi_cmds[]=
 
     SCPI_CMD_LIST_END
 };
-
 
 namespace MegaDevice {
 

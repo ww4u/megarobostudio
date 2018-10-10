@@ -41,18 +41,21 @@ void cmdTrigInCmdInit(void);
 void cmdTrigInCmdProc(CmdParseFrameStruct *pCmdStackFrame);
 
 #ifdef PROJECT_GELGOOG
+#if !GELGOOG_SINANJU
 void cmdIsolInMonitorTimerCB(void *timeOutPara);
 
 void cmdIsolInCmdInit(void);
 void cmdIsolInCmdProc(CmdParseFrameStruct *pCmdStackFrame);
-void cmdIsolInMonitorTimerCB(void *timeOutPara);
+#endif
 #endif
 
+#if !GELGOOG_SINANJU
 void cmdTrigOutCmdInit(void);
 void cmdTrigOutCmdProc(CmdParseFrameStruct *pCmdStackFrame);
 
 void cmdIsolatorOutCmdInit(void);
 void cmdIsolatorOutCmdProc(CmdParseFrameStruct *pCmdStackFrame);
+#endif
 
 
 

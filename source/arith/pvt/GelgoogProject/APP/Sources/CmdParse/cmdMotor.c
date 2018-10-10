@@ -17,11 +17,14 @@ Copyright (C) 2016，北京镁伽机器人科技有限公司
 #include "servSystemPara.h"
 #include "servCommIntfc.h"
 #include "bspTimer.h"
+#include "servAlgorithm.h"
+#include "servSoftTimer.h"
 
 
 
 /****************************************外部变量声明*****************************************/
 extern bool g_bCmdPostSemToFunc;
+extern bool g_bCmdPostSemToEvent;
 
 extern SystemInfoStruct  g_systemInfo;
 extern SystemStateStruct g_systemState;
@@ -30,10 +33,16 @@ extern ChanCfgBmpStruct  g_chanCfgBmp[CH_TOTAL];
 extern TrigInInfoStruct  g_trigInInfo;
 
 extern SensorUartStruct  g_sensorUart;
+extern DriverInfoStruct  g_driverInfo;
+
+extern EventSrcBmpStruct g_eventSrcBmp;
+
+extern SoftTimerStruct g_paraSaveTimer;
 
 
 
 /*****************************************局部宏定义******************************************/
+#define    BACKLASH_TEST    1
 
 
 
@@ -70,7 +79,7 @@ void cmdMotorGearRatioNumSet(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -85,15 +94,27 @@ void cmdMotorGearRatioNumSet(u8 cmdDataLen, u8 *pCmdData)
     //进行参数验证
     if (PARA_VERIFY_NO_ERROR == pvrfMotorGearRatioVerify(cmdDataLen, pCmdData, (void *)&gearRatio))
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if (bConfig[i])
             {
                 g_motorInfo.motor[i].gearRatioNum = gearRatio;
+
+#if !GELGOOG_AXIS_10                            
+                //重新计算下位置到微步和编码器线的转换系数
+                servPosnConvCoeffCalc(g_motorInfo.motor[i], 
+                                      g_driverInfo.driver[i].DRVCTRL.stepDirMode.MRES,
+                                      &g_systemState.posnConvertInfo[i]);
+#else
+                //重新计算下位置到微步和编码器线的转换系数
+                servPosnConvCoeffCalc(g_motorInfo.motor[i], 
+                                      g_driverInfo.microStep,
+                                      &g_systemState.posnConvertInfo[i]);
+#endif
             }
         }
         
-        servMotorInfoWrite(&g_motorInfo);
+        servStimerAdd(&g_paraSaveTimer);
     }
 }
 
@@ -128,7 +149,7 @@ void cmdMotorGearRatioNumQuery(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -169,7 +190,7 @@ void cmdMotorGearRatioDenSet(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -184,15 +205,27 @@ void cmdMotorGearRatioDenSet(u8 cmdDataLen, u8 *pCmdData)
     //进行参数验证
     if (PARA_VERIFY_NO_ERROR == pvrfMotorGearRatioVerify(cmdDataLen, pCmdData, (void *)&gearRatio))
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if (bConfig[i])
             {
                 g_motorInfo.motor[i].gearRatioDen = gearRatio;
+
+#if !GELGOOG_AXIS_10                            
+                //重新计算下位置到微步和编码器线的转换系数
+                servPosnConvCoeffCalc(g_motorInfo.motor[i], 
+                                      g_driverInfo.driver[i].DRVCTRL.stepDirMode.MRES,
+                                      &g_systemState.posnConvertInfo[i]);
+#else
+                //重新计算下位置到微步和编码器线的转换系数
+                servPosnConvCoeffCalc(g_motorInfo.motor[i], 
+                                      g_driverInfo.microStep,
+                                      &g_systemState.posnConvertInfo[i]);
+#endif
             }
         }
         
-        servMotorInfoWrite(&g_motorInfo);
+        servStimerAdd(&g_paraSaveTimer);
     }
 }
 
@@ -227,7 +260,7 @@ void cmdMotorGearRatioDenQuery(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -268,7 +301,7 @@ void cmdMotorStepAngleSet(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -283,15 +316,27 @@ void cmdMotorStepAngleSet(u8 cmdDataLen, u8 *pCmdData)
     //进行参数验证
     if (PARA_VERIFY_NO_ERROR == pvrfMotorStepAngleVerify(cmdDataLen, pCmdData, (void *)&stepAngel))
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if (bConfig[i])
             {
                 g_motorInfo.motor[i].stepAngel = stepAngel;
+
+#if !GELGOOG_AXIS_10                            
+                //重新计算下位置到微步和编码器线的转换系数
+                servPosnConvCoeffCalc(g_motorInfo.motor[i], 
+                                      g_driverInfo.driver[i].DRVCTRL.stepDirMode.MRES,
+                                      &g_systemState.posnConvertInfo[i]);
+#else
+                //重新计算下位置到微步和编码器线的转换系数
+                servPosnConvCoeffCalc(g_motorInfo.motor[i], 
+                                      g_driverInfo.microStep,
+                                      &g_systemState.posnConvertInfo[i]);
+#endif
             }
         }
         
-        servMotorInfoWrite(&g_motorInfo);
+        servStimerAdd(&g_paraSaveTimer);
     }
 }
 
@@ -326,7 +371,7 @@ void cmdMotorStepAngleQuery(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -367,7 +412,7 @@ void cmdMotorTypeSet(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -382,7 +427,7 @@ void cmdMotorTypeSet(u8 cmdDataLen, u8 *pCmdData)
     //进行参数验证
     if (PARA_VERIFY_NO_ERROR == pvrfMotorTypeVerify(cmdDataLen, pCmdData, (void *)&motorType))
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if (bConfig[i])
             {
@@ -399,7 +444,7 @@ void cmdMotorTypeSet(u8 cmdDataLen, u8 *pCmdData)
             }
         }
         
-        servMotorInfoWrite(&g_motorInfo);
+        servStimerAdd(&g_paraSaveTimer);
     }
 }
 
@@ -434,7 +479,7 @@ void cmdMotorTypeQuery(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -475,7 +520,7 @@ void cmdMotorPosnUnitSet(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -490,7 +535,7 @@ void cmdMotorPosnUnitSet(u8 cmdDataLen, u8 *pCmdData)
     //进行参数验证
     if (PARA_VERIFY_NO_ERROR == pvrfMotorPosnUnitVerify(cmdDataLen, pCmdData, (void *)&posnUnit))
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if (bConfig[i])
             {
@@ -498,7 +543,7 @@ void cmdMotorPosnUnitSet(u8 cmdDataLen, u8 *pCmdData)
             }
         }
 
-        servMotorInfoWrite(&g_motorInfo);
+        servStimerAdd(&g_paraSaveTimer);
     }
 }
 
@@ -533,7 +578,7 @@ void cmdMotorPosnUnitQuery(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -574,7 +619,7 @@ void cmdMotorLeadSet(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -589,7 +634,7 @@ void cmdMotorLeadSet(u8 cmdDataLen, u8 *pCmdData)
     //进行参数验证
     if (PARA_VERIFY_NO_ERROR == pvrfMotorLeadVerify(cmdDataLen, pCmdData, (void *)&lead))
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if (bConfig[i])
             {
@@ -597,7 +642,7 @@ void cmdMotorLeadSet(u8 cmdDataLen, u8 *pCmdData)
             }
         }
         
-        servMotorInfoWrite(&g_motorInfo);
+        servStimerAdd(&g_paraSaveTimer);
     }
 }
 
@@ -632,7 +677,7 @@ void cmdMotorLeadQuery(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -673,7 +718,7 @@ void cmdMotorPeakSpeedSet(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -688,7 +733,7 @@ void cmdMotorPeakSpeedSet(u8 cmdDataLen, u8 *pCmdData)
     //进行参数验证
     if (PARA_VERIFY_NO_ERROR == pvrfMotorPeakSpeedVerify(cmdDataLen, pCmdData, (void *)&peakSpeed))
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if (bConfig[i])
             {
@@ -696,7 +741,7 @@ void cmdMotorPeakSpeedSet(u8 cmdDataLen, u8 *pCmdData)
             }
         }
         
-        servMotorInfoWrite(&g_motorInfo);
+        servStimerAdd(&g_paraSaveTimer);
     }
 }
 
@@ -731,7 +776,7 @@ void cmdMotorPeakSpeedQuery(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -772,7 +817,7 @@ void cmdMotorPeakAccSet(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -787,7 +832,7 @@ void cmdMotorPeakAccSet(u8 cmdDataLen, u8 *pCmdData)
     //进行参数验证
     if (PARA_VERIFY_NO_ERROR == pvrfMotorPeakAccVerify(cmdDataLen, pCmdData, (void *)&peakAcc))
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if (bConfig[i])
             {
@@ -795,7 +840,7 @@ void cmdMotorPeakAccSet(u8 cmdDataLen, u8 *pCmdData)
             }
         }
         
-        servMotorInfoWrite(&g_motorInfo);
+        servStimerAdd(&g_paraSaveTimer);
     }
 }
 
@@ -830,7 +875,7 @@ void cmdMotorPeakAccQuery(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -871,7 +916,7 @@ void cmdMotorSizeSet(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -886,7 +931,7 @@ void cmdMotorSizeSet(u8 cmdDataLen, u8 *pCmdData)
     //进行参数验证
     if (PARA_VERIFY_NO_ERROR == pvrfMotorSizeVerify(cmdDataLen, pCmdData, (void *)&motorSize))
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if (bConfig[i])
             {
@@ -894,7 +939,7 @@ void cmdMotorSizeSet(u8 cmdDataLen, u8 *pCmdData)
             }
         }
         
-        servMotorInfoWrite(&g_motorInfo);
+        servStimerAdd(&g_paraSaveTimer);
     }
 }
 
@@ -929,7 +974,7 @@ void cmdMotorSizeQuery(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -970,7 +1015,7 @@ void cmdMotorVoltSet(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -985,7 +1030,7 @@ void cmdMotorVoltSet(u8 cmdDataLen, u8 *pCmdData)
     //进行参数验证
     if (PARA_VERIFY_NO_ERROR == pvrfMotorVoltVerify(cmdDataLen, pCmdData, (void *)&motorVolt))
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if (bConfig[i])
             {
@@ -993,7 +1038,7 @@ void cmdMotorVoltSet(u8 cmdDataLen, u8 *pCmdData)
             }
         }
         
-        servMotorInfoWrite(&g_motorInfo);
+        servStimerAdd(&g_paraSaveTimer);
     }
 }
 
@@ -1028,7 +1073,7 @@ void cmdMotorVoltQuery(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -1069,7 +1114,7 @@ void cmdMotorCurrSet(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -1084,7 +1129,7 @@ void cmdMotorCurrSet(u8 cmdDataLen, u8 *pCmdData)
     //进行参数验证
     if (PARA_VERIFY_NO_ERROR == pvrfMotorCurrVerify(cmdDataLen, pCmdData, (void *)&motorCurr))
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if (bConfig[i])
             {
@@ -1092,7 +1137,7 @@ void cmdMotorCurrSet(u8 cmdDataLen, u8 *pCmdData)
             }
         }
         
-        servMotorInfoWrite(&g_motorInfo);
+        servStimerAdd(&g_paraSaveTimer);
     }
 }
 
@@ -1127,7 +1172,7 @@ void cmdMotorCurrQuery(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -1168,7 +1213,7 @@ void cmdMotorBacklashSet(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -1183,15 +1228,14 @@ void cmdMotorBacklashSet(u8 cmdDataLen, u8 *pCmdData)
     //进行参数验证
     if (PARA_VERIFY_NO_ERROR == pvrfMotorBacklashVerify(cmdDataLen, pCmdData, (void *)&backlash))
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if (bConfig[i])
             {
                 g_motorInfo.motor[i].backlash = backlash;
             }
         }
-        
-        servMotorInfoWrite(&g_motorInfo);
+        servStimerAdd(&g_paraSaveTimer);
     }
 }
 
@@ -1226,7 +1270,7 @@ void cmdMotorBacklashQuery(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -1244,6 +1288,104 @@ void cmdMotorBacklashQuery(u8 cmdDataLen, u8 *pCmdData)
     }
 }
 
+
+#if BACKLASH_TEST
+/*********************************************************************************************
+函 数 名: cmdMotorBacklashTestSet;
+实现功能: 无; 
+输入参数: 无;
+输出参数: 无;
+返 回 值: 无;
+说    明: 无;
+*********************************************************************************************/
+void cmdMotorBacklashTestSet(u8 cmdDataLen, u8 *pCmdData)
+{
+    u8   i;
+    bool bConfig[CH_TOTAL] = {0};
+    u8   chanNum = *pCmdData++;
+
+    
+    if (chanNum <= CH_MAX)
+    {
+        bConfig[chanNum] = true;
+    }
+    else
+    {
+        for (i = 0;i < CH_TOTAL;i++)
+        {
+            if ((CH_ALL == chanNum) ||
+                (chanNum == g_systemInfo.group[i][0]) ||
+                (chanNum == g_systemInfo.group[i][1]))
+            {
+                bConfig[i] = true;
+            }
+        }
+    }
+    cmdDataLen -= 1;
+    
+    //进行参数验证
+    //if (PARA_VERIFY_NO_ERROR == pvrfMotorBacklashVerify(cmdDataLen, pCmdData, (void *)&backlash))
+    {
+        for (i = 0;i < CH_TOTAL;i++)
+        {
+            if (bConfig[i])
+            {
+                g_chanCfgBmp[i].bBlReset = true;
+                g_bCmdPostSemToFunc = true;
+            }
+        }
+    }
+}
+
+
+/*********************************************************************************************
+函 数 名: cmdMotorBacklashTestQuery;
+实现功能: 无; 
+输入参数: 无;
+输出参数: 无;
+返 回 值: 无;
+说    明: 无;
+*********************************************************************************************/
+void cmdMotorBacklashTestQuery(u8 cmdDataLen, u8 *pCmdData)
+{
+    u8   i;
+    bool bConfig[CH_TOTAL] = {0};
+    u8   chanNum = *pCmdData++;
+
+    
+    if (chanNum <= CH_MAX)
+    {
+        bConfig[chanNum] = true;
+    }
+    else
+    {
+        for (i = 0;i < CH_TOTAL;i++)
+        {
+            if ((CH_ALL == chanNum) ||
+                (chanNum == g_systemInfo.group[i][0]) ||
+                (chanNum == g_systemInfo.group[i][1]))
+            {
+                bConfig[i] = true;
+            }
+        }
+    }
+    cmdDataLen -= 1;
+    
+    //进行参数验证
+    //if (PARA_VERIFY_NO_ERROR == pvrfMotorBacklashVerify(cmdDataLen, pCmdData, (void *)&backlash))
+    {
+        for (i = 0;i < CH_TOTAL;i++)
+        {
+            if (bConfig[i])
+            {
+                g_eventSrcBmp.backLashRead[i] = true;
+                g_bCmdPostSemToEvent = true;
+            }
+        }
+    }
+}
+#endif
+ 
 
 /*********************************************************************************************
 函 数 名: cmdMotorCmdInit;
@@ -1284,6 +1426,11 @@ void cmdMotorCmdInit(void)
     pMotroCmdFunc[MOTORCMD_CURRQ]       = cmdMotorCurrQuery;
     pMotroCmdFunc[MOTORCMD_BACKLASH]    = cmdMotorBacklashSet;
     pMotroCmdFunc[MOTORCMD_BACKLASHQ]   = cmdMotorBacklashQuery;
+
+    #if BACKLASH_TEST
+    pMotroCmdFunc[MOTORCMD_BACKLASHTEST]  = cmdMotorBacklashTestSet;
+    pMotroCmdFunc[MOTORCMD_BACKLASHTESTQ] = cmdMotorBacklashTestQuery;
+    #endif
 }
 
             
@@ -1332,7 +1479,7 @@ void cmdEncoderLineNumSet(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -1348,15 +1495,27 @@ void cmdEncoderLineNumSet(u8 cmdDataLen, u8 *pCmdData)
     //进行参数验证
     if (PARA_VERIFY_NO_ERROR == pvrfEncoderLineNumVerify(cmdDataLen, pCmdData, (void *)&lineNum))
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if (bConfig[i])
             {
                 g_motorInfo.motor[i].encoderLineNum = lineNum;
+
+#if !GELGOOG_AXIS_10                            
+                //重新计算下位置到微步和编码器线的转换系数
+                servPosnConvCoeffCalc(g_motorInfo.motor[i], 
+                                      g_driverInfo.driver[i].DRVCTRL.stepDirMode.MRES,
+                                      &g_systemState.posnConvertInfo[i]);
+#else
+                //重新计算下位置到微步和编码器线的转换系数
+                servPosnConvCoeffCalc(g_motorInfo.motor[i], 
+                                      g_driverInfo.microStep,
+                                      &g_systemState.posnConvertInfo[i]);
+#endif
             }
         }
         
-        servMotorInfoWrite(&g_motorInfo);
+        servStimerAdd(&g_paraSaveTimer);
     }
 }
 
@@ -1391,7 +1550,7 @@ void cmdEncoderLineNumQuery(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -1422,12 +1581,6 @@ void cmdEncoderChanNumSet(u8 cmdDataLen, u8 *pCmdData)
 {
     EncoderChanEnum encoderChanNum;
     u8 i;
-#ifdef PROJECT_GELGOOG
-    u8 j;
-    u8 dataLen;
-    u8 *pData;
-    u8 data[6];
-#endif
     bool bConfig[CH_TOTAL] = {0};
     u8   chanNum = *pCmdData++;
 
@@ -1438,7 +1591,7 @@ void cmdEncoderChanNumSet(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -1454,7 +1607,7 @@ void cmdEncoderChanNumSet(u8 cmdDataLen, u8 *pCmdData)
     //进行参数验证
     if (PARA_VERIFY_NO_ERROR == pvrfEncoderChanNumVerify(cmdDataLen, pCmdData, (void *)&encoderChanNum))
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if (bConfig[i])
             {
@@ -1466,39 +1619,13 @@ void cmdEncoderChanNumSet(u8 cmdDataLen, u8 *pCmdData)
                     //默认恢复成单倍乘
                     g_motorInfo.motor[i].encoderMult = ENCMULT_SINGLE;
                 }
-                
-#ifdef PROJECT_GELGOOG
-                if (INTFC_ON == g_motorInfo.motor[i].encoderState)
-                {
-                    //三线编码器和TRIG_DIR共用端口了，所以需要关闭
-                    if ((SENSOR_ON == g_trigInInfo.trigIn[i].levelState[TRIGPIN_DIR]) &&
-                        (ECCHAN_3 == g_motorInfo.motor[i].encoderChanNum))
-                    {
-                        g_trigInInfo.trigIn[i].levelState[TRIGPIN_DIR] = SENSOR_OFF;
-                        servTrigInInfoWrite(&g_trigInInfo);
-                        
-                        //通知上位机IO状态变化了
-                        dataLen = sizeof(g_trigInInfo.trigIn[i].levelState[TRIGPIN_DIR]) + sizeof(chanNum) + sizeof(TRIGPIN_DIR);
-                        pData = (u8 *)&g_trigInInfo.trigIn[i].levelState[TRIGPIN_DIR];
-                        data[0] = chanNum;        //通道号
-                        data[1] = TRIGPIN_DIR;    //Trig编号
-                        for (j = 0;j < sizeof(g_trigInInfo.trigIn[i].levelState[TRIGPIN_DIR]);j++)
-                        {
-                            data[2 + j] = *pData++;
-                        }
-                        cmdFrameSend(CMD_TRIGIN, TRIGINCMD_LEVELSTATEQ, dataLen, data);
-                
-                        g_chanCfgBmp[i].bTrigIn = true;
-                    }                    
-                }
-#endif
 
                 g_chanCfgBmp[i].bEncoder = true;
                 g_bCmdPostSemToFunc = true;
             }
         }
         
-        servMotorInfoWrite(&g_motorInfo);
+        servStimerAdd(&g_paraSaveTimer);
     }
 }
 
@@ -1533,7 +1660,7 @@ void cmdEncoderChanNumQuery(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -1574,7 +1701,7 @@ void cmdEncoderTypeSet(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -1590,7 +1717,7 @@ void cmdEncoderTypeSet(u8 cmdDataLen, u8 *pCmdData)
     //进行参数验证
     if (PARA_VERIFY_NO_ERROR == pvrfEncoderTypeVerify(cmdDataLen, pCmdData, (void *)&type))
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if (bConfig[i])
             {
@@ -1598,7 +1725,7 @@ void cmdEncoderTypeSet(u8 cmdDataLen, u8 *pCmdData)
             }
         }
         
-        servMotorInfoWrite(&g_motorInfo);
+        servStimerAdd(&g_paraSaveTimer);
     }
 }
 
@@ -1633,7 +1760,7 @@ void cmdEncoderTypeQuery(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -1674,7 +1801,7 @@ void cmdEncoderMultipleSet(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -1690,18 +1817,30 @@ void cmdEncoderMultipleSet(u8 cmdDataLen, u8 *pCmdData)
     //进行参数验证
     if (PARA_VERIFY_NO_ERROR == pvrfEncoderMultipleVerify(cmdDataLen, pCmdData, (void *)&encoderMult))
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if (bConfig[i])
             {
                 //单通道编码器不支持4倍乘
                 if ((ECCHAN_1 == g_motorInfo.motor[i].encoderChanNum) && (ENCMULT_QUADR == encoderMult))
                 {
-                    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = PARA_VERIFY_ERROR_TYPE;
+                    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = PARA_VERIFY_ERROR_TYPE;
                 }
                 else
                 {
                     g_motorInfo.motor[i].encoderMult = encoderMult;
+                    
+#if !GELGOOG_AXIS_10                            
+                    //重新计算下位置到微步和编码器线的转换系数
+                    servPosnConvCoeffCalc(g_motorInfo.motor[i], 
+                                          g_driverInfo.driver[i].DRVCTRL.stepDirMode.MRES,
+                                          &g_systemState.posnConvertInfo[i]);
+#else
+                    //重新计算下位置到微步和编码器线的转换系数
+                    servPosnConvCoeffCalc(g_motorInfo.motor[i], 
+                                          g_driverInfo.microStep,
+                                          &g_systemState.posnConvertInfo[i]);
+#endif
 
                     g_chanCfgBmp[i].bEncoder = true;
                     g_bCmdPostSemToFunc = true;
@@ -1709,7 +1848,7 @@ void cmdEncoderMultipleSet(u8 cmdDataLen, u8 *pCmdData)
             }
         }
         
-        servMotorInfoWrite(&g_motorInfo);
+        servStimerAdd(&g_paraSaveTimer);
     }
 }
 
@@ -1744,7 +1883,7 @@ void cmdEncoderMultipleQuery(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -1775,11 +1914,6 @@ void cmdEncoderStateSet(u8 cmdDataLen, u8 *pCmdData)
 {
     IntfcStateEnum encoderState;
     u8 i;
-#ifdef PROJECT_GELGOOG
-    u8 j;
-    u8 dataLen;
-    u8 data[6];
-#endif
     bool bConfig[CH_TOTAL] = {0};
     u8   chanNum = *pCmdData++;
 
@@ -1790,7 +1924,7 @@ void cmdEncoderStateSet(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -1811,105 +1945,13 @@ void cmdEncoderStateSet(u8 cmdDataLen, u8 *pCmdData)
             if (bConfig[i])
             {
                 g_motorInfo.motor[i].encoderState = encoderState;
-
-#ifdef PROJECT_GELGOOG
-#if 1
-                //互斥修改为CH4编码器和UartSensor2互斥
-                if ((INTFC_ON == encoderState) && (CH4 == i))
-                {
-#if 1
-                    //三通道编码器和U2_S3、4互斥
-                    //单通道编码器和U2_S3互斥
-                    if (ECCHAN_3 == g_motorInfo.motor[i].encoderChanNum)
-                    {
-                        for (j = SENSOR_S3;j < SENSOR_RESERVE;j++)
-                        {
-                            if (SENSOR_ON == g_sensorUart.sensor[UARTNUM_U2][j].state)
-                            {
-                                g_sensorUart.sensor[UARTNUM_U2][j].state = SENSOR_OFF;
-
-                                //通知上位机IO状态变化了
-                                dataLen = sizeof(g_sensorUart.sensor[UARTNUM_U2][j].state) + sizeof(SenUartNumEnum) + sizeof(SensorNumEnum);
-                                data[0] = UARTNUM_U2;    //UARTNUM_U2
-                                data[1] = j;             //SENSOR_S1
-                                data[2] = g_sensorUart.sensor[UARTNUM_U2][j].state;
-                                cmdFrameSend(CMD_SENSORUART, SNUARTCMD_STATEQ, dataLen, data);
-                        
-                                servSensor2UartReciveOff();    //临时在这里设置，后续改成在FUNC线程中关闭    NICK MARK
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (SENSOR_ON == g_sensorUart.sensor[UARTNUM_U2][SENSOR_S3].state)
-                        {
-                            g_sensorUart.sensor[UARTNUM_U2][SENSOR_S3].state = SENSOR_OFF;
-
-                            //通知上位机IO状态变化了
-                            dataLen = sizeof(g_sensorUart.sensor[UARTNUM_U2][SENSOR_S3].state) + sizeof(SenUartNumEnum) + sizeof(SensorNumEnum);
-                            data[0] = UARTNUM_U2;    //UARTNUM_U2
-                            data[1] = SENSOR_S3;     //SENSOR_S3
-                            data[2] = g_sensorUart.sensor[UARTNUM_U2][SENSOR_S3].state;
-                            cmdFrameSend(CMD_SENSORUART, SNUARTCMD_STATEQ, dataLen, data);
-                    
-                            servSensor2UartReciveOff();    //临时在这里设置，后续改成在FUNC线程中关闭    NICK MARK
-                        }
-                    }
-#else
-                    for (j = 0;j < SENSOR_RESERVE;j++)
-                    {
-                        if (SENSOR_ON == g_sensorUart.sensor[UARTNUM_U2][j].state)
-                        {
-                            g_sensorUart.sensor[UARTNUM_U2][j].state = SENSOR_OFF;
-
-                            //通知上位机IO状态变化了
-                            dataLen = sizeof(g_sensorUart.sensor[UARTNUM_U2][j].state) + sizeof(SenUartNumEnum) + sizeof(SensorNumEnum);
-                            data[0] = UARTNUM_U2;    //UARTNUM_U2
-                            data[1] = j;             //SENSOR_S1
-                            data[2] = g_sensorUart.sensor[UARTNUM_U2][j].state;
-                            cmdFrameSend(CMD_SENSORUART, SNUARTCMD_STATEQ, dataLen, data);
-                    
-                            servSensor2UartReciveOff();    //临时在这里设置，后续改成在FUNC线程中关闭    NICK MARK
-                        }
-                    }
-#endif
-                    servSensorUartInfoStore(&g_sensorUart);
-                }
-                
-#else
-
-                if (INTFC_ON == encoderState)
-                {
-                    //三线编码器和TRIG_DIR共用端口了，所以需要关闭
-                    if ((SENSOR_ON == g_trigInInfo.trigIn[i].levelState[TRIGPIN_DIR]) &&
-                        (ECCHAN_3 == g_motorInfo.motor[i].encoderChanNum))
-                    {
-                        g_trigInInfo.trigIn[i].levelState[TRIGPIN_DIR] = SENSOR_OFF;
-                        servTrigInInfoWrite(&g_trigInInfo);
-                        
-                        //通知上位机IO状态变化了
-                        dataLen = sizeof(g_trigInInfo.trigIn[i].levelState[TRIGPIN_DIR]) + sizeof(chanNum) + sizeof(TRIGPIN_DIR);
-                        pData = (u8 *)&g_trigInInfo.trigIn[i].levelState[TRIGPIN_DIR];
-                        data[0] = chanNum;        //通道号
-                        data[1] = TRIGPIN_DIR;    //Trig编号
-                        for (j = 0;j < sizeof(g_trigInInfo.trigIn[i].levelState[TRIGPIN_DIR]);j++)
-                        {
-                            data[2 + j] = *pData++;
-                        }
-                        cmdFrameSend(CMD_TRIGIN, TRIGINCMD_LEVELSTATEQ, dataLen, data);
-                
-                        g_chanCfgBmp[i].bTrigIn = true;
-                    }                    
-                }
-#endif
-#endif
                 
                 g_chanCfgBmp[i].bEncoder = true;
                 g_bCmdPostSemToFunc = true;
             }
         }
         
-        servMotorInfoWrite(&g_motorInfo);
+        servStimerAdd(&g_paraSaveTimer);
     }
 }
 
@@ -1944,7 +1986,7 @@ void cmdEncoderStateQuery(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -1957,6 +1999,118 @@ void cmdEncoderStateQuery(u8 cmdDataLen, u8 *pCmdData)
                     data[1 + j] = *pData++;
                 }
                 cmdFrameSend(CMD_ENCODER, ENCODERCMD_STATEQ, dataLen, data);
+            }
+        }
+    }
+}
+
+
+/*********************************************************************************************
+函 数 名: cmdEncoderFeedbackRatioSet;
+实现功能: 无; 
+输入参数: 无;
+输出参数: 无;
+返 回 值: 无;
+说    明: 无;
+*********************************************************************************************/
+void cmdEncoderFeedbackRatioSet(u8 cmdDataLen, u8 *pCmdData)
+{
+    u8   feedbackRatio;
+    u8   i;
+    bool bConfig[CH_TOTAL] = {0};
+    u8   chanNum = *pCmdData++;
+
+    
+    if (chanNum <= CH_MAX)
+    {
+        bConfig[chanNum] = true;
+    }
+    else
+    {
+        for (i = 0;i < CH_TOTAL;i++)
+        {
+            if ((CH_ALL == chanNum) ||
+                (chanNum == g_systemInfo.group[i][0]) ||
+                (chanNum == g_systemInfo.group[i][1]))
+            {
+                bConfig[i] = true;
+            }
+        }
+    }
+    cmdDataLen -= 1;
+
+    
+    //进行参数验证
+    if (PARA_VERIFY_NO_ERROR == pvrfEncoderFeedbackRatioVerify(cmdDataLen, pCmdData, (void *)&feedbackRatio))
+    {
+        for (i = 0;i < CH_TOTAL;i++)
+        {
+            if (bConfig[i])
+            {
+                g_motorInfo.motor[i].feedbackRatio = feedbackRatio;
+
+#if !GELGOOG_AXIS_10                            
+                //重新计算下位置到微步和编码器线的转换系数
+                servPosnConvCoeffCalc(g_motorInfo.motor[i], 
+                                      g_driverInfo.driver[i].DRVCTRL.stepDirMode.MRES,
+                                      &g_systemState.posnConvertInfo[i]);
+#else
+                //重新计算下位置到微步和编码器线的转换系数
+                servPosnConvCoeffCalc(g_motorInfo.motor[i], 
+                                      g_driverInfo.microStep,
+                                      &g_systemState.posnConvertInfo[i]);
+#endif
+            }
+        }
+        
+        servStimerAdd(&g_paraSaveTimer);
+    }
+}
+
+
+/*********************************************************************************************
+函 数 名: cmdEncoderFeedbackRatioQuery;
+实现功能: 无; 
+输入参数: 无;
+输出参数: 无;
+返 回 值: 无;
+说    明: 无;
+*********************************************************************************************/
+void cmdEncoderFeedbackRatioQuery(u8 cmdDataLen, u8 *pCmdData)
+{
+    u8 dataLen;
+    u8 *pData;
+    u8 data[6];
+    u8 i, j;
+    u8 chanNum = *pCmdData++;
+
+    
+    dataLen = sizeof(g_motorInfo.motor[CH1].feedbackRatio) + sizeof(chanNum);
+    if (chanNum <= CH_MAX)
+    {
+        pData = (u8 *)&g_motorInfo.motor[chanNum].feedbackRatio;
+        data[0] = chanNum;
+        for (i = 0;i < sizeof(g_motorInfo.motor[chanNum].feedbackRatio);i++)
+        {
+            data[1 + i] = *pData++;
+        }
+        cmdFrameSend(CMD_ENCODER, ENCODERCMD_FEEDBACKRATIOQ, dataLen, data);
+    }
+    else
+    {
+        for (i = 0;i < CH_TOTAL;i++)
+        {
+            if ((CH_ALL == chanNum) ||
+                (chanNum == g_systemInfo.group[i][0]) ||
+                (chanNum == g_systemInfo.group[i][1]))
+            {
+                pData = (u8 *)&g_motorInfo.motor[i].feedbackRatio;
+                data[0] = i;
+                for (j = 0;j < sizeof(g_motorInfo.motor[i].feedbackRatio);j++)
+                {
+                    data[1 + j] = *pData++;
+                }
+                cmdFrameSend(CMD_ENCODER, ENCODERCMD_FEEDBACKRATIOQ, dataLen, data);
             }
         }
     }
@@ -1985,6 +2139,9 @@ void cmdEncoderCmdInit(void)
     pEncoderCmdFunc[ENCODERCMD_MULTIPLEQ] = cmdEncoderMultipleQuery;
     pEncoderCmdFunc[ENCODERCMD_STATE]     = cmdEncoderStateSet;
     pEncoderCmdFunc[ENCODERCMD_STATEQ]    = cmdEncoderStateQuery;
+    
+    pEncoderCmdFunc[ENCODERCMD_FEEDBACKRATIO]  = cmdEncoderFeedbackRatioSet;
+    pEncoderCmdFunc[ENCODERCMD_FEEDBACKRATIOQ] = cmdEncoderFeedbackRatioQuery;
 }
 
             

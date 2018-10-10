@@ -45,7 +45,6 @@ void MrqSensorPage::setSubUartConfig(
                  subUartConfig &cfg
                  )
 {
-    logDbg()<<index;
     Q_ASSERT( index < ui->tabWidget->count() && index >= 0 );
 
     ((MrqSubUart*)ui->tabWidget->widget( index ))->setConfig( cfg );
@@ -110,5 +109,4 @@ void MrqSensorPage::slot_sub_live_changed( )
     }
 
     ui->chkAllEn->setChecked( bCheck );
-
 }

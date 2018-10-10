@@ -44,8 +44,14 @@ u8 pvrfDriverMicroStepsVerify(u8 dataLen, u8 *pData, void *pParaValue);
 u8 pvrfDriverStateVerify(u8 dataLen, u8 *pData, void *pParaValue);
 u8 pvrfDriverMonitorPeriodVerify(u8 dataLen, u8 *pData, void *pParaValue);
 u8 pvrfDriverRegisterVerify(u8 dataLen, u8 *pData, void *pParaValue, u8 *pIndex);
-u8 pvrfDriverSGLimitVerify(u8 dataLen, u8 *pData, void *pParaValue, u8 *pIndex);
-u8 pvrfDriverSGParaVerify(u8 dataLen, u8 *pData, void *pParaValue, u8 *pIndex);
+u8 pvrfDriverSwitchTimeVerify(u8 dataLen, u8 *pData, void *pParaValue);
+
+#if 0
+#endif
+
+u8 pvrfTuningCurrRatioVerify(u8 dataLen, u8 *pData, void *pParaValue);
+u8 pvrfTuningEnergyEfficVerify(u8 dataLen, u8 *pData, u16 *pEnergEfficMax, u16 *pEnergEfficOffset);
+u8 pvrfTuningCurrRegulateVerify(u8 dataLen, u8 *pData, CurrIncreEnum *pCurrIncre, CurrDecreEnum *pCurrDecre);
 
 
 

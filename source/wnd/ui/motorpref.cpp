@@ -59,7 +59,6 @@ void MotorPref::spyEdited()
     QDoubleSpinBox *doubleSpinBoxes[]={
         ui->spinZeroTime,
         ui->spinZeroAngle,
-//        ui->spinZeroSpeed,
 
         ui->spinGapTime,
         ui->spinGapDist,

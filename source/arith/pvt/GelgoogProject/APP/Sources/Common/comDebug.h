@@ -14,14 +14,28 @@ Copyright (C) 2016，北京镁伽机器人科技有限公司
 
 
 
+/******************************************包含文件*******************************************/
+#include "project.h"
+
+
+
 /*******************************************宏定义********************************************/ 
 #define   DEBUG_MODE             0
 #define   JTAG_MODE              0
 #define   DEBUG_MOTOR            0
 #define   DEBUG_CAN_TEST         1
 #define   SUPPORT_CAN_NMT        1
+
 #define   FOR_FPGA_DEBUG         0
 #define   DRIVE_FROM_ARM         0
+#define   SDIO_CRC_ERROR_ENABLE  0
+
+#define   TUNING_SUPPORT         0
+#define   SDIO_TX_RX_TEST        0
+
+#if GELGOOG_SINANJU
+#define   MRV_SUPPORT            0
+#endif
 
 
 

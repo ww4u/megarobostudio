@@ -112,10 +112,6 @@ bool SinanjuMotionGroup::setData(const QModelIndex &index, const QVariant &value
     }
     else if ( index.column() == 7 )
     {
-//        mItems[ row ]->setH( value.toFloat() );
-//        mItems[ row ]->setIAttr( (value.toBool() ? 1 : 0 )
-//                                 | mItems[row]->IAttr()
-//                                 ) ;
         quint32 iattr = mItems[row]->IAttr();
         if ( value.toBool() )
         { set_bit( iattr, 0); }
@@ -280,7 +276,7 @@ int SinanjuMotionGroup::load( const QString &fileName )
 
     emit dataChanged( index(0,0),
                       index(mItems.count(), SinanjuMotionItem::columns() - 1) );
-    logDbg()<<mItems.size();
+
     return 0;
 }
 
@@ -304,7 +300,6 @@ void SinanjuMotionGroup::reverse()
         mItems[i]->mT = mItems[ count - i - 1 ]->mT;
         mItems[ count - i - 1 ]->mT = t;
     }
-
 
     emit dataChanged( index(0,0),
                       index(mItems.count(), SinanjuMotionItem::columns() - 1) );

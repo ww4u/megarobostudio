@@ -16,7 +16,8 @@ SOURCES = \
     _scpi_callback.cpp \
     _plan.cpp \
     _zero.cpp \
-    motors_task.cpp
+    motors_task.cpp \
+    _serial.cpp
 
 HEADERS = \
     motors.h

@@ -3,7 +3,6 @@
 #include "../inst/instmgr.h"
 
 #include "../model/tpvgroup.h"
-//#include "../../model/motiongroup.h"
 
 #include "../device/mrq/deviceMRQ.h"
 #include "../com/robomsg.h"
@@ -83,7 +82,6 @@ VRobot::VRobot()
     setTrigSrcs( 2 );
 
     mPoseCount = 0;
-//    mAbsCount = 0;
     mAngleType = robo_angle_none;
 
     mbInterpAble = false;
@@ -175,13 +173,6 @@ void VRobot::setStatus( int stat, const tpvRegion &region, frameData &data )
 {
     mRobotStatus[ region ] = stat;
     Q_ASSERT( mRobotStatus.contains( region ) );
-
-//logDbg()<<region.axes()<<region.page()<<stat;
-//    sysQueue()->postMsg(  e_axes_status,
-//                          name(),
-//                          region,
-//                          stat
-//                        );
 }
 
 void VRobot::assignStatus( int stat, const tpvRegion &region )
@@ -229,7 +220,6 @@ int VRobot::getSubGroupId()
 { return mSubGroupId; }
 int VRobot::subGroupId()
 { return mSubGroupId; }
-
 
 //! CH1@name
 MegaDevice::deviceMRQ *VRobot::findDevice( const QString &name,

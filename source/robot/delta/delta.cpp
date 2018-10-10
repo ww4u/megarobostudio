@@ -52,7 +52,6 @@ robotDelta::robotDelta()
 
     //! init angle
     mInitAngles.clear();
-//    mInitAngles<<0<<0;
 
     mbInterpAble = true;
 

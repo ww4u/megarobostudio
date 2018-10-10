@@ -4,7 +4,7 @@
 static QString _headers[]=
 {
     QStringLiteral("Name"),
-    QString("Value(" + QString( QChar(0x00B0)) + ")"),
+    QString("Value(" + QString( char_deg ) + ")"),
     QStringLiteral("Comment"),
 };
 
@@ -54,20 +54,6 @@ QString handAction::comment()
 //! model
 handActionModel::handActionModel()
 {
-
-    //! debug
-//    handAction *pAction;
-//    pAction = new handAction();
-//    pAction->set( "a", 1, "aa" );
-//    mItems.append( pAction );
-
-//    pAction = new handAction();
-//    pAction->set( "b", 2, "bb" );
-//    mItems.append( pAction );
-
-//    pAction = new handAction();
-//    pAction->set( "c", 350, "cc" );
-//    mItems.append( pAction );
 }
 
 handActionModel::~handActionModel()
@@ -135,7 +121,7 @@ bool handActionModel::setData(const QModelIndex &index, const QVariant &value, i
 Qt::ItemFlags handActionModel::flags(const QModelIndex &index) const
 {
     if (!index.isValid())
-          return Qt::ItemIsEnabled;
+    { return Qt::ItemIsEnabled; }
 
     return QAbstractItemModel::flags(index) | Qt::ItemIsEditable;
 }

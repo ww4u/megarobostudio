@@ -71,7 +71,6 @@ void mrqAxes::spyEdited()
         ui->spinDistance,
 
         ui->spin820Current,
-//        ui->spinInvertGap,
     };
 
     QComboBox *comboxes[]={
@@ -98,7 +97,6 @@ void mrqAxes::setupUi()
     mRotateDependList.append( ui->label_19 );
     mRotateDependList.append( ui->spinSlowMotor );
     mRotateDependList.append( ui->spinSlowGear );
-//    mRotateDependList.append( ui->label_18 );
     mRotateDependList.append( ui->label_5 );
     mRotateDependList.append( ui->label_8 );
 
@@ -208,19 +206,18 @@ int mrqAxes::apply()
     pDevice->setMOTOR_GEARRATIODEN( mAxesId, ui->spinSlowGear->value() );
 
     pDevice->setMOTOR_LEAD( mAxesId, ui->spinDistance->value() );
-//    pDevice->setMOTOR_BACKLASH( mAxesId, ui->spinInvertGap->value() );
 
     return 0;
 }
 
 //! model -> view
 int mrqAxes::updateUi()
-{logDbg();
+{
     Q_ASSERT( NULL != m_pMrqModel );
 
     MegaDevice::MRQ_model *pModel;
     pModel = m_pMrqModel->getModel();
-logDbg();
+
     //! motor
     ui->cmbSize->setCurrentIndex( pModel->mMOTOR_SIZE[ mAxesId ] );
     ui->cmbStepAngle->setCurrentIndex( pModel->mMOTOR_STEPANGLE[mAxesId] );
@@ -268,7 +265,6 @@ logDbg();
     ui->spinSlowMotor->setValue( ( pModel->mMOTOR_GEARRATIONUM[mAxesId]) );
 
     ui->spinDistance->setValue( ( pModel->mMOTOR_LEAD[mAxesId]) );
-//    ui->spinInvertGap->setValue( ( pModel->mMOTOR_BACKLASH[mAxesId]) );
 
     return 0;
 }

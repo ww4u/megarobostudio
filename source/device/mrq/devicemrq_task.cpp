@@ -25,16 +25,18 @@ void MrqTaskThread::run()
 {
     checkRequest( m_pReq );
 
-    sysLog( __FUNCTION__, QString::number(__LINE__), "Enter" );
+//    sysLog( __FUNCTION__, QString::number(__LINE__), "Enter" );
 
     deviceMRQ *pMrq;
     pMrq = (deviceMRQ *)m_pReq->m_pRobo;
 
     int ret = ( pMrq->*(m_pReq->m_pApi))( m_pReq->m_pArg );
+    if ( ret != 0 )
+    { sysWarn( __FUNCTION__, QString::number(__LINE__), QString::number( ret ) ); }
 
     gc();
 
-    sysLog( __FUNCTION__, QString::number(__LINE__), QString::number( ret ) );
+//    sysLog( __FUNCTION__, QString::number(__LINE__), QString::number( ret ) );
 }
 
 }

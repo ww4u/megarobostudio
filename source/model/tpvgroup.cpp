@@ -129,7 +129,7 @@ bool tpvGroup::setData(const QModelIndex &index, const QVariant &value, int role
 Qt::ItemFlags tpvGroup::flags(const QModelIndex &index) const
 {
     if (!index.isValid())
-          return Qt::ItemIsEnabled;
+    { return Qt::ItemIsEnabled; }
 
     return QAbstractItemModel::flags(index) | Qt::ItemIsEditable;
 }
@@ -145,6 +145,7 @@ bool tpvGroup::insertRows(int position, int rows, const QModelIndex &parent)
     for (int row = 0; row < rows; ++row)
     {
         pItem = new tpvItem();
+        Q_ASSERT( NULL != pItem );
         mItems.insert( position+row, pItem );
     }
 
@@ -252,14 +253,6 @@ int tpvGroup::remove( int id )
 
 int tpvGroup::clear()
 {
-//    foreach( tpvItem *pItem, mItems )
-//    {
-//        Q_ASSERT( NULL != pItem );
-//        delete pItem;
-//    }
-
-//    mItems.clear();
-
     delete_all( mItems );
 
     return 0;

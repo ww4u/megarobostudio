@@ -6,24 +6,7 @@ namespace MegaDevice
 
 instClient::instClient(  )
 {
-//    connect( &mSocket, SIGNAL(readyRead()),
-//             this, SLOT(slot_readyRead()) );
-
-//    connect( &mSocket, SIGNAL(connected()),
-//             this, SLOT(slot_connected()));
 }
-
-//void instClient::slot_readyRead()
-//{
-//    mRecvBuf = mSocket.readAll();
-//    qDebug()<<__FUNCTION__<<__LINE__<<mRecvBuf;
-//}
-
-//void instClient::slot_connected()
-//{
-////    mSocket.write( mName.toLatin1() );
-//    qDebug()<<__FUNCTION__<<__LINE__;
-//}
 
 instClient::~instClient(  )
 {
@@ -44,10 +27,6 @@ int instClient::open( const QString &name,
         QString latName = name + "\r\n";
         mSocket.write( latName.toLatin1() );
         mSocket.flush();
-
-//        mSocket.write( latName.toLatin1() );
-//        mSocket.flush();
-//        qDebug()<<latName;
 
         mName = name;
 

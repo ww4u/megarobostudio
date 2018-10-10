@@ -37,6 +37,9 @@
    </property>
    <item>
     <widget class="QComboBox" name="comboBox">
+     <property name="currentIndex">
+      <number>1</number>
+     </property>
      <item>
       <property name="text">
        <string>MAIN</string>

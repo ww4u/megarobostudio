@@ -2,7 +2,6 @@
 namespace MegaDevice
 {
 
-
 int deviceMRQ::applyDeviceId(DeviceId &id )
 {
     int ret;

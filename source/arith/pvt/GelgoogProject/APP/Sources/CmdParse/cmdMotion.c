@@ -22,6 +22,10 @@ Copyright (C) 2016，北京镁伽机器人科技有限公司
 #include "servSystemPara.h"
 #include "systemInit.h"
 
+#if MRV_SUPPORT
+#include "servValve.h"
+#endif
+
 
 
 /****************************************外部变量声明*****************************************/
@@ -50,8 +54,18 @@ extern bool g_bCmdPostSemToEvent;
 extern OS_SEM g_semPvtCalcTask;
 
 extern SoftTimerStruct g_motionStateTimer[CH_TOTAL];
-extern SoftTimerStruct g_motionMonitorTimer[CH_TOTAL];
 extern SoftTimerStruct g_lineOOStepTimer[CH_TOTAL];
+
+extern SoftTimerStruct g_motionMonitorTimer[CH_TOTAL];
+
+extern SoftTimerStruct g_paraSaveTimer;
+
+#if MRV_SUPPORT
+extern MrvWaveTableStruct  g_mrvWaveTable[WTTYPE_RESERVE];
+extern MrvChanCfgBmpStruct g_mrvChanCfgBmp;
+#endif
+
+extern DebugInfoStruct g_debugInfo;
 
 
 
@@ -82,20 +96,31 @@ void cmdMotionSwitch(u8 cmdDataLen, u8 *pCmdData)
     u8   errorCode = PARA_VERIFY_NO_ERROR; 
     u8   i;
     u8   j;
+    
+#if MRV_SUPPORT
+    bool bConfigMrv = false;
+#endif
     bool bConfig[CH_TOTAL] = {0};
+
     u8   chanNum = *pCmdData++;
     MotionSwitchEnum  motnSwitch;
     WaveTableTypeEnum waveTable;
     WaveTableStruct  *pCurrWaveTable;
 
-    
+
     if (chanNum <= CH_MAX)
     {
         bConfig[chanNum] = true;
     }
+#if MRV_SUPPORT
+    else if (CH_MRV == chanNum)
+    {
+        bConfigMrv = true;
+    }
+#endif
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -119,7 +144,7 @@ void cmdMotionSwitch(u8 cmdDataLen, u8 *pCmdData)
 
             if (waveTable >= WTTYPE_RESERVE)
             {
-                g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = PARA_VERIFY_ERROR_TYPE;
+                g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = PARA_VERIFY_ERROR_TYPE;
                 return;
             }
         }
@@ -133,17 +158,140 @@ void cmdMotionSwitch(u8 cmdDataLen, u8 *pCmdData)
             }
             else
             {
-                g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = PARA_VERIFY_ERROR_TYPE;
+                g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = PARA_VERIFY_ERROR_TYPE;
                 return;
             }
         }
+        
+#if MRV_SUPPORT 
+        //先处理电磁阀通道
+        if (bConfigMrv)
+        {
+            switch (motnSwitch)
+            {
+                case MTSWITCH_RESET:
+                    //直接进入IDLE状态
+                    if ((MTSTATE_IDLE    == g_mrvWaveTable[waveTable].waveState) ||
+                        (MTSTATE_CALCEND == g_mrvWaveTable[waveTable].waveState) ||
+                        (MTSTATE_ERROR   == g_mrvWaveTable[waveTable].waveState))
+                    {
+                        //状态变了才发信号量
+                        if (g_mrvWaveTable[waveTable].waveState != MTSTATE_IDLE)
+                        {
+                            g_mrvWaveTable[waveTable].waveState = MTSTATE_IDLE;
+                            
+                            g_systemState.bStateSwitch[CH_MRV][waveTable] = true;
 
-        for (i = 0;i < g_systemState.chanNum;i++)
+                            //触发状态监控事件
+                            g_eventSrcBmp.bStateMonitor[CH_MRV] = true;
+                            g_bCmdPostSemToEvent = true;
+                        }
+                    }
+                    else if ((MTSTATE_CALCING == g_mrvWaveTable[waveTable].waveState))
+                    {
+                        g_mrvWaveTable[waveTable].waveState = MTSTATE_IDLE;
+
+                        g_systemState.bStateSwitch[CH_MRV][waveTable] = true;
+
+                        //触发状态监控事件
+                        g_eventSrcBmp.bStateMonitor[CH_MRV] = true;
+                        g_bCmdPostSemToEvent = true;
+                    }
+                    else if ((MTSTATE_STANDBY == g_mrvWaveTable[waveTable].waveState))
+                    {
+                        g_mrvWaveTable[waveTable].waveState = MTSTATE_CALCEND;
+
+                        g_systemState.bStateSwitch[CH_MRV][waveTable] = true;
+
+                        //触发状态监控事件
+                        g_eventSrcBmp.bStateMonitor[CH_MRV] = true;
+                        g_bCmdPostSemToEvent = true;
+                    }
+                    else
+                    {
+                        errorCode = PARA_VERIFY_ERROR_TYPE;
+                    }
+                  break;
+                 
+                case MTSWITCH_EMERGSTOP:
+                    if (CHSTATE_OUTPUTING == g_systemState.chanState[CH_MRV])
+                    {
+                        //给FUNC发信号量
+                        g_mrvChanCfgBmp.bEmergStop = true;
+                        g_bCmdPostSemToFunc = true;
+                    }
+                    else
+                    {
+                        errorCode = PARA_VERIFY_ERROR_TYPE;
+                    }
+                  break;
+                  
+                case MTSWITCH_STOP:
+                    if (CHSTATE_OUTPUTING == g_systemState.chanState[CH_MRV])
+                    {
+                        //给FUNC发信号量
+                        g_mrvChanCfgBmp.bStop = true;
+                        g_bCmdPostSemToFunc = true;
+                    }
+                    else
+                    {
+                        errorCode = PARA_VERIFY_ERROR_TYPE;
+                    }
+                  break;
+                  
+                case MTSWITCH_RUN:
+                    //只有在standby状态下才能进入running状态
+                    if (MTSTATE_STANDBY == g_mrvWaveTable[waveTable].waveState)
+                    {
+                        //给FUNC发信号量
+                        g_systemCfgBmp.bRun = true;
+                        g_bCmdPostSemToFunc = true;
+                    }
+                    else
+                    {
+                        errorCode = PARA_VERIFY_ERROR_TYPE;
+                    }
+                  break;
+                  
+                case MTSWITCH_PREPARE:
+                    //只有在计算结束状态下才能进入standby状态
+                    //非输出状态下才能预取
+                    if ((CHSTATE_OUTPUTING != g_systemState.chanState[CH_MRV]) &&
+                        (MTSTATE_CALCEND   == g_mrvWaveTable[waveTable].waveState))
+                    {
+                        //先把当前通道处于STANDBY状态的波表切换回计算结束状态
+                        for (j = 0;j < WTTYPE_RESERVE;j++)
+                        {
+                            if (MTSTATE_STANDBY == g_waveTable[CH_MRV][j].waveState)
+                            {
+                                g_waveTable[CH_MRV][j].waveState = MTSTATE_CALCEND;
+                            }
+                        }
+                        
+                        g_systemState.outpWaveTable[CH_MRV] = waveTable;
+
+                        g_mrvChanCfgBmp.bPrepare = true;
+                        g_bCmdPostSemToFunc = true;
+                    }
+                    else
+                    {
+                        errorCode = PARA_VERIFY_ERROR_TYPE;
+                    }
+                  break;
+
+                default:
+                    errorCode = PARA_VERIFY_ERROR_TYPE;    //CJ 2017.04.11 Add
+                  break;
+            }   //switch (motnSwitch)
+        }   //if (bConfig[i])
+#endif
+
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if (bConfig[i])
-            {                
+            {
                 pCurrWaveTable = &g_waveTable[i][waveTable];
-                
+
                 switch (motnSwitch)
                 {
                     case MTSWITCH_RESET:
@@ -157,38 +305,48 @@ void cmdMotionSwitch(u8 cmdDataLen, u8 *pCmdData)
                             {
                                 pCurrWaveTable->waveState = MTSTATE_IDLE;
                                 
-                                g_eventSrcBmp.bStateSwitch[i] = true;
+                                g_systemState.bStateSwitch[i][waveTable] = true;
+
+                                //触发状态监控事件
+                                g_eventSrcBmp.bStateMonitor[i] = true;
                                 g_bCmdPostSemToEvent = true;
+
+                                //FIFO模式下有可能还在计算PVT
+                                if (WTWORKMODE_FIFO == pCurrWaveTable->waveWorkMode)
+                                {
+                                    sysTaskClear(SYSTASK_PVTCALC);
+                                }
                             }
                         }
                         else if ((MTSTATE_CALCING == pCurrWaveTable->waveState))
                         {
-                            //将PVTCALCTASK线程信号量清零，然后进入IDLE状态
-                            g_semPvtCalcTask.Ctr = 0;
-
-                            //删除再创建    CJ 2017.11.23 Add
-                            sysTaskDelete(SYSTASK_PVTCALC);
-                            sysTaskCreate(SYSTASK_PVTCALC);
-                            
                             pCurrWaveTable->waveState = MTSTATE_IDLE;
 
-                            g_eventSrcBmp.bStateSwitch[i] = true;
+                            g_systemState.bStateSwitch[i][waveTable] = true;
+
+                            //触发状态监控事件
+                            g_eventSrcBmp.bStateMonitor[i] = true;
                             g_bCmdPostSemToEvent = true;
 
-                            //清空解算队列
-                            for (j = 0;j < PVT_CALC_QUEUE_SIZE;j++)
-                            {
-                                g_systemState.calcQueue[i][j] = WTTYPE_RESERVE;
-                            }
-                            g_systemState.calcIndex[i] = 0;
-                            g_systemState.tailIndex[i] = 0;
+                            sysTaskClear(SYSTASK_PVTCALC);
                         }
                         else if ((MTSTATE_STANDBY == pCurrWaveTable->waveState))
                         {
                             pCurrWaveTable->waveState = MTSTATE_CALCEND;
 
-                            g_eventSrcBmp.bStateSwitch[i] = true;
+                            g_systemState.bStateSwitch[i][waveTable] = true;
+
+                            //触发状态监控事件
+                            g_eventSrcBmp.bStateMonitor[i] = true;
                             g_bCmdPostSemToEvent = true;
+
+                            //FIFO模式下有可能还在计算PVT
+                            if (WTWORKMODE_FIFO == pCurrWaveTable->waveWorkMode)
+                            {
+                                pCurrWaveTable->waveState = MTSTATE_IDLE;
+
+                                sysTaskClear(SYSTASK_PVTCALC);
+                            }
                         }
                         else
                         {
@@ -197,16 +355,21 @@ void cmdMotionSwitch(u8 cmdDataLen, u8 *pCmdData)
                       break;
                      
                     case MTSWITCH_EMERGSTOP:
+                        if (CHSTATE_OUTPUTING == g_systemState.chanState[i])
+                        {
+                            //给FUNC发信号量
+                            g_chanCfgBmp[i].bEmergStop = true;
+                            g_bCmdPostSemToFunc = true;
+                        }
+                        else
+                        {
+                            errorCode = PARA_VERIFY_ERROR_TYPE;
+                        }
+                      break;
+                      
                     case MTSWITCH_STOP:
                         if (CHSTATE_OUTPUTING == g_systemState.chanState[i])
                         {
-                            /*//反向回零位时被停止时需要恢复运行方向    CJ 2017.11.30 Add
-                            if (g_motionInfo.motion[i].revMotion != g_systemState.revMotion[i])
-                            {
-                                g_systemState.revMotion[i] = g_motionInfo.motion[i].revMotion;
-                                servFpgaReverseMotionSet(i, g_systemState.revMotion[i]);
-                            }*/
-                            
                             //给FUNC发信号量
                             g_chanCfgBmp[i].bStop = true;
                             g_bCmdPostSemToFunc = true;
@@ -237,6 +400,15 @@ void cmdMotionSwitch(u8 cmdDataLen, u8 *pCmdData)
                         if ((CHSTATE_OUTPUTING != g_systemState.chanState[i]) &&
                             (MTSTATE_CALCEND   == pCurrWaveTable->waveState))
                         {
+                            //先把当前通道处于STANDBY状态的波表切换回计算结束状态
+                            for (j = 0;j < WTTYPE_RESERVE;j++)
+                            {
+                                if (MTSTATE_STANDBY == g_waveTable[i][j].waveState)
+                                {
+                                    g_waveTable[i][j].waveState = MTSTATE_CALCEND;
+                                }
+                            }
+                            
                             g_systemState.outpWaveTable[i] = waveTable;
 
                             g_chanCfgBmp[i].bPrepare = true;
@@ -253,14 +425,14 @@ void cmdMotionSwitch(u8 cmdDataLen, u8 *pCmdData)
                       break;
                 }   //switch (motnSwitch)
             }   //if (bConfig[i])
-        }   //for (i = 0;i < g_systemState.chanNum;i++)
+        }   //for (i = 0;i < CH_TOTAL;i++)
     }   //if (cmdDataLen >= sizeof(MotionSwitchEnum))
     else
     {
         errorCode = PARA_VERIFY_ERROR_LEN;    //CJ 2017.04.11 Modify
     }
     
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = errorCode;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = errorCode;
 }
 
 
@@ -282,14 +454,22 @@ void cmdMotionStateQuery(u8 cmdDataLen, u8 *pCmdData)
     MotionStateEnum   waveState;
     WaveTableTypeEnum waveTable;
 
-    
+
+#if MRV_SUPPORT    
+    if (chanNum <= CH_MAX + MRV_CH_TOTAL_NUM)
+#else
     if (chanNum <= CH_MAX)
+#endif
     {
         bConfig[chanNum] = true;
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+#if MRV_SUPPORT 
+        for (i = 0;i < CH_TOTAL + MRV_CH_TOTAL_NUM;i++)
+#else
+        for (i = 0;i < CH_TOTAL;i++)
+#endif
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -305,33 +485,62 @@ void cmdMotionStateQuery(u8 cmdDataLen, u8 *pCmdData)
     {   
         if ((sizeof(chanNum) + sizeof(WaveTableTypeEnum)) == cmdDataLen)    //查询
         {            
-            for (i = 0;i < g_systemState.chanNum;i++)
+#if MRV_SUPPORT 
+            for (i = 0;i < CH_TOTAL + MRV_CH_TOTAL_NUM;i++)
+#else
+            for (i = 0;i < CH_TOTAL;i++)
+#endif
             {
                 if (bConfig[i])
                 {
                     data[0] = i;
                     data[1] = waveTable;
+
+                    #if MRV_SUPPORT
+                    if (CH_MRV == i)
+                    {
+                        data[2] = g_mrvWaveTable[waveTable].waveState;
+                    }
+                    else
+                    {
+                        data[2] = g_waveTable[i][waveTable].waveState;
+                    }
+                    
+                    #else
+                    
                     data[2] = g_waveTable[i][waveTable].waveState;
+                    #endif
+                    
                     cmdFrameSend(CMD_MOTION, MOTIONCMD_STATE, sizeof(data), data);
                 }
             }
         }
         else if ((sizeof(chanNum) + sizeof(MotionStateEnum) + sizeof(WaveTableTypeEnum)) == cmdDataLen)    //回应
         {        
-            for (i = 0;i < g_systemState.chanNum;i++)
+            for (i = 0;i < CH_TOTAL;i++)
             {
                 if ((bConfig[i]) && (STATEQRY_ACTIVE == g_motionInfo.motion[i].stateReport))
                 {
-                    waveState = g_waveTable[i][g_systemState.outpWaveTable[i]].waveState;
-
-                    if ((waveTable == g_systemState.outpWaveTable[i]) &&   //回复的和当前状态一致则停止上报
-                        (waveState == *(MotionStateEnum *)pCmdData))
+                    #if MRV_SUPPORT
+                    if (CH_MRV == i)
                     {
-                        servStimerDelete(&g_motionStateTimer[i]);
+                        waveState = g_mrvWaveTable[waveTable].waveState;
                     }
                     else
                     {
-                        servStimerAdd(&g_motionStateTimer[i]);
+                        waveState = g_waveTable[i][waveTable].waveState;
+                    }
+                    
+                    #else
+                    
+                    waveState = g_waveTable[i][waveTable].waveState;
+                    #endif
+
+                    //回复的和当前状态一致则停止上报
+                    if (waveState == *(MotionStateEnum *)pCmdData)
+                    {
+                        g_systemState.bStateSwitch[i][waveTable] = false;
+                        servStimerDelete(&g_motionStateTimer[i]);
                     }
                 }
             }
@@ -346,7 +555,7 @@ void cmdMotionStateQuery(u8 cmdDataLen, u8 *pCmdData)
         errorCode = PARA_VERIFY_ERROR_INDEX;
     }
     
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = errorCode;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = errorCode;
 }
 
 
@@ -361,7 +570,7 @@ void cmdMotionStateQuery(u8 cmdDataLen, u8 *pCmdData)
 void cmdMotionStateReportSet(u8 cmdDataLen, u8 *pCmdData)
 {
     StateReportEnum  stateReport;
-    u8   i;
+    u8   i, j;
     bool bConfig[CH_TOTAL] = {0};
     u8   chanNum = *pCmdData++;
 
@@ -372,7 +581,7 @@ void cmdMotionStateReportSet(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -387,16 +596,27 @@ void cmdMotionStateReportSet(u8 cmdDataLen, u8 *pCmdData)
     //进行参数验证
     if (PARA_VERIFY_NO_ERROR == pvrfMotionStateReportVerify(cmdDataLen, pCmdData, (void *)&stateReport))
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if (bConfig[i])
             {
                 g_motionInfo.motion[i].stateReport = stateReport;
+
+                //改成查询方式时要关闭定时器
+                if (STATEQRY_QUERY == stateReport)
+                {
+                    servStimerDelete(&g_motionStateTimer[i]);
+                    for (j = 0;j < WTTYPE_RESERVE;j++)
+                    {
+                        g_systemState.bStateSwitch[i][j] = false;
+                    }
+                }
             }
+            
         }
 
         //存入EEPROM中
-        servMotionInfoWrite(&g_motionInfo);
+        servStimerAdd(&g_paraSaveTimer);
     }
 }
 
@@ -426,7 +646,7 @@ void cmdMotionStateReportQuery(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -463,7 +683,7 @@ void cmdMotionStartSrcSet(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -478,7 +698,7 @@ void cmdMotionStartSrcSet(u8 cmdDataLen, u8 *pCmdData)
     //进行参数验证
     if (PARA_VERIFY_NO_ERROR == pvrfMotionStartSrcVerify(cmdDataLen, pCmdData, (void *)&startSrc))
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if (bConfig[i])
             {
@@ -491,7 +711,7 @@ void cmdMotionStartSrcSet(u8 cmdDataLen, u8 *pCmdData)
         }
 
         //存入EEPROM中
-        servMotionInfoWrite(&g_motionInfo);
+        servStimerAdd(&g_paraSaveTimer);
     }
 }
 
@@ -521,7 +741,7 @@ void cmdMotionStartSrcQuery(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -558,7 +778,7 @@ void cmdMotionStartTypeSet(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -573,7 +793,7 @@ void cmdMotionStartTypeSet(u8 cmdDataLen, u8 *pCmdData)
     //进行参数验证
     if (PARA_VERIFY_NO_ERROR == pvrfMotionStartTypeVerify(cmdDataLen, pCmdData, (void *)&startType))
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if (bConfig[i])
             {
@@ -586,7 +806,7 @@ void cmdMotionStartTypeSet(u8 cmdDataLen, u8 *pCmdData)
         }
 
         //存入EEPROM中
-        servMotionInfoWrite(&g_motionInfo);
+        servStimerAdd(&g_paraSaveTimer);
     }
 }
 
@@ -616,7 +836,7 @@ void cmdMotionStartTypeQuery(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -653,7 +873,7 @@ void cmdMotionMaxSpeedSet(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -668,7 +888,7 @@ void cmdMotionMaxSpeedSet(u8 cmdDataLen, u8 *pCmdData)
     //进行参数验证
     if (PARA_VERIFY_NO_ERROR == pvrfMotionMaxSpeedVerify(cmdDataLen, pCmdData, (void *)&maxSpeed))
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if (bConfig[i])
             {
@@ -677,7 +897,7 @@ void cmdMotionMaxSpeedSet(u8 cmdDataLen, u8 *pCmdData)
         }
 
         //存入EEPROM中
-        servMotionInfoWrite(&g_motionInfo);
+        servStimerAdd(&g_paraSaveTimer);
     }
 }
 
@@ -712,7 +932,7 @@ void cmdMotionMaxSpeedQuery(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -753,7 +973,7 @@ void cmdMotionMinSpeedSet(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -768,7 +988,7 @@ void cmdMotionMinSpeedSet(u8 cmdDataLen, u8 *pCmdData)
     //进行参数验证
     if (PARA_VERIFY_NO_ERROR == pvrfMotionMinSpeedVerify(cmdDataLen, pCmdData, (void *)&minSpeed))
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if (bConfig[i])
             {
@@ -777,7 +997,7 @@ void cmdMotionMinSpeedSet(u8 cmdDataLen, u8 *pCmdData)
         }
 
         //存入EEPROM中
-        servMotionInfoWrite(&g_motionInfo);
+        servStimerAdd(&g_paraSaveTimer);
     }
 }
 
@@ -812,7 +1032,7 @@ void cmdMotionMinSpeedQuery(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -853,7 +1073,7 @@ void cmdMotionMaxPositionSet(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -868,7 +1088,7 @@ void cmdMotionMaxPositionSet(u8 cmdDataLen, u8 *pCmdData)
     //进行参数验证
     if (PARA_VERIFY_NO_ERROR == pvrfMotionMaxPosnVerify(cmdDataLen, pCmdData, (void *)&maxPosn))
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if (bConfig[i])
             {
@@ -877,7 +1097,7 @@ void cmdMotionMaxPositionSet(u8 cmdDataLen, u8 *pCmdData)
         }
 
         //存入EEPROM中
-        servMotionInfoWrite(&g_motionInfo);
+        servStimerAdd(&g_paraSaveTimer);
     }
 }
 
@@ -912,7 +1132,7 @@ void cmdMotionMaxPositionQuery(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -953,7 +1173,7 @@ void cmdMotionMinPositionSet(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -968,7 +1188,7 @@ void cmdMotionMinPositionSet(u8 cmdDataLen, u8 *pCmdData)
     //进行参数验证
     if (PARA_VERIFY_NO_ERROR == pvrfMotionMinPosnVerify(cmdDataLen, pCmdData, (void *)&minPosn))
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if (bConfig[i])
             {
@@ -977,7 +1197,7 @@ void cmdMotionMinPositionSet(u8 cmdDataLen, u8 *pCmdData)
         }
 
         //存入EEPROM中
-        servMotionInfoWrite(&g_motionInfo);
+        servStimerAdd(&g_paraSaveTimer);
     }
 }
 
@@ -1012,7 +1232,7 @@ void cmdMotionMinPositionQuery(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -1053,7 +1273,7 @@ void cmdMotionMaxTorqueSet(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -1068,7 +1288,7 @@ void cmdMotionMaxTorqueSet(u8 cmdDataLen, u8 *pCmdData)
     //进行参数验证
     if (PARA_VERIFY_NO_ERROR == pvrfMotionMaxTorqueVerify(cmdDataLen, pCmdData, (void *)&maxTorque))
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if (bConfig[i])
             {
@@ -1077,7 +1297,7 @@ void cmdMotionMaxTorqueSet(u8 cmdDataLen, u8 *pCmdData)
         }
 
         //存入EEPROM中
-        servMotionInfoWrite(&g_motionInfo);
+        servStimerAdd(&g_paraSaveTimer);
     }
 }
 
@@ -1112,7 +1332,7 @@ void cmdMotionMaxTorqueQuery(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -1153,7 +1373,7 @@ void cmdMotionMinTorqueSet(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -1168,7 +1388,7 @@ void cmdMotionMinTorqueSet(u8 cmdDataLen, u8 *pCmdData)
     //进行参数验证
     if (PARA_VERIFY_NO_ERROR == pvrfMotionMinTorqueVerify(cmdDataLen, pCmdData, (void *)&minTorque))
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if (bConfig[i])
             {
@@ -1177,7 +1397,7 @@ void cmdMotionMinTorqueSet(u8 cmdDataLen, u8 *pCmdData)
         }
 
         //存入EEPROM中
-        servMotionInfoWrite(&g_motionInfo);
+        servStimerAdd(&g_paraSaveTimer);
     }
 }
 
@@ -1212,7 +1432,7 @@ void cmdMotionMinTorqueQuery(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -1253,7 +1473,7 @@ void cmdMotionMaxAccSet(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -1268,7 +1488,7 @@ void cmdMotionMaxAccSet(u8 cmdDataLen, u8 *pCmdData)
     //进行参数验证
     if (PARA_VERIFY_NO_ERROR == pvrfMotionMaxTorqueVerify(cmdDataLen, pCmdData, (void *)&maxAcc))
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if (bConfig[i])
             {
@@ -1277,7 +1497,7 @@ void cmdMotionMaxAccSet(u8 cmdDataLen, u8 *pCmdData)
         }
 
         //存入EEPROM中
-        servMotionInfoWrite(&g_motionInfo);
+        servStimerAdd(&g_paraSaveTimer);
     }
 }
 
@@ -1312,7 +1532,7 @@ void cmdMotionMaxAccQuery(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -1353,7 +1573,7 @@ void cmdMotionMinAccSet(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -1368,7 +1588,7 @@ void cmdMotionMinAccSet(u8 cmdDataLen, u8 *pCmdData)
     //进行参数验证
     if (PARA_VERIFY_NO_ERROR == pvrfMotionMinTorqueVerify(cmdDataLen, pCmdData, (void *)&minAcc))
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if (bConfig[i])
             {
@@ -1377,7 +1597,7 @@ void cmdMotionMinAccSet(u8 cmdDataLen, u8 *pCmdData)
         }
 
         //存入EEPROM中
-        servMotionInfoWrite(&g_motionInfo);
+        servStimerAdd(&g_paraSaveTimer);
     }
 }
 
@@ -1412,7 +1632,7 @@ void cmdMotionMinAccQuery(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -1452,7 +1672,7 @@ void cmdMotionOriginSet(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -1465,7 +1685,7 @@ void cmdMotionOriginSet(u8 cmdDataLen, u8 *pCmdData)
     cmdDataLen -= 1;
 
 
-    for (i = 0;i < g_systemState.chanNum;i++)
+    for (i = 0;i < CH_TOTAL;i++)
     {
         if (bConfig[i])
         {
@@ -1474,7 +1694,7 @@ void cmdMotionOriginSet(u8 cmdDataLen, u8 *pCmdData)
     }
 
     //存入EEPROM中
-    servMotionInfoWrite(&g_motionInfo);
+    servStimerAdd(&g_paraSaveTimer);
 }
 
 
@@ -1508,7 +1728,7 @@ void cmdMotionOriginQuery(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -1548,7 +1768,7 @@ void cmdMotionGoOrigin(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -1584,7 +1804,7 @@ void cmdMotionOffsetStateSet(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -1599,16 +1819,25 @@ void cmdMotionOffsetStateSet(u8 cmdDataLen, u8 *pCmdData)
     //进行参数验证
     if (PARA_VERIFY_NO_ERROR == pvrfMotionOffsetStateVerify(cmdDataLen, pCmdData, (void *)&offsetState))
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if (bConfig[i])
             {
                 g_motionInfo.motion[i].offsetState = offsetState;
+
+                if (SENSOR_ON == offsetState)
+                {
+                    servStimerAdd(&g_motionMonitorTimer[i]);
+                }
+                else
+                {
+                    servStimerDelete(&g_motionMonitorTimer[i]);
+                }
             }
         }
 
         //存入EEPROM中
-        servMotionInfoWrite(&g_motionInfo);
+        servStimerAdd(&g_paraSaveTimer);
     }
 }
 
@@ -1638,7 +1867,7 @@ void cmdMotionOffsetStateQuery(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -1650,163 +1879,6 @@ void cmdMotionOffsetStateQuery(u8 cmdDataLen, u8 *pCmdData)
             }
         }
     } 
-}
-
-#if 0
-/*********************************************************************************************
-函 数 名: cmdMotionPvtStepsQuery;
-实现功能: 无; 
-输入参数: 无;
-输出参数: 无;
-返 回 值: 无;
-说    明: 无;
-*********************************************************************************************/
-void cmdMotionPvtStepsQuery(u8 cmdDataLen, u8 *pCmdData)
-{
-    u8 dataLen;
-    u8 *pData;
-    u8 data[6];
-    u8 i, j;
-    u8 chanNum = *pCmdData++;
-    s32 steps;
-
-    
-    dataLen = sizeof(steps) + sizeof(chanNum);
-    if (chanNum <= CH_MAX)
-    {
-        steps = g_systemState.pvtSteps[chanNum] * g_planInfo.pvtInfo[chanNum].ncycle;
-        pData = (u8 *)&steps;
-        data[0] = chanNum;
-        for (i = 0;i < sizeof(steps);i++)
-        {
-            data[1 + i] = *pData++;
-        }
-        cmdFrameSend(CMD_MOTION, MOTIONCMD_PVTSTEPSQ, dataLen, data);
-    }
-    else
-    {
-        for (i = 0;i < g_systemState.chanNum;i++)
-        {
-            if ((CH_ALL == chanNum) ||
-                (chanNum == g_systemInfo.group[i][0]) ||
-                (chanNum == g_systemInfo.group[i][1]))
-            {
-                steps = g_systemState.pvtSteps[i] * g_planInfo.pvtInfo[i].ncycle;
-                pData = (u8 *)&steps;
-                data[0] = i;
-                for (j = 0;j < sizeof(steps);j++)
-                {
-                    data[1 + j] = *pData++;
-                }
-                cmdFrameSend(CMD_MOTION, MOTIONCMD_PVTSTEPSQ, dataLen, data);
-            }
-        }
-    }
-}
-
-
-/*********************************************************************************************
-函 数 名: cmdMotionCountStepsQuery;
-实现功能: 无; 
-输入参数: 无;
-输出参数: 无;
-返 回 值: 无;
-说    明: 无;
-*********************************************************************************************/
-void cmdMotionCountStepsQuery(u8 cmdDataLen, u8 *pCmdData)
-{
-    u8 dataLen;
-    u8 *pData;
-    u8 data[6];
-    u8 i, j;
-    u8 chanNum = *pCmdData++;
-
-    
-    dataLen = sizeof(g_systemState.steps[CH1]) + sizeof(chanNum);
-    if (chanNum <= CH_MAX)
-    {
-        pData = (u8 *)&g_systemState.steps[chanNum];
-        data[0] = chanNum;
-        for (i = 0;i < sizeof(g_systemState.steps[chanNum]);i++)
-        {
-            data[1 + i] = *pData++;
-        }
-        cmdFrameSend(CMD_MOTION, MOTIONCMD_COUNTSTEPSQ, dataLen, data);
-    }
-    else
-    {
-        for (i = 0;i < g_systemState.chanNum;i++)
-        {
-            if ((CH_ALL == chanNum) ||
-                (chanNum == g_systemInfo.group[i][0]) ||
-                (chanNum == g_systemInfo.group[i][1]))
-            {
-                pData = (u8 *)&g_systemState.steps[i];
-                data[0] = i;
-                for (j = 0;j < sizeof(g_systemState.steps[i]);j++)
-                {
-                    data[1 + j] = *pData++;
-                }
-                cmdFrameSend(CMD_MOTION, MOTIONCMD_COUNTSTEPSQ, dataLen, data);
-            }
-        }
-    }
-}
-
-
-/*********************************************************************************************
-函 数 名: cmdMotionPvtCircleQuery;
-实现功能: 无; 
-输入参数: 无;
-输出参数: 无;
-返 回 值: 无;
-说    明: 无;
-*********************************************************************************************/
-void cmdMotionPvtCircleQuery(u8 cmdDataLen, u8 *pCmdData)
-{
-    u8 dataLen;
-    u8 *pData;
-    u8 data[6];
-    u8 i, j;
-    s16 circleNum;
-    u8  chanNum = *pCmdData++;
-
-
-    dataLen = sizeof(circleNum) + sizeof(chanNum);
-    if (chanNum <= CH_MAX)
-    {
-        circleNum  = pvtStepToCircleCalc((g_systemState.pvtSteps[chanNum] * g_planInfo.pvtInfo[chanNum].ncycle), 
-                                         g_systemState.posnConvertInfo[chanNum].posnToStep, 
-                                         g_motorInfo.motor[chanNum].posnUnit);
-        pData = (u8 *)&circleNum;
-        data[0] = chanNum;
-        for (i = 0;i < sizeof(circleNum);i++)
-        {
-            data[1 + i] = *pData++;
-        }
-        cmdFrameSend(CMD_MOTION, MOTIONCMD_PVTCIRCLEQ, dataLen, data);
-    }
-    else
-    {
-        for (i = 0;i < g_systemState.chanNum;i++)
-        {
-            if ((CH_ALL == chanNum) ||
-                (chanNum == g_systemInfo.group[i][0]) ||
-                (chanNum == g_systemInfo.group[i][1]))
-            {
-                circleNum  = pvtStepToCircleCalc((g_systemState.pvtSteps[i] * g_planInfo.pvtInfo[i].ncycle), 
-                                                 g_systemState.posnConvertInfo[i].posnToStep, 
-                                                 g_motorInfo.motor[i].posnUnit);
-                pData = (u8 *)&circleNum;
-                data[0] = i;
-                for (j = 0;j < sizeof(circleNum);j++)
-                {
-                    data[1 + j] = *pData++;
-                }
-                cmdFrameSend(CMD_MOTION, MOTIONCMD_PVTCIRCLEQ, dataLen, data);
-            }
-        }
-    }
 }
 
 
@@ -1840,7 +1912,7 @@ void cmdMotionCountCircleQuery(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -1879,6 +1951,8 @@ void cmdMotionABCountQuery(u8 cmdDataLen, u8 *pCmdData)
     dataLen = sizeof(g_systemState.abCount[CH1]) + sizeof(chanNum);
     if (chanNum <= CH_MAX)
     {
+        servFpgaEncoderCountRead(chanNum, NULL, &g_systemState.abCount[chanNum], NULL);
+        
         pData = (u8 *)&g_systemState.abCount[chanNum];
         data[0] = chanNum;
         for (i = 0;i < sizeof(g_systemState.abCount[chanNum]);i++)
@@ -1889,12 +1963,14 @@ void cmdMotionABCountQuery(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
                 (chanNum == g_systemInfo.group[i][1]))
             {
+                servFpgaEncoderCountRead(i, NULL, &g_systemState.abCount[chanNum], NULL);
+
                 pData = (u8 *)&g_systemState.abCount[i];
                 data[0] = i;
                 for (j = 0;j < sizeof(g_systemState.abCount[i]);j++)
@@ -1906,19 +1982,18 @@ void cmdMotionABCountQuery(u8 cmdDataLen, u8 *pCmdData)
         }
     }
 }
-#endif
+
 
 /*********************************************************************************************
-函 数 名: cmdMotionReverseMotionSet;
+函 数 名: cmdMotionABCountClear;
 实现功能: 无; 
 输入参数: 无;
 输出参数: 无;
 返 回 值: 无;
 说    明: 无;
 *********************************************************************************************/
-void cmdMotionReverseMotionSet(u8 cmdDataLen, u8 *pCmdData)
+void cmdMotionABCountClear(u8 cmdDataLen, u8 *pCmdData)
 {
-    SensorStateEnum  revMotion;
     u8   i;
     bool bConfig[CH_TOTAL] = {0};
     u8   chanNum = *pCmdData++;
@@ -1930,7 +2005,7 @@ void cmdMotionReverseMotionSet(u8 cmdDataLen, u8 *pCmdData)
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
@@ -1941,65 +2016,119 @@ void cmdMotionReverseMotionSet(u8 cmdDataLen, u8 *pCmdData)
         }
     }
     cmdDataLen -= 1;
-    
-    //进行参数验证
-    if (PARA_VERIFY_NO_ERROR == pvrfMotionReverseMotionVerify(cmdDataLen, pCmdData, (void *)&revMotion))
+
+    for (i = 0;i < CH_TOTAL;i++)
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        if (bConfig[i])
         {
-            if (bConfig[i])
-            {
-                g_motionInfo.motion[i].revMotion = revMotion;
-
-                //给FUNC发信号量
-                g_chanCfgBmp[i].bRevMotion = true;
-                g_bCmdPostSemToFunc = true;
-            }
+            servFpgaEncoderCountReset(i);
+            g_systemState.abCount[i] = 0;
         }
-
-        //存入EEPROM中
-        //servMotionInfoWrite(&g_motionInfo);
     }
 }
 
 
 /*********************************************************************************************
-函 数 名: cmdMotionReverseMotionQuery;
+函 数 名: cmdMotionRunTimeLCountQuery;
 实现功能: 无; 
 输入参数: 无;
 输出参数: 无;
 返 回 值: 无;
 说    明: 无;
 *********************************************************************************************/
-void cmdMotionReverseMotionQuery(u8 cmdDataLen, u8 *pCmdData)
+void cmdMotionRunTimeLCountQuery(u8 cmdDataLen, u8 *pCmdData)
 {
-    u8 dataLen;
-    u8 data[6];
-    u8 i;
-    u8 chanNum = *pCmdData++;
+    u8  dataLen;
+    u8  *pData;
+    u8  data[6];
+    u8  i, j;
+    u32 timeCount;
+    u8  chanNum = *pCmdData++;
 
     
-    dataLen = sizeof(g_motionInfo.motion[CH1].revMotion) + sizeof(chanNum);
+    dataLen = sizeof(timeCount) + sizeof(chanNum);
     if (chanNum <= CH_MAX)
     {
+        timeCount = (u32)g_debugInfo.runTime[chanNum];
+        pData = (u8 *)&timeCount;
         data[0] = chanNum;
-        data[1] = g_motionInfo.motion[chanNum].revMotion;
-        cmdFrameSend(CMD_MOTION, MOTIONCMD_REVMOTIONQ, dataLen, data);  
+        for (i = 0;i < sizeof(timeCount);i++)
+        {
+            data[1 + i] = *pData++;
+        }
+        cmdFrameSend(CMD_MOTION, MOTIONCMD_RUNTIMELQ, dataLen, data);
     }
     else
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             if ((CH_ALL == chanNum) ||
                 (chanNum == g_systemInfo.group[i][0]) ||
                 (chanNum == g_systemInfo.group[i][1]))
             {
+                timeCount = (u32)g_debugInfo.runTime[i];
+                pData = (u8 *)&timeCount;
                 data[0] = i;
-                data[1] = g_motionInfo.motion[i].revMotion;
-                cmdFrameSend(CMD_MOTION, MOTIONCMD_REVMOTIONQ, dataLen, data);  
+                for (j = 0;j < sizeof(timeCount);j++)
+                {
+                    data[1 + j] = *pData++;
+                }
+                cmdFrameSend(CMD_MOTION, MOTIONCMD_RUNTIMELQ, dataLen, data);
             }
         }
-    } 
+    }
+}
+
+
+/*********************************************************************************************
+函 数 名: cmdMotionRunTimeHCountQuery;
+实现功能: 无; 
+输入参数: 无;
+输出参数: 无;
+返 回 值: 无;
+说    明: 无;
+*********************************************************************************************/
+void cmdMotionRunTimeHCountQuery(u8 cmdDataLen, u8 *pCmdData)
+{
+    u8  dataLen;
+    u8  *pData;
+    u8  data[6];
+    u8  i, j;
+    u32 timeCount;
+    u8  chanNum = *pCmdData++;
+
+    
+    dataLen = sizeof(timeCount) + sizeof(chanNum);
+    if (chanNum <= CH_MAX)
+    {
+        timeCount = (u32)(g_debugInfo.runTime[chanNum] >> 32);
+        pData = (u8 *)&timeCount;
+        data[0] = chanNum;
+        for (i = 0;i < sizeof(timeCount);i++)
+        {
+            data[1 + i] = *pData++;
+        }
+        cmdFrameSend(CMD_MOTION, MOTIONCMD_RUNTIMEHQ, dataLen, data);
+    }
+    else
+    {
+        for (i = 0;i < CH_TOTAL;i++)
+        {
+            if ((CH_ALL == chanNum) ||
+                (chanNum == g_systemInfo.group[i][0]) ||
+                (chanNum == g_systemInfo.group[i][1]))
+            {
+                timeCount = (u32)(g_debugInfo.runTime[i] >> 32);
+                pData = (u8 *)&timeCount;
+                data[0] = i;
+                for (j = 0;j < sizeof(timeCount);j++)
+                {
+                    data[1 + j] = *pData++;
+                }
+                cmdFrameSend(CMD_MOTION, MOTIONCMD_RUNTIMEHQ, dataLen, data);
+            }
+        }
+    }
 }
 
 
@@ -2050,14 +2179,13 @@ void cmdMotionCmdInit(void)
     pMotionCmdFunc[MOTIONCMD_OFFSETSTATE]  = cmdMotionOffsetStateSet;
     pMotionCmdFunc[MOTIONCMD_OFFSETSTATEQ] = cmdMotionOffsetStateQuery;
     
-    /*pMotionCmdFunc[MOTIONCMD_PVTSTEPSQ]    = cmdMotionPvtStepsQuery;
-    pMotionCmdFunc[MOTIONCMD_COUNTSTEPSQ]  = cmdMotionCountStepsQuery;
-    pMotionCmdFunc[MOTIONCMD_PVTCIRCLEQ]   = cmdMotionPvtCircleQuery;
     pMotionCmdFunc[MOTIONCMD_COUNTCIRCLEQ] = cmdMotionCountCircleQuery;
-    pMotionCmdFunc[MOTIONCMD_ABCOUNTQ]     = cmdMotionABCountQuery;*/
-    
-    pMotionCmdFunc[MOTIONCMD_REVMOTION]  = cmdMotionReverseMotionSet;
-    pMotionCmdFunc[MOTIONCMD_REVMOTIONQ] = cmdMotionReverseMotionQuery;
+    pMotionCmdFunc[MOTIONCMD_ABCOUNTQ]     = cmdMotionABCountQuery;
+
+    pMotionCmdFunc[MOTIONCMD_ABCOUNTCLEAR] = cmdMotionABCountClear;
+
+    pMotionCmdFunc[MOTIONCMD_RUNTIMELQ] = cmdMotionRunTimeLCountQuery;
+    pMotionCmdFunc[MOTIONCMD_RUNTIMEHQ] = cmdMotionRunTimeHCountQuery;
 }
 
             

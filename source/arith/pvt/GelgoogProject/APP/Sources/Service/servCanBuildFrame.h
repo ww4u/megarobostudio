@@ -127,6 +127,5 @@ int servCanBuildFrameSendClockSyncStartFrame2Fpga(u32 id,u8 type,CanBaudEnum enB
 int servCanBuildFrameSendClockSyncEndFrame2Fpga(u32 id,u8 type,CanBaudEnum enBaud);
 
 
-//void servSyncHandle(RegisterFuncEnum func, ReceiveTypeEnum receiveType, CanIntfcStruct canIntfc);    //CJ 2017.06.20 Modify
-#endif
 
+#endif

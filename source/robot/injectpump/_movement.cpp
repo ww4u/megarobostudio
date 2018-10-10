@@ -149,7 +149,7 @@ int robotInject::goZero( const tpvRegion &region,
 
     //! x
     if ( jointId == 0 )
-    {logDbg()<<mZeroDistance<<mZeroTime<<mVGapDistance<<mVGapTime;
+    {
         //! arg
         pArg->mAx = 0;
         pArg->mZeroDist = dir * mZeroDistance;
@@ -280,7 +280,6 @@ int robotInject::zeroAxesTask( void *pArg )
               region );
 
         //! wait
-        //! \todo wait idle
         ret = waitFsm( region, MegaDevice::mrq_state_idle, pZArg->mTmo, pZArg->mTick );
         if ( ret != 0 )
         { return ret; }
@@ -307,7 +306,6 @@ int robotInject::zeroAxesTask( void *pArg )
               0, pZArg->mZeroEndV,
               region );
 
-        //! \todo
         ret = waitFsm( region, MegaDevice::mrq_state_idle, pZArg->mTmo, pZArg->mTick );
         if ( ret != 0 )
         { return ret; }

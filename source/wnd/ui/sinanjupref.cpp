@@ -16,13 +16,6 @@ SinanjuPref::SinanjuPref(QWidget *parent) :
     mLabels[i] = ui->labelWrist;i++;
     mLabels[i] = ui->label_3;i++;
 
-//    i = 0;
-//    mEdits[i] = ui->lineEdit_6;i++;
-//    mEdits[i] = ui->lineEdit_5;i++;
-//    mEdits[i] = ui->lineEdit_4;i++;
-//    mEdits[i] = ui->lineEdit_3;i++;
-//    mEdits[i] = ui->lineEdit_2;i++;
-
     //! init angles
     mInitAngles.append( ui->spinAngleBase );
     mInitAngles.append( ui->spinAngleBArm );
@@ -157,12 +150,6 @@ void SinanjuPref::initModel()
     Q_ASSERT( m_pModelObj != NULL );
     VRobot *pBase = ( VRobot *)m_pModelObj;
     Q_ASSERT( NULL != pBase );
-
-//    int i;
-//    for( i = 0; i < pBase->axes(); i++ )
-//    {
-//        mLabels[i]->setText( (pBase->mJointName.at(i)) );
-//    }
 }
 
 void SinanjuPref::spyEdited()
@@ -200,7 +187,6 @@ void SinanjuPref::spyEdited()
     install_spy();
 }
 
-//! \todo only for arms
 void SinanjuPref::on_btnZeroArm_clicked()
 {
     Q_ASSERT( m_pModelObj != NULL );

@@ -123,12 +123,6 @@ byte* Mrh_e::recv( int &retLen, int len, int tmo )
     }
 
     read( m_pBuf, len, tmo, retLen );
-//    if ( retLen <= 0 )
-//    {}
-//    else
-//    {
-//        m_pBuf[ retLen ] = 0;
-//    }
 
     return m_pBuf;
 }

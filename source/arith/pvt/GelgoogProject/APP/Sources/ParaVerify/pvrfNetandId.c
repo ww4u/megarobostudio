@@ -72,7 +72,7 @@ u8 pvrfIdentityGroupVerify(u8 dataLen, u8 *pData, void *pParaValue, u8 *pGroup)
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -115,7 +115,7 @@ u8 pvrfIdentityDistStateVerify(u8 dataLen, u8 *pData, void *pParaValue)
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -163,7 +163,7 @@ u8 pvrfIdentityLabelVerify(u8 dataLen, u8 *pData, void *pMainLabel, void *pSubLa
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }

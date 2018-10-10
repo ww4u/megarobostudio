@@ -1,5 +1,4 @@
 #include "injectpump.h"
-//#include "../../arith/h2_split/h2_split.h"
 
 int robotInject::verifyTrace( IPKeyPointList &curve )
 {
@@ -52,9 +51,10 @@ int robotInject::buildTrace( IPKeyPointList &curve,
         //! group items
         for ( int i = 0; i < curve.size(); i++ )
         {
-           ret = pGroup->addItem( curve.at(i).t,
-                                  curve.at(i).datas[col],
-                                  curve.at(i).datas[col+2] );   //! different velocity
+           ret = pGroup->addItem( scale_t( curve.at(i).t ),
+                                  scale_p( curve.at(i).datas[col] ),
+                                  scale_p( curve.at(i).datas[col+2] )
+                                );   //! different velocity
            if ( ret != 0 )
            { break; }
         }

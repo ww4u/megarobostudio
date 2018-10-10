@@ -8,7 +8,6 @@ namespace MegaDevice
 static msg_type _msg_patterns[] =
 {
     //! sys msg
-//    { e_robot_init, },
     { e_robot_timeout, {TPV_REGEION_TYPE_ID, QMetaType::Int} },
 
     //! mrq msg
@@ -64,9 +63,8 @@ void deviceMRQ::onMsg( int subAxes, RoboMsg &detail )
         region = detail.at(0).value<tpvRegion>();
 
         Q_ASSERT( mMrqFsms.contains(region) );
-//logDbg()<<varMsg;
+
         mMrqFsms[ region ]->proc( varMsg, detail );
-//logDbg()<<varMsg;
     }
     else
     { Q_ASSERT(false); }
@@ -80,7 +78,6 @@ void deviceMRQ::onTimer( void *pContext, int id )
     //! context is fsm
     MrqFsm *pFsm = (MrqFsm*)pContext;
     lpc( pFsm->axes() )->postMsg( e_robot_timeout,
-//                                  tpvRegion( pFsm->axes(), pFsm->page() ),
                                   *pFsm,        //! \todo why?
                                   id );
 }

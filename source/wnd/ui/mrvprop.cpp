@@ -19,6 +19,7 @@ MrvProp::MrvProp( VRobot *pMrqRobo,
     setupUi();
 
     buildConnection();
+
     //! three btns
     mbtnEnableSnap.append( false );
     mbtnEnableSnap.append( false );
@@ -193,15 +194,6 @@ void MrvProp::buildConnection()
 
 int MrvProp::postApply( appMsg msg, void *pPara )
 {
-//    //! check device
-//    MegaDevice::deviceMRQ *pDevice;
-//    pDevice = getDevice();
-//    if ( NULL == pDevice )
-//    {
-//        sysPrompt( tr("Invalid device") );
-//        return ERR_INVALID_DEVICE_NAME;
-//    }
-
     m_pMRV->preSet();
 
     //! foreach apply
@@ -273,5 +265,4 @@ void MrvProp::restoreBtnSnap()
     ui->btnOK->setEnabled( mbtnEnableSnap[1] );
     ui->btnCancel->setEnabled( mbtnEnableSnap[2] );
 }
-
 

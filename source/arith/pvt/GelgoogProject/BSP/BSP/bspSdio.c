@@ -75,7 +75,7 @@ Copyright (C) 2016，北京镁伽机器人科技有限公司
 #define    SDIO_DMA_FLAG_HTIF     DMA_FLAG_HTIF3
 #define    SDIO_DMA_FLAG_TCIF     DMA_FLAG_TCIF3 
 
-#define    SDIO_DATA_TIMEOUT      ((uint32_t)0xFFFFFFFF)    //根据DELAY_COUNT_MS = 33600，此超时时间大于为128s
+#define    SDIO_DATA_TIMEOUT      33600    //根据DELAY_COUNT_MS = 33600，此超时时间大约为1ms
 #define    SDIO_STATIC_FLAGS      ((uint32_t)0x000005FF)
 #define    SDIO_DATA_LEN_MASK     0x01FFFFFF
 #define    SDIO_DCTRL_CLEAR_MASK  0xFFFFFF08
@@ -93,6 +93,7 @@ Copyright (C) 2016，北京镁伽机器人科技有限公司
 
 
 /******************************************局部变量*******************************************/
+u8 g_sdioDmaTxComplete = 0;
 
 
 
@@ -207,7 +208,7 @@ void bspSdioInit(void)
     NVIC_Init(&NVIC_InitStructure);
     
     NVIC_InitStructure.NVIC_IRQChannel = SDIO_DMA_IRQ;
-    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
+    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
     NVIC_Init(&NVIC_InitStructure);
 }
 
@@ -220,7 +221,7 @@ void bspSdioInit(void)
 返 回 值: 无;
 说    明: 无;
 *********************************************************************************************/
-void bspSdioDataSend(u8 *dataBuff, u32 dataLen, u16 dataBlock)
+u8 bspSdioDataSend(u8 *dataBuff, u32 dataLen, u16 dataBlock)
 {
     u32 tmpReg;
     u32 delaySeconds;
@@ -235,14 +236,19 @@ void bspSdioDataSend(u8 *dataBuff, u32 dataLen, u16 dataBlock)
                                    SDIO_DMA_FLAG_TEIF  | 
                                    SDIO_DMA_FLAG_HTIF  | 
                                    SDIO_DMA_FLAG_TCIF);
-                                   
+
+    //失能DMA
+    SDIO_DMA_STREAM->CR &= (uint32_t)(~DMA_SxCR_EN);
+    
+    g_sdioDmaTxComplete = 0;
+
     //设置DMA传输方向、长度和内存地址
     tmpReg = SDIO_DMA_STREAM->CR;
     tmpReg &= (uint32_t)~DMA_SxCR_DIR;       //清除DMA传输方向
     tmpReg |= DMA_DIR_MemoryToPeripheral;    //方向设置为内存到外设
     SDIO_DMA_STREAM->CR   = tmpReg;
-    SDIO_DMA_STREAM->NDTR = dataLen;    
     SDIO_DMA_STREAM->M0AR = (uint32_t)dataBuff;
+    SDIO_DMA_STREAM->NDTR = dataLen;    
 
     //使能DMA
     SDIO_DMA_STREAM->CR  |= (uint32_t)DMA_SxCR_EN;
@@ -270,33 +276,58 @@ void bspSdioDataSend(u8 *dataBuff, u32 dataLen, u16 dataBlock)
     tmpReg |= dataBlock | SDIO_TransferDir_ToCard | SDIO_TransferMode_Block | SDIO_DPSM_Enable;
     SDIO->DCTRL = tmpReg;
 
+#if 1    //使用状态位判断的方式，而不是延时
+    //
+    delaySeconds = SDIO_DATA_TIMEOUT;
+
+    //while ((!g_sdioDmaTxComplete) && (delaySeconds > 0))    //也可以用变量进行判断
+    while ((SDIO_FLAG_TXACT == (SDIO->STA & SDIO_FLAG_TXACT)) && (delaySeconds > 0))
+    {
+        delaySeconds--;  
+    }
+
+    if (0 == delaySeconds)
+    {
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
+    
+#else
 
     //目前没有找到有效的判断数据传输完成的标识，所以使用延时的方式保证数据传输完成
     //计算延时时间: 1M时钟下，8bit传输模式传输一个字节需要时间为1us，所以延时时间等于字节数除以时钟
     delaySeconds = (u32)(((float)dataLen + SDIO_CRC_LEN) / SDIO_CLK_FREQ + 1);    //向上取整
     bspDelayUs(delaySeconds);    //等待数据传送完成
+
+    return 0;
+#endif
 }
 
 
 /*********************************************************************************************
-函 数 名: bspSdioDataReceive;
+函 数 名: bspSdioDataReceiveSet;
 实现功能: 无; 
 输入参数: 无;
 输出参数: 无;
 返 回 值: 无;
-说    明: 无;
+说    明: 接收设置时如果不适用DMA则需要使用bspSdioDataRead获取数据，大数据量时不方便;
 *********************************************************************************************/
-void bspSdioDataReceive(u8 *dataBuff, u16 dataLen, u8 dataBlock)
+void bspSdioDataReceiveSet(u8 *dataBuff, u16 dataLen, u8 dataBlock)
 {
     u32 tmpReg;
 
-
+  
     SDIO->DCTRL = 0x0;    //关闭传输
     
     SDIO_ITConfig(SDIO_IT_DCRCFAIL | SDIO_IT_DTIMEOUT | SDIO_IT_DATAEND | SDIO_IT_RXOVERR | SDIO_IT_STBITERR, ENABLE);
 
+    g_sdioDmaTxComplete = 0;
+    
     SDIO_DMACmd(ENABLE);
-
+    
     DMA_ClearFlag(SDIO_DMA_STREAM, SDIO_DMA_FLAG_FEIF  | 
                                    SDIO_DMA_FLAG_DMEIF | 
                                    SDIO_DMA_FLAG_TEIF  | 
@@ -313,13 +344,41 @@ void bspSdioDataReceive(u8 *dataBuff, u16 dataLen, u8 dataBlock)
     SDIO_DMA_STREAM->M0AR = (uint32_t)dataBuff;
     SDIO_DMA_STREAM->CR  |= (uint32_t)DMA_SxCR_EN;
 
+#if SDIO_SEND_BYTES_OFFSET_ENBALE
+    //接收也存在少12个字节的问题
+    if (dataLen <= SDIO_SEND_BYTES_THRESHOLD)
+    {
+        SDIO->DLEN = dataLen & SDIO_DATA_LEN_MASK;
+    }
+    else
+    {
+        SDIO->DLEN = (dataLen + SDIO_SEND_BYTES_OFFSET) & SDIO_DATA_LEN_MASK;
+    }
 
-    SDIO->DLEN   = dataLen & SDIO_DATA_LEN_MASK;
+#else
+    SDIO->DLEN = dataLen & SDIO_DATA_LEN_MASK;
+#endif
+
+    //SDIO->DLEN   = dataLen & SDIO_DATA_LEN_MASK;
     SDIO->DTIMER = SDIO_DATA_TIMEOUT;
-    tmpReg = SDIO->DCTRL;
+    tmpReg = SDIO->DCTRL;    
     tmpReg &= SDIO_DCTRL_CLEAR_MASK;    //Clear DEN, DTMODE, DTDIR and DBCKSIZE bits
-    tmpReg |= dataBlock | SDIO_TransferDir_ToSDIO | SDIO_TransferMode_Block | SDIO_DPSM_Enable;
+    tmpReg |= dataBlock | SDIO_TransferDir_ToSDIO | SDIO_TransferMode_Stream | SDIO_DPSM_Enable;
     SDIO->DCTRL = tmpReg;
+}
+
+
+/*********************************************************************************************
+函 数 名: bspSdioDataTxComplete;
+实现功能: 无; 
+输入参数: 无;
+输出参数: 无;
+返 回 值: 无;
+说    明: 无;
+*********************************************************************************************/
+u8  bspSdioDataTxComplete(void)
+{
+    return g_sdioDmaTxComplete;
 }
 
 
@@ -362,8 +421,8 @@ u8 bspSdioCmdSend(u16 addr, u16 length, unsigned char needDelay)
 
     if (needDelay)    //读取数据时才需要延时等待数据发送完成
     {
-        //等待FPGA传送数据完毕，长度固定为4 + SDIO_CRC_LEN = 21个字节，时间(21/24(24MHz时钟))+1 = 1us
-        bspDelayUs(21 / SDIO_CLK_FREQ + 1);  
+        //等待FPGA传送数据完毕，长度固定为4 + SDIO_CRC_LEN = 21个字节，时间(21/24(24MHz时钟))+2 = 2us
+        bspDelayUs(21 / SDIO_CLK_FREQ + 2);  
     }
 
     return 0;

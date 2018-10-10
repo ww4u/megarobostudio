@@ -17,7 +17,7 @@ public:
     ~mrqAxes2();
 
 protected Q_SLOTS:
-    void on_btnInitZero_clicked();
+
 
 public:
     virtual int setApply();

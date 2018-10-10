@@ -80,7 +80,6 @@ int eventViewer::exceptionIndex( const QString &str )
         { return i; }
     }
 
-//    Q_ASSERT( false );
     return 0;
 }
 
@@ -201,8 +200,7 @@ void eventViewer::slot_exception_changed()
                               _exceptions_[i].sCode,
                               _exceptions_[i].mPattern,
                               _exceptions_[i].len );
-        receiveCache::setFrameEventEnable( event, false );logDbg();
-
+        receiveCache::setFrameEventEnable( event, false );
     }
 
     //! enable the current
@@ -237,7 +235,6 @@ void eventViewer::on_btnExport_clicked()
 
     fDlg.setAcceptMode( QFileDialog::AcceptSave );
     fDlg.setNameFilter( tr("CSV (*.csv )") );
-//    fDlg.selectFile( windowTitle() );
     if ( QDialog::Accepted != fDlg.exec() )
     { return; }
 

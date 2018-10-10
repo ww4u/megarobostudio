@@ -19,7 +19,7 @@ Copyright (C) 2016，北京镁伽机器人科技有限公司
 #define    ERROR_CODE_INDEX_PVT_CALC        1    //PVT错误在错误码数组中的下标
 #define    ERROR_CODE_INDEX_INTFACE         2    //接口错误在错误码数组中的下标
 #define    ERROR_CODE_INDEX_FPGA            3    //FPGA错误在错误码数组中的下标
-#define    ERROR_CODE_INDEX_MEMORY          4    //存储错误在错误码数组中的下标
+#define    ERROR_CODE_INDEX_MEMORY          4    //运行过程中出现问题
 #define    ERROR_CODE_INDEX_RESERVE         5    //保留
 
 /**********************************参数验证***********************************/
@@ -33,7 +33,6 @@ Copyright (C) 2016，北京镁伽机器人科技有限公司
 #define    PARA_VERIFY_ERROR_STATE         7
 
 /**********************************PVT解算***********************************/
-#define    PVT_CALC_NO_ERROR               0
 #define    PVT_CALC_DDR_INSUFF_SPACE       1    //DDR的空间不足
 
 /**********************************测试错误***********************************/

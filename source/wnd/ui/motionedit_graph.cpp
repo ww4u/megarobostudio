@@ -36,20 +36,6 @@ void motionEdit::on_btnReverse_clicked()
 
 void motionEdit::updatePlot()
 {
-//    //! now for the joints
-//    int skipUnit;
-//    skipUnit = sizeof(jointsTrace)/sizeof(double);
-//    for ( int i = 0; i < 4; i++ )
-//    {
-//        m_pPlot->setCurve( QString("t-p%1").arg( i + 1 ), &mJointsPlan.data()->t, skipUnit,
-//                         &mJointsPlan.data()->p[i], skipUnit,
-//                         mJointsPlan.size() );
-
-//        m_pPlot->setCurve( QString("t-v%1").arg( i + 1 ), &mJointsPlan.data()->t, skipUnit,
-//                         &mJointsPlan.data()->v[i], skipUnit,
-//                         mJointsPlan.size() );
-//    }
-
     for ( int i = 0; i < mJointsTpvGroup.size(); i++ )
     {
         tpvGroupPlot( mJointsTpvGroup.at(i), i+1 );
@@ -85,7 +71,6 @@ void motionEdit::updatePlot()
                            sizeof_array(skipYs),
                            mTracePlan.size() );
     }
-
 }
 
 void motionEdit::tpvGroupPlot( tpvGroup *pGroup, int id )
@@ -127,7 +112,6 @@ void motionEdit::tpvGroupPlot( tpvGroup *pGroup, int id )
     ps.clear();
     vs.clear();
 }
-
 
 bool motionEdit::checkRobotLive( VRobot **ppRobot )
 {

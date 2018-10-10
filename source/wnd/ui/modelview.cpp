@@ -58,14 +58,10 @@ void modelView::buildConnection()
              SIGNAL(sig_prog_do(appWidget::servContext,int,int,int)),
              this,
              SLOT(slot_prog_do(appWidget::servContext,int,int,int)));
-
-//    connect( this, SIGNAL(sigModified(bool )),
-//             this, SLOT(slot_modified()));
 }
 
 void modelView::slot_modified()
 {
-    logDbg();
     slotModified( true );
 }
 

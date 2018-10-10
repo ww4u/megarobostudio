@@ -60,17 +60,6 @@ int  sampleMgr::getCount()
 
 void sampleMgr::clear( sampleThread *pCallThread )
 {
-//    foreach( sampleProxy *pProxy, mSamples )
-//    {
-//        Q_ASSERT( NULL != pProxy );
-//        if ( NULL != pCallThread )
-//        {
-//            pCallThread->sigSpyUpdated( pProxy->chName(),
-//                                        pProxy->mItem,
-//                                        0 );
-//          }
-//    }
-
     delete_all( mSamples );
 }
 
@@ -111,7 +100,7 @@ void sampleMgr::sampleProc( int tickus,
                                         cacheSize );
 
             //! \todo commit the item
-            logDbg()<<sampleItem.mVal.toHex();
+//            logDbg()<<sampleItem.mVal.toHex();
 
             commitList.append( pProxy );
             valList.append( sampleItem );
@@ -192,7 +181,7 @@ void sampleMgr::commitProc( QList< sampleProxy *> &commitList,
                             .arg( pItem->mItem )
                             .arg( pValItem->mMs )
                             .arg( QString(pValItem->mVal.toHex()) );
-            logDbg()<<str;
+//            logDbg()<<str;
             ok = query.exec( str );
             if ( !ok )
             {

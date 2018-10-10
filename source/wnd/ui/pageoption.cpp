@@ -6,9 +6,6 @@ PageOption::PageOption(QWidget *parent) :
     ui(new Ui::PageOption)
 {
     ui->setupUi(this);
-
-    //! to small page
-    ui->comboBox->setCurrentIndex( 1 );
 }
 
 PageOption::~PageOption()

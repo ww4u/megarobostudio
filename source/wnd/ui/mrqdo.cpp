@@ -43,7 +43,6 @@ void MrqDO::getConfig( DoConfig &cfg )
     cfg.mDuty = ui->spinDoDuty->value();
 }
 
-
 void MrqDO::setupUi()
 {
     //! hide

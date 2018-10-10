@@ -66,6 +66,7 @@
 #define CSV_LINE_SEP                    "\n"
 #define CSV_COL_SEP                     ","
 
+#define char_deg                        QChar(0x00B0)
 
 //! robo name
 #define robo_t4     "MRX-T4"

@@ -22,7 +22,6 @@ int robotMegatron::downloadTrace( const tpvRegion &region )
     ret = download( mJointsGroup, jointsTabList, region );
     if ( ret != 0 )
     { return ret; }
-logDbg()<<mJointsGroup.size();
 
     return 0;
 }

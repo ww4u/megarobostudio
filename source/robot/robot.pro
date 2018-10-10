@@ -9,7 +9,7 @@ SUBDIRS = \
     quebeley/quebeley.pro \
     geogoog/geogoog.pro \
     gouf/gouf.pro \
-    geo8/geo8.pro \
+#    geo8/geo8.pro \
     geo10/geo10.pro \
     geo51/geo51.pro \
     rawrobo/rawrobo.pro \

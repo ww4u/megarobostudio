@@ -13,7 +13,6 @@ IgusConfig::~IgusConfig()
     delete ui;
 }
 
-
 void IgusConfig::setModelObj( mcModelObj *pObj )
 {
     modelView::setModelObj( pObj );

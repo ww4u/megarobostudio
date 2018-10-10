@@ -43,6 +43,11 @@ void servLedInit(LedStatusEnum ledState);
 void servLedSet(LedStatusEnum ledState);
 void servLedTimerCB(void *timeOutPara);
 
+#if GELGOOG_SINANJU
+void servFanConfig(u32 frequency, u8 duty);
+void servArmLedConfig(ArmLedEnum armLed, u32 frequency, u8 duty);
+#endif
+
 
 
 /*****************************************头文件保护******************************************/

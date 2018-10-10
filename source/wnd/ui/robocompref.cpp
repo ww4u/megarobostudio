@@ -45,9 +45,6 @@ RoboComPref::RoboComPref(QWidget *parent) :
         pLabel->setVisible( false );
     }
 
-//    ui->label_10->setVisible(false);
-//    ui->cmbGroup->setVisible(false);
-
     spyEdited();
 }
 
@@ -87,12 +84,11 @@ void RoboComPref::spyEdited()
     QRadioButton *radBoxes[] = {
     };
     QLineEdit *edits[]={
-//        ui->edtAlias,
+
     };
 
     QSpinBox *spinBoxes[]={
-//        ui->spinBox,
-//        ui->spinBox_2,
+
     };
 
     QDoubleSpinBox *doubleSpinBoxes[]={
@@ -104,7 +100,6 @@ void RoboComPref::spyEdited()
     };
 
     QComboBox *comboxes[]={
-//        ui->cmbGroup,
         ui->cmbInterpMode,
     };
 
@@ -122,7 +117,6 @@ void RoboComPref::updateUi()
     VRobot *pBase = ( VRobot *)m_pModelObj;
     Q_ASSERT( NULL != pBase );
 
-//    ui->edtAlias->setText( pBase->getName() );
     ui->widget->setAlias( pBase->getName() );
 
     Q_ASSERT( NULL != m_pmcModel );
@@ -175,10 +169,6 @@ void RoboComPref::updateData()
     pRobo->setSubGroupId( ui->widget->subGroupId() );
 
     //! interp
-//    RawRobo *pRawRobo = (RawRobo*)pRobo;
-//    pRawRobo->setPlanStep( ui->spinInterpStep->value() );
-//    pRawRobo->setPlanMode( (eRoboPlanMode)ui->cmbInterpMode->currentIndex() );
-
     pRobo->setPlanAttr( PlanAttr( (eRoboPlanMode)ui->cmbInterpMode->currentIndex(),
                                   ui->spinInterpStep->value()) );
 
@@ -243,18 +233,6 @@ int RoboComPref::applyGroupId()
         }
 
         //! set sub group
-
-//        //! disable the other group
-//        for ( int i = 0; i < ui->cmbGroup->count(); i++ )
-//        {
-//            if ( i != (MRQ_IDENTITY_GROUP)ui->cmbGroup->currentIndex() )
-//            {
-//                pMRQ->setIDENTITY_GROUP( axesId,
-//                                        (MRQ_IDENTITY_GROUP)( i ),
-//                                         sub_group_id_from );
-//            }
-//        }
-
         pMRQ->setIDENTITY_GROUP( axesId,
                                  (MRQ_IDENTITY_GROUP)ui->widget->subGroupIndex(),
                                  ( ui->widget->subGroupId() ) );

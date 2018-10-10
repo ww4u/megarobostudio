@@ -65,7 +65,8 @@ LIBS += -lmegatron -lsinanju -ldelta -lh2 -lh2z -lh2m -linjectpump
 LIBS += -ligus_delta
 LIBS += -lmotor -lmotors
 #-lslide
-LIBS += -lquebeley -lgeogoog -lgeo8 -lgeo10 -lgeo51
+#-lgeo8
+LIBS += -lquebeley -lgeogoog -lgeo10 -lgeo51
 LIBS += -lgouf
 LIBS += -lrawrobo
 
@@ -305,6 +306,7 @@ SOURCES += \
     ../ui/megalcdnumber.cpp \
     ../ui/rotmat3_3.cpp
 
+
 HEADERS += \
         ../ui/mainwindow.h \
         ../ui/mrqinfo.h \
@@ -474,7 +476,8 @@ HEADERS += \
     ../ui/mrqtune.h \
     ../ui/igusdrylinpanel.h \
     ../ui/megalcdnumber.h \
-    ../ui/rotmat3_3.h
+    ../ui/rotmat3_3.h \
+    ../../../include/myassert.h
 
 FORMS += \
         ../ui/mainwindow.ui \

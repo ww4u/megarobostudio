@@ -77,7 +77,6 @@ void RawRobo::switchRun( const tpvRegion &region )
                    (mSubGroupId),
                    (byte)MRQ_MOTION_SWITCH_RUN,
                    (byte)region.page() );
-    logDbg();
 }
 void RawRobo::switchPrepare( const tpvRegion &region )
 {
@@ -109,7 +108,6 @@ void RawRobo::switchPrepare( const tpvRegion &region )
         mrqRegion.setPage( region.page() );
         pMrq->lpc( ax )->postMsg((eRoboMsg)(MegaDevice::mrq_msg_prepare),
                                   mrqRegion );
-
     }
 }
 void RawRobo::switchEmergStop( const tpvRegion &region )

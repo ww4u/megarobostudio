@@ -8,7 +8,6 @@ mcModel::mcModel()
 mcModel::~mcModel()
 {
     deinit();
-
 }
 
 //! load data from file

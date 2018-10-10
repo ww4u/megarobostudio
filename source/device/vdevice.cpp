@@ -5,7 +5,6 @@
 namespace MegaDevice 
 {
 
-
 VDevice::VDevice()
 {
    m_pBus = NULL;

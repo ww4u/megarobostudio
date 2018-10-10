@@ -19,7 +19,6 @@
 
 static scpi_result_t _scpi_idn( scpi_t * context )
 {
-    // read
     DEF_LOCAL_VAR();
 
     DEF_ROBO();
@@ -91,9 +90,6 @@ static scpi_result_t _scpi_move( scpi_t * context )
         { scpi_ret( SCPI_RES_ERR ); }
     }
 
-//    for ( int i = 0; i < sizeof_array(vals); i++ )
-//    { logDbg()<<vals[i]; }
-
     //! robo op
     DEF_ROBO();
 
@@ -139,9 +135,6 @@ static scpi_result_t _scpi_preMove( scpi_t * context )
         { scpi_ret( SCPI_RES_ERR ); }
     }
 
-//    for ( int i = 0; i < sizeof_array(vals); i++ )
-//    { logDbg()<<vals[i]; }
-
     //! robo op
     DEF_ROBO();
 
@@ -156,7 +149,7 @@ static scpi_result_t _scpi_preMove( scpi_t * context )
     TraceKeyPointList curve;
     curve.append( pt1 );
     curve.append( pt2 );
-sysLog( __FUNCTION__, QString::number(__LINE__));
+
     int ret;
     ret = pRobo->preMove( curve, tpvRegion(ax,page) );
     if ( ret != 0 )
@@ -164,97 +157,6 @@ sysLog( __FUNCTION__, QString::number(__LINE__));
 
     return SCPI_RES_OK;
 }
-
-//#define server_path1     QCoreApplication::applicationDirPath() + QString( QDir::separator() )
-//#define server_path2     "G:\\work\\mc\\develope\\installer" + QString( QDir::separator() )
-//static int _sloveFile( const QString &fileIn,
-//                        const QString &fileOut )
-//{
-//    QStringList args;
-//    QString program;
-//    QString serverPath;
-
-//    //! try path
-////    program = server_path1 + QStringLiteral("sinanjuslove.exe");
-//    program = server_path1 + QStringLiteral("deltaslove.exe");
-//    if ( QFile::exists(program) )
-//    { serverPath = server_path1; }
-//    else
-//    { serverPath = server_path2; }
-
-//    QString cfgFile;
-////    cfgFile = serverPath + QStringLiteral("sinanjuslove_config.txt");
-//    cfgFile = serverPath + QStringLiteral("deltaslove_config.txt");
-
-//    QString inFile,outFile,configFile;
-//    inFile = fileIn;
-//    outFile = fileOut;
-//    configFile = cfgFile;
-//    args<<inFile<<outFile<<configFile;
-
-//    logDbg()<<program<<args;
-
-//    QProcess process;
-
-//    process.start( program, args );
-
-//    if ( process.waitForFinished( 120000 ) )
-//    { return 0; }
-//    else
-//    { return -1; }
-//}
-
-////! ax, page, file
-//static scpi_result_t _scpi_program( scpi_t * context )
-//{
-//    // read
-//    DEF_LOCAL_VAR();
-
-//    int ax, page;
-
-//    if ( SCPI_ParamInt32(context, &ax, true) != true )
-//    { scpi_ret( SCPI_RES_ERR ); }
-
-//    if ( SCPI_ParamInt32(context, &page, true) != true )
-//    { scpi_ret( SCPI_RES_ERR ); }
-
-//    if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
-//    { scpi_ret( SCPI_RES_ERR ); }logDbg()<<strLen<<pLocalStr;
-//    if (strLen < 1)
-//    { scpi_ret( SCPI_RES_ERR ); }
-
-//    //! x,y,z,h,interp,t
-//    QList<float> dataset;
-//    int col = 6;
-//    if ( 0 != comAssist::loadDataset( pLocalStr, strLen, col, dataset ) )
-//    { scpi_ret( SCPI_RES_ERR ); }
-
-//    //! point
-//    if ( dataset.size() / col < 2 )
-//    { scpi_ret( SCPI_RES_ERR ); }
-
-//    TraceKeyPointList curve;
-//    TraceKeyPoint tp;
-//    for ( int i = 0; i < dataset.size()/col; i++ )
-//    {
-//        for ( int j = 0; j < col-1; j++ )
-//        {
-//            tp.datas[j+1] = dataset.at( i * col + j);
-//        }
-
-//        tp.t = dataset.at( i * col + col - 1);
-
-//        curve.append( tp );
-//    }
-
-//    DEF_ROBO();
-//    int ret;
-//    ret = pRobo->program( curve, tpvRegion( ax, page) );
-//    if ( ret != 0 )
-//    { scpi_ret( SCPI_RES_ERR ); }
-
-//    return SCPI_RES_OK;
-//}
 
 //! ax, page, file
 static scpi_result_t _scpi_program( scpi_t * context )
@@ -271,7 +173,7 @@ static scpi_result_t _scpi_program( scpi_t * context )
     { scpi_ret( SCPI_RES_ERR ); }
 
     if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
-    { scpi_ret( SCPI_RES_ERR ); }logDbg()<<strLen<<pLocalStr;
+    { scpi_ret( SCPI_RES_ERR ); }
     if (strLen < 1)
     { scpi_ret( SCPI_RES_ERR ); }
 
@@ -320,24 +222,6 @@ static scpi_result_t _scpi_program( scpi_t * context )
     CHECK_LINK();
 
     pRobo->program( curve, tpvRegion( ax, page) );
-
-//    //! slove the file
-//    QString fileOutName;
-//    DEF_ROBO();
-
-//    CHECK_LINK();
-
-//    fileOutName = ROBO()->tempPath() + QDir::separator() + "deltapvt_pvt.csv";
-//    fileOutName = QDir::toNativeSeparators( fileOutName );
-
-//    if ( 0 != _sloveFile( fileInName, fileOutName ) )
-//    { scpi_ret( SCPI_RES_ERR ); }
-//logDbg()<<fileInName<<fileOutName;
-//    //! success
-//    int ret;
-//    ret = pRobo->program( fileOutName, tpvRegion( ax, page) );
-//    if ( ret != 0 )
-//    { scpi_ret( SCPI_RES_ERR ); }
 
     return SCPI_RES_OK;
 }
@@ -441,20 +325,10 @@ static scpi_result_t _scpi_pose( scpi_t * context )
     // read
     DEF_LOCAL_VAR();
 
-//    int ax, page;
-
-//    if ( SCPI_ParamInt32(context, &ax, true) != true )
-//    { scpi_ret( SCPI_RES_ERR ); }
-
-//    if ( SCPI_ParamInt32(context, &page, true) != true )
-//    { scpi_ret( SCPI_RES_ERR ); }
-
     //! robo op
     DEF_ROBO();
 
     CHECK_LINK();
-
-//    pRobo->call( tpvRegion( ax, page) );
 
     float xyzs[3];
     int ret;
@@ -469,29 +343,6 @@ static scpi_result_t _scpi_pose( scpi_t * context )
 
     return SCPI_RES_OK;
 }
-
-//static scpi_result_t _scpi_angle( scpi_t * context )
-//{
-//    // read
-//    DEF_LOCAL_VAR();
-
-//    int ax, page;
-
-//    if ( SCPI_ParamInt32(context, &ax, true) != true )
-//    { scpi_ret( SCPI_RES_ERR ); }
-
-//    if ( SCPI_ParamInt32(context, &page, true) != true )
-//    { scpi_ret( SCPI_RES_ERR ); }
-
-//    //! robo op
-//    DEF_ROBO();
-
-//    CHECK_LINK();
-
-////    pRobo->call( tpvRegion( ax, page) );
-
-//    return SCPI_RES_OK;
-//}
 
 //! int
 static scpi_result_t _scpi_fsmState( scpi_t * context )
@@ -510,26 +361,6 @@ static scpi_result_t _scpi_fsmState( scpi_t * context )
     int ret = pRobo->state( tpvRegion(ax,page) );
 
     SCPI_ResultInt32( context, ret );
-
-    return SCPI_RES_OK;
-}
-
-static scpi_result_t _scpi_test1( scpi_t * context )
-{
-    DEF_LOCAL_VAR();
-    DEF_ROBO();
-
-    pRobo->moveTest1();
-
-    return SCPI_RES_OK;
-}
-
-static scpi_result_t _scpi_test2( scpi_t * context )
-{
-    DEF_LOCAL_VAR();
-    DEF_ROBO();
-
-    pRobo->moveTest2();
 
     return SCPI_RES_OK;
 }
@@ -554,10 +385,6 @@ static scpi_command_t _scpi_cmds[]=
     CMD_ITEM( "CENTER", _scpi_zero ),
 
     CMD_ITEM( "POSE?", _scpi_pose ),    //! x,y,z
-//    CMD_ITEM( "ANGLE?", _scpi_angle ),
-
-    CMD_ITEM( "TEST1", _scpi_test1 ),
-    CMD_ITEM( "TEST2", _scpi_test2 ),
 
     SCPI_CMD_LIST_END
 };

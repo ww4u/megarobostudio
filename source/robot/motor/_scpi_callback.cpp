@@ -18,7 +18,6 @@
 
 static scpi_result_t _scpi_idn( scpi_t * context )
 {
-    // read
     DEF_LOCAL_VAR();
 
     QString str;
@@ -85,9 +84,6 @@ static scpi_result_t _scpi_step( scpi_t * context )
         if ( SCPI_RES_OK != SCPI_ParamFloat( context, vals+i, true ) )
         { scpi_ret( SCPI_RES_ERR ); }
     }
-
-    for ( int i = 0; i < sizeof_array(vals); i++ )
-    { logDbg()<<vals[i]; }
 
     //! robo op
     DEF_ROBO();
@@ -168,9 +164,6 @@ static scpi_result_t _scpi_preMove( scpi_t * context )
         { scpi_ret( SCPI_RES_ERR ); }
     }
 
-    for ( int i = 0; i < sizeof_array(vals); i++ )
-    { logDbg()<<vals[i]; }
-
     //! robo op
     DEF_ROBO();
 
@@ -250,7 +243,6 @@ static scpi_result_t _scpi_program( scpi_t * context )
 //! ax, page, cycle, motionMode
 static scpi_result_t _scpi_call( scpi_t * context )
 {
-    // read
     DEF_LOCAL_VAR();
 
     int ax, page, cycle, motionMode;
@@ -295,15 +287,15 @@ static scpi_result_t _scpi_gozero( scpi_t * context )
     { scpi_ret( SCPI_RES_ERR ); }
 
     int joint;
-logDbg();
+
     //! robo
     if ( SCPI_ParamInt32(context, &joint, true) != true )
-    {logDbg();
+    {
         pRobo->goZero( tpvRegion(ax,page) );
     }
     //! some joint
     else
-    {logDbg();
+    {
         pRobo->goZero( tpvRegion(ax,page), joint, true );
     }
 

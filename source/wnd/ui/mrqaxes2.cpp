@@ -23,16 +23,6 @@ mrqAxes2::~mrqAxes2()
     desetupUi();
 }
 
-void mrqAxes2::on_btnInitZero_clicked()
-{
-//    m_pMrqModel->goInit( mAxesId,
-//                         (MRQ_MOTION_INITPOSITIONUNIT)ui->cmbInitUnit->currentIndex(),
-//                         (MRQ_MOTION_INITIOSIGNAL)ui->cmbInitIO->currentIndex(),
-//                         ui->cmbInitPos->currentText().toFloat()
-//                         );
-    logDbg();
-}
-
 int mrqAxes2::setApply()
 {
     return apply();

@@ -49,14 +49,12 @@ int robotMegatron::buildTrace( QList<MegatronKeyPoint> &curve,
         for ( int j = 0; j < splitDataSet.at(i)->size(); j++ )
         {
             ret = pGroup->addItem(
-                                splitDataSet.at(i)->at(j)->mT,
-                                splitDataSet.at(i)->at(j)->mP,
-                                splitDataSet.at(i)->at(j)->mV
+                                scale_t( splitDataSet.at(i)->at(j)->mT ),
+                                scale_p( splitDataSet.at(i)->at(j)->mP ),
+                                scale_v( splitDataSet.at(i)->at(j)->mV )
                         );
             if ( ret != 0 )
             { break; }
-
-            logDbg()<<i<<splitDataSet.at(i)->at(j)->mT<<splitDataSet.at(i)->at(j)->mP;
         }
     }
 

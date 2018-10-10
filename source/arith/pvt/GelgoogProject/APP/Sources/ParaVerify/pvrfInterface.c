@@ -9,6 +9,7 @@ Copyright (C) 2016，北京镁伽机器人科技有限公司
 完成日期:  2016.12.19;
 历史版本:  无;
 *********************************************************************************************/
+#include <string.h>
 #include "pvrfInterface.h"
 
 
@@ -105,7 +106,7 @@ u8 pvrfUartBaudVerify(u8 dataLen, u8 *pData, void *pParaValue)
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -148,7 +149,7 @@ u8 pvrfUartWordLenVerify(u8 dataLen, u8 *pData, void *pParaValue)
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -199,7 +200,7 @@ u8 pvrfUartFlowCtlVerify(u8 dataLen, u8 *pData, void *pParaValue)
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -246,7 +247,7 @@ u8 pvrfUartParityVerify(u8 dataLen, u8 *pData, void *pParaValue)
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -297,7 +298,7 @@ u8 pvrfUartStopBitVerify(u8 dataLen, u8 *pData, void *pParaValue)
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -340,7 +341,7 @@ u8 pvrfCanTypeVerify(u8 dataLen, u8 *pData, void *pParaValue)
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -362,7 +363,8 @@ u8 pvrfCanSendIdVerify(u8 dataLen, u8 *pData, void *pParaValue)
     
     if (sizeof(u32) == dataLen)    //长度先要正确
     {
-        tempValue = *(u32 *)pData;
+        //tempValue = *(u32 *)pData;
+        memcpy(&tempValue, pData, dataLen);
         if (tempValue <= g_paraLimit.upLimit.canSendId)
         {
             if (tempValue >= g_paraLimit.downLimit.canSendId)
@@ -384,7 +386,7 @@ u8 pvrfCanSendIdVerify(u8 dataLen, u8 *pData, void *pParaValue)
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -451,7 +453,7 @@ u8 pvrfCanBaudVerify(u8 dataLen, u8 *pData, void *pParaValue)
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -495,7 +497,7 @@ u8 pvrfCanGroupVerify(u8 dataLen, u8 *pData, void *pParaValue)
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -517,7 +519,8 @@ u8 pvrfCanReceiveIdVerify(u8 dataLen, u8 *pData, void *pParaValue)
     
     if (sizeof(u32) == dataLen)    //长度先要正确
     {
-        tempValue = *(u32 *)pData;
+        //tempValue = *(u32 *)pData;
+        memcpy(&tempValue, pData, dataLen);
         if (tempValue <= g_paraLimit.upLimit.canReceiveId)
         {
             if (tempValue >= g_paraLimit.downLimit.canReceiveId)
@@ -539,7 +542,7 @@ u8 pvrfCanReceiveIdVerify(u8 dataLen, u8 *pData, void *pParaValue)
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -561,7 +564,8 @@ u8 pvrfCanGroupIdVerify(u8 dataLen, u8 *pData, void *pParaValue)
     
     if (sizeof(u32) == dataLen)    //长度先要正确
     {
-        tempValue = *(u32 *)pData;
+        //tempValue = *(u32 *)pData;
+        memcpy(&tempValue, pData, dataLen);
         if (tempValue <= g_paraLimit.upLimit.canGroupId)
         {
             if (tempValue >= g_paraLimit.downLimit.canGroupId)
@@ -583,7 +587,7 @@ u8 pvrfCanGroupIdVerify(u8 dataLen, u8 *pData, void *pParaValue)
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -605,7 +609,8 @@ u8 pvrfCanRadioIdVerify(u8 dataLen, u8 *pData, void *pParaValue)
     
     if (sizeof(u32) == dataLen)    //长度先要正确
     {
-        tempValue = *(u32 *)pData;
+        //tempValue = *(u32 *)pData;
+        memcpy(&tempValue, pData, dataLen);
         if (tempValue <= g_paraLimit.upLimit.canRadioId)
         {
             if (tempValue >= g_paraLimit.downLimit.canRadioId)
@@ -627,7 +632,7 @@ u8 pvrfCanRadioIdVerify(u8 dataLen, u8 *pData, void *pParaValue)
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }

@@ -104,7 +104,8 @@ typedef struct //5×Ö½Ú
 
 
 /******************************************º¯ÊýÉùÃ÷*******************************************/
-void bspCiUartInit(UartIntfcStruct uartIntfc);
+void bspCiUartInit(void);
+void bspCiUartConfig(UartIntfcStruct uartIntfc);
 u8   bspCiUartSend(u8 *dataBuff, u8 dataLen);
 void bspCiUartReciveOn(void);
 void bspCiUartDmaOff(void);
@@ -112,7 +113,8 @@ u8   bspCiUartRecive(void);
 void bspCiUartDmaRecive(u8 *dataBuff, u32 dataLen);
 void bspCiUartITConfig(FunctionalState funcState);
 
-void bspSensor1UartInit(UartIntfcStruct uartIntfc);
+void bspSensor1UartInit(void);
+void bspSensor1UartConfig(UartIntfcStruct uartIntfc);
 u8   bspSensor1UartSend(u8 *dataBuff, u8 dataLen);
 void bspSensor1UartReciveOn(void);
 void bspSensor1UartReciveOff(void);
@@ -122,7 +124,8 @@ u8   bspSensor1UartRecive(void);
 void bspSensor1UartDmaRecive(u8 *dataBuff, u32 dataLen);
 void bspSensor1UartITConfig(FunctionalState funcState);
 
-void bspSensor2UartInit(UartIntfcStruct uartIntfc);
+void bspSensor2UartInit(void);
+void bspSensor2UartConfig(UartIntfcStruct uartIntfc);
 u8   bspSensor2UartSend(u8 *dataBuff, u8 dataLen);
 void bspSensor2UartReciveOn(void);
 void bspSensor2UartReciveOff(void);

@@ -44,7 +44,6 @@ robotIgusDelta::robotIgusDelta()
     mJointAngleMask[2]=true;
 
     setAngleType( robo_angle_inc );
-//    mJointAngleMask[3]=false;
 
     //! angle dir
     mAngleDir.clear();
@@ -58,7 +57,6 @@ robotIgusDelta::robotIgusDelta()
 
     //! init angle
     mInitAngles.clear();
-//    mInitAngles<<0<<0;
 
     mbInterpAble = true;
 
@@ -98,9 +96,6 @@ robotIgusDelta::robotIgusDelta()
     mZeroTmo = 60;
 
     mInitLeg = 5;
-//    mInitL = 23;
-//    mInitR = 21;
-//    mInitY = 5;
     mInitH = 0.5;
     mInitT = 1;
 

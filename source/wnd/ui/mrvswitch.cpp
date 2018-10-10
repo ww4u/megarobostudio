@@ -54,5 +54,4 @@ void MrvSwitch::getConifig( switchConfig &cfg )
     cfg.mFilterDelay = comAssist::align( ui->spinFilterDelay->value(), delay_unit );
     cfg.mFilterCount = ui->spinFilterCounter->value();
     cfg.mTrigEdge = ui->cmbTriggerEdge->currentIndex();
-
 }

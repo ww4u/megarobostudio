@@ -38,7 +38,7 @@ static void outputData( uint8_t /*chanNum*/,
     Q_ASSERT( NULL != pInterpContext->m_pCalcContext );
     PvtCalcStruct *pCalcContext;
     pCalcContext = (PvtCalcStruct*)pInterpContext->m_pCalcContext;
-    if ( pCalcContext->lastStepDir == DIR_FORWARD )
+    if ( pCalcContext->lastStepDir == OUTPDATA_FORWARD )
     { pInterpContext->mtNow += tDur; }
     else
     { pInterpContext->mtNow -= tDur; }
@@ -67,7 +67,6 @@ int pvtInterp(  enumInterpMode eInterp,
                 QList< QPointF > &tv
                )
 {
-
     //! local para
     PvtCalcStruct pvtDatas;
 
@@ -84,15 +83,15 @@ int pvtInterp(  enumInterpMode eInterp,
     pPvtCalcData->motionMode     =  MTNMODE_PVT;
 
     //! current dir
-    pPvtCalcData->lastStepDir    =  p2.y() >= p1.y() ? DIR_FORWARD : DIR_REVERSE;
+    pPvtCalcData->lastStepDir    =  p2.y() >= p1.y() ? OUTPDATA_FORWARD : OUTPDATA_REVERSE;
 
     //! \note end > start
     pPvtCalcData->startPosn      =  p1.y();
     pPvtCalcData->endPosn        =  pPvtCalcData->startPosn + qAbs( p2.y() - p1.y() );
 
     pPvtCalcData->lastPoint    =  2;
-    pPvtCalcData->accScale    =  300;        //千分之
-    pPvtCalcData->decScale    =  300;        //千分之
+//    pPvtCalcData->accScale    =  300;        //千分之
+//    pPvtCalcData->decScale    =  300;        //千分之
     pPvtCalcData->fpgaPwmClock  =  0;
     //
     pPvtCalcData->startSpeed      =  0.0;
@@ -105,31 +104,31 @@ int pvtInterp(  enumInterpMode eInterp,
     pPvtCalcData->waitStepError  =  0;
     pPvtCalcData->targetStep        =  1;
     pPvtCalcData->lastStepSpeed  =  0;
-    pPvtCalcData->lastStepTime    =  0;
-    pPvtCalcData->targetLine  =  1;
+//    pPvtCalcData->lastStepTime    =  0;
+//    pPvtCalcData->targetLine  =  1;
     //
     //
     //
-    pPvtCalcData->lineErrorP  =  0.0003f;
-    pPvtCalcData->lineErrorN  =  -0.0003f;
+//    pPvtCalcData->lineErrorP  =  0.0003f;
+//    pPvtCalcData->lineErrorN  =  -0.0003f;
     pPvtCalcData->errorTime    =  0;
     //
     //
-    pPvtCalcData->posnConvertInfo.posnToStep     //! 64*200*10/360 = 355.55...
-                                              = config.mVernierStep * config.mSteps * config.mSlowRatio / 360.0;
+//    pPvtCalcData->posnConvertInfo.posnToStep     //! 64*200*10/360 = 355.55...
+//                                              = config.mVernierStep * config.mSteps * config.mSlowRatio / 360.0;
 
-    pPvtCalcData->posnConvertInfo.posnToLine  =  //2000/360;      //! 单倍乘编码器，一圈2000线，一圈360度
-                                                config.mEncoderLines / 360.0;
+//    pPvtCalcData->posnConvertInfo.posnToLine  =  //2000/360;      //! 单倍乘编码器，一圈2000线，一圈360度
+//                                                config.mEncoderLines / 360.0;
 
-    pPvtCalcData->posnConvertInfo.lineSteps   =  //64*200/2000;
-                                                config.mVernierStep * config.mSteps / config.mEncoderLines;
-    pPvtCalcData->posnConvertInfo.lineMult    =  0;
+//    pPvtCalcData->posnConvertInfo.lineSteps   =  //64*200/2000;
+//                                                config.mVernierStep * config.mSteps / config.mEncoderLines;
+//    pPvtCalcData->posnConvertInfo.lineMult    =  0;
     pPvtCalcData->outpBufferFill = outputData;
     pPvtCalcData->pContext = &localContext;                     //! context
 
     //! now for context
-    Q_ASSERT( pPvtCalcData->posnConvertInfo.posnToStep != 0  );
-    localContext.mSteps = qAbs( p2.y() - p1.y() ) * pPvtCalcData->posnConvertInfo.posnToStep;
+//    Q_ASSERT( pPvtCalcData->posnConvertInfo.posnToStep != 0  );
+//    localContext.mSteps = qAbs( p2.y() - p1.y() ) * pPvtCalcData->posnConvertInfo.posnToStep;
 
     Q_ASSERT( localContext.mSteps >= 0  );                       //! t * v = pStep
     if ( localContext.mSteps > 0 )
@@ -137,7 +136,6 @@ int pvtInterp(  enumInterpMode eInterp,
     //! == 0
     else
     {
-//        localContext.mPStep = 0;
         tp.append( p2 );
         tv.append( QPoint( p2.x(), 0 ) );
 
@@ -147,7 +145,7 @@ int pvtInterp(  enumInterpMode eInterp,
         return 0;
     }
 
-    localContext.mMicroSteps = pPvtCalcData->posnConvertInfo.posnToStep;                           //! step count
+//    localContext.mMicroSteps = pPvtCalcData->posnConvertInfo.posnToStep;                           //! step count
 
     localContext.mp_tPs = &tp;
     localContext.mp_tVs = &tv;

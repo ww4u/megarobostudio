@@ -30,7 +30,6 @@ mrqProperty::mrqProperty( VRobot *pMrqRobo,
 mrqProperty::~mrqProperty()
 {
     desetupUi();
-    logDbg();
 }
 
 void mrqProperty::slot_page_changed( int index )
@@ -375,8 +374,6 @@ int mrqProperty::postApply( appMsg msg, void *pPara )
         sysProgress( true );
         pView->setApply();
 
-//        QThread::msleep( 100 );
-
         sysProgress( id, pView->name(), cfgViews.size(), 0 );
     }
 
@@ -403,7 +400,6 @@ void mrqProperty::endApply( int ret, void *pPara )
 int mrqProperty::postOk( appMsg msg, void *pPara )
 {
     return postApply( msg_mrq_property_apply, pPara );
-//    return 0;
 }
 void mrqProperty::beginOk( void *pPara)
 {

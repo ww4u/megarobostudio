@@ -53,7 +53,6 @@ u8 pvrfMotionMaxAccVerify(u8 dataLen, u8 *pData, void *pParaValue);
 u8 pvrfMotionMinAccVerify(u8 dataLen, u8 *pData, void *pParaValue);
 
 u8 pvrfMotionOffsetStateVerify(u8 dataLen, u8 *pData, void *pParaValue);
-u8 pvrfMotionReverseMotionVerify(u8 dataLen, u8 *pData, void *pParaValue);
 
 
 

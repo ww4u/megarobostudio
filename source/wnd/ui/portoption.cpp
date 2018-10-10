@@ -73,7 +73,6 @@ void PortOption::searchRsrc( const QString &rsrcPattern,
                              QStringList &rsrcList )
 {
 #ifdef NI_VISA
-
     ViStatus viStat;
     ViSession viDef;
     viStat = viOpenDefaultRM( &viDef );

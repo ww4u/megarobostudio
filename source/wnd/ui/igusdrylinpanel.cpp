@@ -56,7 +56,6 @@ void IgusDrylinPanel::moveD( float dx, float dy, float dz )
         { break; }
 
         //! p0
-//        keyP.clear();
         keyP.t = 0;
         keyP.x = pos[0];
         keyP.y = pos[1];
@@ -142,12 +141,6 @@ void IgusDrylinPanel::slot_timeout()
             ui->lcdX->display( (pos[0]) );
             ui->lcdY->display( (pos[1]) );
             ui->lcdZ->display( (pos[2]) );
-
-
-//            sysLog( __FUNCTION__,
-//                    QString::number(pos[0]),
-//                    QString::number(pos[1]),
-//                    QString::number(pos[2]) );
         }
         else
         {}

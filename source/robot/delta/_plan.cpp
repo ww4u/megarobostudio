@@ -37,7 +37,7 @@ int robotDelta::buildTrace( QList<TraceKeyPoint> &curve,
     ret = planTrace( curve, tracePlan );
     if ( ret != 0 )
     { return ret; }
-logDbg()<<tracePlan.size();
+
     ret = splitTrace( tracePlan, jointsPlan );
     if ( ret != 0 )
     { return ret; }
@@ -74,7 +74,7 @@ int robotDelta::planTrace( QList<TraceKeyPoint> &curve,
         endPoints.data()[i].x = curve.at( i ).x;
         endPoints.data()[i].y = curve.at( i ).y;
         endPoints.data()[i].z = curve.at( i ).z;
-        endPoints.data()[i].t = curve.at( i ).t;
+        endPoints.data()[i].t = scale_t( curve.at( i ).t );
     }
 
     int xyzResLen;
@@ -85,7 +85,7 @@ int robotDelta::planTrace( QList<TraceKeyPoint> &curve,
                                       &xyzResLen );
     if ( ret != 0 )
     { return ERR_PLAN_FAIL; }
-logDbg()<<curve.size()<<xyzResLen<<mPlanAttr.mStep;
+
     int traceSize;
     traceSize = xyzResLen * sizeof(double) / sizeof(tracePoint);
     if ( traceSize > 1 )
@@ -127,9 +127,9 @@ int robotDelta::splitTrace( xxxGroup<tracePoint> &tracePoints,
     }
 
     int ret;
-logDbg();
+
     ret = arith_delta::ccwSlove( points, traceJoints );
-logDbg();
+
     return ret;
 }
 
@@ -200,7 +200,7 @@ int robotDelta::buildTpvGroup( QList<TraceKeyPoint> &curve,
     {
         tpvGroup *pGroup = new tpvGroup();
         Q_ASSERT( NULL != pGroup );
-logDbg()<<jointsPlan.size();
+
         //! for each data
         for ( int j = 0; j < jointsPlan.size(); j++ )
         {

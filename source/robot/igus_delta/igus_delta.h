@@ -104,9 +104,6 @@ public:
     int preMove( QList<TraceKeyPoint> &curve,
               const tpvRegion &region );
 
-    int moveTest1( const tpvRegion &region=0 );
-    int moveTest2( const tpvRegion &region=0 );
-
 protected:
     int pose( float xyz[3] );
 

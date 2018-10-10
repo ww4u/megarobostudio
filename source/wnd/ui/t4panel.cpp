@@ -20,7 +20,6 @@ T4Panel::T4Panel(mcModel *pModel,
     //! icon
     if ( Robot() != NULL )
     { setWindowIcon( QIcon( QPixmap::fromImage( Robot()->mImage)) ); }
-
 }
 
 T4Panel::~T4Panel()

@@ -15,7 +15,7 @@ MrvAxes::MrvAxes()
 }
 
 void MrvAxes::proc( RoboMsg &msg )
-{logDbg()<<(int)msg.mMsg;
+{
     if ( msg.mMsg == (eRoboMsg)mrv_msg_idle )
     { killTimer( mrv_timer_id ); }
     else if ( msg.mMsg == (eRoboMsg)mrv_msg_end )

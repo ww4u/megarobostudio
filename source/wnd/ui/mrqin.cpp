@@ -13,7 +13,6 @@ MrqIn::MrqIn(QWidget *parent) :
     setupUi();
 
     spyEdited();
-//    SET_INFO_ATTR();
 }
 
 MrqIn::~MrqIn()

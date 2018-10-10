@@ -9,6 +9,7 @@ Copyright (C) 2016，北京镁伽机器人科技有限公司
 完成日期:  2017.10.25;
 历史版本:  无;
 *********************************************************************************************/
+#include <string.h>
 #include "pvrfDriver.h"
 
 
@@ -70,7 +71,7 @@ u8 pvrfDriverCurrVerify(u8 dataLen, u8 *pData, void *pParaValue)
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -95,6 +96,7 @@ u8 pvrfDriverMicroStepsVerify(u8 dataLen, u8 *pData, void *pParaValue)
         tempValue = *pData;
         switch (tempValue)
         {
+#if QUBELEY_HARDVER_1
             case 0:
                 *(MicroStepEnum *)pParaValue = MICROSTEP_256;
               break;
@@ -102,11 +104,13 @@ u8 pvrfDriverMicroStepsVerify(u8 dataLen, u8 *pData, void *pParaValue)
             case 1:
                 *(MicroStepEnum *)pParaValue = MICROSTEP_128;
               break;
-    
+#endif
+
+#if !GELGOOG_AXIS_10
             case 2:
                 *(MicroStepEnum *)pParaValue = MICROSTEP_64;
               break;
-    
+#endif
             case 3:
                 *(MicroStepEnum *)pParaValue = MICROSTEP_32;
               break;
@@ -141,7 +145,7 @@ u8 pvrfDriverMicroStepsVerify(u8 dataLen, u8 *pData, void *pParaValue)
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -184,7 +188,7 @@ u8 pvrfDriverStateVerify(u8 dataLen, u8 *pData, void *pParaValue)
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -206,7 +210,8 @@ u8 pvrfDriverMonitorPeriodVerify(u8 dataLen, u8 *pData, void *pParaValue)
 
     if (sizeof(u32) == dataLen)    //长度先要正确
     {
-        tempValue = *(u32 *)pData;
+        //tempValue = *(u32 *)pData;
+        memcpy(&tempValue, pData, dataLen);
         if (tempValue <= g_paraLimit.upLimit.reportPeriod)
         {
             if (tempValue >= g_paraLimit.downLimit.reportPeriod)
@@ -228,7 +233,7 @@ u8 pvrfDriverMonitorPeriodVerify(u8 dataLen, u8 *pData, void *pParaValue)
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -266,155 +271,44 @@ u8 pvrfDriverRegisterVerify(u8 dataLen, u8 *pData, void *pParaValue, u8 *pIndex)
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
 
 
 /*********************************************************************************************
-函 数 名: pvrfDriverSGLimitVerify;
+函 数 名: pvrfDriverSwitchTimeVerify;
 实现功能: 无; 
 输入参数: 无;
 输出参数: 无;
 返 回 值: 无;
 说    明: 无;
 *********************************************************************************************/
-u8 pvrfDriverSGLimitVerify(u8 dataLen, u8 *pData, void *pParaValue, u8 *pIndex)
+u8 pvrfDriverSwitchTimeVerify(u8 dataLen, u8 *pData, void *pParaValue)
 {
-    u8  tempIndex;
-    s8 tempValue;
-    u8  verifyResult = PARA_VERIFY_NO_ERROR;
-
-    
-    if ((sizeof(s8) + sizeof(u8)) == dataLen)    //参数的长度加上下标的长度
-    {
-        tempIndex = *pData++;
-        if (tempIndex < LIMIT_RESERVE)
-        {
-            *pIndex = tempIndex;
-            tempValue = *(s8 *)pData;
-
-            switch ((LimitEnum)tempIndex)
-            {
-                case LIMIT_UP:
-                    if (tempValue <= g_paraLimit.upLimit.sgLimit)
-                    {
-                        if (tempValue >= g_paraLimit.downLimit.sgLimit)    //应该是大于下限的            NICK MARK
-                        {
-                            *(s8 *)pParaValue = tempValue;
-                        }
-                        else
-                        {
-                            verifyResult = PARA_VERIFY_LESS_LOWER_LIMIT;
-                        }
-                    }
-                    else
-                    {
-                        verifyResult = PARA_VERIFY_GREAT_UPER_LIMIT;
-                    }
-                  break;
-               
-                case LIMIT_DOWN:
-                    if (tempValue <= g_paraLimit.upLimit.sgLimit)    //应该是小于上限的            NICK MARK
-                    {
-                        if (tempValue >= g_paraLimit.downLimit.sgLimit)
-                        {
-                            *(s8 *)pParaValue = tempValue;
-                        }
-                        else
-                        {
-                            verifyResult = PARA_VERIFY_LESS_LOWER_LIMIT;
-                        }
-                    }
-                    else
-                    {
-                        verifyResult = PARA_VERIFY_GREAT_UPER_LIMIT;
-                    }
-                  break;
-
-                default:
-                  break; 
-            }
-        }
-        else
-        {
-            verifyResult = PARA_VERIFY_ERROR_INDEX;
-        }
-    }
-    else
-    {
-        verifyResult = PARA_VERIFY_ERROR_LEN;
-    }
-
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
-
-    return verifyResult;
-}
-
-
-/*********************************************************************************************
-函 数 名: pvrfDriverSGLimitVerify;
-实现功能: 无; 
-输入参数: 无;
-输出参数: 无;
-返 回 值: 无;
-说    明: 无;
-*********************************************************************************************/
-u8 pvrfDriverSGParaVerify(u8 dataLen, u8 *pData, void *pParaValue, u8 *pIndex)
-{
-    u8  tempIndex;
     u32 tempValue;
     u8  verifyResult = PARA_VERIFY_NO_ERROR;
 
     
-    if ((sizeof(s16) + sizeof(u8)) == dataLen)    //参数的长度加上下标的长度
+    if (sizeof(u32) == dataLen)
     {
-        tempIndex = *pData++;
-        if (tempIndex < SGPARA_RESERVE)
+        //tempValue = *(u32 *)pData;
+        memcpy(&tempValue, pData, dataLen);
+        if (tempValue <= g_paraLimit.upLimit.switchTime)
         {
-            *pIndex = tempIndex;
-            tempValue = *(s16 *)pData;
-
-            switch ((SGParaEnum)tempIndex)
+            if (tempValue >= g_paraLimit.downLimit.switchTime)
             {
-                case SGPARA_SG0:
-                    /*if (tempValue <= g_paraLimit.upLimit.sgLimit)
-                    {
-                        if (tempValue >= g_paraLimit.downLimit.sgLimit)
-                        {*/
-                            *(s16 *)pParaValue = tempValue;    //TO ADD NICK
-                        /*}
-                        else
-                        {
-                            verifyResult = PARA_VERIFY_LESS_LOWER_LIMIT;
-                        }
-                    }
-                    else
-                    {
-                        verifyResult = PARA_VERIFY_GREAT_UPER_LIMIT;
-                    }*/
-                  break;
-               
-                case SGPARA_SGT:
-                    *(s16 *)pParaValue = tempValue;    //TO ADD NICK
-                  break;
-               
-                case SGPARA_SEMAX:
-                    *(s16 *)pParaValue = tempValue;    //TO ADD NICK
-                  break;
-               
-                case SGPARA_SEMIN:
-                    *(s16 *)pParaValue = tempValue;    //TO ADD NICK
-                  break;
-
-                default:
-                  break; 
+                *(u32 *)pParaValue = tempValue;
+            }
+            else
+            {
+                verifyResult = PARA_VERIFY_LESS_LOWER_LIMIT;
             }
         }
         else
         {
-            verifyResult = PARA_VERIFY_ERROR_INDEX;
+            verifyResult = PARA_VERIFY_GREAT_UPER_LIMIT;
         }
     }
     else
@@ -422,7 +316,174 @@ u8 pvrfDriverSGParaVerify(u8 dataLen, u8 *pData, void *pParaValue, u8 *pIndex)
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+
+    return verifyResult;
+}
+
+
+#if 0
+#endif
+
+
+/*********************************************************************************************
+函 数 名: pvrfTuningCurrRatioVerify;
+实现功能: 无; 
+输入参数: 无;
+输出参数: 无;
+返 回 值: 无;
+说    明: 无;
+*********************************************************************************************/
+u8 pvrfTuningCurrRatioVerify(u8 dataLen, u8 *pData, void *pParaValue)
+{
+    u8 tempValue;
+    u8 verifyResult = PARA_VERIFY_NO_ERROR;
+
+    
+    if (sizeof(CurrRatioEnum) == dataLen)    //长度先要正确
+    {
+        tempValue = *pData;
+        switch (tempValue)
+        {
+            case 0:
+                *(CurrRatioEnum *)pParaValue = CURRRATIO_HALF;
+              break;
+    
+            case 1:
+                *(CurrRatioEnum *)pParaValue = CURRRATIO_QUARTER;
+              break;
+    
+            default:
+                verifyResult = PARA_VERIFY_ERROR_TYPE;
+              break;
+        }        
+    }
+    else
+    {
+        verifyResult = PARA_VERIFY_ERROR_LEN;
+    }
+
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+
+    return verifyResult;
+}
+
+
+/*********************************************************************************************
+函 数 名: pvrfTuningEnergyEfficVerify;
+实现功能: 无; 
+输入参数: 无;
+输出参数: 无;
+返 回 值: 无;
+说    明: 无;
+*********************************************************************************************/
+u8 pvrfTuningEnergyEfficVerify(u8 dataLen, u8 *pData, u16 *pEnergEfficMax, u16 *pEnergEfficOffset)
+{
+    u16 energEfficMax;
+    u16 energEfficOffset;
+    u8  verifyResult = PARA_VERIFY_NO_ERROR;
+
+    
+    if ((sizeof(energEfficMax) + sizeof(energEfficOffset)) == dataLen)    //参数的长度加上下标的长度
+    {
+        memcpy(&energEfficMax, pData, sizeof(energEfficMax));
+        pData += sizeof(energEfficMax);
+        memcpy(&energEfficOffset, pData, sizeof(energEfficOffset));
+
+        if ((energEfficMax <= SCALE_MAGNIFICATION) && 
+            (energEfficMax >= (SCALE_MAGNIFICATION / 2)) &&
+            (energEfficOffset <= (SCALE_MAGNIFICATION / 2)))
+        {
+            *pEnergEfficMax = energEfficMax;
+            *pEnergEfficOffset = energEfficOffset;
+        }
+        else
+        {
+            verifyResult = PARA_VERIFY_GREAT_UPER_LIMIT;
+        }
+    }
+    else
+    {
+        verifyResult = PARA_VERIFY_ERROR_LEN;
+    }
+
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+
+    return verifyResult;
+}
+
+
+/*********************************************************************************************
+函 数 名: pvrfTuningCurrRatioVerify;
+实现功能: 无; 
+输入参数: 无;
+输出参数: 无;
+返 回 值: 无;
+说    明: 无;
+*********************************************************************************************/
+u8 pvrfTuningCurrRegulateVerify(u8 dataLen, u8 *pData, CurrIncreEnum *pCurrIncre, CurrDecreEnum *pCurrDecre)
+{
+    u8 tempIncre;
+    u8 tempDecre;
+    u8 verifyResult = PARA_VERIFY_NO_ERROR;
+
+    
+    if ((sizeof(CurrIncreEnum) + sizeof(CurrDecreEnum)) == dataLen)    //长度先要正确
+    {
+        tempIncre = *pData++;
+        tempDecre = *pData;
+        switch (tempIncre)
+        {
+            case 0:
+                *pCurrIncre = CURRINCRE_1;
+              break;
+    
+            case 1:
+                *pCurrIncre = CURRINCRE_2;
+              break;
+    
+            case 2:
+                *pCurrIncre = CURRINCRE_4;
+              break;
+    
+            case 3:
+                *pCurrIncre = CURRINCRE_8;
+              break;
+    
+            default:
+                verifyResult = PARA_VERIFY_ERROR_TYPE;
+              break;
+        }
+        
+        switch (tempDecre)
+        {
+            case 0:
+                *pCurrDecre = CURRDECRE_32;
+              break;
+    
+            case 1:
+                *pCurrDecre = CURRDECRE_8;
+              break;
+    
+            case 2:
+                *pCurrDecre = CURRDECRE_2;
+              break;
+    
+            case 3:
+                *pCurrDecre = CURRDECRE_1;
+              break;
+    
+            default:
+                verifyResult = PARA_VERIFY_ERROR_TYPE;
+              break;
+        }         
+    }
+    else
+    {
+        verifyResult = PARA_VERIFY_ERROR_LEN;
+    }
+
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }

@@ -4,19 +4,6 @@
 #include "../../com/comassist.h"
 #include "motionwizard.h"
 
-//! file
-//void MainWindow::on_actionNew_triggered()
-//{
-//    QFileDialog fDlg;
-
-//    fDlg.setAcceptMode( QFileDialog::AcceptSave );
-//    fDlg.setNameFilter( tr("motion file (*.xml)") );
-//    if ( QDialog::Accepted != fDlg.exec() )
-//    { return; }
-
-//    m_pScriptMgr->newFile( fDlg.directory().absolutePath(), fDlg.selectedFiles().first() );
-//}
-
 void  MainWindow::doLoadPrj( const QString &path,
                              const QString &name )
 {
@@ -90,7 +77,6 @@ void MainWindow::on_actionSave_Prj_triggered()
                         strFileName );
 }
 
-
 void MainWindow::on_actionSave_Prj_As_triggered()
 {
     QFileDialog fDlg;
@@ -119,9 +105,9 @@ void MainWindow::on_actionSave_triggered()
         int ret = pView->save(str);
         on_signalReport( ret, str );
         if ( ret == 0 )
-        { sysLog( str, "save complted"); }
+        { sysLog( str, tr("save complted") ); }
         else
-        { sysError( str, "save failed"); }
+        { sysError( str, tr("save failed") ); }
     }
 }
 
@@ -314,7 +300,7 @@ void MainWindow::on_actionDocs_triggered()
     str.replace("/", QDir::separator() );
     args<<str;
     //! \todo linux
-    logDbg()<<args;
+
     QProcess::execute( "explorer.exe", args );
 }
 
@@ -328,7 +314,7 @@ void MainWindow::on_actionPackage_triggered()
     str.replace("/", QDir::separator() );
     args<<str;
     //! \todo linux
-    logDbg()<<args;
+
     QProcess::execute( "explorer.exe", args );
 }
 
@@ -342,7 +328,7 @@ void MainWindow::on_actionExample_triggered()
     str.replace("/", QDir::separator() );
     args<<str;
     //! \todo linux
-    logDbg()<<args;
+
     QProcess::execute( "explorer.exe", args );
 }
 
@@ -356,7 +342,7 @@ void MainWindow::on_actionDataSet_triggered()
     str.replace("/", QDir::separator() );
     args<<str;
     //! \todo linux
-    logDbg()<<args;
+
     QProcess::execute( "explorer.exe", args );
 }
 
@@ -372,7 +358,7 @@ void MainWindow::on_actionReadMe_triggered()
     str.replace("/","\\");
     args<<str;
     //! \todo linux
-    logDbg()<<str;
+
     QProcess::execute( "explorer.exe", args );
 }
 
@@ -438,5 +424,4 @@ void MainWindow::on_actionTerminate_triggered()
         m_pProcess->kill();
     }
 }
-
 

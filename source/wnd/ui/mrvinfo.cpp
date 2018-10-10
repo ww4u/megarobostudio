@@ -106,4 +106,3 @@ void mrvInfo::modelChanged()
     updateUi();
 }
 
-

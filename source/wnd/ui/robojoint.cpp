@@ -18,7 +18,6 @@ RoboJoint::RoboJoint(QWidget *parent) :
     connect( ui->btnLr01, SIGNAL(signal_step(float)),
              this, SLOT(slot_step(float)));
 
-
     mId = 0;
     mStepTime = 1.0f;
     mbSingle = true;
@@ -75,14 +74,14 @@ void RoboJoint::actionChanged( const QDateTime &endTime, int endVal )
     QString strInfo;
 
     mCurValue = endVal;
-    strInfo = QString( "%2%3 %1ms" ).arg( dt ).arg( endVal-mPressValue ).arg(QChar(0x00B0));
+    strInfo = QString( "%2%3 %1ms" ).arg( dt ).arg( endVal-mPressValue ).arg( char_deg );
     ui->label_2->setText( strInfo );
 }
 
 void RoboJoint::rotate( float ang, float ts, float ev )
 {
     QString strInfo;
-    strInfo = QString( "%2%3 %1ms" ).arg( ts * 1000 ).arg( ang ).arg(QChar(0x00B0));
+    strInfo = QString( "%2%3 %1ms" ).arg( ts * 1000 ).arg( ang ).arg( char_deg );
     ui->label_2->setText( strInfo );
 
     //! move

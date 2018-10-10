@@ -39,7 +39,6 @@ int robotMotor::goZero( const tpvRegion &region,
     pArg->mTick = mZeroTick;
     pArg->mTmo = mZeroTmo;
 
-    //! \todo
     pReq->request( this,
                    (VRobot::apiTaskRequest)(&robotMotor::zeroAxesTask),
                    pArg );

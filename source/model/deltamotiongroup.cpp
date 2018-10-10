@@ -14,5 +14,4 @@ DeltaMotionGroup::DeltaMotionGroup( const QString &className,
 
     mbStepAble = true;
     mbPrefAble = false;
-
 }

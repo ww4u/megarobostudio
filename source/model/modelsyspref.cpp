@@ -10,7 +10,7 @@ modelSysPref::modelSysPref()
 void modelSysPref::rst()
 {
     mPort = 0;
-    mSpeed = 1000000;                     //! 1M index
+    mSpeed = 1000000;               //! 1M index
 
     mTimeout = time_ms(100);
     mRecvTmo = 1;                   //! ms
@@ -333,7 +333,6 @@ int modelSysPref::load( const QString &str )
                 else if ( reader.name() == "visa_tmo" )
                 { mVisaTmo = reader.readElementText().toInt(); }
 
-
                 else if ( reader.name() == "tmo" )
                 { mTimeout = reader.readElementText().toInt(); }
 
@@ -401,7 +400,6 @@ int modelSysPref::load( const QString &str )
                 {
                     while( reader.readNextStartElement() )
                     {
-//                        logDbg()<<reader.name();
                         if ( reader.name() == "auto_expand" )
                         { mAutoExpand = reader.readElementText().toInt() > 0; }
                         else if ( reader.name() == "search_onopen" )
@@ -495,9 +493,6 @@ int modelSysPref::load( const QString &str )
                 }
                 else if ( reader.name() == "alias" )
                 {
-//                    int idSn, idAlias;
-//                    idSn = 0;
-//                    idAlias = 0;
                     Relation *pItem;
                     while( reader.readNextStartElement() )
                     {
@@ -506,6 +501,7 @@ int modelSysPref::load( const QString &str )
                         else if ( reader.name() == "item" )
                         {
                             pItem = new Relation();
+                            Q_ASSERT( NULL != pItem );
                             while( reader.readNextStartElement() )
                             {
                                 if ( reader.name() == "name" )

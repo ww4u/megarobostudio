@@ -17,7 +17,8 @@ SOURCES = \
     _state.cpp \
     _calibration.cpp \
     _build.cpp \
-    h2_task.cpp
+    h2_task.cpp \
+    _serial.cpp
 
 HEADERS = \
     h2.h

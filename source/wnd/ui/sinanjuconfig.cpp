@@ -1,10 +1,10 @@
 #include "sinanjuconfig.h"
 #include "ui_sinanjuconfig.h"
 
-
 #define set_rot_r( r, c )   mRots[ r * 3 + c ] = ui->spinR##r##c;
 #define set_rot_ir( r, c )   mRotInvs[ r * 3 + c ] = ui->spinR##r##c##_2;
 #define set_rot_s( r, c )   mShifts[ r * 1 + c ] = ui->spinS##r##c;
+
 SinanjuConfig::SinanjuConfig(QWidget *parent) :
     modelView(parent),
     ui(new Ui::SinanjuConfig)

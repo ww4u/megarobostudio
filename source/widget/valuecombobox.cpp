@@ -23,6 +23,7 @@ void ValueComboBox::setValue( int val )
         if ( itemData(i).toInt() == val )
         {
             setCurrentIndex( i );
+            return;
         }
     }
 }

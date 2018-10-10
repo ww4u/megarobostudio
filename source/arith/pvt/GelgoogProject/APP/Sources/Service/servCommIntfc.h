@@ -49,29 +49,36 @@ Copyright (C) 2016，北京镁伽机器人科技有限公司
 
 /******************************************函数声明*******************************************/
 void servCommStreamBufferInit(void);
-void servFrameSend(CmdTypeEnum cmdMainType, u8 cmdSubType, u8 dataLen, u8 *pData, LinkTypeEnum linkType);
+void servFrameSend(u8 cmdMainType, u8 cmdSubType, u8 dataLen, u8 *pData, LinkTypeEnum linkType);
 void servTxFrameProcess(void);
 void servRxFrameProcess(void);
 
+void servCiCanConfig(CanIntfcStruct canIntfc);
 void irqCiCanReceive(void);
 void irqCiUartReceive(void);
 
+void servCiUartConfig(UartIntfcStruct uartIntfc);
 void servCiUartDmaRecTimerCB(void *timeOutPara);
 void irqCiUartDmaComplReceive(void);
 
+void servSensor1UartConfig(UartIntfcStruct uartIntfc);
 void irqSensor1UartDmaComplReceive(void);
 void irqSensor1UartReceive(void);
 void servSensor1UartDmaRecTimerCB(void *timeOutPara);
 void servSensor1UartSwitchTimerCB(void *timeOutPara);
 void servSensor1UartReciveOff(void);
 void servSensor1UartReciveOn(SensorManageStruct sensor, SensorNumEnum sensorNum);
+void servSensor1UartSend(u8 *dataBuff, u8 dataLen);
 
+#if !(GELGOOG_AXIS_4 || GELGOOG_AXIS_10)    //4轴和10轴只支持1路
+void servSensor2UartConfig(UartIntfcStruct uartIntfc);
 void irqSensor2UartDmaComplReceive(void);
 void irqSensor2UartReceive(void);
 void servSensor2UartDmaRecTimerCB(void *timeOutPara);
 void servSensor2UartSwitchTimerCB(void *timeOutPara);
 void servSensor2UartReciveOff(void);
 void servSensor2UartReciveOn(SensorManageStruct sensor, SensorNumEnum sensorNum);
+#endif
 
 
 

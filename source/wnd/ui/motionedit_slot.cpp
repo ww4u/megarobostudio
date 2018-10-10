@@ -184,8 +184,6 @@ void motionEdit::on_btnExport_clicked()
         Q_ASSERT( (from + len - 1) < columns );
 
         //! title
-//        outStream<<"t,p1,p2,p3,p4,v1,v2,v3,v4"<<"\n";
-
         outStream<<"t";
         for ( int i = from; i < ( from + len ); i++ )
         { outStream<<QString(",p%1").arg(i+1); }

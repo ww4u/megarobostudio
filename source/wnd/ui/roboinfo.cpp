@@ -57,18 +57,12 @@ void roboInfo::initModel()
 
 void roboInfo::deInitModel()
 {
-//    foreach( QTableWidgetItem *pItem, mItems )
-//    {
-//       delete pItem;
-//    }
+
 }
 
 void roboInfo::updateUi()
 {
     Q_ASSERT( NULL != m_pModelObj );
-//    if ( m_pModelObj->getType() != mcModelObj::model_scene_variable )
-//    { return; }
-
     VRobot *pRobot = (VRobot*)m_pModelObj->getObj();
     Q_ASSERT( NULL != pRobot );
 

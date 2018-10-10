@@ -45,8 +45,6 @@ void MotorMonitor::clearMonitors()
     foreach( MotorState *pStat, mMotors )
     {
         Q_ASSERT( NULL != pStat );
-
-//        ui->verticalLayout_2->removeWidget( pStat );
         m_pFlowLayout->removeWidget( pStat );
         pStat->close();     //! delete on close
     }
@@ -66,7 +64,6 @@ void MotorMonitor::addMonitor( const QString &str )
 
     pMotorStat->setName( str );
 
-//    ui->verticalLayout_2->addWidget( pMotorStat );
     m_pFlowLayout->addWidget( pMotorStat );
     mMotors.append( pMotorStat );
 }

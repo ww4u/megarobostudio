@@ -24,15 +24,12 @@ QString H2MotionItem::header( int col )
     { return QObject::tr("Enable"); }
     else if ( col == 1 )
     { return QObject::tr("Name"); }
-
     else if ( col == 2 )
     { return QObject::tr("t(s)"); }
-
     else if ( col == 3 )
     { return QObject::tr("x(mm)"); }
     else if ( col == 4 )
     { return QObject::tr("y(mm)"); }
-
     else
     { return QObject::tr("Comment"); }
 }
@@ -41,12 +38,6 @@ H2MotionItem::H2MotionItem()
 {
 
 }
-
-//H2MotionItem &H2MotionItem::operator=( const H2MotionItem &item )
-//{
-//    //! \todo
-//    return *this;
-//}
 
 int H2MotionItem::serialOut( ImcStream &stream )
 {

@@ -8,7 +8,6 @@
 
 #include "../../app/samplethread.h"
 
-
 queryMgr::queryMgr(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::queryMgr)
@@ -115,6 +114,7 @@ void queryMgr::setupUi()
     m_pDelegate3 = new comboxDelegate(this);
     QStringList strList;
     strList.clear();
+    //! \todo read from cfg file
     strList<<tr("TORQUE")<<tr("CYCLE")
            <<tr("SGALL")<<tr("SGSE")
            <<tr("DIST")<<tr("ABSENC");
@@ -174,7 +174,6 @@ sampleProxy* queryMgr::rowSampleProxy( QModelIndex &index )
     return pSampleProxy;
 }
 
-
 void queryMgr::slot_view_data()
 {
     QModelIndex index = ui->tableView->currentIndex();
@@ -211,7 +210,6 @@ void queryMgr::slot_view_data()
     pView->setModel( pModel, pCfgItem->mName, pCfgItem->mComment );
 
     pView->show();
-
 }
 
 void queryMgr::slot_model_changed()
@@ -256,7 +254,6 @@ void queryMgr::on_btnAdd_clicked()
 
     //! current
     curRow = ui->tableView->currentIndex().row();
-    logDbg()<<curRow;
 
     ui->tableView->model()->insertRow( curRow + 1 );
     ui->tableView->setCurrentIndex( ui->tableView->model()->index( curRow + 1, 0 ) );

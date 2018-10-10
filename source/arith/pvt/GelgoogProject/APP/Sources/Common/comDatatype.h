@@ -18,11 +18,11 @@ Copyright (C) 2016，北京镁伽机器人科技有限公司
 #include <stdio.h>
 #include "project.h"
 
-#if defined PROJECT_QUBELEY
+#ifdef STM32F10X_XL
 #include "stm32f10x.h"
 #endif
 
-#if defined PROJECT_GELGOOG
+#ifdef STM32F40_41xxx
 #include "stm32f4xx.h"
 #endif
 

@@ -80,7 +80,6 @@ void MotorState::setState( const QString &stat, int page )
     else
     {
         //! enter running
-//        if ( stat == strRunning  )
         if ( str_is(stat, strRunning) )
         { mRunningTimes[page]->start(); }
 

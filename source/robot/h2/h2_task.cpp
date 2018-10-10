@@ -25,8 +25,6 @@ H2Task::H2Task(QObject *pParent) : RoboTask( pParent )
 
 void H2Task::run()
 {
-    sysLog( __FUNCTION__, QString::number(__LINE__), "Enter" );
-
     if ( 0 != checkRequest( m_pReq ) )
     { return; }
 
@@ -35,8 +33,9 @@ void H2Task::run()
 
     int ret;
     ret = (pH2->*( m_pReq->m_pApi ))( m_pReq->m_pArg );
-
+    if ( ret != 0 )
+    {
+        sysWarn( __FUNCTION__, QString::number(__LINE__), QString::number( ret ) );
+    }
     gc();
-
-    sysLog( __FUNCTION__, QString::number(__LINE__), QString::number( ret ) );
 }

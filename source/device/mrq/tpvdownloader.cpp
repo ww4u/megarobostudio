@@ -3,7 +3,6 @@
 
 #include "./devicemrq_msg.h"
 
-
 int tpvDownloader::_downloaderInterval = 0;
 
 void tpvDownloader::setInterval( int interval )
@@ -27,20 +26,12 @@ void tpvDownloader::run()
 {
     Q_ASSERT( NULL != m_pMRQ );
 
-//    tpvDownloader::_activeLoadersMutex.lock();
-//    tpvDownloader::_activeLoaders.append( this );
-//    tpvDownloader::_activeLoadersMutex.unlock();
-
-//sysLog( QString::number(mRegion.mAx), QString::number(mRegion.mPage), "down start" );
+    //sysLog( QString::number(mRegion.mAx), QString::number(mRegion.mPage), "down start" );
     m_pMRQ->acquireDownloader();
 
     int ret = downloadProc();
 
     m_pMRQ->releaseDownloader();
-
-//    tpvDownloader::_activeLoadersMutex.lock();
-//    tpvDownloader::_activeLoaders.removeAll( this );
-//    tpvDownloader::_activeLoadersMutex.unlock();
 
     if ( ret == ERR_INTERRUPT_REQUESTED
          && tpvDownloader::_activeLoaders.size() == 0 )
@@ -50,7 +41,7 @@ void tpvDownloader::run()
                              mRegion );
     }
 
-//sysLog( QString::number(mRegion.mAx), QString::number(mRegion.mPage), "down end" );
+    //sysLog( QString::number(mRegion.mAx), QString::number(mRegion.mPage), "down end" );
 }
 
 int tpvDownloader::downloadProc()
@@ -67,6 +58,7 @@ int tpvDownloader::downloadProc()
     //! download
     int ret;
     QQueue< tpvRow *> transferTpvs;
+    //! \todo try times by out setting
     for ( int i = 0; i < 2; i++ )
     {
         //! copy send buf
@@ -174,7 +166,7 @@ int tpvDownloader::transmissionProc( QQueue< tpvRow *> &transQueue )
 {
     int ret;
     int total, now;
-logDbg()<<mRegion.axes()<<mRegion.page();
+
     //! in transmisstion
     ret = m_pMRQ->beginTpvDownload( mRegion );
     if ( ret != 0 )
@@ -199,30 +191,11 @@ logDbg()<<mRegion.axes()<<mRegion.page();
         else
         {}
 
-//        //! 1024 / (8*3) = 42
-//        if ( batchSize > 36 )
-//        { batchSize = 36; }
-
-//        if ( batchSize > 128 )
-//        { batchSize = 128; }
-
-//        if ( batchSize > 64 )
-//        { batchSize = 64; }
-
-//        sysLog( __FUNCTION__, QString::number(__LINE__),
-//                QString::number(batchSize),
-//                QString::number(mTpvs.size()),
-//                QString::number( m_pMRQ->getTpvIndex(mRegion)  )
-//                );
         //! \errant keep one empty at least
         if ( batchSize > 1 )
         {
-//            receiveCache::lock();   //! disable read
-
             ret = batchDownload( transQueue,
                                  batchSize - 1, total, now );
-
-//            receiveCache::unlock();
 
             if ( ret != 0 )
             { sysError( __FUNCTION__, QString::number(__LINE__) ); return ret; }

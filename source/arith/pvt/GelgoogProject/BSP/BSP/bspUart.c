@@ -81,7 +81,7 @@ Copyright (C) 2016，北京镁伽机器人科技有限公司
 #define    UART_SN2_UART_RX_DMA_FLAG       DMA_FLAG_FEIF2 | DMA_FLAG_DMEIF2 | DMA_FLAG_TEIF2 | DMA_FLAG_HTIF2 | DMA_FLAG_TCIF2
 
 
-#define    UART_DATA_TIMEOUT    ((uint32_t)0x334500)    //根据DELAY_COUNT_MS = 33600，此超时时间大约为100ms
+#define    UART_DATA_TIMEOUT    100000    //根据DELAY_COUNT_MS = 33600，此超时时间大约为2.9762ms(4800bps下发送一个BYTE大概需要2.0834ms)
 
 
 
@@ -114,7 +114,7 @@ u16 uartParity[PARITY_RESERVE]  = {USART_Parity_No, USART_Parity_Even, USART_Par
 返 回 值: 无;
 说    明: 无;
 *********************************************************************************************/
-void bspCiUartInit(UartIntfcStruct uartIntfc)
+void bspCiUartInit(void)
 {
     GPIO_InitTypeDef  GPIO_InitStructure;
     USART_InitTypeDef USART_InitStructure;
@@ -139,11 +139,11 @@ void bspCiUartInit(UartIntfcStruct uartIntfc)
     /******************UART1 配置*******************************************/
     RCC_APB2PeriphClockCmd(UART_CI_UART_CLK, ENABLE);
     
-    USART_InitStructure.USART_BaudRate   = uartBaudrate[uartIntfc.baud];
-    USART_InitStructure.USART_WordLength = uartWordLen[uartIntfc.wordLen];
-    USART_InitStructure.USART_StopBits   = uartStopBit[uartIntfc.stopBit];
-    USART_InitStructure.USART_Parity     = uartParity[uartIntfc.parity];
-    USART_InitStructure.USART_HardwareFlowControl = uartFlowCtl[uartIntfc.flowCtl];
+    USART_InitStructure.USART_BaudRate   = uartBaudrate[0];
+    USART_InitStructure.USART_WordLength = uartWordLen[0];
+    USART_InitStructure.USART_StopBits   = uartStopBit[0];
+    USART_InitStructure.USART_Parity     = uartParity[0];
+    USART_InitStructure.USART_HardwareFlowControl = uartFlowCtl[0];
     USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
     USART_Init(UART_CI_UART, &USART_InitStructure);
     USART_ITConfig(UART_CI_UART, USART_IT_RXNE, ENABLE);
@@ -191,6 +191,33 @@ void bspCiUartInit(UartIntfcStruct uartIntfc)
     NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;  
     NVIC_InitStructure.NVIC_IRQChannelSubPriority = 8;   
     NVIC_Init(&NVIC_InitStructure);
+}
+
+
+/*********************************************************************************************
+函 数 名: bspCiUartConfig;
+实现功能: 无; 
+输入参数: 无;
+输出参数: 无;
+返 回 值: 无;
+说    明: 无;
+*********************************************************************************************/
+void bspCiUartConfig(UartIntfcStruct uartIntfc)
+{
+    USART_InitTypeDef USART_InitStructure;
+
+
+    USART_Cmd(UART_CI_UART, DISABLE);
+    
+    USART_InitStructure.USART_BaudRate   = uartBaudrate[uartIntfc.baud];
+    USART_InitStructure.USART_WordLength = uartWordLen[uartIntfc.wordLen];
+    USART_InitStructure.USART_StopBits   = uartStopBit[uartIntfc.stopBit];
+    USART_InitStructure.USART_Parity     = uartParity[uartIntfc.parity];
+    USART_InitStructure.USART_HardwareFlowControl = uartFlowCtl[uartIntfc.flowCtl];
+    USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
+    USART_Init(UART_CI_UART, &USART_InitStructure);
+    
+    USART_Cmd(UART_CI_UART, ENABLE);
 }
 
 
@@ -283,11 +310,13 @@ void bspCiUartDmaRecive(u8 *dataBuff, u32 dataLen)
 u8 bspCiUartSend(u8 *dataBuff, u8 dataLen)
 {
     u32 index;
-    u32 timeout = UART_DATA_TIMEOUT;
+    u32 timeout;
     
     
     for (index = 0;index < dataLen;index++)
     {
+        timeout = UART_DATA_TIMEOUT;
+    
         USART_SendData(UART_CI_UART, *dataBuff++);
         while ((USART_GetFlagStatus(UART_CI_UART, USART_FLAG_TXE) == RESET) && (timeout > 0))
         {
@@ -329,7 +358,7 @@ void bspCiUartITConfig(FunctionalState funcState)
 返 回 值: 无;
 说    明: 无;
 *********************************************************************************************/
-void bspSensor1UartInit(UartIntfcStruct uartIntfc)
+void bspSensor1UartInit(void)
 {
     GPIO_InitTypeDef  GPIO_InitStructure;
     USART_InitTypeDef USART_InitStructure;
@@ -354,11 +383,11 @@ void bspSensor1UartInit(UartIntfcStruct uartIntfc)
     /******************UART3 配置*******************************************/
     RCC_APB1PeriphClockCmd(UART_SN1_UART_CLK, ENABLE);
     
-    USART_InitStructure.USART_BaudRate   = uartBaudrate[uartIntfc.baud];
-    USART_InitStructure.USART_WordLength = uartWordLen[uartIntfc.wordLen];
-    USART_InitStructure.USART_StopBits   = uartStopBit[uartIntfc.stopBit];
-    USART_InitStructure.USART_Parity     = uartParity[uartIntfc.parity];
-    USART_InitStructure.USART_HardwareFlowControl = uartFlowCtl[uartIntfc.flowCtl];
+    USART_InitStructure.USART_BaudRate   = uartBaudrate[0];
+    USART_InitStructure.USART_WordLength = uartWordLen[0];
+    USART_InitStructure.USART_StopBits   = uartStopBit[0];
+    USART_InitStructure.USART_Parity     = uartParity[0];
+    USART_InitStructure.USART_HardwareFlowControl = uartFlowCtl[0];
     USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
     USART_Init(UART_SN1_UART, &USART_InitStructure);
     USART_ITConfig(UART_SN1_UART, USART_IT_RXNE, ENABLE);
@@ -409,6 +438,31 @@ void bspSensor1UartInit(UartIntfcStruct uartIntfc)
 
 
 /*********************************************************************************************
+函 数 名: bspSensor1UartInit;
+实现功能: 无; 
+输入参数: 无;
+输出参数: 无;
+返 回 值: 无;
+说    明: 无;
+*********************************************************************************************/
+void bspSensor1UartConfig(UartIntfcStruct uartIntfc)
+{
+    USART_InitTypeDef USART_InitStructure;
+    
+    
+    USART_Cmd(UART_SN1_UART, DISABLE);
+
+    USART_InitStructure.USART_BaudRate   = uartBaudrate[uartIntfc.baud];
+    USART_InitStructure.USART_WordLength = uartWordLen[uartIntfc.wordLen];
+    USART_InitStructure.USART_StopBits   = uartStopBit[uartIntfc.stopBit];
+    USART_InitStructure.USART_Parity     = uartParity[uartIntfc.parity];
+    USART_InitStructure.USART_HardwareFlowControl = uartFlowCtl[uartIntfc.flowCtl];
+    USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
+    USART_Init(UART_SN1_UART, &USART_InitStructure);
+}
+
+
+/*********************************************************************************************
 函 数 名: bspSensor1UartReciveOn;
 实现功能: 无; 
 输入参数: 无;
@@ -445,7 +499,8 @@ void bspSensor1UartReciveOff(void)
 
     //关闭USART接收
     USART_ClearFlag(UART_SN1_UART, USART_FLAG_RXNE);
-    USART_Cmd(UART_SN1_UART, DISABLE);
+    USART_ITConfig(UART_SN1_UART,  USART_IT_RXNE, DISABLE);
+    //USART_Cmd(UART_SN1_UART, DISABLE);
 }
 
 
@@ -511,9 +566,7 @@ void bspSensor1UartDmaRecive(u8 *dataBuff, u32 dataLen)
 {
     UART_SN1_UART_RX_DMA_STREAM->M0AR = (u32)dataBuff;
 
-    //长度包含了SOF和长度本身，本来应该减2，因为已经接收到了SOF和LEN
-    //但是DMA在接收时会再次接收LEN，所以先减一，减去SOF  (NICK MARK)
-    UART_SN1_UART_RX_DMA_STREAM->NDTR = dataLen - 1;
+    UART_SN1_UART_RX_DMA_STREAM->NDTR = dataLen;
 
     DMA_ClearFlag(UART_SN1_UART_RX_DMA_STREAM, UART_SN1_UART_RX_DMA_FLAG);
                                          
@@ -533,11 +586,13 @@ void bspSensor1UartDmaRecive(u8 *dataBuff, u32 dataLen)
 u8 bspSensor1UartSend(u8 *dataBuff, u8 dataLen)
 {
     u32 index;
-    u32 timeout = UART_DATA_TIMEOUT;
+    u32 timeout;
     
     
     for (index = 0;index < dataLen;index++)
     {
+        timeout = UART_DATA_TIMEOUT;
+        
         USART_SendData(UART_SN1_UART, *dataBuff++);
         while ((USART_GetFlagStatus(UART_SN1_UART, USART_FLAG_TXE) == RESET) && (timeout > 0))
         {
@@ -579,7 +634,7 @@ void bspSensor1UartITConfig(FunctionalState funcState)
 返 回 值: 无;
 说    明: 无;
 *********************************************************************************************/
-void bspSensor2UartInit(UartIntfcStruct uartIntfc)
+void bspSensor2UartInit(void)
 {
     GPIO_InitTypeDef  GPIO_InitStructure;
     USART_InitTypeDef USART_InitStructure;
@@ -604,11 +659,11 @@ void bspSensor2UartInit(UartIntfcStruct uartIntfc)
     /******************UART4 配置*******************************************/
     RCC_APB1PeriphClockCmd(UART_SN2_UART_CLK, ENABLE);
     
-    USART_InitStructure.USART_BaudRate   = uartBaudrate[uartIntfc.baud];
-    USART_InitStructure.USART_WordLength = uartWordLen[uartIntfc.wordLen];
-    USART_InitStructure.USART_StopBits   = uartStopBit[uartIntfc.stopBit];
-    USART_InitStructure.USART_Parity     = uartParity[uartIntfc.parity];
-    USART_InitStructure.USART_HardwareFlowControl = uartFlowCtl[uartIntfc.flowCtl];
+    USART_InitStructure.USART_BaudRate   = uartBaudrate[0];
+    USART_InitStructure.USART_WordLength = uartWordLen[0];
+    USART_InitStructure.USART_StopBits   = uartStopBit[0];
+    USART_InitStructure.USART_Parity     = uartParity[0];
+    USART_InitStructure.USART_HardwareFlowControl = uartFlowCtl[0];
     USART_InitStructure.USART_Mode = USART_Mode_Rx;
     USART_Init(UART_SN2_UART, &USART_InitStructure);
     USART_ITConfig(UART_SN2_UART, USART_IT_RXNE, ENABLE);
@@ -655,6 +710,31 @@ void bspSensor2UartInit(UartIntfcStruct uartIntfc)
     NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;  
     NVIC_InitStructure.NVIC_IRQChannelSubPriority = 5;   
     NVIC_Init(&NVIC_InitStructure);
+}
+
+
+/*********************************************************************************************
+函 数 名: bspSensor2UartInit;
+实现功能: 无; 
+输入参数: 无;
+输出参数: 无;
+返 回 值: 无;
+说    明: 无;
+*********************************************************************************************/
+void bspSensor2UartConfig(UartIntfcStruct uartIntfc)
+{
+    USART_InitTypeDef USART_InitStructure;
+
+
+    USART_Cmd(UART_SN2_UART, DISABLE); 
+
+    USART_InitStructure.USART_BaudRate   = uartBaudrate[uartIntfc.baud];
+    USART_InitStructure.USART_WordLength = uartWordLen[uartIntfc.wordLen];
+    USART_InitStructure.USART_StopBits   = uartStopBit[uartIntfc.stopBit];
+    USART_InitStructure.USART_Parity     = uartParity[uartIntfc.parity];
+    USART_InitStructure.USART_HardwareFlowControl = uartFlowCtl[uartIntfc.flowCtl];
+    USART_InitStructure.USART_Mode = USART_Mode_Rx;
+    USART_Init(UART_SN2_UART, &USART_InitStructure);
 }
 
 
@@ -761,9 +841,7 @@ void bspSensor2UartDmaRecive(u8 *dataBuff, u32 dataLen)
 {
     UART_SN2_UART_RX_DMA_STREAM->M0AR = (u32)dataBuff;
 
-    //长度包含了SOF和长度本身，本来应该减2，因为已经接收到了SOF和LEN
-    //但是DMA在接收时会再次接收LEN，所以先减一，减去SOF  (NICK MARK)
-    UART_SN2_UART_RX_DMA_STREAM->NDTR = dataLen - 1;
+    UART_SN2_UART_RX_DMA_STREAM->NDTR = dataLen;
 
     DMA_ClearFlag(UART_SN2_UART_RX_DMA_STREAM, UART_SN2_UART_RX_DMA_FLAG);
                                          
@@ -783,11 +861,13 @@ void bspSensor2UartDmaRecive(u8 *dataBuff, u32 dataLen)
 u8 bspSensor2UartSend(u8 *dataBuff, u8 dataLen)
 {
     u32 index;
-    u32 timeout = UART_DATA_TIMEOUT;
+    u32 timeout;
     
     
     for (index = 0;index < dataLen;index++)
     {
+        timeout = UART_DATA_TIMEOUT;
+    
         USART_SendData(UART_SN2_UART, *dataBuff++);
         while ((USART_GetFlagStatus(UART_SN2_UART, USART_FLAG_TXE) == RESET) && (timeout > 0))
         {

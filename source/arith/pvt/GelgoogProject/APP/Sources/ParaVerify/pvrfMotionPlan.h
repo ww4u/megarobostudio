@@ -46,8 +46,6 @@ u8 pvrfPvtModifyDutyVerify(u8 dataLen, u8 *pData, void *pParaValue, WaveTableTyp
 u8 pvrfPvtNcyclesVerify(u8 dataLen, u8 *pData, void *pParaValue, WaveTableTypeEnum *pWaveIndex);
 u8 pvrfPvtWarnPointVerify(u8 dataLen, u8 *pData, void *pParaValue, WaveTableTypeEnum *pWaveIndex);
 u8 pvrfPvtEndStateVerify(u8 dataLen, u8 *pData, void *pParaValue, WaveTableTypeEnum *pWaveIndex);
-u8 pvrfPvtSpeedScaleVerify(u8 dataLen, u8 *pData, void *pParaValue, WaveTableTypeEnum *pWaveIndex);
-
 u8 pvrfPvtStopDecelModeVerify(u8 dataLen, u8 *pData, void *pParaValue, WaveTableTypeEnum *pWaveIndex);
 u8 pvrfPvtStopDecelTimeVerify(u8 dataLen, u8 *pData, void *pParaValue, WaveTableTypeEnum *pWaveIndex);
 u8 pvrfPvtStopDecelDistanceVerify(u8 dataLen, u8 *pData, void *pParaValue, WaveTableTypeEnum *pWaveIndex);
@@ -59,6 +57,7 @@ u8 pvrfPvtOOSResponseVerify(u8 dataLen, u8 *pData, void *pParaValue, WaveTableTy
 u8 pvrfPvtPositionVerify(u8 dataLen, u8 *pData, void *pParaValue, u8 *pIndex, WaveTableTypeEnum *pWaveIndex);
 u8 pvrfPvtSpeedVerify(u8 dataLen, u8 *pData, void *pParaValue, u8 *pIndex, WaveTableTypeEnum *pWaveIndex);
 u8 pvrfPvtTimeVerify(u8 dataLen, u8 *pData, void *pParaValue, u8 *pIndex, WaveTableTypeEnum *pWaveIndex);
+u8 pvrfPvtTimeScaleVerify(u8 dataLen, u8 *pData, u16 *pAccScale, u16 *pDecScale, u8 *pIndex, WaveTableTypeEnum *pWaveIndex);
 
 
 

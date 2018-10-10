@@ -27,7 +27,7 @@ roboGeogoog::roboGeogoog()
 
     mMicrostepBase = 2;     //! 64
 
-    //! \note for 21
+    //! \note for Ver:21
     setTunningAble( true );
 
     mImage = QImage::fromData( _megaimage, sizeof(_megaimage) );

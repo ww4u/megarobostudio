@@ -42,12 +42,11 @@ int robotDelta::build(   MegaTableModel *pModel,
     ret = buildTrace( curve, jointTrace );
     if ( ret != 0 )
     { return ret; }
-logDbg();
+
     //! convert
     ret = convertTrace( curve, jointTrace, tpvGroups, sectionList );
     if ( ret != 0 )
     { return ret; }
-logDbg();
 
 //    //! export
 //    int lastPt = curve.size() - 1;

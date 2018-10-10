@@ -24,10 +24,20 @@ Copyright (C) 2016，北京镁伽机器人科技有限公司
 #include "comMemoryMap.h"
 #include "servCanBuildFrame.h"
 
+#if GELGOOG_SINANJU
+#include <os.h>
+#include "servCommIntfc.h"
+#endif
+
 
 
 /****************************************外部变量声明*****************************************/
 extern MotionInfoStruct  g_motionInfo;
+
+#if GELGOOG_SINANJU
+extern OS_SEM          g_semCmdParseTask;
+extern CommIntfcStruct g_commIntfc;
+#endif
 
 
 
@@ -40,7 +50,7 @@ extern MotionInfoStruct  g_motionInfo;
 #define    FPGA_RCHAN_NUM_LSHIFT   5       //读通道号掩码 bit[5:8]
 
 #define    FPGA_WREG_ADDR_MARK     0x3F    //写寄存器地址掩码 bit[0:5]
-#define    FPGA_WCHAN_NUM_MARK     0x07    //写通道号掩码 bit[8:10]，第二个Byte
+#define    FPGA_WCHAN_NUM_MARK     0x0F    //写通道号掩码 bit[8:11]，第二个Byte
 
 #define    FPGA_CFG_BUFF_SIZE      2048
 
@@ -48,43 +58,25 @@ extern MotionInfoStruct  g_motionInfo;
 
 #define    FPGA_DDR_WAVE_TABLE_POINT_LEN    4    //Bytes
 
+#define    FPGA_SDIO_WRITE_USE_LOCAL    0    // 使用局部变量发送
+
+#define    FPGA_PDM_MSTEP_COUNT_LEN      8
+#define    FPGA_PDM_MSTEP_BUFFER_RESV    2
+
+#define    FPGA_SDIO_RX_COUNT_MAX    5
+
 
 
 /*************************************局部常量和类型定义**************************************/
-typedef enum 
-{
-    FPGAACT_READ = 0,
-    FPGAACT_WRITE
-    
-}FpgaActionEnum;
-
-typedef struct
-{
-    u16 driverCtrlReg;                 //驱动控制寄存器 16#
-    
-    u16 ultrasonicCtrlReg;             //超声控制寄存器 19#
-
-    u16 waveTableModeReg[CH_TOTAL];    //波表模式寄存器 31#，包括启动源和时钟校正
-    u16 waveTableCtrlReg[CH_TOTAL];    //波表控制寄存器 32#
-
-    u16 encMultandCountReg[CH_TOTAL];  //编码器倍乘和计数清零寄存器 39#
-    
-    u16 digitalOutputReg;              //DO配置寄存器 45#
-    u16 encandUartReg;                 //编码器和UART配置寄存器 46#
-    
-    u16 trigRelatRefCfgReg[CH_TOTAL];  //触发逻辑关系和REF配置寄存器 49#
-    
-    u16 interruptSrcReg[CH_TOTAL];     //中断源寄存器 50#
-    
-    u16 sensorUart2SelectReg;          //Uart选择寄存器 51#
-    
-    
-}FpgaWriteableRegValueStruct;
 
 
 
 /******************************************局部变量*******************************************/
 FpgaWriteableRegValueStruct fpgaRegValue = {0};
+
+#if !FPGA_SDIO_WRITE_USE_LOCAL
+u8 sdioWriteBuffer[4] = {0};
+#endif
 
 
 
@@ -97,7 +89,7 @@ FpgaWriteableRegValueStruct fpgaRegValue = {0};
 返 回 值: 无;
 说    明: 无;
 *********************************************************************************************/
-static void servFpgaDataLenSet(FpgaActionEnum fpgaAction, u16 realLen, u16 dataLen)
+void servFpgaDataLenSet(FpgaActionEnum fpgaAction, u16 realLen, u16 dataLen)
 {
     if (FPGAACT_WRITE == fpgaAction)
     {
@@ -142,22 +134,49 @@ static void servFpgaReadAddrSet(u16 readAddr)
 *********************************************************************************************/
 u8 servFpgaRegisterWrite(u8 chanNum, u16 regAddr, u16 regValue)
 {
+    u8 txState = 0;
     u8 regLen = FPGA_ADD_LEN_2BYTE + FPGA_REG_LEN_BYTE;
-    u8 regData[32];
+#if FPGA_SDIO_WRITE_USE_LOCAL
+    u8 regData[4];
+#endif
     
 
     //设置数据长度
     servFpgaDataLenSet(FPGAACT_WRITE, regLen, regLen);
-    
+
+#if FPGA_SDIO_WRITE_USE_LOCAL    
     regData[0] = regAddr & FPGA_WREG_ADDR_MARK;
     regData[1] = chanNum & FPGA_WCHAN_NUM_MARK;
+
+    if (regData[1] > 0x0F)
+    {
+        regData[1] = chanNum;
+    }
+    
     regData[2] = (u8)(regValue & 0xFF);    //低8位
     regData[3] = (u8)((regValue & 0xFF00) >> 8);    //高8位
 
     //发送数据
-    bspSdioDataSend(regData, regLen, SDIO_BLK_4_Byte);
+    txState = bspSdioDataSend(regData, regLen, SDIO_BLK_4_Byte);
+    
+#else
 
-    return 0;
+    sdioWriteBuffer[0] = regAddr & FPGA_WREG_ADDR_MARK;
+    sdioWriteBuffer[1] = chanNum & FPGA_WCHAN_NUM_MARK;
+
+    if (sdioWriteBuffer[1] > 0x0F)
+    {
+        sdioWriteBuffer[1] = chanNum;
+    }
+    
+    sdioWriteBuffer[2] = (u8)(regValue & 0xFF);    //低8位
+    sdioWriteBuffer[3] = (u8)((regValue & 0xFF00) >> 8);    //高8位
+
+    //发送数据
+    txState = bspSdioDataSend(sdioWriteBuffer, regLen, SDIO_BLK_4_Byte);
+#endif
+
+    return txState;
 }
 
 
@@ -173,27 +192,65 @@ u8 servFpgaRegisterRead(u8 chanNum, u16 regAddr, u16 *pRegValue)
 {
     u8  regLen = FPGA_ADD_LEN_2BYTE + FPGA_REG_LEN_BYTE;
     u8  regValue[4] = {0};
+    u8  rxState = 0;
     u16 tempReg;
-    
+    u32 timeout = 33600;    //根据DELAY_COUNT_MS = 33600，此超时时间大约为1ms;
+
+    u8   readChan;
+    u16  readRegAddr;
+    u16  readReg;
+    u8   readCount = FPGA_SDIO_RX_COUNT_MAX;
+    bool readRight = false;
+
 
     if (pRegValue != NULL)
     {
-        //启动DMA
-        bspSdioDataReceive(regValue, regLen, SDIO_BLK_4_Byte);
+        //读得不对则多读几次
+        while (!readRight && (readCount > 0))
+        {
+            //启动SDIO接收DMA
+            bspSdioDataReceiveSet(regValue, regLen, SDIO_BLK_4_Byte);
+            
+            //设置数据长度
+            servFpgaDataLenSet(FPGAACT_READ, regLen, regLen);
+
+            //设置读取的逻辑寄存器地址
+            tempReg = (regAddr & FPGA_RREG_ADDR_MARK) | ((chanNum << FPGA_RCHAN_NUM_LSHIFT) & FPGA_RCHAN_NUM_MARK);
+            servFpgaReadAddrSet(tempReg);
+
+            //做成超时等待，同时考虑释放CPU使用权
+            while ((!bspSdioDataTxComplete()) && (timeout > 0))
+            {
+                timeout--;  
+            }
+
+            readCount--;
         
-        //设置数据长度
-        servFpgaDataLenSet(FPGAACT_READ, regLen, regLen);
+            //判断通道号和寄存器地址是否一致
+            //readRegAddr = regValue[0] & FPGA_WREG_ADDR_MARK;
+            //readChan    = regValue[1] & FPGA_WCHAN_NUM_MARK;
+            readReg = ((u16)regValue[1] << 8) + regValue[0];
+            readRegAddr = readReg & FPGA_RREG_ADDR_MARK;
+            readChan    = (readReg & FPGA_RCHAN_NUM_MARK) >> FPGA_RCHAN_NUM_LSHIFT;
 
-        //设置读取的逻辑寄存器地址
-        tempReg = (regAddr & FPGA_RREG_ADDR_MARK) | ((chanNum << FPGA_RCHAN_NUM_LSHIFT) & FPGA_RCHAN_NUM_MARK);
-        servFpgaReadAddrSet(tempReg);
+            if ((readChan == chanNum) && (readRegAddr == regAddr))
+            {
+                readRight = true;
+        
+                //前两个字节是地址
+                *pRegValue  = regValue[2];         //低8位 
+                *pRegValue |= regValue[3] << 8;    //高8位 
 
-        //前两个字节是地址
-        *pRegValue  = regValue[2];         //低8位 
-        *pRegValue |= regValue[3] << 8;    //高8位 
+            }    //if ((readChan == chanNum) && (readRegAddr == regAddr))
+        }    //while (!readRight && (readCount > 0))
+
+        if (!readRight)
+        {
+            rxState = 1;    //Rx失败
+        }
     }
   
-    return 0;
+    return rxState;
 }
 
 
@@ -492,7 +549,14 @@ u8 servFpgaFlashFileLoad(u32 loadAddr)
             flashAddr = loadAddr;
             bspFlashRead(flashAddr, (u8 *)&dataLen, sizeLen);    //读取数据长度
             flashAddr += sizeLen;
-          
+
+            //判断下数据长度，如果长度超出了FLASH分配的范围则直接退出
+            if ((dataLen > FLASH_FPGA_CODE_LEN) || (dataLen < 0))
+            {
+                errorCode = 2;
+                break;
+            }
+            
             do
             {
                 if (dataLen > FPGA_CFG_BUFF_SIZE)
@@ -553,199 +617,23 @@ FpgaVersionStruct servFpgaVersionGet(void)
     FpgaVersionStruct fpgaVersion;
 
     
+    //读逻辑版本号
     servFpgaRegisterRead(CH_SYS, SERV_FPGA_VERSION_REG, &tmpReg);
     
-    fpgaVersion.hard  = (u8)((tmpReg & SERV_FPGA_VERSION_HARD_MASK)  >> SERV_FPGA_VERSION_HARD_RSHIFT);
-    fpgaVersion.major = (u8)((tmpReg & SERV_FPGA_VERSION_MAJOR_MASK) >> SERV_FPGA_VERSION_MAJOR_RSHIFT);
-    fpgaVersion.minor = (u8)((tmpReg & SERV_FPGA_VERSION_MINOR_MASK) >> SERV_FPGA_VERSION_MINOR_RSHIFT);
-    fpgaVersion.build = (u8)(tmpReg & SERV_FPGA_VERSION_BUILD_MASK);
+    fpgaVersion.majorVer = (u8)((tmpReg & SERV_FPGA_VERSION_MAJOR_MASK) >> SERV_FPGA_VERSION_MAJOR_RSHIFT);
+    fpgaVersion.minorVer = (u8)((tmpReg & SERV_FPGA_VERSION_MINOR_MASK) >> SERV_FPGA_VERSION_MINOR_RSHIFT);
+    fpgaVersion.buildVer = (u8)(tmpReg & SERV_FPGA_VERSION_BUILD_MASK);
+
+
+    //读产品型号
+    servFpgaRegisterRead(CH_SYS, SERV_FPGA_TYPE_REG, &tmpReg);
+    
+    fpgaVersion.majorType = (u8)((tmpReg & SERV_FPGA_TYPE_MAJOR_MASK) >> SERV_FPGA_TYPE_MAJOR_RSHIFT);
+    fpgaVersion.minorType = (u8)((tmpReg & SERV_FPGA_TYPE_MINOR_MASK) >> SERV_FPGA_TYPE_MINOR_RSHIFT);
+    fpgaVersion.hardVer   = (u8)(tmpReg & SERV_FPGA_TYPE_HARD_MASK);
+    
     
     return fpgaVersion;
-}
-
-
-
-/*********************************************************************************************
-函 数 名: servFPGA_STAT_Get
-实现功能: 读取FPGA的状态
-输入参数: 
-          
-输出参数:
-            
-返 回 值: 0
-说    明: 
-*********************************************************************************************/
-s32 servFPGA_STAT_Get(u16* STAT)
-{
-    servFpgaRegisterRead(0, ADDR_FPGA_STAT, STAT);    //通道号固定为0
-
-    return 0;
-}
-
-/*********************************************************************************************
-函 数 名: servFPGA_Sonic_Reset
-实现功能: 复位逻辑的超声测距功能
-输入参数: 
-          
-输出参数:
-            
-返 回 值: 0
-说    明: 为了保证每次测距的准确性,必须执行该操作
-*********************************************************************************************/
-static void servFPGA_Sonic_Reset(void)
-{
-    fpgaRegValue.ultrasonicCtrlReg &= ~0x01;  //测距启动信号清空
-    fpgaRegValue.ultrasonicCtrlReg |= 0x01<<1; //设置测距复位
-    
-    servFpgaRegisterWrite(0, ADDR_FPGA_USONIC_CTRL, fpgaRegValue.ultrasonicCtrlReg);    //FOR MODIFY NICK
-    
-    fpgaRegValue.ultrasonicCtrlReg &= ~(0x01<<1); //清除测距复位  必须操作
-}
-
-
-/*********************************************************************************************
-函 数 名: servFPGA_Sonic_Start
-实现功能: 控制逻辑进行一次超声测距
-输入参数: 
-          
-输出参数:
-            
-返 回 值: 0
-说    明: 
-*********************************************************************************************/
-static void servFPGA_Sonic_Start(void)
-{
-    fpgaRegValue.ultrasonicCtrlReg &= ~(0x01<<1); //清除测距复位  必须操作
-    fpgaRegValue.ultrasonicCtrlReg |= ~0x01;      //设置测距启动信号
-    
-    servFpgaRegisterWrite(0, ADDR_FPGA_USONIC_CTRL, fpgaRegValue.ultrasonicCtrlReg);    //FOR MODIFY NICK
-    
-    fpgaRegValue.ultrasonicCtrlReg &= ~(0x01); //清除测距启动
-}
-
-/*********************************************************************************************
-函 数 名: servFPGA_Sonic_Protect_Mode
-实现功能: 配置逻辑在检测到碰撞危险时的操作
-输入参数: 
-          euSonicProtMode  mode:
-                        SONIC_ARM_PROTECT = 0,    //逻辑检测到碰撞危险后不做任何动作
-                        SONIC_FPGA_PROTECT = 1    //逻辑检测到碰撞危险后主动进行保护动作
-输出参数:
-            
-返 回 值: 0
-说    明: 
-*********************************************************************************************/
-void servFPGA_Sonic_Protect_Mode(euSonicProtMode mode)
-{
-    if(mode == SONIC_ARM_PROTECT)
-    {
-        fpgaRegValue.ultrasonicCtrlReg &= ~(0x01<<2);  //bit2 = 0 ARM保护
-    }
-    else
-    {
-        fpgaRegValue.ultrasonicCtrlReg |= (0x01<<2);  //bit2 = 1 FPGA保护
-    }
-        
-    servFpgaRegisterWrite(0, ADDR_FPGA_USONIC_CTRL, fpgaRegValue.ultrasonicCtrlReg);    //FOR MODIFY NICK
-}
-
-
-/*********************************************************************************************
-函 数 名: servFPGA_Sonic_Pulse_Get
-实现功能: 获取超声波模块的回响信号脉冲数
-输入参数: 
-          
-输出参数:u32 * u32pulse:脉冲计数的返回地址
-            
-返 回 值: 0
-说    明: 脉冲数是由逻辑返回的 低16和高4位 拼接得到
-*********************************************************************************************/
-static s32 servFPGA_Sonic_Pulse_Get(u8 chanNum, u32 * u32pulse)
-{
-    u16 pulse_L = 0;
-    u16 pulse_H = 0;
-
-    
-    servFpgaRegisterRead(chanNum, ADDR_FPGA_USONIC_DIS_L, &pulse_L);
-    servFpgaRegisterRead(chanNum, ADDR_FPGA_USONIC_DIS_H, &pulse_H);
-    
-    *u32pulse = (pulse_H<<16)|pulse_L;
-    
-    return 0;
-}
-
-
-/*********************************************************************************************
-函 数 名: servFPGA_Sonic_Distance_Get
-实现功能: 获得超声波测距的结果
-输入参数: float  f32Temperature:环境温度
-          
-输出参数:
-            
-返 回 值: > 0 :超胜测速得到的距离
-          < 0 :错误
-说    明: 
-        ARM按照下式计算脉宽PW和间距S:
-        PW=PCNT * TCNT= 2S/(331.4 + 0.607T)
-        其中TCNT为FPGA内部计数时钟周期=1.28*10^6S.
-        以S表示间距(单位:m),
-        T为环境温度(单位:OC)
-        
-        经换算得到公式为: S = 0.00064*P/(331400+607T) 
-*********************************************************************************************/
-float servFPGA_Sonic_Distance_Get(float  f32Temperature)
-{
-    u32 u32pulse = 0;
-    float f32tmp_1 = 0;
-    float f32tmp_2 = 0;
-    float f32res = 0;
-    servFPGA_Sonic_Reset();
-
-    servFPGA_Sonic_Start();
-    bspDelayMs(15); //等待15ms为逻辑要求
-    
-    servFPGA_Sonic_Pulse_Get(0, &u32pulse);    //FOR MODIFY NICK
-    f32tmp_1 = 331.400 + 0.607*f32Temperature;
-    f32tmp_2 = 0.0008*u32pulse;
-    f32res = f32tmp_2*f32tmp_1;
-
-    return f32res;
-}
-
-
-/*********************************************************************************************
-函 数 名: servFPGA_Sonic_Threshold_Set
-实现功能: 设置超声波碰撞保护阈值
-输入参数: 
-          
-输出参数:u32 u32ThresDis:安全距离阈值
-            
-返 回 值: 0
-说    明: 
-          发送给逻辑的安全距离数共20bit,第一次发送低16bit,第二次发送高4bit
-          下发数据的计算公式为
-          TH=(2*Sth/(331.4 + 0.607*T)*1000000)/ (Tsys*128) -1
-          其中TH为阈值,Sth为安全距离(单位为m),T为环境温度(单位摄氏度),Tsys为逻辑内部计数时钟周期,单位为us
-          目前该数值为80*10^-3us.
-*********************************************************************************************/
-
-s32 servFPGA_Sonic_Threshold_Set(float f32ThresDis,float f32tmeperature)
-{
-    float f32tmp = 0;
-    u32 res = 0;
-    u16 data = 0;
-
-    f32tmp = (0.607*f32tmeperature + 331.4)*5.12;
-    res = (u32)((f32ThresDis*1000000)/f32tmp);
-
-    data = res&0xFF; //低16bit
-    servFpgaRegisterWrite(0, ADDR_FPGA_USONIC_THRES_L, data);    //FOR MODIFY NICK
-
-    data = (res>>16)&0x0F;//高4bit
-    servFpgaRegisterWrite(0, ADDR_FPGA_USONIC_THRES_H, data);
-    
-    //printf("dis is %d\n",res);
-    return 0;
 }
 
 
@@ -765,7 +653,7 @@ s32 servFPGA_State_If_WR_Allow(u8 chanNum)
     u8 ii = 0;
     do
     {
-        servFpgaRegisterRead(chanNum, ADDR_FPGA_DDR_STAT, &state);
+        servFpgaRegisterRead(chanNum, SERV_FPGA_RESPONSE_REG_10, &state);
         ii++;
         bspDelayUs(3);
     }while(((state&0x03) != 0x03)&&(ii<3));
@@ -785,8 +673,9 @@ s32 servFPGA_State_If_WR_Allow(u8 chanNum)
     
 }
 
+
 /*********************************************************************************************
-函 数 名: servFPGA_State_If_Run_Allow
+函 数 名: servFpgaWaveDataStateRead
 实现功能: 获取DDR状态是否可以开始执行 DDR 产生PWM
 输入参数: 
           
@@ -795,14 +684,14 @@ s32 servFPGA_State_If_WR_Allow(u8 chanNum)
 返 回 值: 0
 说    明: 
 *********************************************************************************************/
-s32 servFPGA_State_If_Run_Allow(u8 chanNum)
+s32 servFpgaWaveDataStateRead(u8 chanNum)
 {
-    u16 state = 0xFF;
+    FpgaResponseReg10Union responseReg;
 
     
-    servFpgaRegisterRead(chanNum, ADDR_FPGA_DDR_STAT, &state);
+    servFpgaRegisterRead(chanNum, SERV_FPGA_RESPONSE_REG_10, &responseReg.regValue);
 
-    if((state>>2)&0x01 == 0x01)
+    if (responseReg.regBitFiled.waveDataReady)
     {
         return 0;
     }
@@ -815,131 +704,32 @@ s32 servFPGA_State_If_Run_Allow(u8 chanNum)
 
 
 /*********************************************************************************************
-函 数 名: servFPGA_State_If_DDR_Init
-实现功能: 获取DDR状态是否已经初始化
+函 数 名: servFpgaDDRWriteSet
+实现功能: 
 输入参数: 
-          
-输出参数:
-            
-返 回 值: 0
+输出参数:   
+返 回 值: 
 说    明: 
 *********************************************************************************************/
-s32 servFPGA_State_If_DDR_Init(u8 chanNum)
+void servFpgaDDRWriteSet(DDRWriteEnum ddrWrite)
 {
-    u16 state = 0xFF;
-
-    
-    servFpgaRegisterRead(chanNum, ADDR_FPGA_DDR_STAT, &state);
-
-    if((state)&0x01 == 0x01)
-    {
-        return 0;
-    }
-    else
-    {
-        return -1;
-    }
-
+    fpgaRegValue.register27.regBitFiled.wrDdrFinish = ddrWrite;
+    servFpgaRegisterWrite(CH_SYS, SERV_FPGA_CONFIG_REG_27, fpgaRegValue.register27.regValue);
 }
 
 
 /*********************************************************************************************
-函 数 名: servFPGA_PWM_Len_Set
-实现功能: 配置逻辑要执行的波表的长度
+函 数 名: servFpgaDDRDataTypeSet
+实现功能: 通过FPGA配置驱动时钟
 输入参数: 
-          
-输出参数:
-            
-返 回 值: 0
+输出参数:   
+返 回 值: 
 说    明: 
-          
 *********************************************************************************************/
-void servFPGA_PWM_Len_Set(u8 chanNum, u32 len)
+void servFpgaDDRDataTypeSet(u8 chanNum, WaveDataTypeEnum dateType)
 {
-    servFpgaRegisterWrite(chanNum, SERV_FPGA_WT_LENGTH_L_REG, (u16)len);
-    servFpgaRegisterWrite(chanNum, SERV_FPGA_WT_LENGTH_H_REG, (u16)(len >> 16));
-}
-
-
-/*********************************************************************************************
-函 数 名: servFPGA_PWM_Cycle_Set
-实现功能: 配置逻辑要执行的波表的循环次数
-输入参数: 
-          
-输出参数:
-            
-返 回 值: 0
-说    明: 
-          下发的数据等于波表长度*2
-*********************************************************************************************/
-void servFPGA_PWM_Cycle_Set(u8 chanNum, u32 times)
-{
-    servFpgaRegisterWrite(chanNum, SERV_FPGA_WT_CYCLE_NUM_L_REG, (u16)times);
-    servFpgaRegisterWrite(chanNum, SERV_FPGA_WT_CYCLE_NUM_H_REG, (u16)(times >> 16));
-}
-
-
-/*********************************************************************************************
-函 数 名: servFPGA_DDR_WR_Start_Flag
-实现功能: 向逻辑寄存器写入标志 告知开始写入
-输入参数: 
-          
-输出参数:
-            
-返 回 值: 0
-说    明: 
-         bit0 写之前清零,写完成后置1
-*********************************************************************************************/
-void servFPGA_DDR_WR_Start_Flag(void)
-{
-    servFpgaRegisterWrite(0, ADDR_FPGA_DDR_WAVE_WRITE_CTRL, 0);    //FOR MODIFY NICK
-}
-
-/*********************************************************************************************
-函 数 名: servFPGA_DDR_WR_End_Flag
-实现功能: 向逻辑寄存器写入标志 告知写入完成
-输入参数: 
-          
-输出参数:
-            
-返 回 值: 0
-说    明: 
-         bit0 写之前清零,写完成后置1
-*********************************************************************************************/
-void servFPGA_DDR_WR_End_Flag(void)
-{
-    servFpgaRegisterWrite(0, ADDR_FPGA_DDR_WAVE_WRITE_CTRL, 1);    //FOR MODIFY NICK
-}
-
-/*********************************************************************************************
-函 数 名: servFPGA_DDR_Data_Type_Set
-实现功能: 配置即将写入的数据类型
-输入参数: 
-          euWaveDataType euType:
-                                    WAVE_DATA = 0,      //写入的是波表
-                                    ENCODER_DATA = 1    //写入的是编码器校准系数
-          
-输出参数:
-            
-返 回 值: 0
-说    明: 
-         
-*********************************************************************************************/
-void servFPGA_DDR_Data_Type_Set(u8 chanNum, euWaveDataType euType)
-{
-    u16 data = 3 ;
-
-    
-    if (euType == ENCODER_DATA)
-    {
-        data = 2;
-    }
-    else
-    {
-        data = 1;
-    }
-
-    servFpgaRegisterWrite(chanNum, ADDR_FPGA_DDR_WAVE_TYPE, data);
+    fpgaRegValue.register23[chanNum].regBitFiled.waveType = dateType;
+    servFpgaRegisterWrite(chanNum, SERV_FPGA_CONFIG_REG_23, fpgaRegValue.register23[chanNum].regValue);
 }
 
 
@@ -962,35 +752,35 @@ void servFPGA_DDR_Data_Type_Set(u8 chanNum, euWaveDataType euType)
 *********************************************************************************************/
 RunStatenum servFpgaRunStateGet(u8 chanNum)
 {
-    u16 tmpReg = 0;
+    FpgaResponseReg10Union responseReg;
 
     
-    servFpgaRegisterRead(chanNum, SERV_FPGA_DDR_MOTOR_STATE_REG, &tmpReg);
+    servFpgaRegisterRead(chanNum, SERV_FPGA_RESPONSE_REG_10, &responseReg.regValue);
 
-    tmpReg &= SERV_FPGA_RUN_STATE_MASK;
+    switch (responseReg.regBitFiled.waveState)
+    {
+        case WAVESTATE_IDLE1:
+        case WAVESTATE_IDLE2:
+            return RUNSTETE_NORUN;
+          break;
 
-    if ((SERV_FPGA_RUN_STATE_NORUN1 == tmpReg) || (SERV_FPGA_RUN_STATE_NORUN2 == tmpReg))
-    {
-        return RUNSTETE_NORUN;
-    }
-    else if ((SERV_FPGA_RUN_STATE_RUN1 == tmpReg) || (SERV_FPGA_RUN_STATE_RUN2 == tmpReg))
-    {
-        return RUNSTETE_RUN;
+        case WAVESTATE_SD:
+            return RUNSTETE_SD;
+          break;
+          
+        case WAVESTATE_OUTP1:
+        case WAVESTATE_OUTP2:
+            return RUNSTETE_RUN;
+          break;
 
-    }
-    else if (SERV_FPGA_RUN_STATE_SD == tmpReg)
-    {
-        return RUNSTETE_SD;
-    }
-    else if (SERV_FPGA_RUN_STATE_HOLD == tmpReg)
-    {
-        return RUNSTETE_HOLD;
-    }
-    else
-    {
-        return RUNSTETE_ERROR;
-    }
+        case WAVESTATE_HOLD:
+            return RUNSTETE_HOLD;
+          break;
 
+        default:
+            return RUNSTETE_ERROR;
+          break;
+    }
 }
 
 
@@ -1011,167 +801,63 @@ void servFPGA_Cycle_Cnt_Get(u8 chanNum, u32 *times)
     u16 data_L = 0;
     u16 data_H = 0;
     
-    servFpgaRegisterRead(chanNum, ADDR_FPGA_CYC_CNT_L, &data_L);
-    servFpgaRegisterRead(chanNum, ADDR_FPGA_CYC_CNT_H, &data_H);
+    servFpgaRegisterRead(chanNum, SERV_FPGA_RESPONSE_REG_22, &data_L);
+    servFpgaRegisterRead(chanNum, SERV_FPGA_RESPONSE_REG_23, &data_H);
     
     *times = (data_H<<16)|data_L + 1;
 }
 
 
 /*********************************************************************************************
-函 数 名: servFPGA_PWM_Stop
-实现功能: 通知逻辑停止产生PWM
-输入参数:     
-              
+函 数 名: servFpgaWaveWritableSizeRead
+实现功能: 
+输入参数: 
+输出参数:   
+返 回 值: 
+说    明: 首先从逻辑获取逻辑还未输出的波表数据的个数,
+          然后用FIFO总空间数-未输出个数 = 还可以写入的波表个数
+*********************************************************************************************/
+u32 servFpgaWaveWritableSizeRead(u8 chanNum, u32 totalSize)
+{
+    u16 regValue    = 0;
+    u32 remainPoint = 0;
+    
+    servFpgaRegisterRead(chanNum, SERV_FPGA_RESPONSE_REG_03, &regValue);//FIFO遗留数据 低16bit
+    remainPoint = regValue;
+
+    regValue = 0;
+    servFpgaRegisterRead(chanNum, SERV_FPGA_RESPONSE_REG_04, &regValue);//FIFO遗留数据 高16bit
+    remainPoint += (regValue << 16) & 0xFFFF0000;
+
+    return (totalSize - remainPoint);
+}
+
+
+/*********************************************************************************************
+函 数 名: servFpgaWaveDataStateRead
+实现功能: 获取DDR状态是否可以开始执行 DDR 产生PWM
+输入参数: 
+          
 输出参数:
             
 返 回 值: 0
-说    明: 在运行过程中需要停止  或者  开始预取数据之前  都要发送停止命令
-*********************************************************************************************/
-void servFPGA_PWM_Reset(u8 chanNum)
-{
-    fpgaRegValue.waveTableCtrlReg[chanNum] |= SERV_FPGA_WAVE_STOP;
-    
-    servFpgaRegisterWrite(chanNum, SERV_FPGA_WT_CTRL_REG, fpgaRegValue.waveTableCtrlReg[chanNum]);
-    
-    fpgaRegValue.waveTableCtrlReg[chanNum] &= ~SERV_FPGA_WAVE_STOP;
-}
-
-
-/*********************************************************************************************
-函 数 名: servFPGA_PWM_FIFO_Left
-实现功能: 获取FIFO剩余空间
-输入参数: 
-          u32      u32Total:FIFO总大小
-输出参数:
-            
-返 回 值: 
 说    明: 
-         首先从逻辑获取逻辑还未输出的波表数据的个数,
-         然后用FIFO总空间数-未输出个数 = 还可以写入的波表个数
 *********************************************************************************************/
-u32 servFPGA_PWM_FIFO_Left(u8 chanNum, u32 u32Total)
+u8 servFpgaSdioWrErrorRead(void)
 {
-    u16 tmp = 0;
-    u32 u32Occupy = 0;
+    FpgaResponseReg06Union responseReg;
+
     
-    servFpgaRegisterRead(chanNum, ADDR_FPGA_DDR_WAVE_FIFO_OCCUPY_L, &tmp);//FIFO遗留数据 低16bit
-    u32Occupy = tmp;
+    servFpgaRegisterRead(CH_SYS, SERV_FPGA_RESPONSE_REG_06, &responseReg.regValue);
 
-    tmp = 0;
-    servFpgaRegisterRead(chanNum, ADDR_FPGA_DDR_WAVE_FIFO_OCCUPY_H, &tmp);//FIFO遗留数据 高16bit
-    u32Occupy |= (tmp<<16)&0xFFFF0000;
-
-    return u32Total-u32Occupy;
-}
-
-
-/*********************************************************************************************
-函 数 名: servSetFpgaMultiSyncFunc
-实现功能: 启动源设置：开始输出波表（S/D信号）的条件/触发源，(位域[6:4]在逻辑上没有限制关系，可同时有效,但在上层需要互斥操作)，只要满足其中1项条件，就输出S/D。
-          多机同步设置
-输入参数: trigSource:触发源选择(0:软件触发,1:硬件触发,2:CAN总线触发)      
-输出参数:   
-返 回 值: 
-说    明: xyzheng add 2017-04-01
-*********************************************************************************************/
-void servSetFpgaMultiSyncFunc(MultiSyncFuncEnum enFunc)
-{
-#if 0  //只用于测试,没有互斥操作,可同时使能多个触发源 
-    switch(trigSource)
-    {
-    case MULTI_SYNC_TRIG_SRC_SW:
-        fpgaRegValue.waveTableModeReg &= ~0x01<<4;
-        fpgaRegValue.waveTableModeReg |=  0x01<<4;
-        break;
-    case MULTI_SYNC_TRIG_SRC_HW:
-        fpgaRegValue.waveTableModeReg &= ~0x01<<5;
-        fpgaRegValue.waveTableModeReg |=  0x01<<5;
-        break;
-    case MULTI_SYNC_TRIG_SRC_CAN:
-        fpgaRegValue.waveTableModeReg &= ~0x01<<6;
-        fpgaRegValue.waveTableModeReg |=  0x01<<6;
-        break;
-    default:
-        return;
-    }
-#else //加入互斥,只能选择一个功能
-    switch(enFunc)
-    {
-    case MULTI_SYNC_TRIG_SRC_OFF:
-       fpgaRegValue.waveTableModeReg[0] &= ~0x77<<4;
-       break;
-    case MULTI_SYNC_TRIG_SRC_SW:
-       fpgaRegValue.waveTableModeReg[0] &= ~0x77<<4;
-       fpgaRegValue.waveTableModeReg[0] |=  0x01<<4;
-       break;
-    case MULTI_SYNC_TRIG_SRC_HW:
-       fpgaRegValue.waveTableModeReg[0] &= ~0x77<<4;
-       fpgaRegValue.waveTableModeReg[0] |=  0x01<<5;
-       break;
-    case MULTI_SYNC_TRIG_SRC_CAN:
-       fpgaRegValue.waveTableModeReg[0] &= ~0x77<<4;
-       fpgaRegValue.waveTableModeReg[0] |=  0x01<<6;
-       break;
-    case MULTI_SYNC_START:
-       fpgaRegValue.waveTableModeReg[0] &= ~0x77<<4;
-       fpgaRegValue.waveTableModeReg[0] |=  0x01<<9;
-       break;
-    case MULTI_SYNC_END:
-       fpgaRegValue.waveTableModeReg[0] &= ~0x77<<4;
-       fpgaRegValue.waveTableModeReg[0] |=  0x01<<10;
-       break;
-    case MULTI_SYNC_RST:
-       fpgaRegValue.waveTableModeReg[0] &= ~0x01<<8;
-       fpgaRegValue.waveTableModeReg[0] |=  0x01<<8;
-       break;
-    default:
-       fpgaRegValue.waveTableModeReg[0] &= ~0x77<<4;
-       fpgaRegValue.waveTableModeReg[0] |=  0x01<<4; //默认为软件触发
-       return;
-    }
-#endif
-
-    servFpgaRegisterWrite(0, SERV_FPGA_WT_MODE_REG, fpgaRegValue.waveTableModeReg[0]);    //FOR MODIFY NICK
-}
-
-
-/*********************************************************************************************
-函 数 名: servGetFpgaMultiSyncFunc
-实现功能: 多机同步配置
-输入参数: 
-输出参数:   
-返 回 值: 
-说    明: xyzheng add 2017-04-01
-*********************************************************************************************/
-int servGetFpgaMultiSyncFunc(void)
-{
-    if((fpgaRegValue.waveTableModeReg[0]>>0x06) & 0x01)
-    {
-         return MULTI_SYNC_TRIG_SRC_CAN;
-    }
-    else if((fpgaRegValue.waveTableModeReg[0]>>0x04) & 0x01)
-    {
-         return MULTI_SYNC_TRIG_SRC_SW;
-    }
-    else if((fpgaRegValue.waveTableModeReg[0]>>0x05) & 0x01)
-    {
-        return MULTI_SYNC_TRIG_SRC_HW;
-    }
-    else if((fpgaRegValue.waveTableModeReg[0]>>0x09) & 0x01)
-    {
-        return MULTI_SYNC_START;
-    }
-    else if((fpgaRegValue.waveTableModeReg[0]>>0x0a) & 0x01)
-    {
-        return MULTI_SYNC_END;
-    }
-    return -1;
+    return responseReg.regBitFiled.sdioWrError;
 }
 
 
 #if 0
 #endif
+
+
 /*********************************************************************************************
 函 数 名: servFpgaDioStatusRead
 实现功能: 读取数字端口电平
@@ -1332,9 +1018,9 @@ void servFpgaDigitalOutSet(DoutNumEnum dIONum, DigitalOutManageStruct digitalIO)
     {
         levelState = (LevelStatusEnum)digitalIO.polarity;
     }
-    else
+    else    //关闭时配成高电平表示处于Uart的Tx模式
     {
-        levelState = (LevelStatusEnum)(DIOPOLARITY_P - digitalIO.polarity);
+        levelState = LEVEL_HIGH;
     }
 
     servFpgaDigitalOutLevelSet(dIONum, levelState);
@@ -1488,7 +1174,13 @@ void servFpgaTriggerFilterSet(u8 chanNum, TrigInPinEnum trigInPin, f32 sPeriod)
 #ifdef PROJECT_GELGOOG
 
         case TRIGPIN_DIL:
+#if GELGOOG_AXIS_10
+            //临时处理下 for debug 
+            servFpgaRegisterWrite(chanNum, 52, registerValue);
+#else
+
             servFpgaRegisterWrite(chanNum, SERV_FPGA_DI4_X3_FILTER_REG, registerValue);
+#endif
           break;
 
         case TRIGPIN_DIR:
@@ -1546,7 +1238,7 @@ void servFpgaTriggerSet(u8 chanNum, TrigInManageStruct trigInInfo, EncoderChanEn
         else
         {
             fpgaRegValue.waveTableCtrlReg[chanNum] |= SERV_FPGA_SD_SRC_DIO_ENABLE;    //使能数字触发
-            servFpgaRegisterWrite(chanNum, SERV_FPGA_WT_CTRL_REG, fpgaRegValue.waveTableCtrlReg[chanNum]);
+            servFpgaRegisterWrite(chanNum, SERV_FPGA_CONFIG_REG_32, fpgaRegValue.register32[chanNum].regValue);
             
             switch (trigInInfo.pattResponse)
             {
@@ -1564,7 +1256,7 @@ void servFpgaTriggerSet(u8 chanNum, TrigInManageStruct trigInInfo, EncoderChanEn
                 
                     //设置中断
                     fpgaRegValue.interruptSrcReg[chanNum] |= SERV_FPGA_ALARM_INT_ENABLE;
-                    servFpgaRegisterWrite(chanNum, SERV_FPGA_INT_SRC_REG, fpgaRegValue.interruptSrcReg[chanNum]);
+                    servFpgaRegisterWrite(chanNum, SERV_FPGA_CONFIG_REG_50, fpgaRegValue.interruptSrcReg[chanNum]);
                   break;
                   
                 case RESPONSE_STOP:
@@ -1578,7 +1270,7 @@ void servFpgaTriggerSet(u8 chanNum, TrigInManageStruct trigInInfo, EncoderChanEn
                     
                     //设置中断
                     fpgaRegValue.interruptSrcReg[chanNum] |= SERV_FPGA_STOP_INT_ENABLE;
-                    servFpgaRegisterWrite(chanNum, SERV_FPGA_INT_SRC_REG, fpgaRegValue.interruptSrcReg[chanNum]);
+                    servFpgaRegisterWrite(chanNum, SERV_FPGA_CONFIG_REG_50, fpgaRegValue.interruptSrcReg[chanNum]);
                   break;
                   
                 case RESPONSE_ALARMSTOP:
@@ -1593,7 +1285,7 @@ void servFpgaTriggerSet(u8 chanNum, TrigInManageStruct trigInInfo, EncoderChanEn
                     
                     //设置中断
                     fpgaRegValue.interruptSrcReg[chanNum] |= SERV_FPGA_STOP_INT_ENABLE | SERV_FPGA_ALARM_INT_ENABLE;
-                    servFpgaRegisterWrite(chanNum, SERV_FPGA_INT_SRC_REG, fpgaRegValue.interruptSrcReg[chanNum]);
+                    servFpgaRegisterWrite(chanNum, SERV_FPGA_CONFIG_REG_50, fpgaRegValue.interruptSrcReg[chanNum]);
                   break;
                   
                 /*case RESPONSE_RUN:    //目前不支持RUN
@@ -1659,11 +1351,11 @@ void servFpgaTriggerSet(u8 chanNum, TrigInManageStruct trigInInfo, EncoderChanEn
             servFpgaRegisterWrite(chanNum, SERV_FPGA_TRIG_REL_REG, fpgaRegValue.trigRelatRefCfgReg[chanNum]);
             
             //设置中断
-            fpgaRegValue.interruptSrcReg[chanNum] |= SERV_FPGA_ALARM_INT_ENABLE;
-            servFpgaRegisterWrite(chanNum, SERV_FPGA_INT_SRC_REG, fpgaRegValue.interruptSrcReg[chanNum]);
+            fpgaRegValue.register50[chanNum].regBitFiled.alarm = INT_ENABLE;
+            servFpgaRegisterWrite(chanNum, SERV_FPGA_CONFIG_REG_50, fpgaRegValue.register50[chanNum].regValue);
             
-            fpgaRegValue.waveTableCtrlReg[chanNum] |= SERV_FPGA_SD_SRC_DIO_ENABLE;    //使能数字触发
-            servFpgaRegisterWrite(chanNum, SERV_FPGA_WT_CTRL_REG, fpgaRegValue.waveTableCtrlReg[chanNum]);
+            fpgaRegValue.register32[chanNum].regBitFiled.sdSrcHard = BITOPT_ENABLE;
+            servFpgaRegisterWrite(chanNum, SERV_FPGA_CONFIG_REG_32, fpgaRegValue.register32[chanNum].regValue);
         }
 
         //再配置STOP寄存器
@@ -1681,32 +1373,16 @@ void servFpgaTriggerSet(u8 chanNum, TrigInManageStruct trigInInfo, EncoderChanEn
 
             //设置触发条件逻辑关系
             fpgaRegValue.trigRelatRefCfgReg[chanNum] |= SERV_FPGA_STOP_OPR_OR;
-        
-#ifdef PROJECT_GELGOOG
-            /*if (SENSOR_ON == trigInInfo.levelState[TRIGPIN_DIR])
-            {
-                //根据编码器选择模式
-                if (ECCHAN_3 == encChan)  
-                {
-                    fpgaRegValue.trigRelatRefCfgReg[chanNum] &= ~SERV_FPGA_REF_SELECT_MASK;
-                    fpgaRegValue.trigRelatRefCfgReg[chanNum] |= SERV_FPGA_REF_CH4_ENC_TRIPLE;
-                }
-                else
-                {
-                    fpgaRegValue.trigRelatRefCfgReg[chanNum] &= ~SERV_FPGA_REF_SELECT_MASK;
-                    fpgaRegValue.trigRelatRefCfgReg[chanNum] |= SERV_FPGA_REF_CH4_ENC_SINGLE;
-                }
-            }*/
-#endif
+
             servFpgaRegisterWrite(chanNum, SERV_FPGA_TRIG_REL_REG, fpgaRegValue.trigRelatRefCfgReg[chanNum]);
             
             //设置中断
-            fpgaRegValue.interruptSrcReg[chanNum] |= SERV_FPGA_STOP_INT_ENABLE;
-            servFpgaRegisterWrite(chanNum, SERV_FPGA_INT_SRC_REG, fpgaRegValue.interruptSrcReg[chanNum]);
+            fpgaRegValue.register50[chanNum].regBitFiled.trigger = INT_ENABLE;
+            servFpgaRegisterWrite(chanNum, SERV_FPGA_CONFIG_REG_50, fpgaRegValue.register50[chanNum].regValue);
 
             //临时配置，后面修改成专门的函数来设置    NICK MARK
-            fpgaRegValue.waveTableCtrlReg[chanNum] |= SERV_FPGA_SD_SRC_DIO_ENABLE;    //使能数字触发
-            servFpgaRegisterWrite(chanNum, SERV_FPGA_WT_CTRL_REG, fpgaRegValue.waveTableCtrlReg[chanNum]);
+            fpgaRegValue.register32[chanNum].regBitFiled.sdSrcHard = BITOPT_ENABLE;
+            servFpgaRegisterWrite(chanNum, SERV_FPGA_CONFIG_REG_32, fpgaRegValue.register32[chanNum].regValue);
         }
     }
 }
@@ -1724,14 +1400,14 @@ void servFpgaWaveEndIntSet(u8 chanNum, bool bEnable)
 {
     if (bEnable)
     {
-        fpgaRegValue.interruptSrcReg[chanNum] |= SERV_FPGA_WAVE_END_INT_ENABLE;
+        fpgaRegValue.register50[chanNum].regBitFiled.waveEnd = INT_ENABLE;
     }
     else
     {
-        fpgaRegValue.interruptSrcReg[chanNum] &= ~SERV_FPGA_WAVE_END_INT_ENABLE;
+        fpgaRegValue.register50[chanNum].regBitFiled.waveEnd = INT_DISABLE;
     }
-
-    servFpgaRegisterWrite(chanNum, SERV_FPGA_INT_SRC_REG, fpgaRegValue.interruptSrcReg[chanNum]);
+    
+    servFpgaRegisterWrite(chanNum, SERV_FPGA_CONFIG_REG_50, fpgaRegValue.register50[chanNum].regValue);
 }
 
 
@@ -1743,14 +1419,9 @@ void servFpgaWaveEndIntSet(u8 chanNum, bool bEnable)
 返 回 值: 
 说    明: CJ 2017.06.26 Add
 *********************************************************************************************/
-u16 servFpgaIntrSourceGet(u8 chanNum)
+u8 servFpgaIntrSourceGet(u8 chanNum, u16 *intrSrcValue)
 {
-    u16 intrSrcValue;
-    
-    
-    servFpgaRegisterRead(chanNum, SERV_FPGA_INTERRUPT_SRC_REG, &intrSrcValue);
-
-    return intrSrcValue;
+    return servFpgaRegisterRead(chanNum, SERV_FPGA_INTERRUPT_SRC_REG, intrSrcValue);
 }
 
 
@@ -1810,20 +1481,14 @@ void servFpgaDistStopModeSet(u8 chanNum, StopConfigStruct stopConfigInfo)
 *********************************************************************************************/
 void servFpgaStopDecelSet(u8 chanNum, StopConfigStruct stopConfigInfo)
 {
-    //StopConfigStruct holdStopConfigInfo;
-
-
-    fpgaRegValue.waveTableCtrlReg[chanNum] &= ~SERV_FPGA_STOP_DECEL_MASK;    //域复位
-
-
-    //默认使能停止动作的触发源为波表结束
-    fpgaRegValue.waveTableCtrlReg[chanNum] |= SERV_FPGA_SD_SRC_WAVE_END_ENABLE;
+    fpgaRegValue.register32[chanNum].regBitFiled.stopDecType = SDTYPE_NONE;
+    fpgaRegValue.register32[chanNum].regBitFiled.sdSrcEnd    = BITOPT_ENABLE;
 
     switch (stopConfigInfo.stopMode)
     {
         case STOPMODE_IMMED: 
-            fpgaRegValue.waveTableCtrlReg[chanNum] &= ~SERV_FPGA_SD_SRC_WAVE_END_ENABLE;    //禁止急停减速，直接停止   
-            fpgaRegValue.waveTableCtrlReg[chanNum] |= SERV_FPGA_SD_IMMED_ENABLE;            //减速方式立即停止
+            fpgaRegValue.register32[chanNum].regBitFiled.stopDecType = SDTYPE_IMMED;      //减速方式立即停止
+            fpgaRegValue.register32[chanNum].regBitFiled.sdSrcEnd    = BITOPT_DISABLE;    //禁止急停减速，直接停止
           break;
           
         /*case STOPMODE_HOLD:
@@ -1840,7 +1505,7 @@ void servFpgaStopDecelSet(u8 chanNum, StopConfigStruct stopConfigInfo)
             //目前按距离减速的方式是在波表计算过程中，统计周期最小值，
             //然后在这里安装最小值和阈值的差值以及要求的距离计算周期增量
             //后续等FPGA修改好了之后再改    NICK MARK
-            fpgaRegValue.waveTableCtrlReg[chanNum] |= SERV_FPGA_SD_SLOPE_ENABLE;
+            fpgaRegValue.register32[chanNum].regBitFiled.stopDecType = SDTYPE_SPEED;
 
             servFpgaDistStopModeSet(chanNum, stopConfigInfo);
           break;
@@ -1859,7 +1524,7 @@ void servFpgaStopDecelSet(u8 chanNum, StopConfigStruct stopConfigInfo)
           break;
     }
 
-    servFpgaRegisterWrite(chanNum, SERV_FPGA_WT_CTRL_REG, fpgaRegValue.waveTableCtrlReg[chanNum]);
+    servFpgaRegisterWrite(chanNum, SERV_FPGA_CONFIG_REG_32, fpgaRegValue.register32[chanNum].regValue);
 }
 
 
@@ -1873,14 +1538,14 @@ void servFpgaStopDecelSet(u8 chanNum, StopConfigStruct stopConfigInfo)
 *********************************************************************************************/
 void servFpgaWaveHoldSet(u8 chanNum, bool waveHold)
 {
-    fpgaRegValue.waveTableCtrlReg[chanNum] &= ~SERV_FPGA_WAVE_HOLD_MASK;    //域复位
+    fpgaRegValue.register32[chanNum].regBitFiled.waveHoldSrc = WHSRC_NONE;
 
     if (waveHold)
     {
-        fpgaRegValue.waveTableCtrlReg[chanNum] |= SERV_FPGA_WH_SRC_WAVE_END_ENABLE;
+        fpgaRegValue.register32[chanNum].regBitFiled.waveHoldSrc = WHSRC_END;
     }
 
-    servFpgaRegisterWrite(chanNum, SERV_FPGA_WT_CTRL_REG, fpgaRegValue.waveTableCtrlReg[chanNum]);
+    servFpgaRegisterWrite(chanNum, SERV_FPGA_CONFIG_REG_32, fpgaRegValue.register32[chanNum].regValue);
 }
 
 
@@ -1922,17 +1587,16 @@ void servFpgaEndStateSet(u8 chanNum, EndStateEnum endState, StopConfigStruct sto
 *********************************************************************************************/
 void servFpgaWaveWorkModeSet(u8 chanNum, WaveWorkModeEnum waveWorkMode)
 {
-    fpgaRegValue.waveTableModeReg[chanNum] &= ~SERV_FPGA_WT_MODE_MASK; //清除工作模式
     if (WTWORKMODE_FIFO == waveWorkMode)
     {
-        fpgaRegValue.waveTableModeReg[chanNum] |= SERV_FPGA_WT_MODE_FIFO_ENABLE; 
+        fpgaRegValue.register31[chanNum].regBitFiled.waveStopMode = WSTOPMODE_FIFO; 
     }
     else if (WTWORKMODE_CYCLE == waveWorkMode)
     {
-        fpgaRegValue.waveTableModeReg[chanNum] |= SERV_FPGA_WT_MODE_CYCLE_ENABLE; 
+        fpgaRegValue.register31[chanNum].regBitFiled.waveStopMode = WSTOPMODE_CYCLE; 
     }
 
-    servFpgaRegisterWrite(chanNum, SERV_FPGA_WT_MODE_REG, fpgaRegValue.waveTableModeReg[chanNum]);
+    servFpgaRegisterWrite(chanNum, SERV_FPGA_CONFIG_REG_31, fpgaRegValue.register31[chanNum].regValue);
 }
 
 
@@ -1946,27 +1610,9 @@ void servFpgaWaveWorkModeSet(u8 chanNum, WaveWorkModeEnum waveWorkMode)
 *********************************************************************************************/
 void servFpgaWaveModifyDutySet(u8 chanNum, ModifyDutyEnum modifyDuty)
 {  
-    //清除调整占比
-    fpgaRegValue.waveTableModeReg[chanNum] &= ~SERV_FPGA_WT_LVT_TIME_MASK;    
-    
-    if (MDUTY_1000 == modifyDuty)
-    {
-        fpgaRegValue.waveTableModeReg[chanNum] |= SERV_FPGA_WT_LVT_TIME_1000; 
-    }
-    else if (MDUTY_500 == modifyDuty)
-    {
-        fpgaRegValue.waveTableModeReg[chanNum] |= SERV_FPGA_WT_LVT_TIME_500; 
-    }
-    else if (MDUTY_250 == modifyDuty)
-    {
-        fpgaRegValue.waveTableModeReg[chanNum] |= SERV_FPGA_WT_LVT_TIME_250; 
-    }
-    else if (MDUTY_125 == modifyDuty)
-    {
-        fpgaRegValue.waveTableModeReg[chanNum] |= SERV_FPGA_WT_LVT_TIME_125; 
-    }
+    fpgaRegValue.register31[chanNum].regBitFiled.lvtModify = modifyDuty; 
 
-    servFpgaRegisterWrite(chanNum, SERV_FPGA_WT_MODE_REG, fpgaRegValue.waveTableModeReg[chanNum]);
+    servFpgaRegisterWrite(chanNum, SERV_FPGA_CONFIG_REG_31, fpgaRegValue.register31[chanNum].regValue);
 }
 
 
@@ -2010,14 +1656,10 @@ void servFpgaWaveLineStepsSet(u8 chanNum, f32 lineSteps)
 *********************************************************************************************/
 void servFpgaWaveLineMultSet(u8 chanNum, u32 lineMult)
 {
-    //配置编码器线数倍乘
-    fpgaRegValue.encMultandCountReg[chanNum] &= ~SERV_FPGA_ENC_LINE_MULT_MASK;    //清除编码器线数的倍乘
-    fpgaRegValue.encMultandCountReg[chanNum] |= (lineMult - SERV_FPGA_ENC_LINE_MULT_OFFSET) 
-                                                 << SERV_FPGA_ENC_LINE_MULT_LSHIFT
-                                                 & SERV_FPGA_ENC_LINE_MULT_MASK;
+    //配置编码器反馈比
+    fpgaRegValue.register39[chanNum].regBitFiled.encDivSelect = lineMult - SERV_FPGA_ENC_LINE_MULT_OFFSET;
 
-    servFpgaRegisterWrite(chanNum, SERV_FPGA_ENCODER_RESET_REG, 
-                          fpgaRegValue.encMultandCountReg[chanNum]);
+    servFpgaRegisterWrite(chanNum, SERV_FPGA_CONFIG_REG_39, fpgaRegValue.register39[chanNum].regValue);
 }
 
 
@@ -2031,21 +1673,26 @@ void servFpgaWaveLineMultSet(u8 chanNum, u32 lineMult)
 *********************************************************************************************/
 void servFpgaWaveCalcModeSet(u8 chanNum, MotionModeEnum motionMode)
 {
-    fpgaRegValue.waveTableModeReg[chanNum] &= ~SERV_FPGA_WT_MOTION_MODE_MASK;    //清除运动模式
-    if (MTNMODE_PVT == motionMode)
+    switch (motionMode)
     {
-        fpgaRegValue.waveTableModeReg[chanNum] |= SERV_FPGA_WT_MTN_MODE_PVT; 
-    }
-    else if (MTNMODE_LVT_CORR == motionMode)
-    {
-        fpgaRegValue.waveTableModeReg[chanNum] |= SERV_FPGA_WT_MTN_MODE_LVT_VEL; 
-    }
-    else if (MTNMODE_LVT_NOCORR == motionMode)
-    {
-        fpgaRegValue.waveTableModeReg[chanNum] |= SERV_FPGA_WT_MTN_MODE_LVT_NOVEL; 
-    }
+        case MTNMODE_PVT:
+            fpgaRegValue.register31[chanNum].regBitFiled.motionMode = WMMODE_PVT;
+          break;
+          
+        case MTNMODE_LVT_CORR:
+            fpgaRegValue.register31[chanNum].regBitFiled.motionMode = WMMODE_LVT_CORR;
+          break;
+          
+        case MTNMODE_LVT_NOCORR:
+            fpgaRegValue.register31[chanNum].regBitFiled.motionMode = WMMODE_LVT_NOCORR;
+          break;
 
-    servFpgaRegisterWrite(chanNum, SERV_FPGA_WT_MODE_REG, fpgaRegValue.waveTableModeReg[chanNum]);
+        default:
+          break;
+          
+    }
+    
+    servFpgaRegisterWrite(chanNum, SERV_FPGA_CONFIG_REG_31, fpgaRegValue.register31[chanNum].regValue);
 }
 
 
@@ -2087,14 +1734,14 @@ void servFpgaWaveInit(u8 chanNum, WaveTableStruct waveTable)
 
 
 /*********************************************************************************************
-函 数 名: servFpgaWaveReset
+函 数 名: servFpgaWaveTableInit
 实现功能: 复位波表
 输入参数: 
 输出参数:   
 返 回 值: 
 说    明: CJ 2017.07.11 Add
 *********************************************************************************************/
-void servFpgaWaveReset(WaveTableStruct *pWaveTable, WaveWorkModeEnum waveWorkMode)
+void servFpgaWaveTableInit(WaveTableStruct *pWaveTable, WaveWorkModeEnum waveWorkMode)
 {
     pWaveTable->writableAddr = pWaveTable->startAddr;
     pWaveTable->writableSize = pWaveTable->totalSize;
@@ -2102,6 +1749,24 @@ void servFpgaWaveReset(WaveTableStruct *pWaveTable, WaveWorkModeEnum waveWorkMod
     pWaveTable->waveState = MTSTATE_IDLE;
     
     pWaveTable->waveWorkMode = waveWorkMode;
+}
+
+
+/*********************************************************************************************
+函 数 名: servFpgaWaveBufferReset
+实现功能: 预取前复位缓存
+输入参数: 
+输出参数:   
+返 回 值: 
+说    明: 
+*********************************************************************************************/
+void servFpgaWaveBufferReset(u8 chanNum)
+{
+    fpgaRegValue.register32[chanNum].regBitFiled.waveStop = BITOPT_ENABLE;
+    
+    servFpgaRegisterWrite(chanNum, SERV_FPGA_CONFIG_REG_32, fpgaRegValue.register32[chanNum].regValue);
+    
+    fpgaRegValue.register32[chanNum].regBitFiled.waveStop = BITOPT_DISABLE;
 }
 
 
@@ -2115,13 +1780,13 @@ void servFpgaWaveReset(WaveTableStruct *pWaveTable, WaveWorkModeEnum waveWorkMod
 *********************************************************************************************/
 void servFpgaWaveFifoReset(u8 chanNum)
 {
-    fpgaRegValue.waveTableCtrlReg[chanNum] |= SERV_FPGA_WAVE_FIFO_RESET;
-    fpgaRegValue.waveTableCtrlReg[chanNum] |= SERV_FPGA_WAVE_STOP;
+    fpgaRegValue.register32[chanNum].regBitFiled.waveReset = BITOPT_ENABLE;
+    fpgaRegValue.register32[chanNum].regBitFiled.waveStop  = BITOPT_ENABLE;
     
-    servFpgaRegisterWrite(chanNum, SERV_FPGA_WT_CTRL_REG, fpgaRegValue.waveTableCtrlReg[chanNum]);
-    
-    fpgaRegValue.waveTableCtrlReg[chanNum] &= ~SERV_FPGA_WAVE_FIFO_RESET;
-    fpgaRegValue.waveTableCtrlReg[chanNum] &= ~SERV_FPGA_WAVE_STOP;
+    servFpgaRegisterWrite(chanNum, SERV_FPGA_CONFIG_REG_32, fpgaRegValue.register32[chanNum].regValue);
+
+    fpgaRegValue.register32[chanNum].regBitFiled.waveReset = BITOPT_DISABLE;
+    fpgaRegValue.register32[chanNum].regBitFiled.waveStop  = BITOPT_DISABLE;
 }
 
 
@@ -2136,17 +1801,16 @@ void servFpgaWaveFifoReset(u8 chanNum)
 void servFpgaWaveWriteDdrAddrSet(u32 waveAddr)
 {
     u32 ddrAddr;
-    u16 addrL;
-    u16 addrH;
 
 
     //传入的是波表地址，和DDR地址的对应关系是ddrAddr = waveAddr * 4
     ddrAddr = waveAddr * FPGA_DDR_WAVE_TABLE_POINT_LEN;
-    addrL = (u16)(ddrAddr & 0xFFFF);
-    addrH = (u16)((ddrAddr >> 16) & 0x0FFF);
+    
+    fpgaRegValue.register24.regBitFiled.regData = (u16)(ddrAddr & 0xFFFF);
+    fpgaRegValue.register25.regBitFiled.regData = (u16)((ddrAddr >> 16) & 0x0FFF);
 
-    servFpgaRegisterWrite(CH_SYS, SERV_FPGA_WT_WRITE_ADDR_L_REG, addrL);
-    servFpgaRegisterWrite(CH_SYS, SERV_FPGA_WT_WRITE_ADDR_H_REG, addrH);
+    servFpgaRegisterWrite(CH_SYS, SERV_FPGA_CONFIG_REG_24, fpgaRegValue.register24.regValue);
+    servFpgaRegisterWrite(CH_SYS, SERV_FPGA_CONFIG_REG_25, fpgaRegValue.register25.regValue);
 }
 
 
@@ -2161,17 +1825,52 @@ void servFpgaWaveWriteDdrAddrSet(u32 waveAddr)
 void servFpgaWaveStartDdrAddrSet(u8 chanNum, u32 waveAddr)
 {
     u32 ddrAddr;
-    u16 addrL;
-    u16 addrH;
 
 
     //传入的是波表地址，和DDR地址的对应关系是ddrAddr = waveAddr * 4
     ddrAddr = waveAddr * FPGA_DDR_WAVE_TABLE_POINT_LEN;
-    addrL = (u16)(ddrAddr & 0xFFFF);
-    addrH = (u16)((ddrAddr >> 16) & 0x0FFF);
+    
+    fpgaRegValue.register33[chanNum].regBitFiled.regData = (u16)(ddrAddr & 0xFFFF);
+    fpgaRegValue.register34[chanNum].regBitFiled.regData = (u16)((ddrAddr >> 16) & 0x0FFF);
 
-    servFpgaRegisterWrite(chanNum, SERV_FPGA_WT_START_ADDR_L_REG, addrL);
-    servFpgaRegisterWrite(chanNum, SERV_FPGA_WT_START_ADDR_H_REG, addrH);
+    servFpgaRegisterWrite(chanNum, SERV_FPGA_CONFIG_REG_33, fpgaRegValue.register33[chanNum].regValue);
+    servFpgaRegisterWrite(chanNum, SERV_FPGA_CONFIG_REG_34, fpgaRegValue.register34[chanNum].regValue);
+}
+
+
+/*********************************************************************************************
+函 数 名: servFpgaWaveDateLenSet
+实现功能: 
+输入参数: 
+输出参数:   
+返 回 值: 
+说    明: 
+*********************************************************************************************/
+void servFpgaWaveDateLenSet(u8 chanNum, u32 len)
+{
+    fpgaRegValue.register35[chanNum].regBitFiled.regData = (u16)(len & 0xFFFF);
+    fpgaRegValue.register36[chanNum].regBitFiled.regData = (u16)(len >> 16);
+    
+    servFpgaRegisterWrite(chanNum, SERV_FPGA_CONFIG_REG_35, fpgaRegValue.register35[chanNum].regValue);
+    servFpgaRegisterWrite(chanNum, SERV_FPGA_CONFIG_REG_36, fpgaRegValue.register36[chanNum].regValue);
+}
+
+
+/*********************************************************************************************
+函 数 名: servFpgaWaveDateCycleSet
+实现功能: 
+输入参数: 
+输出参数:   
+返 回 值: 
+说    明: 
+*********************************************************************************************/
+void servFpgaWaveDateCycleSet(u8 chanNum, u32 cycleNum)
+{
+    fpgaRegValue.register37[chanNum].regBitFiled.regData = (u16)(cycleNum & 0xFFFF);
+    fpgaRegValue.register38[chanNum].regBitFiled.regData = (u16)(cycleNum >> 16);
+    
+    servFpgaRegisterWrite(chanNum, SERV_FPGA_CONFIG_REG_37, fpgaRegValue.register37[chanNum].regValue);
+    servFpgaRegisterWrite(chanNum, SERV_FPGA_CONFIG_REG_38, fpgaRegValue.register38[chanNum].regValue);
 }
 
 
@@ -2186,6 +1885,7 @@ void servFpgaWaveStartDdrAddrSet(u8 chanNum, u32 waveAddr)
 s32 servFpgaWaveDataWrite(u8 chanNum, OutputDataStruct *pOutputData, WaveTableStruct *pWaveTable)
 {
     static u8 lastChan = 0;
+    u8  txState = 0;
     s32 writeResult = 0;
 
 
@@ -2196,7 +1896,7 @@ s32 servFpgaWaveDataWrite(u8 chanNum, OutputDataStruct *pOutputData, WaveTableSt
         pWaveTable->waveState = MTSTATE_CALCING;
         
         //配置数据类型
-        servFPGA_DDR_Data_Type_Set(chanNum, WAVE_DATA);
+        servFpgaDDRDataTypeSet(chanNum, DATATYPE_WAVE);
 
         //初始化波表
         servFpgaWaveInit(chanNum, *pWaveTable);
@@ -2207,7 +1907,7 @@ s32 servFpgaWaveDataWrite(u8 chanNum, OutputDataStruct *pOutputData, WaveTableSt
             servFpgaWaveFifoReset(chanNum);
 
             //这一步理论上在预取的时候设置也是可行的，目前先按旧的流程设置，后续测试后再修改    NICK MARK
-            servFPGA_PWM_Len_Set(chanNum, pWaveTable->totalSize);
+            servFpgaWaveDateLenSet(chanNum, pWaveTable->totalSize);
         }
     }
     
@@ -2217,7 +1917,7 @@ s32 servFpgaWaveDataWrite(u8 chanNum, OutputDataStruct *pOutputData, WaveTableSt
         lastChan = chanNum;
 
         //配置数据类型
-        servFPGA_DDR_Data_Type_Set(chanNum, WAVE_DATA);
+        servFpgaDDRDataTypeSet(chanNum, DATATYPE_WAVE);
     }
 
     //读取逻辑状态，检测是否可以进行波表下发
@@ -2228,7 +1928,7 @@ s32 servFpgaWaveDataWrite(u8 chanNum, OutputDataStruct *pOutputData, WaveTableSt
     }
         
     //配置开始标志
-    servFPGA_DDR_WR_Start_Flag();  
+    servFpgaDDRWriteSet(DDRWR_START);
         
     //配置写入地址
     servFpgaWaveWriteDdrAddrSet(pWaveTable->writableAddr);
@@ -2245,7 +1945,7 @@ s32 servFpgaWaveDataWrite(u8 chanNum, OutputDataStruct *pOutputData, WaveTableSt
             servFpgaDataLenSet(FPGAACT_WRITE, pOutputData->validBytes, pOutputData->toSendBytes);
             pOutputData->lastSendBytes = pOutputData->toSendBytes;
         }
-        bspSdioDataSend((u8 *)&pOutputData->writeAddr, pOutputData->toSendBytes, pOutputData->toSendBlkSize);
+        txState = bspSdioDataSend((u8 *)&pOutputData->writeAddr, pOutputData->toSendBytes, pOutputData->toSendBlkSize);
 
         //更新波表可写地址和大小
         pWaveTable->writableAddr += pOutputData->validPoints;
@@ -2261,7 +1961,7 @@ s32 servFpgaWaveDataWrite(u8 chanNum, OutputDataStruct *pOutputData, WaveTableSt
                 servFpgaDataLenSet(FPGAACT_WRITE, pOutputData->validEmpBytes, pOutputData->emptyBytes);
                 pOutputData->lastSendBytes = pOutputData->toSendBytes;
             }
-            bspSdioDataSend((u8 *)&pOutputData->emptyDataAddr, pOutputData->emptyBytes, pOutputData->emptyBlkSize);
+            txState = bspSdioDataSend((u8 *)&pOutputData->emptyDataAddr, pOutputData->emptyBytes, pOutputData->emptyBlkSize);
 
             //更新波表可写地址和大小
             pWaveTable->writableAddr += pOutputData->validEmpPoints;
@@ -2272,18 +1972,18 @@ s32 servFpgaWaveDataWrite(u8 chanNum, OutputDataStruct *pOutputData, WaveTableSt
     }
     
     //配置结束标志
-    servFPGA_DDR_WR_End_Flag();
+    servFpgaDDRWriteSet(DDRWR_FINISH);
 
     //最后一帧数据
-    if (pOutputData->bLastFrame)
+    /*if (pOutputData->bLastFrame)
     {
         if (WTWORKMODE_FIFO != pWaveTable->waveWorkMode)
         {
             pWaveTable->waveState = MTSTATE_CALCEND;
         }
-    }
+    }*/
 
-    return writeResult;
+    return (writeResult | txState);
 }
 
 
@@ -2297,9 +1997,9 @@ s32 servFpgaWaveDataWrite(u8 chanNum, OutputDataStruct *pOutputData, WaveTableSt
 *********************************************************************************************/
 void servFpgaWavePrefetch(u8 chanNum)
 {
-    fpgaRegValue.waveTableCtrlReg[chanNum] |= SERV_FPGA_WAVE_PREFETCH;
+    fpgaRegValue.register32[chanNum].regBitFiled.wavePrepare = BITOPT_ENABLE;
 
-    servFpgaRegisterWrite(chanNum, SERV_FPGA_WT_CTRL_REG, fpgaRegValue.waveTableCtrlReg[chanNum]);  
+    servFpgaRegisterWrite(chanNum, SERV_FPGA_CONFIG_REG_32, fpgaRegValue.register32[chanNum].regValue);  
 }
 
 
@@ -2312,21 +2012,21 @@ void servFpgaWavePrefetch(u8 chanNum)
 说    明: CJ 2017.07.11 Add
 *********************************************************************************************/
 void servFpgaWaveEnable(u8 chanNum, bool outputEnable)
-{
-    fpgaRegValue.waveTableCtrlReg[chanNum] &= ~(SERV_FPGA_WAVE_PREFETCH      |
-                                                SERV_FPGA_WAVE_OUTPUT_ENABLE |
-                                                SERV_FPGA_WAVE_STOP); 
-                                          
+{                                                
+    fpgaRegValue.register32[chanNum].regBitFiled.wavePrepare = BITOPT_DISABLE;
+    fpgaRegValue.register32[chanNum].regBitFiled.waveOutput  = BITOPT_DISABLE;
+    fpgaRegValue.register32[chanNum].regBitFiled.waveStop    = BITOPT_DISABLE;
+    
     if (outputEnable)
     {
-        fpgaRegValue.waveTableCtrlReg[chanNum] |= SERV_FPGA_WAVE_OUTPUT_ENABLE;
+        fpgaRegValue.register32[chanNum].regBitFiled.waveOutput = BITOPT_ENABLE;
     }
     else
     {
-        fpgaRegValue.waveTableCtrlReg[chanNum] &= ~SERV_FPGA_WAVE_OUTPUT_ENABLE;
+        fpgaRegValue.register32[chanNum].regBitFiled.waveOutput = BITOPT_DISABLE;
     }
 
-    servFpgaRegisterWrite(chanNum, SERV_FPGA_WT_CTRL_REG, fpgaRegValue.waveTableCtrlReg[chanNum]);
+    servFpgaRegisterWrite(chanNum, SERV_FPGA_CONFIG_REG_32, fpgaRegValue.register32[chanNum].regValue);
 }
 
 
@@ -2340,11 +2040,11 @@ void servFpgaWaveEnable(u8 chanNum, bool outputEnable)
 *********************************************************************************************/
 void servFpgaWaveStart(void)
 {
-    fpgaRegValue.waveTableCtrlReg[0] |= SERV_FPGA_WAVE_ALL_RUN;
+    fpgaRegValue.register32[CH_SYS].regBitFiled.waveRunAll = BITOPT_ENABLE;
 
-    servFpgaRegisterWrite(0, SERV_FPGA_WT_CTRL_REG, fpgaRegValue.waveTableCtrlReg[0]);
+    servFpgaRegisterWrite(CH_SYS, SERV_FPGA_CONFIG_REG_32, fpgaRegValue.register32[CH_SYS].regValue);
     
-    fpgaRegValue.waveTableCtrlReg[0] &= ~SERV_FPGA_WAVE_ALL_RUN;
+    fpgaRegValue.register32[CH_SYS].regBitFiled.waveRunAll = BITOPT_DISABLE;
 }
 
 
@@ -2361,12 +2061,12 @@ void servFpgaWaveStop(u8 chanNum, StopConfigStruct stopConfigInfo)
     servFpgaStopDecelSet(chanNum, stopConfigInfo);    //临时设计，等FPGA保持设计好后再修改    NICK MARK
 
     //配置FPGA停止输出波表
-    fpgaRegValue.waveTableCtrlReg[chanNum] |= SERV_FPGA_SD_SRC_SOFT_ENABLE;
-    fpgaRegValue.waveTableCtrlReg[chanNum] &= ~SERV_FPGA_WAVE_OUTPUT_ENABLE;    //清除启动位
+    fpgaRegValue.register32[chanNum].regBitFiled.sdSrcSoft  = BITOPT_ENABLE;
+    fpgaRegValue.register32[chanNum].regBitFiled.waveOutput = BITOPT_DISABLE;    //清除启动位
     
-    servFpgaRegisterWrite(chanNum, SERV_FPGA_WT_CTRL_REG, fpgaRegValue.waveTableCtrlReg[chanNum]);
+    servFpgaRegisterWrite(chanNum, SERV_FPGA_CONFIG_REG_32, fpgaRegValue.register32[chanNum].regValue);
     
-    fpgaRegValue.waveTableCtrlReg[chanNum] &= ~SERV_FPGA_SD_SRC_SOFT_ENABLE;    //停止命令发送后本地状态必须复位  防止下次误配
+    fpgaRegValue.register32[chanNum].regBitFiled.sdSrcSoft = BITOPT_DISABLE;    //停止命令发送后本地状态必须复位  防止下次误配
 }
 
 
@@ -2387,12 +2087,82 @@ void servFpgaWaveEmergStop(u8 chanNum)
     servFpgaStopDecelSet(chanNum, stopConfigInfo);
     
     //配置FPGA停止输出波表
-    fpgaRegValue.waveTableCtrlReg[chanNum] |= SERV_FPGA_SD_SRC_SOFT_ENABLE;
-    fpgaRegValue.waveTableCtrlReg[chanNum] &= ~SERV_FPGA_WAVE_OUTPUT_ENABLE;    //清除启动位
+    fpgaRegValue.register32[chanNum].regBitFiled.sdSrcSoft  = BITOPT_ENABLE;
+    fpgaRegValue.register32[chanNum].regBitFiled.waveOutput = BITOPT_DISABLE;    //清除启动位
     
-    servFpgaRegisterWrite(chanNum, SERV_FPGA_WT_CTRL_REG, fpgaRegValue.waveTableCtrlReg[chanNum]);
+    servFpgaRegisterWrite(chanNum, SERV_FPGA_CONFIG_REG_32, fpgaRegValue.register32[chanNum].regValue);
     
-    fpgaRegValue.waveTableCtrlReg[chanNum] &= ~SERV_FPGA_SD_SRC_SOFT_ENABLE;    //停止命令发送后本地状态必须复位  防止下次误配    
+    fpgaRegValue.register32[chanNum].regBitFiled.sdSrcSoft = BITOPT_DISABLE;    //停止命令发送后本地状态必须复位  防止下次误配    
+}
+
+
+/*********************************************************************************************
+函 数 名: servFpgaWaveStopConfig
+实现功能: 无; 
+输入参数: 无;
+输出参数: 无;
+返 回 值: 无;
+说    明: 无;
+*********************************************************************************************/
+void servFpgaWaveStopConfig(StopConfigStruct *pWaveStopCofing, StopDecelerationStruct stopDecel, f32 posnToStep)
+{
+    u32 stopSteps;
+
+    
+    pWaveStopCofing->stopMode  = stopDecel.stopMode;
+    if (STOPMODE_DIST == stopDecel.stopMode)
+    {
+        stopSteps = (u32)(stopDecel.distance * posnToStep);
+        if (0 == stopSteps)
+        {
+            pWaveStopCofing->stopMode = STOPMODE_IMMED;
+        }
+        else
+        {
+            pWaveStopCofing->stopSteps = stopSteps;
+        }
+    }
+    pWaveStopCofing->stopTime  = stopDecel.time;
+    pWaveStopCofing->emergPeriod = EMERG_STOP_END_PERIOD;
+}
+
+
+/*********************************************************************************************
+函 数 名: servFpgaWavePrepareConfig
+实现功能: 无; 
+输入参数: 无;
+输出参数: 无;
+返 回 值: 无;
+说    明: 无;
+*********************************************************************************************/
+void servFpgaWavePrepareConfig(u8 chanNum, WaveTableStruct *pOutpWaveTable, PlanManageStruct wavePlanInfo, PosnConvertInfoStruct posnConvertInfo)
+{
+    //更新下减速停止的设置参数(对外接口和FPGA接口的数据格式不一样，需要转换下)
+    servFpgaWaveStopConfig(&(pOutpWaveTable->stopConfigInfo), wavePlanInfo.stopDecelInfo, posnConvertInfo.posnToStep);
+
+    //配置结束状态和减速停止
+    servFpgaEndStateSet(chanNum, wavePlanInfo.endState, pOutpWaveTable->stopConfigInfo);
+    
+    //配置波表结束中断
+    servFpgaWaveEndIntSet(chanNum, pOutpWaveTable->bEndIntEnable);
+    
+    //LVT相关设置
+    servFpgaWaveMotionModeSet(chanNum, 
+                              wavePlanInfo.motionMode,
+                              posnConvertInfo.lineSteps,
+                              posnConvertInfo.lineMult,
+                              wavePlanInfo.modifyDuty);
+
+    //丢步告警
+    servFpgaLineOutOfStepSet(chanNum, wavePlanInfo.outOfStepInfo.lineState,
+                                      posnConvertInfo.lineSteps,
+                                      wavePlanInfo.outOfStepInfo.lineOutNum);
+
+    //预取之前将波表的循环数配置下去
+    if (pOutpWaveTable->waveWorkMode != WTWORKMODE_FIFO)
+    {
+        servFpgaWaveDateCycleSet(chanNum, wavePlanInfo.cycleNum);
+    }
 }
 
 
@@ -2411,16 +2181,16 @@ bool servFpgaReadyQuery(u8 chanNum, WaveTableStruct waveTableAddr)
 
 
     //通知逻辑停止输出波表
-    servFPGA_PWM_Reset(chanNum);
+    servFpgaWaveBufferReset(chanNum);
 
     //配置波表起始地址和长度
     if (waveTableAddr.waveWorkMode != WTWORKMODE_FIFO)    
     {
-        servFPGA_PWM_Len_Set(chanNum, waveTableAddr.totalSize - waveTableAddr.writableSize);
+        servFpgaWaveDateLenSet(chanNum, waveTableAddr.totalSize - waveTableAddr.writableSize);
     }
     /*else    //理论上FIFO模式也可以在这里才设置长度，目前先按旧流程，等测试过了后再修改    NICK MARK
     {
-        servFPGA_PWM_Len_Set(waveTableAddr.totalSize);
+        servFpgaWaveDateLenSet(waveTableAddr.totalSize);
     }*/
 
     //设置波表起始地址
@@ -2432,7 +2202,7 @@ bool servFpgaReadyQuery(u8 chanNum, WaveTableStruct waveTableAddr)
     //查询是否可以开始
     do
     {
-        state = servFPGA_State_If_Run_Allow(chanNum); 
+        state = servFpgaWaveDataStateRead(chanNum); 
         times++;
 
         bspDelayMs(2);
@@ -2554,25 +2324,10 @@ void servFpgaEncoderSet(u8 chanNum, IntfcStateEnum encoderState, EncoderMultiEnu
                 else
                 {
                     fpgaRegValue.trigRelatRefCfgReg[chanNum] |= SERV_FPGA_REF_CH4_ENC_SINGLE;
-                }
-                
-#if FPGA_ARM_COUNT_ENCODER
-                bspEncoderTimerInit(chanNum, encMult, ENABLE);
-#endif
-
-#else   //#ifdef PROJECT_GELGOOG
+                }            
               
-#if QUBELEY_HARDVER_2
-                fpgaRegValue.encandUartReg &= ~SERV_FPGA_ENC_SELECT_MASK;
-                fpgaRegValue.encandUartReg |= SERV_FPGA_ENC_SELECT_DI145;
-                servFpgaRegisterWrite(CH_SYS, SERV_FPGA_ENC_AND_UART3_REG, fpgaRegValue.encandUartReg);
 #endif
-
-#if FPGA_ARM_COUNT_ENCODER
                 bspEncoderTimerInit(chanNum, encMult, ENABLE);
-#endif
-              
-#endif    //#ifdef PROJECT_GELGOOG
 
               break;
 
@@ -2585,43 +2340,40 @@ void servFpgaEncoderSet(u8 chanNum, IntfcStateEnum encoderState, EncoderMultiEnu
         if (bEncMult)
         {
             //设置编码器倍乘
-            fpgaRegValue.encMultandCountReg[chanNum] &= ~SERV_FPGA_ENC_MULT_MASK;
-
             switch (encMult)
             {
                 case ENCMULT_SINGLE:
-                    fpgaRegValue.encMultandCountReg[chanNum] |= SERV_FPGA_ENC_MULT_SINGLE;
+                    fpgaRegValue.register39[chanNum].regBitFiled.encMultSelect = EMSEL_NONE;
                   break;
 
                 case ENCMULT_DOUBLE:
-                    fpgaRegValue.encMultandCountReg[chanNum] |= SERV_FPGA_ENC_MULT_DOUBLE;
+                    fpgaRegValue.register39[chanNum].regBitFiled.encMultSelect = EMSEL_DOUBLE;
                   break;
 
                 case ENCMULT_QUADR:
-                    fpgaRegValue.encMultandCountReg[chanNum] |= SERV_FPGA_ENC_MULT_QUADR;
+                    fpgaRegValue.register39[chanNum].regBitFiled.encMultSelect = EMSEL_QUADR;
                   break;
 
                 default:
                   break;
             }
-            
-            servFpgaRegisterWrite(chanNum, SERV_FPGA_ENCODER_RESET_REG, fpgaRegValue.encMultandCountReg[chanNum]);
 
             //设置通道数
             switch (encChan)
             {
                 case ECCHAN_3:
-                    fpgaRegValue.encMultandCountReg[chanNum] &= ~SERV_FPGA_ENC_CHAN_SINGLE;
+                    fpgaRegValue.register39[chanNum].regBitFiled.encSingleSel = BITOPT_DISABLE;
                   break;
             
                 case ECCHAN_1:
-                    fpgaRegValue.encMultandCountReg[chanNum] |= SERV_FPGA_ENC_CHAN_SINGLE;
+                    fpgaRegValue.register39[chanNum].regBitFiled.encSingleSel = BITOPT_ENABLE;
                   break;
 
                 default:
                   break;
             }
-            servFpgaRegisterWrite(chanNum, SERV_FPGA_ENCODER_RESET_REG, fpgaRegValue.encMultandCountReg[chanNum]);
+            
+            servFpgaRegisterWrite(chanNum, SERV_FPGA_CONFIG_REG_39, fpgaRegValue.register39[chanNum].regValue);
         }
     }
 }
@@ -2645,13 +2397,13 @@ void servFpgaEncoderCountReset(u8 chanNum)
     fpgaRegValue.encMultandCountReg[chanNum] &= ~SERV_FPGA_ENC_COUNT_MASK;
     fpgaRegValue.encMultandCountReg[chanNum] |= SERV_FPGA_ENC_COUNT_RESET;
     
-    servFpgaRegisterWrite(chanNum, SERV_FPGA_ENCODER_RESET_REG, fpgaRegValue.encMultandCountReg[chanNum]);
+    servFpgaRegisterWrite(chanNum, SERV_FPGA_CONFIG_REG_39, fpgaRegValue.register39[chanNum].regValue);
 #endif
 }
 
 
 /*********************************************************************************************
-函 数 名: servFpgaEncoderCountReset
+函 数 名: servFpgaEncoderCountRead
 实现功能: 复位编码器计数
 输入参数: 
 输出参数:   
@@ -2743,103 +2495,54 @@ void servFpgaEncoderCountRead(u8 chanNum, s16 *pCircleNum, s32 *pABCount, s32 *p
 返 回 值: 
 说    明: CJ 2017.08.12 Add
 *********************************************************************************************/
-void servFpgaLineOutOfStepSet(u8 chanNum, SensorStateEnum  state, f32 lineSteps, u16 threshold)
+void servFpgaLineOutOfStepSet(u8 chanNum, SensorStateEnum state, f32 lineSteps, u16 threshold)
 {
-    u16 thresholdL;
+    //u16 thresholdL;
     u16 thresholdH;
 
 
     if (SENSOR_ON == state)
     {
-        fpgaRegValue.interruptSrcReg[chanNum] |= SERV_FPGA_OOSTEP_INT_ENABLE;
+        fpgaRegValue.register50[chanNum].regBitFiled.outOfStep = INT_ENABLE;
 
-        thresholdL = (u16)(lineSteps - threshold);
+        //thresholdL = (u16)(lineSteps - threshold);
         thresholdH = (u16)(lineSteps + threshold);
         
-        servFpgaRegisterWrite(chanNum, SERV_FPGA_LINE_OUT_OF_STEP_L_REG, thresholdL);
-        servFpgaRegisterWrite(chanNum, SERV_FPGA_LINE_OUT_OF_STEP_H_REG, thresholdH);
-    }
-    else
-    {
-        fpgaRegValue.interruptSrcReg[chanNum] &= ~SERV_FPGA_OOSTEP_INT_ENABLE;
-    }
-
-    servFpgaRegisterWrite(chanNum, SERV_FPGA_INT_SRC_REG, fpgaRegValue.interruptSrcReg[chanNum]);
-}
-
-
-#if QUBELEY_HARDVER_2
-/*********************************************************************************************
-函 数 名: servFpgaDriverStateCofing
-实现功能: 通过FPGA配置驱动
-输入参数: 
-输出参数:   
-返 回 值: 
-说    明: 
-*********************************************************************************************/
-static void servFpgaDriverStateCofing(DriverTypeEnum deviceType, DriverStateEnum driverState)
-{
-    fpgaRegValue.driverCtrlReg &= SERV_FPGA_DRIVER_SELC_MASK;
-    fpgaRegValue.driverCtrlReg |= SERV_FPGA_DRIVER_STATE_MASK;    //关闭所有驱动
-
-    if (DRIVER_2660 == deviceType)
-    {
-        fpgaRegValue.driverCtrlReg |= SERV_FPGA_DRIVER_SELC_2660;
-
-        if (DRVSTATE_ON == driverState)
-        {
-            fpgaRegValue.driverCtrlReg &= ~SERV_FPGA_DRIVER_OFF_2660;
-        }
-    }
-    else
-    {
-        fpgaRegValue.driverCtrlReg |= SERV_FPGA_DRIVER_SELC_262;
-
-        if (DRVSTATE_ON == driverState)
-        {
-            fpgaRegValue.driverCtrlReg &= ~SERV_FPGA_DRIVER_OFF_262;
-        }
-    }
+        //目前不处理超步，下限先配成0
+        //servFpgaRegisterWrite(chanNum, SERV_FPGA_CONFIG_REG_57, thresholdL);
+        servFpgaRegisterWrite(chanNum, SERV_FPGA_CONFIG_REG_57, 0);
         
-    servFpgaRegisterWrite(CH_SYS, SERV_FPGA_DRIVER_REG, fpgaRegValue.driverCtrlReg);
+        servFpgaRegisterWrite(chanNum, SERV_FPGA_CONFIG_REG_58, thresholdH);
+    }
+    else
+    {
+        fpgaRegValue.register50[chanNum].regBitFiled.outOfStep = INT_DISABLE;
+    }
+
+    servFpgaRegisterWrite(chanNum, SERV_FPGA_CONFIG_REG_50, fpgaRegValue.register50[chanNum].regValue);
 }
-#endif
 
 
 /*********************************************************************************************
-函 数 名: servFpgaDriverClkCofing
-实现功能: 通过FPGA配置驱动时钟
+函 数 名: servFpgaSdioCrcErrorIntSet
+实现功能: 设置SDIO CRC错误中断
 输入参数: 
 输出参数:   
 返 回 值: 
-说    明: 
+说    明: CJ 2018.05.17 Add
 *********************************************************************************************/
-static void servFpgaDriverClkCofing(u8 chanNum, DriverClkStateEnum driverClkState)
+void servFpgaSdioCrcErrorIntSet(SensorStateEnum state)
 {
-    if (CH1 == chanNum)
+    if (SENSOR_ON == state)
     {
-        fpgaRegValue.driverCtrlReg &= ~SERV_FPGA_DRIVER_CLK_MASK;
-
-        if (DRVCLK_OPEN == driverClkState)
-        {
-            fpgaRegValue.driverCtrlReg |= SERV_FPGA_DRIVER_CLK_ENABLE;
-        }
+        fpgaRegValue.register50[CH_SYS].regBitFiled.sdioCrcErr = INT_ENABLE;
     }
-#ifdef PROJECT_GELGOOG
-
     else
     {
-        fpgaRegValue.driverCtrlReg &= ~(SERV_FPGA_DRIVER_CLK2_MASK << (chanNum - CH2));
-
-        if (DRVCLK_OPEN == driverClkState)
-        {
-            fpgaRegValue.driverCtrlReg |= SERV_FPGA_DRIVER_CLK2_ENABLE << (chanNum - CH2);
-        }
+        fpgaRegValue.register50[CH_SYS].regBitFiled.sdioCrcErr = INT_DISABLE;
     }
-    
-#endif
 
-    servFpgaRegisterWrite(CH_SYS, SERV_FPGA_DRIVER_REG, fpgaRegValue.driverCtrlReg);
+    servFpgaRegisterWrite(CH_SYS, SERV_FPGA_CONFIG_REG_50, fpgaRegValue.register50[CH_SYS].regValue);
 }
 
 
@@ -2853,10 +2556,9 @@ static void servFpgaDriverClkCofing(u8 chanNum, DriverClkStateEnum driverClkStat
 *********************************************************************************************/
 void servFpgaDriverFromArm(u8 chanNum)
 {
-    fpgaRegValue.driverCtrlReg &= ~SERV_FPGA_DRIVER_SRC_MASK;
-    fpgaRegValue.driverCtrlReg |= SERV_FPGA_DRIVER_SRC_CPU;
+    fpgaRegValue.register16.regBitFiled.drvSrc = DRIVER_ARM;
     
-    servFpgaRegisterWrite(CH_SYS, SERV_FPGA_DRIVER_REG, fpgaRegValue.driverCtrlReg);    //通道号固定为0
+    servFpgaRegisterWrite(CH_SYS, SERV_FPGA_CONFIG_REG_16, fpgaRegValue.register16.regValue);    //通道号固定为0
 }
 
 
@@ -2870,32 +2572,30 @@ void servFpgaDriverFromArm(u8 chanNum)
 *********************************************************************************************/
 void servFpgaDriverSelect(u8 chanNum)
 {
-#ifdef PROJECT_GELGOOG 
-    fpgaRegValue.driverCtrlReg &= ~SERV_FPGA_DRIVER_CHAN_MASK;
-    fpgaRegValue.driverCtrlReg |= chanNum << SERV_FPGA_DRIVER_CHAN_LSHIFT;
+#if GELGOOG_AXIS_4 || GELGOOG_SINANJU
+    fpgaRegValue.register16.regBitFiled.drvSpiSelect = chanNum;
     
-    servFpgaRegisterWrite(CH_SYS, SERV_FPGA_DRIVER_REG, fpgaRegValue.driverCtrlReg);
+    servFpgaRegisterWrite(CH_SYS, SERV_FPGA_CONFIG_REG_16, fpgaRegValue.register16.regValue);
 #endif
 }
 
 
 /*********************************************************************************************
-函 数 名: servFpgaDriverCofing
-实现功能: 通过FPGA配置驱动
-输入参数: 
-输出参数:   
-返 回 值: 
-说    明: 
+函 数 名: servFpgaDriverConfig;
+实现功能: 无; 
+输入参数: 无;
+输出参数: 无;
+返 回 值: 无;
+说    明: 无;
 *********************************************************************************************/
-s32 servFpgaDriverCofing(u8 chanNum, DriverTypeEnum deviceType, DriverStateEnum driverState, DriverClkStateEnum driverClkState)
+u8 servFpgaDriverConfig(u8 regNum, u32 regVaule, DrvConfActionEnum drvConfAct)
 {
-    //fpgaRegValue.driverCtrlReg = 0;
-
-#if QUBELEY_HARDVER_2    //Qubeley 03版以后及Gelgoog都不需要配置 
-    servFpgaDriverStateCofing(deviceType, driverState);
-#endif
-
-    servFpgaDriverClkCofing(chanNum, driverClkState);
+    fpgaRegValue.register17.regValue = (u16)regVaule;    //低16bit
+    servFpgaRegisterWrite(CH_SYS, SERV_FPGA_CONFIG_REG_17, fpgaRegValue.register17.regValue);
+    
+    fpgaRegValue.register18.regBitFiled.drvData = (u16)(regVaule >> 16);    //高4bit
+    fpgaRegValue.register18.regBitFiled.drvRead = drvConfAct;
+    servFpgaRegisterWrite(CH_SYS, SERV_FPGA_CONFIG_REG_18, fpgaRegValue.register18.regValue);
     
     return 0;
 }
@@ -2911,31 +2611,33 @@ s32 servFpgaDriverCofing(u8 chanNum, DriverTypeEnum deviceType, DriverStateEnum 
 *********************************************************************************************/
 void servFpgaStartSourceSet(u8 chanNum, StartSourceEnum startSource)
 {
-    fpgaRegValue.waveTableModeReg[chanNum] &= ~SERV_FPGA_START_SOURCE_MASK;
+    fpgaRegValue.register31[chanNum].regBitFiled.startSrcSoft = BITOPT_DISABLE;
+    fpgaRegValue.register31[chanNum].regBitFiled.startSrcHard = BITOPT_DISABLE;
+    fpgaRegValue.register31[chanNum].regBitFiled.startSrcCan  = BITOPT_DISABLE;
 
     switch (startSource)
     {
         case SSRC_SOFT:
         default:
-          fpgaRegValue.waveTableModeReg[chanNum] |= SERV_FPGA_START_SOURCE_SOFT;
+            fpgaRegValue.register31[chanNum].regBitFiled.startSrcSoft = BITOPT_ENABLE;
           break;
 
         case SSRC_HARD:
-          fpgaRegValue.waveTableModeReg[chanNum] |= SERV_FPGA_START_SOURCE_HARD;
+            fpgaRegValue.register31[chanNum].regBitFiled.startSrcHard = BITOPT_ENABLE;
           break;
 
         case SSRC_CAN:
-          fpgaRegValue.waveTableModeReg[chanNum] |= SERV_FPGA_START_SOURCE_CAN;
+            fpgaRegValue.register31[chanNum].regBitFiled.startSrcCan = BITOPT_ENABLE;
           break;
 
         case SSRC_ALL:
-          fpgaRegValue.waveTableModeReg[chanNum] |= SERV_FPGA_START_SOURCE_SOFT;
-          fpgaRegValue.waveTableModeReg[chanNum] |= SERV_FPGA_START_SOURCE_HARD;
-          fpgaRegValue.waveTableModeReg[chanNum] |= SERV_FPGA_START_SOURCE_CAN;
+            fpgaRegValue.register31[chanNum].regBitFiled.startSrcSoft = BITOPT_ENABLE;
+            fpgaRegValue.register31[chanNum].regBitFiled.startSrcHard = BITOPT_ENABLE;
+            fpgaRegValue.register31[chanNum].regBitFiled.startSrcCan  = BITOPT_ENABLE;
           break;
     }
 
-    servFpgaRegisterWrite(chanNum, SERV_FPGA_WT_MODE_REG, fpgaRegValue.waveTableModeReg[chanNum]);
+    servFpgaRegisterWrite(chanNum, SERV_FPGA_CONFIG_REG_31, fpgaRegValue.register31[chanNum].regValue);
 }
 
 
@@ -2952,41 +2654,47 @@ void servFpgaClockSyncSet(ClockSyncRegEnum ClockSyncReg, ReceiveTypeEnum receive
     u32 canId = 0;
 
 
-    fpgaRegValue.waveTableModeReg[CH1] &= ~SERV_FPGA_CLOCK_SYNC_MASK;
+    fpgaRegValue.register31[CH_SYS].regBitFiled.startSrcCan = BITOPT_DISABLE;
 
     switch (ClockSyncReg)
     {
         case CLOCKREG_ON:
-          fpgaRegValue.waveTableModeReg[CH1] |= SERV_FPGA_CLOCK_SYNC_RESET;
-          fpgaRegValue.waveTableModeReg[CH1] |= SERV_FPGA_CLOCK_SYNC_START;
+            fpgaRegValue.register31[CH_SYS].regBitFiled.clkSynState = CSSTATE_RESET;
+            servFpgaRegisterWrite(CH_SYS, SERV_FPGA_CONFIG_REG_31, fpgaRegValue.register31[CH_SYS].regValue);
+
+            fpgaRegValue.register31[CH_SYS].regBitFiled.clkSynState = CSSTATE_ON;
+            servFpgaRegisterWrite(CH_SYS, SERV_FPGA_CONFIG_REG_31, fpgaRegValue.register31[CH_SYS].regValue);
           break;
 
         case CLOCKREG_OFF:
-          fpgaRegValue.waveTableModeReg[CH1] |= SERV_FPGA_CLOCK_SYNC_END;
+            fpgaRegValue.register31[CH_SYS].regBitFiled.clkSynState = CSSTATE_OFF;
+            servFpgaRegisterWrite(CH_SYS, SERV_FPGA_CONFIG_REG_31, fpgaRegValue.register31[CH_SYS].regValue);
           break;
           
         default:
           break;
     }
 
+    switch (receiveType)
+    {
+        case RECEIVE_RADIOID:
+            canId = canIntfc.radioId;
+          break;
+          
+        case RECEIVE_GROUPID1:
+            canId = canIntfc.groupId1;
+          break;
+          
+        case RECEIVE_GROUPID2:
+            canId = canIntfc.groupId2;
+          break;
+          
+        case RECEIVE_RECEIVEID:
+            canId = canIntfc.receiveId;
+          break;
 
-    servFpgaRegisterWrite(CH_SYS, SERV_FPGA_WT_MODE_REG, fpgaRegValue.waveTableModeReg[CH1]);
-
-    if(receiveType == RECEIVE_RADIOID)
-    {
-        canId = canIntfc.radioId;
-    }
-    else if(receiveType == RECEIVE_GROUPID1)
-    {
-        canId = canIntfc.groupId1;
-    }
-    else if(receiveType == RECEIVE_GROUPID2)
-    {
-        canId = canIntfc.groupId2;
-    }
-    else if(receiveType == RECEIVE_RECEIVEID)
-    {
-        canId = canIntfc.receiveId;
+        default:
+          break;
     }
 
     if (CLOCKREG_ON == ClockSyncReg)
@@ -3077,29 +2785,26 @@ void servFpgaMotionRegSet(RegisterFuncEnum regFunc, ReceiveTypeEnum receiveType,
 *********************************************************************************************/
 DdrStateEnum servFpgaDDRStateGet(void)
 {
-    u16 tmpReg = 0;
-    DdrStateEnum ddrState;
+    FpgaResponseReg10Union responseReg;
 
     
-    servFpgaRegisterRead(CH_SYS, SERV_FPGA_DDR_MOTOR_STATE_REG, &tmpReg);
+    servFpgaRegisterRead(CH_SYS, SERV_FPGA_RESPONSE_REG_10, &responseReg.regValue);
 
-    if ((tmpReg & SERV_FPGA_DDR_INIT_MASK) == SERV_FPGA_DDR_INIT_SUCCESS)
+    if (responseReg.regBitFiled.ddrInitDone)
     {
-        if ((tmpReg & SERV_FPGA_DDR_TEST_ERROR) == SERV_FPGA_DDR_TEST_ERROR)
+        if (responseReg.regBitFiled.ddrCalibError)
         {
-            ddrState = DDR_TESTERROR;
+            return DDR_TESTERROR;
         }
         else
         {
-            ddrState = DDR_NOERROR;
+            return DDR_NOERROR;
         }
     }
     else
     {
-        ddrState = DDR_NOINIT;
+        return DDR_NOINIT;
     }
-
-    return ddrState;
 }
 
 
@@ -3154,6 +2859,50 @@ void servFpgaSensorUart1RxSelect(SensorNumEnum sensorNum)
     }
     
     servFpgaRegisterWrite(CH_SYS, SERV_FPGA_ENC_AND_UART3_REG, fpgaRegValue.encandUartReg);
+#endif
+}
+
+
+/*********************************************************************************************
+函 数 名: servFpgaSensorUart1TxSelect
+实现功能: 
+输入参数: 
+输出参数:   
+返 回 值: 
+说    明: 
+*********************************************************************************************/
+void servFpgaSensorUart1TxSelect(SensorNumEnum sensorNum)
+{
+#ifdef PROJECT_GELGOOG
+
+    switch (sensorNum)
+    {
+        case SENSOR_S1:
+            fpgaRegValue.encandUartReg &= ~SERV_FPGA_UART_TX_MASK_SEN1;
+            fpgaRegValue.encandUartReg |= SERV_FPGA_UART_TX_SEN1_TX;
+          break;
+
+        case SENSOR_S2:
+            fpgaRegValue.encandUartReg &= ~SERV_FPGA_UART_TX_MASK_SEN2;
+            fpgaRegValue.encandUartReg |= SERV_FPGA_UART_TX_SEN2_TX;
+          break;
+
+        case SENSOR_S3:
+            fpgaRegValue.encandUartReg &= ~SERV_FPGA_UART_TX_MASK_SEN3;
+            fpgaRegValue.encandUartReg |= SERV_FPGA_UART_TX_SEN3_TX;
+          break;
+
+        case SENSOR_S4:
+            fpgaRegValue.encandUartReg &= ~SERV_FPGA_UART_TX_MASK_SEN4;
+            fpgaRegValue.encandUartReg |= SERV_FPGA_UART_TX_SEN4_TX;
+          break;
+
+        default:
+          break;
+    }
+    
+    servFpgaRegisterWrite(CH_SYS, SERV_FPGA_ENC_AND_UART3_REG, fpgaRegValue.encandUartReg);
+    
 #endif
 }
 
@@ -3245,97 +2994,356 @@ void servFpgaSensorUart2RxSelect(SensorNumEnum sensorNum)
 返 回 值: 无;
 说    明: 无;
 *********************************************************************************************/
-void servFpgaReverseMotionSet(u8 chanNum, SensorStateEnum  revMotion)
+void servFpgaReverseMotionSet(SensorStateEnum  revMotion)
 {
     switch (revMotion)
     {
         case SENSOR_OFF:
+        default:          
+            fpgaRegValue.register31[CH_SYS].regBitFiled.dirReverse = BITOPT_DISABLE;
+          break;
+
+        case SENSOR_ON:          
+            fpgaRegValue.register31[CH_SYS].regBitFiled.dirReverse = BITOPT_ENABLE;
+          break;
+    }
+
+    servFpgaRegisterWrite(CH_SYS, SERV_FPGA_CONFIG_REG_31, fpgaRegValue.register31[CH_SYS].regValue);
+}
+
+
+/*********************************************************************************************
+函 数 名: servFpgaDioRefStatusRead
+实现功能: 读取限位开关状态
+输入参数: 
+输出参数:   
+返 回 值: 
+说    明: CJ 2018.03.10 Add
+*********************************************************************************************/
+u16 servFpgaDioRefStatusRead(void)
+{
+    u16 registerValue;
+
+    
+    servFpgaRegisterRead(CH_SYS, SERV_FPGA_RESPONSE_REG_07, &registerValue);
+
+    return registerValue;
+}
+
+
+/*********************************************************************************************
+函 数 名: servFpgaDioPortStatusRead
+实现功能: 读取数字端口状态
+输入参数: 
+输出参数:   
+返 回 值: 
+说    明: CJ 2018.03.10 Add
+*********************************************************************************************/
+u16 servFpgaDioPortStatusRead(void)
+{
+    u16 registerValue;
+
+    
+    servFpgaRegisterRead(CH_SYS, SERV_FPGA_DIO_STATUS_REG, &registerValue);
+
+    return registerValue;
+}
+
+
+#if GELGOOG_AXIS_10
+
+/*********************************************************************************************
+函 数 名: servFpgaDriverResetSet
+实现功能: 
+输入参数: 
+输出参数:   
+返 回 值: 
+说    明: 
+*********************************************************************************************/
+void servFpgaDriverResetSet(DriverResetEnum drvReset)
+{
+    fpgaRegValue.register16.regBitFiled.drvReset = drvReset;
+    
+    servFpgaRegisterWrite(CH_SYS, SERV_FPGA_CONFIG_REG_16, fpgaRegValue.register16.regValue);
+}
+
+/*********************************************************************************************
+函 数 名: servFpgaDriverModeSet
+实现功能: 
+输入参数: 
+输出参数:   
+返 回 值: 
+说    明: 
+*********************************************************************************************/
+void servFpgaDriverModeSet(MicroStepEnum microStep)
+{
+    DriverModeEnum drvMode;
+    
+
+    switch (microStep)
+    {
+        case MICROSTEP_256:
+            drvMode = DRIVER_MODE256;
+          break;
+
+        case MICROSTEP_128:
+            drvMode = DRIVER_MODE128;
+          break;
+
+        case MICROSTEP_32:
+            drvMode = DRIVER_MODE32;
+          break;
+
+        case MICROSTEP_16:
+            drvMode = DRIVER_MODE16;
+          break;
+
+        case MICROSTEP_8:
+            drvMode = DRIVER_MODE8;
+          break;
+
+        case MICROSTEP_4:
+            drvMode = DRIVER_MODE4;
+          break;
+
+        case MICROSTEP_2:
+            drvMode = DRIVER_MODE2;
+          break;
+
+        case MICROSTEP_1:
+            drvMode = DRIVER_MODE1;
+          break;
+
         default:
-          fpgaRegValue.waveTableModeReg[chanNum] &= ~SERV_FPGA_REVERSE_MOTION_ENABLE;
-          break;
-
-        case SENSOR_ON:
-          fpgaRegValue.waveTableModeReg[chanNum] |= SERV_FPGA_REVERSE_MOTION_ENABLE;
           break;
     }
+    
+    fpgaRegValue.register16.regBitFiled.drvMode = drvMode;
+    
+    servFpgaRegisterWrite(CH_SYS, SERV_FPGA_CONFIG_REG_16, fpgaRegValue.register16.regValue);
+}
 
-    servFpgaRegisterWrite(chanNum, SERV_FPGA_WT_MODE_REG, fpgaRegValue.waveTableModeReg[chanNum]);
+/*********************************************************************************************
+函 数 名: servFpgaDriverDecaySet
+实现功能: 
+输入参数: 
+输出参数:   
+返 回 值: 
+说    明: 
+*********************************************************************************************/
+void servFpgaDriverDecaySet(DriverDecayEnum drvDecay)
+{
+    fpgaRegValue.register16.regBitFiled.drvDecay = drvDecay;
+    
+    servFpgaRegisterWrite(CH_SYS, SERV_FPGA_CONFIG_REG_16, fpgaRegValue.register16.regValue);
 }
 
 
 /*********************************************************************************************
-函 数 名: servFpgaWaveStopConfig
-实现功能: 无; 
-输入参数: 无;
-输出参数: 无;
-返 回 值: 无;
-说    明: 无;
+函 数 名: servFpgaDriverSourceSet
+实现功能: 
+输入参数: 
+输出参数:   
+返 回 值: 
+说    明: 
 *********************************************************************************************/
-void servFpgaWaveStopConfig(StopConfigStruct *pWaveStopCofing, StopDecelerationStruct stopDecel, f32 posnToStep)
+void servFpgaDriverSourceSet(DriverSourceEnum drvSrc)
 {
-    u32 stopSteps;
-
+    fpgaRegValue.register16.regBitFiled.drvSrc = drvSrc;
     
-    pWaveStopCofing->stopMode  = stopDecel.stopMode;
-    if (STOPMODE_DIST == stopDecel.stopMode)
-    {
-        stopSteps = (u32)(stopDecel.distance * posnToStep);
-        if (0 == stopSteps)
-        {
-            pWaveStopCofing->stopMode = STOPMODE_IMMED;
-        }
-        else
-        {
-            pWaveStopCofing->stopSteps = stopSteps;
-        }
-    }
-    pWaveStopCofing->stopTime  = stopDecel.time;
-    pWaveStopCofing->emergPeriod = EMERG_STOP_END_PERIOD;
+    servFpgaRegisterWrite(CH_SYS, SERV_FPGA_CONFIG_REG_16, fpgaRegValue.register16.regValue);
 }
 
 
 /*********************************************************************************************
-函 数 名: servFpgaWavePrepareConfig
-实现功能: 无; 
-输入参数: 无;
-输出参数: 无;
-返 回 值: 无;
-说    明: 无;
+函 数 名: servFpgaDriverEnable
+实现功能: 
+输入参数: 
+输出参数:   
+返 回 值: 
+说    明: 
 *********************************************************************************************/
-void servFpgaWavePrepareConfig(u8 chanNum, WaveTableStruct *pOutpWaveTable, PlanManageStruct wavePlanInfo, PosnConvertInfoStruct posnConvertInfo)
+void servFpgaDriverEnable(u8 chanNum, SensorStateEnum  state)
 {
-    //复位编码器计数
-    servFpgaEncoderCountReset(chanNum);
+    bool bConfigReg = true;
 
-    //更新下急停设置
-    servFpgaWaveStopConfig(&(pOutpWaveTable->stopConfigInfo), wavePlanInfo.stopDecelInfo, posnConvertInfo.posnToStep);
-
-    //配置结束状态
-    servFpgaEndStateSet(chanNum, wavePlanInfo.endState, pOutpWaveTable->stopConfigInfo);
     
-    //配置波表结束中断
-    servFpgaWaveEndIntSet(chanNum, pOutpWaveTable->bEndIntEnable);
-    
-    //LVT相关设置
-    servFpgaWaveMotionModeSet(chanNum, 
-                              wavePlanInfo.motionMode,
-                              posnConvertInfo.lineSteps,
-                              posnConvertInfo.lineMult,
-                              wavePlanInfo.modifyDuty);
-
-    //丢步告警
-    servFpgaLineOutOfStepSet(chanNum, wavePlanInfo.outOfStepInfo.lineState,
-                                      posnConvertInfo.lineSteps,
-                                      wavePlanInfo.outOfStepInfo.lineOutNum);
-
-    //预取之前将波表的循环数配置下去
-    if (pOutpWaveTable->waveWorkMode != WTWORKMODE_FIFO)
+    switch (chanNum)
     {
-        servFPGA_PWM_Cycle_Set(chanNum, wavePlanInfo.cycleNum);
+        case 0:
+            fpgaRegValue.register17.regBitFiled.drvEnable0 = state;
+          break;
+
+        case 1:
+            fpgaRegValue.register17.regBitFiled.drvEnable1 = state;
+          break;
+
+        case 2:
+            fpgaRegValue.register17.regBitFiled.drvEnable2 = state;
+          break;
+
+        case 3:
+            fpgaRegValue.register17.regBitFiled.drvEnable3 = state;
+          break;
+
+        case 4:
+            fpgaRegValue.register17.regBitFiled.drvEnable4 = state;
+          break;
+
+        case 5:
+            fpgaRegValue.register17.regBitFiled.drvEnable5 = state;
+          break;
+
+        case 6:
+            fpgaRegValue.register17.regBitFiled.drvEnable6 = state;
+          break;
+
+        case 7:
+            fpgaRegValue.register17.regBitFiled.drvEnable7 = state;
+          break;
+
+        case 8:
+            fpgaRegValue.register17.regBitFiled.drvEnable8 = state;
+          break;
+
+        case 9:
+            fpgaRegValue.register17.regBitFiled.drvEnable9 = state;
+          break;
+
+        default:
+            bConfigReg = false;
+          break;
+    }
+
+    if (bConfigReg)
+    {
+        servFpgaRegisterWrite(CH_SYS, SERV_FPGA_CONFIG_REG_17, fpgaRegValue.register17.regValue);
     }
 }
 
 
+/*********************************************************************************************
+函 数 名: servFpgaDriverFaultRead
+实现功能: 
+输入参数: 
+输出参数:   
+返 回 值: 
+说    明: 
+*********************************************************************************************/
+u16 servFpgaDriverFaultRead(void)
+{
+    u16 regValue;
+    
+
+    servFpgaRegisterRead(CH_SYS, SERV_FPGA_RESPONSE_REG_12, &regValue);
+
+    return regValue;
+}
+
+
+#else
+
+
+/*********************************************************************************************
+函 数 名: servFpgaDriverClkCofing
+实现功能: 通过FPGA配置驱动时钟
+输入参数: 
+输出参数:   
+返 回 值: 
+说    明: 
+*********************************************************************************************/
+void servFpgaDriverClkCofing(u8 chanNum, DriverClkStateEnum driverClkState)
+{
+    if (CH1 == chanNum)
+    {
+        fpgaRegValue.register16.regBitFiled.drvSysClk1 = driverClkState;
+    }
+#ifdef PROJECT_GELGOOG
+
+    else
+    {
+        switch (chanNum)
+        {
+            case CH2:
+                fpgaRegValue.register16.regBitFiled.drvSysClk2 = driverClkState;
+              break;
+              
+            case CH3:
+                fpgaRegValue.register16.regBitFiled.drvSysClk3 = driverClkState;
+              break;
+              
+            case CH4:
+                fpgaRegValue.register16.regBitFiled.drvSysClk4 = driverClkState;
+              break;
+
+#if GELGOOG_SINANJU             
+            case CH5:
+                fpgaRegValue.register16.regBitFiled.drvSysClk5 = driverClkState;
+              break;
+#endif
+
+#if GELGOOG_AXIS_8              
+            case CH6:
+                fpgaRegValue.register16.regBitFiled.drvSysClk6 = driverClkState;
+              break;
+              
+            case CH7:
+                fpgaRegValue.register16.regBitFiled.drvSysClk7 = driverClkState;
+              break;
+              
+            case CH8:
+                fpgaRegValue.register16.regBitFiled.drvSysClk8 = driverClkState;
+              break;
+#endif
+
+            default:
+              break;
+        }
+    }
+    
+#endif
+
+    servFpgaRegisterWrite(CH_SYS, SERV_FPGA_CONFIG_REG_16, fpgaRegValue.register16.regValue);
+}
+#endif
+
+
+/*********************************************************************************************
+函 数 名: servFpgaBackLashReset
+实现功能: 
+输入参数: 
+输出参数:   
+返 回 值: 
+说    明: 
+*********************************************************************************************/
+void servFpgaBackLashReset(BackLashChanEnum blChan)
+{
+    fpgaRegValue.register28.regBitFiled.chSelect = blChan;
+    fpgaRegValue.register28.regBitFiled.blReset  = BLRESET_ON;
+    
+    servFpgaRegisterWrite(CH_SYS, SERV_FPGA_CONFIG_REG_28, fpgaRegValue.register28.regValue);
+}
+
+/*********************************************************************************************
+函 数 名: servFpgaBackLashReset
+实现功能: 
+输入参数: 
+输出参数:   
+返 回 值: 
+说    明: 
+*********************************************************************************************/
+u16 servFpgaBackLashRead(BackLashChanEnum blChan)
+{
+    u16 backLash;
+
+    
+    servFpgaRegisterRead(blChan, SERV_FPGA_RESPONSE_REG_08, &backLash);
+
+    return backLash;
+}
+
+
+#if  GELGOOG_SINANJU
 /*********************************************************************************************
 函 数 名: servFpgaAbsEncReadTrig
 实现功能: 触发绝对值编码器的回读
@@ -3345,12 +3353,363 @@ void servFpgaWavePrepareConfig(u8 chanNum, WaveTableStruct *pOutpWaveTable, Plan
 说    明: CJ 2018.02.28 Add
 *********************************************************************************************/
 void servFpgaAbsEncReadTrig(SensorNumEnum sensorNum)
+{  
+    servFpgaRegisterWrite(sensorNum, SERV_FPGA_ABS_ENC_REDA_REG, SERV_FPGA_ABS_ENC_REDA_CMD);
+}
+
+
+/*********************************************************************************************
+函 数 名: servFpgaPdmSampleReset
+实现功能: 
+输入参数: 
+输出参数:   
+返 回 值: 
+说    明: 
+*********************************************************************************************/
+void servFpgaPdmSampleReset(SampleChanEnum sampleChan)
 {
-#if GELGOOG_SINANJU
-    u16 dataID = 0x11A;
+    fpgaRegValue.register29.regBitFiled.chSelect    = sampleChan;
+    fpgaRegValue.register29.regBitFiled.sampleState = SAMPLESTATE_RESET;
     
-    servFpgaRegisterWrite(sensorNum, SERV_FPGA_ABS_ENC_REDA_REG, dataID);
+    servFpgaRegisterWrite(CH_SYS, SERV_FPGA_CONFIG_REG_29, fpgaRegValue.register29.regValue);
+}
+
+/*********************************************************************************************
+函 数 名: servFpgaPdmSampleStart
+实现功能: 
+输入参数: 
+输出参数:   
+返 回 值: 
+说    明: 
+*********************************************************************************************/
+void servFpgaPdmSampleStart(SampleChanEnum sampleChan)
+{
+    fpgaRegValue.register29.regBitFiled.chSelect    = sampleChan;
+    fpgaRegValue.register29.regBitFiled.sampleState = SAMPLESTATE_START;
+    
+    servFpgaRegisterWrite(CH_SYS, SERV_FPGA_CONFIG_REG_29, fpgaRegValue.register29.regValue);
+}
+
+/*********************************************************************************************
+函 数 名: servFpgaPdmSampleEnd
+实现功能: 
+输入参数: 
+输出参数:   
+返 回 值: 
+说    明: 
+*********************************************************************************************/
+void servFpgaPdmSampleEnd(SampleChanEnum sampleChan)
+{
+    fpgaRegValue.register29.regBitFiled.chSelect    = sampleChan;
+    fpgaRegValue.register29.regBitFiled.sampleState = SAMPLESTATE_END;
+    
+    servFpgaRegisterWrite(CH_SYS, SERV_FPGA_CONFIG_REG_29, fpgaRegValue.register29.regValue);
+}
+
+/*********************************************************************************************
+函 数 名: servFpgaPdmEncDivSet
+实现功能: 
+输入参数: 
+输出参数:   
+返 回 值: 
+说    明: 
+*********************************************************************************************/
+void servFpgaPdmEncDivSet(SampleChanEnum sampleChan, u8 encDiv)
+{
+    fpgaRegValue.register29.regBitFiled.chSelect = sampleChan;
+    fpgaRegValue.register29.regBitFiled.encDiv   = encDiv - 1;    //FPGA要求减1
+    
+    servFpgaRegisterWrite(CH_SYS, SERV_FPGA_CONFIG_REG_29, fpgaRegValue.register29.regValue);
+}
+
+/*********************************************************************************************
+函 数 名: servFpgaPdmSampleStateSet
+实现功能: 
+输入参数: 
+输出参数:   
+返 回 值: 
+说    明: 
+*********************************************************************************************/
+void servFpgaPdmSampleStateSet(SampleChanEnum sampleChan, PdmInfoStruct pdmInfo)
+{
+    if (SENSOR_ON == pdmInfo.sampleState)
+    {
+        servFpgaPdmSampleReset(sampleChan);
+
+        servFpgaPdmEncDivSet(sampleChan, pdmInfo.encDiv);
+
+        servFpgaPdmSampleStart(sampleChan);
+    }
+    else
+    {
+        servFpgaPdmSampleEnd(sampleChan);
+    }
+}
+
+
+/*********************************************************************************************
+函 数 名: servFpgaPdmMstepCountRead
+实现功能: 
+输入参数: 
+输出参数:   
+返 回 值: 
+说    明: 
+*********************************************************************************************/
+u16 servFpgaPdmMstepCountRead(SampleChanEnum sampleChan)
+{
+    u16 regValue;
+        
+    
+    servFpgaRegisterRead(CH_SYS, SERV_FPGA_RESPONSE_REG_09, &regValue);
+
+    return (regValue + SERV_FPGA_MSTEP_COUNT_OFFSET);
+}
+
+
+/*********************************************************************************************
+函 数 名: servFpgaPdmMstepDataRead
+实现功能: 
+输入参数: 
+输出参数:   
+返 回 值: 
+说    明: 
+*********************************************************************************************/
+u8 servFpgaPdmMstepDataRead(SampleChanEnum sampleChan, u8 *pRegValue, u16 bufferSize)
+{
+    u8  rxState = 0;
+    u16 regLen = FPGA_ADD_LEN_2BYTE + bufferSize;
+    u16 tempReg;
+    u32 timeout = 33600;    //根据DELAY_COUNT_MS = 33600，此超时时间大约为1ms;
+
+
+    if (pRegValue != NULL)
+    {
+        //启动SDIO接收
+        bspSdioDataReceiveSet(pRegValue, regLen, SDIO_BLK_512_Byte);
+        
+        //设置数据长度
+        servFpgaDataLenSet(FPGAACT_READ, regLen, regLen);
+
+        //设置读取的逻辑寄存器地址
+        tempReg = (SERV_FPGA_RESPONSE_REG_11 & FPGA_RREG_ADDR_MARK) | 
+                  ((sampleChan << FPGA_RCHAN_NUM_LSHIFT) & FPGA_RCHAN_NUM_MARK);
+        servFpgaReadAddrSet(tempReg);
+
+        //做成超时等待，同时考虑释放CPU使用权
+        while ((!bspSdioDataTxComplete()) && (timeout > 0))
+        {
+            timeout--;  
+        }
+    }
+  
+    return rxState;
+}
+
+
+/*********************************************************************************************
+函 数 名: servFpgaPdmMstepDataProcess
+实现功能: 
+输入参数: 
+输出参数:   
+返 回 值: 
+说    明: 
+*********************************************************************************************/
+void servFpgaPdmMstepDataProcess(SampleChanEnum sampleChan, PdmInfoStruct pdmInfo)
+{
+    u8  data[FPGA_PDM_MSTEP_COUNT_LEN];
+    bool bRemainder = false;
+    bool bRemSend   = false;
+    u16 i, j, k;
+    u16 readCount;
+    u16 sendCount;
+    u8 *dataBuffer;
+    u16 mstepCount = pdmInfo.readLen * sizeof(u16);                     //长度指的是U16的长度
+    u16 dataLen = PDM_MSTEP_BUFFER_SIZE - FPGA_ADD_LEN_2BYTE - FPGA_PDM_MSTEP_BUFFER_RESV;    //数据不包含寄存器地址和保留部分
+
+
+    //需要读取的次数
+    readCount = mstepCount / dataLen;
+    if ((mstepCount % dataLen) != 0)
+    {
+        bRemainder = true;
+    }
+
+    //一次读取后需要发送的次数
+    sendCount = dataLen / FPGA_PDM_MSTEP_COUNT_LEN;
+    if ((dataLen % FPGA_PDM_MSTEP_COUNT_LEN) != 0)
+    {
+        sendCount++;
+    }
+
+    //开始读取并发送
+    for (i = 0;i < readCount;i++)
+    {
+        //数据读出来
+        servFpgaPdmMstepDataRead(sampleChan, pdmInfo.mstepData, dataLen);
+
+        //发送，其实是压入发送Buffer中
+        dataBuffer = (u8 *)pdmInfo.mstepData + FPGA_ADD_LEN_2BYTE;      //跳过寄存器地址
+        for (j = 0;j < sendCount;j++)
+        {
+            for (k = 0;k < FPGA_PDM_MSTEP_COUNT_LEN;k++)
+            {
+                data[k] = *dataBuffer++;
+            }
+            //cmdFrameSend(CMD_PDM, PDMCMD_MSTEPDATAQ, FPGA_PDM_MSTEP_COUNT_LEN, data);
+            servFrameSend(data[0], data[1], FPGA_PDM_MSTEP_COUNT_LEN - 2, &data[2], g_commIntfc.linkType);
+        }
+
+        //给CMDPARSE线程发信号量，完成发送
+        OSSemPost(&g_semCmdParseTask, OS_OPT_POST_ALL, NULL);
+
+        mstepCount -= dataLen;
+    }
+    
+    //处理剩余部分
+    if (bRemainder)
+    {
+        //一次读取后需要发送的次数
+        sendCount = mstepCount / FPGA_PDM_MSTEP_COUNT_LEN;
+        if ((mstepCount % FPGA_PDM_MSTEP_COUNT_LEN) != 0)
+        {
+            bRemSend = true;
+        }
+        
+        //数据读出来，然后一点一点发送上去
+        servFpgaPdmMstepDataRead(sampleChan, pdmInfo.mstepData, mstepCount);
+
+        //发送，其实是压入发送Buffer中
+        dataBuffer = (u8 *)pdmInfo.mstepData + FPGA_ADD_LEN_2BYTE;      //跳过寄存器地址
+        for (j = 0;j < sendCount;j++)
+        {
+            for (k = 0;k < FPGA_PDM_MSTEP_COUNT_LEN;k++)
+            {
+                data[k] = *dataBuffer++;
+            }
+            //cmdFrameSend(CMD_PDM, PDMCMD_MSTEPDATAQ, FPGA_PDM_MSTEP_COUNT_LEN, data);
+            servFrameSend(data[0], data[1], FPGA_PDM_MSTEP_COUNT_LEN - 2, &data[2], g_commIntfc.linkType);
+
+            mstepCount -= FPGA_PDM_MSTEP_COUNT_LEN;
+        }
+
+        //发送剩余的
+        if (bRemSend)
+        {
+            //最短长度
+            if (mstepCount < 2)
+            {
+                mstepCount = 2;
+            }
+            
+            for (k = 0;k < mstepCount;k++)
+            {
+                data[k] = *dataBuffer++;
+            }
+            //cmdFrameSend(CMD_PDM, PDMCMD_MSTEPDATAQ, FPGA_PDM_MSTEP_COUNT_LEN, data);
+            servFrameSend(data[0], data[1], mstepCount - 2, &data[2], g_commIntfc.linkType);
+        }
+
+        //给CMDPARSE线程发信号量，完成发送
+        OSSemPost(&g_semCmdParseTask, OS_OPT_POST_ALL, NULL);
+    }
+    
+}
+
+
+/*********************************************************************************************
+函 数 名: servFpgaPdmCacheTestSet
+实现功能: 
+输入参数: 
+输出参数:   
+返 回 值: 
+说    明: 
+*********************************************************************************************/
+void servFpgaPdmCacheTestSet(void)
+{
+    fpgaRegValue.register29.regBitFiled.cacheMode = BITOPT_ENABLE;
+    
+    servFpgaRegisterWrite(CH_SYS, SERV_FPGA_CONFIG_REG_29, fpgaRegValue.register29.regValue);
+    
+    //fpgaRegValue.register29.regBitFiled.cacheMode = BITOPT_DISABLE;
+}
 #endif
+
+
+/*********************************************************************************************
+函 数 名: servFpgaWaveEndIntClear
+实现功能: 清除波表结束标记
+输入参数: 
+输出参数:   
+返 回 值: 
+说    明: CJ 2017.06.26 Add
+*********************************************************************************************/
+void servFpgaWaveEndIntClear(u8 chanNum)
+{
+    fpgaRegValue.register50[chanNum].regBitFiled.waveEndClear = INT_ENABLE;
+    
+    servFpgaRegisterWrite(chanNum, SERV_FPGA_CONFIG_REG_50, fpgaRegValue.register50[chanNum].regValue);
+    
+    fpgaRegValue.register50[chanNum].regBitFiled.waveEndClear = INT_DISABLE;
+}
+
+/*********************************************************************************************
+函 数 名: servFpgaPeriodOverTxClear
+实现功能: 清除传输导致的微步周期超时标记
+输入参数: 
+输出参数:   
+返 回 值: 
+说    明: CJ 2017.06.26 Add
+*********************************************************************************************/
+void servFpgaPeriodOverTxClear(void)
+{
+    fpgaRegValue.register50[CH_SYS].regBitFiled.pOvrTxClear  = INT_ENABLE;
+    
+    servFpgaRegisterWrite(CH_SYS, SERV_FPGA_CONFIG_REG_50, fpgaRegValue.register50[CH_SYS].regValue);
+    
+    fpgaRegValue.register50[CH_SYS].regBitFiled.pOvrTxClear  = INT_DISABLE;
+}
+
+/*********************************************************************************************
+函 数 名: servFpgaPeriodOverDdrClear
+实现功能: 清除DDR读取导致的微步周期超时标记
+输入参数: 
+输出参数:   
+返 回 值: 
+说    明: CJ 2017.06.26 Add
+*********************************************************************************************/
+void servFpgaPeriodOverDdrClear(u8 chanNum)
+{
+    fpgaRegValue.register50[chanNum].regBitFiled.pOvrDdrClear = INT_ENABLE;
+    
+    servFpgaRegisterWrite(chanNum, SERV_FPGA_CONFIG_REG_50, fpgaRegValue.register50[chanNum].regValue);
+    
+    fpgaRegValue.register50[chanNum].regBitFiled.pOvrDdrClear = INT_DISABLE;
+}
+
+
+/*********************************************************************************************
+函 数 名: servFpgaPeriodStateRead
+实现功能: 无; 
+输入参数: 无;
+输出参数: 无;
+返 回 值: 无;
+说    明: 无;
+*********************************************************************************************/
+u8 servFpgaPeriodStateRead(u8 chanNum)
+{
+    u8 periodState;
+    FpgaResponseReg10Union responseReg;
+
+    
+    servFpgaRegisterRead(chanNum, SERV_FPGA_RESPONSE_REG_10, &responseReg.regValue);
+
+
+    periodState = responseReg.regBitFiled.periodOverTx       |
+                  responseReg.regBitFiled.periodUnderTx  * 2 |
+                  responseReg.regBitFiled.periodOverDdr  * 4 |
+                  responseReg.regBitFiled.periodUnderDdr * 8;
+
+    return periodState;
 }
 
 

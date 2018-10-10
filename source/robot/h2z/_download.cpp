@@ -17,28 +17,6 @@ int robotH2Z::downloadTrace( const tpvRegion &region,
     ret = RawRobo::download( jointsGroup, jointsTabList, region );
     if ( ret != 0 )
     { return ret; }
-logDbg()<<jointsGroup.size();
 
     return 0;
 }
-
-////! \note only for internal task
-//int robotH2Z::waitFsm( pvt_region,
-//             int dstState,
-//             int tmous,
-//             int tick
-//             )
-//{
-//    do
-//    {
-//        Q_ASSERT( tick > 0 );
-//        QThread::usleep( tick );
-
-//        if ( state( region, 1 ) == dstState )
-//        { return 0; }
-
-//        tmous -= tick;
-//    }while( tmous > 0 );
-
-//    return -1;
-//}

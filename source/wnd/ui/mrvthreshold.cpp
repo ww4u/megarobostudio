@@ -26,8 +26,6 @@ int MrvThreshold::setApply()
 
 void MrvThreshold::modelChanged()
 {
-//    adaptUi();
-
     updateUi();
 }
 

@@ -10,8 +10,6 @@ namespace MegaDevice {
 #define recv_id( id )   ( ((id)<<4) + 0xf )
 #define max_nodes       4096    //! 12bit + 12bit = 24bit
 
-//#define FRAME_LEN   8
-
 #define can_device_desc mDevType, mDevId, mCanId
 
 #define check_handle()      if ( mHandle <= 0 )\
@@ -95,8 +93,7 @@ int CANBus::open( const modelSysPref &pref,
     QString fullPath ;
     fullPath = QCoreApplication::applicationDirPath() + QDir::separator() + dllName;
     fullPath = QDir::toNativeSeparators( fullPath );
-//    Q_ASSERT( mApi.mDll.isLoaded() == false );
-logDbg();
+
     if ( !mApi.load( fullPath, mPId ) )
     {
         sysLog( fullPath );
@@ -159,7 +156,6 @@ logDbg();
 
     //! open
     mHandle = mApi.open( mDevType, mDevId, mCanId );
-logDbg()<<mDevType<<mDevId<<mCanId<<mHandle;
     if ( mHandle != 1 )
     {
         sysError( QObject::tr("CAN open fail") );

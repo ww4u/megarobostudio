@@ -53,7 +53,6 @@ void AxnPref::updateData()
     {
         pBase->mAxesConnectionName<<mEdits[i]->text();
     }
-
 }
 
 void AxnPref::updateUi()

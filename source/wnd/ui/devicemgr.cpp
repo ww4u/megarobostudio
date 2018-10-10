@@ -28,7 +28,6 @@ deviceMgr::deviceMgr(QWidget *parent) :
     setupUi();
 
     buildConnection();
-
 }
 
 deviceMgr::~deviceMgr()
@@ -197,10 +196,6 @@ void deviceMgr::buildConnection()
 //! fill info from the db
 void deviceMgr::matchDevices()
 {
-    //! iter each device
-//    MegaDevice::CANBus *pBus;
-//    VRoboList *pDevices;
-//    m_pMgr->getBusHub( &pBus, &pDevices );
 }
 
 void deviceMgr::updateData()
@@ -339,7 +334,6 @@ void deviceMgr::updatePhyBusTree( VRoboList *pRoboList )
 
         }
     }
-
 }
 
 void deviceMgr::updateVirBusTree( VRoboList *pRoboList )
@@ -418,13 +412,6 @@ void deviceMgr::endSearchDevice( int ret, void *pPara )
 
     ui->chkOnLine->setEnabled( true );
     ui->chkOnLine->setChecked( true );
-
-//    //! debug
-////    if ( mAxesCount == 0 || mAxesCount == 15 )
-////    {}
-////    else
-////    { logDbg()<<mAxesCount; Q_ASSERT(false); }
-////    ui->pushButton->animateClick();
 }
 
 int deviceMgr::postLoadOn( appMsg msg, void *pPara )
@@ -509,15 +496,12 @@ void deviceMgr::endImport( int ret, void *pPara )
 
 int deviceMgr::doTest( appMsg msg, void *pPara )
 {
-//    logDbg()<<QString::number( (quint32)pPara, 16 );
     return msg;
 }
 
 void deviceMgr::on_btnTest_clicked()
 {
-//    post_request( msg_mgr_motor_test, deviceMgr, MotorTest );
     post_request( msg_mgr_motor_test, deviceMgr, RoboTest );
-//    execRoboTest();
 }
 
 void deviceMgr::on_pushButton_clicked()
@@ -559,7 +543,6 @@ void deviceMgr::on_treeWidget_itemActivated(QTreeWidgetItem *item, int column)
     }
     else
     {}
-
 }
 
 //! quick
@@ -933,7 +916,7 @@ void deviceMgr::contextMenuEvent(QContextMenuEvent *event)
         m_pRobo = ( pObj );
         m_pCurrTreeItem = pItem;
         mCurrentAxes = -1;
-logDbg()<<m_pRobo->deviceFullDesc();
+
         m_pHubMenu->popup( mapToGlobal( event->pos() ) );
         event->accept();
 
@@ -1021,3 +1004,4 @@ void deviceMgr::on_chkOnLine_clicked(bool checked)
         m_pMgr->closeBus();
     }
 }
+

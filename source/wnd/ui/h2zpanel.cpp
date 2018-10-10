@@ -59,7 +59,9 @@ void H2ZPanel::moveD( float dx, float dy, float dz, bool bKeep )
         else
         {
             pRobo->move( dx, dy, dz,
-                         ui->spinStepT->value(), 0, 0, 0, tpvRegion(0,ui->widget->page()) );
+                         ui->spinStepT->value(),
+                         0, 0, 0,
+                         tpvRegion(0,ui->widget->page()) );
         }
 
     }while( 0 );
@@ -227,11 +229,9 @@ void H2ZPanel::on_btnMarkUser_clicked()
 
 #define on_xxx_released()   if ( ui->chkSingle->isChecked() ) { return; }\
                             stop();
-
 void H2ZPanel::on_btnZP_pressed()
 {
-    if ( ui->chkSingle->isChecked() ) { return; }
-
+    check_press();
     moveD( 0,0, ui->spinStepV->value(), true );
 }
 void H2ZPanel::on_btnZP_released()

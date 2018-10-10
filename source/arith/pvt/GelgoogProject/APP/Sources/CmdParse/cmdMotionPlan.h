@@ -46,6 +46,8 @@ void cmdPvtSpeedSetCmdProc(CmdParseFrameStruct *pCmdStackFrame);
 void cmdPvtSpeedQueryCmdProc(CmdParseFrameStruct *pCmdStackFrame);
 void cmdPvtTimeSetCmdProc(CmdParseFrameStruct *pCmdStackFrame);
 void cmdPvtTimeQueryCmdProc(CmdParseFrameStruct *pCmdStackFrame);
+void cmdPvtTimeScaleSetCmdProc(CmdParseFrameStruct *pCmdStackFrame);
+void cmdPvtTimeScaleQueryCmdProc(CmdParseFrameStruct *pCmdStackFrame);
 
 
 

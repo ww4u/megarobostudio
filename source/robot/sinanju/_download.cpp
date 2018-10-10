@@ -45,7 +45,6 @@ int robotSinanju::convertTrace( QList<TraceKeyPoint> &curve,
     groups.append( pGroup );
     sectionList<<4<<1;
 
-// MOVE 280,21.5,452.75,0,250,0,502,90,0.5
     return 0;
 }
 
@@ -69,7 +68,6 @@ int robotSinanju::downloadTrace( const tpvRegion &region,
     ret = download( groups, jointsTabList, region );
     if ( ret != 0 )
     { return ret; }
-//logDbg()<<groups.size();
 
     return 0;
 }

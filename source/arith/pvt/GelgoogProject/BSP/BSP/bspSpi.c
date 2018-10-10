@@ -40,7 +40,7 @@ Copyright (C) 2016，北京镁伽机器人科技有限公司
 #define    SPI_FP_SPI_TX_DMA_FLAG_TCIF  DMA_FLAG_TCIF5
 #define    SPI_FP_SPI_TX_DMA_FLAG_HTIF  DMA_FLAG_HTIF5
 
-#define    SPI_DATA_TIMEOUT             ((uint32_t)0xFFFFFFFF)    //根据DELAY_COUNT_MS = 33600，此超时时间大于为128s
+#define    SPI_DATA_TIMEOUT             33600    //根据DELAY_COUNT_MS = 33600，此超时时间大约为1ms
 
 
 

@@ -18,7 +18,8 @@ Copyright (C) 2016，北京镁伽机器人科技有限公司
 #include "functionTask.h"
 #include "periodicTask.h"
 #include "eventManageTask.h"
-#include "pvtAlgorithm.h"
+#include "paraSaveTask.h"
+#include "servAlgorithm.h"
 #include "bspCan.h"
 #include "bspAdc.h"
 #include "bspSpi.h"
@@ -38,6 +39,10 @@ Copyright (C) 2016，北京镁伽机器人科技有限公司
 #include "servDriver.h"
 #include "servDeviceInfo.h"
 
+#if MRV_SUPPORT
+#include "servValve.h"
+#endif
+
 #ifdef PROJECT_QUBELEY
 #include "servPT100.h"
 #endif
@@ -51,16 +56,16 @@ Copyright (C) 2016，北京镁伽机器人科技有限公司
 /*****************************************局部宏定义******************************************/
 #if QUBELEY_HARDVER_1
 #define FPGA_DATA_PATH "D:\\Work\\FPGA_VERSION\\fpga_top_v0003.bin"
-#elif QUBELEY_HARDVER_2
-#define FPGA_DATA_PATH "D:\\Work\\FPGA_VERSION\\fpga_top_v0002.bin"
 #else
-#define FPGA_DATA_PATH "E:\\Daily Backup\\Version\\Gelgoog_4A(FPGA)_01.00.04.10.bin"
+#define FPGA_DATA_PATH "E:\\Daily Backup\\Version\\gelgoog_fpga_top_wrapper.bin"
 #endif
 
 #define    SYSTEM_SOFTWARE_BRANCH_VER_INDEX    0 
 #define    SYSTEM_SOFTWARE_MAJOR_VER_INDEX     1
 #define    SYSTEM_SOFTWARE_MINOR_VER_INDEX     2
 #define    SYSTEM_SOFTWARE_BUILD_VER_INDEX     3
+
+#define    SYSTEM_PDM_ENC_DIV_DEFAULT          8
 
 
 
@@ -88,11 +93,18 @@ static CPU_STK PeriodicTaskStk[APP_TASK_STK_SIZE_PERIODIC];
 static OS_TCB  EventManageTaskTCB;
 static CPU_STK EventManageTaskStk[APP_TASK_STK_SIZE_EVENT_MANAGE];
 
+static OS_TCB  ParaSaveTaskTCB;
+static CPU_STK ParaSaveTaskStk[APP_TASK_STK_SIZE_PARA_SAVE];
+
 OS_SEM    g_semCmdParseTask;
 OS_SEM    g_semPvtCalcTask;
 OS_SEM    g_semFunctionTask;
 OS_SEM    g_semPeriodicTask;
 OS_SEM    g_semEventManageTask;
+OS_SEM    g_semParaSaveTask;
+
+OS_MUTEX  g_mutexSdioInterface;
+
 
 
 /*系统运行用变量**************************************************************/
@@ -115,23 +127,22 @@ BootInfoStruct    g_bootInfo;
 CommIntfcStruct   g_commIntfc;
 /*这两个是和BOOT共用的，所以存储地址和里面的成员变量不能随便修改!!!*/
 
-DeviceInfoStruct  g_deviceInfo;
-SystemInfoStruct  g_systemInfo;
-
-/*PVT相关内容分为三部分: 规划相关参数(决定了波表的解算，波表停止减速以及失步等)；
-                         PVT点(因为占用内存比较大，多轴时放置在CCRAM中)；
-                         PVT管理参数(主要是解算过程中使用的中间变量，所以放置在g_systemState中)*/
+/*PVT相关内容分为三部分************************/
+//21. 规划相关参数(决定了波表的解算，波表停止减速以及失步等)；
 PlanInfoStruct    g_planInfo;
 
+//22. PVT点(因为占用内存比较大，多轴时放置在CCRAM中)
 #ifdef PROJECT_GELGOOG
-#define    CCRAM_ADDR        ((u32)0x10000400)
-
-#else
-
-PvtInfoStruct  pvtPointBuffer;
+#pragma location = "PVTPOINT_SECTION"
 #endif
-/***********************************************************************************************/
 
+PvtInfoStruct  pvtPointBuffer[CH_TOTAL];
+
+//23. PVT管理参数(主要是解算过程中使用的中间变量，所以放置在g_systemState中)
+/*PVT相关内容分为三部分************************/
+
+DeviceInfoStruct  g_deviceInfo;
+SystemInfoStruct  g_systemInfo;
 MotorInfoStruct   g_motorInfo; 
 MotionInfoStruct  g_motionInfo;
 ReportInfoStruct  g_reportInfo;
@@ -146,15 +157,44 @@ AnalogInfoStruct g_analogInfo;
 #endif
 
 #ifdef PROJECT_GELGOOG
+
+#if GELGOOG_SINANJU
+SensorAlarmStruct g_sensorAlarm;
+
+#else
+
 IsolatorInStruct  g_isolatorIn;
 #endif
 
-
+#endif
 /*系统运行用变量**************************************************************/
 
 
-/*调试用变量******************************************************************/
+/*SINANJU电磁阀用变量*********************************************************/
+#if MRV_SUPPORT
+//电磁阀配置参数
+MrvCtrlParaStruct g_mrvCtrlPara;
 
+//电磁阀规划参数
+MrvPlanInfoStruct g_mrvPlanInfo;
+
+#pragma location = "PVTPOINT_SECTION"
+PvtInfoStruct  mrvPvtPointBuffer[MRV_CH_TOTAL_NUM];
+
+//电磁阀波表
+MrvWaveTableStruct g_mrvWaveTable[WTTYPE_RESERVE];
+
+MrvChanCfgBmpStruct g_mrvChanCfgBmp;
+#endif
+/*SINANJU电磁阀用变量*********************************************************/
+
+
+/*调试用变量******************************************************************/
+DebugInfoStruct g_debugInfo;
+
+#if GELGOOG_SINANJU
+u8 pdmMstepDataBuffer[CH_TOTAL][PDM_MSTEP_BUFFER_SIZE];
+#endif
 /*调试用变量******************************************************************/
 
 
@@ -163,9 +203,19 @@ SystemInfoStruct  systemInfoDefault =
 {
     .workMode = WORK_NORMAL,
     .powerOn  = POWERON_DEFAULT,
-
+    
+    .revMotion = SENSOR_OFF,
+    
     /*.group = {GROUP_NUM_VALUE_MIN, 
               GROUP_NUM_VALUE_MIN},*/
+              
+#if GELGOOG_SINANJU
+    .fanDuty = 50,       //50%占空比
+    .armLedDuty = {50, 50, 50, 50},
+            
+    .fanFrequency = 1000,    //1KHz频率
+    .armLedFreq = {100, 100, 100, 100},
+#endif
 
     .otpInfo = 
     {
@@ -173,12 +223,8 @@ SystemInfoStruct  systemInfoDefault =
         .response  = RESPONSE_ALARM,
         .threshold = 10000    //单位0.01°
     },
-
-#if PVT_CALC_USE_FPGA_CLOCK_ERROR
-    .fpgaPwmClock = 0,
-#else
-    .fpgaPwmClock = FPGA_PWM_CLOCK,
-#endif
+    
+    .fpgaClockOffset = 0,
 };
 
 //接口默认配置
@@ -220,8 +266,8 @@ CommIntfcStruct commIntfcDefault =
 //电机默认参数
 MotorManageStruct motorInfoDefault =
 {
-    .motorType  =  MOTOR_ROTARY,       //类型
-    .stepAngel  =  STEPANGLE_18,       //步距角
+    .motorType  = MOTOR_ROTARY,       //类型
+    .stepAngel  = STEPANGLE_18,       //步距角
     .microSteps = MICROSTEP_32,        //微步数
     .motorSize  = MOTOR_23,            //电机尺寸
 
@@ -233,7 +279,7 @@ MotorManageStruct motorInfoDefault =
     .posnUnit  = POSTUNIT_ANGLE,       //系统运行过程中使用的单位
     .motorVolt = 24,                   //电机电压
     .motorCurr = 10,                   //电机电流
-    .feedbackRatio  = 0,               //编码器反馈比例 
+    .feedbackRatio = 1,               //编码器反馈比例 
     
     .gearRatioNum = 1,                  //减速比分子
     .gearRatioDen = 1,                  //减速比分母
@@ -242,8 +288,12 @@ MotorManageStruct motorInfoDefault =
     .peakAcc = 5,                       //最大加速度    CJ 2017.05.24 Add
 
     .backlash = 0.0,
-    
+
+#if GELGOOG_SINANJU
+    .encoderLineNum = 8192,      //线数
+#else
     .encoderLineNum = 2000,      //线数
+#endif
 };
 
 MotionManageStruct motionInfoDefault = 
@@ -258,8 +308,6 @@ MotionManageStruct motionInfoDefault =
     .initIOPin = TRIGPIN_DIL,
 #endif
     .offsetState = SENSOR_OFF,
-
-    .revMotion = SENSOR_OFF,
 
     .startSrc  = SSRC_SOFT,
     .startType = RECEIVE_RADIOID,
@@ -310,9 +358,6 @@ PlanManageStruct planInfoDefault =
     .endState   = ENDSTATE_STOP,
     .validPoint = 0,
     .warnPoint  = 0,
-
-    .accScale = 300,
-    .decScale = 300,
     
     .cycleNum = 1,
     
@@ -332,8 +377,8 @@ PlanManageStruct planInfoDefault =
         .lineResp  = RESPONSE_NONE,
         .totalResp = RESPONSE_NONE,
         
-        .lineOutNum  = 0,
-        .totalOutNum = 0,
+        .lineOutNum  = 32,
+        .totalOutNum = 32,
     }      
 };
 
@@ -427,6 +472,18 @@ IsolatorOutManageStruct isolatorOutDefault =
     .response  = DIOPOLARITY_N
 };
 
+#if GELGOOG_SINANJU
+SensorManageStruct angleSensorDefault = 
+{
+    .state    = SENSOR_OFF,
+    .SOF      = 0x1A,
+    .frameLen = 12,
+    .recvNum  = 1,
+    .swTime   = 30,      //ms
+};
+
+#else
+
 SensorManageStruct angleSensorDefault = 
 {
     .state    = SENSOR_OFF,
@@ -435,6 +492,7 @@ SensorManageStruct angleSensorDefault =
     .recvNum  = 3,
     .swTime   = 30,      //ms
 };
+#endif
 
 SensorManageStruct distSensorDefault = 
 {
@@ -472,27 +530,36 @@ IsolatorInStruct isolatorInDefault =
 };
 #endif
 
+#if !GELGOOG_AXIS_10
 DriverManageStruct driverManageDefault = 
 {
     .state = SENSOR_ON,
     
     .type  = DRIVER_262,
-    .curr  = 2,    //默认值降低到0.2A    CJ 2017.11.30 Modify
-
-    .sgUpLimit = 101,
-    .sgDnLimit = -1,
     
-    .sgZero = 500,
+    .curr  = 2,    //默认值降低到0.2A    CJ 2017.11.30 Modify
+    
+    .idleCurr = 2,
 
+    .tuningState = SENSOR_ON,
+    .currRatio   = CURRRATIO_QUARTER,
+    
+    .currIncre   = CURRINCRE_8,
+    .currDecre   = CURRDECRE_32,
+    
     .sgThreshold = 5,
-    .seMax = 8,
-    .seMin = 8,
+    
+    .energEfficMax    = 720,
+    .energEfficOffset = 400,
+
+    .switchTime = 500,
 
     .DRVCTRL = 
     {
         .stepDirMode =
         {
             .MRES          = MICROSTEP_64,
+            
             .resv_bit4_7   = 0,
             
             .DEDGE         = 0,
@@ -528,17 +595,17 @@ DriverManageStruct driverManageDefault =
     {
         .regBitFiled =
         {
-            .SEMIN      = 9,
+            .SEMIN      = 8,
             .resv_bit4  = 0,
             
             .SEUP       = 3,
             .resv_bit7  = 0,
             
-            .SEMAX      = 1,
+            .SEMAX      = 12,
             .resv_bit12 = 0,
             
-            .SEDN       = 1,
-            .SEIMIN     = 0,
+            .SEDN       = 0,
+            .SEIMIN     = 1,
             .resv_bit16 = 0,
             
             .addr       = ADDR_TMC_SMARTEN,
@@ -589,6 +656,67 @@ DriverManageStruct driverManageDefault =
         }
     }
 };
+
+#else
+
+DriverInfoStruct driverInfoDefault = 
+{
+    .state = 
+    {
+        SENSOR_ON,
+        SENSOR_ON,
+        SENSOR_ON,
+        SENSOR_ON,
+        SENSOR_ON,
+        SENSOR_ON,
+        SENSOR_ON,
+        SENSOR_ON,
+        SENSOR_ON,
+        SENSOR_ON,
+    },
+    
+    .type = 
+    {
+        DRIVER_820,
+        DRIVER_820,
+        DRIVER_820,
+        DRIVER_820,
+        DRIVER_820,
+        DRIVER_820,
+        DRIVER_820,
+        DRIVER_820,
+        DRIVER_820,
+        DRIVER_820
+    },
+    
+    .microStep = MICROSTEP_32,
+    .curr = 2,
+
+    .crc = 0
+};
+#endif
+
+
+#if GELGOOG_SINANJU
+AbsEncoderAlarmStruct absEncAlarmDefault = 
+{
+    .state    = SENSOR_OFF,
+    .zeroPost = SENSOR_OFF,
+
+    .zeroValue = 0xFFFFFFFF,    //这个值代表未校准
+    .upLimit = 262143,
+    .dnLimit = 0
+};
+
+DistSensorAlarmStruct distSensorAlarmDefault = 
+{
+    .state    = SENSOR_OFF,
+    
+    .alarm1Dist = 500,
+    .alarm2Dist = 200,
+    .alarm3Dist = 100,
+};
+#endif
 /*默认配置参数****************************************************************/
 
 
@@ -617,7 +745,7 @@ void WaveTableInfoInit(void)
     
 
     //根据通道号计算波表大小
-    if (1 == g_systemState.chanNum)
+    if (1 == CH_TOTAL)
     {
         wtMainAddr    = DDR_MAIN_WAVE_TABLE_ADDR1;
         wtMainSize    = DDR_MAIN_WAVE_TABLE_SIZE1;
@@ -629,7 +757,7 @@ void WaveTableInfoInit(void)
         wtPreset5Size = DDR_PRESET5_WAVE_TABLE_SIZE1;
         wtChanOffset  = DDR_WAVE_TABLE_CHAN_OFFSET1;
     }
-    else if (g_systemState.chanNum <= 4)
+    else if (CH_TOTAL <= 4)
     {
         wtMainAddr    = DDR_MAIN_WAVE_TABLE_ADDR4;
         wtMainSize    = DDR_MAIN_WAVE_TABLE_SIZE4;
@@ -641,7 +769,19 @@ void WaveTableInfoInit(void)
         wtPreset5Size = DDR_PRESET5_WAVE_TABLE_SIZE4;
         wtChanOffset  = DDR_WAVE_TABLE_CHAN_OFFSET4;
     }
-    else if (g_systemState.chanNum <= 8)
+    else if (CH_TOTAL <= 5)    //机械臂重新分配
+    {
+        wtMainAddr    = DDR_MAIN_WAVE_TABLE_ADDR5;
+        wtMainSize    = DDR_MAIN_WAVE_TABLE_SIZE5;
+        wtInchingAddr = DDR_INCHING_WAVE_TABLE_ADDR5;
+        wtInchingSize = DDR_INCHING_WAVE_TABLE_SIZE5;
+        wtPreset1Addr = DDR_PRESET1_WAVE_TABLE_ADDR5;
+        wtPreset1Size = DDR_PRESET1_WAVE_TABLE_SIZE5;
+        wtPreset5Addr = DDR_PRESET5_WAVE_TABLE_ADDR5;
+        wtPreset5Size = DDR_PRESET5_WAVE_TABLE_SIZE5;
+        wtChanOffset  = DDR_WAVE_TABLE_CHAN_OFFSET5;
+    }
+    else if (CH_TOTAL <= 8)
     {
         wtMainAddr    = DDR_MAIN_WAVE_TABLE_ADDR8;
         wtMainSize    = DDR_MAIN_WAVE_TABLE_SIZE8;
@@ -653,8 +793,20 @@ void WaveTableInfoInit(void)
         wtPreset5Size = DDR_PRESET5_WAVE_TABLE_SIZE8;
         wtChanOffset  = DDR_WAVE_TABLE_CHAN_OFFSET8;
     }
+    else if (10 == CH_TOTAL)
+    {
+        wtMainAddr    = DDR_MAIN_WAVE_TABLE_ADDR10;
+        wtMainSize    = DDR_MAIN_WAVE_TABLE_SIZE10;
+        wtInchingAddr = DDR_INCHING_WAVE_TABLE_ADDR10;
+        wtInchingSize = DDR_INCHING_WAVE_TABLE_SIZE10;
+        wtPreset1Addr = DDR_PRESET1_WAVE_TABLE_ADDR10;
+        wtPreset1Size = DDR_PRESET1_WAVE_TABLE_SIZE10;
+        wtPreset5Addr = DDR_PRESET5_WAVE_TABLE_ADDR10;
+        wtPreset5Size = DDR_PRESET5_WAVE_TABLE_SIZE10;
+        wtChanOffset  = DDR_WAVE_TABLE_CHAN_OFFSET10;
+    }
 
-    for (i = 0;i < g_systemState.chanNum;i++)
+    for (i = 0;i < CH_TOTAL;i++)
     {
         //初始化状态
         for (j = 0;j < WTTYPE_RESERVE;j++)
@@ -728,16 +880,25 @@ void SystemParaReset(void)
     servInterfaceInfoWrite(&g_commIntfc);  
 #endif
 
-    for (i = 0;i < g_systemState.chanNum;i++)
+    for (i = 0;i < CH_TOTAL;i++)
     {
         //重置电机信息
         memcpy(&g_motorInfo.motor[i], &motorInfoDefault, sizeof(MotorManageStruct));
+
+#ifdef PROJECT_GELGOOG 
+#if GELGOOG_AXIS_8 || GELGOOG_AXIS_10
+
+        g_motorInfo.motor[i].encoderState = INTFC_NONE;
         
+#elif GELGOOG_SINANJU
+
         //5轴和5轴以上的不支持编码器
-        if (g_systemState.chanNum > ENCODER_SUPPORT_NUM)
+        if (i >= ENCODER_SUPPORT_NUM)
         {
             g_motorInfo.motor[i].encoderState = INTFC_NONE;
         }
+#endif
+#endif
 
         //重置运行参数
         memcpy(&g_motionInfo.motion[i], &motionInfoDefault, sizeof(MotionManageStruct));
@@ -753,11 +914,22 @@ void SystemParaReset(void)
         memcpy(&g_trigInInfo.trigIn[i], &trigInInfoDefault, sizeof(TrigInManageStruct));
 
         //重置规划参数
-        //memcpy(&g_planInfo.pvtInfo[i], &pvtInfoDefault, sizeof(PvtInfoStruct));
+        memcpy(&g_planInfo.plan[i][WTTYPE_MAIN], &planInfoDefault, sizeof(PlanManageStruct));
+        memcpy(&g_planInfo.plan[i][WTTYPE_SMALL], &planInfoDefault, sizeof(PlanManageStruct));
+        for (j = WTTYPE_PRESET1;j < WTTYPE_RESERVE;j++)
+        {
+            memcpy(&g_planInfo.plan[i][j], &planInfoDefault, sizeof(PlanManageStruct));
+        }
 
+#if !GELGOOG_AXIS_10
         //驱动信息
         memcpy(&g_driverInfo.driver[i], &driverManageDefault, sizeof(DriverManageStruct));
+#endif
     }
+
+#if GELGOOG_AXIS_10
+    memcpy(&g_driverInfo, &driverInfoDefault, sizeof(DriverInfoStruct));
+#endif
 
     //重置触发输出参数
     for (i = 0;i < DIO_RESERVE;i++)
@@ -776,22 +948,51 @@ void SystemParaReset(void)
     {
         memcpy(&g_sensorUart.uartIntfc[i], &commIntfcDefault.uartIntfc, sizeof(UartIntfcStruct));
     }
+    
+#if GELGOOG_SINANJU
+    //机械臂默认波特率2.5M
+    g_sensorUart.uartIntfc[UARTNUM_U2].baud = UARTBAUD_2500000;
+#endif
+
     for (i = 0;i < SENSOR_RESERVE;i++)
     {
         memcpy(&g_sensorUart.sensor[UARTNUM_U1][i], &distSensorDefault, sizeof(SensorManageStruct));
+
+#if !(GELGOOG_AXIS_4 || GELGOOG_AXIS_10)    //4轴和10轴只支持1路
         memcpy(&g_sensorUart.sensor[UARTNUM_U2][i], &angleSensorDefault, sizeof(SensorManageStruct));
+#endif
     }
 
 #ifdef PROJECT_QUBELEY
-    //模拟输入
-    memcpy(&g_analogInfo, &asensorInfoDefault, sizeof(AnalogInfoStruct));
-    servAnalogInInfoWrite(&g_analogInfo);
+    if (SDMODEL_C23D == g_deviceInfo.sDevcModel)    //-D才有AI和OTP
+    {
+        //模拟输入
+        memcpy(&g_analogInfo, &asensorInfoDefault, sizeof(AnalogInfoStruct));
+        servAnalogInInfoWrite(&g_analogInfo);
+    }
 #endif
 
 #ifdef PROJECT_GELGOOG
+
+#if GELGOOG_SINANJU
+    //存储了零位信息，不清零
+    //传感器警报
+    /*for (i = 0;i < SENSOR_RESERVE;i++)
+    {
+        memcpy(&g_sensorAlarm.encAlarm[i],  &absEncAlarmDefault,     sizeof(AbsEncoderAlarmStruct));
+        memcpy(&g_sensorAlarm.distAlarm[i], &distSensorAlarmDefault, sizeof(DistSensorAlarmStruct));
+    }
+    g_sensorAlarm.encAlarmResponse = RESPONSE_ALARMSTOP;
+    g_sensorAlarm.crc = 0;
+    servSensorAlarmInfoStore(&g_sensorAlarm);*/
+
+#else
+
     //重置隔离输入
     memcpy(&g_isolatorIn, &isolatorInDefault, sizeof(IsolatorInStruct));
     servIsolatorInInfoStore(&g_isolatorIn);
+#endif
+
 #endif
     
     g_systemInfo.crc = 0;
@@ -820,6 +1021,9 @@ void SystemParaReset(void)
     
     g_sensorUart.crc = 0;
     servSensorUartInfoStore(&g_sensorUart);
+
+    g_planInfo.crc = 0;
+    servPlanInfoStore(&g_planInfo);
 }
 
 
@@ -834,7 +1038,6 @@ void SystemParaReset(void)
 void SystemParaInit(void)
 { 
     u16 i, j;
-    PvtInfoStruct  *pvtBuffer[CH_TOTAL];
 #if 0
     u32 flashCrc;
     u32 eepromCrc;
@@ -859,8 +1062,7 @@ void SystemParaInit(void)
     }
 
     //系统状态参数初始化
-    memset(&g_systemState, 0, sizeof(g_systemState));     
-    g_systemState.reportSwitch = SENSOR_ON;
+    memset(&g_systemState, 0, sizeof(g_systemState));
     for (i = 0;i < CH_TOTAL;i++)
     {
         for (j = 0;j < PVT_CALC_QUEUE_SIZE;j++)
@@ -868,9 +1070,21 @@ void SystemParaInit(void)
             g_systemState.calcQueue[i][j] = WTTYPE_RESERVE;
         }
 
-        g_systemState.calcIndex[i] = 0;
-        g_systemState.tailIndex[i] = 0;
+#if GELGOOG_SINANJU
+        g_systemState.pdmInfo[i].sampleState = SENSOR_OFF;
+        g_systemState.pdmInfo[i].chanNum     = CH1;
+        g_systemState.pdmInfo[i].encDiv      = SYSTEM_PDM_ENC_DIV_DEFAULT;
+        
+        g_systemState.pdmInfo[i].readOffset = 0;
+        g_systemState.pdmInfo[i].readLen    = 0;
+        g_systemState.pdmInfo[i].mstepCount = 0;
+        
+        g_systemState.pdmInfo[i].mstepData   = (void *)&pdmMstepDataBuffer[i];
+#endif
     }
+#if GELGOOG_SINANJU
+    g_systemState.ledFlickerFreq = LED_FLICKER_FREQ_MIN;
+#endif
 
     //读取存储的部分系统信息参数
     if (servSystemInfoRead(&g_systemInfo) != VERIFY_SUCCESSFUL)
@@ -883,6 +1097,24 @@ void SystemParaInit(void)
                 g_systemInfo.group[i][j] = GROUP_NUM_VALUE_MIN;
             }
         }
+
+        g_systemInfo.crc = 0;
+        servSystemInfoWrite(&g_systemInfo);
+    }
+    //因为revMotion是放在了结构体中间，之前是有group的默认值的，所以这里需要重新赋值    CJ 2018.08.09 Add
+    if ((u8)g_systemInfo.revMotion > (u8)SENSOR_ON)
+    {
+        memcpy(&g_systemInfo, &systemInfoDefault, sizeof(SystemInfoStruct));
+        for (i = 0;i < CH_TOTAL;i++)
+        {
+            for (j = 0;j < GROUP_NUM;j++)
+            {
+                g_systemInfo.group[i][j] = GROUP_NUM_VALUE_MIN;
+            }
+        }
+
+        g_systemInfo.crc = 0;
+        servSystemInfoWrite(&g_systemInfo);
     }
 #if 0    //For Modify NICK
     //获取SN，先从EEprom和Flash中都读出来，然后分别计算CRC    //关于SN想这进行加密存储    NICK MARK
@@ -943,51 +1175,51 @@ void SystemParaInit(void)
     //读出电机信息
     if (servMotorInfoRead(&g_motorInfo) != VERIFY_SUCCESSFUL)
     {   
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             memcpy(&g_motorInfo.motor[i], &motorInfoDefault, sizeof(MotorManageStruct)); 
-        }
-        
-        //5轴和5轴以上的不支持编码器
-        if (g_systemState.chanNum > ENCODER_SUPPORT_NUM)
-        {
-            for (i = 0;i < g_systemState.chanNum;i++)
+
+#ifdef PROJECT_GELGOOG 
+
+#if GELGOOG_AXIS_8 || GELGOOG_AXIS_10    //8轴，10轴目前不支持编码器
+
+            g_motorInfo.motor[i].encoderState = INTFC_NONE;
+            
+#elif GELGOOG_SINANJU
+
+            //机械臂目前只支持4路编码器
+            if (i >= ENCODER_SUPPORT_NUM)
             {
                 g_motorInfo.motor[i].encoderState = INTFC_NONE; 
             }
-        }
+#endif
 
+#endif
+        }
+        
         g_motorInfo.crc = 0;
         servMotorInfoWrite(&g_motorInfo);
-    }
-    
-    //计算下位置到微步和编码器线的转换系数
-    for (i = 0;i < g_systemState.chanNum;i++)
-    {
-        pvtPosnConvCoeffCalc(g_motorInfo.motor[i], 
-                             g_driverInfo.driver[i].DRVCTRL.stepDirMode.MRES,
-                             &g_systemState.posnConvertInfo[i]);
     }
 
     //读出运行参数
     if (servMotionInfoRead(&g_motionInfo) != VERIFY_SUCCESSFUL)
     { 
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             memcpy(&g_motionInfo.motion[i], &motionInfoDefault, sizeof(MotionManageStruct));
         }
         g_motionInfo.crc = 0;
         servMotionInfoWrite(&g_motionInfo);
     }
-    for (i = 0;i < g_systemState.chanNum;i++)
+    for (i = 0;i < CH_TOTAL;i++)
     {
-        g_systemState.revMotion[i] = g_motionInfo.motion[i].revMotion;
+        g_systemState.softTimer.motionState[i] = SENSOR_ON;
     }
     
     //读出上报器参数
     if (servReportInfoRead(&g_reportInfo) != VERIFY_SUCCESSFUL)
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             for (j = 0;j < REPTTYPE_RESERVE;j++)
             {
@@ -1002,7 +1234,7 @@ void SystemParaInit(void)
     //触发输入参数
     if (servTrigInInfoRead(&g_trigInInfo) != VERIFY_SUCCESSFUL)
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+        for (i = 0;i < CH_TOTAL;i++)
         {
             memcpy(&g_trigInInfo.trigIn[i], &trigInInfoDefault, sizeof(TrigInInfoStruct));
         }
@@ -1039,31 +1271,61 @@ void SystemParaInit(void)
         {
             memcpy(&g_sensorUart.uartIntfc[i], &commIntfcDefault.uartIntfc, sizeof(UartIntfcStruct));
         }
-            
+
+#if GELGOOG_SINANJU
+        //机械臂默认波特率2.5M
+        g_sensorUart.uartIntfc[UARTNUM_U2].baud = UARTBAUD_2500000;
+#endif
+
         for (i = 0;i < SENSOR_RESERVE;i++)
         {
             memcpy(&g_sensorUart.sensor[UARTNUM_U1][i], &distSensorDefault,  sizeof(SensorManageStruct));
+
+#if !(GELGOOG_AXIS_4 || GELGOOG_AXIS_10)    //4轴和10轴只支持1路
             memcpy(&g_sensorUart.sensor[UARTNUM_U2][i], &angleSensorDefault, sizeof(SensorManageStruct));
+#endif
         }
 
         g_sensorUart.crc = 0;
         servSensorUartInfoStore(&g_sensorUart);
     }
     memcpy(&g_sensorUartIntfc[UARTNUM_U1], &g_sensorUart.uartIntfc[UARTNUM_U1], sizeof(UartIntfcStruct));
+#if !(GELGOOG_AXIS_4 || GELGOOG_AXIS_10)    //4轴和10轴只支持1路
     memcpy(&g_sensorUartIntfc[UARTNUM_U2], &g_sensorUart.uartIntfc[UARTNUM_U2], sizeof(UartIntfcStruct));
+#endif
 
 
 #ifdef PROJECT_QUBELEY
-    //模拟输入
-    if (servAnalogInInfoRead(&g_analogInfo) != VERIFY_SUCCESSFUL)
+    if (SDMODEL_C23D == g_deviceInfo.sDevcModel)    //-D才有AI和OTP
     {
-        memcpy(&g_analogInfo, &asensorInfoDefault, sizeof(AnalogInfoStruct));
-        servAnalogInInfoWrite(&g_analogInfo);
+        //模拟输入
+        if (servAnalogInInfoRead(&g_analogInfo) != VERIFY_SUCCESSFUL)
+        {
+            memcpy(&g_analogInfo, &asensorInfoDefault, sizeof(AnalogInfoStruct));
+            servAnalogInInfoWrite(&g_analogInfo);
+        }
     }
 #endif
 
 
 #ifdef PROJECT_GELGOOG
+
+#if GELGOOG_SINANJU
+    //传感器警报
+    if (servSensorAlarmInfoRead(&g_sensorAlarm) != VERIFY_SUCCESSFUL)
+    {
+        for (i = 0;i < SENSOR_RESERVE;i++)
+        {
+            memcpy(&g_sensorAlarm.encAlarm[i],  &absEncAlarmDefault,     sizeof(AbsEncoderAlarmStruct));
+            memcpy(&g_sensorAlarm.distAlarm[i], &distSensorAlarmDefault, sizeof(DistSensorAlarmStruct));
+        }
+        g_sensorAlarm.encAlarmResponse = RESPONSE_ALARMSTOP;
+        g_sensorAlarm.crc = 0;
+        servSensorAlarmInfoStore(&g_sensorAlarm);
+    }
+
+#else
+
     //隔离输入
     if (servIsolatorInInfoRead(&g_isolatorIn) != VERIFY_SUCCESSFUL)
     {
@@ -1072,49 +1334,90 @@ void SystemParaInit(void)
     }
 #endif
 
-    //PVT数据结构体初始化
-#ifdef PROJECT_GELGOOG
-    pvtBuffer[CH1] = (PvtInfoStruct *)CCRAM_ADDR;
-#else
-    pvtBuffer[CH1] = &pvtPointBuffer;
 #endif
-    /*if (servPlanInfoRead(g_pPlanInfo) != VERIFY_SUCCESSFUL)
-    {*/
-    
-    for (i = 0;i < g_systemState.chanNum;i++)
+
+    //PVT数据结构体初始化
+    if (servPlanInfoRead(&g_planInfo) != VERIFY_SUCCESSFUL)
     {
-        memcpy(&g_planInfo.plan[i][WTTYPE_MAIN], &planInfoDefault, sizeof(PlanManageStruct));
+        for (i = 0;i < CH_TOTAL;i++)
+        {
+            memcpy(&g_planInfo.plan[i][WTTYPE_MAIN], &planInfoDefault, sizeof(PlanManageStruct));
+            memcpy(&g_planInfo.plan[i][WTTYPE_SMALL], &planInfoDefault, sizeof(PlanManageStruct));
+
+            for (j = WTTYPE_PRESET1;j < WTTYPE_RESERVE;j++)
+            {
+                memcpy(&g_planInfo.plan[i][j], &planInfoDefault, sizeof(PlanManageStruct));
+            }
+        }
+
+        g_planInfo.crc = 0;
+        servPlanInfoStore(&g_planInfo);
+    }
+    
+    for (i = 0;i < CH_TOTAL;i++)
+    {
         memset(&g_systemState.pvtManage[i][WTTYPE_MAIN], 0, sizeof(PvtManageStruct));
         g_systemState.pvtManage[i][WTTYPE_MAIN].pvtBufferSize = PVT_POINT_BUFFER_SIZE;
-        g_systemState.pvtManage[i][WTTYPE_MAIN].pvtPoint = pvtBuffer[i]->mainPvtPoint;
+        g_systemState.pvtManage[i][WTTYPE_MAIN].pvtPoint = pvtPointBuffer[i].mainPvtPoint;
         
-        memcpy(&g_planInfo.plan[i][WTTYPE_SMALL], &planInfoDefault, sizeof(PlanManageStruct));
+        
         memset(&g_systemState.pvtManage[i][WTTYPE_SMALL], 0, sizeof(PvtManageStruct));
-        g_systemState.pvtManage[i][WTTYPE_SMALL].pvtBufferSize = SMALL_PVT_BUFFER_SIZE;
-        g_systemState.pvtManage[i][WTTYPE_SMALL].pvtPoint = pvtBuffer[i]->smallPvtPoint;
+        g_systemState.pvtManage[i][WTTYPE_SMALL].pvtBufferSize = PVT_POINT_BUFFER_SIZE;
+        g_systemState.pvtManage[i][WTTYPE_SMALL].pvtPoint = pvtPointBuffer[i].smallPvtPoint;
 
         for (j = WTTYPE_PRESET1;j < WTTYPE_RESERVE;j++)
         {
-            memcpy(&g_planInfo.plan[i][j], &planInfoDefault, sizeof(PlanManageStruct));
-
             memset(&g_systemState.pvtManage[i][j], 0, sizeof(PvtManageStruct));
-            
-            g_systemState.pvtManage[i][j].pvtBufferSize = PRESET_PVT_BUFFER_SIZE;
-            g_systemState.pvtManage[i][j].pvtPoint = pvtBuffer[i]->presetPvtPoint[j];
+            g_systemState.pvtManage[i][j].pvtBufferSize = PVT_POINT_BUFFER_SIZE;
+            g_systemState.pvtManage[i][j].pvtPoint = pvtPointBuffer[i].presetPvtPoint[j - WTTYPE_PRESET1];
         }
     }
-    
-    //}
 
     //驱动信息结构体初始化
     if (servDriverInfoRead(&g_driverInfo) != VERIFY_SUCCESSFUL)
     {
-        for (i = 0;i < g_systemState.chanNum;i++)
+#if !GELGOOG_AXIS_10
+        for (i = 0;i < CH_TOTAL;i++)
         {
+            //驱动信息
             memcpy(&g_driverInfo.driver[i], &driverManageDefault, sizeof(DriverManageStruct));
         }
+#else
+        memcpy(&g_driverInfo, &driverInfoDefault, sizeof(DriverInfoStruct));
+#endif
+        
         g_driverInfo.crc = 0;
         servDriverInfoStore(&g_driverInfo);
+    }
+#if !GELGOOG_AXIS_10
+    //因为tuningState之前的位置是有sgUpLimit的默认值的，所以这里需要重新赋值，而且只需判断一个通道就行    CJ 2018.09.01 Add
+    if ((u8)g_driverInfo.driver[0].tuningState > (u8)SENSOR_ON)
+    {
+        for (i = 0;i < CH_TOTAL;i++)
+        {
+            //驱动信息
+            memcpy(&g_driverInfo.driver[i], &driverManageDefault, sizeof(DriverManageStruct));
+        }
+        
+        g_driverInfo.crc = 0;
+        servDriverInfoStore(&g_driverInfo);
+    }
+#endif
+    
+    //计算下位置到微步和编码器线的转换系数
+    for (i = 0;i < CH_TOTAL;i++)
+    {
+#if !GELGOOG_AXIS_10                            
+        //重新计算下位置到微步和编码器线的转换系数
+        servPosnConvCoeffCalc(g_motorInfo.motor[i], 
+                              g_driverInfo.driver[i].DRVCTRL.stepDirMode.MRES,
+                              &g_systemState.posnConvertInfo[i]);
+#else
+        //重新计算下位置到微步和编码器线的转换系数
+        servPosnConvCoeffCalc(g_motorInfo.motor[i], 
+                              g_driverInfo.microStep,
+                              &g_systemState.posnConvertInfo[i]);
+#endif
     }
 
     //传感器上报数据初始化
@@ -1130,19 +1433,22 @@ void SystemParaInit(void)
 
     if (0 == g_systemState.pvtCalcTaskSem)    //没有PRESET需要解算就直接进入IDLE状态
     {
-        g_systemState.systemState  = SYSTATE_IDLE;
-        //g_systemState.lastSysState = SYSTATE_POWERON;
-
-        for (i = 0;i < g_systemState.chanNum;i++)
+#if MRV_SUPPORT 
+        for (i = 0;i < CH_TOTAL + MRV_CH_TOTAL_NUM;i++)
+#else
+        for (i = 0;i < CH_TOTAL;i++)
+#endif
         {
-            g_systemState.lastChanState[i] = CHSTATE_POWERON;
-            g_systemState.chanState[i]     = CHSTATE_IDLE;
-            g_eventSrcBmp.bStateSwitch[i]  = true;
+            //g_systemState.bStateSwitch[i][WTTYPE_MAIN] = true;
+
+            //触发状态监控事件
+            g_eventSrcBmp.bStateMonitor[i] = true;
         }
 
         //状态改变，通知event线程
         OSSemPost(&g_semEventManageTask, OS_OPT_POST_ALL, NULL);
     }
+#if 0    //暂时不支持上电计算PVT
     else
     {
         //给PVTCALC线程发信号量
@@ -1151,6 +1457,7 @@ void SystemParaInit(void)
             OSSemPost(&g_semPvtCalcTask, OS_OPT_POST_ALL, NULL);
         }
     }
+#endif
 }
 
 
@@ -1191,6 +1498,12 @@ static void SystemSemCreate(void)
     
     OSSemCreate((OS_SEM   *)&g_semEventManageTask,
                 (CPU_CHAR *)"Event Manage Task Sem",
+                (OS_SEM_CTR)0,
+                (OS_ERR   *)&err);
+    
+    
+    OSSemCreate((OS_SEM   *)&g_semParaSaveTask,
+                (CPU_CHAR *)"Para Save Task Sem",
                 (OS_SEM_CTR)0,
                 (OS_ERR   *)&err);
 }
@@ -1236,7 +1549,7 @@ static void SystemTaskCreate(void)
                  (OS_MSG_QTY )0,
                  (OS_TICK    )0,
                  (void      *)0,
-                 (OS_OPT     )(OS_OPT_TASK_STK_CHK | OS_OPT_TASK_STK_CLR),
+                 (OS_OPT     )(OS_OPT_TASK_SAVE_FP | OS_OPT_TASK_STK_CHK | OS_OPT_TASK_STK_CLR),
                  (OS_ERR    *)&err);
     
     
@@ -1286,7 +1599,202 @@ static void SystemTaskCreate(void)
                  (void      *)0,
                  (OS_OPT     )(OS_OPT_TASK_STK_CHK | OS_OPT_TASK_STK_CLR),
                  (OS_ERR    *)&err);
+    
+    
+    //参数存储任务
+    OSTaskCreate((OS_TCB    *)&ParaSaveTaskTCB,
+                 (CPU_CHAR  *)"Para Save Task",
+                 (OS_TASK_PTR)ParaSaveTask,
+                 (void      *)0,
+                 (OS_PRIO    )APP_TASK_PRIO_PARA_SAVE,
+                 (CPU_STK   *)&ParaSaveTaskStk[0],
+                 (CPU_STK_SIZE)APP_TASK_STK_SIZE_PARA_SAVE / 10,    //(CPU_STK_SIZE)ParaSaveTaskStk[APP_TASK_STK_SIZE_PARA_SAVE / 10],
+                 (CPU_STK_SIZE)APP_TASK_STK_SIZE_PARA_SAVE,
+                 (OS_MSG_QTY )0,
+                 (OS_TICK    )0,
+                 (void      *)0,
+                 (OS_OPT     )(OS_OPT_TASK_STK_CHK | OS_OPT_TASK_STK_CLR),
+                 (OS_ERR    *)&err);
+
+    //SDIO接口互斥
+    OSMutexCreate((OS_MUTEX  *)&g_mutexSdioInterface,
+                  (CPU_CHAR  *)"Sdio Interface Mutex",
+                  (OS_ERR    *)&err);
 }
+
+
+#if SDIO_TX_RX_TEST
+/*********************************************************************************************
+函 数 名: SystemSdioTxRxTest;
+实现功能: 无; 
+输入参数: 无;
+输出参数: 无;
+返 回 值: 无;
+说    明: 无;
+*********************************************************************************************/
+void SystemSdioTxRxTest(void)
+{
+    bool bRemainder = false;
+    bool bRxError = false;
+    u8  cmdData[8];
+    u8 *pTestCount;
+    u8  readCount;
+    u8  respData[1024];
+    u16 i;
+    u16 j;
+    u16 readLen = 510;
+    u16 dataBlock;
+    u16 txErrorCount;
+    u16 rxErrorCount;
+    u16 *pTxData;
+    u16 *pRxData;
+    u32 dataLen;
+    u32 respDataLen;
+    u64 testCount;
+
+    
+    //测试开始，给CAN总线发送测试开始指令
+    for (i = 0;i < 8;i++)
+    {
+        cmdData[i] = 1;
+    }
+    servFrameSend(cmdData[0], cmdData[1], 6, &cmdData[2], g_commIntfc.linkType);
+    servTxFrameProcess();
+
+    //生成一组数据
+    g_outputData[CH1].writeAddr = SERV_FPGA_CONFIG_REG_26;
+    for (i = 0;i < OUTPUT_DATA_BUFFER_SIZE;i++)
+    {
+        g_outputData[CH1].data[i] = 0x20001 + 0x20002 * i;
+    }
+
+    //循环往FPGA CACHE中写入生成的数据，然后读取写错误状态
+    //再从FPGA CACHE中读出写入的数据和写入之前的数据进行对比
+    testCount    = 0;
+    txErrorCount = 0;
+    rxErrorCount = 0;
+    dataLen   = 8;    //第一次发送4个字节
+    dataBlock = SDIO_DataBlockSize_8b;
+    do
+    {
+        //复位，开始，配置数据类型
+        servFpgaPdmCacheTestSet();
+        servFpgaPdmSampleReset(SAMPLECH_CH1);
+        servFpgaPdmSampleStart(SAMPLECH_CH1);
+        servFpgaDDRDataTypeSet(CH1, DATATYPE_CACHE);
+
+        //写数据
+        servFpgaDataLenSet(FPGAACT_WRITE, dataLen, dataLen);
+        bspSdioDataSend((u8 *)&g_outputData[CH1].writeAddr, dataLen, dataBlock);
+
+        //结束
+        servFpgaPdmSampleEnd(SAMPLECH_CH1);
+
+        //读取写入的长度(读回来的长度是16bit的，所以要×2)
+        respDataLen = servFpgaPdmMstepCountRead(SAMPLECH_CH1) * 2;
+        
+        //读取写错误状态
+        if ((!servFpgaSdioWrErrorRead()) && (respDataLen == (dataLen - sizeof(u32))))
+        {
+            bRemainder = false;
+            bRxError = false;
+
+            readCount = respDataLen / readLen;
+            if ((respDataLen % readLen) != 0)
+            {
+                bRemainder = true;
+            }
+
+            pTxData = (u16 *)g_outputData[CH1].data;
+            for (i = 0;i < readCount;i++)
+            {
+                pRxData = (u16 *)respData + 1;    //+1是寄存器地址偏移
+                servFpgaPdmMstepDataRead(SAMPLECH_CH1, respData, readLen);
+
+                for (j = 0;j < readLen / sizeof(u16);j++)
+                {
+                    if (*pTxData != *pRxData)
+                    {
+                        rxErrorCount++;
+                        bRxError = true;
+                        break;
+                    }
+                    pTxData++;
+                    pRxData++;
+                }
+
+                if (bRxError)
+                {
+                    break;
+                }
+
+                respDataLen -= readLen;
+            }
+
+            //处理剩余数据
+            if (bRemainder && !bRxError)
+            {
+                pRxData = (u16 *)respData + 1;    //+1是寄存器地址偏移
+                servFpgaPdmMstepDataRead(SAMPLECH_CH1, respData, respDataLen);
+
+                for (j = 0;j < respDataLen / sizeof(u16);j++)
+                {
+                    if (*pTxData != *pRxData)
+                    {
+                        rxErrorCount++;
+                        bRxError = true;
+                        break;
+                    }
+                    pTxData++;
+                    pRxData++;
+                }
+            }
+        }
+        else
+        {
+            //记录错误次数，写错了就没必要读了
+            txErrorCount++;
+        }
+
+        dataLen   *= 2;
+        dataBlock += SDIO_DataBlockSize_2b;
+        if (dataLen > 4096)
+        {
+            dataLen   = 8;
+            dataBlock = SDIO_DataBlockSize_8b;
+        }
+
+        testCount++;
+    }
+    while ((txErrorCount < 1000) && ((rxErrorCount < 1000)));
+    
+    //测试结束，给CAN总线发送测试结束指令
+    pTestCount = (u8 *)&testCount;
+    for (i = 0;i < 8;i++)
+    {
+        cmdData[i] = *pTestCount++;
+    }
+    servFrameSend(cmdData[0], cmdData[1], 6, &cmdData[2], g_commIntfc.linkType);
+
+    for (i = 0;i < 6;i++)
+    {
+        cmdData[i] = 0;
+    }
+    cmdData[6] = (u8)(txErrorCount >> 8);
+    cmdData[7] = (u8)txErrorCount;
+    servFrameSend(cmdData[0], cmdData[1], 6, &cmdData[2], g_commIntfc.linkType);
+
+    for (i = 0;i < 6;i++)
+    {
+        cmdData[i] = 0;
+    }
+    cmdData[6] = (u8)(rxErrorCount >> 8);
+    cmdData[7] = (u8)rxErrorCount;
+    servFrameSend(cmdData[0], cmdData[1], 6, &cmdData[2], g_commIntfc.linkType);
+    
+    servTxFrameProcess();
+}
+#endif
 
 
 /*********************************************************************************************
@@ -1302,7 +1810,7 @@ static void SystemInitTask(void *p_arg)
     CPU_INT32U  cpu_clk_freq;
     CPU_INT32U  cnts;
     OS_ERR      err;
-    u8          i;
+    u16         i;
     
 
     //(void)p_arg;
@@ -1332,28 +1840,51 @@ static void SystemInitTask(void *p_arg)
 
     
     /*------------------------------系统初始化，包括硬件外设，FPGA以及软件-----------------------------------*/
+    /************************硬件初始化开始***********************************/
     //初始化GPIO
     bspLedGpioInit(); 
     bspFpgaITGpioInit();
     bspDriverGpioInit();
 
     bspSdioInit();
+
     bspFpSpiInit();
 
     //初始化外设
     bspEepromInit();
     bspCRC32Init();
 
+    bspCiCanInit();
+
+    bspCiUartInit();
+    bspSensor1UartInit();
+    bspSensor2UartInit();
+
 #ifdef PROJECT_QUBELEY
     bspAdc1Init();    //用于模拟输入
 #endif
 
+
+#ifdef PROJECT_GELGOOG
+    
+#if GELGOOG_SINANJU
+    bspFanTimerInit();       //控制风扇
+    bspArmLedTimerInit();    //控制LED
+
+#elif GELGOOG_AXIS_10
+    bspDriverTimerInit();    //控制驱动芯片Vref，从而控制电流
+#endif
+    
+#endif
+
     bspHardVerAdcInit();
+    /************************硬件初始化结束***********************************/
+    
 
     //Gelgoog需要先获取数字版型号和硬件版本号才能决定FPGA文件的加载镜像
     //servFpgaTypeRead();读FPGA类型，根据类型加载镜像
 
-    
+    /************************开始加载FPGA***********************************/
 #if !FOR_FPGA_DEBUG
 
     bspFpgaProgGpioInit();
@@ -1369,11 +1900,11 @@ static void SystemInitTask(void *p_arg)
     servFpgaLoaclFileLoad(FPGA_DATA_PATH);    //从本地文件中读取FPGA数据
 #endif
 
-#else    
 
-    //等待FPGA载入完成，调试用
+#else //#if !FOR_FPGA_DEBUG    
 
-    //写01寄存器，然后读，直到读到的数和写的数一样
+
+    //等待FPGA载入完成，调试用: 写01寄存器，然后读，直到读到的数和写的数一样
     bool fpgaReady = false;
     do
     {
@@ -1381,7 +1912,8 @@ static void SystemInitTask(void *p_arg)
         
     }while (false == fpgaReady);
         
-#endif    //#if FOR_FPGA_DEBUG
+#endif    //#if !FOR_FPGA_DEBUG
+    /************************完成加载FPGA***********************************/
 
 
     //状态灯置为上电状态
@@ -1389,35 +1921,52 @@ static void SystemInitTask(void *p_arg)
 
     //初始化系统参数，从存储中获取后续相关配置的配置参数
     SystemParaInit();
-
-    //配置对外接口:CAN和232
-    bspCiUartInit(g_commIntfc.uartIntfc);
-    bspCiCanInit(g_commIntfc.canIntfc);
-
-    //配置传感器串口
-    bspSensor1UartInit(g_sensorUart.uartIntfc[UARTNUM_U1]);
-    bspSensor2UartInit(g_sensorUart.uartIntfc[UARTNUM_U2]);
     
     //初始化协议栈和软定时器
     servCommStreamBufferInit();
     servStimerAllInit();
 
+    //配置对外接口:CAN和232
+    servCiUartConfig(g_commIntfc.uartIntfc);
+    servCiCanConfig(g_commIntfc.canIntfc);
+
+    //配置传感器串口
+    servSensor1UartConfig(g_sensorUart.uartIntfc[UARTNUM_U1]);
+#if !(GELGOOG_AXIS_4 || GELGOOG_AXIS_10)    //4轴和10轴只支持1路
+    servSensor2UartConfig(g_sensorUart.uartIntfc[UARTNUM_U2]);
+#endif
+
+    //配置驱动(10轴直接配置，其他产品先配置时钟和驱动使能)
+#if GELGOOG_AXIS_10
+    servDriverConfig(g_driverInfo);
+    
+#else
+
+    for (i = 0;i < CH_TOTAL;i++)
+    {
+        servFpgaDriverClkCofing(i, DRVCLK_OPEN);    //初始化逻辑对TMC控制 
+    }
+    
     //使能驱动
     servDriverCtrlEnable(true);
 
+#endif
+
     //配置通道相关的参数
-    for (i = 0;i < g_systemState.chanNum;i++)
+    for (i = 0;i < CH_TOTAL;i++)
     {
+#if !GELGOOG_AXIS_10
         //配置驱动
         servDriverConfig(i, g_driverInfo.driver[i]);
 
-        //配置启动源
-        servFpgaStartSourceSet(i, g_motionInfo.motion[i].startSrc);
-
-        //配置编码器
+        //配置编码器(10轴没有编码器)
         servFpgaEncoderSet(i, g_motorInfo.motor[i].encoderState,
                               g_motorInfo.motor[i].encoderMult,
                               g_motorInfo.motor[i].encoderChanNum);
+#endif
+
+        //配置启动源
+        servFpgaStartSourceSet(i, g_motionInfo.motion[i].startSrc);
 
         //配置触发输入
         servFpgaTriggerSet(i, g_trigInInfo.trigIn[i], g_motorInfo.motor[i].encoderChanNum);
@@ -1427,13 +1976,13 @@ static void SystemInitTask(void *p_arg)
     //TO ADD NICK
 
     //配置数字输出
-    for (i = 0;i < DIO_RESERVE;i++)
+    for (i = 0;i < g_systemState.doutNum;i++)
     {
         servFpgaDigitalOutSet((DoutNumEnum)i, g_digitalOut.output[i]);
     }
 
     //配置隔离输出
-    for (i = 0;i < YOUT_RESERVE;i++)
+    for (i = 0;i < g_systemState.youtNum;i++)
     {
         servFpgaIsolatorOutSet((YoutNumEnum)i, g_isolatorOut.output[i]);
     }
@@ -1445,21 +1994,41 @@ static void SystemInitTask(void *p_arg)
         {
             servSensor1UartReciveOn(g_sensorUart.sensor[UARTNUM_U1][i], (SensorNumEnum)i);
         }
-        
+
+#if !(GELGOOG_AXIS_4 || GELGOOG_AXIS_10)    //4轴和10轴只支持1路        
         if (SENSOR_ON == g_sensorUart.sensor[UARTNUM_U2][i].state)
         {
             servSensor2UartReciveOn(g_sensorUart.sensor[UARTNUM_U2][i], (SensorNumEnum)i);
         }
+#endif
     }
 
 #ifdef PROJECT_QUBELEY
-    //配置模拟输入
-    servAnalogInSet(g_analogInfo);
+    if (SDMODEL_C23D == g_deviceInfo.sDevcModel)    //-D才有AI和OTP
+    {
+        //配置模拟输入
+        servAnalogInSet(g_analogInfo);
+    }
 #endif
 
 #ifdef PROJECT_GELGOOG
+
+#if GELGOOG_SINANJU
+    //配置风扇转速
+    servFanConfig(g_systemInfo.fanFrequency, g_systemInfo.fanDuty);
+
+    for (i = 0;i < ARMLED_RESERVE;i++)
+    {
+        servArmLedConfig((ArmLedEnum)i, g_systemInfo.armLedFreq[i], g_systemInfo.armLedDuty[i]);
+    }
+
+#else
+
     //隔离输入
     //TO ADD NICK
+    
+#endif
+
 #endif
 
     //初始化命令解析模块
@@ -1468,7 +2037,16 @@ static void SystemInitTask(void *p_arg)
     //初始化参数验证模块
     pvrfParaLimitInit();
     /*------------------------------系统初始化，包括硬件外设，FPGA以及软件-----------------------------------*/
-    
+
+#if SDIO_CRC_ERROR_ENABLE
+    servFpgaSdioCrcErrorIntSet(SENSOR_ON);
+#endif
+
+
+#if SDIO_TX_RX_TEST
+    SystemSdioTxRxTest();
+#endif
+
     
     OS_TaskSuspend((OS_TCB*)&SystemInitTaskTCB, &err);    //挂起开始任务
     
@@ -1562,7 +2140,7 @@ void sysTaskCreate(SystemTaskEnum sysTask)
                      (OS_MSG_QTY )0,
                      (OS_TICK    )0,
                      (void      *)0,
-                     (OS_OPT     )(OS_OPT_TASK_STK_CHK | OS_OPT_TASK_STK_CLR),
+                     (OS_OPT     )(OS_OPT_TASK_SAVE_FP | OS_OPT_TASK_STK_CHK | OS_OPT_TASK_STK_CLR),
                      (OS_ERR    *)NULL);
     }
     else if (SYSTASK_FUNCTION == sysTask)
@@ -1653,9 +2231,56 @@ void sysTaskDelete(SystemTaskEnum sysTask)
     {
         //事件管理任务
         OSTaskDel((OS_TCB *)&EventManageTaskTCB, (OS_ERR *)NULL);
-     }            
+    }            
 }
 
+
+/*********************************************************************************************
+函 数 名: sysTaskClear;
+实现功能: 无; 
+输入参数: 无;
+输出参数: 无;
+返 回 值: 无;
+说    明: 无;
+*********************************************************************************************/
+void sysTaskClear(SystemTaskEnum sysTask)
+{
+    u8 i;
+    u8 j;
+
+    
+    if (SYSTASK_CMDPARSE == sysTask)
+    {
+    }
+    else if (SYSTASK_PVTCALC == sysTask)
+    {             
+        g_semPvtCalcTask.Ctr = 0;
+
+        //删除再创建    CJ 2017.11.23 Add
+        sysTaskDelete(SYSTASK_PVTCALC);
+        sysTaskCreate(SYSTASK_PVTCALC);
+
+        //清空解算队列
+        for (i = 0;i < CH_TOTAL;i++)
+        {
+            for (j = 0;j < PVT_CALC_QUEUE_SIZE;j++)
+            {
+                g_systemState.calcQueue[i][j] = WTTYPE_RESERVE;
+            }
+            g_systemState.calcIndex[i] = 0;
+            g_systemState.tailIndex[i] = 0;
+        }
+    }
+    else if (SYSTASK_FUNCTION == sysTask)
+    {
+    }
+    else if (SYSTASK_PERIODIC == sysTask)
+    {
+    }
+    else if (SYSTASK_EVENMANG == sysTask)
+    {
+    } 
+}
 
 
 

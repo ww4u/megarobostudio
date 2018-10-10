@@ -29,17 +29,6 @@ int scriptGroup::save( const QString &str )
 
     serialOut( writer );
 
-//    writer.writeStartElement("prj");
-
-//    writer.writeTextElement("name", mName );
-
-//    foreach( scriptNode *pNode, mNodeList )
-//    {
-//        pNode->serialOut( writer );
-//    }
-
-//    writer.writeEndElement();
-
     writer.writeEndDocument();
 
     return 0;
@@ -155,10 +144,7 @@ void scriptGroup::dbgPrint()
 void scriptGroup::iterGroup( scriptGroup *pGp )
 {
     Q_ASSERT( NULL != pGp );
-    if ( pGp->getParent() != NULL )
-    { logDbg()<<"group:"<<pGp->name()<<pGp->getParent()->getName(); }
-    else
-    { logDbg()<<"group:"<<pGp->name(); }
+
     foreach( scriptNode* pNode, pGp->mNodeList )
     {
         Q_ASSERT( NULL != pNode );
@@ -169,7 +155,7 @@ void scriptGroup::iterGroup( scriptGroup *pGp )
         }
         else
         {
-            logDbg()<<"file:"<<pNode->getName()<<pNode->getParent()->getName();
+//            logDbg()<<"file:"<<pNode->getName()<<pNode->getParent()->getName();
         }
     }
 

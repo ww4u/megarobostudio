@@ -50,7 +50,7 @@ int  servMotionInfoWrite(MotionInfoStruct *info);
 int  servMotionInfoRead(MotionInfoStruct *info);
 int  servReportInfoWrite(ReportInfoStruct *info);
 int  servReportInfoRead(ReportInfoStruct *info);
-int  servPlanInfoWrite(PlanInfoStruct *info);
+int  servPlanInfoStore(PlanInfoStruct *info);
 int  servPlanInfoRead(PlanInfoStruct *info);
 
 #ifdef PROJECT_QUBELEY
@@ -59,8 +59,17 @@ int servAnalogInInfoRead(AnalogInfoStruct *info);
 #endif
 
 #ifdef PROJECT_GELGOOG
+
+#if GELGOOG_SINANJU
+int servSensorAlarmInfoStore(SensorAlarmStruct *info);  
+int servSensorAlarmInfoRead(SensorAlarmStruct *info);
+
+#else
+
 int servIsolatorInInfoStore(IsolatorInStruct *info);
 int servIsolatorInInfoRead(IsolatorInStruct *info);
+#endif
+
 #endif
 
 int  servTrigInInfoWrite(TrigInInfoStruct *info);

@@ -33,7 +33,7 @@ Copyright (C) 2016，北京镁伽机器人科技有限公司
 #define    CAN_CI_CAN_RX_SOURCE    GPIO_PinSource11
 #define    CAN_CI_CAN_TX_SOURCE    GPIO_PinSource12  
 
-#define    CAN_CI_DATA_TIMEOUT     13440000    //根据DELAY_COUNT_MS = 33600, 此超时时间大约为400ms
+#define    CAN_CI_DATA_TIMEOUT     436800    //根据DELAY_COUNT_MS = 33600，此超时时间大约为13ms
 
 
 
@@ -61,11 +61,10 @@ u16 canPrescaler[CANBAUD_RESERVE] = {6, 12, 24, 48, 60, 120, 300, 600};
 返 回 值: 无;
 说    明: 无;
 *********************************************************************************************/
-void bspCiCanInit(CanIntfcStruct canIntfc)
+void bspCiCanInit(void)
 {
     GPIO_InitTypeDef      GPIO_InitStructure;
     CAN_InitTypeDef       CAN_InitStructure;
-    CAN_FilterInitTypeDef CAN_FilterInitStructure;
     NVIC_InitTypeDef      NVIC_InitStructure;
     
 
@@ -87,6 +86,50 @@ void bspCiCanInit(CanIntfcStruct canIntfc)
     RCC_APB1PeriphClockCmd(CAN_CI_CAN_CLK, ENABLE);
 
     CAN_DeInit(CAN_CI_CAN);
+
+    CAN_InitStructure.CAN_TTCM = DISABLE;            //没有使能时间触发模式
+    CAN_InitStructure.CAN_ABOM = DISABLE;            //没有使能自动离线管理
+    CAN_InitStructure.CAN_AWUM = DISABLE;            //没有使能自动唤醒模式
+    CAN_InitStructure.CAN_NART = DISABLE;            //没有使能非自动重传模式
+    CAN_InitStructure.CAN_RFLM = DISABLE;            //没有使能接收FIFO锁定模式
+    CAN_InitStructure.CAN_TXFP = DISABLE;            //没有使能发送FIFO优先级
+    
+    CAN_InitStructure.CAN_Mode = CAN_Mode_Normal;    //CAN设置为正常模式
+    
+    CAN_InitStructure.CAN_SJW = CAN_SJW_1tq;         //重新同步跳跃宽度1个时间单位
+    CAN_InitStructure.CAN_BS1 = CAN_BS1_3tq;         //时间段1为3个时间单位
+    CAN_InitStructure.CAN_BS2 = CAN_BS2_3tq;         //时间段2为3个时间单位
+    CAN_InitStructure.CAN_Prescaler = canPrescaler[0];
+    
+    CAN_Init(CAN_CI_CAN, &CAN_InitStructure);
+
+    
+    /****************CAN中断配置*****************************************/
+    NVIC_InitStructure.NVIC_IRQChannel = CAN_CI_CAN_RX_IRQn;;
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 6;
+    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+    NVIC_Init(&NVIC_InitStructure);
+
+    CAN_ITConfig(CAN_CI_CAN, CAN_CI_CAN_IT_FMP, ENABLE);    //使能FIFO0消息挂号中断
+}
+
+
+/*********************************************************************************************
+函 数 名: bspCiCanConfig;
+实现功能: 无; 
+输入参数: 无;
+输出参数: 无;
+返 回 值: 无;
+说    明: 无;
+*********************************************************************************************/
+void bspCiCanConfig(CanIntfcStruct canIntfc)
+{
+    CAN_InitTypeDef       CAN_InitStructure;
+    CAN_FilterInitTypeDef CAN_FilterInitStructure;
+
+
+    //CAN_DeInit(CAN_CI_CAN);
 
     CAN_InitStructure.CAN_TTCM = DISABLE;            //没有使能时间触发模式
     CAN_InitStructure.CAN_ABOM = DISABLE;            //没有使能自动离线管理
@@ -146,16 +189,6 @@ void bspCiCanInit(CanIntfcStruct canIntfc)
     CAN_FilterInitStructure.CAN_FilterFIFOAssignment = CAN_CI_CAN_FIFO;
     CAN_FilterInitStructure.CAN_FilterActivation = ENABLE;
     CAN_FilterInit(&CAN_FilterInitStructure);
-
-    
-    /****************CAN中断配置*****************************************/
-    NVIC_InitStructure.NVIC_IRQChannel = CAN_CI_CAN_RX_IRQn;;
-    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
-    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 6;
-    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-    NVIC_Init(&NVIC_InitStructure);
-
-    CAN_ITConfig(CAN_CI_CAN, CAN_CI_CAN_IT_FMP, ENABLE);    //使能FIFO0消息挂号中断
 }
 
 

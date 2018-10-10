@@ -39,8 +39,6 @@ void TpEdit::setModelObj( mcModelObj *pObj )
              this, SLOT(slot_data_changed()) );
 
     slot_data_changed();
-
-//    on_comboBox_currentIndexChanged( ui->comboBox->currentIndex() );
 }
 
 int TpEdit::save( QString &outFileName )
@@ -69,8 +67,6 @@ void TpEdit::onNetEvent(const QString &name,
                          int axes,
                          RoboMsg &msg)
 {
-//    logDbg()<<msg.getMsg();
-
     //! event id, frame id, byte array
     if ( msg.getMsg() == e_interrupt_occuring )
     {
@@ -87,7 +83,7 @@ void TpEdit::onNetEvent(const QString &name,
 }
 
 void TpEdit::onMotionStatus( int axes, MRQ_MOTION_STATE_2 stat )
-{//logDbg()<<stat;/*sysLog(__FUNCTION__, QString::number( (int)stat ) );*/
+{
     if ( stat == MRQ_MOTION_STATE_2_IDLE )
     {
         ui->btnDown->setEnabled( true );
@@ -173,8 +169,6 @@ MegaDevice::deviceMRV *TpEdit::currentDevice( int &ax )
     axesId = m_pmcModel->getConnection().getDeviceCH();
 
     VRobot *pRobo = m_pmcModel->m_pInstMgr->findRobot( str, axesId );
-//    Q_ASSERT( NULL != pRobo );
-
     MegaDevice::deviceMRV *pDev = (MegaDevice::deviceMRV*)pRobo;
 
     ax = axesId;
@@ -296,12 +290,8 @@ void TpEdit::context_add_before()
     //! current
     curRow = ui->tableView->currentIndex().row();
 
-//    mCurT += mTStep;
-//    mCurP += mPStep;
-
     Q_ASSERT( NULL != m_pTpGroup );
     m_pTpGroup->insertRow( curRow );
-//    (*mTpvGroup)[ curRow ]->set( mCurT, mCurP, mCurV );
 
     ui->tableView->setCurrentIndex( m_pTpGroup->index( curRow, 0) );
 }
@@ -330,14 +320,6 @@ void TpEdit::slot_data_changed()
 
 void TpEdit::slot_download_cancel()
 {
-//    //! set model && axesid
-//    QString str;
-//    int id;
-//    str = m_pmcModel->getConnection().getDeviceName();
-//    id = m_pmcModel->getConnection().getDeviceCH();
-
-//    MegaDevice::deviceMRQ *pMrq = m_pmcModel->m_pInstMgr->findDevice( str, id );
-//    pMrq->terminate( tpvRegion(mAgentAxes,0) );
 }
 
 void TpEdit::slot_line_changed()
@@ -385,7 +367,6 @@ void TpEdit::on_btnStart_clicked()
     if ( NULL == pDev )
     { return; }
 
-//    pDev->setMOTION_SWITCH( ax, MRV_MOTION_SWITCH_RUN, MRV_MOTION_SWITCH_1_MAIN );
     pDev->switchRun( ax );
 
     //! disable start
@@ -402,7 +383,6 @@ void TpEdit::on_btnStop_clicked()
     if ( NULL == pDev )
     { return; }
 
-//    pDev->setMOTION_SWITCH( ax, MRV_MOTION_SWITCH_STOP, MRV_MOTION_SWITCH_1_MAIN );
     pDev->switchStop( ax );
 
     //! disable start
@@ -418,12 +398,8 @@ void TpEdit::on_btnAdd_clicked()
     //! current
     curRow = ui->tableView->currentIndex().row();
 
-//    mCurT += mTStep;
-//    mCurP += mPStep;
-
     Q_ASSERT( NULL != m_pTpGroup );
     m_pTpGroup->insertRow( curRow + 1 );
-//    (*mTpvGroup)[ curRow + 1 ]->set( mCurT, mCurP, mCurV );
 
     ui->tableView->setCurrentIndex( m_pTpGroup->index( curRow + 1, 0) );
 }
@@ -479,14 +455,6 @@ void TpEdit::on_spinLoop_valueChanged(int arg1)
 
 void TpEdit::on_btnPref_clicked()
 {
-//    QString str;
-//    int axesId;
-//    str = m_pmcModel->getConnection().getDeviceName();
-//    axesId = m_pmcModel->getConnection().getDeviceCH();
-
-//    MegaDevice::deviceMRQ *pMrq = m_pmcModel->m_pInstMgr->findDevice( str,
-//                                                                      axesId );
-//    Q_ASSERT( NULL != pMrq );
 }
 
 void TpEdit::on_comboBox_currentIndexChanged(int index)

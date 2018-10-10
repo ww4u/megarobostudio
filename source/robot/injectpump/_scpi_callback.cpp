@@ -18,7 +18,6 @@
 
 static scpi_result_t _scpi_idn( scpi_t * context )
 {
-    // read
     DEF_LOCAL_VAR();
 
     logDbg();
@@ -28,7 +27,6 @@ static scpi_result_t _scpi_idn( scpi_t * context )
     DEF_ROBO();
     str = LOCAL_ROBO()->getName();
 
-    logDbg()<<str;
     SCPI_ResultText( context, str.toLatin1().data() );
 
     return SCPI_RES_OK;
@@ -139,9 +137,6 @@ static scpi_result_t _scpi_preMove( scpi_t * context )
         { scpi_ret( SCPI_RES_ERR ); }
     }
 
-    for ( int i = 0; i < sizeof_array(vals); i++ )
-    { logDbg()<<vals[i]; }
-
     //! robo op
     DEF_ROBO();
 
@@ -166,7 +161,6 @@ static scpi_result_t _scpi_preMove( scpi_t * context )
 //! page, file
 static scpi_result_t _scpi_program( scpi_t * context )
 {
-    // read
     DEF_LOCAL_VAR();
 
     int ax, page;
@@ -216,6 +210,8 @@ static scpi_result_t _scpi_program( scpi_t * context )
     CHECK_LINK();
 
     int ret = LOCAL_ROBO()->program( curve, tpvRegion(ax,page) );
+    if ( ret != 0 )
+    {  scpi_ret( SCPI_RES_ERR ); }
 
     return SCPI_RES_OK;
 }
@@ -223,7 +219,6 @@ static scpi_result_t _scpi_program( scpi_t * context )
 //! ax, page, cycle, motionMode
 static scpi_result_t _scpi_call( scpi_t * context )
 {
-    // read
     DEF_LOCAL_VAR();
 
     int ax, page, cycle, motionMode;
@@ -244,7 +239,6 @@ static scpi_result_t _scpi_call( scpi_t * context )
         if ( SCPI_ParamInt32(context, &motionMode, true) != true )
         { break; }
     }while( 0 );
-
 
     //! robo op
     DEF_ROBO();
@@ -295,12 +289,12 @@ static scpi_result_t _scpi_gozero( scpi_t * context )
     //! robo
     int joint;
     if ( SCPI_ParamInt32(context, &joint, true) != true )
-    {logDbg();
+    {
         LOCAL_ROBO()->goZero( tpvRegion(ax,page) );
     }
     //! some joint
     else
-    {logDbg();
+    {
         LOCAL_ROBO()->goZero( tpvRegion(ax,page), joint, true );
     }
 

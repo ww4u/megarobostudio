@@ -14,7 +14,6 @@ int robotMotor::downloadTrace( const tpvRegion &region )
     ret = RawRobo::download( mJointsGroup, jointsTabList, region );
     if ( ret != 0 )
     { return ret; }
-logDbg()<<mJointsGroup.size();
 
     return 0;
 }

@@ -2,8 +2,6 @@
 #include "ui_robomgr.h"
 
 #include "../../robot/robotfact.h"
-//#include "../../robot/megatron/megatron.h"
-
 
 roboMgr::roboMgr(QWidget *parent) :
     QWidget(parent),

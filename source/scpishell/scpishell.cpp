@@ -24,8 +24,6 @@ int getCnt()
 static size_t SCPI_Write(scpi_t * context, const char * data, size_t len) {
     (void) context;
 
-//    return fwrite(data, 1, len, stdout);
-
     CHECK_CONTEXT( context, 0 );
 
     return scpi_shell(context)->SCPI_Write( context, data, len );
@@ -42,8 +40,6 @@ static scpi_result_t SCPI_Flush(scpi_t * context) {
 static int SCPI_Error(scpi_t * context, int_fast16_t err) {
     (void) context;
 
-//    fprintf(stderr, "**ERROR: %d, \"%s\"\r\n", (int16_t) err, SCPI_ErrorTranslate(err));
-
     CHECK_CONTEXT( context, 0 );
 
     return scpi_shell(context)->SCPI_Error( context, err );
@@ -51,12 +47,6 @@ static int SCPI_Error(scpi_t * context, int_fast16_t err) {
 
 static scpi_result_t SCPI_Control(scpi_t * context, scpi_ctrl_name_t ctrl, scpi_reg_val_t val) {
     (void) context;
-
-//    if (SCPI_CTRL_SRQ == ctrl) {
-//        fprintf(stderr, "**SRQ: 0x%X (%d)\r\n", val, val);
-//    } else {
-//        fprintf(stderr, "**CTRL %02x: 0x%X (%d)\r\n", ctrl, val, val);
-//    }
 
     CHECK_CONTEXT( context, SCPI_RES_ERR );
 
@@ -66,18 +56,10 @@ static scpi_result_t SCPI_Control(scpi_t * context, scpi_ctrl_name_t ctrl, scpi_
 static scpi_result_t SCPI_Reset(scpi_t * context) {
     (void) context;
 
-//    fprintf(stderr, "**Reset\r\n");
-
     CHECK_CONTEXT( context, SCPI_RES_ERR );
 
     return (scpi_result_t)scpi_shell(context)->SCPI_Reset( context );
 }
-
-//static scpi_result_t SCPI_SystemCommTcpipControlQ(scpi_t * context) {
-
-
-//    return SCPI_RES_ERR;
-//}
 
 static scpi_interface_t _scpi_interface = {
     /*.error = */   SCPI_Error,
@@ -147,13 +129,11 @@ int scpiShell::open( int inSize,
     SCPI_Init( (scpi_t*)p_scpi_context,
               (const scpi_command_t *)loadScpiCmd(),
               (scpi_interface_t*)p_scpi_interface,
-//              scpi_unit_def,
               NULL,
               getIdn1(), getIdn2(), getIdn3(), getIdn4(),
               p_scpi_input_buffer, mIntputBufferSize,
               (scpi_error_t*)p_scpi_error_queue_data, mErrQueueSize );
 
-//    scpi_interface
     (*(scpi_interface_t*)p_scpi_interface)=_scpi_interface;
 
     //! index
@@ -174,7 +154,6 @@ int scpiShell::write( const char *p, int len )
     mOutReadPos = 0;
     mOutWritePos = 0;
 
-//    qDebug()<<len<<__FUNCTION__<<__LINE__;
     Q_ASSERT( NULL != p_scpi_context );
 
     lock();

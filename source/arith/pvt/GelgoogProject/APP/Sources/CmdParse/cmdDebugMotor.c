@@ -308,38 +308,21 @@ static s32 cmdDebugReadConfigReg(u8 cmdDataLen, u8 *pCmdData){return 0;};
 s32 cmdDebugCanTest(u8 cmdDataLen, u8 *pCmdData)
 {
     u32 value = 0;
-    int i = 0;
+    //int i = 0;
     u8 data[6];
     u8 chanNum = *pCmdData++;
     memcpy(&value,pCmdData,4);
     value+=1;
+    memcpy(data,&value,4);
+    cmdFrameSend(CMD_DEBUG, DEBUGCMD_CAN_TEST,4, data);
     
-    if (chanNum <= CH_MAX)
-    {
-        data[0] = chanNum;
-        memcpy(&data[1],&value,4);
-        cmdFrameSend(CMD_DEBUG, DEBUGCMD_CAN_TEST,5, data);
-    }
-    else
-    {
-        for (i = 0;i < g_systemState.chanNum;i++)
-        {
-            if ((CH_ALL == chanNum) ||
-                (chanNum == g_systemInfo.group[i][0]) ||
-                (chanNum == g_systemInfo.group[i][1]))
-            {
-                data[0] = i;
-                memcpy(&data[1],&value,4);
-                cmdFrameSend(CMD_DEBUG, DEBUGCMD_CAN_TEST,5, data);
-            }
-        }
-    }
-
     return 0;
 }
 #else
 s32 cmdDebugCanTest(u8 cmdDataLen, u8 *pCmdData){return 0;};
 #endif
+
+
 /*********************************************************************************************
 函 数 名: DebugCmdInit;
 实现功能: 无; 
@@ -364,7 +347,6 @@ void cmdDebugCmdInit(void)
     pDebugCmdFunc[DEBUGCMD_SET_SMARTEN_REG]     = cmdDebugConfigSmarten;
     pDebugCmdFunc[DEBUGCMD_TMC26XX_REG_Query]   = cmdDebugReadConfigReg;
     pDebugCmdFunc[DEBUGCMD_CAN_TEST]            = cmdDebugCanTest;
-    g_stTMC26xxDrvConf.speed = 10000;
 }
       
 /*********************************************************************************************

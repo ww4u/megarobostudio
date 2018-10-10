@@ -41,10 +41,31 @@ Copyright (C) 2016，北京镁伽机器人科技有限公司
 /******************************************函数声明*******************************************/
 void EventManageTask(void *p_arg);
 void irqEventOccur(EventSourceEnum eventSrc, u16 eventValue);
-void EventMotionStateTimerCB(void *timeOutPara);
-void EventMotionMonitorTimerCB(void *timeOutPara);
-void EventLineOOStepTimerCB(void *timeOutPara);
-void EventIsolInMonitorTimerCB(void *timeOutPara);
+
+void eventMotionStateTimerCB(void *timeOutPara);
+void eventMotionMonitorTimerCB(void *timeOutPara);
+void eventLineOOStepTimerCB(void *timeOutPara);
+void eventDriverCurrTimerCB(void *timeOutPara);
+void eventDriverStateReadTimerCB(void *timeOutPara);
+
+void eventDriverCurrProcess(u8 chanNum, SensorStateEnum state);
+
+#ifdef PROJECT_GELGOOG
+
+#if !GELGOOG_SINANJU
+void eventIsolInMonitorTimerCB(void *timeOutPara);
+#else
+void eventDistAlarmLedTimerCB(void *timeOutPara);
+void eventDistAlarmLedProcess(bool bRecoverDuty);
+#endif
+
+#if GELGOOG_AXIS_10
+void eventDriverFaultTimerCB(void *timeOutPara);
+#endif
+
+#endif
+
+void eventRunTimeCountTimerCB(void *timeOutPara);
 
 
 

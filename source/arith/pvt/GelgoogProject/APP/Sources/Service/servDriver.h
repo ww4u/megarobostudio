@@ -14,14 +14,22 @@ Copyright (C) 2016，北京镁伽机器人科技有限公司
 
 
 
+/******************************************包含文件*******************************************/
 #include "comDataType.h"
 #include "comStruct.h"
 #include "comEnum.h"
 #include "comDebug.h"
 
 
+
+/****************************************外部变量声明*****************************************/
+
+
+
+/***************************************常数和类型声明****************************************/
+
 #define R_SENSE_2660     75   //2660 使用75毫欧姆感应电阻   
-#define R_SENSE_262      40   //262  40毫欧姆
+
 
 #define CURR_MAX_262     8  //262支持的最大电流
 #define CURR_MAX_2660    4  //2660支持的最大电流
@@ -308,160 +316,20 @@ typedef enum
 }euS2GTime;
 
 
-typedef enum
-{
-    VENSE_305MV = 0,    //设置VENSE的值为305mV   在感应电阻值为75m欧姆的情况下 输出电流峰值为 305/75 = 4.1A     有效值为 2.9A
-    VENSE_165MV = 1     //设置VENSE的值为165mV   在感应电阻值为75m欧姆的情况下 输出电流峰值为 165/75 = 2.2A     有效值为 1.55A
-}euVsenseCtrl;
+
+/*******************************************宏定义********************************************/
 
 
 
-#if 0
-typedef enum
-{
-    DRIVER_2660 = 0,  // 驱动器为  2660 
-    DRIVER_262 = 1     //
-}DriverTypeEnum;   //驱动器型号
-
-#endif 
+/******************************************变量声明*******************************************/
 
 
 
-
-
-typedef struct
-{
-    u8 bStall:1; //  stallguard状态, 为1表示达到堵转阈值 SG_TST会被拉高
-    u8 bOverTempDown:1; // 1 表示 温度达到150  发生芯片关闭保护
-    u8 bOverTempWarn:1; // 1 表示 温度达到100  发生过温报警
-    u8 bS2GA:1;         // 1 表示 A路高端mosfet发生接地短路
-    u8 bS2GB:1;         // 1 表示 B路高端mosfet发生接地短路
-    u8 bOLA:1;          // 1 表示 A路负载开路  应是电机没接或者线圈断了
-    u8 bOLB:1;          // 1 表示 B路负载开路  应是电机没接或者线圈断了
-    u8 bSTST:1;         // 1 表示 处于停止状态,在过去的一段时间内没有接收到步进触发信号
-}stTMC26xxWarn; //TMC2660和TMC262的报警状态
-
-
-
-typedef union
-{
-    struct {
-      u32 CB:8;//B相电流值索引
-      u32 PHB:1;//B相电流方向
-      u32 CA:8;//A相电流值索引
-      u32 PHA:1;//A相电流方向
-      u32 addr:2;//本寄存器地址
-      u32 resv_bit20_31:12;//保留位
-    }stCtrl1;
-    u32 u32Ctrl1;
-}UN_DRVCTRL_SPI;
-typedef union
-{
-    struct {
-        u32 MRES:4;//细分设置
-        u32 resv_bit4_7:4;//保留位
-        u32 DEDGE:1;//边沿模式
-        u32 INTPOL:1;//内部插值控制 0:禁用内部插值,1:使能内部插值
-        u32 resv_bit10_17:8;//保留位
-        u32 addr:2;//本寄存器地址
-        u32 resv_bit20_31:12;
-    }stCtrlStepDir;
-    u32 u32CtrlStepDir;
-}UN_DRVCTRL_STEP_DIR;
-typedef union
-{
-    struct{
-        u32 TOFF:4;
-        u32 HSTRT:3;
-        u32 HEND:4;
-        u32 HDEC:2;
-        u32 RNDTF:1;
-        u32 CHM:1; //斩波模式设置,0:扩展周期模式;1:传统的恒定快速衰减时间
-        u32 TBL:2;//消隐时间
-        u32 addr:3;//寄存器地址
-        u32 resv_bit20_31:12;
-    }stChopConf;
-    u32 u32ChopConf;
-}UN_CHOPCONF;
-typedef union
-{
-    struct{
-        u32 SEMIN:4;//当SG小于SEMIN时,调整电流
-        u32 resv_bit4:1;
-        u32 SEUP:2;//电流增加比例因子
-        u32 resv_bit7:1;
-        u32 SEMAX:4;//当SG高于SEMAX时,调整电流
-        u32 resv_bit12:1;
-        u32 SEDN:2;//电流减小比例因子
-        u32 SEIMIN:1;//最低电流缩放比例限制
-        u32 resv_bit16:1;
-        u32 addr:3;//寄存器地址
-        u32 resv_bit20_31:12;
-    }stSmarten;
-    u32 u32Smarten;
-}UN_SMARTEN;
-typedef union
-{
-    struct
-    {
-        u32 CS:5;//电流缩放比例
-        u32 resv_bit5_7:3;
-        u32 SGT:7;//电机失速指示阈值 stall guard threshold
-        u32 resv_bit15:1;
-        u32 SFILT:1;//是否进行滤波
-        u32 addr:3;//寄存器地址
-        u32 resv_bit20_31:12;
-    }stSgcsConf;
-    u32 u32SgcsConf;
-}UN_SGCSCONF;
-
-typedef union
-{
-    struct{
-        u32 resv_bit0_3:4;
-        u32 RDSEL:2;//回读寄存器选择
-        u32 VSENSE:1;
-        u32 SDOFF:1;//关闭STEP/DIR接口
-        u32 TS2G:2;//接地短路检测时间
-        u32 DISS2G:1;//接地短路保护使能
-        u32 resv_bit11:1;
-        u32 SLPL:2;
-        u32 SLPH:2;
-        u32 TST:1;//测试
-        u32 addr:3;//寄存器地址
-        u32 resv_bit20_31:12;
-    }stDrvConf;
-    u32 u32DrvConf;
-}UN_DRVCONF;
-
-typedef enum
-{
-    MOTOR_SPEED_TYPE_LOW = 0,
-    MOTOR_SPEED_TYPE_MID = 1,
-    MOTOR_SPEED_TYPE_HIGH = 2
-}MOTOR_SPEED_TYPE;    //mosfet管开关状态
-
-typedef struct {
- 
-    DriverTypeEnum   driver_type;
-    u8  resv[3];
-    u32  speed;
-    UN_DRVCTRL_STEP_DIR unCtrlStepDir;
-    UN_DRVCTRL_SPI unCtrlSpi;
-    UN_CHOPCONF  unChopConf;
-    UN_SMARTEN   unSmarten;
-    UN_SGCSCONF  unSgcsConf;
-    UN_DRVCONF   unDrvConf;
-}STRU_MOTOR_CTRL;
-extern  STRU_MOTOR_CTRL g_stTMC26xxDrvConf;
-
-
-
+/******************************************函数声明*******************************************/
 void servDriverCtrlEnable(bool enableDriver);
 void servTMC_Ctrl_Cfg(u8 chanNum, DriverTypeEnum euDevice, MicroStepEnum microSteps, u8  motorCurr);
 s32  servTMC_Reg_Read(u8 u8Reg,u32* ReadData);
-s32 servTmcReadSelectedReg(u32* ReadData); //xyzheng add 
-s32 servTMC_Reg_Write(u8 u8Reg);
+s32  servTMC_Reg_Write(u8 u8Reg);
 void servTMC_MS_Set(MicroStepEnum euMS);
 void serv_TMC_DRVCTRL_cfg(euIntpolCtrl intpol,euEdgeCtrl edge,MicroStepEnum MicroStep);
 void servTMC_CurrentSet(u8 u8curr);
@@ -475,10 +343,19 @@ void servDriverCurrRegParaCalc(DriverTypeEnum type, u8 curr, u8 *vsense, u8 *csV
 void servDriverCurrentSet(u8 chanNum, DriverManageStruct driverManage);
 u8   servDriverCurrCalc(DriverTypeEnum type, u8 vsense, u8 csValue);
 void servDriverMicroStepSet(u8 chanNum, DriverManageStruct driverManage);
+
+#if GELGOOG_AXIS_10
+void servDriverCurrentConfig(u8 current);
+void servDriverConfig(DriverInfoStruct driverInfo);
+void servDriverSwitch(u8 chanNum, SensorStateEnum state);
+#else
 void servDriverConfig(u8 chanNum, DriverManageStruct driverManage);
 void servDriverSwitch(u8 chanNum, DriverManageStruct driverManage);
-
-
-
+void servDriverTuningSet(u8 chanNum, DriverManageStruct *pDriverManage);
 #endif
-/*****************************************END OF FILE****************************************/
+
+
+
+/*****************************************头文件保护******************************************/
+#endif
+/*******************************************文件尾********************************************/

@@ -9,13 +9,15 @@ Copyright (C) 2016，北京镁伽机器人科技有限公司
 完成日期:  2016.12.19;
 历史版本:  无;
 *********************************************************************************************/
+#include <string.h>
 #include "pvrfMotionPlan.h"
 
 
 
 /****************************************外部变量声明*****************************************/
-extern ParaLimitStruct  g_paraLimit;
+extern ParaLimitStruct   g_paraLimit;
 extern SystemStateStruct g_systemState;
+extern PlanInfoStruct    g_planInfo;
 
 
 
@@ -80,7 +82,7 @@ u8 pvrfPvtExecModeVerify(u8 dataLen, u8 *pData, void *pParaValue, WaveTableTypeE
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -115,23 +117,11 @@ u8 pvrfPvtPlanModeVerify(u8 dataLen, u8 *pData, void *pParaValue, WaveTableTypeE
                   break;
 
                 case 1:
-                    *(PlanModeEnum *)pParaValue = PLANMODE_LINEAR;
-                  break; 
-
-                case 2:
-                    *(PlanModeEnum *)pParaValue = PLANMODE_UNIFORM;
-                  break; 
-
-                case 3:
                     *(PlanModeEnum *)pParaValue = PLANMODE_TRAPEZOID;
                   break;  
 
-                case 4:
-                    *(PlanModeEnum *)pParaValue = PLANMODE_QUINTIC;
-                  break; 
-
-                case 5:
-                    *(PlanModeEnum *)pParaValue = PLANMODE_SINE;
+                case 2:
+                    *(PlanModeEnum *)pParaValue = PLANMODE_SCURVE;
                   break;     
 
                 default:
@@ -149,7 +139,7 @@ u8 pvrfPvtPlanModeVerify(u8 dataLen, u8 *pData, void *pParaValue, WaveTableTypeE
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -206,7 +196,7 @@ u8 pvrfPvtMotionModeVerify(u8 dataLen, u8 *pData, void *pParaValue, WaveTableTyp
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -267,7 +257,7 @@ u8 pvrfPvtModifyDutyVerify(u8 dataLen, u8 *pData, void *pParaValue, WaveTableTyp
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -294,7 +284,8 @@ u8 pvrfPvtNcyclesVerify(u8 dataLen, u8 *pData, void *pParaValue, WaveTableTypeEn
         {
             *pWaveIndex = (WaveTableTypeEnum)tempValue;
             
-            tempValue = *(u32 *)pData;
+            //tempValue = *(u32 *)pData;
+            memcpy(&tempValue, pData, sizeof(u32));
             if (tempValue <= g_paraLimit.upLimit.pvtNcycles)
             {
                 if (tempValue >= g_paraLimit.downLimit.pvtNcycles)
@@ -321,7 +312,7 @@ u8 pvrfPvtNcyclesVerify(u8 dataLen, u8 *pData, void *pParaValue, WaveTableTypeEn
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -348,7 +339,8 @@ u8 pvrfPvtWarnPointVerify(u8 dataLen, u8 *pData, void *pParaValue, WaveTableType
         {
             *pWaveIndex = (WaveTableTypeEnum)tempValue;
             
-            tempValue = *(u16 *)pData;
+            //tempValue = *(u16 *)pData;
+            memcpy(&tempValue, pData, sizeof(u16));
             if (tempValue <= g_paraLimit.upLimit.pvtWarnPoint)
             {
                 if (tempValue >= g_paraLimit.downLimit.pvtWarnPoint)
@@ -375,7 +367,7 @@ u8 pvrfPvtWarnPointVerify(u8 dataLen, u8 *pData, void *pParaValue, WaveTableType
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -428,61 +420,7 @@ u8 pvrfPvtEndStateVerify(u8 dataLen, u8 *pData, void *pParaValue, WaveTableTypeE
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
-
-    return verifyResult;
-}
-
-
-/*********************************************************************************************
-函 数 名: pvrfPvtNcyclesVerify;
-实现功能: 无; 
-输入参数: 无;
-输出参数: 无;
-返 回 值: 无;
-说    明: 无;
-*********************************************************************************************/
-u8 pvrfPvtSpeedScaleVerify(u8 dataLen, u8 *pData, void *pParaValue, WaveTableTypeEnum *pWaveIndex)
-{
-    u16 tempValue;
-    u8 verifyResult = PARA_VERIFY_NO_ERROR;
-
-    
-    if ((sizeof(WaveTableTypeEnum) + sizeof(u16)) == dataLen)    //长度先要正确
-    {
-        tempValue = *pData++;
-        if (tempValue < WTTYPE_RESERVE)
-        {
-            *pWaveIndex = (WaveTableTypeEnum)tempValue;
-            
-            tempValue = *(u16 *)pData;
-            if (tempValue <= g_paraLimit.upLimit.speedScale)
-            {
-                if (tempValue >= g_paraLimit.downLimit.speedScale)
-                {
-                    *(u16 *)pParaValue = tempValue;
-                }
-                else
-                {
-                    verifyResult = PARA_VERIFY_LESS_LOWER_LIMIT;
-                }
-            }
-            else
-            {
-                verifyResult = PARA_VERIFY_GREAT_UPER_LIMIT;
-            }
-        }
-        else
-        {
-            verifyResult = PARA_VERIFY_ERROR_INDEX;
-        }
-    }
-    else
-    {
-        verifyResult = PARA_VERIFY_ERROR_LEN;
-    }
-
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -543,7 +481,7 @@ u8 pvrfPvtStopDecelModeVerify(u8 dataLen, u8 *pData, void *pParaValue, WaveTable
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -570,7 +508,8 @@ u8 pvrfPvtStopDecelTimeVerify(u8 dataLen, u8 *pData, void *pParaValue, WaveTable
         {
             *pWaveIndex = (WaveTableTypeEnum)tempValue;
             
-            tempValue = *(f32 *)pData;
+            //tempValue = *(f32 *)pData;
+            memcpy(&tempValue, pData, sizeof(f32));
             if (tempValue <= g_paraLimit.upLimit.stopTime)
             {
                 if (tempValue >= g_paraLimit.downLimit.stopTime)
@@ -597,7 +536,7 @@ u8 pvrfPvtStopDecelTimeVerify(u8 dataLen, u8 *pData, void *pParaValue, WaveTable
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -624,7 +563,8 @@ u8 pvrfPvtStopDecelDistanceVerify(u8 dataLen, u8 *pData, void *pParaValue, WaveT
         {
             *pWaveIndex = (WaveTableTypeEnum)tempValue;
             
-            tempValue = *(f32 *)pData;
+            //tempValue = *(f32 *)pData;
+            memcpy(&tempValue, pData, sizeof(f32));
             if (tempValue <= g_paraLimit.upLimit.stopDistance)
             {
                 if (tempValue >= g_paraLimit.downLimit.stopDistance)
@@ -651,7 +591,7 @@ u8 pvrfPvtStopDecelDistanceVerify(u8 dataLen, u8 *pData, void *pParaValue, WaveT
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -704,7 +644,7 @@ u8 pvrfPvtOOSStateVerify(u8 dataLen, u8 *pData, void *pParaValue, WaveTableTypeE
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -731,8 +671,9 @@ u8 pvrfPvtOOSLineOutNumVerify(u8 dataLen, u8 *pData, void *pParaValue, WaveTable
         {
             *pWaveIndex = (WaveTableTypeEnum)tempValue;
             
-            tempValue = *(u16 *)pData;
-            if (tempValue <= g_systemState.posnConvertInfo[CH1].lineSteps)
+            //tempValue = *(u16 *)pData;
+            memcpy(&tempValue, pData, sizeof(u16));
+            if (tempValue <= g_paraLimit.upLimit.lineOutNum)    //不按线间步作为上限
             {
                 *(u16 *)pParaValue = tempValue;
             }
@@ -751,7 +692,7 @@ u8 pvrfPvtOOSLineOutNumVerify(u8 dataLen, u8 *pData, void *pParaValue, WaveTable
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -778,7 +719,8 @@ u8 pvrfPvtOOSTotalOutNumVerify(u8 dataLen, u8 *pData, void *pParaValue, WaveTabl
         {
             *pWaveIndex = (WaveTableTypeEnum)tempValue;
             
-            tempValue = *(u32 *)pData;
+            //tempValue = *(u32 *)pData;
+            memcpy(&tempValue, pData, sizeof(u32));
             if (tempValue <= g_paraLimit.upLimit.outOfStepNum)
             {
                 if (tempValue >= g_paraLimit.downLimit.outOfStepNum)
@@ -805,7 +747,7 @@ u8 pvrfPvtOOSTotalOutNumVerify(u8 dataLen, u8 *pData, void *pParaValue, WaveTabl
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -870,7 +812,7 @@ u8 pvrfPvtOOSResponseVerify(u8 dataLen, u8 *pData, void *pParaValue, WaveTableTy
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -895,16 +837,17 @@ u8 pvrfPvtPositionVerify(u8 dataLen, u8 *pData, void *pParaValue, u8 *pIndex, Wa
     
     if (sizeof(f32) + sizeof(u8) + (sizeof(WaveTableTypeEnum)) == dataLen)    //长度先要正确
     {
-        tempValue = *pData++;
-        if (tempValue < WTTYPE_RESERVE)
+        tempIndex = *pData++;
+        if (tempIndex < WTTYPE_RESERVE)
         {
-            *pWaveIndex = (WaveTableTypeEnum)tempValue;
+            *pWaveIndex = (WaveTableTypeEnum)tempIndex;
             
             tempIndex = *(u8 *)pData++;
             //if (tempIndex < PVT_POINT_BUFFER_SIZE)
             {
                 *pIndex = tempIndex;
-                tempValue = *(f32 *)pData;
+                //tempValue = *(f32 *)pData;
+                memcpy(&tempValue, pData, sizeof(f32));
                 if (tempValue <= g_paraLimit.upLimit.pvtPosn)
                 {
                     if (tempValue >= g_paraLimit.downLimit.pvtPosn)
@@ -932,7 +875,7 @@ u8 pvrfPvtPositionVerify(u8 dataLen, u8 *pData, void *pParaValue, u8 *pIndex, Wa
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -956,16 +899,17 @@ u8 pvrfPvtSpeedVerify(u8 dataLen, u8 *pData, void *pParaValue, u8 *pIndex, WaveT
     
     if (sizeof(f32) + sizeof(u8) + (sizeof(WaveTableTypeEnum)) == dataLen)    //长度先要正确
     {
-        tempValue = *pData++;
-        if (tempValue < WTTYPE_RESERVE)
+        tempIndex = *pData++;
+        if (tempIndex < WTTYPE_RESERVE)
         {
-            *pWaveIndex = (WaveTableTypeEnum)tempValue;
+            *pWaveIndex = (WaveTableTypeEnum)tempIndex;
             
             tempIndex = *(u8 *)pData++;
             //if (tempIndex < PVT_POINT_BUFFER_SIZE)
             {
                 *pIndex = tempIndex;
-                tempValue = *(f32 *)pData;
+                //tempValue = *(f32 *)pData;
+                memcpy(&tempValue, pData, sizeof(f32));
                 if (tempValue <= g_paraLimit.upLimit.pvtSpeed)
                 {
                     if (tempValue >= g_paraLimit.downLimit.pvtSpeed)
@@ -993,7 +937,7 @@ u8 pvrfPvtSpeedVerify(u8 dataLen, u8 *pData, void *pParaValue, u8 *pIndex, WaveT
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }
@@ -1017,16 +961,17 @@ u8 pvrfPvtTimeVerify(u8 dataLen, u8 *pData, void *pParaValue, u8 *pIndex, WaveTa
     
     if (sizeof(f32) + sizeof(u8) + (sizeof(WaveTableTypeEnum)) == dataLen)    //长度先要正确
     {
-        tempValue = *pData++;
-        if (tempValue < WTTYPE_RESERVE)
+        tempIndex = *pData++;
+        if (tempIndex < WTTYPE_RESERVE)
         {
-            *pWaveIndex = (WaveTableTypeEnum)tempValue;
+            *pWaveIndex = (WaveTableTypeEnum)tempIndex;
             
             tempIndex = *(u8 *)pData++;
             //if (tempIndex < PVT_POINT_BUFFER_SIZE)
             {
                 *pIndex = tempIndex;
-                tempValue = *(f32 *)pData;
+                //tempValue = *(f32 *)pData;
+                memcpy(&tempValue, pData, sizeof(f32));
                 if (tempValue <= g_paraLimit.upLimit.pvtTime)
                 {
                     if (tempValue >= g_paraLimit.downLimit.pvtTime)
@@ -1054,7 +999,66 @@ u8 pvrfPvtTimeVerify(u8 dataLen, u8 *pData, void *pParaValue, u8 *pIndex, WaveTa
         verifyResult = PARA_VERIFY_ERROR_LEN;
     }
 
-    g_systemState.errorCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
+
+    return verifyResult;
+}
+
+
+/*********************************************************************************************
+函 数 名: pvrfPvtTimeScaleVerify;
+实现功能: 无; 
+输入参数: 无;
+输出参数: 无;
+返 回 值: 无;
+说    明: 无;
+*********************************************************************************************/
+u8 pvrfPvtTimeScaleVerify(u8 dataLen, u8 *pData, u16 *pAccScale, u16 *pDecScale, u8 *pIndex, WaveTableTypeEnum *pWaveIndex)
+{
+    u8  tempIndex;
+    u16 accScale;
+    u16 decScale;
+    u8  verifyResult = PARA_VERIFY_NO_ERROR;
+
+    
+    if (sizeof(accScale) + sizeof(decScale) + sizeof(tempIndex) + (sizeof(WaveTableTypeEnum)) == dataLen)    //长度先要正确
+    {
+        tempIndex = *pData++;
+        if (tempIndex < WTTYPE_RESERVE)
+        {
+            *pWaveIndex = (WaveTableTypeEnum)tempIndex;
+            
+            tempIndex = *(u8 *)pData++;
+            //if (tempIndex < PVT_POINT_BUFFER_SIZE)
+            {
+                *pIndex = tempIndex;
+                
+                //tempValue = *(f32 *)pData;
+                memcpy(&accScale, pData, sizeof(accScale));
+                pData += sizeof(accScale);
+                memcpy(&decScale, pData, sizeof(decScale));
+                if ((accScale + decScale) <= SCALE_MAGNIFICATION)
+                {
+                    *pAccScale = accScale;
+                    *pDecScale = decScale;
+                }
+                else
+                {
+                    verifyResult = PARA_VERIFY_GREAT_UPER_LIMIT;
+                }
+            }
+            /*else
+            {
+                verifyResult = PARA_VERIFY_ERROR_INDEX;
+            }*/
+        }
+    }
+    else
+    {
+        verifyResult = PARA_VERIFY_ERROR_LEN;
+    }
+
+    g_systemState.eventCode[ERROR_CODE_INDEX_PARA_VERIFY] = verifyResult;
 
     return verifyResult;
 }

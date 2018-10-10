@@ -56,6 +56,7 @@ u8 pvrfEncoderChanNumVerify(u8 dataLen, u8 *pData, void *pParaValue);
 u8 pvrfEncoderTypeVerify(u8 dataLen, u8 *pData, void *pParaValue);
 u8 pvrfEncoderMultipleVerify(u8 dataLen, u8 *pData, void *pParaValue);
 u8 pvrfEncoderStateVerify(u8 dataLen, u8 *pData, void *pParaValue);
+u8 pvrfEncoderFeedbackRatioVerify(u8 dataLen, u8 *pData, void *pParaValue);
 
 
 

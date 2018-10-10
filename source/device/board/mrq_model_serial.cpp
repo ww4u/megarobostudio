@@ -133,19 +133,6 @@ int MRQ_model::loadCan( QXmlStreamReader &reader )
         { toValue( reader.readElementText(), &mCAN_TYPE ); }
         else if ( reader.name() == "mCAN_BAUD" )
         { toValue( reader.readElementText(), &mCAN_BAUD ); }
-//        else if ( reader.name() == "mCAN_GROUP" )
-//        { DeviceModel::toValue( reader.readElementText(), &mCAN_GROUP ); }
-//        else if ( reader.name() == "mCAN_SENDID" )
-//        { DeviceModel::toValue( reader.readElementText(), &mCAN_SENDID ); }
-
-//        else if ( reader.name() == "mCAN_RECEIVEID" )
-//        { DeviceModel::toValue( reader.readElementText(), &mCAN_RECEIVEID ); }
-//        else if ( reader.name() == "mCAN_GROUPID1" )
-//        { DeviceModel::toValue( reader.readElementText(), &mCAN_GROUPID1 ); }
-//        else if ( reader.name() == "mCAN_GROUPID2" )
-//        { DeviceModel::toValue( reader.readElementText(), &mCAN_GROUPID2 ); }
-//        else if ( reader.name() == "mCAN_BROADCASTID" )
-//        { DeviceModel::toValue( reader.readElementText(), &mCAN_BROADCASTID ); }
 
         else if ( reader.name() == "mCAN_NETMANAGESTATE" )
         { toValue( reader.readElementText(), &mCAN_NETMANAGESTATE ); }
@@ -244,10 +231,6 @@ int MRQ_model::saveSubMotion( int id, QXmlStreamWriter &writer )
 
     writer.writeTextElement( "mMOTION_ORIGIN", DeviceModel::toString( mMOTION_ORIGIN[id]) );
     writer.writeTextElement( "mMOTION_OFFSETSTATE", DeviceModel::toString( mMOTION_OFFSETSTATE[id]) );
-//    writer.writeTextElement( "mMOTION_COUNTCIRCLE", DeviceModel::toString( mMOTION_COUNTCIRCLE[id]) );
-//    writer.writeTextElement( "mMOTION_ABCOUNT", DeviceModel::toString( mMOTION_ABCOUNT[id]) );
-
-//    writer.writeTextElement( "mMOTION_REVMOTION", toString( mMOTION_REVMOTION[id]) );
 
     return 0;
 }
@@ -868,9 +851,6 @@ int MRQ_model::saveSubDriver( int sub, QXmlStreamWriter &writer )
     writer.writeTextElement( "mDRIVER_MICROSTEPS", toString(mDRIVER_MICROSTEPS[sub]) );
     writer.writeTextElement( "mDRIVER_STATE", toString(mDRIVER_STATE[sub]) );
 
-//    writer.writeTextElement( "mDRIVER_SGLIMIT", toString(mDRIVER_SGLIMIT[sub]) );
-//    writer.writeTextElement( "mDRIVER_SGLIMIT1", toString(mDRIVER_TYPE[sub]) );
-//    writer.writeTextElement( "mDRIVER_TYPE", toString(mDRIVER_TYPE[sub]) );
     writer.writeTextElement( "mDRIVER_IDLECURRENT", DeviceModel::toString(mDRIVER_IDLECURRENT[sub]) );
 
     writer.writeTextElement( "mDRIVER_SWITCHTIME", DeviceModel::toString(mDRIVER_SWITCHTIME[sub]) );
@@ -892,8 +872,6 @@ int MRQ_model::loadSubDriver( int sub, QXmlStreamReader &reader )
         else if ( reader.name() == "mDRIVER_STATE" )
         { toValue( reader.readElementText(), &mDRIVER_STATE[sub]); }
 
-//        else if ( reader.name() == "mDRIVER_TYPE" )
-//        { toValue( reader.readElementText(), &mDRIVER_TYPE[sub]); }
         else if ( reader.name() == "mDRIVER_IDLECURRENT" )
         { DeviceModel::toValue( reader.readElementText(), &mDRIVER_IDLECURRENT[sub]); }
 
@@ -1366,8 +1344,6 @@ int MRQ_model::loadSubAngleAlarm( int sub, QXmlStreamReader &reader )
         { DeviceModel::toValue( reader.readElementText(), &mABSENCALARM_UPLIMIT[sub]); }
         else if (reader.name() == "mABSENCALARM_DOWNLIMIT" )
         { DeviceModel::toValue( reader.readElementText(), &mABSENCALARM_DOWNLIMIT[sub]); }
-//        else if (reader.name() == "mABSENCALARM_ZEROVALUE" )
-//        { DeviceModel::toValue( reader.readElementText(), &mABSENCALARM_ZEROVALUE[sub]); }
 
         else if (reader.name() == "mABSENCALARM_ZEROPOSITION" )
         { toValue( reader.readElementText(), &mABSENCALARM_ZEROPOSITION[sub]); }

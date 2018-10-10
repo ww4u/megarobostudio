@@ -1,7 +1,6 @@
 #include "distancealarmpage.h"
 #include "ui_distancealarmpage.h"
 
-
 DistanceAlarmPage::DistanceAlarmPage(QWidget *parent) :
     modelView(parent),
     ui(new Ui::DistanceAlarmPage)

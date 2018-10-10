@@ -15,9 +15,6 @@ Copyright (C) 2016，北京镁伽机器人科技有限公司
 
 
 /******************************************包含文件*******************************************/
-#include "comDatatype.h"
-#include "comStruct.h"
-#include "comEnum.h"
 #include "pvtAlgorithm.h"
 
 

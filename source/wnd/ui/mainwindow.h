@@ -257,7 +257,7 @@ public slots:
 
     void on_actionMotor_Panel_triggered();
 
-    void on_actionCamera_triggered();
+//    void on_actionCamera_triggered();
 
     void on_actionClose_All_triggered();
 

@@ -29,26 +29,6 @@ MRQ_PROGRESS_DOWN( 0, ("LINK") );
     checked_call( setRS232_PARITY(mRS232_PARITY) );
 
     checked_call( setRS232_STOPBIT(mRS232_STOPBIT) );
-//    checked_call( setCAN_TYPE(mCAN_TYPE) );
-//    checked_call( setCAN_BAUD(mCAN_BAUD) );
-//    checked_call( setCAN_GROUP(mCAN_GROUP) );
-
-//    checked_call( setCAN_SENDID(mCAN_SENDID) );
-//    checked_call( setCAN_RECEIVEID(mCAN_RECEIVEID) );
-
-//    checked_call( setCAN_GROUPID1(mCAN_GROUPID1) );
-//    checked_call( setCAN_GROUPID2(mCAN_GROUPID2) );
-//    checked_call( setCAN_BROADCASTID(mCAN_BROADCASTID) );
-
-//    checked_call( setCAN_NETMANAGESTATE(mCAN_NETMANAGESTATE) );
-//    checked_call( setCAN_NETMANAGEHASH(mCAN_NETMANAGEHASH) );
-
-//    checked_call( setCLOCK_FREQUENCY(mCLOCK_FREQUENCY) );
-//    checked_call( setCLOCK_SYNCREGISTER(mCLOCK_SYNCREGISTER) );
-//    checked_call( setCLOCK_STARTTYPE(mCLOCK_STARTTYPE) );
-
-//    checked_call( setCLOCK_SYNCSTATE(mCLOCK_SYNCSTATE) );
-//    checked_call( setCLOCK_COUNT(mCLOCK_COUNT) );
 
 MRQ_PROGRESS( 10, ("MOTION") );
 
@@ -84,13 +64,6 @@ MRQ_PROGRESS( 10, ("MOTION") );
         checked_call( setMOTION_ORIGIN( i, mMOTION_ORIGIN[i]) );
 
         checked_call( setMOTION_OFFSETSTATE( i, mMOTION_OFFSETSTATE[i]) );
-//        checked_call( setMOTION_PVTSTEPS( i, mMOTION_PVTSTEPS[i]) );
-//        checked_call( setMOTION_COUNTSTEPS( i, mMOTION_COUNTSTEPS[i]) );
-//        checked_call( setMOTION_PVTCIRCLE( i, mMOTION_PVTCIRCLE[i]) );
-
-//        checked_call( setMOTION_COUNTCIRCLE( i, mMOTION_COUNTCIRCLE[i]) );
-//        checked_call( setMOTION_ABCOUNT( i, mMOTION_ABCOUNT[i]) );
-//        checked_call( setMOTION_REVMOTION( i, mMOTION_REVMOTION[i]) );
 
         MRQ_PROGRESS_DOWN( 20, ("MOTOR") );
     }
@@ -98,13 +71,6 @@ MRQ_PROGRESS( 10, ("MOTION") );
     checked_call( setIDENTITY_DISTDEVICE( mIDENTITY_DISTDEVICE ) );
     for ( int i = 0; i < axes(); i++ )
     {
-//        checked_call( setIDENTITY_GROUP( i, MRQ_IDENTITY_GROUP_GROUP1, mIDENTITY_GROUP[i][0] ) );
-//        checked_call( setIDENTITY_GROUP( i, MRQ_IDENTITY_GROUP_GROUP2, mIDENTITY_GROUP[i][1] ) );
-
-//        checked_call( setIDENTITY_LABEL( i,
-//                                         mIDENTITY_LABEL + i,
-//                                         mIDENTITY_LABEL1+ i ) );
-
         //! motor
         checked_call( setMOTOR_STEPANGLE( i, mMOTOR_STEPANGLE[i]) );
         checked_call( setMOTOR_TYPE( i, mMOTOR_TYPE[i]) );
@@ -139,17 +105,11 @@ MRQ_PROGRESS( 10, ("MOTION") );
 
     foreach_page()
     {
-//        checked_call( setMOTIONPLAN_PVTCONFIG( _i, _axPage, mMOTIONPLAN_PVTCONFIG[_i][_j] ) );
-//        checked_call( setMOTIONPLAN_PRESETSTATE( _i,
-//                                                 (MRQ_MOTIONPLAN_PRESETSTATE)_axPage,
-//                                                 mMOTIONPLAN_PRESETSTATE[_i][_j] ) );
-
         checked_call( setMOTIONPLAN_EXECUTEMODE( _i, _axPage, mMOTIONPLAN_EXECUTEMODE[_i][_j] ) );
 
         checked_call( setMOTIONPLAN_PLANMODE( _i, _axPage, mMOTIONPLAN_PLANMODE[_i][_j] ) );
         checked_call( setMOTIONPLAN_MOTIONMODE( _i, _axPage, mMOTIONPLAN_MOTIONMODE[_i][_j]) );
         checked_call( setMOTIONPLAN_MODIFYDUTY( _i, _axPage, mMOTIONPLAN_MODIFYDUTY[_i][_j]) );
-//        checked_call( setMOTIONPLAN_REMAINPOINT( _i, _axPage, mMOTIONPLAN_REMAINPOINT[_i][_j]) );
 
         checked_call( setMOTIONPLAN_CYCLENUM( _i, _axPage, mMOTIONPLAN_CYCLENUM[_i][_j]) );
 
@@ -183,14 +143,6 @@ MRQ_PROGRESS( 10, ("MOTION") );
         checked_call( setTRIGGER_MODE( i, mTRIGGER_MODE[i]) );
         checked_call( setTRIGGER_PATTSTATE( i, mTRIGGER_PATTSTATE[i]) );
 
-//        checked_call( setTRIGGER_PATTERN( i,
-//                                          mTRIGGER_PATTERN+i,
-//                                          mTRIGGER_PATTERN1+i,
-//                                          mTRIGGER_PATTERN2+i,
-//                                          mTRIGGER_PATTERN3+i,
-//                                          mTRIGGER_PATTERN4+i
-//                                          ) ); U16?
-
         checked_call( setTRIGGER_PATTRESP( i, mTRIGGER_PATTRESP[i]) );
         checked_call( setTRIGGER_PATTSMODE( i, mTRIGGER_PATTSMODE[i]) );
         checked_call( setTRIGGER_PATTSPERIOD( i, mTRIGGER_PATTSPERIOD[i]) );
@@ -214,12 +166,6 @@ MRQ_PROGRESS( 10, ("MOTION") );
 
         if ( mDriverId == VRobot::motor_driver_262 )
         {
-    //        checked_call( setDRIVER_TYPE( i, mDRIVER_TYPE[i]) );
-            for( int j = 0; j < 3; j++ )
-            {
-                Q_ASSERT( j < sizeof_array(mDRIVER_STATEREG[0]) );
-    //            checked_call( setDRIVER_STATEREG( i, (MRQ_DRIVER_STATEREG)j, mDRIVER_STATEREG[i][j]) );
-            }
             checked_call( setDRIVER_CURRENT( i, mDRIVER_CURRENT[i]) );
 
             checked_call( setDRIVER_MICROSTEPS( i, mDRIVER_MICROSTEPS[i]) );
@@ -327,16 +273,6 @@ MRQ_PROGRESS( 10, ("MOTION") );
         {
             checked_call( setABSENCALARM_STATE( (MRQ_IDENTITY_LABEL_1)i,
                                                 mABSENCALARM_STATE[i] ) );
-//            checked_call( setABSENCALARM_UPLIMIT( (MRQ_IDENTITY_LABEL_1)i,
-//                                                mABSENCALARM_UPLIMIT[i] ) );
-//            checked_call( setABSENCALARM_DOWNLIMIT( (MRQ_IDENTITY_LABEL_1)i,
-//                                                mABSENCALARM_DOWNLIMIT[i] ) );
-//            //! \todo zero value can not be motified by setup
-//            checked_call( setABSENCALARM_ZEROVALUE( (MRQ_IDENTITY_LABEL_1)i,
-//                                                mABSENCALARM_ZEROVALUE[i] ) );
-
-//            checked_call( setABSENCALARM_ZEROPOSITION( (MRQ_IDENTITY_LABEL_1)i,
-//                                                mABSENCALARM_ZEROPOSITION[i] ) );
         }
         checked_call( setABSENCALARM_RESPONSE(
                                             mABSENCALARM_RESPONSE ) );

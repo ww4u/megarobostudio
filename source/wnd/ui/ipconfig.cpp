@@ -53,7 +53,6 @@ void IPConfig::spyEdited()
     QDoubleSpinBox *doubleSpinBoxes[]={
         ui->spinDoorTime,
         ui->spinDoorDist,
-//        ui->spinZeroSpeed,
 
         ui->spinDrinkTime,
         ui->spinDrinkDist,
@@ -76,13 +75,6 @@ void IPConfig::updateData()
 
     robotInject *pRobo = (robotInject*)pBase;
     Q_ASSERT( NULL != pRobo );
-//    pRobo->setZeroAttr( ui->spinZeroTime->value(),
-//                        ui->spinZeroAngle->value() );
-
-//    pRobo->setGap( ui->spinVGapTime->value(),
-//                   ui->spinVGapDist->value(),
-//                   ui->spinIGapTime->value(),
-//                   ui->spinIGapDist->value() );
 
     InjProp lProp;
 

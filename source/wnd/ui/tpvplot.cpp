@@ -339,7 +339,6 @@ void tpvPlot::setCurve( const QString &name,
     {
         pLine->append( pXY[i], pXY[ mLineCap + i ] );
     }
-    logDbg()<<retSize;
     delete []pXY;
 
     //! remove and add again
@@ -384,7 +383,6 @@ void tpvPlot::setCurves( const QString &name,
     }
 
     //! ys
-    logDbg()<<yCount<<dataLen;
     for ( int i = 0; i < yCount; i++ )
     {
         for ( int j = 0; j < dataLen; j++ )
@@ -485,7 +483,6 @@ QChartView * tpvPlot::createCurves( const QString &name,
     pChart->setAnimationDuration( animation_time );
     pChart->setAnimationOptions( animation_option );
     pChart->setTheme( chart_theme );
-//    pChart->legend()->hide();
     pChart->legend()->show();
 
     //! series ys

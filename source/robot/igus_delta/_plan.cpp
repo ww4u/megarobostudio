@@ -38,7 +38,7 @@ int robotIgusDelta::buildTrace( QList<TraceKeyPoint> &curve,
     ret = planTrace( curve, tracePlan );
     if ( ret != 0 )
     { return ret; }
-//logDbg()<<tracePlan.size();
+
     ret = splitTrace( tracePlan, jointsPlan );
     if ( ret != 0 )
     { return ret; }
@@ -75,7 +75,7 @@ int robotIgusDelta::planTrace( QList<TraceKeyPoint> &curve,
         endPoints.data()[i].x = curve.at( i ).x;
         endPoints.data()[i].y = curve.at( i ).y;
         endPoints.data()[i].z = curve.at( i ).z;
-        endPoints.data()[i].t = curve.at( i ).t;
+        endPoints.data()[i].t = scale_t( curve.at( i ).t );
     }
 
     int xyzResLen;
@@ -86,7 +86,7 @@ int robotIgusDelta::planTrace( QList<TraceKeyPoint> &curve,
                                       &xyzResLen );
     if ( ret != 0 )
     { return ERR_PLAN_FAIL; }
-logDbg()<<curve.size()<<xyzResLen<<mPlanAttr.mStep;
+
     int traceSize;
     traceSize = xyzResLen * sizeof(double) / sizeof(tracePoint);
     if ( traceSize > 1 )
@@ -132,18 +132,18 @@ int robotIgusDelta::splitTrace( xxxGroup<tracePoint> &tracePoints,
     //! config para
     arith_igus::igusConfig cfg;
     for ( int i = 0; i < 4; i++ )
-    { cfg.armLength[i] = mArmLengths[i]; /*sysLog(QString::number(mArmLengths[i]));*/ }
+    { cfg.armLength[i] = mArmLengths[i]; }
     for ( int i = 0; i < 2; i++ )
-    { cfg.offset[i] = mOffset[i]; /*sysLog(QString::number(mOffset[i]));*/}
+    { cfg.offset[i] = mOffset[i]; }
     for ( int i = 0; i < 3; i++ )
-    { cfg.P0[i] = mP0[i]; /*sysLog(QString::number(mP0[i]));*/}
+    { cfg.P0[i] = mP0[i]; }
     for ( int i = 0; i < 2; i++ )
-    { cfg.posLim[i] = mPosLim[i]; /*sysLog(QString::number(mPosLim[i]))*/;}
-    cfg.scal = mScal;/*sysLog(QString::number(mScal));*/
-    cfg.vM = mVm;/*sysLog(QString::number(mVm));*/
+    { cfg.posLim[i] = mPosLim[i]; }
+    cfg.scal = mScal;
+    cfg.vM = mVm;
 
     ret = arith_igus::ccwSlove( cfg, points, traceJoints );
-    sysLog( __FUNCTION__, QString::number(ret) );
+
     return ret;
 }
 
@@ -188,16 +188,6 @@ int robotIgusDelta::convertTrace(  QList<TraceKeyPoint> &curve,
     //! x,y,z
 //    ! h
     sectionList<<0<<3;
-
-//    //! log joint group
-//    foreach ( tpvGroup *pGp, mJointsGroup )
-//    {
-//        logDbg()<<"*******";
-//        foreach(  tpvItem *pItem, pGp->mItems )
-//        {
-//            logDbg()<<pItem->mT<<pItem->mP<<pItem->mV;
-//        }
-//    }
 
     return 0;
 }

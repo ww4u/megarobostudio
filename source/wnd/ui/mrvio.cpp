@@ -22,8 +22,6 @@ int MrvIo::setApply()
 
 void MrvIo::modelChanged()
 {
-//    adaptUi();
-
     updateUi();
 }
 

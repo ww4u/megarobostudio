@@ -35,7 +35,7 @@ void mrqAxes2::spyEdited()
 {
     QCheckBox *checkBoxes[]=
     {
-        ui->chkOutOfLineState,
+
     };
     QRadioButton *radBoxes[] = {
     };
@@ -154,7 +154,7 @@ int mrqAxes2::apply()
         //! out of line
         checked_call( pDevice->setMOTIONPLAN_OOSLINESTATE( mAxesId,
                                                            nPage,
-                                          (MRQ_SYSTEM_REVMOTION)ui->chkOutOfLineState->isChecked() ) );
+                                          (MRQ_SYSTEM_REVMOTION)ui->gb_limit->isChecked() ) );
         checked_call( pDevice->setMOTIONPLAN_OOSLINEOUTNUM( mAxesId,
                                                             nPage,
                                           ui->spinOutOfLine->value() ) );
@@ -188,7 +188,7 @@ int mrqAxes2::updateUi()
     ui->spinStopTime->setValue( ( m_pMrqModel->mMOTIONPLAN_STOPTIME[mAxesId][0]) );
 
     //! out of line
-    ui->chkOutOfLineState->setChecked( m_pMrqModel->mMOTIONPLAN_OOSLINESTATE[mAxesId][0] );
+    ui->gb_limit->setChecked( m_pMrqModel->mMOTIONPLAN_OOSLINESTATE[mAxesId][0] );
     ui->spinOutOfLine->setValue( m_pMrqModel->mMOTIONPLAN_OOSLINEOUTNUM[mAxesId][0] );
     ui->cmbLineResponse->setCurrentIndex( m_pMrqModel->mMOTIONPLAN_OOSLINERESPONSE[mAxesId][0] );
 

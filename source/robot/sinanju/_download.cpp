@@ -84,10 +84,10 @@ int robotSinanju::buildTpvGroup( xxxGroup<jointsTrace> &jointsPlan,
     {
         tpvGroup *pGroup = new tpvGroup();
         Q_ASSERT( NULL != pGroup );
-logDbg()<<i<<jointsPlan.size();
+
         //! for each data
         for ( int j = 0; j < jointsPlan.size(); j++ )
-        {logDbg()<<jointsPlan.data()[j].t<<jointsPlan.data()[j].p[i]<<jointsPlan.data()[j].v[i];
+        {
             ret = pGroup->addItem(
                              jointsPlan.data()[j].t,
                              jointsPlan.data()[j].p[i],

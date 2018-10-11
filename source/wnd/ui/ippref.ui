@@ -47,12 +47,15 @@
          <item row="0" column="0">
           <widget class="QLabel" name="label_7">
            <property name="text">
-            <string>Time(s)</string>
+            <string>Time</string>
            </property>
           </widget>
          </item>
          <item row="0" column="1">
           <widget class="QDoubleSpinBox" name="spinZeroTime">
+           <property name="suffix">
+            <string>s</string>
+           </property>
            <property name="minimum">
             <double>0.010000000000000</double>
            </property>
@@ -108,7 +111,7 @@
          <item row="0" column="0">
           <widget class="QLabel" name="label_4">
            <property name="text">
-            <string>Time(s)</string>
+            <string>Time</string>
            </property>
           </widget>
          </item>
@@ -121,6 +124,9 @@
          </item>
          <item row="0" column="1">
           <widget class="QDoubleSpinBox" name="spinVGapTime">
+           <property name="suffix">
+            <string>s</string>
+           </property>
            <property name="minimum">
             <double>0.010000000000000</double>
            </property>
@@ -166,19 +172,22 @@
          <item row="0" column="0">
           <widget class="QLabel" name="label_6">
            <property name="text">
-            <string>Time(s)</string>
+            <string>Time</string>
            </property>
           </widget>
          </item>
          <item row="1" column="0">
           <widget class="QLabel" name="label_8">
            <property name="text">
-            <string>Distance(mm)</string>
+            <string>Distance</string>
            </property>
           </widget>
          </item>
          <item row="1" column="1">
           <widget class="QDoubleSpinBox" name="spinIGapDist">
+           <property name="suffix">
+            <string>mm</string>
+           </property>
            <property name="maximum">
             <double>1000.000000000000000</double>
            </property>
@@ -186,6 +195,9 @@
          </item>
          <item row="0" column="1">
           <widget class="QDoubleSpinBox" name="spinIGapTime">
+           <property name="suffix">
+            <string>s</string>
+           </property>
            <property name="minimum">
             <double>0.010000000000000</double>
            </property>

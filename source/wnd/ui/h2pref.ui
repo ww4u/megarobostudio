@@ -32,12 +32,15 @@
          <item row="0" column="0">
           <widget class="QLabel" name="label_7">
            <property name="text">
-            <string>Time(s)</string>
+            <string>Time</string>
            </property>
           </widget>
          </item>
          <item row="0" column="1">
           <widget class="QDoubleSpinBox" name="spinZeroTime">
+           <property name="suffix">
+            <string>s</string>
+           </property>
            <property name="minimum">
             <double>1.000000000000000</double>
            </property>
@@ -48,6 +51,9 @@
          </item>
          <item row="1" column="1">
           <widget class="QDoubleSpinBox" name="spinZeroAngle">
+           <property name="suffix">
+            <string>mm</string>
+           </property>
            <property name="minimum">
             <double>-360.000000000000000</double>
            </property>
@@ -59,7 +65,7 @@
          <item row="1" column="0">
           <widget class="QLabel" name="label_9">
            <property name="text">
-            <string>Distance(mm)</string>
+            <string>Distance</string>
            </property>
           </widget>
          </item>
@@ -88,12 +94,15 @@
          <item row="0" column="0">
           <widget class="QLabel" name="label_4">
            <property name="text">
-            <string>Time(s)</string>
+            <string>Time</string>
            </property>
           </widget>
          </item>
          <item row="0" column="1">
           <widget class="QDoubleSpinBox" name="spinGapTime">
+           <property name="suffix">
+            <string>s</string>
+           </property>
            <property name="minimum">
             <double>1.000000000000000</double>
            </property>
@@ -105,12 +114,15 @@
          <item row="1" column="0">
           <widget class="QLabel" name="label_5">
            <property name="text">
-            <string>Distance(mm)</string>
+            <string>Distance</string>
            </property>
           </widget>
          </item>
          <item row="1" column="1">
           <widget class="QDoubleSpinBox" name="spinGapDist">
+           <property name="suffix">
+            <string>mm</string>
+           </property>
            <property name="maximum">
             <double>10000.000000000000000</double>
            </property>
@@ -127,6 +139,9 @@
         <layout class="QGridLayout" name="gridLayout_2">
          <item row="0" column="1">
           <widget class="QDoubleSpinBox" name="spinGapZTime">
+           <property name="suffix">
+            <string>s</string>
+           </property>
            <property name="minimum">
             <double>1.000000000000000</double>
            </property>
@@ -138,12 +153,15 @@
          <item row="0" column="0">
           <widget class="QLabel" name="label_6">
            <property name="text">
-            <string>Time(s)</string>
+            <string>Time</string>
            </property>
           </widget>
          </item>
          <item row="1" column="1">
           <widget class="QDoubleSpinBox" name="spinGapZDist">
+           <property name="suffix">
+            <string>mm</string>
+           </property>
            <property name="maximum">
             <double>10000.000000000000000</double>
            </property>
@@ -152,7 +170,7 @@
          <item row="1" column="0">
           <widget class="QLabel" name="label_8">
            <property name="text">
-            <string>Distance(mm)</string>
+            <string>Distance</string>
            </property>
           </widget>
          </item>
@@ -266,8 +284,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>361</width>
-        <height>168</height>
+        <width>378</width>
+        <height>69</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -289,7 +307,7 @@
           <string/>
          </property>
          <property name="pixmap">
-          <pixmap resource="../res/res.qrc">:/res/image/joint/mrx-h2_geo.png</pixmap>
+          <pixmap>:/res/image/joint/mrx-h2_geo.png</pixmap>
          </property>
          <property name="scaledContents">
           <bool>true</bool>
@@ -323,8 +341,6 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources>
-  <include location="../res/res.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

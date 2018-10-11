@@ -3,10 +3,16 @@
 
 #define MATH_PI     (3.1415926)
 #define RAD_TO_DEG( rad )       ( ( rad )*180/MATH_PI )
-#define DEG_TO_RAD( deg )       ( deg * MATH_PI/180 )
+#define DEG_TO_RAD( deg )       ( (deg) * MATH_PI/180 )
+
+#define SINdeg( deg )           qSin( DEG_TO_RAD(deg) )
+#define COSdeg( deg )           qCos( DEG_TO_RAD(deg) )
 
 #define sizeof_array( array )	 	(int)( sizeof(array)/sizeof(array[0]) )
 #define i_sizeof( a )                   (int)( sizeof(a) )
+
+#define MEMCPY( dst, src, cnt )         memcpy( dst, src, cnt )
+#define rMEMCPY( src, dst, cnt )        memcpy( dst, src, cnt )
 
 #define sizeof_double( item )           (int)( sizeof(item)/sizeof(double) )
 #define offsetof_double( a, b )         (int)( offsetof( a, b )/sizeof(double) )

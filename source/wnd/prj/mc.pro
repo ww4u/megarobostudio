@@ -305,7 +305,8 @@ SOURCES += \
     ../ui/igusdrylinpanel.cpp \
     ../ui/megalcdnumber.cpp \
     ../ui/rotmat3_3.cpp \
-    ../../widget/mprogressbar.cpp
+    ../../widget/mprogressbar.cpp \
+    ../ui/coordoption.cpp
 
 
 HEADERS += \
@@ -479,7 +480,8 @@ HEADERS += \
     ../ui/megalcdnumber.h \
     ../ui/rotmat3_3.h \
     ../../../include/myassert.h \
-    ../../widget/mprogressbar.h
+    ../../widget/mprogressbar.h \
+    ../ui/coordoption.h
 
 FORMS += \
         ../ui/mainwindow.ui \
@@ -583,7 +585,8 @@ FORMS += \
     ../ui/igusdrylinpref.ui \
     ../ui/mrqtune.ui \
     ../ui/igusdrylinpanel.ui \
-    ../ui/rotmat3_3.ui
+    ../ui/rotmat3_3.ui \
+    ../ui/coordoption.ui
 
 
 #RESOURCES = ../res/res.qrc

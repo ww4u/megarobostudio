@@ -11,6 +11,7 @@ int motionEdit::compileTrace()
 
     //! plan attr
     currentRobot()->setPlanAttr( PlanAttr( plan_linear, ui->spinStep->value() ) );
+    currentRobot()->setCoord( (eRoboCoord)ui->coordOption->option() );
 
     ret = currentRobot()->build( m_pMotionGroup,
                                  mTracePlan,

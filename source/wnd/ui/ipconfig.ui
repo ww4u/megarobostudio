@@ -55,6 +55,9 @@
       </item>
       <item row="1" column="1">
        <widget class="QDoubleSpinBox" name="spinDoorTime">
+        <property name="suffix">
+         <string>s</string>
+        </property>
         <property name="minimum">
          <double>0.010000000000000</double>
         </property>
@@ -66,7 +69,7 @@
       <item row="1" column="0">
        <widget class="QLabel" name="label_6">
         <property name="text">
-         <string>Time(s)</string>
+         <string>Time</string>
         </property>
        </widget>
       </item>
@@ -109,12 +112,15 @@
       <item row="0" column="0">
        <widget class="QLabel" name="label">
         <property name="text">
-         <string>Time(s)</string>
+         <string>Time</string>
         </property>
        </widget>
       </item>
       <item row="1" column="1">
        <widget class="QDoubleSpinBox" name="spinDrinkDist">
+        <property name="suffix">
+         <string>mm</string>
+        </property>
         <property name="minimum">
          <double>-1000.000000000000000</double>
         </property>
@@ -125,6 +131,9 @@
       </item>
       <item row="0" column="1">
        <widget class="QDoubleSpinBox" name="spinDrinkTime">
+        <property name="suffix">
+         <string>s</string>
+        </property>
         <property name="minimum">
          <double>0.010000000000000</double>
         </property>
@@ -136,7 +145,7 @@
       <item row="1" column="0">
        <widget class="QLabel" name="label_2">
         <property name="text">
-         <string>Distance(mm)</string>
+         <string>Distance</string>
         </property>
        </widget>
       </item>
@@ -178,12 +187,15 @@
       <item row="0" column="0">
        <widget class="QLabel" name="label_3">
         <property name="text">
-         <string>Time(s)</string>
+         <string>Time</string>
         </property>
        </widget>
       </item>
       <item row="0" column="1">
        <widget class="QDoubleSpinBox" name="spinSpitTime">
+        <property name="suffix">
+         <string>s</string>
+        </property>
         <property name="minimum">
          <double>0.010000000000000</double>
         </property>
@@ -195,12 +207,15 @@
       <item row="1" column="0">
        <widget class="QLabel" name="label_4">
         <property name="text">
-         <string>Distance(mm)</string>
+         <string>Distance</string>
         </property>
        </widget>
       </item>
       <item row="1" column="1">
        <widget class="QDoubleSpinBox" name="spinSpitDist">
+        <property name="suffix">
+         <string>mm</string>
+        </property>
         <property name="minimum">
          <double>-1000.000000000000000</double>
         </property>

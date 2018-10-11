@@ -53,6 +53,9 @@ robotSinanju::robotSinanju()
     mJointAngleMask[2]=true;
     mJointAngleMask[3]=true;
 
+    mJointDeltaAngleMask.clear();
+    mJointDeltaAngleMask<<true<<true<<true<<true<<false;
+
     mJointCcwMask.clear();
     mJointCcwMask<<false<<false<<false<<false<<true;
 
@@ -130,7 +133,6 @@ robotSinanju::robotSinanju()
     m_pRoboTask = new SinanjuTask();
     Q_ASSERT( NULL != m_pRoboTask );
 
-
     //! zero
     mHandZeroTime = 5;
     mHandZeroAngle = 60;
@@ -144,7 +146,6 @@ robotSinanju::robotSinanju()
     mJointFactoryList<<0<<-20<<-65<<100;  //! \ref to the zero
 
     //! transfer
-    mbTransferable = false;
     for ( int i = 0; i < sizeof_array(mTransferR); i++ )
     { mTransferR[i] = 0; }
 
@@ -160,6 +161,17 @@ robotSinanju::robotSinanju()
     //! 0 1 0
     //! 0 0 1
     memcpy( mTransferRInv, mTransferR, sizeof(mTransferR) );
+
+    //! tcp
+    mTcpP[0] = 250;
+    mTcpP[1] = 0;
+    mTcpP[2] = 512;
+
+    mTcpR[0] = 0;
+    mTcpR[1] = 0;
+    mTcpR[2] = 0;
+
+    setCoordAble( true );
 }
 
 robotSinanju::~robotSinanju()
@@ -317,25 +329,36 @@ double robotSinanju::jointFactoryAngle( int id )
     return mJointFactoryList.at(id);
 }
 
-void robotSinanju::setTransfer( bool bEn,
+void robotSinanju::setTransfer(
                   double rot[3*3],
                   double shift[3*1],
                   double rotInv[3*3] )
 {
-    mbTransferable = bEn;
+//    mbTransferable = bEn;
 
-    memcpy( mTransferR, rot, sizeof(mTransferR) );
-    memcpy( mTransferS, shift, sizeof(mTransferS) );
-    memcpy( mTransferRInv, rotInv, sizeof(mTransferRInv) );
+    MEMCPY( mTransferR, rot, sizeof(mTransferR) );
+    MEMCPY( mTransferS, shift, sizeof(mTransferS) );
+    MEMCPY( mTransferRInv, rotInv, sizeof(mTransferRInv) );
 }
-void robotSinanju::transfer( bool &bEn,
+void robotSinanju::transfer(
                double rot[3*3],
                double shift[3*1],
                double rotInv[3*3] )
 {
-    bEn = mbTransferable;
+//    bEn = mbTransferable;
 
-    memcpy( rot, mTransferR, sizeof(mTransferR) );
-    memcpy( shift, mTransferS, sizeof(mTransferS) );
-    memcpy( rotInv, mTransferRInv, sizeof(mTransferRInv) );
+    rMEMCPY( mTransferR, rot, sizeof(mTransferR) );
+    rMEMCPY( mTransferS, shift, sizeof(mTransferS) );
+    rMEMCPY( mTransferRInv, rotInv, sizeof(mTransferRInv) );
+}
+
+void robotSinanju::setTcp( double p[3], double r[3] )
+{
+    MEMCPY( mTcpP, p, sizeof(mTcpP) );
+    MEMCPY( mTcpR, r, sizeof(mTcpR) );
+}
+void robotSinanju::getTcp( double p[3], double r[3] )
+{
+    rMEMCPY( mTcpP, p, sizeof(mTcpP) );
+    rMEMCPY( mTcpR, r, sizeof(mTcpR) );
 }

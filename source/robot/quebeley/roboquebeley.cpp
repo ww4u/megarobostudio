@@ -49,7 +49,7 @@ roboQuebeley::roboQuebeley( robotEnum id )
     if ( id == robot_qubeley_d )
     { mImage = QImage::fromData( _megaimage, sizeof(_megaimage) ); }
     else if ( id == robot_qubeley_s )
-    { mImage = QImage::fromData( _megaimage, sizeof(_megaimage_s) ); }
+    { mImage = QImage::fromData( _megaimage_s, sizeof(_megaimage_s) ); }
     else
     { Q_ASSERT(false); }
 }
@@ -110,7 +110,7 @@ QString roboQuebeley::trigSrcAlias( int ax, int iTrig )
     Q_ASSERT( ax == 0 && iTrig >= 0 && iTrig < trigSrcs() );
 
     //! 5
-    if ( mId==robot_qubeley_s )
+    if ( mId==robot_qubeley_d )
     {
         if ( iTrig >= 0 && iTrig < 4 )
         {

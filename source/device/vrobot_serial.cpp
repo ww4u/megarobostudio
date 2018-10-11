@@ -119,6 +119,17 @@ int VRobot::load( const QString &name )
                             }
                         }
 
+                        else if ( reader.name() == "geomerty" )
+                        {
+                            while( reader.readNextStartElement() )
+                            {
+                                if ( reader.name() == "coord" )
+                                { mCoord = (eRoboCoord)reader.readElementText().toInt(); }
+                                else
+                                { reader.skipCurrentElement(); }
+                            }
+                        }
+
                         else
                         { reader.skipCurrentElement(); }
                     }
@@ -199,6 +210,11 @@ int VRobot::save( const QString &name )
                 writer.writeTextElement("dir", QString::number(mAngleDir.at(i)) );
             }
 
+            writer.writeEndElement();
+
+            //! coord
+            writer.writeStartElement( "geometry" );
+                writer.writeTextElement( "coord", QString::number( (int)mCoord ) );
             writer.writeEndElement();
 
         writer.writeEndElement();

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>477</width>
-    <height>87</height>
+    <width>349</width>
+    <height>56</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -35,25 +35,24 @@
       <string/>
      </property>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="0" column="3" colspan="2">
-       <widget class="QLabel" name="label_2">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>100</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>6</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <property name="horizontalSpacing">
+       <number>3</number>
+      </property>
+      <property name="verticalSpacing">
+       <number>0</number>
+      </property>
       <item row="1" column="0">
        <widget class="QDoubleSpinBox" name="doubleSpinBox">
         <property name="maximum">
@@ -61,19 +60,6 @@
         </property>
         <property name="value">
          <double>180.000000000000000</double>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1" colspan="5">
-       <widget class="QSlider" name="horizontalSlider">
-        <property name="maximum">
-         <number>360</number>
-        </property>
-        <property name="value">
-         <number>180</number>
-        </property>
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
         </property>
        </widget>
       </item>
@@ -100,15 +86,79 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="6">
-       <widget class="LRButton" name="btnLr01" native="true"/>
-      </item>
       <item row="0" column="6">
        <widget class="MegaLcdnumber" name="lcdNumber">
         <property name="digitCount">
          <number>6</number>
         </property>
        </widget>
+      </item>
+      <item row="0" column="3" colspan="2">
+       <widget class="QLabel" name="label_2">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>100</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="8">
+       <widget class="MegaLcdnumber" name="lcdDelta">
+        <property name="digitCount">
+         <number>6</number>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="7">
+       <widget class="QLabel" name="labelDelta">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16</width>
+          <height>16</height>
+         </size>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="pixmap">
+         <pixmap>:/res/image/icon/triangle.png</pixmap>
+        </property>
+        <property name="scaledContents">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1" colspan="5">
+       <widget class="QSlider" name="horizontalSlider">
+        <property name="maximum">
+         <number>360</number>
+        </property>
+        <property name="value">
+         <number>180</number>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="6" colspan="3">
+       <widget class="LRButton" name="btnLr01" native="true"/>
       </item>
      </layout>
     </widget>

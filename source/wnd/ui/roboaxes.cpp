@@ -39,18 +39,6 @@ roboAxes::roboAxes(mcModel *pModel,
     }
 
     //! connection
-    foreach( RoboJoint *p, mJoints )
-    {
-        connect( p, SIGNAL(signal_actionChanged(int,float,float, float)),
-                 this, SLOT(slot_joint_action(int,float,float,float)) );
-
-        connect( p, SIGNAL(signal_stop(int)),
-                 this, SLOT(slot_joint_stop(int)) );
-
-        connect( p, SIGNAL(signal_zeroClicked(int,bool)),
-                 this, SLOT(slot_joint_zero(int,bool)));
-    }
-
     buildConnection();
 
     setModal( false );
@@ -99,6 +87,9 @@ void roboAxes::slot_timeout()
     //! sample the angle for joint 0~3
     int subAx;
     MegaDevice::deviceMRQ *pMrq;
+
+    float angle, dAngle;
+
     for ( int jointId = 0; jointId < pRobo->mJointAngleMask.size(); jointId++ )
     {
         if ( pRobo->mJointAngleMask.at(jointId) )
@@ -114,7 +105,6 @@ void roboAxes::slot_timeout()
         }
 
         //! now for angle
-        float angle;
         if ( pRobo->angleType() == robo_angle_abs )
         { angle = pMrq->getAbsAngle( subAx ); }
         else if ( pRobo->angleType() == robo_angle_inc )
@@ -125,8 +115,14 @@ void roboAxes::slot_timeout()
             return;
         }
 
+        //! convert delta angle
+        if ( pRobo->mJointDeltaAngleMask.at(jointId) )
+        { dAngle = pRobo->toDeltaAngle( jointId, angle ); }
+        else
+        { dAngle = 0; }
+
         Q_ASSERT( jointId < mJoints.size() );
-        mJoints.at( jointId )->setAngle( angle );
+        mJoints.at( jointId )->setAngle( angle, dAngle );
     }
 
     //! robo pos
@@ -221,7 +217,8 @@ void roboAxes::adapteUiToRobot( VRobot *pRobo )
     for ( jointId = 0; jointId < pRobo->axes(); jointId++ )
     {
         Q_ASSERT( jointId < pRobo->mJointAngleMask.size() );
-        mJoints[jointId]->setAngleVisible( pRobo->mJointAngleMask[jointId] );
+        mJoints[jointId]->setAngleVisible( pRobo->mJointAngleMask[jointId],
+                                           pRobo->mJointDeltaAngleMask[jointId] );
         if ( pRobo->mJointAngleMask[jointId] )
         { angleCnt++; }
 
@@ -248,6 +245,10 @@ void roboAxes::adapteUiToRobot( VRobot *pRobo )
         { mPoseLcds.at(i)->setVisible( false ); }
     }
 
+    //! coordable
+    ui->coordOption->setVisible( pRobo->coordAble() );
+    ui->coordOption->setOption( (int)pRobo->getCoord() );
+
     //! adapt ui
     on_chkSingle_clicked( ui->chkSingle->isChecked() );
     on_spinStepTime_valueChanged( ui->spinStepTime->value() );
@@ -255,8 +256,23 @@ void roboAxes::adapteUiToRobot( VRobot *pRobo )
 
 void roboAxes::buildConnection()
 {
+    foreach( RoboJoint *p, mJoints )
+    {
+        connect( p, SIGNAL(signal_actionChanged(int,float,float, float)),
+                 this, SLOT(slot_joint_action(int,float,float,float)) );
+
+        connect( p, SIGNAL(signal_stop(int)),
+                 this, SLOT(slot_joint_stop(int)) );
+
+        connect( p, SIGNAL(signal_zeroClicked(int,bool)),
+                 this, SLOT(slot_joint_zero(int,bool)));
+    }
+
     connect( ui->widget->getComb(), SIGNAL(currentIndexChanged(int)),
              this, SLOT(slot_comboBox_currentIndexChanged(int)) );
+
+    connect( ui->coordOption, SIGNAL(signal_option_changed(int)),
+             this, SLOT(slot_coord_option_changed(int)) );
 }
 
 //! convert the time by t
@@ -379,6 +395,20 @@ void roboAxes::slot_comboBox_currentIndexChanged(int index)
     ui->labelStat->clear();
 
     ui->labelStat->setText( MegaDevice::deviceMRQ::toString( (MegaDevice::mrqState)status ) );
+}
+
+void roboAxes::slot_coord_option_changed( int index )
+{
+    VRobot *pRobo = Robot();
+    if ( NULL == pRobo )
+    {
+        sysError( tr("Invalid robot") );
+        return;
+    }
+
+    //! config coord
+    if ( pRobo->coordAble() )
+    { pRobo->setCoord( (eRoboCoord)index ); }
 }
 
 void roboAxes::on_toolButton_clicked()

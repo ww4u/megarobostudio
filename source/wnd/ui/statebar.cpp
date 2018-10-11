@@ -38,7 +38,6 @@ void stateBar::downloadProgress( bool b, int from, int to , int now )
         ui->downloadBar->setRange( from, to );
         ui->downloadBar->setValue( now );
         ui->downloadBar->show();
-        logDbg();
     }
     else
     { ui->downloadBar->hide(); }

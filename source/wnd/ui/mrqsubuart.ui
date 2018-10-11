@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>122</height>
+    <height>128</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -39,7 +39,7 @@
        <number>0</number>
       </property>
       <property name="topMargin">
-       <number>0</number>
+       <number>6</number>
       </property>
       <property name="rightMargin">
        <number>0</number>
@@ -51,7 +51,11 @@
        <number>3</number>
       </property>
       <item row="5" column="2">
-       <widget class="QDoubleSpinBox" name="spinInvterval"/>
+       <widget class="QDoubleSpinBox" name="spinInvterval">
+        <property name="suffix">
+         <string>s</string>
+        </property>
+       </widget>
       </item>
       <item row="3" column="2">
        <widget class="QSpinBox" name="spinFrameLen"/>
@@ -86,7 +90,7 @@
       <item row="5" column="0">
        <widget class="QLabel" name="label_5">
         <property name="text">
-         <string>Interval(s)</string>
+         <string>Interval</string>
         </property>
        </widget>
       </item>

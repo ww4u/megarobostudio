@@ -23,6 +23,8 @@ int robotSinanju::serialIn( QXmlStreamReader &reader )
         { ret = serialInJointFactory(reader); }
         else if ( reader.name() == "transfer" )
         { ret = serialInTransfer( reader ); }
+        else if ( reader.name() == "tcp" )
+        { ret = serialInTcp( reader ); }
         else
         { reader.skipCurrentElement(); }
     }
@@ -62,6 +64,10 @@ int robotSinanju::serialOut( QXmlStreamWriter &writer )
 
     writer.writeStartElement("transfer");
     ret = serialOutTransfer( writer );
+    writer.writeEndElement();
+
+    writer.writeStartElement("tcp");
+    ret = serialOutTcp( writer );
     writer.writeEndElement();
 
     return ret;
@@ -307,9 +313,7 @@ int robotSinanju::serialInTransfer( QXmlStreamReader &reader )
     int ret;
     while ( reader.readNextStartElement() )
     {
-        if ( reader.name() == "enable" )
-        { mbTransferable = toBool( reader ); }
-        else if ( reader.name() == "rotate" )
+        if ( reader.name() == "rotate" )
         {
             ret = serialInTransferR( reader );
             if ( ret != 0 )
@@ -338,8 +342,6 @@ int robotSinanju::serialInTransfer( QXmlStreamReader &reader )
 
 int robotSinanju::serialOutTransfer( QXmlStreamWriter &writer )
 {
-    writer.writeTextElement( "enable", QString::number(mbTransferable) );
-
     writer.writeStartElement( "rotate" );
         for ( int i = 0; i < sizeof_array( mTransferR ); i++ )
         {
@@ -417,6 +419,67 @@ int robotSinanju::serialInTransferS( QXmlStreamReader &reader )
             reader.skipCurrentElement();
         }
     }
+
+    return 0;
+}
+
+int robotSinanju::serialInTcp( QXmlStreamReader &reader )
+{
+    int index = 0;
+    while( reader.readNextStartElement() )
+    {
+        if ( reader.name() == "p" )
+        {
+            index = 0;
+            while( reader.readNextStartElement() )
+            {
+                if ( reader.name() == "v" )
+                {
+                    Q_ASSERT( index < sizeof_array(mTcpP) );
+
+                    mTcpP[index++] = reader.readElementText().toDouble();
+                }
+                else
+                { reader.skipCurrentElement(); }
+            }
+        }
+        else if ( reader.name() == "r" )
+        {
+            index = 0;
+            while( reader.readNextStartElement() )
+            {
+                if ( reader.name() == "v" )
+                {
+                    Q_ASSERT( index < sizeof_array(mTcpR) );
+
+                    mTcpR[index++] = reader.readElementText().toDouble();
+                }
+                else
+                { reader.skipCurrentElement(); }
+            }
+        }
+        else
+        { reader.skipCurrentElement(); }
+    }
+
+    return 0;
+}
+
+int robotSinanju::serialOutTcp(QXmlStreamWriter &writer )
+{
+    writer.writeStartElement( "p" );
+    for ( int i = 0; i < sizeof_array( mTcpP ); i++ )
+    {
+        writer.writeTextElement( "v", QString::number( mTcpP[i] ) );
+    }
+    writer.writeEndElement();
+
+    writer.writeStartElement( "r" );
+    for ( int i = 0; i < sizeof_array( mTcpR ); i++ )
+    {
+        writer.writeTextElement( "v", QString::number( mTcpR[i] ) );
+    }
+    writer.writeEndElement();
 
     return 0;
 }

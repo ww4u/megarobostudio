@@ -160,13 +160,6 @@
       </widget>
      </item>
      <item>
-      <widget class="QLabel" name="label_2">
-       <property name="text">
-        <string>ms</string>
-       </property>
-      </widget>
-     </item>
-     <item>
       <widget class="QSpinBox" name="spinInterval">
        <property name="minimumSize">
         <size>
@@ -176,6 +169,9 @@
        </property>
        <property name="toolTip">
         <string extracomment="Interval">Tick</string>
+       </property>
+       <property name="suffix">
+        <string>ms</string>
        </property>
        <property name="minimum">
         <number>10</number>

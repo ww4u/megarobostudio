@@ -44,7 +44,7 @@
          </size>
         </property>
         <property name="text">
-         <string>Tick(ms)</string>
+         <string>Tick</string>
         </property>
         <property name="scaledContents">
          <bool>true</bool>
@@ -82,6 +82,9 @@
       </item>
       <item row="2" column="2">
        <widget class="QSpinBox" name="spinBox">
+        <property name="suffix">
+         <string>ms</string>
+        </property>
         <property name="minimum">
          <number>100</number>
         </property>
@@ -184,12 +187,15 @@
          <item row="0" column="0">
           <widget class="QLabel" name="label">
            <property name="text">
-            <string>t(s)</string>
+            <string>t</string>
            </property>
           </widget>
          </item>
          <item row="0" column="1">
           <widget class="QDoubleSpinBox" name="spinT">
+           <property name="suffix">
+            <string>s</string>
+           </property>
            <property name="minimum">
             <double>0.010000000000000</double>
            </property>
@@ -210,6 +216,9 @@
          </item>
          <item row="1" column="1">
           <widget class="QDoubleSpinBox" name="spinX">
+           <property name="suffix">
+            <string>mm</string>
+           </property>
            <property name="minimum">
             <double>-1000.000000000000000</double>
            </property>
@@ -230,6 +239,9 @@
          </item>
          <item row="2" column="1">
           <widget class="QDoubleSpinBox" name="spinY">
+           <property name="suffix">
+            <string>mm</string>
+           </property>
            <property name="minimum">
             <double>-1000.000000000000000</double>
            </property>
@@ -546,12 +558,15 @@
             <item row="0" column="0">
              <widget class="QLabel" name="label_5">
               <property name="text">
-               <string>t(s)</string>
+               <string>t</string>
               </property>
              </widget>
             </item>
             <item row="0" column="1">
              <widget class="QDoubleSpinBox" name="spinStepT">
+              <property name="suffix">
+               <string>s</string>
+              </property>
               <property name="minimum">
                <double>0.010000000000000</double>
               </property>
@@ -566,12 +581,15 @@
             <item row="1" column="0">
              <widget class="QLabel" name="label_6">
               <property name="text">
-               <string>Step(mm)</string>
+               <string>Step</string>
               </property>
              </widget>
             </item>
             <item row="1" column="1">
              <widget class="QDoubleSpinBox" name="spinStepV">
+              <property name="suffix">
+               <string>mm</string>
+              </property>
               <property name="minimum">
                <double>0.010000000000000</double>
               </property>

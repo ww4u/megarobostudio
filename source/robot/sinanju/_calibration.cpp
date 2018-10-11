@@ -136,6 +136,17 @@ int robotSinanju::getPOSE( float pos[] )
     return 0;
 }
 
+float robotSinanju::toDeltaAngle(int jointId, float angle)
+{
+    Q_ASSERT( jointId >= 0 && jointId < 4 );
+
+    float dAngle = ( angle - mInitAngles[jointId] ) * ( mAngleDir.at( jointId ) ? 1 : -1 );
+
+    dAngle = comAssist::normalizeDegreeN180_180( dAngle );
+
+    return dAngle;
+}
+
 int robotSinanju::zeroAxesTask( void *pArg )
 {
     int ret;

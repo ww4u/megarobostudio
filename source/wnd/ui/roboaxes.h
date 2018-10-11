@@ -63,6 +63,7 @@ private slots:
     void on_spinStepTime_valueChanged(double arg1);
 
     void slot_comboBox_currentIndexChanged(int index);
+    void slot_coord_option_changed( int index );
 
     void on_toolButton_clicked();
 

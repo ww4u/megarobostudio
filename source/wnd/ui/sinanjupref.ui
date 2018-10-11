@@ -66,11 +66,14 @@
         <property name="title">
          <string>Zero</string>
         </property>
-        <layout class="QVBoxLayout" name="verticalLayout_3">
-         <item>
+        <layout class="QGridLayout" name="gridLayout_3">
+         <item row="1" column="0">
           <widget class="PageOption" name="widget" native="true"/>
          </item>
-         <item>
+         <item row="1" column="1">
+          <widget class="CoordOption" name="coordOption" native="true"/>
+         </item>
+         <item row="2" column="0" colspan="2">
           <widget class="QGroupBox" name="groupBox_2">
            <property name="title">
             <string>Arm</string>
@@ -244,7 +247,7 @@
            </layout>
           </widget>
          </item>
-         <item>
+         <item row="3" column="0" colspan="2">
           <widget class="QGroupBox" name="gpHand">
            <property name="title">
             <string>Hand</string>
@@ -279,19 +282,22 @@
             <item row="0" column="3">
              <widget class="QLabel" name="label_10">
               <property name="text">
-               <string>Gap Time(s)</string>
+               <string>Gap Time</string>
               </property>
              </widget>
             </item>
             <item row="0" column="0">
              <widget class="QLabel" name="label_3">
               <property name="text">
-               <string>Zero Time(s)</string>
+               <string>Zero Time</string>
               </property>
              </widget>
             </item>
             <item row="0" column="4">
              <widget class="QDoubleSpinBox" name="spinGapTime">
+              <property name="suffix">
+               <string>s</string>
+              </property>
               <property name="decimals">
                <number>3</number>
               </property>
@@ -335,6 +341,9 @@
             </item>
             <item row="0" column="1">
              <widget class="QDoubleSpinBox" name="spinZeroTime">
+              <property name="suffix">
+               <string>s</string>
+              </property>
               <property name="decimals">
                <number>3</number>
               </property>
@@ -372,7 +381,7 @@
            </layout>
           </widget>
          </item>
-         <item>
+         <item row="4" column="0" colspan="2">
           <layout class="QHBoxLayout" name="horizontalLayout">
            <property name="leftMargin">
             <number>6</number>
@@ -485,6 +494,12 @@
    <class>PageOption</class>
    <extends>QWidget</extends>
    <header>pageoption.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>CoordOption</class>
+   <extends>QWidget</extends>
+   <header>coordoption.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

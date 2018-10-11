@@ -234,6 +234,9 @@
          </item>
          <item row="1" column="4">
           <widget class="QDoubleSpinBox" name="spinCompT">
+           <property name="suffix">
+            <string>s</string>
+           </property>
            <property name="minimum">
             <double>0.010000000000000</double>
            </property>
@@ -264,49 +267,7 @@
          <string>Slew Rate</string>
         </property>
         <layout class="QGridLayout" name="gridLayout_4">
-         <item row="0" column="3" rowspan="2">
-          <widget class="QLabel" name="label_14">
-           <property name="maximumSize">
-            <size>
-             <width>64</width>
-             <height>64</height>
-            </size>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-           <property name="pixmap">
-            <pixmap resource="../res/res.qrc">:/res/image/icon3/slew.png</pixmap>
-           </property>
-           <property name="scaledContents">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="0">
-          <widget class="QLabel" name="label_10">
-           <property name="text">
-            <string>Acc Scale</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QDoubleSpinBox" name="spinSAcc">
-           <property name="decimals">
-            <number>3</number>
-           </property>
-           <property name="minimum">
-            <double>0.001000000000000</double>
-           </property>
-           <property name="maximum">
-            <double>99.998999999999995</double>
-           </property>
-           <property name="singleStep">
-            <double>0.100000000000000</double>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="4">
+         <item row="0" column="3">
           <spacer name="horizontalSpacer_4">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
@@ -326,8 +287,11 @@
            </property>
           </widget>
          </item>
-         <item row="1" column="1">
-          <widget class="QDoubleSpinBox" name="spinSDec">
+         <item row="0" column="1">
+          <widget class="QDoubleSpinBox" name="spinSAcc">
+           <property name="suffix">
+            <string>%</string>
+           </property>
            <property name="decimals">
             <number>3</number>
            </property>
@@ -342,17 +306,48 @@
            </property>
           </widget>
          </item>
-         <item row="0" column="2">
-          <widget class="QLabel" name="label_15">
+         <item row="0" column="0">
+          <widget class="QLabel" name="label_10">
            <property name="text">
-            <string>%</string>
+            <string>Acc Scale</string>
            </property>
           </widget>
          </item>
-         <item row="1" column="2">
-          <widget class="QLabel" name="label_16">
-           <property name="text">
+         <item row="1" column="1">
+          <widget class="QDoubleSpinBox" name="spinSDec">
+           <property name="suffix">
             <string>%</string>
+           </property>
+           <property name="decimals">
+            <number>3</number>
+           </property>
+           <property name="minimum">
+            <double>0.001000000000000</double>
+           </property>
+           <property name="maximum">
+            <double>99.998999999999995</double>
+           </property>
+           <property name="singleStep">
+            <double>0.100000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="2" rowspan="2">
+          <widget class="QLabel" name="label_14">
+           <property name="maximumSize">
+            <size>
+             <width>64</width>
+             <height>64</height>
+            </size>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="pixmap">
+            <pixmap>:/res/image/icon3/slew.png</pixmap>
+           </property>
+           <property name="scaledContents">
+            <bool>true</bool>
            </property>
           </widget>
          </item>
@@ -388,6 +383,9 @@
          </item>
          <item row="2" column="1">
           <widget class="QDoubleSpinBox" name="spinStopTime">
+           <property name="suffix">
+            <string>s</string>
+           </property>
            <property name="minimum">
             <double>0.010000000000000</double>
            </property>
@@ -412,6 +410,9 @@
          </item>
          <item row="1" column="1">
           <widget class="QDoubleSpinBox" name="spinStopDistance">
+           <property name="suffix">
+            <string>mm</string>
+           </property>
            <property name="minimum">
             <double>0.010000000000000</double>
            </property>
@@ -441,21 +442,18 @@
         <property name="title">
          <string>Out of step</string>
         </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
         <layout class="QGridLayout" name="gridLayout_2">
-         <item row="1" column="2">
-          <spacer name="horizontalSpacer_2">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
+         <item row="0" column="0">
+          <widget class="QLabel" name="label_7">
+           <property name="text">
+            <string>Out of line</string>
            </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
+          </widget>
          </item>
-         <item row="2" column="1">
+         <item row="1" column="1">
           <widget class="QComboBox" name="cmbLineResponse">
            <item>
             <property name="text">
@@ -479,21 +477,20 @@
            </item>
           </widget>
          </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="label_7">
-           <property name="text">
-            <string>Out of line</string>
+         <item row="0" column="2">
+          <spacer name="horizontalSpacer_2">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
            </property>
-          </widget>
-         </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="label_8">
-           <property name="text">
-            <string>Line response</string>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
            </property>
-          </widget>
+          </spacer>
          </item>
-         <item row="1" column="1">
+         <item row="0" column="1">
           <widget class="QSpinBox" name="spinOutOfLine">
            <property name="minimum">
             <number>1</number>
@@ -503,10 +500,10 @@
            </property>
           </widget>
          </item>
-         <item row="0" column="0">
-          <widget class="QCheckBox" name="chkOutOfLineState">
+         <item row="1" column="0">
+          <widget class="QLabel" name="label_8">
            <property name="text">
-            <string>ON/OFF</string>
+            <string>Line response</string>
            </property>
           </widget>
          </item>
@@ -538,8 +535,6 @@
    <header>valuecombobox.h</header>
   </customwidget>
  </customwidgets>
- <resources>
-  <include location="../res/res.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

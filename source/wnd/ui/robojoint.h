@@ -17,9 +17,10 @@ public:
 
     void setId( int id );
     void setTitle( const QString &title );
-    void setAngle( float angle );
 
-    void setAngleVisible( bool b );
+    void setAngle( float angle, float deltaAngle = 0 );
+    void setAngleVisible( bool b, bool bDeltaAngle = false );
+
     void setCcwVisible( bool b );
     bool isCcwVisible();
 

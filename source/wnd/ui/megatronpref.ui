@@ -30,12 +30,15 @@
       <item row="1" column="3">
        <widget class="QLabel" name="label_11">
         <property name="text">
-         <string>Gap Time(s)</string>
+         <string>Gap Time</string>
         </property>
        </widget>
       </item>
       <item row="1" column="1">
        <widget class="QDoubleSpinBox" name="spinZeroTime">
+        <property name="suffix">
+         <string>s</string>
+        </property>
         <property name="minimum">
          <double>1.000000000000000</double>
         </property>
@@ -47,19 +50,22 @@
       <item row="2" column="0">
        <widget class="QLabel" name="label_9">
         <property name="text">
-         <string>Distance(mm)</string>
+         <string>Distance</string>
         </property>
        </widget>
       </item>
       <item row="1" column="0">
        <widget class="QLabel" name="label_7">
         <property name="text">
-         <string>Time(s)</string>
+         <string>Time</string>
         </property>
        </widget>
       </item>
       <item row="2" column="1">
        <widget class="QDoubleSpinBox" name="spinZeroAngle">
+        <property name="suffix">
+         <string>mm</string>
+        </property>
         <property name="minimum">
          <double>-10000.000000000000000</double>
         </property>
@@ -70,6 +76,9 @@
       </item>
       <item row="2" column="4">
        <widget class="QDoubleSpinBox" name="spinGapDistance">
+        <property name="suffix">
+         <string>mm</string>
+        </property>
         <property name="minimum">
          <double>-10000.000000000000000</double>
         </property>
@@ -80,6 +89,9 @@
       </item>
       <item row="1" column="4">
        <widget class="QDoubleSpinBox" name="spinGapTime">
+        <property name="suffix">
+         <string>s</string>
+        </property>
         <property name="minimum">
          <double>1.000000000000000</double>
         </property>
@@ -91,7 +103,7 @@
       <item row="2" column="3">
        <widget class="QLabel" name="label_12">
         <property name="text">
-         <string>Gap Distance(mm)</string>
+         <string>Gap Distance</string>
         </property>
        </widget>
       </item>

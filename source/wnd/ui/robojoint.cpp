@@ -35,14 +35,18 @@ void RoboJoint::setTitle( const QString &title )
 {
     ui->groupBox->setTitle( title );
 }
-void RoboJoint::setAngle( float angle )
+void RoboJoint::setAngle( float angle,
+                          float deltaAngle )
 {
     ui->lcdNumber->display( angle );
+    ui->lcdDelta->display( deltaAngle );
 }
 
-void RoboJoint::setAngleVisible( bool b )
+void RoboJoint::setAngleVisible( bool b, bool bDeltaAngle )
 {
     ui->lcdNumber->setVisible( b );
+    ui->lcdDelta->setVisible( bDeltaAngle );
+    ui->labelDelta->setVisible( bDeltaAngle );
 }
 
 void RoboJoint::setCcwVisible( bool b )

@@ -37,15 +37,11 @@ private slots:
     void on_chkOnOff_clicked(bool checked);
 
     void on_btnYP_clicked();
-
     void on_btnYN_clicked();
-
     void on_btnZP_clicked();
 
     void on_btnZN_clicked();
-
     void on_btnXN_clicked();
-
     void on_btnXP_clicked();
 
     void on_btnCenter_clicked();
@@ -53,8 +49,9 @@ private slots:
     void on_btnGo_clicked();
 
     void on_btnMarkNow_clicked();
-
     void on_btnMarkUser_clicked();
+
+    void slot_coord_option_changed( int index );
 
 private:
     Ui::T4Panel *ui;

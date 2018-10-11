@@ -54,6 +54,8 @@ VRobot::VRobot()
 {
     mClass = "Unk robot";
     mId = robot_unk;
+
+    mCoord = robo_coord_body;
                                         //! configs
     mAxes = 0;                          //! axes count
     mRegions = 10;                      //! region count for each axes
@@ -88,6 +90,8 @@ VRobot::VRobot()
     mbEncoderAble = true;
     mbRunWaveAble = false;
     mbTunningAble = false;
+
+    mbCoordAble = false;
 
     mDriverId = 0;
 

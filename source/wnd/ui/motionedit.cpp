@@ -70,6 +70,9 @@ void motionEdit::setModelObj( mcModelObj *pObj )
 
     //! smart edit
     ui->btnSmartEdit->setVisible( m_pMotionGroup->smartEditable() );
+
+    //! robo change
+    slot_robo_changed( m_pmcModel->mConn.getRoboName() );
 }
 
 int motionEdit::save( QString &outFileName )
@@ -110,7 +113,7 @@ void motionEdit::onNetEvent(const QString &name,
 void motionEdit::onMotionStatus( int axes,
                                  MRQ_MOTION_STATE_2 stat )
 {
-    logDbg()<<stat;
+//    logDbg()<<stat;
 
 //    MRQ_MOTION_STATE_POWERON,
 //	MRQ_MOTION_STATE_IDLE,

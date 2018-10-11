@@ -89,18 +89,68 @@ void robotSinanju::interpTune( QList<TraceKeyPoint> &curve )
 
 void robotSinanju::coordRotate( QList<TraceKeyPoint> &curve )
 {
-    if ( mbTransferable )
+//    if ( mbTransferable )
+//    {
+//        TraceKeyPoint localPoint;
+//        for ( int i = 0; i < curve.size(); i++ )
+//        {
+//            localPoint = curve.at(i);
+
+//            coordRotate( localPoint, mTransferR, mTransferS );
+
+//            curve[ i ] = localPoint;
+//        }
+//    }
+
+    TraceKeyPoint localPoint;
+    if ( mCoord == robo_coord_body )
+    {}
+    else if ( mCoord == robo_coord_user )
     {
-        TraceKeyPoint localPoint;
         for ( int i = 0; i < curve.size(); i++ )
         {
             localPoint = curve.at(i);
 
-            coordRotate( localPoint, mTransferR, mTransferS );
+            fromUser( localPoint );
 
             curve[ i ] = localPoint;
         }
     }
+    else if ( mCoord == robo_coord_tool )
+    {
+        for ( int i = 0; i < curve.size(); i++ )
+        {
+            localPoint = curve.at(i);
+
+            fromTcp( localPoint );
+
+            curve[ i ] = localPoint;
+        }
+    }
+    else
+    {}
+}
+
+void robotSinanju::coordIRotate( TraceKeyPoint &pt )
+{
+//    if ( mbTransferable )
+//    { coordIRotate( pt, mTransferRInv, mTransferS ); }
+//    else
+//    {  }
+
+    if ( mCoord == robo_coord_body )
+    {}
+    else if ( mCoord == robo_coord_user )
+    {
+         toUser( pt );
+    }
+    else if ( mCoord == robo_coord_tool )
+    {
+         toTcp( pt );
+    }
+    else
+    {}
+
 }
 
 //! A = rot * pt + shift
@@ -129,14 +179,6 @@ void robotSinanju::coordRotate( TraceKeyPoint &pt, double rot[3*3], double shift
 //    logDbg()<<localPt.t<<localPt.x<<localPt.y<<localPt.z<<pt.x<<pt.y<<pt.z;
 }
 
-void robotSinanju::coordIRotate( TraceKeyPoint &pt )
-{
-    if ( mbTransferable )
-    { coordIRotate( pt, mTransferRInv, mTransferS ); }
-    else
-    {  }
-}
-
 //! pt = rot * (A - shift)
 void robotSinanju::coordIRotate( TraceKeyPoint &pt, double rot[3*3], double shift[3*1] )
 {
@@ -162,6 +204,63 @@ void robotSinanju::coordIRotate( TraceKeyPoint &pt, double rot[3*3], double shif
                     + rot[2*3+1] * localPt.y
                     + rot[2*3+2] * localPt.z;
 
+}
+
+//! user
+void robotSinanju::toUser( TraceKeyPoint &pt )
+{
+    coordIRotate( pt, mTransferRInv, mTransferS );
+}
+void robotSinanju::fromUser( TraceKeyPoint &pt )
+{
+    coordRotate( pt, mTransferR, mTransferS );
+}
+
+//! tcp
+//! \note rotate only for z
+//! x' = x * cosA - y * sinA
+//! y' = x * sinA + y * cosA
+void robotSinanju::toTcp( TraceKeyPoint &pt )
+{
+    TraceKeyPoint localPt;
+    localPt = pt;
+
+    //! shift
+    pt.x = localPt.x - mTcpP[0];
+    pt.y = localPt.y - mTcpP[1];
+    pt.z = localPt.z - mTcpP[2];
+
+    //! rotate
+    qreal x1, y1, z1;
+    x1 = pt.x * COSdeg( mTcpR[2] ) - pt.y * SINdeg(  mTcpR[2] );
+    y1 = pt.x * SINdeg( mTcpR[2] ) + pt.y * COSdeg(  mTcpR[2] );
+    z1 = pt.z;
+
+    pt.x = x1;
+    pt.y = y1;
+    pt.z = z1;
+}
+void robotSinanju::fromTcp( TraceKeyPoint &pt )
+{
+    TraceKeyPoint localPt;
+    localPt = pt;
+
+    //! roate
+    TraceKeyPoint rotatePt;
+    rotatePt = localPt;
+
+    rotatePt.x = localPt.x * COSdeg( -mTcpR[2] ) - localPt.y * SINdeg(  -mTcpR[2] );
+    rotatePt.y = localPt.x * SINdeg( -mTcpR[2] ) + localPt.y * COSdeg(  -mTcpR[2] );
+    rotatePt.z = localPt.z;
+
+    //! shift
+    pt.x = rotatePt.x + mTcpP[0];
+    pt.y = rotatePt.y + mTcpP[1];
+    pt.z = rotatePt.z + mTcpP[2];
+
+//    logDbg()<<localPt.x<<localPt.y<<localPt.z
+//            <<rotatePt.x<<rotatePt.y<<rotatePt.z
+//            <<pt.x<<pt.y<<pt.z;
 }
 
 int robotSinanju::planTrace( QList<TraceKeyPoint> &curve,

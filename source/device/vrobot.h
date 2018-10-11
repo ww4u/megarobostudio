@@ -55,6 +55,13 @@ enum eRoboAngle
     robo_angle_inc,
 };
 
+enum eRoboCoord
+{
+    robo_coord_body,
+    robo_coord_tool,
+    robo_coord_user,
+};
+
 struct PlanAttr
 {
     eRoboPlanMode mMode;
@@ -191,8 +198,6 @@ public:
 
     //! for robot -- axes is joint
     virtual int download( tpvGroup *pGroup, const tpvRegion &region );
-//    virtual int download( motionGroup *pGroup, const tpvRegion &region );
-
     virtual int download( QList<tpvGroup*> &groups,
                           QList<int> &joints,
                           const tpvRegion &region );
@@ -218,6 +223,7 @@ public:
     virtual int  setZero( int jointTabId, float val );
 
     virtual int getPOSE( float pos[] ); //! mPOSITION
+    virtual float toDeltaAngle( int jointId, float angle );
 
     virtual int setLoop( int n, const tpvRegion &region=0 );
     virtual int loopNow();
@@ -232,14 +238,6 @@ public:
     virtual bool waitCondition( const tpvRegion &region,
                                 MegaDevice::RoboCondition *pCond,
                                 int tmoms=-1 );
-
-    //! entity
-//    virtual void attachCondition(
-//                                  MegaDevice::RoboCondition *pCond );
-//    virtual bool waitCondition(
-//                                MegaDevice::RoboCondition *pCond,
-//                                int tmoms=-1 );
-
 public:
     //! prop
     QString& getClass();
@@ -251,6 +249,9 @@ public:
     virtual QList<int> deviceIds();     //! receive/send/group
     virtual QList<int> subIDs( int ch );
     virtual QString deviceFullDesc();
+
+    void setCoord( eRoboCoord cord );
+    eRoboCoord getCoord( );
 
     //! configs
     int setAxes(int n);
@@ -295,6 +296,9 @@ public:
     void setTunningAble( bool b );
     bool tunningAble();
 
+    void setCoordAble( bool b );
+    bool coordAble();
+
     void setDriverId( int id );
     int driverId();
 
@@ -335,9 +339,6 @@ public:
     int poseCount();
 
     QStringList & poseTitles();
-
-//    void setAbsCount( int cnt );
-//    int absCount();
 
     void setAngleType( eRoboAngle angMode );
     eRoboAngle angleType();
@@ -421,13 +422,13 @@ protected:
     int mPoseCount;                     //! 0,3..
     QStringList mPoseTitles;
 
-//    int mAbsCount;
     eRoboAngle mAngleType;
 
     bool mbInterpAble;
     bool mbEncoderAble;
     bool mbRunWaveAble;
     bool mbTunningAble;
+    bool mbCoordAble;
 
     int  mDriverId;
 
@@ -453,10 +454,13 @@ public:
     double mZeroSpeed;
     int mZeroTmo, mZeroTick;
 
+    eRoboCoord mCoord;
     QStringList mAxesConnectionName;    //! connected to device
     QStringList mJointName;             //! by config
 
     QList<bool> mJointAngleMask;        //! angles for each joint
+    QList<bool> mJointDeltaAngleMask;
+
     QList<bool> mJointCcwMask;          //! ccw for each angle
     QList<bool> mJointZeroCcw;          //! zero ccw for each joint
 

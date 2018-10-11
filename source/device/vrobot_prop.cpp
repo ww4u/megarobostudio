@@ -26,6 +26,11 @@ QList<int> VRobot::subIDs( int ch )
 QString VRobot::deviceFullDesc()
 { return ""; }
 
+void VRobot::setCoord( eRoboCoord cord )
+{ mCoord = cord; }
+eRoboCoord VRobot::getCoord( )
+{ return mCoord; }
+
 int VRobot::setAxes(int n)
 {
     //! gc
@@ -39,11 +44,13 @@ int VRobot::setAxes(int n)
 
     //! init the angle
     mJointAngleMask.clear();
+    mJointDeltaAngleMask.clear();
     mJointCcwMask.clear();
     for ( int i = 0; i <n; i++ )
     {
-        mJointAngleMask.append( false );
-        mJointCcwMask.append( true );
+        mJointAngleMask<<false;
+        mJointDeltaAngleMask<<false;
+        mJointCcwMask<<false;
     }
 
     //! init lvtable
@@ -133,6 +140,11 @@ void VRobot::setTunningAble( bool b )
 { mbTunningAble = b; }
 bool VRobot::tunningAble()
 { return mbTunningAble; }
+
+void VRobot::setCoordAble( bool b )
+{ mbCoordAble = b; }
+bool VRobot::coordAble()
+{ return mbCoordAble; }
 
 void VRobot::setDriverId( int id )
 { mDriverId = id; }

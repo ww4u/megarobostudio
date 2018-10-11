@@ -43,8 +43,8 @@ void mrqAxes::spyEdited()
 {
     QCheckBox *checkBoxes[]=
     {
-        ui->chkDriverState,
-        ui->chk820,
+//        ui->chkDriverState,
+//        ui->chk820,
     };
     QRadioButton *radBoxes[] = {
     };
@@ -168,7 +168,7 @@ int mrqAxes::apply()
     //! driver
     if ( m_pMrqModel->driverId() == VRobot::motor_driver_262 )
     {
-        pDevice->setDRIVER_STATE( mAxesId, (MRQ_SYSTEM_REVMOTION)ui->chkDriverState->isChecked() );
+        pDevice->setDRIVER_STATE( mAxesId, (MRQ_SYSTEM_REVMOTION)ui->gb_driver->isChecked() );
         pDevice->setDRIVER_IDLECURRENT( mAxesId, comAssist::align( ui->spinIdleCurrent->value(),motor_current_unit) );
         pDevice->setDRIVER_SWITCHTIME( mAxesId, comAssist::align( ui->spinIdleTime->value(),driver_time_unit) );
 
@@ -177,7 +177,7 @@ int mrqAxes::apply()
     }
     else if ( m_pMrqModel->driverId() == VRobot::motor_driver_820 )
     {
-        pDevice->setNEWDRIVER_STATE( mAxesId, (MRQ_SYSTEM_REVMOTION)ui->chk820->isChecked() );
+        pDevice->setNEWDRIVER_STATE( mAxesId, (MRQ_SYSTEM_REVMOTION)ui->gpSt820->isChecked() );
 
         pDevice->setNEWDRIVER_CURRENT( comAssist::align( ui->spin820Current->value(),driver_current_unit) );
         pDevice->setNEWDRIVER_MICROSTEPS( (MRQ_NEWDRIVER_MICROSTEPS)ui->cmb820MicroStep->value() );
@@ -233,7 +233,7 @@ int mrqAxes::updateUi()
     //! driver
     if ( m_pMrqModel->driverId() == VRobot::motor_driver_262 )
     {
-        ui->chkDriverState->setChecked( pModel->mDRIVER_STATE[mAxesId] );
+        ui->gb_driver->setChecked( pModel->mDRIVER_STATE[mAxesId] );
         ui->spinIdleCurrent->setValue( pModel->mDRIVER_IDLECURRENT[mAxesId]*driver_current_unit );
         ui->spinIdleTime->setValue( pModel->mDRIVER_SWITCHTIME[mAxesId]*driver_time_unit );
 
@@ -242,7 +242,7 @@ int mrqAxes::updateUi()
     }
     else if ( m_pMrqModel->driverId() == VRobot::motor_driver_820 )
     {
-        ui->chk820->setChecked( pModel->mNEWDRIVER_STATE[mAxesId] );
+        ui->gpSt820->setChecked( pModel->mNEWDRIVER_STATE[mAxesId] );
         ui->spin820Current->setValue( pModel->mNEWDRIVER_CURRENT * driver_current_unit );
         ui->cmb820MicroStep->setValue( pModel->mNEWDRIVER_MICROSTEPS );
     }

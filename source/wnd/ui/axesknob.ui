@@ -161,6 +161,9 @@
       </item>
       <item row="0" column="1">
        <widget class="QDoubleSpinBox" name="spinStepTime">
+        <property name="suffix">
+         <string>s</string>
+        </property>
         <property name="decimals">
          <number>6</number>
         </property>
@@ -175,7 +178,7 @@
       <item row="0" column="0">
        <widget class="QLabel" name="label_5">
         <property name="text">
-         <string>Time(s)</string>
+         <string>Time</string>
         </property>
        </widget>
       </item>

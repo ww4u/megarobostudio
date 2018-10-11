@@ -101,6 +101,9 @@ void SinanjuPref::updateData()
 
     //! ccw
     pRobo->setJointZeroCcw( 4, ui->chkHandZeroCcw->isChecked() );
+
+    //! coord
+    pRobo->setCoord( (eRoboCoord)ui->coordOption->option() );
 }
 
 void SinanjuPref::updateUi()
@@ -143,6 +146,8 @@ void SinanjuPref::updateUi()
     ui->gpHand->setChecked( pRobo->handAble() );
 
     ui->chkHandZeroCcw->setChecked( pRobo->jointZeroCcwList().at(4) );
+
+    ui->coordOption->setOption( (int)pRobo->getCoord() );
 }
 
 void SinanjuPref::initModel()

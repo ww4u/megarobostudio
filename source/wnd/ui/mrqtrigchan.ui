@@ -69,6 +69,9 @@
        </item>
        <item row="4" column="1">
         <widget class="QDoubleSpinBox" name="spinLevelPeriod">
+         <property name="suffix">
+          <string>s</string>
+         </property>
          <property name="decimals">
           <number>3</number>
          </property>
@@ -83,7 +86,7 @@
        <item row="4" column="0">
         <widget class="QLabel" name="label_4">
          <property name="text">
-          <string>Period(s)</string>
+          <string>Period</string>
          </property>
         </widget>
        </item>

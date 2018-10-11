@@ -126,12 +126,15 @@
          <item row="1" column="0">
           <widget class="QLabel" name="label_5">
            <property name="text">
-            <string>Hold(%)</string>
+            <string>Hold</string>
            </property>
           </widget>
          </item>
          <item row="0" column="1">
           <widget class="QDoubleSpinBox" name="spinIdleDuty">
+           <property name="suffix">
+            <string>%</string>
+           </property>
            <property name="maximum">
             <double>100.000000000000000</double>
            </property>
@@ -140,19 +143,22 @@
          <item row="0" column="0">
           <widget class="QLabel" name="label_3">
            <property name="text">
-            <string>Idle(%)</string>
+            <string>Idle</string>
            </property>
           </widget>
          </item>
          <item row="2" column="0">
           <widget class="QLabel" name="label_6">
            <property name="text">
-            <string>Open(%)</string>
+            <string>Open</string>
            </property>
           </widget>
          </item>
          <item row="1" column="1">
           <widget class="QDoubleSpinBox" name="spinHoldDuty">
+           <property name="suffix">
+            <string>%</string>
+           </property>
            <property name="maximum">
             <double>100.000000000000000</double>
            </property>
@@ -160,6 +166,9 @@
          </item>
          <item row="2" column="1">
           <widget class="QDoubleSpinBox" name="spinOpenDuty">
+           <property name="suffix">
+            <string>%</string>
+           </property>
            <property name="maximum">
             <double>100.000000000000000</double>
            </property>
@@ -177,22 +186,30 @@
          <item row="1" column="0">
           <widget class="QLabel" name="label_4">
            <property name="text">
-            <string>Open(s)</string>
+            <string>Open</string>
            </property>
           </widget>
          </item>
          <item row="2" column="0">
           <widget class="QLabel" name="label_8">
            <property name="text">
-            <string>Open Delay(s)</string>
+            <string>Open Delay</string>
            </property>
           </widget>
          </item>
          <item row="1" column="1">
-          <widget class="QDoubleSpinBox" name="spinOpenTime"/>
+          <widget class="QDoubleSpinBox" name="spinOpenTime">
+           <property name="suffix">
+            <string>s</string>
+           </property>
+          </widget>
          </item>
          <item row="2" column="1">
-          <widget class="QDoubleSpinBox" name="spinDelayTime"/>
+          <widget class="QDoubleSpinBox" name="spinDelayTime">
+           <property name="suffix">
+            <string>s</string>
+           </property>
+          </widget>
          </item>
         </layout>
        </widget>

@@ -17,9 +17,15 @@ T4Panel::T4Panel(mcModel *pModel,
              this, SLOT(slot_timeout()) );
     mTimer.setInterval( ui->spinBox->value() );
 
+    connect( ui->coordOption, SIGNAL(signal_option_changed(int)),
+             this, SLOT(slot_coord_option_changed(int)) );
+
     //! icon
     if ( Robot() != NULL )
     { setWindowIcon( QIcon( QPixmap::fromImage( Robot()->mImage)) ); }
+
+    //! post config
+    slot_coord_option_changed( ui->coordOption->option() );
 }
 
 T4Panel::~T4Panel()
@@ -215,4 +221,12 @@ void T4Panel::on_btnMarkUser_clicked()
     sysRpc( t4Rpc );
 }
 
+void T4Panel::slot_coord_option_changed( int index )
+{
+    robotSinanju *pRobo = Robot();
+    if ( NULL != pRobo )
+    {
+        pRobo->setCoord( (eRoboCoord)index );
+    }
+}
 

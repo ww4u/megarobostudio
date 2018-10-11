@@ -79,7 +79,7 @@
         <item row="0" column="0">
          <widget class="QLabel" name="label_16">
           <property name="text">
-           <string>Step(mm)</string>
+           <string>Step)</string>
           </property>
          </widget>
         </item>
@@ -114,6 +114,9 @@
         </item>
         <item row="0" column="1">
          <widget class="QDoubleSpinBox" name="spinInterpStep">
+          <property name="suffix">
+           <string>mm</string>
+          </property>
           <property name="decimals">
            <number>3</number>
           </property>
@@ -294,12 +297,15 @@
       <item row="0" column="0">
        <widget class="QLabel" name="label">
         <property name="text">
-         <string>Zero Speed(/s)</string>
+         <string>Zero Speed</string>
         </property>
        </widget>
       </item>
       <item row="0" column="1">
        <widget class="QDoubleSpinBox" name="spinZeroSpeed">
+        <property name="suffix">
+         <string>/s</string>
+        </property>
         <property name="minimum">
          <double>0.000000000000000</double>
         </property>
@@ -314,19 +320,22 @@
       <item row="1" column="0">
        <widget class="QLabel" name="label_11">
         <property name="text">
-         <string>Zero Timeout(s)</string>
+         <string>Zero Timeout</string>
         </property>
        </widget>
       </item>
       <item row="2" column="0">
        <widget class="QLabel" name="label_18">
         <property name="text">
-         <string>Zero Tick(s)</string>
+         <string>Zero Tick</string>
         </property>
        </widget>
       </item>
       <item row="1" column="1">
        <widget class="QDoubleSpinBox" name="spinZeroTmo">
+        <property name="suffix">
+         <string>s</string>
+        </property>
         <property name="minimum">
          <double>1.000000000000000</double>
         </property>
@@ -337,6 +346,9 @@
       </item>
       <item row="2" column="1">
        <widget class="QDoubleSpinBox" name="spinZeroTick">
+        <property name="suffix">
+         <string>s</string>
+        </property>
         <property name="minimum">
          <double>0.100000000000000</double>
         </property>

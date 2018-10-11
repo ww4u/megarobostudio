@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>564</width>
+    <width>485</width>
     <height>609</height>
    </rect>
   </property>
@@ -30,6 +30,9 @@
    <bool>false</bool>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="spacing">
+    <number>6</number>
+   </property>
    <property name="leftMargin">
     <number>0</number>
    </property>
@@ -58,11 +61,23 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>562</width>
+        <width>483</width>
         <height>607</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_3">
+       <property name="spacing">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_4">
          <property name="spacing">
@@ -114,6 +129,9 @@
             </item>
             <item>
              <widget class="QSpinBox" name="sampleTimer">
+              <property name="suffix">
+               <string>ms</string>
+              </property>
               <property name="minimum">
                <number>10</number>
               </property>
@@ -125,13 +143,6 @@
               </property>
               <property name="value">
                <number>2000</number>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="label_17">
-              <property name="text">
-               <string>ms</string>
               </property>
              </widget>
             </item>
@@ -202,18 +213,56 @@
         </layout>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_5">
+        <layout class="QHBoxLayout" name="horizontalLayout_6">
+         <property name="spacing">
+          <number>0</number>
+         </property>
          <property name="leftMargin">
-          <number>6</number>
+          <number>0</number>
          </property>
          <property name="topMargin">
-          <number>6</number>
+          <number>0</number>
          </property>
          <property name="rightMargin">
-          <number>6</number>
+          <number>0</number>
          </property>
          <property name="bottomMargin">
-          <number>6</number>
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="CoordOption" name="coordOption" native="true"/>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_3">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_5">
+         <property name="spacing">
+          <number>3</number>
+         </property>
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
          </property>
          <item>
           <widget class="QGroupBox" name="groupBox_2">
@@ -234,7 +283,7 @@
              <number>3</number>
             </property>
             <property name="topMargin">
-             <number>3</number>
+             <number>6</number>
             </property>
             <property name="rightMargin">
              <number>3</number>
@@ -308,10 +357,28 @@
             <string>Step</string>
            </property>
            <layout class="QGridLayout" name="gridLayout_2">
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <property name="spacing">
+             <number>3</number>
+            </property>
             <item row="0" column="3">
              <widget class="QDoubleSpinBox" name="spinStepTime">
               <property name="toolTip">
                <string>Step Time</string>
+              </property>
+              <property name="suffix">
+               <string>s</string>
               </property>
               <property name="minimum">
                <double>0.010000000000000</double>
@@ -327,7 +394,7 @@
             <item row="0" column="2">
              <widget class="QLabel" name="label">
               <property name="text">
-               <string>Time(s)</string>
+               <string>Time</string>
               </property>
              </widget>
             </item>
@@ -375,7 +442,7 @@
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_2">
           <property name="spacing">
-           <number>3</number>
+           <number>0</number>
           </property>
           <property name="leftMargin">
            <number>0</number>
@@ -439,6 +506,12 @@
    <class>PageOption</class>
    <extends>QWidget</extends>
    <header>pageoption.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>CoordOption</class>
+   <extends>QWidget</extends>
+   <header>coordoption.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

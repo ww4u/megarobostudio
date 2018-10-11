@@ -71,6 +71,8 @@ int  VRobot::setZero( int jointTabId, float val )
 
 int VRobot::getPOSE( float pos[] )
 { return -1; }
+float VRobot::toDeltaAngle( int jointId, float angle )
+{ return 0; }
 
 int VRobot::setLoop( int n, const tpvRegion &region )
 { return 0;  }

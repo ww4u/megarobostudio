@@ -61,6 +61,7 @@ public:
     virtual int  setZero( int jointTabId, float zero );
 
     virtual int getPOSE( float pos[] );
+    virtual float toDeltaAngle(int jointId, float angle);
 
 public:
     int zeroAxesTask( void *pArg );
@@ -85,7 +86,6 @@ public:
     virtual int loopNow();
 
     virtual void toState(int stat);
-//    virtual int state(const tpvRegion &region, int inTask = 0);
 
 public:
     virtual int build( MegaTableModel *pModel,
@@ -136,11 +136,27 @@ protected:
 
     void interpTune( QList<TraceKeyPoint> &curve );
 
+    //! rotate
     void coordRotate( QList<TraceKeyPoint> &curve );
-    void coordRotate( TraceKeyPoint &pt, double rot[3*3], double shift[3*1] );
-
     void coordIRotate( TraceKeyPoint &pt );
+
+    //! ass
+    void coordRotate( TraceKeyPoint &pt, double rot[3*3], double shift[3*1] );
     void coordIRotate( TraceKeyPoint &pt, double rot[3*3], double shift[3*1] );
+
+    //! body
+
+    //! user
+    //! body->user
+    void toUser( TraceKeyPoint &pt );
+    //! user->body
+    void fromUser( TraceKeyPoint &pt );
+
+    //! tcp
+    //! body->tcp
+    void toTcp( TraceKeyPoint &pt );
+    //! tcp->body
+    void fromTcp( TraceKeyPoint &pt );
 
     int planTrace( QList<TraceKeyPoint> &curve,
                    xxxGroup<tracePoint> &tracePoints );
@@ -184,6 +200,9 @@ protected:
     int serialInTransferRInv( QXmlStreamReader &reader );
     int serialInTransferS( QXmlStreamReader &reader );
 
+    int serialInTcp( QXmlStreamReader &reader );
+    int serialOutTcp(QXmlStreamWriter &writer );
+
 protected:
     void exportPlan( const QString &fileName, xxxGroup<tracePoint> &tracePlan );
     void exportJoints( const QString &fileName, xxxGroup<jointsTrace> &jointsPlan );
@@ -201,14 +220,17 @@ public:
     void setJointFactoryAngle( int id, double angle );
     double jointFactoryAngle( int id );
 
-    void setTransfer( bool bEn,
+    void setTransfer(
                       double rot[3*3],
                       double shift[3*1],
                       double rotInv[3*3] );
-    void transfer( bool &bEn,
+    void transfer(
                    double rot[3*3],
                    double shift[3*1],
                    double rotInv[3*3] );
+
+    void setTcp( double p[3], double r[3] );
+    void getTcp( double p[3], double r[3] );
 
 protected:
     double mHandZeroTime, mHandZeroAngle;
@@ -217,9 +239,11 @@ protected:
     bool mbHandAble;
     QList< double > mJointFactoryList;
 
-    bool mbTransferable;
+//    bool mbTransferable;
     double mTransferR[3*3], mTransferRInv[3*3];
     double mTransferS[3*1];
+
+    double mTcpP[3], mTcpR[3];
 };
 
 #endif

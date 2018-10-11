@@ -35,12 +35,15 @@
          <item row="0" column="0">
           <widget class="QLabel" name="label_7">
            <property name="text">
-            <string>Time(s)</string>
+            <string>Time</string>
            </property>
           </widget>
          </item>
          <item row="0" column="1">
           <widget class="QDoubleSpinBox" name="spinZeroTime">
+           <property name="suffix">
+            <string>s</string>
+           </property>
            <property name="minimum">
             <double>1.000000000000000</double>
            </property>
@@ -84,12 +87,15 @@
          <item row="1" column="0">
           <widget class="QLabel" name="label_2">
            <property name="text">
-            <string>L(mm)</string>
+            <string>L</string>
            </property>
           </widget>
          </item>
          <item row="1" column="1">
           <widget class="QDoubleSpinBox" name="spinInitL">
+           <property name="suffix">
+            <string>mm</string>
+           </property>
            <property name="minimum">
             <double>0.000000000000000</double>
            </property>
@@ -101,12 +107,15 @@
          <item row="4" column="0">
           <widget class="QLabel" name="label_3">
            <property name="text">
-            <string>Y(mm)</string>
+            <string>Y</string>
            </property>
           </widget>
          </item>
          <item row="4" column="1">
           <widget class="QDoubleSpinBox" name="spinInitY">
+           <property name="suffix">
+            <string>mm</string>
+           </property>
            <property name="minimum">
             <double>-200.000000000000000</double>
            </property>
@@ -135,12 +144,15 @@
          <item row="3" column="0">
           <widget class="QLabel" name="label_4">
            <property name="text">
-            <string>R(mm)</string>
+            <string>R</string>
            </property>
           </widget>
          </item>
          <item row="3" column="1">
           <widget class="QDoubleSpinBox" name="spinInitR">
+           <property name="suffix">
+            <string>mm</string>
+           </property>
            <property name="minimum">
             <double>0.000000000000000</double>
            </property>
@@ -152,12 +164,15 @@
          <item row="3" column="2">
           <widget class="QLabel" name="label_16">
            <property name="text">
-            <string>t(s)</string>
+            <string>t</string>
            </property>
           </widget>
          </item>
          <item row="3" column="3">
           <widget class="QDoubleSpinBox" name="spinInitT">
+           <property name="suffix">
+            <string>s</string>
+           </property>
            <property name="minimum">
             <double>1.000000000000000</double>
            </property>

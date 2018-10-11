@@ -44,7 +44,7 @@
          </size>
         </property>
         <property name="text">
-         <string>Tick(ms)</string>
+         <string>Tick</string>
         </property>
         <property name="scaledContents">
          <bool>true</bool>
@@ -69,7 +69,7 @@
          <string>PushButton</string>
         </property>
         <property name="icon">
-         <iconset resource="../res/res.qrc">
+         <iconset>
           <normaloff>:/res/image/icon/addition.png</normaloff>:/res/image/icon/addition.png</iconset>
         </property>
         <property name="iconSize">
@@ -82,6 +82,9 @@
       </item>
       <item row="2" column="2">
        <widget class="QSpinBox" name="spinBox">
+        <property name="suffix">
+         <string>ms</string>
+        </property>
         <property name="minimum">
          <number>100</number>
         </property>
@@ -219,12 +222,15 @@
          <item row="0" column="0">
           <widget class="QLabel" name="label">
            <property name="text">
-            <string>t(s)</string>
+            <string>t</string>
            </property>
           </widget>
          </item>
          <item row="0" column="1">
           <widget class="QDoubleSpinBox" name="spinT">
+           <property name="suffix">
+            <string>s</string>
+           </property>
            <property name="minimum">
             <double>0.010000000000000</double>
            </property>
@@ -245,6 +251,9 @@
          </item>
          <item row="1" column="1">
           <widget class="QDoubleSpinBox" name="spinX">
+           <property name="suffix">
+            <string>mm</string>
+           </property>
            <property name="minimum">
             <double>-1000.000000000000000</double>
            </property>
@@ -265,6 +274,9 @@
          </item>
          <item row="2" column="1">
           <widget class="QDoubleSpinBox" name="spinY">
+           <property name="suffix">
+            <string>mm</string>
+           </property>
            <property name="minimum">
             <double>-1000.000000000000000</double>
            </property>
@@ -294,7 +306,7 @@
             <string>Mark</string>
            </property>
            <property name="icon">
-            <iconset resource="../res/res.qrc">
+            <iconset>
              <normaloff>:/res/image/icon/addition.png</normaloff>:/res/image/icon/addition.png</iconset>
            </property>
            <property name="iconSize">
@@ -320,7 +332,7 @@
             <string>GO</string>
            </property>
            <property name="icon">
-            <iconset resource="../res/res.qrc">
+            <iconset>
              <normaloff>:/res/image/icon/skip.png</normaloff>:/res/image/icon/skip.png</iconset>
            </property>
            <property name="iconSize">
@@ -340,6 +352,9 @@
          </item>
          <item row="3" column="1">
           <widget class="QDoubleSpinBox" name="spinZ">
+           <property name="suffix">
+            <string>mm</string>
+           </property>
            <property name="minimum">
             <double>-1000.000000000000000</double>
            </property>
@@ -420,7 +435,7 @@
                <string>...</string>
               </property>
               <property name="icon">
-               <iconset resource="../res/res.qrc">
+               <iconset>
                 <normaloff>:/res/image/icon/c_less.png</normaloff>:/res/image/icon/c_less.png</iconset>
               </property>
               <property name="iconSize">
@@ -446,7 +461,7 @@
                <string>...</string>
               </property>
               <property name="icon">
-               <iconset resource="../res/res.qrc">
+               <iconset>
                 <normaloff>:/res/image/icon/c_subtract.png</normaloff>:/res/image/icon/c_subtract.png</iconset>
               </property>
               <property name="iconSize">
@@ -472,7 +487,7 @@
                <string>...</string>
               </property>
               <property name="icon">
-               <iconset resource="../res/res.qrc">
+               <iconset>
                 <normaloff>:/res/image/icon/c_more_unfold.png</normaloff>:/res/image/icon/c_more_unfold.png</iconset>
               </property>
               <property name="iconSize">
@@ -498,7 +513,7 @@
                <string>...</string>
               </property>
               <property name="icon">
-               <iconset resource="../res/res.qrc">
+               <iconset>
                 <normaloff>:/res/image/icon/c_back.png</normaloff>:/res/image/icon/c_back.png</iconset>
               </property>
               <property name="iconSize">
@@ -521,7 +536,7 @@
                <string>...</string>
               </property>
               <property name="icon">
-               <iconset resource="../res/res.qrc">
+               <iconset>
                 <normaloff>:/res/image/icon3/address.png</normaloff>:/res/image/icon3/address.png</iconset>
               </property>
               <property name="iconSize">
@@ -560,7 +575,7 @@
                <string>...</string>
               </property>
               <property name="icon">
-               <iconset resource="../res/res.qrc">
+               <iconset>
                 <normaloff>:/res/image/icon/c_more.png</normaloff>:/res/image/icon/c_more.png</iconset>
               </property>
               <property name="iconSize">
@@ -583,7 +598,7 @@
                <string/>
               </property>
               <property name="pixmap">
-               <pixmap resource="../res/res.qrc">:/res/image/joint/igus-drylingeo.png</pixmap>
+               <pixmap>:/res/image/joint/igus-drylingeo.png</pixmap>
               </property>
               <property name="scaledContents">
                <bool>true</bool>
@@ -605,7 +620,7 @@
                <string>...</string>
               </property>
               <property name="icon">
-               <iconset resource="../res/res.qrc">
+               <iconset>
                 <normaloff>:/res/image/icon/c_add.png</normaloff>:/res/image/icon/c_add.png</iconset>
               </property>
               <property name="iconSize">
@@ -656,12 +671,15 @@
             <item row="0" column="0">
              <widget class="QLabel" name="label_5">
               <property name="text">
-               <string>t(s)</string>
+               <string>t</string>
               </property>
              </widget>
             </item>
             <item row="0" column="1">
              <widget class="QDoubleSpinBox" name="spinStepT">
+              <property name="suffix">
+               <string>s</string>
+              </property>
               <property name="minimum">
                <double>0.010000000000000</double>
               </property>
@@ -676,12 +694,15 @@
             <item row="1" column="0">
              <widget class="QLabel" name="label_6">
               <property name="text">
-               <string>Step(mm)</string>
+               <string>Step</string>
               </property>
              </widget>
             </item>
             <item row="1" column="1">
              <widget class="QDoubleSpinBox" name="spinStepV">
+              <property name="suffix">
+               <string>mm</string>
+              </property>
               <property name="minimum">
                <double>0.010000000000000</double>
               </property>
@@ -733,8 +754,6 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources>
-  <include location="../res/res.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

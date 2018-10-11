@@ -67,12 +67,14 @@ VRobot *robotFact::createRobot( const QString &str )
             break;
         }
 
+        //! 1.0
         if ( str_is_2(str, "quebeley", "MRQ-C-23-D") )
         {
             pRobo = new roboQuebeley( VRobot::robot_qubeley_d );
             break;
         }
 
+        //! 1.1
         if ( str_is(str, "MRQ-C-23-S") )
         {
             pRobo = new roboQuebeley( VRobot::robot_qubeley_s );

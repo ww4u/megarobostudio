@@ -33,7 +33,17 @@ void motionEdit::context_clear()
 //! get the hand action options
 void motionEdit::slot_robo_changed( const QString &roboName )
 {
+    VRobot *pRobot;
+    if ( checkRobotLive( &pRobot ) )
+    {}
+    else
+    {
+        sysPrompt( tr("Invalid robot") );
+        return;
+    }
 
+    //! coord able
+    ui->coordOption->setVisible( pRobot->coordAble() );
 }
 
 //! update the status by

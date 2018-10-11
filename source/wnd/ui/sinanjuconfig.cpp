@@ -142,10 +142,21 @@ void SinanjuConfig::updateData()
         rotInv[i] = mRotInvs[i]->value();
     }
 
-    pRobo->setTransfer( ui->gpTransfer->isChecked(),
+    pRobo->setTransfer(
                         rot,
                         shift,
                         rotInv );
+
+    //! tcp
+    double tcpp[3], tcpr[3];
+    tcpp[0] = ui->spinTcpPx->value();
+    tcpp[1] = ui->spinTcpPy->value();
+    tcpp[2] = ui->spinTcpPz->value();
+
+    tcpr[0] = ui->spinTcpRx->value();
+    tcpr[1] = ui->spinTcpRy->value();
+    tcpr[2] = ui->spinTcpRz->value();
+    pRobo->setTcp( tcpp, tcpr );
 }
 void SinanjuConfig::updateUi()
 {
@@ -169,11 +180,10 @@ void SinanjuConfig::updateUi()
     ui->angleFactWr->setValue( pRobo->jointFactoryAngle(3) );
 
     //! transfer
-    bool bEn;
-    double rot[ sizeof_array(mRots) ], rotInv[ sizeof_array(mRotInvs) ], shift[ sizeof_array(mShifts) ];
-    pRobo->transfer( bEn, rot, shift, rotInv );
 
-    ui->gpTransfer->setChecked( bEn );
+    double rot[ sizeof_array(mRots) ], rotInv[ sizeof_array(mRotInvs) ], shift[ sizeof_array(mShifts) ];
+    pRobo->transfer( rot, shift, rotInv );
+
     //! rot
     for ( int i = 0; i < sizeof_array( rot ); i++ )
     {
@@ -192,4 +202,16 @@ void SinanjuConfig::updateUi()
         Q_ASSERT( i < sizeof_array(mRotInvs) );
         mRotInvs[i]->setValue( rotInv[i]);
     }
+
+    //! tcp
+    double tcpp[3], tcpr[3];
+    pRobo->getTcp( tcpp, tcpr );
+
+    ui->spinTcpPx->setValue( tcpp[0] );
+    ui->spinTcpPy->setValue( tcpp[1] );
+    ui->spinTcpPz->setValue( tcpp[2] );
+
+    ui->spinTcpRx->setValue( tcpr[0] );
+    ui->spinTcpRy->setValue( tcpr[1] );
+    ui->spinTcpRz->setValue( tcpr[2] );
 }

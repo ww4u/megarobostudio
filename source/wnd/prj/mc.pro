@@ -306,7 +306,8 @@ SOURCES += \
     ../ui/megalcdnumber.cpp \
     ../ui/rotmat3_3.cpp \
     ../../widget/mprogressbar.cpp \
-    ../ui/coordoption.cpp
+    ../ui/coordoption.cpp \
+    ../ui/pagecontrol.cpp
 
 
 HEADERS += \
@@ -481,7 +482,8 @@ HEADERS += \
     ../ui/rotmat3_3.h \
     ../../../include/myassert.h \
     ../../widget/mprogressbar.h \
-    ../ui/coordoption.h
+    ../ui/coordoption.h \
+    ../ui/pagecontrol.h
 
 FORMS += \
         ../ui/mainwindow.ui \
@@ -586,10 +588,11 @@ FORMS += \
     ../ui/mrqtune.ui \
     ../ui/igusdrylinpanel.ui \
     ../ui/rotmat3_3.ui \
-    ../ui/coordoption.ui
+    ../ui/coordoption.ui \
+    ../ui/pagecontrol.ui
 
 
-#RESOURCES = ../res/res.qrc
+RESOURCES = ../res/res.qrc
 
 RC_ICONS = ../res/image/logo/megarobo.ico
 

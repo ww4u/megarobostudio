@@ -73,10 +73,10 @@ void modelSysPref::rst()
     mRemoteDirPath.clear();
 
     //! motion
-    mGeometryResolution = 0.1;
-    mAngleResolution = 0.001;
+    mGeometryResolution = 5;    //! mm
+    mAngleResolution = 0.01;    //! deg
     mOmitEn = true;
-    mOmitThreshold = 0.5;
+    mOmitThreshold = 0.5;       //! deg
 
     //! font
     mFontFamily = "arial";

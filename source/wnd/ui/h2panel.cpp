@@ -17,6 +17,11 @@ H2Panel::H2Panel(mcModel *pModel,
              this, SLOT(slot_timeout()) );
     mTimer.setInterval( ui->spinBox->value() );
 
+//    connect( ui->widget, SIGNAL(signal_run_clicked()),
+//             this, SLOT(slot_page_run()) );
+//    connect( ui->widget, SIGNAL(signal_stop_clicked()),
+//             this, SLOT(slot_page_stop()) );
+
     //! icon
     if ( Robot() != NULL )
     { setWindowIcon( QIcon( QPixmap::fromImage( Robot()->mImage)) ); }
@@ -141,6 +146,23 @@ void H2Panel::on_chkOnOff_clicked(bool checked)
     { mTimer.start(); }
     else
     { mTimer.stop(); }
+}
+
+void H2Panel::on_widget_signal_run_clicked()
+{
+    robotH2 *pRobo = Robot();
+    if ( NULL == pRobo )
+    { return; }
+
+    pRobo->call( 1, tpvRegion(0,ui->widget->page()) );
+}
+void H2Panel::on_widget_signal_stop_clicked()
+{
+    robotH2 *pRobo = Robot();
+    if ( NULL == pRobo )
+    { return; }
+
+    pRobo->stop( tpvRegion(0, ui->widget->page() ) );
 }
 
 void H2Panel::on_btnYN_clicked()

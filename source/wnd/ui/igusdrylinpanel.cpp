@@ -160,6 +160,23 @@ void IgusDrylinPanel::on_chkOnOff_clicked(bool checked)
     { mTimer.stop(); }
 }
 
+void IgusDrylinPanel::on_widget_signal_run_clicked()
+{
+    robotIgusDelta *pRobo = Robot();
+    if ( NULL == pRobo )
+    { return; }
+
+    pRobo->call( 1, tpvRegion(0, ui->widget->page() ) );
+}
+void IgusDrylinPanel::on_widget_signal_stop_clicked()
+{
+    robotIgusDelta *pRobo = Robot();
+    if ( NULL == pRobo )
+    { return; }
+
+    pRobo->stop( tpvRegion(0, ui->widget->page() ) );
+}
+
 void IgusDrylinPanel::on_btnZP_clicked()
 {
     moveD( 0, 0, ui->spinStepV->value() );

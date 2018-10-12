@@ -129,7 +129,7 @@ int deviceMRQ::beginTpvDownload( const tpvRegion &region )
 
     return ret;
 }
-//! \todo in one call
+
 int deviceMRQ::tpvDownload(
                  const tpvRegion &region,
                  int index,
@@ -265,7 +265,6 @@ int deviceMRQ::endTpvDownload( pvt_region )
     return ret;
 }
 
-//! \todo not send end
 int deviceMRQ::tpvDownloadMission( pvt_region,
                                    QList<tpvRow *> &list,
                                    int from,
@@ -408,7 +407,11 @@ int deviceMRQ::pvtWrite( pvt_region,
                          float dAngle,
                          float endV )
 {
-    Q_ASSERT( dT > 0 );
+//    Q_ASSERT( dT > 0 );
+    if ( dT > 0 )
+    {}
+    else
+    { return -1; }
 
     return pvtWrite( pvt_region_p, 0, 0, dT, dAngle, endV );
 }

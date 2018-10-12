@@ -236,7 +236,6 @@ void deviceMgr::updatePhyBusTree( VRoboList *pRoboList )
     Q_ASSERT( pRoboList->bus() != NULL );
     pItemBus->setText( 0, pRoboList->bus()->name() );
 
-    //! \todo bus type
     QStringList strList,typeList;
     strList<<":/res/image/megacan.png"
            <<":/res/image/can2.png"

@@ -183,7 +183,6 @@ int scriptMgr::saveActiveFile( const QString &file )
     if ( NULL == pNode || pNode->getNodeType() != scriptNode::node_file )
     { return ERR_INVALID_SCRIPT_FILE_NODE; }
 
-    //! \todo
     SinanjuMotionGroup *pGroup = dynamic_cast<SinanjuMotionGroup*>( pNode );
     if ( NULL == pGroup )
     { return ERR_INVALID_SCRIPT_FILE_NODE; }
@@ -349,7 +348,6 @@ int scriptMgr::openScene( const QString &path, const QString &file )
     return ERR_NONE;
 }
 
-//! \todo
 int scriptMgr::openSetup( const QString &path, const QString &file )
 {
     //! 1.load the class

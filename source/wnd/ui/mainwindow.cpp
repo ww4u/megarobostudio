@@ -654,6 +654,7 @@ void MainWindow::stopService()
 void MainWindow::regSysVar()
 {
     attachSysQueue( m_pRoboNetThread );
+    attachSysPara( &mMcModel.mSysPref );
 }
 
 void MainWindow::statusShow( const QString &str )
@@ -926,7 +927,7 @@ void MainWindow::slot_instmgr_changed( bool bEnd, MegaDevice::InstMgr *pMgr )
     //! add again
     else
     {
-        //! \todo for debug only
+        //! \note for debug only
 //        m_pSampleThread->attachSampleProxy( MegaDevice::MRQ_model::REPORT_STATE_TORQUE,
 //                                            pMgr->getDevice(0)
 //                                            );

@@ -122,7 +122,6 @@ void InstMgr::setMainShell( scpiShell *pShell )
     m_pMainShell->open();
 }
 
-//! \todo only one time
 int InstMgr::probeBus()
 {
     Q_ASSERT( NULL != m_pMainModel );

@@ -25,7 +25,7 @@
    <string>Preference</string>
   </property>
   <property name="windowIcon">
-   <iconset>
+   <iconset resource="../res/res.qrc">
     <normaloff>:/res/image/icon/205.png</normaloff>:/res/image/icon/205.png</iconset>
   </property>
   <property name="sizeGripEnabled">
@@ -475,7 +475,7 @@
                 <string>MRH-E</string>
                </property>
                <property name="icon">
-                <iconset>
+                <iconset resource="../res/res.qrc">
                  <normaloff>:/res/image/megacan.png</normaloff>:/res/image/megacan.png</iconset>
                </property>
               </item>
@@ -484,7 +484,7 @@
                 <string>USB-CAN II</string>
                </property>
                <property name="icon">
-                <iconset>
+                <iconset resource="../res/res.qrc">
                  <normaloff>:/res/image/can2.png</normaloff>:/res/image/can2.png</iconset>
                </property>
               </item>
@@ -493,7 +493,7 @@
                 <string>MRH-T</string>
                </property>
                <property name="icon">
-                <iconset>
+                <iconset resource="../res/res.qrc">
                  <normaloff>:/res/image/mrh-t.png</normaloff>:/res/image/mrh-t.png</iconset>
                </property>
               </item>
@@ -502,7 +502,7 @@
                 <string>MRH-U</string>
                </property>
                <property name="icon">
-                <iconset>
+                <iconset resource="../res/res.qrc">
                  <normaloff>:/res/image/miniusbcan.png</normaloff>:/res/image/miniusbcan.png</iconset>
                </property>
               </item>
@@ -521,7 +521,7 @@
                 <string>RS232</string>
                </property>
                <property name="icon">
-                <iconset>
+                <iconset resource="../res/res.qrc">
                  <normaloff>:/res/image/rs232.png</normaloff>:/res/image/rs232.png</iconset>
                </property>
               </item>
@@ -530,7 +530,7 @@
                 <string>USB</string>
                </property>
                <property name="icon">
-                <iconset>
+                <iconset resource="../res/res.qrc">
                  <normaloff>:/res/image/usb.png</normaloff>:/res/image/usb.png</iconset>
                </property>
               </item>
@@ -814,7 +814,7 @@
                <string/>
               </property>
               <property name="pixmap">
-               <pixmap>:/res/image/megacan.png</pixmap>
+               <pixmap resource="../res/res.qrc">:/res/image/megacan.png</pixmap>
               </property>
               <property name="scaledContents">
                <bool>true</bool>
@@ -1672,7 +1672,7 @@ p, li { white-space: pre-wrap; }
                 <string>Geometry Distance</string>
                </property>
                <property name="suffix">
-                <string>um</string>
+                <string>mm</string>
                </property>
                <property name="decimals">
                 <number>3</number>
@@ -1681,7 +1681,7 @@ p, li { white-space: pre-wrap; }
                 <double>0.001000000000000</double>
                </property>
                <property name="maximum">
-                <double>10.000000000000000</double>
+                <double>100.000000000000000</double>
                </property>
               </widget>
              </item>
@@ -1721,7 +1721,7 @@ p, li { white-space: pre-wrap; }
                 <enum>Qt::LeftToRight</enum>
                </property>
                <property name="text">
-                <string>Vernier Omit</string>
+                <string>Vernier Omit(deg)</string>
                </property>
               </widget>
              </item>
@@ -1851,7 +1851,9 @@ p, li { white-space: pre-wrap; }
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="../res/res.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>buttonBox</sender>

@@ -148,6 +148,23 @@ void H2ZPanel::on_chkOnOff_clicked(bool checked)
     { mTimer.stop(); }
 }
 
+void H2ZPanel::on_widget_signal_run_clicked()
+{
+    robotH2Z *pRobo = Robot();
+    if ( NULL == pRobo )
+    { return; }
+
+    pRobo->call( 1, tpvRegion(0, ui->widget->page() ) );
+}
+void H2ZPanel::on_widget_signal_stop_clicked()
+{
+    robotH2Z *pRobo = Robot();
+    if ( NULL == pRobo )
+    { return; }
+
+    pRobo->stop( tpvRegion(0, ui->widget->page() ) );
+}
+
 void H2ZPanel::on_btnZP_clicked()
 {
     if ( ui->chkSingle->isChecked() )

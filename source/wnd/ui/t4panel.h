@@ -36,6 +36,9 @@ private slots:
     void on_spinBox_valueChanged(int arg1);
     void on_chkOnOff_clicked(bool checked);
 
+    void on_widget_signal_run_clicked();
+    void on_widget_signal_stop_clicked();
+
     void on_btnYP_clicked();
     void on_btnYN_clicked();
     void on_btnZP_clicked();

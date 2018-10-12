@@ -7,7 +7,7 @@ MrqAlarm::MrqAlarm(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    //! \todo only for the T4
+    //! \note only for the T4
     for ( int i = 0; i < 4; i++ )
     {
         mAnglePages.append( new EncoderAlarmPage() );

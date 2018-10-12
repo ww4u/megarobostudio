@@ -99,9 +99,6 @@ void sampleMgr::sampleProc( int tickus,
                                         pProxy->mItem,
                                         cacheSize );
 
-            //! \todo commit the item
-//            logDbg()<<sampleItem.mVal.toHex();
-
             commitList.append( pProxy );
             valList.append( sampleItem );
         }

@@ -65,7 +65,7 @@ int MrqIn::apply()
 
     {
         XiConfig cfg;
-        //! \todo only a tab
+
         ui->tab->getConfig( cfg );
 
         checked_call( pDevice->setISOLATORIN_STATE(

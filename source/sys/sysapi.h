@@ -5,7 +5,7 @@
 
 #include "../com/robomsgthread.h"
 #include "../../app/systimer.h"
-
+#include "../../para/syspara.h"
 //! sys log
 void _sysLog( const QString &preStr = "",
 
@@ -61,6 +61,10 @@ void sysEmergeStop();
 void attachSysQueue( RoboMsgThread* pQueue );
 RoboMsgThread* sysQueue();
 
+//! sys para
+void attachSysPara( SysPara *pPara );
+SysPara *sysPara();
+
 quint64 sysTimeStamp();
 
 void sysPauseTimer();
@@ -71,7 +75,7 @@ class sysRunTime
 public:
     RoboMsgThread *m_pSysQueue;
     int mOpc;
-
+    SysPara *m_pSysPara;
 public:
     sysRunTime()
     {

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>504</width>
-    <height>399</height>
+    <height>405</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -69,7 +69,7 @@
          <string>PushButton</string>
         </property>
         <property name="icon">
-         <iconset>
+         <iconset resource="../res/res.qrc">
           <normaloff>:/res/image/icon/addition.png</normaloff>:/res/image/icon/addition.png</iconset>
         </property>
         <property name="iconSize">
@@ -158,7 +158,7 @@
      </property>
      <layout class="QGridLayout" name="gridLayout_4">
       <item row="0" column="0" colspan="2">
-       <widget class="PageOption" name="widget" native="true"/>
+       <widget class="PageControl" name="widget" native="true"/>
       </item>
       <item row="1" column="0">
        <widget class="QGroupBox" name="groupBox_3">
@@ -271,7 +271,7 @@
             <string>Mark</string>
            </property>
            <property name="icon">
-            <iconset>
+            <iconset resource="../res/res.qrc">
              <normaloff>:/res/image/icon/addition.png</normaloff>:/res/image/icon/addition.png</iconset>
            </property>
            <property name="iconSize">
@@ -297,7 +297,7 @@
             <string>GO</string>
            </property>
            <property name="icon">
-            <iconset>
+            <iconset resource="../res/res.qrc">
              <normaloff>:/res/image/icon/skip.png</normaloff>:/res/image/icon/skip.png</iconset>
            </property>
            <property name="iconSize">
@@ -413,7 +413,7 @@
                <string>...</string>
               </property>
               <property name="icon">
-               <iconset>
+               <iconset resource="../res/res.qrc">
                 <normaloff>:/res/image/icon/c_less.png</normaloff>:/res/image/icon/c_less.png</iconset>
               </property>
               <property name="iconSize">
@@ -439,7 +439,7 @@
                <string>...</string>
               </property>
               <property name="icon">
-               <iconset>
+               <iconset resource="../res/res.qrc">
                 <normaloff>:/res/image/icon/c_subtract.png</normaloff>:/res/image/icon/c_subtract.png</iconset>
               </property>
               <property name="iconSize">
@@ -465,7 +465,7 @@
                <string>...</string>
               </property>
               <property name="icon">
-               <iconset>
+               <iconset resource="../res/res.qrc">
                 <normaloff>:/res/image/icon/c_more_unfold.png</normaloff>:/res/image/icon/c_more_unfold.png</iconset>
               </property>
               <property name="iconSize">
@@ -491,7 +491,7 @@
                <string>...</string>
               </property>
               <property name="icon">
-               <iconset>
+               <iconset resource="../res/res.qrc">
                 <normaloff>:/res/image/icon/c_back.png</normaloff>:/res/image/icon/c_back.png</iconset>
               </property>
               <property name="iconSize">
@@ -514,7 +514,7 @@
                <string>...</string>
               </property>
               <property name="icon">
-               <iconset>
+               <iconset resource="../res/res.qrc">
                 <normaloff>:/res/image/icon3/address.png</normaloff>:/res/image/icon3/address.png</iconset>
               </property>
               <property name="iconSize">
@@ -553,7 +553,7 @@
                <string>...</string>
               </property>
               <property name="icon">
-               <iconset>
+               <iconset resource="../res/res.qrc">
                 <normaloff>:/res/image/icon/c_more.png</normaloff>:/res/image/icon/c_more.png</iconset>
               </property>
               <property name="iconSize">
@@ -576,7 +576,7 @@
                <string/>
               </property>
               <property name="pixmap">
-               <pixmap>:/res/image/joint/mrx-h2z_geo.png</pixmap>
+               <pixmap resource="../res/res.qrc">:/res/image/joint/mrx-h2z_geo.png</pixmap>
               </property>
               <property name="scaledContents">
                <bool>true</bool>
@@ -598,7 +598,7 @@
                <string>...</string>
               </property>
               <property name="icon">
-               <iconset>
+               <iconset resource="../res/res.qrc">
                 <normaloff>:/res/image/icon/c_add.png</normaloff>:/res/image/icon/c_add.png</iconset>
               </property>
               <property name="iconSize">
@@ -723,12 +723,14 @@
    <header>megalcdnumber.h</header>
   </customwidget>
   <customwidget>
-   <class>PageOption</class>
+   <class>PageControl</class>
    <extends>QWidget</extends>
-   <header>pageoption.h</header>
+   <header>pagecontrol.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="../res/res.qrc"/>
+ </resources>
  <connections/>
 </ui>

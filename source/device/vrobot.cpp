@@ -287,7 +287,6 @@ VRobot * VRobot::subRobot( int index, int *pAxes )
     Q_ASSERT( NULL != m_pInstMgr );
     Q_ASSERT( NULL != pAxes );
 
-    //! \todo
     *pAxes = 0;
 
     return m_pInstMgr->findRobot( mAxesConnectionName.at(index) );

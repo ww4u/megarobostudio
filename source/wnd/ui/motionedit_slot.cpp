@@ -156,7 +156,6 @@ void motionEdit::on_btnPref_clicked()
     dlg.exec();
 }
 
-//! \todo some type
 void motionEdit::on_btnExport_clicked()
 {
     QFileDialog fDlg;

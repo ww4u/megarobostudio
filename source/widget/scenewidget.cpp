@@ -11,8 +11,6 @@ sceneWidget::sceneWidget( QWidget *parent ) : QLabel( parent )
     mpLabel->setSizePolicy( QSizePolicy::Minimum,
                             QSizePolicy::Preferred );
 
-    //! \todo set validator
-
     connect( mpLabel, SIGNAL(editingFinished()),
              this, SLOT(slot_editingFinished()) );
 

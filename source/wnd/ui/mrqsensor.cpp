@@ -2,7 +2,6 @@
 #include "ui_mrqsensor.h"
 #include "../../com/comassist.h"
 
-//! \todo interval time
 #define interval_unit_time  (0.001f)
 
 mrqSensor::mrqSensor(QWidget *parent) :

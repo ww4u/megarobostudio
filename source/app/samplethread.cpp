@@ -81,7 +81,6 @@ void sampleThread::stop()
     mThreadMutex.unlock();
 }
 
-//! \todo
 void sampleThread::run()
 {
     Q_FOREVER

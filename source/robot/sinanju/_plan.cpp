@@ -79,8 +79,8 @@ void robotSinanju::interpTune( QList<TraceKeyPoint> &curve )
         dist = comAssist::eulcidenDistance( curve.at(i).x, curve.at(i).y, curve.at(i).z,
                                             curve.at(i+1).x, curve.at(i+1).y, curve.at(i+1).z
                                             );
-        //! \todo by out
-        if ( dist < 5 )
+
+        if ( dist < sysPara()->mGeometryResolution )
         {
             unset_bit( curve[i].iMask, BIT_INTERP );
         }

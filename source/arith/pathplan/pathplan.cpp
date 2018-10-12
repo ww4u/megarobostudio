@@ -1,7 +1,7 @@
 #include "pathplan.h"
-
+#include "../../../source/sys/sysapi.h"
 //! \todo by outter setting
-#define SPACE_RESOLUTION    5
+//#define SPACE_RESOLUTION    5
 
 namespace ns_pathplan {
 
@@ -34,7 +34,8 @@ static void trimPoints( double *pIn, int length )
     {
         dist = pointDistance( &pEp[i].x,
                               &pEp[i+1].x );
-        if ( dist < SPACE_RESOLUTION )      //! disable the interp
+//        if ( dist < SPACE_RESOLUTION )      //! disable the interp
+        if ( dist < sysPara()->mGeometryResolution )
         {
             pEp[i].flagInterp = 0;
         }

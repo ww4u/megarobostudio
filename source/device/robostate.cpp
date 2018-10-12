@@ -64,7 +64,6 @@ void RoboFsm::proc( int msg, RoboMsg &detail )
 QString strName = m_pNowState->name();
 //logDbg()<<"enter"<<strName;
     //! sys proc
-    //! \todo only for mrq timeout
     if ( msg == e_robot_timeout )
     { m_pNowState->onTimer( detail.at(1).toInt() ); }
     else

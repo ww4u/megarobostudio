@@ -113,6 +113,17 @@ RoboMsgThread* sysQueue()
     return _sysRunTime.m_pSysQueue;
 }
 
+void attachSysPara( SysPara *pPara )
+{
+    Q_ASSERT( NULL != pPara );
+    _sysRunTime.m_pSysPara = pPara;
+}
+SysPara *sysPara()
+{
+    Q_ASSERT( NULL != _sysRunTime.m_pSysPara );
+    return _sysRunTime.m_pSysPara;
+}
+
 quint64 sysTimeStamp()
 { return receiveCache::timeStamp(); }
 

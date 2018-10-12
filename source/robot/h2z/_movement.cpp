@@ -293,7 +293,6 @@ int robotH2Z::zeroAxesTask( void *pArg )
         move( pZArg->mZeroXDist, 0, 0, pZArg->mZeroTime, pZArg->mZeroXEndV,0,0,region );
 
         //! wait
-        //! \todo wait idle
         ret = waitFsm( region, MegaDevice::mrq_state_idle, pZArg->mTmo, pZArg->mTick );
         if ( ret != 0 )
         { return ret; }

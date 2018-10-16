@@ -84,5 +84,7 @@ void roboMgr::on_listWidget_itemActivated(QListWidgetItem *item)
         Q_ASSERT( NULL != pNewRobot );
 
         emit itemXActivated( pNewRobot );
+
+        emit signal_itemXHelp( e_help_new_robot );
     }
 }

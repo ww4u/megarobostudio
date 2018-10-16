@@ -45,22 +45,43 @@ static scpi_result_t _transfer_write( scpi_t * context,
     { return SCPI_RES_OK; }
 }
 
-static scpi_result_t _transfer_recv( scpi_t * context )
+static scpi_result_t _transfer_recv( scpi_t * context, bool bTrim=false )
 {
     int retLen;
     byte *pBuf;
     pBuf = _OBJ->recv( retLen );
-
+    int datLen;
     if ( retLen > 0 )
     {
         if ( retLen > 1 && pBuf[retLen-1] == '\0' )
         {
-            SCPI_ResultCharacters( context, (char*)pBuf, retLen - 1 );
+//            SCPI_ResultCharacters( context, (char*)pBuf, retLen - 1 );
+            datLen = retLen - 1;
         }
         else
         {
-            SCPI_ResultCharacters( context, (char*)pBuf, retLen );
+//            SCPI_ResultCharacters( context, (char*)pBuf, retLen );
+            datLen = retLen;
         }
+
+        //! trim 0x0A
+        if ( bTrim )
+        {
+            if ( pBuf[datLen-1] == 0x0A )
+            { datLen -= 1; }
+            else
+            {}
+
+
+        }
+        else
+        {
+        }
+
+        if ( datLen > 0 )
+        { SCPI_ResultCharacters( context, (char*)pBuf, datLen ); }
+        else
+        { return SCPI_RES_ERR; }
 
         return SCPI_RES_OK;
     }
@@ -91,7 +112,8 @@ static scpi_result_t transfer_request( scpi_t * context,
 
 static scpi_result_t transfer_query( scpi_t * context,
                                      bool bTrim,
-                                     byte v)
+                                     byte v,
+                                     bool bTrimRecv = false )
 {
     scpi_result_t ret;
 
@@ -105,7 +127,7 @@ static scpi_result_t transfer_query( scpi_t * context,
                            bTrim,
                            v );
 
-    ret = _transfer_recv( context );
+    ret = _transfer_recv( context, bTrimRecv );
 
     receiveCache::unlock();
 
@@ -134,11 +156,21 @@ static scpi_result_t _scpi_bypass_q( scpi_t * context )
     return SCPI_RES_OK;
 }
 
+//! \note *idn raw return contains \n
 static scpi_result_t _scpi_idn( scpi_t * context )
 {
     DEF_LOCAL_VAR();
 
-    return transfer_query( context, false, 0 );
+    return transfer_query( context, false, 0, true );
+}
+
+static scpi_result_t _scpi_zero( scpi_t * context )
+{
+    DEF_LOCAL_VAR();
+
+//    logDbg();
+    return SCPI_RES_ERR;
+//    return transfer_query( context, false, 0 );
 }
 
 //static scpi_result_t _scpi_system_mode_switch( scpi_t * context )
@@ -283,6 +315,7 @@ static scpi_command_t _scpi_cmds[]=
     CMD_ITEM( "BYPASS?", _scpi_bypass_q ),
 
     CMD_ITEM( "*IDN?", _scpi_idn ),
+
 
     CMD_ITEM( "SYSTEM:MODE:SWITCH", _scpi_system_mode_switch ),
     CMD_ITEM( "SYSTEM:MODE:READ?", _scpi_system_mode_switch_q ),

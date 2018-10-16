@@ -190,6 +190,7 @@ void sysPref::updateUi()
     ui->chkSearch->setChecked( m_pPref->mbSearchOnOpen );
     ui->chkMaximize->setChecked( m_pPref->mbMaximizeStartup );
     ui->chkShowNotice->setChecked( m_pPref->mbShowNotice );
+    ui->chkHelp->setChecked( m_pPref->mbShowHelp );
 
     ui->chkLoadLast->setChecked( m_pPref->mbAutoLoadPrj );
     ui->chkAutoZeroAffirm->setChecked( m_pPref->mbAffirmZero );
@@ -292,6 +293,7 @@ void sysPref::updateData()
     m_pPref->mbMaximizeStartup = ui->chkMaximize->isChecked();
 
     m_pPref->mbShowNotice = ui->chkShowNotice->isChecked();
+    m_pPref->mbShowHelp = ui->chkHelp->isChecked();
 
     m_pPref->mbAutoLoadPrj = ui->chkLoadLast->isChecked();
     m_pPref->mbAffirmZero = ui->chkAutoZeroAffirm->isChecked();

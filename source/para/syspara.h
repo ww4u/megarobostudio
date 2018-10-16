@@ -72,7 +72,7 @@ public:
     bool mbAffirmZero;
     bool mbAutoStatusView;
     bool mbShowNotice;
-
+    bool mbShowHelp;
 
                             //! misa
     bool mMisaEn;

@@ -8,7 +8,7 @@
 #include "../../widget/scenewidget.h"
 
 #include "../../model/roboscenemodel.h"
-
+#include "itemhelp.h"
 namespace Ui {
 class roboScene;
 }
@@ -34,6 +34,8 @@ protected:
 
 Q_SIGNALS:
     void itemXActivated( mcModelObj* );
+    void signal_itemXHelp( eItemHelp helpId );
+
     void signalSceneChanged();
 
 protected Q_SLOTS:

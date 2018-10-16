@@ -51,6 +51,7 @@ void modelSysPref::rst()
     mbAffirmZero = true;
     mbAutoStatusView = true;
     mbShowNotice = true;
+    mbShowHelp = true;
 
     mDumpPath = QCoreApplication::applicationDirPath() + "/temp";
     mEventLogFile = "eventlog.dat";
@@ -186,6 +187,7 @@ int modelSysPref::save( const QString &str )
     writer.writeTextElement( "affirm_zero", QString::number( mbAffirmZero) );
     writer.writeTextElement( "auto_status", QString::number( mbAutoStatusView) );
     writer.writeTextElement( "show_notice", QString::number(mbShowNotice) );
+    writer.writeTextElement( "show_help", QString::number(mbShowHelp) );
 
     writer.writeTextElement( "language_id", QString::number(mLangIndex) );
     writer.writeTextElement( "style_id", QString::number(mStyleIndex) );
@@ -419,6 +421,9 @@ int modelSysPref::load( const QString &str )
 
                         else if ( reader.name() == "show_notice" )
                         { mbShowNotice = reader.readElementText().toInt() > 0; }
+
+                        else if ( reader.name() == "show_help" )
+                        { mbShowHelp = toBool( reader ); }
 
                         else if ( reader.name() == "language_id" )
                         { mLangIndex = reader.readElementText().toInt(); }

@@ -9,6 +9,7 @@
 #include "tpedit.h"
 
 #include "quicktool.h"
+#include "dlghelp.h"
 
 MainWindow::MainWindow(dpcObj *pObj, QWidget *parent) :
     QMainWindow(parent),
@@ -320,6 +321,9 @@ void MainWindow::setupMenu()
 
 void MainWindow::buildConnection()
 {
+    connect( this, SIGNAL(sig_pref_request_save()),
+             this, SLOT(slot_pref_request_save()) );
+
     connect( this, SIGNAL(sig_post_load_prj()),
              this, SLOT(slot_post_load_prj()) );
 
@@ -332,6 +336,10 @@ void MainWindow::buildConnection()
              SIGNAL(itemXActivated( mcModelObj *)),
              this,
              SLOT(on_itemXActivated( mcModelObj *)));
+    connect( m_pDeviceMgr,
+             SIGNAL(signal_itemXHelp(eItemHelp)),
+             this,
+             SLOT(slot_itemXHelp(eItemHelp)) );
 
     connect( m_pDeviceMgr,
              SIGNAL(signalModelUpdated(mcModelObj*)),
@@ -342,11 +350,19 @@ void MainWindow::buildConnection()
              SIGNAL(itemXActivated(mcModelObj*)),
              this,
              SLOT(on_itemXActivated(mcModelObj*)));
+    connect( m_pRoboMgr,
+             SIGNAL(signal_itemXHelp(eItemHelp)),
+             this,
+             SLOT(slot_itemXHelp(eItemHelp)) );
 
     connect( m_pScriptMgr,
              SIGNAL(itemXActivated(mcModelObj*)),
              this,
              SLOT(on_itemXActivated(mcModelObj*)));
+    connect( m_pScriptMgr,
+             SIGNAL(signal_itemXHelp(eItemHelp)),
+             this,
+             SLOT(slot_itemXHelp(eItemHelp)) );
 
     connect( m_pScriptMgr, SIGNAL(signal_scriptmgr_changed()),
              this, SLOT(slot_scriptmgr_changed()));
@@ -843,6 +859,39 @@ void MainWindow::slot_itemModelUpdated( mcModelObj *pObj )
             ((modelView*)ui->widget->widget(i))->updateScreen();
         }
     }
+}
+
+void MainWindow::slot_itemXHelp( eItemHelp hlp )
+{
+    if ( mMcModel.mSysPref.mbShowHelp )
+    {
+        DlgHelp help( this );
+
+        //! on help ic
+        switch( hlp )
+        {
+        case e_help_new_robot:
+            help.showHelp( "", (":/res/image/help/new robo.png") );
+            break;
+
+        default:
+            return;
+        }
+
+        help.exec();
+
+        mMcModel.mSysPref.mbShowHelp = help.showAgain();
+
+        emit sig_pref_request_save();
+    }
+    else
+    {}
+}
+
+void MainWindow::slot_pref_request_save()
+{
+    //! save pref
+    mMcModel.mSysPref.save( pref_file_name );
 }
 
 void MainWindow::on_signalReport( int err, const QString &str )

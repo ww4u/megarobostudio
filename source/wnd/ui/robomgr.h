@@ -8,6 +8,8 @@
 
 #include "../../model/mcmodelobj.h"
 
+#include "itemhelp.h"
+
 namespace Ui {
 class roboMgr;
 }
@@ -33,6 +35,7 @@ public:
 
 Q_SIGNALS:
     void itemXActivated( mcModelObj* );
+    void signal_itemXHelp( eItemHelp helpId );
 
 private slots:
     void on_listWidget_itemActivated(QListWidgetItem *item);

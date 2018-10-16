@@ -25,7 +25,7 @@
    <string>Preference</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../res/res.qrc">
+   <iconset>
     <normaloff>:/res/image/icon/205.png</normaloff>:/res/image/icon/205.png</iconset>
   </property>
   <property name="sizeGripEnabled">
@@ -50,7 +50,7 @@
       <enum>QTabWidget::North</enum>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab_2">
       <attribute name="title">
@@ -126,6 +126,29 @@
           <string/>
          </property>
          <layout class="QGridLayout" name="gridLayout_4">
+          <item row="3" column="0">
+           <widget class="QCheckBox" name="chkMaximize">
+            <property name="layoutDirection">
+             <enum>Qt::RightToLeft</enum>
+            </property>
+            <property name="text">
+             <string>Maxmize on Startup</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QCheckBox" name="chkAutoExpand">
+            <property name="layoutDirection">
+             <enum>Qt::RightToLeft</enum>
+            </property>
+            <property name="text">
+             <string>Auto Expand</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
           <item row="0" column="1">
            <widget class="QCheckBox" name="chkLoadLast">
             <property name="layoutDirection">
@@ -149,56 +172,6 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="0">
-           <widget class="QCheckBox" name="chkAutoExpand">
-            <property name="layoutDirection">
-             <enum>Qt::RightToLeft</enum>
-            </property>
-            <property name="text">
-             <string>Auto Expand</string>
-            </property>
-            <property name="checked">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0">
-           <widget class="QCheckBox" name="chkMaximize">
-            <property name="layoutDirection">
-             <enum>Qt::RightToLeft</enum>
-            </property>
-            <property name="text">
-             <string>Maxmize on Startup</string>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="0">
-           <widget class="QLabel" name="label_23">
-            <property name="text">
-             <string>Sample Tick(us)</string>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="0">
-           <widget class="QLabel" name="label_17">
-            <property name="text">
-             <string>Tempory Directory</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="2">
-           <spacer name="horizontalSpacer_5">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
           <item row="1" column="0">
            <widget class="QCheckBox" name="chkAutoLoadSet">
             <property name="layoutDirection">
@@ -209,10 +182,17 @@
             </property>
            </widget>
           </item>
-          <item row="5" column="1" colspan="2">
+          <item row="5" column="1" colspan="3">
            <widget class="QLineEdit" name="tempPath">
             <property name="readOnly">
              <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0">
+           <widget class="QLabel" name="label_23">
+            <property name="text">
+             <string>Sample Tick(us)</string>
             </property>
            </widget>
           </item>
@@ -226,6 +206,36 @@
             </property>
            </widget>
           </item>
+          <item row="0" column="3">
+           <spacer name="horizontalSpacer_5">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="5" column="0">
+           <widget class="QLabel" name="label_17">
+            <property name="text">
+             <string>Tempory Directory</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QCheckBox" name="chkShowNotice">
+            <property name="layoutDirection">
+             <enum>Qt::RightToLeft</enum>
+            </property>
+            <property name="text">
+             <string>Show Notice on Startup</string>
+            </property>
+           </widget>
+          </item>
           <item row="2" column="1">
            <widget class="QCheckBox" name="chkAutoStatus">
             <property name="layoutDirection">
@@ -236,7 +246,7 @@
             </property>
            </widget>
           </item>
-          <item row="4" column="1" colspan="2">
+          <item row="4" column="1" colspan="3">
            <widget class="QSpinBox" name="spinSampleTick">
             <property name="minimum">
              <number>100</number>
@@ -253,16 +263,16 @@
             </property>
            </widget>
           </item>
-          <item row="6" column="1" colspan="2">
+          <item row="6" column="1" colspan="3">
            <widget class="QLineEdit" name="edtEventLog"/>
           </item>
-          <item row="3" column="1">
-           <widget class="QCheckBox" name="chkShowNotice">
+          <item row="0" column="2">
+           <widget class="QCheckBox" name="chkHelp">
             <property name="layoutDirection">
              <enum>Qt::RightToLeft</enum>
             </property>
             <property name="text">
-             <string>Show Notice on Startup</string>
+             <string>Show Help</string>
             </property>
            </widget>
           </item>
@@ -475,7 +485,7 @@
                 <string>MRH-E</string>
                </property>
                <property name="icon">
-                <iconset resource="../res/res.qrc">
+                <iconset>
                  <normaloff>:/res/image/megacan.png</normaloff>:/res/image/megacan.png</iconset>
                </property>
               </item>
@@ -484,7 +494,7 @@
                 <string>USB-CAN II</string>
                </property>
                <property name="icon">
-                <iconset resource="../res/res.qrc">
+                <iconset>
                  <normaloff>:/res/image/can2.png</normaloff>:/res/image/can2.png</iconset>
                </property>
               </item>
@@ -493,7 +503,7 @@
                 <string>MRH-T</string>
                </property>
                <property name="icon">
-                <iconset resource="../res/res.qrc">
+                <iconset>
                  <normaloff>:/res/image/mrh-t.png</normaloff>:/res/image/mrh-t.png</iconset>
                </property>
               </item>
@@ -502,7 +512,7 @@
                 <string>MRH-U</string>
                </property>
                <property name="icon">
-                <iconset resource="../res/res.qrc">
+                <iconset>
                  <normaloff>:/res/image/miniusbcan.png</normaloff>:/res/image/miniusbcan.png</iconset>
                </property>
               </item>
@@ -521,7 +531,7 @@
                 <string>RS232</string>
                </property>
                <property name="icon">
-                <iconset resource="../res/res.qrc">
+                <iconset>
                  <normaloff>:/res/image/rs232.png</normaloff>:/res/image/rs232.png</iconset>
                </property>
               </item>
@@ -530,7 +540,7 @@
                 <string>USB</string>
                </property>
                <property name="icon">
-                <iconset resource="../res/res.qrc">
+                <iconset>
                  <normaloff>:/res/image/usb.png</normaloff>:/res/image/usb.png</iconset>
                </property>
               </item>
@@ -814,7 +824,7 @@
                <string/>
               </property>
               <property name="pixmap">
-               <pixmap resource="../res/res.qrc">:/res/image/megacan.png</pixmap>
+               <pixmap>:/res/image/megacan.png</pixmap>
               </property>
               <property name="scaledContents">
                <bool>true</bool>
@@ -1851,9 +1861,7 @@ p, li { white-space: pre-wrap; }
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources>
-  <include location="../res/res.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>buttonBox</sender>

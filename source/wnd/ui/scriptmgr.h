@@ -8,6 +8,7 @@
 #include "../../model/roboscenemodel.h"
 
 #include "../../model/megatablemodel.h"
+#include "itemhelp.h"
 
 namespace Ui {
 class scriptMgr;
@@ -86,6 +87,8 @@ protected:
 
 Q_SIGNALS:
     void itemXActivated( mcModelObj* );
+    void signal_itemXHelp( eItemHelp helpId );
+
     void signal_scriptmgr_changed();
     void signal_prj_edited();
 

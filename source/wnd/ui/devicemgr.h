@@ -10,6 +10,7 @@
 #include "../../model/mcmodelobj.h"
 #include "../../com/drivercontroller.h"
 #include "statediagram.h"
+#include "itemhelp.h"
 namespace Ui {
 class deviceMgr;
 }
@@ -39,6 +40,8 @@ protected:
 
 Q_SIGNALS:
     void itemXActivated( mcModelObj* );
+    void signal_itemXHelp( eItemHelp helpId );
+
     void signalModelUpdated( mcModelObj* );
 
     void signalReport( int errCode, const QString &expr="" );

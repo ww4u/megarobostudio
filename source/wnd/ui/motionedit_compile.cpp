@@ -5,7 +5,10 @@ int motionEdit::compileTrace()
 {
     int ret;
 
-    ret = checkRobot();logDbg();
+    //! compile
+    emit sigSaveRequest( this );
+
+    ret = checkRobot();
     if ( ret != 0 )
     { return ret; }
 

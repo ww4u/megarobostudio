@@ -346,6 +346,9 @@ int pvtEdit::buildLine()
 {
     int ret;
 
+                        //! compile
+    emit sigSaveRequest( this );
+
     gcLine();           //! 0
 
     ret = checkLine();  //! 1

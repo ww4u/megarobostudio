@@ -123,6 +123,8 @@ Q_SIGNALS:
 
     void sig_com_send( const QByteArray &str );
 
+    void sig_pref_request_save();
+
 protected Q_SLOTS:
     void slot_downloadbar_clicked();
 
@@ -131,6 +133,10 @@ protected Q_SLOTS:
 
     void on_itemXActivated( mcModelObj *pObj );
     void slot_itemModelUpdated( mcModelObj *pObj );
+
+    void slot_itemXHelp( eItemHelp hlp );
+
+    void slot_pref_request_save();
 
     void on_signalReport( int err, const QString &str );
     void slot_action_plugin( QAction *pAction );

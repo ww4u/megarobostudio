@@ -15,7 +15,9 @@ int RawRobo::stop( const tpvRegion &region  )
 
 int RawRobo::setLoop( int n, const tpvRegion &region )
 {
-    Q_ASSERT( n > 0 );
+//    Q_ASSERT( n > 0 );
+    if ( n <= 0 )
+    { return -1; }
 
     MegaDevice::deviceMRQ *pMrq;
     int ax;

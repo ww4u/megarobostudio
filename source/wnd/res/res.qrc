@@ -1,6 +1,8 @@
 <RCC>
     <qresource prefix="/res">
 
+<file>image/help/new robo.png</file>
+
         <file>image/can2.png</file>
         <file>image/megacan.png</file>
         <file>image/mrh-t.png</file>

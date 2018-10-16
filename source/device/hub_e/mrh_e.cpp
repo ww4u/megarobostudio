@@ -89,6 +89,10 @@ int Mrh_e::write( byte *pData,
         len = pos + 2;
     }
 
+    //! flush before
+    DeviceId localId = m_pBus->deviceId();
+    m_pBus->flush( localId );
+
     int ret = m_pBus->write( m_pBuf, len );
 
     return ret;

@@ -9,7 +9,7 @@ win32 {
 INCLUDEPATH += "D:/Program Files (x86)/IAR Systems/Embedded Workbench 7.5/arm/CMSIS/Include"
 }
 unix{
-INCLUDEPATH += "/home/w/work/megarobostudio/arm/include"
+INCLUDEPATH += "/home/w/work/arm/include"
 }
 
 macx{

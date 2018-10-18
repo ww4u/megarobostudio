@@ -1,10 +1,15 @@
 #include "receivecache.h"
 #include "../../source/sys/sysapi.h"
+
+#include "../../device/vrobot.h"
+#include "../../inst/instmgr.h"
+
 frameEvent::frameEvent()
 {
     mEventId = event_none;
     mbEn = false;
     mRepeatAble = true;
+    mAckAble = false;
 
     mPatternLen = 0;
     for ( int i = 0; i < sizeof_array( mPatterns); i++ )
@@ -31,6 +36,11 @@ void frameEvent::setRepeatAble( bool b )
 { mRepeatAble = b; }
 bool frameEvent::repeatAble()
 { return mRepeatAble; }
+
+void frameEvent::setAckAble( bool b )
+{ mAckAble = b; }
+bool frameEvent::ackAble()
+{ return mAckAble; }
 
 void frameEvent::setMainSubCode( int mainCode,
                                  int subCode )
@@ -92,6 +102,19 @@ bool frameEvent::match( frameData &ary )
     }while( 0 );
 
     return false;
+}
+
+int frameEvent::ackEvent( MegaDevice::IBus *pBus,
+                          MegaDevice::DeviceId &did,
+                          frameData &data )
+{
+    if ( NULL == pBus )
+    { return -1; }
+
+    //! write back frame data
+    return pBus->write( did, (byte*)data.data(), data.size() );
+//    logDbg()<<size();
+//    return 0;
 }
 
 //! -- frame data
@@ -717,6 +740,27 @@ bool receiveCache::detectEvent( frameData &ary )
         //! \todo check repeat events
         if ( pEvt->getEnable() && pEvt->match(ary) )
         {
+            do
+            {
+                if ( pEvt->ackAble() )
+                {}
+                else
+                { break; }
+
+                //! inst
+                MegaDevice::InstMgr *pMgr = MegaDevice::InstMgr::proxy();
+                if ( NULL == pMgr )
+                { break; }
+
+                VRobot * pRobo = pMgr->findRobotBySendId( ary.frameId(), m_pBus->devId(), 0 );
+                if ( NULL == pRobo )
+                { break; }
+
+                MegaDevice::DeviceId deviceId = pRobo->getDeviceId();
+                pEvt->ackEvent( m_pBus, deviceId, ary );
+
+            }while( 0 );
+
             emit sig_event( pEvt->getId(), ary );
 
             receiveCache::accEvent();

@@ -27,7 +27,8 @@ SOURCES = \
           sinanju.c \
           h2.c \
           mimgr.c \
-          test.cpp
+#          test.cpp \
+          idn.cpp
 		  
 HEADERS = visa_adapter.h \
     megarobo.h \

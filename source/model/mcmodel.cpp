@@ -31,8 +31,6 @@ void mcModel::init()
     m_pInstMgr = MegaDevice::InstMgr::proxy();
 
     Q_ASSERT( NULL != m_pInstMgr );
-
-
 }
 void mcModel::deinit()
 {
@@ -58,7 +56,7 @@ void mcModel::resetCommunicate()
     if ( mSysPref.mMisaEn )
     {
         Q_ASSERT( NULL != m_pInstMgr );
-        if ( m_pInstMgr->start( mSysPref.mMisaSocket ) )
+        if ( m_pInstMgr->start( mSysPref.mMisaSocket, mSysPref.mMisaPortCnt ) )
         { sysLog( QObject::tr("port"), QString::number( mSysPref.mMisaSocket ), QObject::tr("open success") ); }
         else
         { sysError( QObject::tr("port"), QString::number( mSysPref.mMisaSocket ), QObject::tr("open fail") ); }

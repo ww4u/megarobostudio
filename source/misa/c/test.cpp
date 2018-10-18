@@ -156,6 +156,17 @@ static int TestMgr()
     return 0;
 }
 
+void testIdn()
+{
+    ViSession vi = miOpen( "mrx-t4");
+
+    char recvStr[512];
+    robo_getIdn( vi, recvStr );
+    printf("idn:%s\n", recvStr );
+
+    miClose( vi );
+}
+
 int main()
 {
 //    testPara();

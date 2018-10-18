@@ -57,7 +57,7 @@ int deviceMRV::tpBeginSend( int ax )
     mTpIndexes[ ax ] = 0;
 
     int ret;
-    checked_call( setMOTION_STATEREPORT( ax, MRV_MOTION_STATEREPORT_QUERY ) );
+//    checked_call( setMOTION_STATEREPORT( ax, MRV_MOTION_STATEREPORT_QUERY ) );
     checked_call( setMOTION_SWITCH( ax, MRV_MOTION_SWITCH_RESET, MRV_MOTION_SWITCH_1_MAIN ) );
 
     checked_call( setPVT_RESET( ax) );

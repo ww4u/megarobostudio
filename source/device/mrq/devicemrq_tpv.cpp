@@ -120,7 +120,7 @@ int deviceMRQ::beginTpvDownload( const tpvRegion &region )
     //! \errant exec mode to cycle
     checked_call( setMOTIONPLAN_EXECUTEMODE( pvt_page_p,
                                              MRQ_MOTIONPLAN_EXECUTEMODE_1_CYCLE) );
-    checked_call( setMOTION_STATEREPORT( ax, MRQ_MOTION_STATEREPORT_QUERY ) );
+//    checked_call( setMOTION_STATEREPORT( ax, MRQ_MOTION_STATEREPORT_QUERY ) );
 
     setTpvIndex( pvt_region_p, 0 );
 

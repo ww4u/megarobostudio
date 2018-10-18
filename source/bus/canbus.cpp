@@ -15,6 +15,11 @@ namespace MegaDevice {
 #define check_handle()      if ( mHandle <= 0 )\
                             { return -1; }
 
+//#define REPORT_MODE     MRQ_MOTION_STATEREPORT_ACTIVE
+//                        MRQ_MOTION_STATEREPORT_QUERY
+
+#define REPORT_MODE         ( sysPara()->mbStateInterrupt ? MRQ_MOTION_STATEREPORT_ACTIVE : MRQ_MOTION_STATEREPORT_QUERY )
+
 QString CANBus::_visaRsrc;
 
 CANBus::CANBus()
@@ -750,7 +755,6 @@ int CANBus::collectHash( )
 
     Q_ASSERT( m_pRecvCache != NULL );
     m_pRecvCache->clear();
-logDbg();
 
     //! 0. can intf
     DeviceId broadId( CAN_BROAD_ID );
@@ -760,7 +764,7 @@ logDbg();
     { return ret; }
 
     //! 1. close report
-    byte bufReport[]={ MRQ_mc_MOTION, MRQ_sc_MOTION_STATEREPORT, CAN_BROAD_CHAN, MRQ_MOTION_STATEREPORT_QUERY };
+    byte bufReport[]={ MRQ_mc_MOTION, MRQ_sc_MOTION_STATEREPORT, CAN_BROAD_CHAN, REPORT_MODE };
     ret = doWrite( broadId, bufReport, sizeof(bufReport) );
     if ( ret != 0 )
     { return ret; }
@@ -839,7 +843,7 @@ int CANBus::collectHash( QMap< int, quint32 > &sendHashMap )
 
     Q_ASSERT( m_pRecvCache != NULL );
     m_pRecvCache->clear();
-logDbg();
+
     //! 0. can intf
     DeviceId broadId( CAN_BROAD_ID );
     byte buf0[] = { MRQ_mc_LINK, MRQ_sc_LINK_INTFC, mLinkType };
@@ -848,7 +852,7 @@ logDbg();
     { return ret; }
 
     //! 1. close report
-    byte bufReport[]={ MRQ_mc_MOTION, MRQ_sc_MOTION_STATEREPORT, CAN_BROAD_CHAN, MRQ_MOTION_STATEREPORT_QUERY };
+    byte bufReport[]={ MRQ_mc_MOTION, MRQ_sc_MOTION_STATEREPORT, CAN_BROAD_CHAN, REPORT_MODE };
     ret = doWrite( broadId, bufReport, sizeof(bufReport) );
     if ( ret != 0 )
     { return ret; }

@@ -596,6 +596,7 @@ void MainWindow::setupService()
     frameEvent event;
     event.setEnable( true );
     event.setRepeatAble( false );
+    event.setAckAble( true );
     event.setId( event_status );
     event.setMainSubCode( MRQ_mc_MOTION, MRQ_sc_MOTION_STATE_Q );
     receiveCache::setFrameEventEnable( event, true );

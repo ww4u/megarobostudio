@@ -47,6 +47,9 @@ public:
     void setRepeatAble( bool b );
     bool repeatAble();
 
+    void setAckAble( bool b );
+    bool ackAble();
+
     void setMainSubCode( int mainCode, int subCode );
     void setMainSubCode( int mainCode,
                          int subCode,
@@ -54,10 +57,15 @@ public:
                          int pattLen );
 
     bool match( frameData &ary );
+
+    int ackEvent( MegaDevice::IBus *pBus,
+                  MegaDevice::DeviceId &did,
+                  frameData &data );
 protected:
     eventId mEventId;
     bool mbEn;
     bool mRepeatAble;
+    bool mAckAble;
 
     int mPatterns[6];
     int mPatternLen;
@@ -207,6 +215,7 @@ protected:
     QMutex mCacheMutex;
 
     byte mFrameBuf[8];
+
 };
 
 

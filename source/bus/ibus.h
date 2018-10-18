@@ -208,6 +208,9 @@ public :
         int write( byte *pData, int len );
         int read( byte *pOut, int len, int tmo, int &retLen );
 
+        //! write buffer
+        int write( DeviceId &nodeId, byte *pData, int len );
+
 		//! write
         //! no para
         int write( DeviceId &id, byte mainCode,

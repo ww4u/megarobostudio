@@ -73,10 +73,12 @@ public:
     bool mbAutoStatusView;
     bool mbShowNotice;
     bool mbShowHelp;
+    bool mbStateInterrupt;
 
                             //! misa
     bool mMisaEn;
     quint32 mMisaSocket;
+    int mMisaPortCnt;
 
     bool mComEn;
     QString mComName;

@@ -236,9 +236,16 @@ void IBus::unlockQuery()
 //}
 
 int IBus::write( byte *pData, int len )
-{ return doWrite(pData, len ); }
+{ return doWrite( pData, len ); }
 int IBus::read( byte *pOut, int len, int tmo, int &retLen )
 { return doRead( pOut, len, tmo, retLen );  }
+
+//! write
+//! buffer
+int IBus::write( DeviceId &nodeId, byte *pData, int len )
+{
+    return doWrite( nodeId, pData, len );
+}
 
 //! write
 //! no para

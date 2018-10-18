@@ -52,6 +52,7 @@ void modelSysPref::rst()
     mbAutoStatusView = true;
     mbShowNotice = true;
     mbShowHelp = true;
+    mbStateInterrupt = false;
 
     mDumpPath = QCoreApplication::applicationDirPath() + "/temp";
     mEventLogFile = "eventlog.dat";
@@ -67,6 +68,7 @@ void modelSysPref::rst()
     //! misa
     mMisaEn = true;
     mMisaSocket = 1234;
+    mMisaPortCnt = 16;
 
     mComEn = true;
     mComName = "COM6";
@@ -188,6 +190,8 @@ int modelSysPref::save( const QString &str )
     writer.writeTextElement( "auto_status", QString::number( mbAutoStatusView) );
     writer.writeTextElement( "show_notice", QString::number(mbShowNotice) );
     writer.writeTextElement( "show_help", QString::number(mbShowHelp) );
+    writer.writeTextElement( "state_interrupt", QString::number(mbStateInterrupt) );
+
 
     writer.writeTextElement( "language_id", QString::number(mLangIndex) );
     writer.writeTextElement( "style_id", QString::number(mStyleIndex) );
@@ -217,6 +221,7 @@ int modelSysPref::save( const QString &str )
 
     writer.writeTextElement( "enable", QString::number( mMisaEn ) );
     writer.writeTextElement( "socket", QString::number( mMisaSocket ) );
+    writer.writeTextElement( "port_cnt", QString::number( mMisaPortCnt ) );
 
     writer.writeTextElement( "com_enable", QString::number( mComEn ) );
     writer.writeTextElement( "com_port", ( mComName ) );
@@ -425,6 +430,9 @@ int modelSysPref::load( const QString &str )
                         else if ( reader.name() == "show_help" )
                         { mbShowHelp = toBool( reader ); }
 
+                        else if ( reader.name() == "state_interrupt" )
+                        { mbStateInterrupt = toBool( reader ); }
+
                         else if ( reader.name() == "language_id" )
                         { mLangIndex = reader.readElementText().toInt(); }
                         else if ( reader.name() == "style_id" )
@@ -455,6 +463,8 @@ int modelSysPref::load( const QString &str )
                         { mMisaEn = reader.readElementText().toInt() > 0; }
                         else if ( reader.name() == "socket" )
                         { mMisaSocket = reader.readElementText().toInt(); }
+                        else if ( reader.name() == "port_cnt" )
+                        { mMisaPortCnt = reader.readElementText().toInt(); }
 
                         else if ( reader.name() == "com_enable" )
                         { mComEn = reader.readElementText().toInt() > 0; }

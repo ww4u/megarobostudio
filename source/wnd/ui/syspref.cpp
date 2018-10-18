@@ -191,6 +191,7 @@ void sysPref::updateUi()
     ui->chkMaximize->setChecked( m_pPref->mbMaximizeStartup );
     ui->chkShowNotice->setChecked( m_pPref->mbShowNotice );
     ui->chkHelp->setChecked( m_pPref->mbShowHelp );
+    ui->chkStateInterrupt->setChecked( m_pPref->mbStateInterrupt );
 
     ui->chkLoadLast->setChecked( m_pPref->mbAutoLoadPrj );
     ui->chkAutoZeroAffirm->setChecked( m_pPref->mbAffirmZero );
@@ -211,13 +212,14 @@ void sysPref::updateUi()
 
     //! misa
     ui->labelHostName->setText( QHostInfo::localHostName() );
-    ui->chkMisaEn->setChecked( m_pPref->mMisaEn );
+    ui->gpSocket->setChecked( m_pPref->mMisaEn );
     ui->spinMisaSocket->setValue( m_pPref->mMisaSocket );
+    ui->spinServerCnt->setValue( m_pPref->mMisaPortCnt );
 
-    ui->chkComOnOff->setChecked( m_pPref->mComEn );
+    ui->gpComPort->setChecked( m_pPref->mComEn );
     ui->cmbComPort->setCurrentText( m_pPref->mComName );
 
-    ui->edtRemotePath->setText( m_pPref->mRemoteDirPath );
+    ui->edtRemotePath->setPlainText( m_pPref->mRemoteDirPath );
 
     ui->tempPath->setText( m_pPref->mDumpPath );
     ui->edtEventLog->setText( m_pPref->mEventLogFile );
@@ -294,6 +296,7 @@ void sysPref::updateData()
 
     m_pPref->mbShowNotice = ui->chkShowNotice->isChecked();
     m_pPref->mbShowHelp = ui->chkHelp->isChecked();
+    m_pPref->mbStateInterrupt = ui->chkStateInterrupt->isChecked();
 
     m_pPref->mbAutoLoadPrj = ui->chkLoadLast->isChecked();
     m_pPref->mbAffirmZero = ui->chkAutoZeroAffirm->isChecked();
@@ -311,13 +314,14 @@ void sysPref::updateData()
     m_pPref->mDbMeta.mPassword = ui->edtPassword->text();
 
     //! misa
-    m_pPref->mMisaEn = ui->chkMisaEn->isChecked();
+    m_pPref->mMisaEn = ui->gpSocket->isChecked();
     m_pPref->mMisaSocket = ui->spinMisaSocket->value();
+    m_pPref->mMisaPortCnt = ui->spinServerCnt->value();
 
-    m_pPref->mComEn = ui->chkComOnOff->isChecked();
+    m_pPref->mComEn = ui->gpComPort->isChecked();
     m_pPref->mComName = ui->cmbComPort->currentText();
 
-    m_pPref->mRemoteDirPath = ui->edtRemotePath->text();
+    m_pPref->mRemoteDirPath = ui->edtRemotePath->toPlainText();
 
     m_pPref->mEventLogFile = ui->edtEventLog->text();
 

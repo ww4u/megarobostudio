@@ -1,6 +1,7 @@
 TEMPLATE=lib
 #QT       = gui
 CONFIG += static
+QT += network
 
 #LIBS += -L$$PWD/../../lib/ -lMegaCanDevice
 

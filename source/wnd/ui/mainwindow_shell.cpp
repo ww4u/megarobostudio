@@ -145,6 +145,105 @@ static scpi_result_t _scpi_to( scpi_t *context )
     return SCPI_RES_OK;
 }
 
+//! script, args..
+static scpi_result_t _scpi_rpc( scpi_t *context )
+{
+    DEF_LOCAL_VAR();
+
+    DEF_MGR();
+
+    scpi_result_t ret;
+
+    if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
+    { scpi_ret( SCPI_RES_ERR ); }logDbg()<<strLen<<pLocalStr;
+
+    QByteArray ary( pLocalStr, strLen );
+    QString content = ary;
+
+    //! call
+    if ( LOCAL_MGR()->rpcMgr()->rpc( content ) )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    return SCPI_RES_OK;
+}
+//! script, args..
+static scpi_result_t _scpi_rpq( scpi_t *context )
+{
+    DEF_LOCAL_VAR();
+
+    DEF_MGR();
+
+    scpi_result_t ret;
+
+    if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
+    { scpi_ret( SCPI_RES_ERR ); }logDbg()<<strLen<<pLocalStr;
+
+    QByteArray ary( pLocalStr, strLen );
+    QString content = ary;
+
+    QString strq;
+    strq = LOCAL_MGR()->rpcMgr()->rpq( content );
+    SCPI_ResultText( context, strq.toLatin1().data() );
+
+    return SCPI_RES_OK;
+}
+//! script, args..
+static scpi_result_t _scpi_rpk( scpi_t *context )
+{
+    DEF_LOCAL_VAR();
+
+    DEF_MGR();
+
+    scpi_result_t ret;
+
+    if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
+    { scpi_ret( SCPI_RES_ERR ); }logDbg()<<strLen<<pLocalStr;
+
+    QByteArray ary( pLocalStr, strLen );
+    QString content = ary;
+
+    //! kill
+    if ( 0 != LOCAL_MGR()->rpcMgr()->rpk( content ) )
+    { scpi_ret( SCPI_RES_ERR ); }
+    else
+    {}
+
+    return SCPI_RES_OK;
+}
+
+
+static scpi_result_t _scpi_rpgc( scpi_t *context )
+{
+    DEF_LOCAL_VAR();
+
+    DEF_MGR();
+
+    LOCAL_MGR()->rpcMgr()->rpgc();
+
+    return SCPI_RES_OK;
+}
+
+
+//!
+static scpi_result_t _scpi_rpls( scpi_t *context )
+{
+    DEF_LOCAL_VAR();
+
+    DEF_MGR();
+
+    QStringList lsList;
+
+    lsList = LOCAL_MGR()->rpcMgr()->rpls();
+
+    QString content;
+    content = lsList.join('\n');
+
+    //! content
+    SCPI_ResultText( context, content.toLatin1().data() );
+
+    return SCPI_RES_OK;
+}
+
 static scpi_command_t _mrq_scpi_cmds[]=
 {
 
@@ -163,6 +262,12 @@ static scpi_command_t _mrq_scpi_cmds[]=
     CMD_ITEM( "DEVICE:RESET", _scpi_device_reset ),
 
     CMD_ITEM( "TO", _scpi_to ),
+
+    CMD_ITEM( "rpc", _scpi_rpc ),
+    CMD_ITEM( "rpq", _scpi_rpq ),
+    CMD_ITEM( "rpk", _scpi_rpk ),
+    CMD_ITEM( "rpls", _scpi_rpls ),
+    CMD_ITEM( "rpgc", _scpi_rpgc ),
 
 //    CMD_ITEM( "*LRN", _scpi_lrn ),      //! setupfile
 //    CMD_ITEM( "HRST", _scpi_hrst ),

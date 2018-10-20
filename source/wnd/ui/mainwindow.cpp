@@ -6,6 +6,7 @@
 #include "../../sys/sysapi.h"
 #include "../../bus/filebus.h"
 
+
 #include "tpedit.h"
 
 #include "quicktool.h"
@@ -64,6 +65,9 @@ deviceMgr *MainWindow::getDeviceMgr()
 
 mcModel *  MainWindow::getMcModel()
 { return &mMcModel; }
+
+RpcManager *MainWindow::rpcMgr()
+{ return &mRpcMgr; }
 
 void MainWindow::init()
 {
@@ -1659,6 +1663,11 @@ void MainWindow::slot_com_receive( const QString &str )
     }
 }
 
+void MainWindow::slot_rpc_script( const QString &str )
+{
+
+}
+
 void MainWindow::slot_pref_changed()
 {
     Q_ASSERT( NULL != m_pComThread );
@@ -1690,3 +1699,5 @@ void MainWindow::slot_process_exit( int code, QProcess::ExitStatus stat )
     ui->actionTerminate->setEnabled( false );
     ui->actionRun_Script->setEnabled( true );
 }
+
+

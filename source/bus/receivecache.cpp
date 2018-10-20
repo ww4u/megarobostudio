@@ -742,7 +742,7 @@ bool receiveCache::detectEvent( frameData &ary )
         {
             do
             {
-                if ( pEvt->ackAble() )
+                if ( pEvt->ackAble() && sysPara()->mbStateInterrupt )
                 {}
                 else
                 { break; }

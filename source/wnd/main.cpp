@@ -19,6 +19,7 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
+#ifdef ARCH_32
     //! single exist
     QSharedMemory shareMem("share_megarobo_studio");
     if ( shareMem.create(64) )
@@ -30,6 +31,7 @@ int main(int argc, char *argv[])
                                   QObject::tr("MEGAROBO Studio is in running!") );
         return 0;
     }
+#endif
 
     //! --meta type
     //! \note register at first
@@ -55,7 +57,6 @@ int main(int argc, char *argv[])
     modelSysPref pref;
     QTranslator translator;
     {
-
         pref.load( pref_file_name );
         if ( pref.mLangIndex != 0 )
         {

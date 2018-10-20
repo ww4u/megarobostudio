@@ -39,7 +39,7 @@ void LRButton::on_btnLeft_released()
 {
     emit signal_step( -step(), false );
 }
-
+#include "../../include/mydebug.h"
 void LRButton::on_btnRight_pressed()
 {
     emit signal_step( step(), true );

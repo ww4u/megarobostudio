@@ -80,6 +80,7 @@ INCLUDEPATH += "C:/Program Files (x86)/IVI Foundation/VISA/WinNT/Include"
 LIBS += -L"C:/Program Files (x86)/IVI Foundation/VISA/WinNT/lib/msc"
 LIBS += -lvisa32
 DEFINES += NI_VISA
+DEFINES += ARCH_32
 
 }
 
@@ -308,7 +309,10 @@ SOURCES += \
     ../../widget/mprogressbar.cpp \
     ../ui/coordoption.cpp \
     ../ui/pagecontrol.cpp \
-    ../ui/dlghelp.cpp
+    ../ui/dlghelp.cpp \
+    ../../app/rpcmanager.cpp \
+    ../../app/rpcworker.cpp \
+    ../ui/dlgapp.cpp
 
 
 HEADERS += \
@@ -486,7 +490,10 @@ HEADERS += \
     ../ui/coordoption.h \
     ../ui/pagecontrol.h \
     ../ui/itemhelp.h \
-    ../ui/dlghelp.h
+    ../ui/dlghelp.h \
+    ../../app/rpcmanager.h \
+    ../../app/rpcworker.h \
+    ../ui/dlgapp.h
 
 FORMS += \
         ../ui/mainwindow.ui \
@@ -593,10 +600,11 @@ FORMS += \
     ../ui/rotmat3_3.ui \
     ../ui/coordoption.ui \
     ../ui/pagecontrol.ui \
-    ../ui/dlghelp.ui
+    ../ui/dlghelp.ui \
+    ../ui/dlgapp.ui
 
 
-#RESOURCES = ../res/res.qrc
+RESOURCES = ../res/res.qrc
 
 RC_ICONS = ../res/image/logo/megarobo.ico
 

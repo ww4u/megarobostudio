@@ -50,8 +50,9 @@ static scpi_result_t _transfer_recv( scpi_t * context )
 {
     int retLen;
     byte *pBuf;
+//    logDbg();
     pBuf = _OBJ->recv( retLen );
-
+//    logDbg()<<retLen;
     if ( retLen > 0 )
     {
         if ( retLen > 1 && pBuf[retLen-1] == '\0' )
@@ -66,7 +67,9 @@ static scpi_result_t _transfer_recv( scpi_t * context )
         return SCPI_RES_OK;
     }
     else
-    { return SCPI_RES_ERR; }
+    {
+        return SCPI_RES_ERR;
+    }
 }
 
 static scpi_result_t transfer_request( scpi_t * context,
@@ -92,7 +95,9 @@ static scpi_result_t transfer_request( scpi_t * context,
 
 static scpi_result_t transfer_query( scpi_t * context,
                                      bool bTrim,
-                                     byte v)
+                                     byte v,
+                                     char *failStr = NULL
+                                     )
 {
     scpi_result_t ret;
 
@@ -107,6 +112,10 @@ static scpi_result_t transfer_query( scpi_t * context,
                            v );
 
     ret = _transfer_recv( context );
+    if ( ret != SCPI_RES_OK && failStr != NULL )
+    {
+        SCPI_ResultCharacters( context, (char*)failStr, strlen(failStr) );
+    }
 
     receiveCache::unlock();
 
@@ -158,6 +167,13 @@ static scpi_result_t _scpi_idn( scpi_t * context )
     return transfer_query( context, false, 0 );\
 }
 
+#define make_r_api_negate_fail( api, failStr ) static scpi_result_t api( scpi_t * context )\
+{\
+    DEF_LOCAL_VAR();\
+\
+    return transfer_query( context, false, 0, failStr );\
+}
+
 //! trim
 #define make_trim_w_api( api, t ) static scpi_result_t api( scpi_t * context )\
 {\
@@ -175,7 +191,7 @@ static scpi_result_t _scpi_idn( scpi_t * context )
 }
 
 make_w_api( _scpi_project_write )
-make_r_api( _scpi_project_xread )
+make_r_api_negate_fail( _scpi_project_xread, "U" )
 
 
 //! write "adddfa,adfsdf,fafa"

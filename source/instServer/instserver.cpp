@@ -168,7 +168,7 @@ bool instServer::start( quint32 port, int portCnt )
     {
         pServer = new QTcpServer();
         if ( NULL == pServer )
-        { return -1; }
+        { return false; }
 //qDebug()<<__FUNCTION__<<__LINE__<<i<<(quint32)pServer;
         mServerList.append( pServer );
 
@@ -176,7 +176,7 @@ bool instServer::start( quint32 port, int portCnt )
         if ( bRet )
         {}
         else
-        { return -2; }
+        { return false; }
 
         connect( pServer,
                  SIGNAL( newConnection()),
@@ -189,7 +189,7 @@ bool instServer::start( quint32 port, int portCnt )
 
     }
 
-    return 0;
+    return true;
 }
 void instServer::stop()
 {

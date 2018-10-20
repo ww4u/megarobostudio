@@ -16,9 +16,9 @@ int deviceMRQ::run( const tpvRegion &region )
 
 int deviceMRQ::stop( const tpvRegion &region )
 {
-    setMOTION_SWITCH(   region.axes(),
-                        MRQ_MOTION_SWITCH_STOP,
-                        (MRQ_MOTION_SWITCH_1)region.page() );
+    setMOTION_SWITCH(  region.axes(),
+                       MRQ_MOTION_SWITCH_STOP,
+                       (MRQ_MOTION_SWITCH_1)region.page() );
 
     requestMotionState( region );
 
@@ -69,7 +69,7 @@ void deviceMRQ::setStatus( int stat, const tpvRegion &region, frameData &data  )
         lpc( ch )->postMsg( (eRoboMsg)mrq_msg_running, region, data.timeStamp() ) ;
     }
     else if ( stat == MRQ_MOTION_STATE_2_ERROR )
-    {
+    { sysError( "error", __FUNCTION__, QString::number( region.axes() ), QString::number( region.page() ) );
         lpc( ch )->postMsg( (eRoboMsg)mrq_msg_idle, region, data.timeStamp() ) ;
     }
     else

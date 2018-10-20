@@ -4,6 +4,9 @@
 #include "../../com/comassist.h"
 #include "motionwizard.h"
 
+#include "dlgapp.h"
+#include "deviceconsole.h"
+
 void  MainWindow::doLoadPrj( const QString &path,
                              const QString &name )
 {
@@ -425,3 +428,30 @@ void MainWindow::on_actionTerminate_triggered()
     }
 }
 
+void MainWindow::on_actionConsole_triggered()
+{
+    deviceConsole *pConsole;
+
+    pConsole = new deviceConsole(this);
+    if ( NULL == pConsole )
+    { return; }
+
+    connect( m_pDeviceMgr, SIGNAL(signal_instmgr_changed(bool,MegaDevice::InstMgr*)),
+             pConsole, SLOT(slot_device_changed()));
+
+    pConsole->setMrq( true );
+    pConsole->setClassName( "local" );
+
+    //! title name
+    pConsole->setWindowTitle( "localhost" );
+    pConsole->setShell( this );
+
+    pConsole->show();
+}
+
+void MainWindow::on_actionApp_triggered()
+{
+    DlgApp appWnd( this );
+
+    appWnd.exec();
+}

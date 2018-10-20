@@ -63,6 +63,7 @@
 #include "../../app/systimer.h"
 
 #include "../../app/comthread.h"
+#include "../../app/rpcmanager.h"
 
 namespace Ui {
 class MainWindow;
@@ -84,6 +85,7 @@ protected:
 public:
     deviceMgr *getDeviceMgr();
     mcModel *  getMcModel();
+    RpcManager *rpcMgr();
 
 protected:
     void init();
@@ -175,6 +177,8 @@ protected Q_SLOTS:
     void slot_download_cancel( const QString &name, int id );
 public Q_SLOTS:
     void slot_com_receive( const QString &str );
+    void slot_rpc_script( const QString &str );
+
 protected Q_SLOTS:
     void slot_pref_changed();
 
@@ -215,7 +219,6 @@ Q_SIGNALS:
     void itemXActivated( mcModelObj* );
 
 public slots:
-
     void on_actionProject_triggered();
     void on_actionOpen_Prj_triggered();
     void on_actionSave_Prj_triggered();
@@ -277,6 +280,10 @@ private slots:
     void on_actionRun_Script_triggered();
 
     void on_actionTerminate_triggered();
+
+    void on_actionConsole_triggered();
+
+    void on_actionApp_triggered();
 
 private:
     //! uis
@@ -340,6 +347,8 @@ private:
     //! Process
     QProcess *m_pProcess;
     QString mCurrentScript;
+
+    RpcManager mRpcMgr;
 };
 
 #endif // MAINWINDOW_H

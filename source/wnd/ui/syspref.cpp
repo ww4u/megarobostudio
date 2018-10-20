@@ -76,11 +76,13 @@ sysPref::sysPref(QWidget *parent) :
 #endif
 
 #ifdef ARCH_LINUX
+    //! only -e
     ui->cmbPort->setCurrentIndex( 0 );
     ui->cmbPort->setEnabled( false );
 #endif
 
 #ifdef ARCH_RASPBERRY
+    //! only mcp
     ui->cmbPort->setCurrentIndex( e_can_mcp );
     ui->cmbPort->setEnabled( false );
 
@@ -108,25 +110,23 @@ void sysPref::setPref( modelSysPref *pPref )
 
 void sysPref::updateUi()
 {
+    //! stick the item
+#ifdef ARCH_LINUX
+    m_pPref->mPort = e_can_mrh_e;
+#endif
+
+#ifdef ARCH_RASPBERRY
+    m_pPref->mPort = e_can_mcp;
+#endif
+
     //! index
     int index = ui->cmbPort->findData( m_pPref->mPort );
     if ( index < 0 )
     { index = 0; }
     ui->cmbPort->setCurrentIndex( index );
 
-#ifdef ARCH_32
+    //! changed
     on_cmbPort_currentIndexChanged( ui->cmbPort->currentText() );
-#else
-#endif
-
-#ifdef ARCH_RASPBERRY
-    ui->cmbPort->setEnabled( false );
-
-    ui->spinDeviceCount->setVisible( false );
-    ui->spinDeviceId->setVisible( false );
-
-    on_cmbPort_currentIndexChanged( ui->cmbPort->currentText() );
-#endif
 
     ui->cmbSpeed->setCurrentText( QString::number(m_pPref->mSpeed) );
 
@@ -207,8 +207,6 @@ void sysPref::updateUi()
     ui->edtTableName->setText( m_pPref->mDbMeta.mTableName );
     ui->edtUserName->setText( m_pPref->mDbMeta.mUserName );
     ui->edtPassword->setText( m_pPref->mDbMeta.mPassword );
-
-    //    slot_updateValidateEn();
 
     //! misa
     ui->labelHostName->setText( QHostInfo::localHostName() );

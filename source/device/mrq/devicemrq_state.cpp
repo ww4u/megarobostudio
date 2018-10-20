@@ -593,7 +593,9 @@ void CalcendMrqUnit::onTimer( int id )
                                                 MRQ_MOTION_SWITCH_PREPARE,
                                                 (MRQ_MOTION_SWITCH_1)selfFsm()->page()
                                                 );
-        sysError("parepare fail", QString::number( selfFsm()->axes() ) );
+        sysError("prepare fail",
+                 QString::number( selfFsm()->axes() ),
+                 QString::number( selfFsm()->page() ) );
     }
 }
 
@@ -650,6 +652,7 @@ void StandbyMrqUnit::proc( int msg, RoboMsg &detail )
     {
         if ( selfFsm()->runReqed() )
         {
+            logDbg()<<selfFsm()->axes()<<selfFsm()->page();
             selfFsm()->reqRun( false );
 
             selfFsm()->Mrq()->setMOTION_SWITCH( selfFsm()->axes(),
@@ -684,6 +687,9 @@ void StandbyMrqUnit::onEnter( RoboMsg &detail )
                                                   MRQ_MOTION_SWITCH_RUN,
                                                   (MRQ_MOTION_SWITCH_1)selfFsm()->page() );
 
+        if ( selfFsm()->axes() == 3 )
+        { logDbg(); }
+
         if ( ret != 0  )
         { toState(mrq_state_idle, detail );  sysLog( __FUNCTION__, QString::number(__LINE__) ); }
         else
@@ -692,7 +698,7 @@ void StandbyMrqUnit::onEnter( RoboMsg &detail )
         startTimer( state_timer_id, state_timer_tmo );
     }
     else
-    {}
+    { logDbg()<<selfFsm()->axes(); }
 }
 
 //! PreRunMrqUnit

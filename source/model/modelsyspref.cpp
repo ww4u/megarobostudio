@@ -90,6 +90,8 @@ void modelSysPref::rst()
 
     mAliasEn = true;
 
+    mAppStartDelay = 30;
+
     mSysMode = sys_normal;
 }
 
@@ -261,7 +263,22 @@ int modelSysPref::save( const QString &str )
 
         writer.writeEndElement();
     }
+    writer.writeEndElement();
 
+    //! app model
+    writer.writeStartElement("apps");
+    writer.writeTextElement( "delay", QString::number( mAppStartDelay ) );
+    for ( int i = 0; i < mAppModel.mItems.size(); i++ )
+    {
+        writer.writeStartElement("app");
+
+            writer.writeTextElement("autostart", QString::number( mAppModel.mItems.at(i)->autoStart() ) );
+            writer.writeTextElement("program", mAppModel.mItems.at(i)->program() );
+            writer.writeTextElement("argument", mAppModel.mItems.at(i)->argument() );
+            writer.writeTextElement("comment", mAppModel.mItems.at(i)->comment() );
+
+        writer.writeEndElement();
+    }
     writer.writeEndElement();
 
     writer.writeEndElement();
@@ -527,6 +544,39 @@ int modelSysPref::load( const QString &str )
                                 { reader.skipCurrentElement(); }
                             }
                             mAlias.mItems.append( pItem );
+                        }
+                        else
+                        { reader.skipCurrentElement(); }
+                    }
+                }
+
+                else if ( reader.name() == "apps" )
+                {
+                    AppItem *pItem;
+                    while( reader.readNextStartElement() )
+                    {
+                        if ( reader.name() == "delay" )
+                        {
+                            mAppStartDelay = reader.readElementText().toInt();
+                        }
+                        else if ( reader.name() == "app" )
+                        {
+                            pItem = new AppItem();
+                            Q_ASSERT( NULL != pItem );
+                            while( reader.readNextStartElement() )
+                            {
+                                if ( reader.name() == "autostart" )
+                                { pItem->setAutoStart( toBool(reader) ); }
+                                else if ( reader.name() == "program" )
+                                { pItem->setProgram( reader.readElementText()); }
+                                else if ( reader.name() == "argument" )
+                                { pItem->setArgument( reader.readElementText()); }
+                                else if ( reader.name() == "comment" )
+                                { pItem->setComment( reader.readElementText()); }
+                                else
+                                { reader.skipCurrentElement(); }
+                            }
+                            mAppModel.mItems.append( pItem );
                         }
                         else
                         { reader.skipCurrentElement(); }

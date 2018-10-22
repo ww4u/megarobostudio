@@ -16,11 +16,18 @@ int deviceMRQ::run( const tpvRegion &region )
 
 int deviceMRQ::stop( const tpvRegion &region )
 {
+    //! force stop
     setMOTION_SWITCH(  region.axes(),
                        MRQ_MOTION_SWITCH_STOP,
                        (MRQ_MOTION_SWITCH_1)region.page() );
 
     requestMotionState( region );
+
+    //! request stop as the defer msg
+    lpc( region.axes() )->postMsg(
+                            (eRoboMsg)mrq_msg_stop,
+                            region
+                        );
 
     return 0;
 }

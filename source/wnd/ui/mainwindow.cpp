@@ -286,6 +286,9 @@ void MainWindow::setupToolbar()
     ui->mainToolBar->addAction( ui->actionOpen );
     ui->mainToolBar->addAction( ui->actionSave );
     ui->mainToolBar->addSeparator();
+    ui->mainToolBar->addAction( ui->actionConsole );
+    ui->mainToolBar->addAction( ui->actionApp );
+    ui->mainToolBar->addSeparator();
     ui->mainToolBar->addAction( ui->actionpref );
 
     //! device conn
@@ -330,6 +333,10 @@ void MainWindow::buildConnection()
 
     connect( this, SIGNAL(sig_post_load_prj()),
              this, SLOT(slot_post_load_prj()) );
+    connect( this, SIGNAL(sig_post_start_app()),
+             this, SLOT(slot_post_start_app()) );
+    connect( &mAppMgr, SIGNAL(signal_output(QByteArray)),
+             this, SLOT(slot_output(QByteArray)) );
 
     //! status bar
     connect( m_pStateBar->downloadBar(), SIGNAL( signal_clicked() ),
@@ -582,6 +589,11 @@ void MainWindow::postSetup()
     //! load prj
     if ( mMcModel.mSysPref.mbAutoLoadPrj )
     { emit sig_post_load_prj(); }
+
+    //! start up mgr on delay
+    QTimer::singleShot( mMcModel.mSysPref.mAppStartDelay * 1000,
+                        this,
+                        SLOT(slot_post_start_app()) );
 }
 
 void MainWindow::setupService()
@@ -707,6 +719,25 @@ void MainWindow::slot_post_load_prj()
     {
         sysError( fullName, tr("not exist") );
     }
+}
+
+void MainWindow::slot_post_start_app()
+{
+    int ret;
+    for ( int i = 0; i < mMcModel.mSysPref.mAppModel.mItems.size(); i++ )
+    {
+        if ( mMcModel.mSysPref.mAppModel.mItems.at(i)->autoStart() )
+        {
+            ret = mAppMgr.startApp( mMcModel.mSysPref.mAppModel.mItems[i] );
+            if ( ret != 0 )
+            { logDbg(); }
+        }
+    }
+}
+
+void MainWindow::slot_output( QByteArray ary )
+{
+    sysLog( ary );
 }
 
 void MainWindow::cfgTab_tabCloseRequested( int index )

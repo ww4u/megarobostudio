@@ -451,7 +451,11 @@ void MainWindow::on_actionConsole_triggered()
 
 void MainWindow::on_actionApp_triggered()
 {
-    DlgApp appWnd( this );
+    DlgApp appWnd( &mMcModel.mSysPref, &mAppMgr, this );
 
-    appWnd.exec();
+    if ( QDialog::Accepted == appWnd.exec() )
+    {
+        mMcModel.mSysPref.mAppStartDelay = appWnd.getDelay();
+        emit sig_pref_request_save();
+    }
 }

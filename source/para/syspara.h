@@ -3,7 +3,7 @@
 
 #include <QtCore>
 #include "../model/relationmodel.h"
-
+#include "../model/appmodel.h"
 enum SysMode
 {
     sys_normal,
@@ -101,6 +101,10 @@ public:
                             //! system alias
     bool mAliasEn;
     RelationModel mAlias;
+
+                            //! app model
+    AppModel mAppModel;
+    int mAppStartDelay;
 
     SysMode mSysMode;       //! sysmode
 };

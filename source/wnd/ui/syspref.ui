@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>718</width>
-    <height>648</height>
+    <width>722</width>
+    <height>657</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -25,7 +25,7 @@
    <string>Preference</string>
   </property>
   <property name="windowIcon">
-   <iconset>
+   <iconset resource="../res/res.qrc">
     <normaloff>:/res/image/icon/205.png</normaloff>:/res/image/icon/205.png</iconset>
   </property>
   <property name="sizeGripEnabled">
@@ -498,7 +498,7 @@
                 <string>MRH-E</string>
                </property>
                <property name="icon">
-                <iconset>
+                <iconset resource="../res/res.qrc">
                  <normaloff>:/res/image/megacan.png</normaloff>:/res/image/megacan.png</iconset>
                </property>
               </item>
@@ -507,7 +507,7 @@
                 <string>USB-CAN II</string>
                </property>
                <property name="icon">
-                <iconset>
+                <iconset resource="../res/res.qrc">
                  <normaloff>:/res/image/can2.png</normaloff>:/res/image/can2.png</iconset>
                </property>
               </item>
@@ -516,7 +516,7 @@
                 <string>MRH-T</string>
                </property>
                <property name="icon">
-                <iconset>
+                <iconset resource="../res/res.qrc">
                  <normaloff>:/res/image/mrh-t.png</normaloff>:/res/image/mrh-t.png</iconset>
                </property>
               </item>
@@ -525,7 +525,7 @@
                 <string>MRH-U</string>
                </property>
                <property name="icon">
-                <iconset>
+                <iconset resource="../res/res.qrc">
                  <normaloff>:/res/image/miniusbcan.png</normaloff>:/res/image/miniusbcan.png</iconset>
                </property>
               </item>
@@ -544,7 +544,7 @@
                 <string>RS232</string>
                </property>
                <property name="icon">
-                <iconset>
+                <iconset resource="../res/res.qrc">
                  <normaloff>:/res/image/rs232.png</normaloff>:/res/image/rs232.png</iconset>
                </property>
               </item>
@@ -553,7 +553,7 @@
                 <string>USB</string>
                </property>
                <property name="icon">
-                <iconset>
+                <iconset resource="../res/res.qrc">
                  <normaloff>:/res/image/usb.png</normaloff>:/res/image/usb.png</iconset>
                </property>
               </item>
@@ -837,7 +837,7 @@
                <string/>
               </property>
               <property name="pixmap">
-               <pixmap>:/res/image/megacan.png</pixmap>
+               <pixmap resource="../res/res.qrc">:/res/image/megacan.png</pixmap>
               </property>
               <property name="scaledContents">
                <bool>true</bool>
@@ -1856,15 +1856,15 @@ p, li { white-space: pre-wrap; }
  </widget>
  <customwidgets>
   <customwidget>
-   <class>MrqUart</class>
-   <extends>QWidget</extends>
-   <header>mrquart.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>TableToolbar</class>
    <extends>QWidget</extends>
    <header>tabletoolbar.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>MrqUart</class>
+   <extends>QWidget</extends>
+   <header>mrquart.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -1874,7 +1874,9 @@ p, li { white-space: pre-wrap; }
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="../res/res.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>buttonBox</sender>

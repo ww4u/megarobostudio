@@ -64,6 +64,7 @@
 
 #include "../../app/comthread.h"
 #include "../../app/rpcmanager.h"
+#include "../../app/appmgr.h"
 
 namespace Ui {
 class MainWindow;
@@ -121,6 +122,7 @@ protected:
 
 Q_SIGNALS:
     void sig_post_load_prj( );
+    void sig_post_start_app();
     void sig_robo_name_changed( const QString &name );
 
     void sig_com_send( const QByteArray &str );
@@ -131,6 +133,9 @@ protected Q_SLOTS:
     void slot_downloadbar_clicked();
 
     void slot_post_load_prj();
+    void slot_post_start_app();
+    void slot_output( QByteArray ary );
+
     void cfgTab_tabCloseRequested( int index );
 
     void on_itemXActivated( mcModelObj *pObj );
@@ -349,6 +354,8 @@ private:
     QString mCurrentScript;
 
     RpcManager mRpcMgr;
+
+    AppMgr mAppMgr;
 };
 
 #endif // MAINWINDOW_H

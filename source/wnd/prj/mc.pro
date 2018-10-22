@@ -312,7 +312,10 @@ SOURCES += \
     ../ui/dlghelp.cpp \
     ../../app/rpcmanager.cpp \
     ../../app/rpcworker.cpp \
-    ../ui/dlgapp.cpp
+    ../ui/dlgapp.cpp \
+    ../../model/appmodel.cpp \
+    ../../app/appmgr.cpp \
+    ../../app/appprocess.cpp
 
 
 HEADERS += \
@@ -493,7 +496,10 @@ HEADERS += \
     ../ui/dlghelp.h \
     ../../app/rpcmanager.h \
     ../../app/rpcworker.h \
-    ../ui/dlgapp.h
+    ../ui/dlgapp.h \
+    ../../model/appmodel.h \
+    ../../app/appmgr.h \
+    ../../app/appprocess.h
 
 FORMS += \
         ../ui/mainwindow.ui \

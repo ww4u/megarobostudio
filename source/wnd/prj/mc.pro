@@ -610,7 +610,7 @@ FORMS += \
     ../ui/dlgapp.ui
 
 
-RESOURCES = ../res/res.qrc
+#RESOURCES = ../res/res.qrc
 
 RC_ICONS = ../res/image/logo/megarobo.ico
 

@@ -978,6 +978,16 @@ void deviceMgr::closeBus()
     }
 }
 
+void deviceMgr::requestUploadSetting( mcModelObj *pObj )
+{
+    Q_ASSERT(NULL != pObj );
+
+    m_pRobo = (VRobot*)pObj;
+
+    //! \todo mrv?
+    context_upload();
+}
+
 void deviceMgr::on_toolState_clicked()
 {
     if ( m_pDiagram != NULL )

@@ -46,27 +46,41 @@ void robotH2::center( float &x, float &y )
     y = mZeroY;
 }
 
-void robotH2::setTransferAble( bool b)
-{ mbTransferAble = b; }
-bool robotH2::transferAble()
-{ return mbTransferAble; }
+void robotH2::setZeroMovement( int zMoveMent )
+{ mZeroMovement = (H2ZeroMovement)zMoveMent; }
+int robotH2::zeroMovement()
+{ return mZeroMovement; }
 
-void robotH2::setTransfer( bool b,
+void robotH2::setZeroCorner( int corner )
+{
+    mZeroCorner = (H2ZeroCorner)corner;
+
+    postConfigTransfer();
+}
+int robotH2::zeroCorner()
+{ return mZeroCorner; }
+
+//void robotH2::setTransferAble( bool b)
+//{ mbTransferAble = b; }
+//bool robotH2::transferAble()
+//{ return mbTransferAble; }
+
+void robotH2::setTransfer( /*bool b,*/
                            double t[2*2],
                            double s[2*1],
                            double invt[2*2] )
 {
-    mbTransferAble = b;
+//    mbTransferAble = b;
     memcpy( mTransferR, t, sizeof(mTransferR) );
     memcpy( mTransferS, s, sizeof(mTransferS) );
     memcpy( mTransferRInv, invt, sizeof(mTransferRInv) );
 }
-void robotH2::transfer( bool &b,
+void robotH2::transfer( /*bool &b,*/
                         double t[2*2],
                         double s[2*1],
                         double invt[2*2] )
 {
-    b = mbTransferAble;
+//    b = mbTransferAble;
     memcpy( t, mTransferR, sizeof(mTransferR) );
     memcpy( s, mTransferS, sizeof(mTransferS) );
     memcpy( invt, mTransferRInv, sizeof(mTransferRInv) );

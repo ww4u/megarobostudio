@@ -63,7 +63,8 @@ void H2Pref::spyEdited()
     };
 
     QComboBox *comboxes[]={
-
+        ui->cmbZeroCorner,
+        ui->cmbZeroMovement
     };
 
     install_spy();
@@ -92,6 +93,10 @@ void H2Pref::updateData()
     { pRobo->setJointZeroCcw( 1, ui->chkCcwY->isChecked() ); }
     if ( ui->chkCcw->isVisible() )
     { pRobo->setJointZeroCcw( 2, ui->chkCcw->isChecked() ); }
+
+    //! zero movement, corner
+    pRobo->setZeroCorner( ui->cmbZeroCorner->currentIndex() );
+    pRobo->setZeroMovement( ui->cmbZeroMovement->currentIndex() );
 }
 
 void H2Pref::updateUi()
@@ -124,6 +129,14 @@ void H2Pref::updateUi()
     { ui->chkCcwY->setChecked( pRobo->jointZeroCcwList().at(1) ); }
     if ( ui->chkCcw->isVisible() )
     { ui->chkCcw->setChecked( pRobo->jointZeroCcwList().at(2) ); }
+
+    //! movement, corner
+    int index;
+    index = pRobo->zeroCorner();
+    ui->cmbZeroCorner->setCurrentIndex( index );
+
+    index = pRobo->zeroMovement();
+    ui->cmbZeroMovement->setCurrentIndex( index );
 }
 
 void H2Pref::adaptUi()

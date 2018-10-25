@@ -739,5 +739,3 @@ void scriptMgr::slot_context_import()
 
     emit signal_prj_edited();
 }
-
-

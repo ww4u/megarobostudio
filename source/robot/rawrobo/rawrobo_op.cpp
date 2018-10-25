@@ -32,9 +32,9 @@ int RawRobo::setLoop( int n, const tpvRegion &region )
                                       n );
 
         //! valid motion mode
-        if ( region.motionMode() >= 0 )
+        if ( region.motionMode() >= 0 && mLvtAble.size() > i )
         {
-            //! lvt able
+            //! lvt able on joint i
             if ( mLvtAble.at(i) )
             {
                 pMrq->setMOTIONPLAN_MOTIONMODE( ax,

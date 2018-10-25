@@ -281,6 +281,11 @@ int modelSysPref::save( const QString &str )
     }
     writer.writeEndElement();
 
+    //! event action model
+    writer.writeStartElement("event_action");
+        mEventActionModel.serialOut( writer );
+    writer.writeEndElement();
+
     writer.writeEndElement();
 
     writer.writeEndDocument();
@@ -581,6 +586,11 @@ int modelSysPref::load( const QString &str )
                         else
                         { reader.skipCurrentElement(); }
                     }
+                }
+
+                else if ( reader.name() =="event_action" )
+                {
+                    mEventActionModel.serialIn( reader );
                 }
 
                 else

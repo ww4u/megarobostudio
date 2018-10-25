@@ -53,6 +53,9 @@ int robotH2::serialOutZero( QXmlStreamWriter &writer)
     writer.writeTextElement( "x", QString::number(mZeroX) );
     writer.writeTextElement( "y", QString::number(mZeroY) );
 
+    writer.writeTextElement( "movement", QString::number( mZeroMovement) );
+    writer.writeTextElement( "corner", QString::number( mZeroCorner) );
+
     return 0;
 }
 int robotH2::serialInZero( QXmlStreamReader &reader )
@@ -75,6 +78,10 @@ int robotH2::serialInZero( QXmlStreamReader &reader )
         { mZeroX = reader.readElementText().toDouble(); }
         else if ( reader.name() == "y" )
         { mZeroY = reader.readElementText().toDouble(); }
+        else if ( reader.name() == "movement" )
+        { mZeroMovement = (H2ZeroMovement)reader.readElementText().toInt(); }
+        else if ( reader.name() == "corner" )
+        { mZeroCorner = (H2ZeroCorner)reader.readElementText().toInt(); }
         else
         { reader.skipCurrentElement(); }
     }
@@ -109,7 +116,7 @@ int robotH2::serialInArm( QXmlStreamReader &reader )
 
 int robotH2::serialOutTransfer( QXmlStreamWriter &writer)
 {
-    writer.writeTextElement( "enable", QString::number( mbTransferAble ) );
+//    writer.writeTextElement( "enable", QString::number( mbTransferAble ) );
 
     writer.writeStartElement("rotate");
         for ( int i = 0; i < sizeof_array( mTransferR ); i++ )
@@ -140,9 +147,10 @@ int robotH2::serialInTransfer( QXmlStreamReader &reader)
     int ret;
     while ( reader.readNextStartElement() )
     {
-        if ( reader.name() == "enable" )
-        { mbTransferAble = toBool( reader ); }
-        else if ( reader.name() == "rotate" )
+//        if ( reader.name() == "enable" )
+//        { mbTransferAble = toBool( reader ); }
+//        else
+        if ( reader.name() == "rotate" )
         {
             ret = serialInTransferR( reader );
             if ( ret != 0 )

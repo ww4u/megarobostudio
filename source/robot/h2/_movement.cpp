@@ -261,24 +261,48 @@ int robotH2::zeroAxesTask( void *pArg )
     else
     {
         //! zero
-        //! x
-        pZArg->mAx = 0;
-        ret = zeroX( pZArg );
-        if ( ret != 0 ){ return ret; }
+        if ( mZeroMovement == movement_x_y )
+        {
+            //! x
+            pZArg->mAx = 0;
+            ret = zeroX( pZArg );
+            if ( ret != 0 ){ return ret; }
 
-        //! y
-        pZArg->mAx = 1;
-        ret = zeroY( pZArg );
-        if ( ret != 0 ){ return ret; }
+            //! y
+            pZArg->mAx = 1;
+            ret = zeroY( pZArg );
+            if ( ret != 0 ){ return ret; }
 
-        //! gap
-        pZArg->mAx = 0;
-        ret = gapX( pZArg );
-        if ( ret != 0 ){ return ret; }
+            //! gap
+            pZArg->mAx = 0;
+            ret = gapX( pZArg );
+            if ( ret != 0 ){ return ret; }
 
-        pZArg->mAx = 1;
-        ret = gapY( pZArg );
-        if ( ret != 0 ){ return ret; }
+            pZArg->mAx = 1;
+            ret = gapY( pZArg );
+            if ( ret != 0 ){ return ret; }
+        }
+        else
+        {
+            //! y
+            pZArg->mAx = 1;
+            ret = zeroY( pZArg );
+            if ( ret != 0 ){ return ret; }
+
+            //! x
+            pZArg->mAx = 0;
+            ret = zeroX( pZArg );
+            if ( ret != 0 ){ return ret; }
+
+            pZArg->mAx = 1;
+            ret = gapY( pZArg );
+            if ( ret != 0 ){ return ret; }
+
+            //! gap
+            pZArg->mAx = 0;
+            ret = gapX( pZArg );
+            if ( ret != 0 ){ return ret; }
+        }
 
         ret = clrAngle();
     }
@@ -293,14 +317,14 @@ int robotH2::zeroX( H2ZeroArg *pZArg )
 
     region = pZArg->mRegion;
 
-    bool bTransfer;
-    bTransfer = transferAble();
-    setTransferAble( false );
+//    bool bTransfer;
+//    bTransfer = transferAble();
+//    setTransferAble( false );
 
     //! m
     move( pZArg->mZeroDist, 0, pZArg->mZeroTime, pZArg->mZeroEndV, 0, region );
 
-    setTransferAble( bTransfer );
+//    setTransferAble( bTransfer );
 
     //! wait
     ret = waitFsm( region, MegaDevice::mrq_state_idle, pZArg->mTmo, pZArg->mTick );
@@ -314,13 +338,13 @@ int robotH2::zeroY( H2ZeroArg *pZArg )
 
     region = pZArg->mRegion;
 
-    bool bTransfer;
-    bTransfer = transferAble();
-    setTransferAble( false );
+//    bool bTransfer;
+//    bTransfer = transferAble();
+//    setTransferAble( false );
 
     move( 0, pZArg->mZeroDist, pZArg->mZeroTime, 0, pZArg->mZeroEndV, region );
 
-    setTransferAble( bTransfer );
+//    setTransferAble( bTransfer );
 
     ret = waitFsm( region, MegaDevice::mrq_state_idle, pZArg->mTmo, pZArg->mTick );
 
@@ -334,14 +358,14 @@ int robotH2::gapX( H2ZeroArg *pZArg )
 
     region = pZArg->mRegion;
 
-    bool bTransfer;
-    bTransfer = transferAble();
-    setTransferAble( false );
+//    bool bTransfer;
+//    bTransfer = transferAble();
+//    setTransferAble( false );
 
     //! gap
     move( pZArg->mZeroGapDist, 0, pZArg->mZeroGapTime, 0, 0, region );
 
-    setTransferAble( bTransfer );
+//    setTransferAble( bTransfer );
 
     ret = waitFsm( region, MegaDevice::mrq_state_idle, pZArg->mTmo, pZArg->mTick );
 
@@ -354,13 +378,13 @@ int robotH2::gapY( H2ZeroArg *pZArg )
 
     region = pZArg->mRegion;
 
-    bool bTransfer;
-    bTransfer = transferAble();
-    setTransferAble( false );
+//    bool bTransfer;
+//    bTransfer = transferAble();
+//    setTransferAble( false );
 
     move( 0, pZArg->mZeroGapDist, pZArg->mZeroGapTime, 0, 0, region );
 
-    setTransferAble( bTransfer );
+//    setTransferAble( bTransfer );
 
     ret = waitFsm( region, MegaDevice::mrq_state_idle, pZArg->mTmo, pZArg->mTick );
     if ( ret != 0 )
@@ -447,7 +471,7 @@ int robotH2::pose( float &x, float &y )
 
 void robotH2::coordRotate( QList<H2KeyPoint> &curve )
 {
-    if ( mbTransferAble )
+//    if ( mbTransferAble )
     {
         //! for each point
         H2KeyPoint localPt;
@@ -460,8 +484,8 @@ void robotH2::coordRotate( QList<H2KeyPoint> &curve )
             curve[i] = localPt;
         }
     }
-    else
-    { return; }
+//    else
+//    { return; }
 }
 void robotH2::coordRotate( H2KeyPoint &pt, double rot[2*2], double shift[2*1] )
 {
@@ -475,7 +499,7 @@ void robotH2::coordRotate( H2KeyPoint &pt, double rot[2*2], double shift[2*1] )
 
 void robotH2::coordIRotate( H2KeyPoint &pt )
 {
-    if ( mbTransferAble )
+//    if ( mbTransferAble )
     {
         coordIRotate( pt, mTransferRInv, mTransferS );
     }

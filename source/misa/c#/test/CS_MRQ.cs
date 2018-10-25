@@ -3838,7 +3838,7 @@ public class CS_MRQ : MegaRobo
     }
 
     //!U8,ENUM,ENUM
-    //![CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8,IMMEDIATE|DISTANCE
+    //![CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8,IMMEDIATE|DISTANCE|UNTILEND
     public int setMOTIONPLAN_STOPMODE(  byte val0, string val1, string val2 )
     {
         //!设置急停模式

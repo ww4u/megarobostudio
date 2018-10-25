@@ -159,6 +159,8 @@ public:
     virtual int serialIn( QXmlStreamReader &reader );
     virtual int serialOut( QXmlStreamWriter &writer );
 
+    virtual void postload();
+
     virtual int uploadSetting();
     virtual int applySetting();
 

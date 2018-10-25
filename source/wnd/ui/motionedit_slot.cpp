@@ -38,7 +38,7 @@ void motionEdit::slot_robo_changed( const QString &roboName )
     {}
     else
     {
-        sysPrompt( tr("Invalid robot") );
+        sysError( tr("Invalid robot") );
         return;
     }
 

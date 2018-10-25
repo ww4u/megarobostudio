@@ -228,6 +228,7 @@ static value_desc _value_desc_MRQ_MOTIONPLAN_ENDSTATE_1[] = {
 static value_desc _value_desc_MRQ_MOTIONPLAN_STOPMODE_1[] = {
 	{0,"IMMEDIATE",},
 	{1,"DISTANCE",},
+	{2,"UNTILEND",},
 };
 static value_desc _value_desc_MRQ_MOTIONPLAN_OOSLINERESPONSE_1[] = {
 	{0,"NONE",},

@@ -80,8 +80,8 @@ void H2Config::updateData()
 
     //! transfer && shift
     double t[2*2], s[2*1], invt[2*2];
-    bool b;
-    b = ui->gpTransfer->isChecked();
+//    bool b;
+//    b = ui->gpTransfer->isChecked();
     t[0*2+0] = ui->spinR00->value();
     t[0*2+1] = ui->spinR01->value();
     t[1*2+0] = ui->spinR10->value();
@@ -95,7 +95,7 @@ void H2Config::updateData()
     invt[1*2+0] = ui->spinR10_2->value();
     invt[1*2+1] = ui->spinR11_2->value();
 
-    pRobo->setTransfer( b, t, s, invt );
+    pRobo->setTransfer( t, s, invt );
 }
 
 void H2Config::updateUi()
@@ -117,9 +117,9 @@ void H2Config::updateUi()
 
     //! transfer && shift
     double t[2*2], s[2*1], invt[2*2];
-    bool b;
-    pRobo->transfer( b, t, s, invt );
-    ui->gpTransfer->setChecked( b );
+//    bool b;
+    pRobo->transfer( /*b,*/ t, s, invt );
+//    ui->gpTransfer->setChecked( b );
     ui->spinR00->setValue( t[0*2+0] );
     ui->spinR01->setValue( t[0*2+1] );
     ui->spinR10->setValue( t[1*2+0] );

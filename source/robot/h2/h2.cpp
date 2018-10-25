@@ -82,7 +82,7 @@ robotH2::robotH2()
     mLines = 1000;
     mEncoderDirs<<1<<1;
 
-    mbTransferAble = false;
+//    mbTransferAble = false;
     mTransferR[0*2+0] = 1.0;
     mTransferR[0*2+1] = 0.0;
 
@@ -97,11 +97,94 @@ robotH2::robotH2()
 
     mTransferRInv[1*2+0] = 0.0;
     mTransferRInv[1*2+1] = 1.0;
+
+    mZeroCorner = corner_lb;
+    mZeroMovement = movement_x_y;
 }
 
 robotH2::~robotH2()
 {
 
+}
+
+void robotH2::postload()
+{
+    postConfigTransfer();
+}
+
+void robotH2::postConfigTransfer()
+{
+    //! config transfer
+    if ( mZeroCorner == corner_lb )
+    {
+        mTransferR[0*2+0] = 1.0;
+        mTransferR[0*2+1] = 0.0;
+
+        mTransferR[1*2+0] = 0.0;
+        mTransferR[1*2+1] = 1.0;
+
+        mTransferS[0*1+0] = 0;
+        mTransferS[1*1+0] = 0;
+
+        mTransferRInv[0*2+0] = 1.0;
+        mTransferRInv[0*2+1] = 0.0;
+
+        mTransferRInv[1*2+0] = 0.0;
+        mTransferRInv[1*2+1] = 1.0;
+    }
+    else if ( mZeroCorner == corner_lt )
+    {
+        mTransferR[0*2+0] = -1.0;
+        mTransferR[0*2+1] = 0.0;
+
+        mTransferR[1*2+0] = 0.0;
+        mTransferR[1*2+1] = 1.0;
+
+        mTransferS[0*1+0] = mArmLengths.at(3);
+        mTransferS[1*1+0] = 0;
+
+        mTransferRInv[0*2+0] = -1.0;
+        mTransferRInv[0*2+1] = 0.0;
+
+        mTransferRInv[1*2+0] = 0.0;
+        mTransferRInv[1*2+1] = 1.0;
+    }
+    else if ( mZeroCorner == corner_rt )
+    {
+        mTransferR[0*2+0] = -1.0;
+        mTransferR[0*2+1] = 0.0;
+
+        mTransferR[1*2+0] = 0.0;
+        mTransferR[1*2+1] = -1.0;
+
+        mTransferS[0*1+0] = mArmLengths.at(3);
+        mTransferS[1*1+0] = mArmLengths.at(2);
+
+        mTransferRInv[0*2+0] = -1.0;
+        mTransferRInv[0*2+1] = 0.0;
+
+        mTransferRInv[1*2+0] = 0.0;
+        mTransferRInv[1*2+1] = -1.0;
+    }
+    else if ( mZeroCorner == corner_rb )
+    {
+        mTransferR[0*2+0] = 1.0;
+        mTransferR[0*2+1] = 0.0;
+
+        mTransferR[1*2+0] = 0.0;
+        mTransferR[1*2+1] = -1.0;
+
+        mTransferS[0*1+0] = 0;
+        mTransferS[1*1+0] = mArmLengths.at(2);
+
+        mTransferRInv[0*2+0] = 1.0;
+        mTransferRInv[0*2+1] = 0.0;
+
+        mTransferRInv[1*2+0] = 0.0;
+        mTransferRInv[1*2+1] = -1.0;
+    }
+    else
+    { Q_ASSERT(false); }
 }
 
 int robotH2::download( VRobot *pSetup )

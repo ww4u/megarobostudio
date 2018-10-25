@@ -38,6 +38,13 @@ void MainWindow::on_actionProject_triggered()
 
     m_pScriptMgr->save( fDlg.directory().absolutePath(),
                         fDlg.selectedFiles().first() );
+
+    //! save latest prj
+    mMcModel.mSysPref.setLatestPrj( fDlg.directory().absolutePath(),
+                                    comAssist::pureFileName( fDlg.selectedFiles().first() ) );
+
+    //! request save
+    emit sig_pref_request_save();
 }
 void MainWindow::on_actionOpen_Prj_triggered()
 {
@@ -55,7 +62,9 @@ void MainWindow::on_actionOpen_Prj_triggered()
     //! save latest prj
     mMcModel.mSysPref.setLatestPrj( fDlg.directory().absolutePath(),
                                     comAssist::pureFileName( fDlg.selectedFiles().first() ) );
-    mMcModel.mSysPref.save( pref_file_name );
+
+    //! request save
+    emit sig_pref_request_save();
 }
 
 void MainWindow::on_actionSave_Prj_triggered()
@@ -271,7 +280,8 @@ void MainWindow::on_actionScene_triggered()
     if ( QDialog::Accepted != fDlg.exec() )
     { return; }
 
-    mcModelObj *pNewModelObj = new roboSceneModel();
+    roboSceneModel *pScene = new roboSceneModel();
+    mcModelObj *pNewModelObj = pScene;
     Q_ASSERT( NULL != pNewModelObj );
 
     pNewModelObj->setPath( fDlg.directory().absolutePath() );
@@ -284,6 +294,9 @@ void MainWindow::on_actionScene_triggered()
     Q_ASSERT( NULL != pNewModelObj );
 
     emit itemXActivated( pNewModelObj );
+
+    //! save
+    pScene->save( fDlg.selectedFiles().first() );
 }
 
 //! about

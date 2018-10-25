@@ -14,6 +14,7 @@ enum deviceEvent
 
 enum deviceAction
 {
+    e_device_action_none,
     e_device_action_stop,
     e_device_action_prompt,
     e_device_action_prompt_stop,
@@ -79,7 +80,7 @@ public:
     int serialOut( QXmlStreamWriter & writer );
     int serialIn( QXmlStreamReader & reader );
 
-protected:
+public:
     QList< EventAction *> mItems;
 
 };

@@ -30,6 +30,20 @@ struct H2ZeroArg : public RoboTaskArgument
     H2ZeroArg();
 };
 
+enum H2ZeroCorner
+{
+    corner_lb,
+    corner_lt,
+    corner_rt,
+    corner_rb
+};
+
+enum H2ZeroMovement
+{
+    movement_x_y,
+    movement_y_x,
+};
+
 class H2Task : public RoboTask
 {
     Q_OBJECT
@@ -55,6 +69,11 @@ public:
     virtual int serialIn( QXmlStreamReader &reader );
     virtual int serialOut( QXmlStreamWriter &writer );
 
+    virtual void postload();
+protected:
+    void postConfigTransfer();
+
+public:
     virtual int download( VRobot *pSetup );
 
 public:
@@ -120,15 +139,21 @@ public:
     void setCenter( float x, float y );
     void center( float &x, float &y );
 
-    //! transfer
-    void setTransferAble( bool b);
-    bool transferAble();
+    void setZeroMovement( int zMoveMent );
+    int zeroMovement();
 
-    void setTransfer( bool b,
+    void setZeroCorner( int corner );
+    int zeroCorner();
+
+    //! transfer
+//    void setTransferAble( bool b);
+//    bool transferAble();
+
+    void setTransfer( /*bool b,*/
                       double t[2*2],
                       double s[2*1],
                       double invt[2*2] );
-    void transfer( bool &b,
+    void transfer( /*bool &b,*/
                    double t[2*2],
                    double s[2*1],
                    double invt[2*2] );
@@ -166,10 +191,13 @@ protected:
     int mLines;
 
                                 //! transfer matrix
-    bool mbTransferAble;
+//    bool mbTransferAble;
     double mTransferR[2*2], mTransferS[2*1];
 
     double mTransferRInv[2*2];  //! deduced by mT
+
+    H2ZeroCorner mZeroCorner;
+    H2ZeroMovement mZeroMovement;
 };
 
 #endif

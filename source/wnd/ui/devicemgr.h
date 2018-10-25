@@ -141,6 +141,8 @@ public:
     void openBus();
     void closeBus();
 
+    void requestUploadSetting( mcModelObj *pObj );
+
 public:
     Ui::deviceMgr *ui;
 

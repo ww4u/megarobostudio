@@ -3983,7 +3983,7 @@ int MRQ_getMOTIONPLAN_BUFFERSIZE( ViSession vi, int val0,char * val1 , int *val2
 }
 
 //!U8,ENUM,ENUM
-//![CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8,IMMEDIATE|DISTANCE
+//![CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8,IMMEDIATE|DISTANCE|UNTILEND
 int MRQ_setMOTIONPLAN_STOPMODE( ViSession vi, int val0,char * val1,char * val2 )
 {
 //!设置急停模式

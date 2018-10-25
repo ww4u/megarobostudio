@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QMutex>
 
 //! widgets
 #include "../widget/megamessagebox.h"
@@ -88,6 +89,8 @@ public:
     mcModel *  getMcModel();
     RpcManager *rpcMgr();
 
+    QString exportDiagnosis( int &n );
+
 protected:
     void init();
     void deinit();
@@ -165,7 +168,6 @@ protected Q_SLOTS:
 
     void slot_logout( const QString &str );
     void slot_prompt( const QString &str );
-//    void slot_emergeStop();
 
     //! connection
     void slot_robo_name_changed( const QString& );
@@ -264,7 +266,7 @@ public slots:
     void slot_scriptmgr_changed();
 
     void on_actionForceStop_triggered();
-
+    void on_actionStop_triggered();
     void on_actionReset_triggered();
 
     void on_actionAngle_A_triggered();
@@ -272,8 +274,6 @@ public slots:
     void on_actionDistance_D_triggered();
 
     void on_actionMotor_Panel_triggered();
-
-//    void on_actionCamera_triggered();
 
     void on_actionClose_All_triggered();
 
@@ -289,6 +289,8 @@ private slots:
     void on_actionConsole_triggered();
 
     void on_actionApp_triggered();
+
+
 
 private:
     //! uis
@@ -356,6 +358,9 @@ private:
     RpcManager mRpcMgr;
 
     AppMgr mAppMgr;
+
+    QMutex mDiagnosisMutex;
+    QStringList mDiagnosisLog;
 };
 
 #endif // MAINWINDOW_H

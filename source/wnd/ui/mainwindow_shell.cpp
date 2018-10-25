@@ -85,6 +85,38 @@ static scpi_result_t _scpi_rsrc( scpi_t *context )
     return SCPI_RES_OK;
 }
 
+static scpi_result_t _scpi_diagnosis( scpi_t *context )
+{
+    DEF_MGR();
+
+    QString str;
+    int n;
+    str = LOCAL_MGR()->exportDiagnosis( n );
+
+    QString outStr;
+    if ( n < 1 )
+    { outStr = QString("%1").arg( n ); }
+    else
+    { outStr = QString("%1,%2").arg( n ).arg( str ); }
+
+    QByteArray outAry, padAry;
+
+    outAry.append( outStr );
+    if ( outAry.length() > 512 )
+    {
+        padAry = outAry.mid( 0, 512 );
+    }
+    else
+    { padAry = outAry; }
+
+    //! attch \0
+    padAry.append( '\0' );
+
+    SCPI_ResultText( context, padAry.data() );
+
+    return SCPI_RES_OK;
+}
+
 static scpi_result_t _scpi_bus_open( scpi_t *context )
 {
     DEF_MGR();
@@ -104,6 +136,17 @@ static scpi_result_t _scpi_bus_close( scpi_t *context )
 }
 
 static scpi_result_t _scpi_device_stop( scpi_t *context )
+{
+    DEF_LOCAL_VAR();
+
+    DEF_MGR();
+
+    LOCAL_MGR()->on_actionStop_triggered();
+
+    return SCPI_RES_OK;
+}
+
+static scpi_result_t _scpi_device_terminate( scpi_t *context )
 {
     DEF_LOCAL_VAR();
 
@@ -255,10 +298,13 @@ static scpi_command_t _mrq_scpi_cmds[]=
     CMD_ITEM( "ROBOT?", _scpi_robots ),
     CMD_ITEM( "RESOURCE?", _scpi_rsrc ),
 
+    CMD_ITEM( "DIAGNOSIS?", _scpi_diagnosis ),
+
     CMD_ITEM( "BUS:OPEN", _scpi_bus_open ),
     CMD_ITEM( "BUS:CLOSE", _scpi_bus_close ),
 
     CMD_ITEM( "DEVICE:STOP", _scpi_device_stop ),
+    CMD_ITEM( "DEVICE:TERMINATE", _scpi_device_terminate ),
     CMD_ITEM( "DEVICE:RESET", _scpi_device_reset ),
 
     CMD_ITEM( "TO", _scpi_to ),

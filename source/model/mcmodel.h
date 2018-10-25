@@ -6,7 +6,6 @@
 #include "mcconnection.h"
 #include "modelsyspref.h"
 
-#include "eventactionmodel.h"
 
 class mcModel
 {
@@ -33,8 +32,6 @@ public:
     mcConnection mConn;
 
     modelSysPref mSysPref;
-
-    EventActionModel mEventActionModel;
 };
 
 #endif // MCMODEL_H

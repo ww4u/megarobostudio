@@ -53,7 +53,7 @@ static scpi_result_t _scpi_lrn( scpi_t * context )
     DEF_LOCAL_VAR();
 
     if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
-    { scpi_ret( SCPI_RES_ERR ); }logDbg()<<strLen<<pLocalStr;
+    { scpi_ret( SCPI_RES_ERR ); }
     if (strLen < 1)
     { scpi_ret( SCPI_RES_ERR ); }
 
@@ -75,6 +75,8 @@ static scpi_result_t _scpi_lrn( scpi_t * context )
     { scpi_ret( SCPI_RES_ERR ); }
 
     sysLog( QObject::tr("Setting Down") );
+
+    //! \todo update the ui
 
     return SCPI_RES_OK;
 }

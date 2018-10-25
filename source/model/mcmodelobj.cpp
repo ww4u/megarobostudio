@@ -74,6 +74,9 @@ mcModelObj::~mcModelObj()
     }
 }
 
+int mcModelObj::uploadSetting()
+{ return 0; }
+
 void mcModelObj::setName( const QString &name )
 { mName = name; }
 QString &mcModelObj::getName()

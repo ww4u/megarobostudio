@@ -359,7 +359,12 @@ QComboBox::down-arrow:on { /* shift the arrow when popup is open */
 	  
 	  selection-background-color:#00a3d9;
   }
-  
+
+QLineEdit:disabled,QSpinBox:disabled,QDoubleSpinBox:disabled, QComboBox:disabled
+
+{
+	background-color : gray;
+}
 
 QProgressBar {
       border: 1px solid #1f2a3b;
@@ -499,3 +504,20 @@ QStatusBar::item {
   }
 
 
+QListView::item:alternate {
+  background: #1f2a3b;
+}
+
+QDockWidget::close-button, QDockWidget::float-button {
+      border: 1px solid transparent;
+      background: #1f2a3b;
+      padding: 0px;
+  }
+
+  QDockWidget::close-button:hover, QDockWidget::float-button:hover {
+      background: #00a0e0;
+  }
+
+  QDockWidget::close-button:pressed, QDockWidget::float-button:pressed {
+      padding: 1px -1px -1px 1px;
+  }

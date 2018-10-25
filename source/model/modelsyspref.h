@@ -5,6 +5,8 @@
 #include "dbmeta.h"
 #include "../para/syspara.h"
 
+#include "eventactionmodel.h"
+
 class modelSysPref : public SysPara, public ISerial
 {
 public:
@@ -36,7 +38,7 @@ public:
 
 public:
     dbMeta mDbMeta;
-
+    EventActionModel mEventActionModel;
 };
 
 #endif // MODELSYSPREF_H

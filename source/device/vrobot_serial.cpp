@@ -146,6 +146,8 @@ int VRobot::load( const QString &name )
         }
     }
 
+    postload();
+
     return ret;
 }
 
@@ -242,6 +244,9 @@ int VRobot::serialOut( QXmlStreamWriter &/*writer*/ )
 {
     return 0;
 }
+
+void VRobot::postload()
+{}
 
 int VRobot::uploadSetting()
 { return 0; }

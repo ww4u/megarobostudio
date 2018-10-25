@@ -36,6 +36,13 @@
        <widget class="TableToolbar" name="tableBar" native="true"/>
       </item>
       <item>
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>* joint name | CHx@devicex</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QTableView" name="tableView">
         <attribute name="horizontalHeaderStretchLastSection">
          <bool>true</bool>
@@ -49,15 +56,15 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>RobotAddr</class>
-   <extends>QWidget</extends>
-   <header>robotaddr.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>TableToolbar</class>
    <extends>QWidget</extends>
    <header>tabletoolbar.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>RobotAddr</class>
+   <extends>QWidget</extends>
+   <header>robotaddr.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

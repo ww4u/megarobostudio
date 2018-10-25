@@ -181,9 +181,9 @@ sceneWidget * roboScene::addRobot( mcModelObj *pBase )
     sceneWidget *pItem = new sceneWidget( ui->scrollArea );   //! has parent, no need to delete
     Q_ASSERT( NULL != pItem );
 
-logDbg();
+
     pItem->setModelObj( pBase );                    //! attach robot
-logDbg();
+
     pItem->setVisible( true );
                                                     //! connection
     connect( pItem, SIGNAL(editingFinished(sceneWidget*, const QString &)),

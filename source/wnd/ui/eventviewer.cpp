@@ -46,9 +46,10 @@ struct struExceptionActionDesc
 };
 static struExceptionActionDesc _exception_actions_[] =
 {
-    { QStringLiteral("Stop"), exception_action_stop },
-    { QStringLiteral("Prompt"), exception_action_prompt },
-    { QStringLiteral("Prompt+Stop"), exception_action_prompt_stop },
+    { QStringLiteral("None"), e_device_action_none },
+    { QStringLiteral("Stop"), e_device_action_stop },
+    { QStringLiteral("Prompt"), e_device_action_prompt },
+    { QStringLiteral("Prompt+Stop"), e_device_action_prompt_stop },
 };
 
 int eventViewer::exceptionCode( const QString &str )
@@ -192,7 +193,7 @@ void eventViewer::slot_event( eventId id, frameData data )
 void eventViewer::slot_exception_changed()
 {
     //! disable all
-    frameEvent event;logDbg();
+    frameEvent event;
     for ( int i = 0; i < sizeof_array(_exceptions_); i++ )
     {
         event.setId( (eventId)_exceptions_[i].id );logDbg();
@@ -227,6 +228,8 @@ void eventViewer::slot_exception_changed()
 
         receiveCache::setFrameEventEnable( event, pAction->enable() );
     }
+
+    emit signal_model_changed();
 }
 
 void eventViewer::on_btnExport_clicked()

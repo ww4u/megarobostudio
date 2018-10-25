@@ -26,12 +26,13 @@ enum eventId
 };
 Q_DECLARE_METATYPE( eventId )
 
-enum exceptionAction
-{
-    exception_action_stop,
-    exception_action_prompt,
-    exception_action_prompt_stop,
-};
+//enum exceptionAction
+//{
+//    exception_action_none,
+//    exception_action_stop,
+//    exception_action_prompt,
+//    exception_action_prompt_stop,
+//};
 
 class frameEvent : public QByteArray
 {

@@ -53,6 +53,8 @@ public:
     void setFile( bool b );
     bool getFile();
 
+    virtual int uploadSetting();
+
     virtual void setName( const QString &name );
     QString &getName();
     QString &name();

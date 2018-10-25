@@ -69,6 +69,18 @@ mcModel *  MainWindow::getMcModel()
 RpcManager *MainWindow::rpcMgr()
 { return &mRpcMgr; }
 
+QString MainWindow::exportDiagnosis( int &n )
+{
+    QString diagStr;
+    mDiagnosisMutex.lock();
+        n = mDiagnosisLog.size();
+        diagStr = mDiagnosisLog.join(';');
+        mDiagnosisLog.clear();
+    mDiagnosisMutex.unlock();
+
+    return diagStr;
+}
+
 void MainWindow::init()
 {
     m_pLogout = NULL;
@@ -216,6 +228,8 @@ void MainWindow::setupUi_docks()
 
     //! logout dock
     pLogDock = new QDockWidget( tr("Log"), this );
+    pLogDock->setFeatures( QDockWidget::DockWidgetVerticalTitleBar
+                           | pLogDock->features() );
     pLogDock->setAllowedAreas( Qt::BottomDockWidgetArea );
     addDockWidget( Qt::BottomDockWidgetArea, pLogDock );
 
@@ -308,6 +322,8 @@ void MainWindow::setupToolbar()
     m_pToolbarQuickOp->addAction( ui->actionEvent_E );
     m_pToolbarQuickOp->addWidget( new QuickTool() );        //! for the spacer
     m_pToolbarQuickOp->addAction( ui->actionReset );
+    m_pToolbarQuickOp->addAction( ui->actionStop );
+    ui->mainToolBar->addSeparator();
     m_pToolbarQuickOp->addAction( ui->actionForceStop );
 
     addToolBar( m_pToolbarQuickOp );
@@ -421,6 +437,7 @@ void MainWindow::buildConnection()
              m_pEventViewer,
              SLOT(slot_event(eventId,frameData)),
              Qt::QueuedConnection );
+
     connect( m_pEventViewer,
              SIGNAL(accepted()),
              this,
@@ -429,6 +446,11 @@ void MainWindow::buildConnection()
              SIGNAL(rejected()),
              this,
              SLOT(slot_eventviewer_hide()) );
+
+    connect( m_pEventViewer,
+             SIGNAL(signal_model_changed()),
+             this,
+             SLOT(slot_pref_request_save() ) );
 
     //! robonet
     connect( m_pRoboNetThread, SIGNAL(signal_net( const QString&,int,RoboMsg)),
@@ -492,39 +514,39 @@ void MainWindow::loadSetup()
 
     mRoboModelMgr.load(  robo_mgr_name );
 
-    //! default action
-    EventAction *pAction = new EventAction();
-    if ( NULL != pAction )
-    {
-        pAction->setEnable( true );
-        pAction->setEvent( QStringLiteral("Lose Step") );
-        pAction->setAction( QStringLiteral("Prompt") );
-        pAction->setComment( tr("Lose Step") );
-        mMcModel.mEventActionModel.items()->append( pAction );
-    }
+//    //! default action
+//    EventAction *pAction = new EventAction();
+//    if ( NULL != pAction )
+//    {
+//        pAction->setEnable( true );
+//        pAction->setEvent( QStringLiteral("Lose Step") );
+//        pAction->setAction( QStringLiteral("None") );
+//        pAction->setComment( tr("Lose Step") );
+//        mMcModel.mEventActionModel.items()->append( pAction );
+//    }
 
-    pAction = new EventAction();
-    if ( NULL != pAction )
-    {
-        pAction->setEnable( true );
-        pAction->setEvent( QStringLiteral("Over Distance") );
-        pAction->setAction( QStringLiteral("Prompt+Stop") );
-        pAction->setComment( tr("MRX-T4 Distance warning") );
-        mMcModel.mEventActionModel.items()->append( pAction );
-    }
+//    pAction = new EventAction();
+//    if ( NULL != pAction )
+//    {
+//        pAction->setEnable( true );
+//        pAction->setEvent( QStringLiteral("Over Distance") );
+//        pAction->setAction( QStringLiteral("Prompt+Stop") );
+//        pAction->setComment( tr("MRX-T4 Distance warning") );
+//        mMcModel.mEventActionModel.items()->append( pAction );
+//    }
 
-    pAction = new EventAction();
-    if ( NULL != pAction )
-    {
-        pAction->setEnable( true );
-        pAction->setEvent( QStringLiteral("Over Angle") );
-        pAction->setAction( QStringLiteral("Prompt+Stop") );
-        pAction->setComment( tr("MRX-T4 Angle warning") );
-        mMcModel.mEventActionModel.items()->append( pAction );
-    }
+//    pAction = new EventAction();
+//    if ( NULL != pAction )
+//    {
+//        pAction->setEnable( true );
+//        pAction->setEvent( QStringLiteral("Over Angle") );
+//        pAction->setAction( QStringLiteral("Prompt+Stop") );
+//        pAction->setComment( tr("MRX-T4 Angle warning") );
+//        mMcModel.mEventActionModel.items()->append( pAction );
+//    }
 
     m_pEventViewer = new eventViewer(
-                                      &mMcModel.mEventActionModel,
+                                      &mMcModel.mSysPref.mEventActionModel,
                                       this );
     Q_ASSERT( NULL != m_pEventViewer );
     m_pEventViewer->setMcModel( &mMcModel );
@@ -1208,7 +1230,13 @@ void MainWindow::slot_tabwidget_currentChanged(int index)
         {}
         else
         {
-            MegaMessageBox::information( this, tr("Info"), tr("Device setting has not been updated") );
+            if ( QMessageBox::Yes == MegaMessageBox::question( this, tr("Info"),
+                                                              tr("Device setting has not been updated, upload now?") ) )
+            {
+                m_pDeviceMgr->requestUploadSetting( pViewModel->getModelObj() );
+            }
+            else
+            {}
         }
     }
 }
@@ -1280,7 +1308,7 @@ modelView *MainWindow::createModelView( modelView *pView,
              pView,
              SLOT(slot_request( const RpcRequest &)));
 
-    mModelViews.append( pView );logDbg();
+    mModelViews.append( pView );
 
     return pView;
 }
@@ -1509,9 +1537,20 @@ void MainWindow::on_actionForceStop_triggered()
 {
     mMcModel.resetCommunicate();
 
+    slot_pref_changed();
+
     RoboTask::killAll();
 
-    slot_pref_changed();
+    if ( NULL != m_pDeviceMgr->m_pMgr )
+    { m_pDeviceMgr->m_pMgr->emergencyStop(); }
+
+    Q_ASSERT( NULL != m_pSysTimerThread );
+    m_pSysTimerThread->stopAll();
+}
+
+void MainWindow::on_actionStop_triggered()
+{
+    RoboTask::killAll();
 
     if ( NULL != m_pDeviceMgr->m_pMgr )
     { m_pDeviceMgr->m_pMgr->emergencyStop(); }
@@ -1615,28 +1654,32 @@ void MainWindow::on_actionImport_I_triggered()
 
 void MainWindow::on_actiontest_triggered()
 {
-//    QFile qss( "G:/work/mc/develope/source/wnd/res/qss/mega.qss" );
-//    qss.open(QFile::ReadOnly);
-//    qApp->setStyleSheet(qss.readAll());
-//    qss.close();
-logDbg();
-//    QProcess *pProcess = new QProcess();
-    if ( NULL == m_pProcess )
-    {
-        m_pProcess = new QProcess();
-        connect( m_pProcess, SIGNAL(readyReadStandardOutput()),
-                 this, SLOT(slot_process_output()) );
+    QFile qss( "G:/work/mc/develope/source/wnd/res/qss/mega.qss" );
+    qss.open(QFile::ReadOnly);
+    qApp->setStyleSheet(qss.readAll());
+    qss.close();
 
-        connect( m_pProcess, SIGNAL(readyReadStandardError()),
-                 this, SLOT(slot_process_output()) );
-    }
+    sysPrompt("hello1");
+    sysPrompt("hello2");
 
-    QStringList strList;
-//    strList<<"-c"<<"print(\"hello\")";
-//    m_pProcess->execute( "python", strList );
+//logDbg();
+////    QProcess *pProcess = new QProcess();
+//    if ( NULL == m_pProcess )
+//    {
+//        m_pProcess = new QProcess();
+//        connect( m_pProcess, SIGNAL(readyReadStandardOutput()),
+//                 this, SLOT(slot_process_output()) );
 
-    strList<<"G:/study/py/hello.py";
-    m_pProcess->start( "python", strList );
+//        connect( m_pProcess, SIGNAL(readyReadStandardError()),
+//                 this, SLOT(slot_process_output()) );
+//    }
+
+//    QStringList strList;
+////    strList<<"-c"<<"print(\"hello\")";
+////    m_pProcess->execute( "python", strList );
+
+//    strList<<"G:/study/py/hello.py";
+//    m_pProcess->start( "python", strList );
 
 //    logDbg()<<pProcess->readAllStandardOutput();
 //    logDbg()<<pProcess->readAllStandardError();
@@ -1730,5 +1773,7 @@ void MainWindow::slot_process_exit( int code, QProcess::ExitStatus stat )
     ui->actionTerminate->setEnabled( false );
     ui->actionRun_Script->setEnabled( true );
 }
+
+
 
 

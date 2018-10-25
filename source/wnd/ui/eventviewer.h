@@ -22,9 +22,6 @@ public:
     static int exceptionCode( const QString &str );
     static int actionCode( const QString &str );
 
-//    static int exceptionMCode( int exceptionId );
-//    static int exceptionSCode( int exceptionId );
-
     static int exceptionIndex( const QString &str );
 
 public:
@@ -34,6 +31,9 @@ public:
     ~eventViewer();
 
     void setMcModel( mcModel *pObj );
+
+Q_SIGNALS:
+    void signal_model_changed();
 
 protected Q_SLOTS:
     void slot_event( eventId id, frameData );

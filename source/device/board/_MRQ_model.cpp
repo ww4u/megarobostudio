@@ -231,6 +231,7 @@ static value_desc _value_desc_MRQ_MOTIONPLAN_ENDSTATE_1[] = {
 static value_desc _value_desc_MRQ_MOTIONPLAN_STOPMODE_1[] = {
 	{0,"IMMEDIATE",},
 	{1,"DISTANCE",},
+	{2,"UNTILEND",},
 };
 static value_desc _value_desc_MRQ_MOTIONPLAN_OOSLINERESPONSE_1[] = {
 	{0,"NONE",},
@@ -3677,7 +3678,7 @@ int _MRQ_model::getMOTIONPLAN_BUFFERSIZE( byte val0
 	return 0;
 }
 //! U8,ENUM,ENUM
-//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8,IMMEDIATE|DISTANCE
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8,IMMEDIATE|DISTANCE|UNTILEND
 int _MRQ_model::setMOTIONPLAN_STOPMODE( byte val0
 ,MRQ_MOTION_SWITCH_1 val1
 ,MRQ_MOTIONPLAN_STOPMODE_1 val2 )

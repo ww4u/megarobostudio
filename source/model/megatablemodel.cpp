@@ -1,7 +1,7 @@
 #include "megatablemodel.h"
 
 MegaTableModel::MegaTableModel( const QString &className,
-                                const QString &name ) : scriptFile(name)
+                                const QString &name )
 {
     mClassName = className;
 

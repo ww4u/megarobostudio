@@ -73,6 +73,7 @@ void RawRoboUnit::proc( int msg, RoboMsg &detail )
         selfFsm()->reqRun( true );
 
         toState( MegaDevice::mrq_state_run_reqed, detail );
+//        toState( MegaDevice::mrq_state_calcend, detail );
     }
 
     else if ( msg == MegaDevice::mrq_msg_stop )

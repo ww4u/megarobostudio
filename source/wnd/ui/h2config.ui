@@ -150,7 +150,7 @@
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="../res/res.qrc">:/res/image/h2arch.png</pixmap>
+         <pixmap>:/res/image/h2arch.png</pixmap>
         </property>
         <property name="scaledContents">
          <bool>true</bool>
@@ -162,6 +162,9 @@
    </item>
    <item row="1" column="0" colspan="2">
     <widget class="QGroupBox" name="gpTransfer">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="title">
       <string>Transfer</string>
      </property>
@@ -521,6 +524,9 @@
    </item>
    <item row="2" column="0" colspan="2">
     <widget class="QGroupBox" name="groupBox_11">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="title">
       <string>Inverse</string>
      </property>
@@ -640,8 +646,6 @@
    </item>
   </layout>
  </widget>
- <resources>
-  <include location="../res/res.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

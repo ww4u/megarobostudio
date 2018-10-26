@@ -95,7 +95,8 @@ void H2Config::updateData()
     invt[1*2+0] = ui->spinR10_2->value();
     invt[1*2+1] = ui->spinR11_2->value();
 
-    pRobo->setTransfer( t, s, invt );
+    //! \note not config the transfer
+//    pRobo->setTransfer( t, s, invt );
 }
 
 void H2Config::updateUi()

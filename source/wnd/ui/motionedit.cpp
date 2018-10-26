@@ -142,8 +142,11 @@ void motionEdit::onMotionStatus( int axes,
         setLink( false );
     }
 
-    if ( MegaDevice::mrq_state_idle == cvtStat
-         || MegaDevice::mrq_state_run_reqed == cvtStat )
+    if ( MegaDevice::mrq_state_idle == cvtStat )
+    {
+        down_start_stop( true, true, false );
+    }
+    else if ( MegaDevice::mrq_state_run_reqed == cvtStat )
     {
         down_start_stop( true, false, false );
     }

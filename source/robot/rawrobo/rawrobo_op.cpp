@@ -4,6 +4,7 @@
 
 int RawRobo::run( const tpvRegion &region  )
 {
+//    onLine();
     lpc()->postMsg( (eRoboMsg)(MegaDevice::mrq_msg_run), region );
     return 0;
 }

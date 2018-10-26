@@ -162,7 +162,7 @@
        <number>3</number>
       </property>
       <property name="topMargin">
-       <number>6</number>
+       <number>9</number>
       </property>
       <property name="rightMargin">
        <number>3</number>
@@ -286,7 +286,7 @@
        <number>3</number>
       </property>
       <property name="topMargin">
-       <number>6</number>
+       <number>9</number>
       </property>
       <property name="rightMargin">
        <number>3</number>

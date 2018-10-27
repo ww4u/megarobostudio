@@ -47,6 +47,10 @@ robotSinanju::robotSinanju()
 
     mImage = QImage::fromData( _megaimage, sizeof(_megaimage) );
 
+    setJointPanelAble( true );
+    setRoboPanelAble( true );
+    setMrpAble( true );
+
     //! angles
     mJointAngleMask[0]=true;
     mJointAngleMask[1]=true;

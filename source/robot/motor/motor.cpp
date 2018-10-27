@@ -24,6 +24,8 @@ robotMotor::robotMotor()
     setJointName( 1 );
 
     mImage = QImage::fromData( _megaimage, sizeof(_megaimage) );
+    setJointPanelAble( true );
+    setRoboPanelAble( false );
 
     mDetail = QString::fromLocal8Bit( (char*)_detail, sizeof_array(_detail) );
 

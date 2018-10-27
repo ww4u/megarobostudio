@@ -315,7 +315,8 @@ SOURCES += \
     ../ui/dlgapp.cpp \
     ../../model/appmodel.cpp \
     ../../app/appmgr.cpp \
-    ../../app/appprocess.cpp
+    ../../app/appprocess.cpp \
+    ../../widget/mfiledialog.cpp
 
 
 HEADERS += \
@@ -499,7 +500,8 @@ HEADERS += \
     ../ui/dlgapp.h \
     ../../model/appmodel.h \
     ../../app/appmgr.h \
-    ../../app/appprocess.h
+    ../../app/appprocess.h \
+    ../../widget/mfiledialog.h
 
 FORMS += \
         ../ui/mainwindow.ui \
@@ -607,10 +609,11 @@ FORMS += \
     ../ui/coordoption.ui \
     ../ui/pagecontrol.ui \
     ../ui/dlghelp.ui \
-    ../ui/dlgapp.ui
+    ../ui/dlgapp.ui \
+    ../../widget/mfiledialog.ui
 
 
-#RESOURCES = ../res/res.qrc
+RESOURCES = ../res/res.qrc
 
 RC_ICONS = ../res/image/logo/megarobo.ico
 

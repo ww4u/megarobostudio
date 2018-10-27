@@ -4,6 +4,13 @@
 #include <QtCore>
 
 
+enum mcModelObj_Op
+{
+    model_obj_op_none = 0,
+    model_obj_op_activate = 0,
+    model_obj_op_new_mrp,
+};
+
 class mcModelObj
 {
 public:

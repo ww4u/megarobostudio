@@ -38,9 +38,12 @@ robotH2Z::robotH2Z()
               <<QObject::tr("Z");
 
     mImage = QImage::fromData( _megaimage, sizeof(_megaimage) );
+    setJointPanelAble( true );
+    setRoboPanelAble( true );
+    setMrpAble( true );
 
     mArmLengths.clear();
-    mArmLengths<<13.4<<13.4<<580<<494<<52<<38;
+    mArmLengths<<580<<494<<38<<52;
 
     mJointAngleMask.clear();
     mJointAngleMask<<true<<true<<false;
@@ -58,7 +61,7 @@ robotH2Z::robotH2Z()
     mAngleDir<<true<<true<<true;
 
     mAxesDirs.clear();
-    mAxesDirs<<-1<<-1<<1;
+    mAxesDirs<<1<<-1<<1;
 
     //! debug used
     //! alter the axes name

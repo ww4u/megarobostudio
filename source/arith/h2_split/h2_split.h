@@ -49,11 +49,13 @@ struct SlovePoint
 };
 
 int h2Split( const QList<double> &armLengthes,
+             const QList<int> &gantry,
              const QList<double> &zeroXy,
              QList< endPoint *> &points,
              QList< tpvList*> &splitDataset );
 int h2Split(
                     const QList<double> &armLengthes,
+                    const QList<int> &gantry,
                     const QList<double> &zeroXy,
                     endPoint * pPoints,
                     int n,
@@ -62,6 +64,7 @@ int h2Split(
 int h2Gc( QList< tpvList*> &splitDataset );
 
 int h2Pose( const QList<double> &armLengthes,
+            const QList<int> &gantry,
             const QList<double> &zeroXy,
             float angleL, float angleR,
             float &x, float &y );

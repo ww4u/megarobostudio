@@ -53,17 +53,32 @@ void H2Panel::moveD( float dx, float dy, bool bKeep )
 
         if ( bKeep )
         {
-            pRobo->move( dx, dy, ui->spinStepT->value(),
+            pRobo->move( ui->spinNX->value(),
+                         ui->spinNY->value(),
+
+                         ui->spinNX->value() + dx,
+                         ui->spinNY->value() + dy,
+
+                         ui->spinStepT->value(),
                          dx / ui->spinStepT->value(),
                          dy / ui->spinStepT->value(),
                          tpvRegion(0,ui->widget->page()));
         }
         else
         {
-            pRobo->move( dx, dy, ui->spinStepT->value(),
+            pRobo->move( ui->spinNX->value(),
+                         ui->spinNY->value(),
+
+                         ui->spinNX->value() + dx,
+                         ui->spinNY->value() + dy,
+
+                         ui->spinStepT->value(),
                          0,
                          0,
                          tpvRegion(0,ui->widget->page()));
+
+            ui->spinNX->setValue( ui->spinNX->value() + dx );
+            ui->spinNY->setValue( ui->spinNY->value() + dy );
         }
 
     }while( 0 );
@@ -97,6 +112,9 @@ void H2Panel::moveA( float x, float y, float dt )
         curve.append( pt );
 
         pRobo->move( curve, tpvRegion(0,ui->widget->page()) );
+
+        ui->spinNX->setValue( x );
+        ui->spinNY->setValue( y );
 
     }while( 0 );
 }
@@ -195,6 +213,8 @@ void H2Panel::on_btnCenter_clicked()
     if ( NULL != pRobo )
     {
         pRobo->goZero( tpvRegion(0,ui->widget->page()) );
+        ui->spinNX->setValue( 0 );
+        ui->spinNY->setValue( 0 );
     }
 }
 

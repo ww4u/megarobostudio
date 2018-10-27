@@ -60,7 +60,8 @@ public:
                  const tpvRegion &region );
     int move( QList<H2ZKeyPoint> &curve,
               const tpvRegion &region );
-    int move( float dx, float dy, float dz,
+    int move( float x, float y, float z,
+              float dx, float dy, float dz,
               float dt,
               float endVx,float endVy, float endVz,
               const tpvRegion &region );

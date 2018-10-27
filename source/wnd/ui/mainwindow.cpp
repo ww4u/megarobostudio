@@ -360,9 +360,9 @@ void MainWindow::buildConnection()
 
     //! prop
     connect( m_pDeviceMgr,
-             SIGNAL(itemXActivated( mcModelObj *)),
+             SIGNAL(itemXActivated( mcModelObj *, mcModelObj_Op)),
              this,
-             SLOT(on_itemXActivated( mcModelObj *)));
+             SLOT(on_itemXActivated( mcModelObj *, mcModelObj_Op)));
     connect( m_pDeviceMgr,
              SIGNAL(signal_itemXHelp(eItemHelp)),
              this,
@@ -374,18 +374,18 @@ void MainWindow::buildConnection()
              SLOT(slot_itemModelUpdated(mcModelObj*)));
 
     connect( m_pRoboMgr,
-             SIGNAL(itemXActivated(mcModelObj*)),
+             SIGNAL(itemXActivated(mcModelObj*, mcModelObj_Op)),
              this,
-             SLOT(on_itemXActivated(mcModelObj*)));
+             SLOT(on_itemXActivated(mcModelObj*, mcModelObj_Op)));
     connect( m_pRoboMgr,
              SIGNAL(signal_itemXHelp(eItemHelp)),
              this,
              SLOT(slot_itemXHelp(eItemHelp)) );
 
     connect( m_pScriptMgr,
-             SIGNAL(itemXActivated(mcModelObj*)),
+             SIGNAL(itemXActivated(mcModelObj*, mcModelObj_Op)),
              this,
-             SLOT(on_itemXActivated(mcModelObj*)));
+             SLOT(on_itemXActivated(mcModelObj*, mcModelObj_Op)));
     connect( m_pScriptMgr,
              SIGNAL(signal_itemXHelp(eItemHelp)),
              this,
@@ -400,9 +400,9 @@ void MainWindow::buildConnection()
 
     //! new
     connect( this,
-             SIGNAL(itemXActivated( mcModelObj* )),
+             SIGNAL(itemXActivated( mcModelObj*, mcModelObj_Op )),
              this,
-             SLOT(on_itemXActivated(mcModelObj*)));
+             SLOT(on_itemXActivated(mcModelObj*, mcModelObj_Op)));
 
     //! tab close
     connect( ui->widget,
@@ -786,121 +786,19 @@ void MainWindow::cfgTab_tabCloseRequested( int index )
 }
 
 //! show model
-void MainWindow::on_itemXActivated( mcModelObj *pObj )
+void MainWindow::on_itemXActivated( mcModelObj *pObj, mcModelObj_Op op )
 {
     if ( NULL == pObj )
     { return; }
 
-    //! find view
-    modelView *pView = findView( pObj );logDbg();
-    if ( NULL != pView )
-    {
-        int index;
-        index = ui->widget->indexOf( pView );
-        if ( index >= 0 )
-        {
-            ui->widget->setCurrentWidget( pView );
-            return;
-        }
-        //! no view
-        else
-        {
-            Q_ASSERT( false );
-            return;
-        }
-    }
-
-    //! new view
-
-    //! tpv
-    if ( pObj->getType() == mcModelObj::model_tpv )
-    {
-        pvtEdit *pEdit;
-        pEdit = new pvtEdit();
-        Q_ASSERT( NULL != pEdit );
-
-        createModelView( pEdit, pObj );
-    }
-
-    else if ( pObj->getType() == mcModelObj::model_tp )
-    {
-        TpEdit *pEdit;
-        pEdit = new TpEdit();
-        Q_ASSERT( NULL != pEdit );
-
-        createModelView( pEdit, pObj );
-    }
-
-    //! motion
-    else if ( pObj->getType() == mcModelObj::model_motion_file )
-    {
-        motionEdit *pMotionEdit;
-        pMotionEdit = new motionEdit();logDbg();
-        Q_ASSERT( NULL != pMotionEdit );logDbg();
-
-        createModelView( pMotionEdit, pObj );logDbg();
-
-        connect( this, SIGNAL(sig_robo_name_changed(const QString&)),
-                 pMotionEdit, SLOT(slot_robo_changed( const QString&)));
-        emit sig_robo_name_changed( mMcModel.mConn.getRoboName() );
-    }
-
-    //! from robo mgr
-    else if ( pObj->getType() == mcModelObj::model_robot )
-    {
-        roboScene *pRoboScene = currentRoboScene();
-        if ( NULL != pRoboScene )
-        {
-            pRoboScene->addRobot(pObj);
-            Q_ASSERT( NULL != pRoboScene->getModelObj() );
-            pObj->setPath( pRoboScene->getModelObj()->getPath() );
-        }
-        else
-        { delete pObj; }
-    }
-
-    //! setup from scene
-    else if ( pObj->getType() == mcModelObj::model_scene_variable
-              || pObj->getType() == mcModelObj::model_device
-              || pObj->getType() == mcModelObj::model_composite_device
-              )
-    {
-        pView = createRoboProp( pObj );
-        Q_ASSERT( NULL != pView );
-        pView->setActive();
-    }
-
-    //! scene file
-    else if ( pObj->getType() == mcModelObj::model_scene_file )
-    {logDbg();
-        roboScene *pWorkScene;
-        pWorkScene = new roboScene();
-        Q_ASSERT( NULL != pWorkScene );
-
-        createModelView( pWorkScene, pObj );
-
-        connect( pWorkScene,
-                 SIGNAL(itemXActivated(mcModelObj*)),
-                 this,
-                 SLOT(on_itemXActivated(mcModelObj*)));
-
-        connect( pWorkScene,
-                 SIGNAL(signalSceneChanged()),
-                 this,
-                 SLOT(slot_scene_changed()) );
-    }
-
-    //! py file
-    else if ( pObj->getType() == mcModelObj::model_py_file )
-    {
-        scriptEditor *pScriptEditor;
-        pScriptEditor = new scriptEditor();
-        Q_ASSERT( NULL != pScriptEditor );
-
-        createModelView( pScriptEditor, pObj );
-    }
+    if ( op == model_obj_op_activate )
+    { on_itemx_active( pObj ); }
+    else if ( op == model_obj_op_new_mrp )
+    { on_itemx_new_mrp( pObj ); }
     else
     {}
+
+
 }
 
 //! model updated
@@ -1652,15 +1550,19 @@ void MainWindow::on_actionImport_I_triggered()
     m_pScriptMgr->slot_context_import();
 }
 
+#include "../widget/mfiledialog.h"
 void MainWindow::on_actiontest_triggered()
 {
-    QFile qss( "G:/work/mc/develope/source/wnd/res/qss/mega.qss" );
-    qss.open(QFile::ReadOnly);
-    qApp->setStyleSheet(qss.readAll());
-    qss.close();
+//    QFile qss( "G:/work/mc/develope/source/wnd/res/qss/mega.qss" );
+//    qss.open(QFile::ReadOnly);
+//    qApp->setStyleSheet(qss.readAll());
+//    qss.close();
 
-    sysPrompt("hello1");
-    sysPrompt("hello2");
+//    sysPrompt("hello1");
+//    sysPrompt("hello2");
+
+    MFileDialog dlg;
+    dlg.exec();
 
 //logDbg();
 ////    QProcess *pProcess = new QProcess();

@@ -20,7 +20,7 @@ robotH2M::robotH2M()
     mDetail = QString::fromLocal8Bit( (char*)_detail, sizeof_array(_detail) );
 
     mArmLengths.clear();
-    mArmLengths<<13.4<<13.4<<580<<494<<52<<38;
+    mArmLengths<<580<<494<<38<<52;
 
     //! mask
     mJointCcwMask.clear();
@@ -33,7 +33,7 @@ robotH2M::robotH2M()
     mAngleDir<<true<<true;
 
     mAxesDirs.clear();
-    mAxesDirs<<-1<<-1;
+    mAxesDirs<<1<<-1;
 }
 
 

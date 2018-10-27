@@ -78,10 +78,14 @@ void RawRoboUnit::proc( int msg, RoboMsg &detail )
 
     else if ( msg == MegaDevice::mrq_msg_stop )
     {
+        selfFsm()->reqRun( false );
+
         //! \todo stop downloading
         selfFsm()->Robot()->switchStop();
 
-        toState( MegaDevice::mrq_state_prestop, detail );
+        toState( MegaDevice::mrq_state_idle, detail );
+
+        logDbg();
     }
 
     else if ( msg == MegaDevice::mrq_msg_call )

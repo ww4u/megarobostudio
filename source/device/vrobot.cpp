@@ -92,6 +92,9 @@ VRobot::VRobot()
     mbTunningAble = false;
 
     mbCoordAble = false;
+    mbJointPanelAble = false;
+    mbRoboPanelAble = false;
+    mbMrpAble = false;
 
     mDriverId = 0;
 

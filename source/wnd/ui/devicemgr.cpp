@@ -521,7 +521,17 @@ void deviceMgr::on_treeWidget_itemActivated(QTreeWidgetItem *item, int column)
     {
         var = item->data( 0, Qt::UserRole );
         VRobot *pRobot = var.value<VRobot*>();
-        emit itemXActivated( (mcModelObj*)pRobot );
+
+        //! default to panel
+        if ( pRobot->roboPanelAble() )
+        {
+            m_pRobo = pRobot;
+            mCurrNodeName = item->parent()->text(0);
+
+            context_robo_panel();
+        }
+        else
+        { emit itemXActivated( (mcModelObj*)pRobot ); }
     }
     //! mrq axes
     else if ( item->data(0,Qt::UserRole).type() == (QVariant::Type)QMetaType::Int )
@@ -886,21 +896,10 @@ void deviceMgr::contextMenuEvent(QContextMenuEvent *event)
             mCurrNodeName = pItem->parent()->text(0);
 
             //! panel for some robo
-            if ( m_pRobo->getId() == VRobot::robot_sinanju
-                 || m_pRobo->getId() == VRobot::robot_h2
-                 || m_pRobo->getId() == VRobot::robot_h2_m
-                 || m_pRobo->getId() == VRobot::robot_h2z
-                 || m_pRobo->getId() == VRobot::robot_igus_delta
-                                    )
-            { m_pRoboPanelAction->setVisible(true); }
-            else
-            { m_pRoboPanelAction->setVisible(false); }
+            m_pRoboPanelAction->setVisible( m_pRobo->roboPanelAble() );
 
             //! motors has no joints
-            if ( m_pRobo->getId() == VRobot::robot_motors )
-            { m_pRoboJoiontAction->setVisible( false ); }
-            else
-            { m_pRoboJoiontAction->setVisible( true ); }
+            m_pRoboJoiontAction->setVisible( m_pRobo->jointPanelAble() );
 
             m_pRoboMenu->popup( mapToGlobal( event->pos() ) );
             event->accept();

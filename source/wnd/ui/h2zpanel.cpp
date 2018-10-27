@@ -48,7 +48,11 @@ void H2ZPanel::moveD( float dx, float dy, float dz, bool bKeep )
 
         if ( bKeep )
         {
-            pRobo->move( dx, dy, dz,
+            pRobo->move( ui->spinNX->value(),
+                         ui->spinNY->value(),
+                         0,
+
+                         dx, dy, dz,
                          ui->spinStepT->value(),
                          dx/ui->spinStepT->value(),
                          dy/ui->spinStepT->value(),
@@ -58,10 +62,16 @@ void H2ZPanel::moveD( float dx, float dy, float dz, bool bKeep )
         }
         else
         {
-            pRobo->move( dx, dy, dz,
+            pRobo->move( ui->spinNX->value(),
+                         ui->spinNY->value(),
+                         0,
+                         dx, dy, dz,
                          ui->spinStepT->value(),
                          0, 0, 0,
                          tpvRegion(0,ui->widget->page()) );
+
+            ui->spinNX->setValue( ui->spinNX->value() + dx );
+            ui->spinNY->setValue( ui->spinNX->value() + dy );
         }
 
     }while( 0 );
@@ -97,6 +107,9 @@ void H2ZPanel::moveA( float x, float y, float z, float dt )
         curve.append( pt );
 
         pRobo->move( curve, tpvRegion(0,ui->widget->page()) );
+
+        ui->spinNX->setValue( x );
+        ui->spinNY->setValue( y );
 
     }while( 0 );
 }

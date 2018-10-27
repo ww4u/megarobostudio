@@ -8,8 +8,8 @@ int robotH2::serialIn( QXmlStreamReader &reader )
         { serialInRaw(reader); }
         else if ( reader.name() == "zero" )
         { serialInZero(reader); }
-        else if ( reader.name() == "arm" )
-        { serialInArm(reader); }
+        else if ( reader.name() == "gantry" )
+        { serialInGantry(reader); }
         else if ( reader.name() == "transfer" )
         { serialInTransfer(reader); }
         else
@@ -28,8 +28,8 @@ int robotH2::serialOut( QXmlStreamWriter &writer )
     serialOutZero(writer);
     writer.writeEndElement();
 
-    writer.writeStartElement("arm");
-    serialOutArm( writer );
+    writer.writeStartElement("gantry");
+    serialOutGantry( writer );
     writer.writeEndElement();
 
     writer.writeStartElement("transfer");
@@ -89,16 +89,23 @@ int robotH2::serialInZero( QXmlStreamReader &reader )
     return 0;
 }
 
-int robotH2::serialOutArm( QXmlStreamWriter &writer)
+int robotH2::serialOutGantry( QXmlStreamWriter &writer)
 {
     for ( int i = 0; i < mArmLengths.size(); i++ )
     {
         writer.writeTextElement( "value", QString::number( mArmLengths.at(i) ) );
     }
 
+    //! gear
+    writer.writeTextElement( "tooth_type", QString::number( mToothType ) );
+    writer.writeTextElement( "tooth_gear", QString::number( mToothGear ) );
+
+    writer.writeTextElement( "p_dir_index", QString::number( mPDirIndex ) );
+    writer.writeTextElement( "motion_index", QString::number( mMotionIndex ) );
+
     return 0;
 }
-int robotH2::serialInArm( QXmlStreamReader &reader )
+int robotH2::serialInGantry( QXmlStreamReader &reader )
 {
     int id = 0;
     while(reader.readNextStartElement())
@@ -107,6 +114,14 @@ int robotH2::serialInArm( QXmlStreamReader &reader )
         {
             mArmLengths[id++] = reader.readElementText().toDouble();
         }
+        else if ( reader.name() == "tooth_type" )
+        { mToothType = reader.readElementText().toInt(); }
+        else if ( reader.name() == "tooth_gear" )
+        { mToothGear = reader.readElementText().toInt(); }
+        else if ( reader.name() == "p_dir_index" )
+        { mPDirIndex = reader.readElementText().toInt(); }
+        else if ( reader.name() == "motion_index" )
+        { mMotionIndex = reader.readElementText().toInt(); }
         else
         { reader.skipCurrentElement(); }
     }

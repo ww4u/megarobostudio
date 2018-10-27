@@ -33,6 +33,9 @@ robotInject::robotInject()
               <<QObject::tr("Injection");
 
     mImage = QImage::fromData( _megaimage, sizeof(_megaimage) );
+    setJointPanelAble( true );
+    setRoboPanelAble( false );
+    setMrpAble( true );
 
     mArmLengths.clear();
 

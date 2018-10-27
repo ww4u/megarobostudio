@@ -141,7 +141,7 @@ protected Q_SLOTS:
 
     void cfgTab_tabCloseRequested( int index );
 
-    void on_itemXActivated( mcModelObj *pObj );
+    void on_itemXActivated( mcModelObj *pObj, mcModelObj_Op op=model_obj_op_none );
     void slot_itemModelUpdated( mcModelObj *pObj );
 
     void slot_itemXHelp( eItemHelp hlp );
@@ -222,8 +222,15 @@ protected:
     void doLoadPrj( const QString &path,
                     const QString &name );
 
+    bool asurePrjValid();
+    bool savePrjAs( QString &path, QString &name );
+    void newMrp( QString className );
+
+    void on_itemx_active( mcModelObj* );
+    void on_itemx_new_mrp( mcModelObj* );
+
 Q_SIGNALS:
-    void itemXActivated( mcModelObj* );
+    void itemXActivated( mcModelObj*, mcModelObj_Op op=model_obj_op_none );
 
 public slots:
     void on_actionProject_triggered();

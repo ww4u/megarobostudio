@@ -45,7 +45,8 @@ int robotH2::move( QList<H2KeyPoint> &curve,
     return ret;
 }
 
-int robotH2::move( float dx, float dy, float dt, float endVx, float endVy,
+int robotH2::move( float x, float y,
+                   float dstx, float dsty, float dt, float endVx, float endVy,
                    const tpvRegion &region )
 {
     QList<H2KeyPoint> curve;
@@ -54,8 +55,8 @@ int robotH2::move( float dx, float dy, float dt, float endVx, float endVy,
 
     //! p0
     kp.t = 0;
-    kp.x = 0;
-    kp.y = 0;
+    kp.x = x;
+    kp.y = y;
     kp.vx = 0;
     kp.vy = 0;
 
@@ -63,8 +64,8 @@ int robotH2::move( float dx, float dy, float dt, float endVx, float endVy,
 
     //! p1
     kp.t = dt;
-    kp.x = dx;
-    kp.y = dy;
+    kp.x = dstx;
+    kp.y = dsty;
     kp.vx = endVx;
     kp.vy = endVy;
     curve.append( kp );
@@ -113,7 +114,7 @@ int robotH2::goZero( const tpvRegion &region,
     {//logDbg()<<mZeroDistance<<mZeroTime<<mGapDistance<<mGapTime;
         //! arg
         pArg->mAx = 0;
-        pArg->mZeroDist = -mZeroDistance;
+        pArg->mZeroDist = mZeroDistance;
         pArg->mZeroTime = mZeroTime;
         pArg->mZeroEndV = -mZeroSpeed;
 
@@ -136,7 +137,7 @@ int robotH2::goZero( const tpvRegion &region,
     {
         //! arg
         pArg->mAx = 1;
-        pArg->mZeroDist = -mZeroDistance;
+        pArg->mZeroDist = mZeroDistance;
         pArg->mZeroTime = mZeroTime;
         pArg->mZeroEndV = -mZeroSpeed;
 
@@ -191,7 +192,7 @@ int robotH2::goZero( const tpvRegion &region,
 
     //! arg
     pArg->mAx = 128;        //! full ax
-    pArg->mZeroDist = -mZeroDistance;
+    pArg->mZeroDist = mZeroDistance;
     pArg->mZeroTime = mZeroTime;
     pArg->mZeroEndV = -mZeroSpeed;
 
@@ -322,7 +323,9 @@ int robotH2::zeroX( H2ZeroArg *pZArg )
 //    setTransferAble( false );
 
     //! m
-    move( pZArg->mZeroDist, 0, pZArg->mZeroTime, pZArg->mZeroEndV, 0, region );
+    move(   pZArg->mZeroDist,0,
+            0, 0, pZArg->mZeroTime, pZArg->mZeroEndV, 0, region
+         );
 
 //    setTransferAble( bTransfer );
 
@@ -342,7 +345,8 @@ int robotH2::zeroY( H2ZeroArg *pZArg )
 //    bTransfer = transferAble();
 //    setTransferAble( false );
 
-    move( 0, pZArg->mZeroDist, pZArg->mZeroTime, 0, pZArg->mZeroEndV, region );
+    move( 0, pZArg->mZeroDist,
+          0, 0, pZArg->mZeroTime, 0, pZArg->mZeroEndV, region );
 
 //    setTransferAble( bTransfer );
 
@@ -358,14 +362,9 @@ int robotH2::gapX( H2ZeroArg *pZArg )
 
     region = pZArg->mRegion;
 
-//    bool bTransfer;
-//    bTransfer = transferAble();
-//    setTransferAble( false );
-
     //! gap
-    move( pZArg->mZeroGapDist, 0, pZArg->mZeroGapTime, 0, 0, region );
-
-//    setTransferAble( bTransfer );
+    move( 0,0,
+          pZArg->mZeroGapDist, 0, pZArg->mZeroGapTime, 0, 0, region );
 
     ret = waitFsm( region, MegaDevice::mrq_state_idle, pZArg->mTmo, pZArg->mTick );
 
@@ -378,13 +377,8 @@ int robotH2::gapY( H2ZeroArg *pZArg )
 
     region = pZArg->mRegion;
 
-//    bool bTransfer;
-//    bTransfer = transferAble();
-//    setTransferAble( false );
-
-    move( 0, pZArg->mZeroGapDist, pZArg->mZeroGapTime, 0, 0, region );
-
-//    setTransferAble( bTransfer );
+    move( 0,0,
+          0, pZArg->mZeroGapDist, pZArg->mZeroGapTime, 0, 0, region );
 
     ret = waitFsm( region, MegaDevice::mrq_state_idle, pZArg->mTmo, pZArg->mTick );
     if ( ret != 0 )
@@ -447,12 +441,17 @@ int robotH2::pose( float &x, float &y )
     { return ret; }
 
     //! convert
+    QList<int> gantry;
+    gantry<<mToothType<<mToothGear<<mPDirIndex<<mMotionIndex;
+
     QList<double> zeroXy;
     zeroXy.append( mZeroX );
     zeroXy.append( mZeroY );
-    ret = h2_split::h2Pose( mArmLengths, zeroXy,
-                              angleL, angleR,
-                              x, y );           //! \note invert
+    ret = h2_split::h2Pose( mArmLengths,
+                            gantry,
+                            zeroXy,
+                            angleL, angleR,
+                            x, y );           //! \note invert
 
     //! invert x
 //    x = -x;

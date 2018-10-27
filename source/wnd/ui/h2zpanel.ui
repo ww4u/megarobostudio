@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>504</width>
-    <height>405</height>
+    <height>452</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -35,7 +35,7 @@
       <property name="spacing">
        <number>3</number>
       </property>
-      <item row="2" column="1">
+      <item row="3" column="1">
        <widget class="QLabel" name="label_7">
         <property name="maximumSize">
          <size>
@@ -51,7 +51,23 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="3">
+      <item row="3" column="2">
+       <widget class="QSpinBox" name="spinBox">
+        <property name="suffix">
+         <string>ms</string>
+        </property>
+        <property name="minimum">
+         <number>100</number>
+        </property>
+        <property name="maximum">
+         <number>10000</number>
+        </property>
+        <property name="value">
+         <number>1000</number>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="3">
        <widget class="QToolButton" name="btnMarkNow">
         <property name="enabled">
          <bool>true</bool>
@@ -69,7 +85,7 @@
          <string>PushButton</string>
         </property>
         <property name="icon">
-         <iconset resource="../res/res.qrc">
+         <iconset>
           <normaloff>:/res/image/icon/addition.png</normaloff>:/res/image/icon/addition.png</iconset>
         </property>
         <property name="iconSize">
@@ -80,41 +96,12 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="2">
-       <widget class="QSpinBox" name="spinBox">
-        <property name="suffix">
-         <string>ms</string>
-        </property>
-        <property name="minimum">
-         <number>100</number>
-        </property>
-        <property name="maximum">
-         <number>10000</number>
-        </property>
-        <property name="value">
-         <number>1000</number>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0">
+      <item row="3" column="0">
        <widget class="QCheckBox" name="chkOnOff">
         <property name="text">
          <string>ON/OFF</string>
         </property>
        </widget>
-      </item>
-      <item row="1" column="4" colspan="2">
-       <spacer name="horizontalSpacer_2">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
       </item>
       <item row="1" column="0" colspan="4">
        <layout class="QHBoxLayout" name="horizontalLayout">
@@ -147,6 +134,74 @@
          </widget>
         </item>
        </layout>
+      </item>
+      <item row="1" column="4" colspan="2">
+       <spacer name="horizontalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="2" column="0" colspan="4">
+       <widget class="QGroupBox" name="groupBox_7">
+        <property name="title">
+         <string>Nominal</string>
+        </property>
+        <layout class="QGridLayout" name="gridLayout_5">
+         <item row="0" column="0">
+          <widget class="QLabel" name="label_11">
+           <property name="text">
+            <string>X</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="2">
+          <widget class="QLabel" name="label_12">
+           <property name="text">
+            <string>Y</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QDoubleSpinBox" name="spinNX">
+           <property name="suffix">
+            <string>mm</string>
+           </property>
+           <property name="decimals">
+            <number>3</number>
+           </property>
+           <property name="minimum">
+            <double>-1000000.000000000000000</double>
+           </property>
+           <property name="maximum">
+            <double>1000000.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="3">
+          <widget class="QDoubleSpinBox" name="spinNY">
+           <property name="suffix">
+            <string>mm</string>
+           </property>
+           <property name="decimals">
+            <number>3</number>
+           </property>
+           <property name="minimum">
+            <double>-1000000.000000000000000</double>
+           </property>
+           <property name="maximum">
+            <double>1000000.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
       </item>
      </layout>
     </widget>
@@ -271,7 +326,7 @@
             <string>Mark</string>
            </property>
            <property name="icon">
-            <iconset resource="../res/res.qrc">
+            <iconset>
              <normaloff>:/res/image/icon/addition.png</normaloff>:/res/image/icon/addition.png</iconset>
            </property>
            <property name="iconSize">
@@ -297,7 +352,7 @@
             <string>GO</string>
            </property>
            <property name="icon">
-            <iconset resource="../res/res.qrc">
+            <iconset>
              <normaloff>:/res/image/icon/skip.png</normaloff>:/res/image/icon/skip.png</iconset>
            </property>
            <property name="iconSize">
@@ -413,7 +468,7 @@
                <string>...</string>
               </property>
               <property name="icon">
-               <iconset resource="../res/res.qrc">
+               <iconset>
                 <normaloff>:/res/image/icon/c_less.png</normaloff>:/res/image/icon/c_less.png</iconset>
               </property>
               <property name="iconSize">
@@ -439,7 +494,7 @@
                <string>...</string>
               </property>
               <property name="icon">
-               <iconset resource="../res/res.qrc">
+               <iconset>
                 <normaloff>:/res/image/icon/c_subtract.png</normaloff>:/res/image/icon/c_subtract.png</iconset>
               </property>
               <property name="iconSize">
@@ -465,7 +520,7 @@
                <string>...</string>
               </property>
               <property name="icon">
-               <iconset resource="../res/res.qrc">
+               <iconset>
                 <normaloff>:/res/image/icon/c_more_unfold.png</normaloff>:/res/image/icon/c_more_unfold.png</iconset>
               </property>
               <property name="iconSize">
@@ -491,7 +546,7 @@
                <string>...</string>
               </property>
               <property name="icon">
-               <iconset resource="../res/res.qrc">
+               <iconset>
                 <normaloff>:/res/image/icon/c_back.png</normaloff>:/res/image/icon/c_back.png</iconset>
               </property>
               <property name="iconSize">
@@ -514,7 +569,7 @@
                <string>...</string>
               </property>
               <property name="icon">
-               <iconset resource="../res/res.qrc">
+               <iconset>
                 <normaloff>:/res/image/icon3/address.png</normaloff>:/res/image/icon3/address.png</iconset>
               </property>
               <property name="iconSize">
@@ -553,7 +608,7 @@
                <string>...</string>
               </property>
               <property name="icon">
-               <iconset resource="../res/res.qrc">
+               <iconset>
                 <normaloff>:/res/image/icon/c_more.png</normaloff>:/res/image/icon/c_more.png</iconset>
               </property>
               <property name="iconSize">
@@ -576,7 +631,7 @@
                <string/>
               </property>
               <property name="pixmap">
-               <pixmap resource="../res/res.qrc">:/res/image/joint/mrx-h2z_geo.png</pixmap>
+               <pixmap>:/res/image/joint/mrx-h2z_geo.png</pixmap>
               </property>
               <property name="scaledContents">
                <bool>true</bool>
@@ -598,7 +653,7 @@
                <string>...</string>
               </property>
               <property name="icon">
-               <iconset resource="../res/res.qrc">
+               <iconset>
                 <normaloff>:/res/image/icon/c_add.png</normaloff>:/res/image/icon/c_add.png</iconset>
               </property>
               <property name="iconSize">
@@ -729,8 +784,6 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources>
-  <include location="../res/res.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

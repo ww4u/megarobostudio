@@ -50,8 +50,7 @@ void H2Config::spyEdited()
         ui->spinArm1,
         ui->spinArm2,
         ui->spinArm3,
-        ui->spinArm4,
-        ui->spinArm5,
+
     };
 
     QComboBox *comboxes[]={
@@ -75,8 +74,11 @@ void H2Config::updateData()
     pRobo->mArmLengths[2] = ui->spinArm2->value();
     pRobo->mArmLengths[3] = ui->spinArm3->value();
 
-    pRobo->mArmLengths[4] = ui->spinArm4->value();
-    pRobo->mArmLengths[5] = ui->spinArm5->value();
+    //! gantry
+    pRobo->setGantry( ui->spinToothType->value(),
+                      ui->spinToothGear->value(),
+                      ui->cmbPDir->currentIndex(),
+                      ui->cmbMotion->currentIndex() );
 
     //! transfer && shift
     double t[2*2], s[2*1], invt[2*2];
@@ -113,8 +115,13 @@ void H2Config::updateUi()
     ui->spinArm2->setValue( pRobo->mArmLengths[2] );
     ui->spinArm3->setValue( pRobo->mArmLengths[3] );
 
-    ui->spinArm4->setValue( pRobo->mArmLengths[4] );
-    ui->spinArm5->setValue( pRobo->mArmLengths[5] );
+    //! gantry
+    int mod, gear, pdir, motion;
+    pRobo->gantry( mod, gear, pdir, motion );
+    ui->spinToothType->setValue( mod );
+    ui->spinToothGear->setValue( gear );
+    ui->cmbPDir->setCurrentIndex( pdir );
+    ui->cmbMotion->setCurrentIndex( motion );
 
     //! transfer && shift
     double t[2*2], s[2*1], invt[2*2];

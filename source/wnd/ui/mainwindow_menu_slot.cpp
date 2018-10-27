@@ -7,7 +7,7 @@
 #include "dlgapp.h"
 #include "deviceconsole.h"
 
-void  MainWindow::doLoadPrj( const QString &path,
+void MainWindow::doLoadPrj( const QString &path,
                              const QString &name )
 {
     m_pScriptMgr->load( path, name );
@@ -22,7 +22,222 @@ void  MainWindow::doLoadPrj( const QString &path,
     setWindowTitle( m_pScriptMgr->getFullName() );
 }
 
-//! project
+bool MainWindow::asurePrjValid()
+{
+    //! not saved
+    if ( m_pScriptMgr->getPath().length() < 1 )
+    {
+        QString path, name;
+
+        if ( savePrjAs( path, name ) )
+        {}
+        else
+        { return false; }
+
+        //! load again
+        doLoadPrj( path, name );
+
+        //! save latest prj
+        mMcModel.mSysPref.setLatestPrj( path,
+                                        comAssist::pureFileName( name ) );
+
+        //! request save
+        emit sig_pref_request_save();
+
+        return true;
+    }
+    else
+    { return true; }
+}
+
+bool MainWindow::savePrjAs( QString &path, QString &name )
+{
+    QFileDialog fDlg;
+
+    fDlg.setAcceptMode( QFileDialog::AcceptSave );
+    fDlg.setNameFilter( tr("prj file (*.prj)") );
+    if ( QDialog::Accepted != fDlg.exec() )
+    { return false; }
+
+    m_pScriptMgr->save( fDlg.directory().absolutePath(),
+                        fDlg.selectedFiles().first() );
+
+    setWindowTitle( m_pScriptMgr->getFullName() );
+
+    //! out name
+    path = fDlg.directory().absolutePath();
+    name = fDlg.selectedFiles().first();
+
+    return true;
+}
+
+void MainWindow::newMrp( QString className )
+{
+    //! file name
+    QFileDialog fDlg;
+    fDlg.setAcceptMode( QFileDialog::AcceptSave );
+    fDlg.setNameFilter( tr("motion file (*.mc)") );
+    if ( fDlg.exec() != QFileDialog::Accepted )
+    { return; }
+
+    //! create the type
+    MegaTableModel *pNewModelObj;
+    pNewModelObj = scriptMgr::newMotion( className );
+    if ( NULL == pNewModelObj )
+    {
+        sysError( tr("fail"), className );
+        return;
+    }
+
+    //! auto add
+    if ( mMcModel.mSysPref.mbNewAutoAdd )
+    { m_pScriptMgr->slot_file_import( fDlg.selectedFiles().first() ); }
+
+    pNewModelObj->save( fDlg.selectedFiles().first() );
+
+    //! init obj
+    pNewModelObj->setName( comAssist::pureFileName( fDlg.selectedFiles().first() ) );
+    pNewModelObj->setPath( fDlg.directory().absolutePath() );
+
+    pNewModelObj->setFile( true );
+    pNewModelObj->setGc( true );
+
+    pNewModelObj->set( mcModelObj::model_motion_file, pNewModelObj );
+
+    on_itemXActivated( pNewModelObj );
+}
+
+void MainWindow::on_itemx_active( mcModelObj* pObj )
+{
+    if ( NULL == pObj )
+    { return; }
+
+    //! find view
+    modelView *pView = findView( pObj );logDbg();
+    if ( NULL != pView )
+    {
+        int index;
+        index = ui->widget->indexOf( pView );
+        if ( index >= 0 )
+        {
+            ui->widget->setCurrentWidget( pView );
+            return;
+        }
+        //! no view
+        else
+        {
+            Q_ASSERT( false );
+            return;
+        }
+    }
+
+    //! new view
+
+    //! tpv
+    if ( pObj->getType() == mcModelObj::model_tpv )
+    {
+        pvtEdit *pEdit;
+        pEdit = new pvtEdit();
+        Q_ASSERT( NULL != pEdit );
+
+        createModelView( pEdit, pObj );
+    }
+
+    else if ( pObj->getType() == mcModelObj::model_tp )
+    {
+        TpEdit *pEdit;
+        pEdit = new TpEdit();
+        Q_ASSERT( NULL != pEdit );
+
+        createModelView( pEdit, pObj );
+    }
+
+    //! motion
+    else if ( pObj->getType() == mcModelObj::model_motion_file )
+    {
+        motionEdit *pMotionEdit;
+        pMotionEdit = new motionEdit();logDbg();
+        Q_ASSERT( NULL != pMotionEdit );logDbg();
+
+        createModelView( pMotionEdit, pObj );logDbg();
+
+        connect( this, SIGNAL(sig_robo_name_changed(const QString&)),
+                 pMotionEdit, SLOT(slot_robo_changed( const QString&)));
+        emit sig_robo_name_changed( mMcModel.mConn.getRoboName() );
+    }
+
+    //! from robo mgr
+    else if ( pObj->getType() == mcModelObj::model_robot )
+    {
+        roboScene *pRoboScene = currentRoboScene();
+        if ( NULL != pRoboScene )
+        {
+            pRoboScene->addRobot(pObj);
+            Q_ASSERT( NULL != pRoboScene->getModelObj() );
+            pObj->setPath( pRoboScene->getModelObj()->getPath() );
+        }
+        else
+        { delete pObj; }
+    }
+
+    //! setup from scene
+    else if ( pObj->getType() == mcModelObj::model_scene_variable
+              || pObj->getType() == mcModelObj::model_device
+              || pObj->getType() == mcModelObj::model_composite_device
+              )
+    {
+        pView = createRoboProp( pObj );
+        Q_ASSERT( NULL != pView );
+        pView->setActive();
+    }
+
+    //! scene file
+    else if ( pObj->getType() == mcModelObj::model_scene_file )
+    {logDbg();
+        roboScene *pWorkScene;
+        pWorkScene = new roboScene();
+        Q_ASSERT( NULL != pWorkScene );
+
+        createModelView( pWorkScene, pObj );
+
+        connect( pWorkScene,
+                 SIGNAL(itemXActivated(mcModelObj*, mcModelObj_Op)),
+                 this,
+                 SLOT(on_itemXActivated(mcModelObj*, mcModelObj_Op)));
+
+        connect( pWorkScene,
+                 SIGNAL(signalSceneChanged()),
+                 this,
+                 SLOT(slot_scene_changed()) );
+    }
+
+    //! py file
+    else if ( pObj->getType() == mcModelObj::model_py_file )
+    {
+        scriptEditor *pScriptEditor;
+        pScriptEditor = new scriptEditor();
+        Q_ASSERT( NULL != pScriptEditor );
+
+        createModelView( pScriptEditor, pObj );
+    }
+    else
+    {}
+}
+
+void MainWindow::on_itemx_new_mrp( mcModelObj* pObj )
+{
+    if ( NULL == pObj )
+    { return; }
+
+    //! new mrp
+    VRobot *pRobo = (VRobot*)pObj;
+    if ( NULL == pRobo )
+    { return; }
+
+    newMrp( pRobo->getClass() );
+}
+
+//! new prj
 void MainWindow::on_actionProject_triggered()
 {
     QFileDialog fDlg;
@@ -77,6 +292,7 @@ void MainWindow::on_actionSave_Prj_triggered()
 
     QString strFileName;
 
+    //! save file name
     strFileName = m_pScriptMgr->getPath() + QDir::separator() + m_pScriptMgr->getName();
     strFileName = QDir::toNativeSeparators( strFileName );
     if ( strFileName.contains(".prj") )
@@ -91,17 +307,9 @@ void MainWindow::on_actionSave_Prj_triggered()
 
 void MainWindow::on_actionSave_Prj_As_triggered()
 {
-    QFileDialog fDlg;
+    QString path, name;
 
-    fDlg.setAcceptMode( QFileDialog::AcceptSave );
-    fDlg.setNameFilter( tr("prj file (*.prj)") );
-    if ( QDialog::Accepted != fDlg.exec() )
-    { return; }
-
-    m_pScriptMgr->save( fDlg.directory().absolutePath(),
-                        fDlg.selectedFiles().first() );
-
-    setWindowTitle( m_pScriptMgr->getFullName() );
+    savePrjAs( path, name );
 }
 
 //! save the current file
@@ -193,42 +401,30 @@ void MainWindow::on_actionOpen_triggered()
 //! news
 void MainWindow::on_actionNewMotion_triggered()
 {
+    //! type
     MotionWizard motionWizard;
-
     if ( QDialog::Accepted == motionWizard.exec() )
     {}
     else
     { return; }
 
-    QFileDialog fDlg;
-    fDlg.setAcceptMode( QFileDialog::AcceptSave );
-    fDlg.setNameFilter( tr("motion file (*.mc)") );
-    if ( fDlg.exec() != QFileDialog::Accepted )
+    //! check prj
+    if ( asurePrjValid() )
+    {}
+    else
     { return; }
 
-    //! create the type
-    MegaTableModel *pNewModelObj;
-    pNewModelObj = scriptMgr::newMotion( motionWizard.motionName() );
-    if ( NULL == pNewModelObj )
-    {
-        sysError( tr("fail"), motionWizard.motionName() );
-        return;
-    }
-
-    //! init obj
-    pNewModelObj->setName( comAssist::pureFileName( fDlg.selectedFiles().first() ) );
-    pNewModelObj->setPath( fDlg.directory().absolutePath() );
-
-    pNewModelObj->setFile( true );
-    pNewModelObj->setGc( true );
-
-    pNewModelObj->set( mcModelObj::model_motion_file, pNewModelObj );
-
-    on_itemXActivated( pNewModelObj );
+    newMrp( motionWizard.motionName() );
 }
 
 void MainWindow::on_actionNewPVT_triggered()
 {
+    //! check prj
+    if ( asurePrjValid() )
+    {}
+    else
+    { return; }
+
     QFileDialog fDlg;
     fDlg.setAcceptMode( QFileDialog::AcceptSave );
     fDlg.setNameFilter( tr("pvt file (*.pvt)") );
@@ -237,6 +433,12 @@ void MainWindow::on_actionNewPVT_triggered()
 
     tpvGroup * pNewModelObj = new tpvGroup();
     Q_ASSERT( NULL != pNewModelObj );
+
+    //! auto add
+    if ( mMcModel.mSysPref.mbNewAutoAdd )
+    { m_pScriptMgr->slot_file_import( fDlg.selectedFiles().first() ); }
+
+    pNewModelObj->save( fDlg.selectedFiles().first() );
 
     pNewModelObj->setName( comAssist::pureFileName( fDlg.selectedFiles().first() ) );
     pNewModelObj->setPath( fDlg.directory().absolutePath() );
@@ -251,6 +453,12 @@ void MainWindow::on_actionNewPVT_triggered()
 
 void MainWindow::on_actionPT_triggered()
 {
+    //! check prj
+    if ( asurePrjValid() )
+    {}
+    else
+    { return; }
+
     QFileDialog fDlg;
     fDlg.setAcceptMode( QFileDialog::AcceptSave );
     fDlg.setNameFilter( tr("pt file (*.pt)") );
@@ -259,6 +467,12 @@ void MainWindow::on_actionPT_triggered()
 
     TpGroup * pNewModelObj = new TpGroup();
     Q_ASSERT( NULL != pNewModelObj );
+
+    //! auto add
+    if ( mMcModel.mSysPref.mbNewAutoAdd )
+    { m_pScriptMgr->slot_file_import( fDlg.selectedFiles().first() ); }
+
+    pNewModelObj->save( fDlg.selectedFiles().first() );
 
     pNewModelObj->setName( comAssist::pureFileName( fDlg.selectedFiles().first() ) );
     pNewModelObj->setPath( fDlg.directory().absolutePath() );
@@ -273,6 +487,12 @@ void MainWindow::on_actionPT_triggered()
 
 void MainWindow::on_actionScene_triggered()
 {
+    //! check prj
+    if ( asurePrjValid() )
+    {}
+    else
+    { return; }
+
     QFileDialog fDlg;
 
     fDlg.setAcceptMode( QFileDialog::AcceptSave );
@@ -283,6 +503,13 @@ void MainWindow::on_actionScene_triggered()
     roboSceneModel *pScene = new roboSceneModel();
     mcModelObj *pNewModelObj = pScene;
     Q_ASSERT( NULL != pNewModelObj );
+
+    //! auto add
+    if ( mMcModel.mSysPref.mbNewAutoAdd )
+    { m_pScriptMgr->slot_file_import( fDlg.selectedFiles().first() ); }
+
+    //! save
+    pScene->save( fDlg.selectedFiles().first() );
 
     pNewModelObj->setPath( fDlg.directory().absolutePath() );
     pNewModelObj->setName( comAssist::pureFileName( fDlg.selectedFiles().first() ) );
@@ -295,8 +522,7 @@ void MainWindow::on_actionScene_triggered()
 
     emit itemXActivated( pNewModelObj );
 
-    //! save
-    pScene->save( fDlg.selectedFiles().first() );
+
 }
 
 //! about

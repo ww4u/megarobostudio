@@ -88,7 +88,8 @@ public:
                  const tpvRegion &region );
     int move( QList<H2KeyPoint> &curve,
               const tpvRegion &region );
-    int move( float dx, float dy, float dt, float endVx, float endVy,
+    int move( float x,  float y,
+              float dstx, float dsty, float dt, float endVx, float endVy,
               const tpvRegion &region );
 
     int preMove( QList<H2KeyPoint> &curve,
@@ -139,6 +140,9 @@ public:
     void setCenter( float x, float y );
     void center( float &x, float &y );
 
+    void setGantry( int mod, int gear, int pdir, int motion );
+    void gantry( int &mod, int &gear, int &pdir, int &motion );
+
     void setZeroMovement( int zMoveMent );
     int zeroMovement();
 
@@ -161,8 +165,8 @@ public:
     int serialOutZero( QXmlStreamWriter &writer);
     int serialInZero( QXmlStreamReader &reader );
 
-    int serialOutArm( QXmlStreamWriter &writer);
-    int serialInArm( QXmlStreamReader &reader);
+    int serialOutGantry( QXmlStreamWriter &writer);
+    int serialInGantry( QXmlStreamReader &reader);
 
     int serialOutTransfer( QXmlStreamWriter &writer);
     int serialInTransfer( QXmlStreamReader &reader);
@@ -198,6 +202,10 @@ protected:
 
     H2ZeroCorner mZeroCorner;
     H2ZeroMovement mZeroMovement;
+
+    int mToothType, mToothGear;
+    int mPDirIndex;     //! 0: cw, 1:ccw
+    int mMotionIndex;   //! 0: rot, 1: line
 };
 
 #endif

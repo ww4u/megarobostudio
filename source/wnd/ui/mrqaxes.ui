@@ -808,7 +808,7 @@
            <item row="4" column="0" rowspan="2">
             <widget class="QLabel" name="label_20">
              <property name="text">
-              <string>Distance</string>
+              <string>Lead</string>
              </property>
             </widget>
            </item>
@@ -855,7 +855,7 @@
               </size>
              </property>
              <property name="pixmap">
-              <pixmap resource="../res/res.qrc">:/res/image/icon2/focus.png</pixmap>
+              <pixmap>:/res/image/icon2/focus.png</pixmap>
              </property>
              <property name="scaledContents">
               <bool>true</bool>
@@ -874,7 +874,7 @@
               <string/>
              </property>
              <property name="pixmap">
-              <pixmap resource="../res/res.qrc">:/res/image/icon2/settings_light.png</pixmap>
+              <pixmap>:/res/image/icon2/settings_light.png</pixmap>
              </property>
              <property name="scaledContents">
               <bool>true</bool>
@@ -911,8 +911,6 @@
    <header>valuecombobox.h</header>
   </customwidget>
  </customwidgets>
- <resources>
-  <include location="../res/res.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

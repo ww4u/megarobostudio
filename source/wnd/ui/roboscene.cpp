@@ -70,6 +70,18 @@ void roboScene::contextMenuEvent(QContextMenuEvent *event)
 {
     if ( selectCount()>0 )
     {
+        sceneWidget *pWig = theSelectedFirst();
+        if ( NULL== pWig )
+        { return; }
+
+        //! get model
+        VRobot *pRobo;
+        pRobo = (VRobot*)pWig->getModelObj();
+        if ( pRobo == NULL )
+        { return; }
+
+        m_pNewMrp->setVisible( pRobo->mrpAble() );
+
         m_pContextMenu->popup( mapToGlobal( event->pos() ) );
     }
 }
@@ -85,6 +97,14 @@ void roboScene::keyReleaseEvent(QKeyEvent *event)
 void roboScene::mouseDoubleClickEvent(QMouseEvent *event)
 {
     sceneWidget *pWidget = (sceneWidget*)childAt( event->pos() );
+    if ( NULL == pWidget )
+    { return; }
+
+//    VRobot *pRobo = (VRobot*)pWidget->getModelObj();
+//    if ( NULL == pRobo )
+//    { return; }
+
+//    if ( )
     if ( NULL != pWidget )
     { emit itemXActivated( pWidget->getModelObj() ); }
 }
@@ -120,6 +140,19 @@ void roboScene::context_option()
         if ( NULL != pItem && pItem->getSelected() )
         {
             emit itemXActivated( pItem->getModelObj() );
+            return;
+        }
+    }
+}
+
+void roboScene::context_new_mrp()
+{
+    //! find the select one
+    foreach( sceneWidget *pItem, mItemList )
+    {
+        if ( NULL != pItem && pItem->getSelected() )
+        {
+            emit itemXActivated( pItem->getModelObj(), model_obj_op_new_mrp );
             return;
         }
     }
@@ -353,6 +386,10 @@ void roboScene::setupUi()
                                            this,
                                            SLOT(context_option()));
 
+    m_pNewMrp = m_pContextMenu->addAction( tr("New mrp"),
+                                           this,
+                                           SLOT(context_new_mrp()));
+
 }
 void roboScene::buildConnection()
 {
@@ -394,4 +431,15 @@ int roboScene::selectCount()
         count += pItem->getSelected()? 1:0;
     }
     return count;
+}
+
+sceneWidget *roboScene::theSelectedFirst()
+{
+    foreach( sceneWidget*pItem, mItemList )
+    {
+        if ( pItem->getSelected() )
+        { return pItem; }
+    }
+
+    return NULL;
 }

@@ -42,7 +42,8 @@ int robotH2Z::move( QList<H2ZKeyPoint> &curve,
     return ret;
 }
 
-int robotH2Z::move( float dx, float dy, float dz,
+int robotH2Z::move( float x,  float y,  float z,
+                    float dx, float dy, float dz,
                     float dt,
                     float endVx, float endVy, float endVz,
                     const tpvRegion &region )
@@ -53,9 +54,9 @@ int robotH2Z::move( float dx, float dy, float dz,
 
     //! p0
     kp.t = 0;
-    kp.x = 0;
-    kp.y = 0;
-    kp.z = 0;
+    kp.x = x;
+    kp.y = y;
+    kp.z = z;
     kp.vx = 0;
     kp.vy = 0;
     kp.vz = 0;
@@ -64,9 +65,9 @@ int robotH2Z::move( float dx, float dy, float dz,
 
     //! p1
     kp.t = dt;
-    kp.x = dx;
-    kp.y = dy;
-    kp.z = dz;
+    kp.x = x + dx;
+    kp.y = y + dy;
+    kp.z = z + dz;
     kp.vx = endVx;
     kp.vy = endVy;
     kp.vz = endVz;
@@ -290,7 +291,8 @@ int robotH2Z::zeroAxesTask( void *pArg )
     if ( pZArg->mAx == 0 )
     {
         //! m
-        move( pZArg->mZeroXDist, 0, 0, pZArg->mZeroTime, pZArg->mZeroXEndV,0,0,region );
+        move( pZArg->mZeroXDist,0,0,
+              -pZArg->mZeroXDist, 0, 0, pZArg->mZeroTime, pZArg->mZeroXEndV,0,0,region );
 
         //! wait
         ret = waitFsm( region, MegaDevice::mrq_state_idle, pZArg->mTmo, pZArg->mTick );
@@ -298,7 +300,8 @@ int robotH2Z::zeroAxesTask( void *pArg )
         { return ret; }
 
         //! gap
-        move( pZArg->mZeroXGapDist, 0, 0, pZArg->mZeroGapTime, 0,0,0, region );
+        move( 0,0,0,
+              pZArg->mZeroXGapDist, 0, 0, pZArg->mZeroGapTime, 0,0,0, region );
 
         ret = waitFsm( region, MegaDevice::mrq_state_idle, pZArg->mTmo, pZArg->mTick );
         if ( ret != 0 )
@@ -310,13 +313,15 @@ int robotH2Z::zeroAxesTask( void *pArg )
     //! y
     else if ( pZArg->mAx == 1 )
     {
-        move( 0, pZArg->mZeroYDist, 0, pZArg->mZeroTime, 0,pZArg->mZeroYEndV,0, region );
+        move( 0,pZArg->mZeroYDist,0,
+              0, -pZArg->mZeroYDist, 0, pZArg->mZeroTime, 0,pZArg->mZeroYEndV,0, region );
 
         ret = waitFsm( region, MegaDevice::mrq_state_idle, pZArg->mTmo, pZArg->mTick );
         if ( ret != 0 )
         { return ret; }
 
-        move( 0, pZArg->mZeroYGapDist, 0, pZArg->mZeroGapTime, 0,0,0, region );
+        move( 0,0,0,
+              0, pZArg->mZeroYGapDist, 0, pZArg->mZeroGapTime, 0,0,0, region );
 
         ret = waitFsm( region, MegaDevice::mrq_state_idle, pZArg->mTmo, pZArg->mTick );
         if ( ret != 0 )
@@ -328,14 +333,16 @@ int robotH2Z::zeroAxesTask( void *pArg )
     //! z
     else if ( pZArg->mAx == 2 )
     {
-        move( 0, 0, pZArg->mZeroZDist, pZArg->mZeroTime, 0,0,pZArg->mZeroZEndV, region );
+        move( 0,0, pZArg->mZeroZDist,
+              0, 0, -pZArg->mZeroZDist, pZArg->mZeroTime, 0,0,pZArg->mZeroZEndV, region );
 
         ret = waitFsm( region, MegaDevice::mrq_state_idle, pZArg->mTmo, pZArg->mTick );
         if ( ret != 0 )
         { return ret; }
 
         //! invert z
-        move( 0, 0, pZArg->mZeroGapZDist, pZArg->mZeroGapZTime, 0,0,0, region );
+        move( 0,0,0,
+              0, 0, pZArg->mZeroGapZDist, pZArg->mZeroGapZTime, 0,0,0, region );
 
         ret = waitFsm( region, MegaDevice::mrq_state_idle, pZArg->mTmo, pZArg->mTick );
         if ( ret != 0 )

@@ -1,12 +1,13 @@
 #include "h2_split.h"
 #include "../../../include/mcdef.h"
 #include <float.h>
-
+#include "../../../include/mydebug.h"
 namespace h2_split {
 
 #include "./arith/functions.cpp"
 
 int _h2Split( const QList<double> &armLengthes,
+              const QList<int> &gantry,
               const QList<double> &zeroXy,
               QList< endPoint *> & points,
               QList< tpvList*> &splitDataset )
@@ -17,9 +18,10 @@ int _h2Split( const QList<double> &armLengthes,
     //! cache the data
     xxxGroup< double > ts, xys, vs;
 
-    if ( 0 != xys.alloc( points.size() * 2 ) )
+    //! \note for z reserved
+    if ( 0 != xys.alloc( points.size() * 3 ) )
     { return -1; }
-    if ( 0 != vs.alloc( points.size() * 2 ) )
+    if ( 0 != vs.alloc( points.size() * 3 ) )
     { return -1; }
     if ( 0 != ts.alloc( points.size() ) )
     { return -1; }
@@ -28,22 +30,33 @@ int _h2Split( const QList<double> &armLengthes,
     for ( int i = 0; i < points.size(); i++ )
     {
         ts.data()[i] = points.at(i)->t;
-        xys.data()[i*2] = points.at(i)->x;
-        xys.data()[i*2+1] = points.at(i)->y;
+        xys.data()[i*3+0] = points.at(i)->x;
+        xys.data()[i*3+1] = points.at(i)->y;
+        xys.data()[i*3+2] = 0;                      //! \note z
 
-        vs.data()[i*2] = points.at(i)->vx;       //! \note for xv,yv
-        vs.data()[i*2+1] = points.at(i)->vy;
+        vs.data()[i*3+0] = points.at(i)->vx;        //! \note for xv,yv
+        vs.data()[i*3+1] = points.at(i)->vy;
+        vs.data()[i*3+2] = 0;                       //! \note z
     }
 
-    Q_ASSERT( armLengthes.size() == 6 );
+    Q_ASSERT( armLengthes.size() == 4 );
     double armLength[]={ armLengthes.at(0),
                          armLengthes.at(1),
                          armLengthes.at(2),
                          armLengthes.at(3),
-                         armLengthes.at(4),
-                         armLengthes.at(5),
                        };
-    double armLim[]={ -2 * PI, 2 * PI, -2 * PI, 2 * PI };
+logDbg()<<armLengthes;
+logDbg()<<gantry;
+    Q_ASSERT( gantry.size() == 4 );
+    int inputParam[]=
+    {
+        gantry.at(0),
+        gantry.at(1),
+        gantry.at(2),
+        1,
+        gantry.at(3),
+    };
+
     Q_ASSERT( zeroXy.size() == 2 );
     double P0[] = { zeroXy.at(0), zeroXy.at(1) };
 
@@ -53,13 +66,12 @@ int _h2Split( const QList<double> &armLengthes,
     { return -1; }
 
     int ret;
-    ret = SolveStructureKinematics( armLength, armLim, P0,
+    ret = SolveStructureKinematics( armLength, inputParam, P0,
                                     xys.data(), vs.data(), ts.data(), points.size(),
-                                    1,
                                     slovePoints.data()->datas
                                       );
     if ( ret != 0 )
-    { return -2; }
+    { logDbg()<<ret;return -2; }
 
     //! split
     tpvRow *pRow;
@@ -94,6 +106,7 @@ int _h2Split( const QList<double> &armLengthes,
 
 //! split into 2 axes
 int h2Split(const QList<double> &armLengthes,
+            const QList<int> &gantry,
             const QList<double> &zeroXy,
                     QList< endPoint *> &points,
                     QList< tpvList*> &splitDataset )
@@ -102,7 +115,7 @@ int h2Split(const QList<double> &armLengthes,
     { return -1; }
 
     //! split
-    int ret = _h2Split( armLengthes, zeroXy, points, splitDataset );
+    int ret = _h2Split( armLengthes, gantry, zeroXy, points, splitDataset );
     //! fail to gc
     if ( ret != 0 )
     {
@@ -114,6 +127,7 @@ int h2Split(const QList<double> &armLengthes,
 }
 
 int h2Split(const QList<double> &armLengthes,
+            const QList<int> &gantry,
             const QList<double> &zeroXy,
             endPoint * pPoints,
             int n,
@@ -126,7 +140,7 @@ int h2Split(const QList<double> &armLengthes,
         points.append( pPoints + i );
     }
 
-    return h2Split( armLengthes, zeroXy, points, splitDataset );
+    return h2Split( armLengthes, gantry, zeroXy, points, splitDataset );
 }
 
 int h2Gc( QList< tpvList*> &splitDataset )
@@ -144,20 +158,29 @@ int h2Gc( QList< tpvList*> &splitDataset )
 
 //! to pose by angle
 int h2Pose( const QList<double> &armLengthes,
+            const QList<int> &gantry,
             const QList<double> &zeroXy,
             float angleL, float angleR,
             float &x, float &y )
 {
     //! paras
-    Q_ASSERT( armLengthes.size() == 6 );
+    Q_ASSERT( armLengthes.size() == 4 );
     double armLength[]={ armLengthes.at(0),
                          armLengthes.at(1),
                          armLengthes.at(2),
                          armLengthes.at(3),
-                         armLengthes.at(4),
-                         armLengthes.at(5),
+
                        };
-    double armLim[]={ -2 * PI, 2 * PI, -2 * PI, 2 * PI };
+    Q_ASSERT( gantry.size() == 4 );
+    int inputParam[]=
+    {
+        gantry.at(0),
+        gantry.at(1),
+        gantry.at(2),
+        0,
+        gantry.at(3),
+    };
+
     Q_ASSERT( zeroXy.size() == 2 );
     double P0[] = { zeroXy.at(0), zeroXy.at(1) };
 
@@ -172,9 +195,8 @@ int h2Pose( const QList<double> &armLengthes,
     pIn[0] = angleL;
     pIn[1] = angleR;
 
-    ret = SolveStructureKinematics( armLength, armLim, P0,
+    ret = SolveStructureKinematics( armLength, inputParam, P0,
                                     pIn, vIn, tIn,
-                                    1,
                                     0,                  //! angle->x,y
                                     xys
                                       );

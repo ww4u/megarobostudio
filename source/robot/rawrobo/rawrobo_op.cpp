@@ -26,7 +26,8 @@ int RawRobo::setLoop( int n, const tpvRegion &region )
     {
         pMrq = jointDevice( i, &ax );
 
-        Q_ASSERT( NULL != pMrq );
+        if ( NULL == pMrq )
+        { return -1; }
 
         pMrq->setMOTIONPLAN_CYCLENUM( ax,
                                       (MRQ_MOTION_SWITCH_1)region.page(),

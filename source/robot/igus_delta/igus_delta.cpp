@@ -37,6 +37,9 @@ robotIgusDelta::robotIgusDelta()
               <<QObject::tr("Hand");
 
     mImage = QImage::fromData( _megaimage, sizeof(_megaimage) );
+    setJointPanelAble( true );
+    setRoboPanelAble( true );
+    setMrpAble( true );
 
     //! angles
     mJointAngleMask[0]=true;

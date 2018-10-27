@@ -355,6 +355,7 @@ QComboBox::down-arrow:on { /* shift the arrow when popup is open */
 	  border-radius: 3px;
 	  color: black;
 	  background-color : white;
+	  /*background-color : #dddddd;*/
 	  min-height: 24px;
 	  
 	  selection-background-color:#00a3d9;

@@ -39,7 +39,7 @@ protected:
     void buildConnection();
 
 Q_SIGNALS:
-    void itemXActivated( mcModelObj* );
+    void itemXActivated( mcModelObj*, mcModelObj_Op op=model_obj_op_none );
     void signal_itemXHelp( eItemHelp helpId );
 
     void signalModelUpdated( mcModelObj* );

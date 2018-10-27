@@ -144,7 +144,7 @@ void motionEdit::onMotionStatus( int axes,
 
     if ( MegaDevice::mrq_state_idle == cvtStat )
     {
-        down_start_stop( true, true, false );
+        down_start_stop( true, false, false );
     }
     else if ( MegaDevice::mrq_state_run_reqed == cvtStat )
     {

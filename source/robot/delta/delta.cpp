@@ -34,6 +34,10 @@ robotDelta::robotDelta()
 
     mImage = QImage::fromData( _megaimage, sizeof(_megaimage) );
 
+    setJointPanelAble( true );
+    setRoboPanelAble( false );
+    setMrpAble( true );
+
     //! angles
     mJointAngleMask[0]=false;
     mJointAngleMask[1]=false;

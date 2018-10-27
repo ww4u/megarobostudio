@@ -38,6 +38,10 @@ robotMegatron::robotMegatron()
 
     mImage = QImage::fromData( _megaimage, sizeof(_megaimage) );
 
+    setJointPanelAble( true );
+    setRoboPanelAble( false );
+    setMrpAble( true );
+
     mJointZeroCcw.clear();
     mJointZeroCcw<<true<<true<<true<<true<<true<<true;
 

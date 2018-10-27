@@ -53,6 +53,7 @@ void modelSysPref::rst()
     mbShowNotice = true;
     mbShowHelp = true;
     mbStateInterrupt = false;
+    mbNewAutoAdd = true;
 
     mDumpPath = QCoreApplication::applicationDirPath() + "/temp";
     mEventLogFile = "eventlog.dat";
@@ -193,6 +194,7 @@ int modelSysPref::save( const QString &str )
     writer.writeTextElement( "show_notice", QString::number(mbShowNotice) );
     writer.writeTextElement( "show_help", QString::number(mbShowHelp) );
     writer.writeTextElement( "state_interrupt", QString::number(mbStateInterrupt) );
+    writer.writeTextElement( "new_auto_add", QString::number(mbNewAutoAdd) );
 
 
     writer.writeTextElement( "language_id", QString::number(mLangIndex) );
@@ -454,6 +456,9 @@ int modelSysPref::load( const QString &str )
 
                         else if ( reader.name() == "state_interrupt" )
                         { mbStateInterrupt = toBool( reader ); }
+
+                        else if ( reader.name() == "new_auto_add" )
+                        { mbNewAutoAdd = toBool( reader ); }
 
                         else if ( reader.name() == "language_id" )
                         { mLangIndex = reader.readElementText().toInt(); }

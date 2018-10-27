@@ -74,6 +74,7 @@ public:
     bool mbShowNotice;
     bool mbShowHelp;
     bool mbStateInterrupt;
+    bool mbNewAutoAdd;
 
                             //! misa
     bool mMisaEn;

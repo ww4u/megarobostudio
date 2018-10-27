@@ -42,9 +42,10 @@ int robotH2::buildTrace( QList<H2KeyPoint> &curve,
         endPoints.data()[i].t = scale_t( curve.at(i).t );
 
         dir = ( mAngleDir.at(0) ? 1 : -1 );
-        endPoints.data()[i].x = dir * scale_p( curve.at(i).x ) + mAxesDirs.at(0) * ( mArmLengths.at(3) - mArmLengths.at(4) ) /2;    //! 409/2
+//        endPoints.data()[i].x = dir * scale_p( curve.at(i).x ) /*+ mAxesDirs.at(0) * ( mArmLengths.at(1) - mArmLengths.at(3) ) /2*/;    //! 409/2
+        endPoints.data()[i].x = dir * scale_p( curve.at(i).x ) + mAxesDirs.at(0) * ( mArmLengths.at(3) ) /2;
         dir = ( mAngleDir.at(1) ? 1 : -1 );
-        endPoints.data()[i].y = dir * scale_p( curve.at(i).y ) + mAxesDirs.at(1) * ( mArmLengths.at(2) - mArmLengths.at(5) ) /2;    //! 802/2
+        endPoints.data()[i].y = dir * scale_p( curve.at(i).y ) + mAxesDirs.at(1) * ( mArmLengths.at(0) - mArmLengths.at(2) ) /2;    //! 802/2
 
         endPoints.data()[i].vx = scale_v( curve.at(i).vx );
         endPoints.data()[i].vy = scale_v( curve.at(i).vy );
@@ -55,10 +56,16 @@ int robotH2::buildTrace( QList<H2KeyPoint> &curve,
     //! split
     QList< tpvList*> splitDataSet;
     int ret;
+
+    //! gantry
+    QList<int> gantry;
+    gantry<<mToothType<<mToothGear<<mPDirIndex<<mMotionIndex;
+
     QList<double> zeroXy;
     zeroXy.append( mZeroX );
     zeroXy.append( mZeroY );
     ret = h2_split::h2Split( mArmLengths,
+                             gantry,
                              zeroXy,
                              endPoints.data(),
                              curve.size(),

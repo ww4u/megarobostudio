@@ -46,6 +46,23 @@ void robotH2::center( float &x, float &y )
     y = mZeroY;
 }
 
+void robotH2::setGantry( int mod, int gear, int pdir, int motion )
+{
+    mToothType = mod;
+    mToothGear = gear;
+
+    mPDirIndex = pdir;
+    mMotionIndex = motion;
+}
+void robotH2::gantry( int &mod, int &gear, int &pdir, int &motion )
+{
+    mod = mToothType;
+    gear = mToothGear;
+
+    pdir = mPDirIndex;
+    motion = mMotionIndex;
+}
+
 void robotH2::setZeroMovement( int zMoveMent )
 { mZeroMovement = (H2ZeroMovement)zMoveMent; }
 int robotH2::zeroMovement()

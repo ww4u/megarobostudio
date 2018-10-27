@@ -1,5 +1,5 @@
-//#pragma once
-// å¸¸é‡åŠå˜é‡å®šä¹‰
+#pragma once
+// ³£Á¿¼°±äÁ¿¶¨Òå
 #define error  1e-4
 #define PI 3.1415926
 #define E 2.7182818
@@ -7,32 +7,13 @@
 #define ERROR_OUT_OF_WORK_SPACE -2
 #define SUCCESS 0
 #define ERROR 1E-4
-struct ArmLength
-{
-	double Ll;
-    double Lr;
-	double Lw;
-	double Lh;
-	double Lb;
-	double Lp;
-};
-struct CorrectData
-{
-	double X;
-	double Y;
-	double deltAngleX;
-	double deltAngleY;
-};
 
-double angleLim[4];
-double deltP[2];
-ArmLength armLen;
-CorrectData correctData;
-double workSpace[4];
-// æ±‚è§£
-///*extern "C" __declspec(dllexport)*/ int SolveStructureKinematics(double* armLength, double*armLim, double* P0, double* posIn, double*vIn, double* tIn, int len, int mode, double* res);
-int PositiveCalc(double* pIn, double* t, int length, double* result);
-int OppositeCalc(double* pIn, double* v, double* t, int length, double* result);
-void SetStructInfo(double* armLength, double* armLim);
-int JudgeAngle(double* p, int len);
-void AngleTrans(double *p, int len, int mode);
+/// Çó½âº¯ÊıµÄµ¼³öº¯Êı
+/// ÊäÈë²ÎÊı£º1£ºarmLength -- ¸÷Öá³¤¶È£¬[0]:Íâ³¤£¬[1]:Íâ¿í£¬[2]:»¬¿é³¤£¬[3]:»¬¿é¿í¡£
+/// 2£ºinputParam--ÊäÈë²ÎÊı£¬[0]:Ä£¾ßÀàĞÍ:(2M),[1]:³İÊı,[2]dir Á½µç»úĞı×ªµÄÕı·½Ïò 0£ºË³Ê±Õë£¬1£ºÄæÊ±Õë,[3]:Çó½â·½Ê½,[4]:ÔË¶¯·½Ê½(0£ºĞı×ªÔË¶¯£¬1£ºÖ±ÏßÔË¶¯) 
+/// 3£ºP0--Ä©¶Ë³õÊ¼Î»ÖÃ£¬ÓÃÓÚÉ¸Ñ¡½â
+/// 4:posIn -- Äæ½âÎªÊäÈëµÄÄ©¶Ëµã£¬Õı½âÎª¹Ø½Ú½Ç¶È£¬ 5£ºvin -- Õı½âÎª0 Äæ½âÎªÄ©¶ËËÙ¶È£¬6:len -- Çó½âµãµÄ¸öÊı£¬7£ºmode --Çó½âÄ£Ê½ 0ÎªÕı½â £¬1ÎªÄæ½â
+/// 8:movementMode 0:Ğı×ªÔË¶¯£¬1£ºÖ±ÏßÔË¶¯
+/// Êä³ö²ÎÊı£ºres-- Çó½âµÄ·µ»ØÖµ
+extern "C" __declspec(dllexport) int SolveStructureKinematics(double* armLength, int* inputParam, double* P0, double* posIn, double*vIn, double* tIn, int len, double* res);
+

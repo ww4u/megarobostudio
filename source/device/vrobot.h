@@ -301,6 +301,15 @@ public:
     void setCoordAble( bool b );
     bool coordAble();
 
+    void setJointPanelAble( bool b );
+    bool jointPanelAble();
+
+    void setRoboPanelAble( bool b );
+    bool roboPanelAble();
+
+    void setMrpAble( bool b );
+    bool mrpAble();
+
     void setDriverId( int id );
     int driverId();
 
@@ -431,6 +440,10 @@ protected:
     bool mbRunWaveAble;
     bool mbTunningAble;
     bool mbCoordAble;
+
+    //! ui attri
+    bool mbJointPanelAble, mbRoboPanelAble;
+    bool mbMrpAble;
 
     int  mDriverId;
 

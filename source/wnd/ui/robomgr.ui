@@ -54,8 +54,8 @@
      </property>
      <property name="iconSize">
       <size>
-       <width>16</width>
-       <height>16</height>
+       <width>32</width>
+       <height>32</height>
       </size>
      </property>
      <property name="textElideMode">
@@ -76,7 +76,7 @@
      <property name="gridSize">
       <size>
        <width>64</width>
-       <height>40</height>
+       <height>64</height>
       </size>
      </property>
      <property name="viewMode">

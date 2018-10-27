@@ -37,9 +37,19 @@ robotH2::robotH2()
               <<QObject::tr("Right");
 
     mImage = QImage::fromData( _megaimage, sizeof(_megaimage) );
+    setJointPanelAble( true );
+    setRoboPanelAble( true );
+    setMrpAble( true );
 
     mArmLengths.clear();
-    mArmLengths<<13.4<<13.4<<802<<494<<52<<38;
+    mArmLengths<<802<<494<<38<<52;
+//    mArmLengths<<13.4<<13.4<<802<<494<<52<<38;
+
+    mToothType = 2;
+    mToothGear = 30;
+
+    mPDirIndex = 1;
+    mMotionIndex = 1;
 
     //! mask
     mJointCcwMask.clear();
@@ -59,7 +69,7 @@ robotH2::robotH2()
     mAngleDir<<true<<true;
 
     mAxesDirs.clear();
-    mAxesDirs<<-1<<-1;
+    mAxesDirs<<1<<-1;
 
     //! debug used
     //! alter the axes name
@@ -140,7 +150,7 @@ void robotH2::postConfigTransfer()
         mTransferR[1*2+0] = 0.0;
         mTransferR[1*2+1] = 1.0;
 
-        mTransferS[0*1+0] = mArmLengths.at(3);
+        mTransferS[0*1+0] = mArmLengths.at(1);
         mTransferS[1*1+0] = 0;
 
         mTransferRInv[0*2+0] = -1.0;
@@ -157,8 +167,8 @@ void robotH2::postConfigTransfer()
         mTransferR[1*2+0] = 0.0;
         mTransferR[1*2+1] = -1.0;
 
-        mTransferS[0*1+0] = mArmLengths.at(3);
-        mTransferS[1*1+0] = mArmLengths.at(2);
+        mTransferS[0*1+0] = mArmLengths.at(1);
+        mTransferS[1*1+0] = mArmLengths.at(0);
 
         mTransferRInv[0*2+0] = -1.0;
         mTransferRInv[0*2+1] = 0.0;
@@ -175,7 +185,7 @@ void robotH2::postConfigTransfer()
         mTransferR[1*2+1] = -1.0;
 
         mTransferS[0*1+0] = 0;
-        mTransferS[1*1+0] = mArmLengths.at(2);
+        mTransferS[1*1+0] = mArmLengths.at(0);
 
         mTransferRInv[0*2+0] = 1.0;
         mTransferRInv[0*2+1] = 0.0;

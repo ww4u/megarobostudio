@@ -146,6 +146,21 @@ void VRobot::setCoordAble( bool b )
 bool VRobot::coordAble()
 { return mbCoordAble; }
 
+void VRobot::setJointPanelAble( bool b )
+{ mbJointPanelAble = b; }
+bool VRobot::jointPanelAble()
+{ return mbJointPanelAble; }
+
+void VRobot::setRoboPanelAble( bool b )
+{ mbRoboPanelAble = b; }
+bool VRobot::roboPanelAble()
+{ return mbRoboPanelAble; }
+
+void VRobot::setMrpAble( bool b )
+{ mbMrpAble = b; }
+bool VRobot::mrpAble()
+{ return mbMrpAble; }
+
 void VRobot::setDriverId( int id )
 { mDriverId = id; }
 int VRobot::driverId()

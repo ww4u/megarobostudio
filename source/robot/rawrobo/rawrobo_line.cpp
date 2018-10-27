@@ -10,7 +10,8 @@ void RawRobo::onLine()
     {
         pMrq = jointDevice( i, &ax );
 
-        Q_ASSERT( NULL != pMrq );
+        if ( NULL == pMrq )
+        { return; }
 
         Q_ASSERT( regions() == pMrq->regions() );
 

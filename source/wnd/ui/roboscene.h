@@ -33,7 +33,7 @@ protected:
     virtual void mouseDoubleClickEvent(QMouseEvent *event);
 
 Q_SIGNALS:
-    void itemXActivated( mcModelObj* );
+    void itemXActivated( mcModelObj*, mcModelObj_Op op=model_obj_op_none );
     void signal_itemXHelp( eItemHelp helpId );
 
     void signalSceneChanged();
@@ -41,6 +41,7 @@ Q_SIGNALS:
 protected Q_SLOTS:
     void context_delete();
     void context_option();
+    void context_new_mrp();
 
     void slot_editingFinished( sceneWidget * pWig, const QString &str );
 
@@ -75,12 +76,13 @@ protected:
     void selectAll( bool bSel );
     void updateSelecte();
     int  selectCount();
-
+    sceneWidget *theSelectedFirst();
 private:
     Ui::roboScene *ui;
     QMenu *m_pContextMenu;
     QAction *m_pDelete;
     QAction *m_pOption;
+    QAction *m_pNewMrp;
 
     QList<sceneWidget *> mItemList;
     QPoint mRefPoint;

@@ -1,111 +1,245 @@
 #include "params.h"
 #include "math.h"
 #include "string.h"
-/// æ±‚è§£å‡½æ•°çš„å¯¼å‡ºå‡½æ•°
-/// è¾“å…¥å‚æ•°ï¼š1ï¼šarmLength -- å„è½´é•¿åº¦ï¼Œ 2ï¼šarmLim ä¸¤å…³èŠ‚è§’åº¦èŒƒå›´é™åˆ¶ï¼Œ3ï¼šP0--æœ«ç«¯åˆå§‹ä½ç½®ï¼Œç”¨äºç­›é€‰è§£
-/// 4:posIn -- é€†è§£ä¸ºè¾“å…¥çš„æœ«ç«¯ç‚¹ï¼Œæ­£è§£ä¸ºå…³èŠ‚è§’åº¦ï¼Œ 5ï¼švin -- æ­£è§£ä¸º0 é€†è§£ä¸ºæœ«ç«¯é€Ÿåº¦ï¼Œ6:len -- æ±‚è§£ç‚¹çš„ä¸ªæ•°ï¼Œ7ï¼šmode --æ±‚è§£æ¨¡å¼ 0ä¸ºæ­£è§£ ï¼Œ1ä¸ºé€†è§£
-/// è¾“å‡ºå‚æ•°ï¼šres-- æ±‚è§£çš„è¿”å›å€¼
-//extern "C" __declspec(dllexport)
-int SolveStructureKinematics(double* armLength, double*armLim,double* P0, double* posIn, double*vIn,double* tIn, int len, int mode,double* res)
+
+struct ArmLength
+{
+	double Lw;
+	double Lh;
+	double Lp;
+	double Lb;
+};
+struct Sysparam
+{
+	int m;
+	int c;
+	int dir;
+	int mode;
+	int moveMode;
+};
+struct CorrectData
+{
+	double X;
+	double Y;
+	double deltAngleX;
+	double deltAngleY;
+};
+//ÂÖÖ±¾¶
+double d;
+double angleLim[4];
+double deltP[2];
+int direction;
+int mode;
+int moveMode;
+ArmLength armLen;
+Sysparam param;
+CorrectData correctData;
+double workSpace[4];
+int PositiveCalc(double* pIn, double* t, int length, double* result);
+int OppositeCalc(double* pIn, double* v, double* t, int length, double* result);
+void SetStructInfo(double* armLength, int* param);
+int JudgeAngle(double* p, int len);
+void AngleTrans(double *p, int len, int mode);
+/// Çó½âº¯ÊıµÄµ¼³öº¯Êı
+/// ÊäÈë²ÎÊı£º1£ºarmLength -- ¸÷Öá³¤¶È£¬[0]:Íâ³¤£¬[1]:Íâ¿í£¬[2]:»¬¿é³¤£¬[3]:»¬¿é¿í¡£
+/// 2£ºinputParam--ÊäÈë²ÎÊı£¬[0]:Ä£¾ßÀàĞÍ:(2M),[1]:³İÊı,[2]dir Á½µç»úĞı×ªµÄÕı·½Ïò 0£ºË³Ê±Õë£¬1£ºÄæÊ±Õë,[3]:Çó½â·½Ê½,[4]:ÔË¶¯·½Ê½(0£ºĞı×ªÔË¶¯£¬1£ºÖ±ÏßÔË¶¯) 
+/// 3£ºP0--Ä©¶Ë³õÊ¼Î»ÖÃ£¬ÓÃÓÚÉ¸Ñ¡½â
+/// 4:posIn -- Äæ½âÎªÊäÈëµÄÄ©¶Ëµã£¬Õı½âÎª¹Ø½Ú½Ç¶È£¬ 5£ºvin -- Õı½âÎª0 Äæ½âÎªÄ©¶ËËÙ¶È£¬6:len -- Çó½âµãµÄ¸öÊı£¬7£ºmode --Çó½âÄ£Ê½ 0ÎªÕı½â £¬1ÎªÄæ½â
+/// 8:movementMode 0:Ğı×ªÔË¶¯£¬1£ºÖ±ÏßÔË¶¯
+/// Êä³ö²ÎÊı£ºres-- Çó½âµÄ·µ»ØÖµ
+extern "C" __declspec(dllexport) int SolveStructureKinematics(double* armLength, int* inputParam, double* P0, double* posIn, double*vIn, double* tIn, int len, double* res)
 {
 	memset(deltP, 0, 2 * sizeof(double));
 	deltP[0] = P0[0];
 	deltP[1] = P0[1];
-	SetStructInfo(armLength, armLim);
-	// æ­£è§£è§’åº¦è½¬æ¢
+	SetStructInfo(armLength, inputParam);
+	// Õı½â½Ç¶È×ª»»
 	if (mode == 0)
 	{
-		for (int i = 0; i < len; i++)
+		if (moveMode == 0)
 		{
-			posIn[2 * i] = posIn[2 * i] * PI / 180;
-			posIn[2 * i + 1] = posIn[2 * i + 1] * PI / 180;
+			for (int i = 0; i < len; i++)
+			{
+				posIn[3 * i] = posIn[3 * i] * PI / 180;
+				posIn[3 * i + 1] = posIn[3 * i + 1] * PI / 180;
+			}
 		}
-	}		
-	// è¿›è¡Œæ­£é€†è§£æ±‚è§£
+	}
+	// ½øĞĞÕıÄæ½âÇó½â
 	if (mode == 0)
 	{
-		// æ­£è§£
+		// Õı½â
 		memset(res, 0, 3 * len * sizeof(double));
-		return PositiveCalc(posIn,tIn,len,res);		
+		return PositiveCalc(posIn, tIn, len, res);
 	}
 	else
 	{
-		//é€†è§£
+		//Äæ½â
 		memset(res, 0, 5 * len * sizeof(double));
-		return OppositeCalc(posIn, vIn,tIn, len, res);
+		return OppositeCalc(posIn, vIn, tIn, len, res);
 	}
 }
-int PositiveCalc(double* pIn,double* t,int length,double* result)
-{	
-	//int res = JudgeAngle(pIn, length);
-	//// è§’åº¦è¶…å‡ºåŒºé—´èŒƒå›´
-	//if (res == -1)
-	//{
-	//	return -1;
-	//}
-	// è§’åº¦è½¬æ¢
-	AngleTrans(pIn, length,0);
-	/* åˆ¤æ–­æœ«ç«¯æ‰§è¡Œå™¨æ˜¯å¦åœ¨å·¥ä½œåŒºé—´å†… */
+int PositiveCalc(double* pIn, double* t, int length, double* result)
+{
+	// ½Ç¶È×ª»»
+	AngleTrans(pIn, length, 0);
+	double tmp1 = 0;
+	double tmp2 = 0;
+	/* ÅĞ¶ÏÄ©¶ËÖ´ĞĞÆ÷ÊÇ·ñÔÚ¹¤×÷Çø¼äÄÚ */
 	for (int i = 0; i < length; i++)
 	{
-		double tmp1 = armLen.Ll * pIn[2*i];
-		double tmp2 = armLen.Lr * pIn[2 * i +1];
-		// è®¡ç®—x
-                result[3*i] = 0.25 * (tmp1 - tmp2) - deltP[0];
-//		// å·¥ä½œåŒºé—´åˆ¤æ–­
-//		if (fabs(result[2 * i] - workSpace[0])<0
-//			|| fabs(result[2 * i] - workSpace[1])<0)
-//		{
-//			return ERROR_OUT_OF_WORK_SPACE;
-//		}
-		// è®¡ç®—y
-                result[3 * i + 1] = 0.25 * (tmp1 + tmp2) - deltP[1];
-		// T
-		result[3 * i + 2] = t[i];
-//		if (fabs(result[2 * i + 1] - workSpace[2])<0 || fabs(result[2 * i + 1] - workSpace[3])<0)
-//		{
-//			return ERROR_OUT_OF_WORK_SPACE;
-//		}
+		// ÄæÊ±Õë
+		if (direction == 1)
+		{
+			if (moveMode == 0)
+			{
+				tmp1 = d * pIn[3 * i];
+				tmp2 = d * pIn[3 * i + 1];
+			}
+			else
+			{
+				tmp1 = 2*pIn[3 * i];
+				tmp2 = 2*pIn[3 * i + 1];
+			}
+			// ¼ÆËãx
+			result[3 * i] = 0.25 * (tmp1 - tmp2) - deltP[0];
+			// ¹¤×÷Çø¼äÅĞ¶Ï												
+			if (fabs(result[2 * i] - workSpace[0]) < 0
+				|| fabs(result[2 * i] - workSpace[1]) < 0)
+			{
+				return ERROR_OUT_OF_WORK_SPACE;
+			}
+			// ¼ÆËãy
+			result[3 * i + 1] = 0.25 * (tmp1 + tmp2) - deltP[1];
+			// T
+			result[3 * i + 2] = t[i];
+			if (fabs(result[2 * i + 1] - workSpace[2]) < 0 || fabs(result[2 * i + 1] - workSpace[3]) < 0)
+			{
+				return ERROR_OUT_OF_WORK_SPACE;
+			}
+		}
+		// Ë³Ê±Õë
+		else
+		{
+			if (moveMode == 0)
+			{
+				tmp1 = -d * pIn[3 * i];
+				tmp2 = -d * pIn[3 * i + 1];
+			}
+			else
+			{
+				tmp1 = -2*pIn[3 * i];
+				tmp2 = -2 * pIn[3 * i + 1];
+			}
+			// ¼ÆËãx
+			result[3 * i] = 0.25 * (tmp1 - tmp2) - deltP[0];
+			// ¹¤×÷Çø¼äÅĞ¶Ï												
+			if (fabs(result[2 * i] - workSpace[0]) < 0
+				|| fabs(result[2 * i] - workSpace[1]) < 0)
+			{
+				return ERROR_OUT_OF_WORK_SPACE;
+			}
+			// ¼ÆËãy
+			result[3 * i + 1] = 0.25 * (tmp1 + tmp2) - deltP[1];
+			// T
+			result[3 * i + 2] = t[i];
+			if (fabs(result[2 * i + 1] - workSpace[2]) < 0 || fabs(result[2 * i + 1] - workSpace[3]) < 0)
+			{
+				return ERROR_OUT_OF_WORK_SPACE;
+			}
+		}
 	}
 	return 0;
 }
-int OppositeCalc(double* pIn,double* v,double* t, int length, double* result)
+int OppositeCalc(double* pIn, double* v, double* t, int length, double* result)
 {
 	double temp[2];
 	memset(temp, 0, 2 * sizeof(double));
-	// åˆ¤æ–­æœ«ç«¯æ‰§è¡Œå™¨æ˜¯å¦åœ¨å·¥ä½œåŒºé—´å†…
+	// ÅĞ¶ÏÄ©¶ËÖ´ĞĞÆ÷ÊÇ·ñÔÚ¹¤×÷Çø¼äÄÚ
 	for (int i = 0; i < length; i++)
 	{
-		pIn[2 * i] = pIn[2 * i] + deltP[0];
-		pIn[2 * i + 1] = pIn[2 * i + 1] + deltP[1];
-//		/* xè¶…å‡ºå·¥ä½œåŒºé—´ */
-//		if (pIn[2 * i] - workSpace[0]<0
-//			|| pIn[2 * i] - workSpace[1]>0)
-//		{
-//			return ERROR_OUT_OF_WORK_SPACE;
-//		}
-//		/* yè¶…å‡ºå·¥ä½œåŒºé—´ */
-//		if (pIn[2 * i + 1] - workSpace[2]<0 || pIn[2 * i + 1] - workSpace[3]>0)
-//		{
-//			return ERROR_OUT_OF_WORK_SPACE;
-//		}
-		// é€†è§£æ±‚è§£
-		temp[0] = 2.0 * (pIn[2 * i] + pIn[2 * i + 1]) / armLen.Ll;
-		temp[1] = 2.0 * (-pIn[2 * i] + pIn[2 * i + 1]) / armLen.Lr;
-		// è§’åº¦è½¬æ¢
-		AngleTrans(temp, 1,1);
-		//int res = JudgeAngle(pIn, length);
-		//// è§’åº¦è¶…å‡ºåŒºé—´èŒƒå›´
-		//if (res == ERROR_OUT_OF_ANGLE_LIMIT)
-		//{
-		//	return ERROR_OUT_OF_ANGLE_LIMIT;
-		//}
-		result[5 * i] = temp[0] *  180 / PI;
-		result[5 * i + 1] = temp[1] * 180 / PI;
-		// é€Ÿåº¦é€†è§£
-		result[5 * i +2] = 2.0 * (v[2*i] + v[2 * i+1]) / armLen.Ll * 180 / PI;
-		result[5 * i +3] = 2.0 * (-v[2 * i] + v[2 * i + 1]) / armLen.Lr * 180 / PI;
-		result[5 * i + 4] = t[i];		
+		// ÄæÊ±Õë
+		if (direction == 1)
+		{
+			pIn[3 * i] = pIn[3 * i] + deltP[0];
+			pIn[3 * i + 1] = pIn[3 * i + 1] + deltP[1];
+			/* x³¬³ö¹¤×÷Çø¼ä */
+			if (pIn[3 * i] - workSpace[0] < 0
+				|| pIn[3 * i] - workSpace[1]>0)
+			{
+				return ERROR_OUT_OF_WORK_SPACE;
+			}
+			/* y³¬³ö¹¤×÷Çø¼ä */
+			if (pIn[3 * i + 1] - workSpace[2] < 0 || pIn[3 * i + 1] - workSpace[3]>0)
+			{
+				return ERROR_OUT_OF_WORK_SPACE;
+			}
+			if (moveMode == 0)
+			{
+				// Äæ½âÇó½â
+				temp[0] = 2.0 * (pIn[3 * i] + pIn[3 * i + 1]) / d;
+				temp[1] = 2.0 * (-pIn[3 * i] + pIn[3 * i + 1]) / d;
+				result[5 * i] = temp[0] * 180 / PI;
+				result[5 * i + 1] = temp[1] * 180 / PI;
+				// ËÙ¶ÈÄæ½â
+				result[5 * i + 2] = 2.0 * (v[3 * i] + v[3 * i + 1]) / d * 180 / PI;
+				result[5 * i + 3] = 2.0 * (-v[3 * i] + v[3 * i + 1]) / d * 180 / PI;
+				result[5 * i + 4] = t[i];
+			}
+			else
+			{
+				// Äæ½âÇó½â
+				temp[0] = pIn[3 * i] + pIn[3 * i + 1];
+				temp[1] = -pIn[3 * i] + pIn[3 * i + 1];
+				result[5 * i] = temp[0];
+				result[5 * i + 1] = temp[1];
+				// ËÙ¶ÈÄæ½â
+				result[5 * i + 2] = v[3 * i] + v[3 * i + 1];
+				result[5 * i + 3] = -v[3 * i] + v[3 * i + 1];
+				result[5 * i + 4] = t[i];
+			}
+		}
+		else
+		{
+			pIn[3 * i] = pIn[3 * i] + deltP[0];
+			pIn[3 * i + 1] = pIn[3 * i + 1] + deltP[1];
+			/* x³¬³ö¹¤×÷Çø¼ä */
+			if (pIn[3 * i] - workSpace[0] < 0
+				|| pIn[3 * i] - workSpace[1]>0)
+			{
+				return ERROR_OUT_OF_WORK_SPACE;
+			}
+			/* y³¬³ö¹¤×÷Çø¼ä */
+			if (pIn[3 * i + 1] - workSpace[2] < 0 || pIn[3 * i + 1] - workSpace[3]>0)
+			{
+				return ERROR_OUT_OF_WORK_SPACE;
+			}
+			if (moveMode == 0)
+			{
+				// Äæ½âÇó½â
+				temp[0] = 2.0 * (pIn[3 * i] + pIn[3 * i + 1]) / d;
+				temp[1] = 2.0 * (-pIn[3 * i] + pIn[3 * i + 1]) / d;
+				result[5 * i] = temp[0] * 180 / PI;
+				result[5 * i + 1] = temp[1] * 180 / PI;
+				// ËÙ¶ÈÄæ½â
+				result[5 * i + 2] = -2.0 * (v[3 * i] + v[3 * i + 1]) / d * 180 / PI;
+				result[5 * i + 3] = -2.0 * (-v[3 * i] + v[3 * i + 1]) / d * 180 / PI;
+				result[5 * i + 4] = t[i];
+			}
+			else
+			{
+				// Äæ½âÇó½â
+				temp[0] = 2.0 * (pIn[3 * i] + pIn[3 * i + 1]);
+				temp[1] = 2.0 * (-pIn[3 * i] + pIn[3 * i + 1]);
+				result[5 * i] = temp[0] * 180 / PI;
+				result[5 * i + 1] = temp[1] * 180 / PI;
+				// ËÙ¶ÈÄæ½â
+				result[5 * i + 2] = -2.0 * (v[3 * i] + v[3 * i + 1]);
+				result[5 * i + 3] = -2.0 * (-v[3 * i] + v[3 * i + 1]);
+				result[5 * i + 4] = t[i];
+			}
+		}
+
 	}
 	for (int i = 0; i < length; i++)
 	{
@@ -119,48 +253,53 @@ int OppositeCalc(double* pIn,double* v,double* t, int length, double* result)
 	}
 	return SUCCESS;
 }
-void SetStructInfo(double* armLength,double* armLim)
+void SetStructInfo(double* armLength, int* param)
 {
-	// æœºæ„å‚æ•°è®¾ç½®
-	armLen.Ll = armLength[0];
-	armLen.Lr = armLength[1];
-	armLen.Lw = armLength[2];
-	armLen.Lh = armLength[3];
-	armLen.Lb = armLength[4];
-	armLen.Lp = armLength[5];
-	angleLim[0] = armLim[0];
-	angleLim[1] = armLim[1];
-	angleLim[2] = armLim[2];
-	angleLim[3] = armLim[3];
+	// »ú¹¹²ÎÊıÉèÖÃ
+	int m = param[0];
+	int c = param[1];
+	direction = param[2];
+	mode = param[3];
+	moveMode = param[4];
+	armLen.Lw = armLength[0];
+	armLen.Lh = armLength[1];
+	armLen.Lp = armLength[2];
+	armLen.Lb = armLength[3];
 	correctData.X = deltP[0];
 	correctData.Y = deltP[1];
-	correctData.deltAngleX = -2 * (deltP[0] + deltP[1]) / armLen.Ll;
-	correctData.deltAngleY = -2 * (-deltP[0] + deltP[1]) / armLen.Lr;
-	// å·¥ä½œåŒºé—´
+	d = m*c / PI;
+	if (moveMode == 0)
+	{
+		correctData.deltAngleX = -2 * (deltP[0] + deltP[1]) / d;
+		correctData.deltAngleY = -2 * (-deltP[0] + deltP[1]) / d;
+	}
+	else
+	{
+		correctData.deltAngleX = deltP[0] + deltP[1];
+		correctData.deltAngleY = -deltP[0] + deltP[1];
+	}
+	// ¹¤×÷Çø¼ä
 	double tmp1 = 0;
 	double tmp2 = 0;
-	if (armLen.Ll >= armLen.Lr)
-		tmp1 = (armLen.Ll + armLen.Lb) / 2.0;
-	else
-		tmp1 = (armLen.Lr + armLen.Lb) / 2.0;
+	tmp1 = armLen.Lb / 2.0;
 	// Xmin
 	workSpace[0] = tmp1;
 	// Xmax
-	workSpace[1] = tmp1 + armLen.Lh - armLen.Lb;		
+	workSpace[1] = tmp1 + armLen.Lh - armLen.Lb;
 
-	tmp2 = (armLen.Lw - armLen.Lp)/2;
+	tmp2 = (armLen.Lw - armLen.Lp) / 2;
 	// Ymin
 	workSpace[2] = -tmp2;
 	// Ymax
-	workSpace[3] = tmp2;			
+	workSpace[3] = tmp2;
 }
-int JudgeAngle(double* p,int len)
+int JudgeAngle(double* p, int len)
 {
 	double temp[2];
 	for (int i = 0; i < len; i++)
 	{
-		temp[0] = p[2 * i];
-		temp[1] = p[2 * i +1];
+		temp[0] = p[3 * i];
+		temp[1] = p[3 * i + 1];
 		if (temp[0] >= angleLim[0] && temp[0] < angleLim[1]
 			&& temp[1] >= angleLim[2] && temp[1] < angleLim[3])
 		{
@@ -174,24 +313,43 @@ int JudgeAngle(double* p,int len)
 	return SUCCESS;
 }
 
-void AngleTrans(double *p,int len, int mode)
+void AngleTrans(double *p, int len, int mode)
 {
 	int i;
-	double sign;
-
-	if (mode == 0)		// æ­£è§£
+	if (mode == 0)		// Õı½â
 	{
-		sign = -1.0;
-		for (i = 0; i < len; i++)		// è¾“å…¥/å‡ºè§’åº¦è½¬æ¢
+		// Ë³Ê±Õë
+		if (direction == 0)
 		{
-			p[2 * i] += sign * correctData.deltAngleX;		// è¾“å…¥/å‡ºè§’åº¦1è½¬æ¢
-			p[2 * i + 1] += sign * correctData.deltAngleY;		// è¾“å…¥/å‡ºè§’åº¦2è½¬æ¢
+			for (i = 0; i < len; i++)		// ÊäÈë/³ö½Ç¶È×ª»»
+			{
+				p[3 * i] = -p[3 * i] - correctData.deltAngleX;		// ÊäÈë/³ö½Ç¶È1×ª»»
+				p[3 * i + 1] = -p[3 * i + 1] - correctData.deltAngleY;		// ÊäÈë/³ö½Ç¶È2×ª»»
+			}
+		}
+		//ÄæÊ±Õë
+		else
+		{
+			for (i = 0; i < len; i++)		// ÊäÈë/³ö½Ç¶È×ª»»
+			{
+				p[3 * i] = p[3 * i] - correctData.deltAngleX;		// ÊäÈë/³ö½Ç¶È1×ª»»
+				p[3 * i + 1] = p[3 * i + 1] - correctData.deltAngleY;		// ÊäÈë/³ö½Ç¶È2×ª»»
+			}
 		}
 	}
-	else		//é€†è§£
+	else		//Äæ½â
 	{
-		sign = 1.0;
-		p[0] += sign * correctData.deltAngleX;		
-		p[1] += sign * correctData.deltAngleY;
+		// Ë³Ê±Õë
+		if (direction == 0)
+		{
+			p[0] = -p[0] - correctData.deltAngleX;
+			p[1] = -p[1] - correctData.deltAngleY;
+		}
+		else
+		{
+			p[0] = p[0] + correctData.deltAngleX;
+			p[1] = p[1] + correctData.deltAngleY;
+		}
+
 	}
 }

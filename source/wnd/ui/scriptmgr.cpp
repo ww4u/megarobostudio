@@ -719,23 +719,44 @@ void scriptMgr::slot_context_import()
         else
         { }
 
-        //! new one
-        scriptFile *pFile = new scriptFile( comAssist::pureFileName( fileName ) );
-
-        //! extract filename
-        QString pureFileName = comAssist::pureFileName( fileName );
-
-        //! find repeat
-
-        //! base path
-        QDir dir( m_pRootModel->getPath() );
-        QString refPath = dir.relativeFilePath( fileName ).remove( pureFileName);
-        //! remove the last
-        refPath.remove( refPath.size() - 1, 1);
-        pFile->setPath( refPath );
-
-        m_pRootModel->appendNode( ui->scriptView->currentIndex(), pFile );
+        post_file_import( fileName );
     }
 
     emit signal_prj_edited();
+}
+
+void scriptMgr::slot_file_import( const QString &fileName )
+{
+    //! check repeat
+    if ( isExist( QDir::fromNativeSeparators(fileName) ) )
+    {
+        sysPrompt( tr("File is alreay in project, ") + fileName );
+        return;
+    }
+    else
+    { }
+
+    post_file_import( fileName );
+
+    emit signal_prj_edited();
+}
+
+void scriptMgr::post_file_import( const QString &fileName )
+{
+    //! new one
+    scriptFile *pFile = new scriptFile( comAssist::pureFileName( fileName ) );
+
+    //! extract filename
+    QString pureFileName = comAssist::pureFileName( fileName );
+
+    //! find repeat
+
+    //! base path
+    QDir dir( m_pRootModel->getPath() );
+    QString refPath = dir.relativeFilePath( fileName ).remove( pureFileName);
+    //! remove the last
+    refPath.remove( refPath.size() - 1, 1);
+    pFile->setPath( refPath );
+
+    m_pRootModel->appendNode( ui->scriptView->currentIndex(), pFile );
 }

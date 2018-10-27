@@ -86,7 +86,7 @@ protected:
     bool isExist( const QString &fullName );
 
 Q_SIGNALS:
-    void itemXActivated( mcModelObj* );
+    void itemXActivated( mcModelObj*, mcModelObj_Op op=model_obj_op_none );
     void signal_itemXHelp( eItemHelp helpId );
 
     void signal_scriptmgr_changed();
@@ -100,6 +100,10 @@ private Q_SLOTS:
     void slot_context_remove();
 public Q_SLOTS:
     void slot_context_import();
+    void slot_file_import( const QString &file );
+
+protected:
+    void post_file_import( const QString &file );
 
 private:
     Ui::scriptMgr *ui;

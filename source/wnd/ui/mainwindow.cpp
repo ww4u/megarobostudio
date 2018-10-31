@@ -1152,7 +1152,8 @@ modelView *MainWindow::findView( mcModelObj *pModel )
         //! model match?
         if ( pView->matchModelObj( pModel ) )
         {
-            delete pModel;
+            if ( pModel->getGc() )
+            { delete pModel; }
             return pView;
         }
     }
@@ -1675,7 +1676,4 @@ void MainWindow::slot_process_exit( int code, QProcess::ExitStatus stat )
     ui->actionTerminate->setEnabled( false );
     ui->actionRun_Script->setEnabled( true );
 }
-
-
-
 

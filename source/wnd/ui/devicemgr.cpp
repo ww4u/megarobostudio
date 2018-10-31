@@ -147,11 +147,11 @@ void deviceMgr::setupUi()
 
     //! robo menu
     m_pRoboMenu = new QMenu( this );
-    m_pRoboMenu->addAction( QIcon( ":/res/image/icon/54.png" ),
-                              tr("Alias..."),
-                              this,
-                              SLOT( context_robo_alias() ) );
-    m_pRoboMenu->addSeparator();
+//    m_pRoboMenu->addAction( QIcon( ":/res/image/icon/54.png" ),
+//                              tr("Alias..."),
+//                              this,
+//                              SLOT( context_robo_alias() ) );
+//    m_pRoboMenu->addSeparator();
     m_pRoboMenu->addAction( QIcon( ":/res/image/icon/55.png" ),
                               tr("Console..."),
                               this,
@@ -531,7 +531,12 @@ void deviceMgr::on_treeWidget_itemActivated(QTreeWidgetItem *item, int column)
             context_robo_panel();
         }
         else
-        { emit itemXActivated( (mcModelObj*)pRobot ); }
+        {
+            //! try load setup?
+            pRobot->tryLoad();
+
+            emit itemXActivated( (mcModelObj*)pRobot );
+        }
     }
     //! mrq axes
     else if ( item->data(0,Qt::UserRole).type() == (QVariant::Type)QMetaType::Int )

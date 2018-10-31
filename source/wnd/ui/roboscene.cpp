@@ -106,7 +106,12 @@ void roboScene::mouseDoubleClickEvent(QMouseEvent *event)
 
 //    if ( )
     if ( NULL != pWidget )
-    { emit itemXActivated( pWidget->getModelObj() ); }
+    {
+        //! try load
+        pWidget->getModelObj()->tryLoad();
+
+        emit itemXActivated( pWidget->getModelObj() );
+    }
 }
 
 void roboScene::context_delete()
@@ -139,6 +144,9 @@ void roboScene::context_option()
     {
         if ( NULL != pItem && pItem->getSelected() )
         {
+            //! try load
+            pItem->getModelObj()->tryLoad();
+
             emit itemXActivated( pItem->getModelObj() );
             return;
         }
@@ -167,9 +175,25 @@ void roboScene::slot_editingFinished( sceneWidget *pWig, const QString &str )
     }
     else
     {
-        pWig->setName( tr("untitled") );
         MegaMessageBox::warning( this, tr("Warning"), tr("Name Inavlid") );
         pWig->focusOnName();
+    }
+}
+
+//! model updated
+void roboScene::slot_model_updated( mcModelObj *pBase )
+{
+    Q_ASSERT( NULL != pBase );
+
+    //! set name
+    foreach (sceneWidget *pWig, mItemList)
+    {
+        Q_ASSERT( NULL != pWig );
+
+        if ( pWig->getModelObj() == pBase )
+        {
+            pWig->setName( pBase->getName() );
+        }
     }
 }
 
@@ -214,8 +238,11 @@ sceneWidget * roboScene::addRobot( mcModelObj *pBase )
     sceneWidget *pItem = new sceneWidget( ui->scrollArea );   //! has parent, no need to delete
     Q_ASSERT( NULL != pItem );
 
-
     pItem->setModelObj( pBase );                    //! attach robot
+
+    //! name check
+    QString tName = autoName( pBase->getName() );
+    pItem->setName( tName );
 
     pItem->setVisible( true );
                                                     //! connection
@@ -360,7 +387,7 @@ bool roboScene::checkName( const QString &name,
         if ( pWig == pSelf )
         { continue; }
 
-        if ( name == pWig->getName() )
+        if ( str_is( pWig->getName(), name ) )
         { return false; }
     }
 
@@ -394,6 +421,40 @@ void roboScene::setupUi()
 void roboScene::buildConnection()
 {
 
+}
+
+QString roboScene::autoName( const QString &name )
+{
+    //! find
+    if ( findName( name ) )
+    {}
+    else
+    { return name; }
+
+    //! auto
+    QString aName;
+    for ( int i = 1; i < INT_MAX; i++ )
+    {
+        aName = QString("%1%2").arg( name ).arg( i );
+        if ( findName(aName) )
+        {}
+        else
+        { return aName; }
+    }
+
+    Q_ASSERT( false );
+    return name;
+}
+
+bool roboScene::findName( const QString &name )
+{
+    foreach( sceneWidget*pItem, mItemList )
+    {
+        if ( str_is( pItem->getName(), name) )
+        { return true; }
+    }
+
+    return false;
 }
 
 void roboScene::selectAll( bool bSel )

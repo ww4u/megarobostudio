@@ -265,7 +265,7 @@ int scriptMgr::openMotionGroup( const QString &path, const QString &file )
 
     pModel->setPath( path );
     pModel->setName( comAssist::pureFileName(file) );
-    pModel->setFile( true );
+    pModel->setShadow( true );
     pModel->setGc( true );
 
     pModel->set( mcModelObj::model_motion_file,
@@ -294,7 +294,7 @@ int scriptMgr::openTpv( const QString &path, const QString &file )
 
     pGroup->setPath( path );
     pGroup->setName( comAssist::pureFileName(file) );
-    pGroup->setFile( true );
+    pGroup->setShadow( true );
     pGroup->setGc( true );
 
     pGroup->set( mcModelObj::model_tpv,
@@ -323,7 +323,7 @@ int scriptMgr::openTp( const QString &path, const QString &file )
 
     pGroup->setPath( path );
     pGroup->setName( comAssist::pureFileName(file) );
-    pGroup->setFile( true );
+    pGroup->setShadow( true );
     pGroup->setGc( true );
 
     pGroup->set( mcModelObj::model_tp,
@@ -375,7 +375,7 @@ int scriptMgr::openSetup( const QString &path, const QString &file )
 
     pRealRobo->setPath( path );
     pRealRobo->setName( comAssist::pureFileName(file,false) );
-    pRealRobo->setFile( true );
+    pRealRobo->setShadow( true );
     pRealRobo->setGc( true );
 
     pRealRobo->set( mcModelObj::model_scene_variable, pRealRobo );
@@ -394,7 +394,7 @@ int scriptMgr::openPy( const QString &path, const QString &file )
     pModel->setPath( path );
     pModel->setName( comAssist::pureFileName(file) );
     pModel->setGc( true );
-    pModel->setFile( true );
+    pModel->setShadow( true );
 
     pModel->set( mcModelObj::model_py_file, pModel );
 
@@ -594,7 +594,7 @@ roboSceneModel *scriptMgr::createScene( const QString &path,
 
     pModel->setPath( path );
     pModel->setName( comAssist::pureFileName(file) );
-    pModel->setFile( true );
+    pModel->setShadow( true );
     pModel->setGc( true );
 
     pModel->set( mcModelObj::model_scene_file, pModel );

@@ -1,5 +1,36 @@
 #include "vrobot.h"
 
+int VRobot::tryLoad()
+{
+    QString rawPath;
+    if ( getPath().length() > 1 )
+    { rawPath = getPath(); }
+    else
+    { rawPath = QDir::currentPath(); }
+
+    QString fullName;
+    fullName = rawPath + QDir::separator() + getName() +  setup_d_ext;
+    fullName = QDir::toNativeSeparators( fullName );
+    QFile file( fullName );
+    if ( file.exists() )
+    {
+        if ( load( fullName ) == 0 )
+        {
+            setShadow( true );
+            setPath( rawPath );
+            //! \note name have been set
+//            setName( getName() );
+            return 0;
+        }
+        else
+        {
+            return -1;
+        }
+    }
+    else
+    { return -1; }
+}
+
 //! serial
 int VRobot::load( const QString &name )
 {

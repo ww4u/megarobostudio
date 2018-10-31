@@ -41,7 +41,7 @@ mcModelObj::mcModelObj()
 
     mbGc = false;
     mbFilled = false;
-    mbFile = false;
+    mbShadow = false;
 }
 
 void mcModelObj::setGc( bool b )
@@ -58,12 +58,12 @@ void mcModelObj::setFilled( bool b )
 bool mcModelObj::isFilled()
 { return mbFilled; }
 
-void mcModelObj::setFile( bool b )
+void mcModelObj::setShadow( bool b )
 {
-    mbFile = b;
+    mbShadow = b;
 }
-bool mcModelObj::getFile()
-{ return mbFile; }
+bool mcModelObj::hasShadow()
+{ return mbShadow; }
 
 mcModelObj::~mcModelObj()
 {
@@ -75,6 +75,9 @@ mcModelObj::~mcModelObj()
 }
 
 int mcModelObj::uploadSetting()
+{ return 0; }
+
+int mcModelObj::tryLoad()
 { return 0; }
 
 void mcModelObj::setName( const QString &name )

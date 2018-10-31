@@ -114,14 +114,17 @@ bool modelView::matchModelObj( mcModelObj *pObj )
     Q_ASSERT( NULL != pObj );
     Q_ASSERT( NULL != m_pModelObj );
 
-    //! check file
-    if ( pObj->getFile() )
+    //! check shadow
+    if ( pObj->hasShadow() && m_pModelObj->hasShadow() )
     {
-        if ( pObj->getType() != m_pModelObj->getType() )
-        { return false; }
-
+//        if ( pObj->getType() != m_pModelObj->getType() )
+//        { return false; }
+//logDbg()<<m_pModelObj->getName()<<m_pModelObj->getPath();
+//logDbg()<<pObj->getName()<<pObj->getPath();
         //! name match
-        if ( QString::compare( m_pModelObj->getName(), pObj->getName(),Qt::CaseInsensitive ) != 0 )
+        if ( str_is( m_pModelObj->getName(), pObj->getName() ) )
+        {}
+        else
         { return false; }
 
         //! path match
@@ -141,7 +144,9 @@ bool modelView::matchModelObj( mcModelObj *pObj )
         if ( natPath2.back() == '/' )
         { natPath2.remove( natPath2.size()-1, 1 ); }
 
-        if ( QString::compare( natPath1, natPath2,Qt::CaseInsensitive ) != 0 )
+        if ( str_is( natPath1, natPath2) )
+        {}
+        else
         { return false; }
 
         return true;

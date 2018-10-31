@@ -16,6 +16,12 @@
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="1" colspan="2">
     <widget class="QLineEdit" name="edtAlias">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="toolTip">
+      <string>Change it in the scene</string>
+     </property>
      <property name="text">
       <string/>
      </property>
@@ -24,7 +30,7 @@
    <item row="0" column="0">
     <widget class="QLabel" name="label_8">
      <property name="text">
-      <string>Alias</string>
+      <string>Name</string>
      </property>
     </widget>
    </item>

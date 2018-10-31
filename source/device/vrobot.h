@@ -152,6 +152,8 @@ protected:
     void gcWorker();
 
 public:
+    virtual int tryLoad();
+
     //! serial
     virtual int load( const QString &name );
     virtual int save( const QString &name );

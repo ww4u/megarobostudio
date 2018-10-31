@@ -255,6 +255,7 @@ public slots:
     void on_actionExample_triggered();
     void on_actionDataSet_triggered();
     void on_actionReadMe_triggered();
+    void on_actionErrant_triggered();
 
     void on_actionpref_triggered();
 
@@ -296,7 +297,6 @@ private slots:
     void on_actionConsole_triggered();
 
     void on_actionApp_triggered();
-
 
 
 private:

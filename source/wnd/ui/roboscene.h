@@ -44,6 +44,7 @@ protected Q_SLOTS:
     void context_new_mrp();
 
     void slot_editingFinished( sceneWidget * pWig, const QString &str );
+    void slot_model_updated( mcModelObj *pBase );
 
 public:
     virtual void setModelObj( mcModelObj *pObj );
@@ -72,6 +73,9 @@ protected:
 
     void setupUi();
     void buildConnection();
+
+    QString autoName( const QString &name );
+    bool findName( const QString &name );
 
     void selectAll( bool bSel );
     void updateSelecte();

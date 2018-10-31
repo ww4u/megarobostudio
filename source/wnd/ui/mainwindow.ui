@@ -26,7 +26,7 @@
    <string>Mega Robo Studio</string>
   </property>
   <property name="windowIcon">
-   <iconset>
+   <iconset resource="../res/res.qrc">
     <normaloff>:/res/image/logo/m.png</normaloff>:/res/image/logo/m.png</iconset>
   </property>
   <widget class="QWidget" name="centralWidget">
@@ -125,7 +125,7 @@
       <string>New(&amp;N)</string>
      </property>
      <property name="icon">
-      <iconset>
+      <iconset resource="../res/res.qrc">
        <normaloff>:/res/image/icon/document.png</normaloff>:/res/image/icon/document.png</iconset>
      </property>
      <addaction name="actionNewMotion"/>
@@ -173,6 +173,7 @@
     <addaction name="actionPackage"/>
     <addaction name="actionExample"/>
     <addaction name="actionReadMe"/>
+    <addaction name="actionErrant"/>
    </widget>
    <widget class="QMenu" name="menuView_V">
     <property name="title">
@@ -201,7 +202,7 @@
       <string>Plugin</string>
      </property>
      <property name="icon">
-      <iconset>
+      <iconset resource="../res/res.qrc">
        <normaloff>:/res/image/icon2/evaluate.png</normaloff>:/res/image/icon2/evaluate.png</iconset>
      </property>
     </widget>
@@ -222,7 +223,7 @@
   </widget>
   <action name="actionAbout">
    <property name="icon">
-    <iconset>
+    <iconset resource="../res/res.qrc">
      <normaloff>:/res/image/icon/feedback.png</normaloff>:/res/image/icon/feedback.png</iconset>
    </property>
    <property name="text">
@@ -234,7 +235,7 @@
   </action>
   <action name="actionReset">
    <property name="icon">
-    <iconset>
+    <iconset resource="../res/res.qrc">
      <normaloff>:/res/image/icon2/repeal.png</normaloff>:/res/image/icon2/repeal.png</iconset>
    </property>
    <property name="text">
@@ -249,7 +250,7 @@
   </action>
   <action name="actionForceStop">
    <property name="icon">
-    <iconset>
+    <iconset resource="../res/res.qrc">
      <normaloff>:/res/image/icon/246.png</normaloff>:/res/image/icon/246.png</iconset>
    </property>
    <property name="text">
@@ -264,7 +265,7 @@
   </action>
   <action name="actionOpen">
    <property name="icon">
-    <iconset>
+    <iconset resource="../res/res.qrc">
      <normaloff>:/res/image/icon/questions.png</normaloff>:/res/image/icon/questions.png</iconset>
    </property>
    <property name="text">
@@ -279,7 +280,7 @@
   </action>
   <action name="actionSave">
    <property name="icon">
-    <iconset>
+    <iconset resource="../res/res.qrc">
      <normaloff>:/res/image/icon/223.png</normaloff>:/res/image/icon/223.png</iconset>
    </property>
    <property name="text">
@@ -294,7 +295,7 @@
   </action>
   <action name="actionSave_As">
    <property name="icon">
-    <iconset>
+    <iconset resource="../res/res.qrc">
      <normaloff>:/res/image/icon/219.png</normaloff>:/res/image/icon/219.png</iconset>
    </property>
    <property name="text">
@@ -306,7 +307,7 @@
   </action>
   <action name="actionExit">
    <property name="icon">
-    <iconset>
+    <iconset resource="../res/res.qrc">
      <normaloff>:/res/image/icon2/exit.png</normaloff>:/res/image/icon2/exit.png</iconset>
    </property>
    <property name="text">
@@ -318,7 +319,7 @@
   </action>
   <action name="actionpref">
    <property name="icon">
-    <iconset>
+    <iconset resource="../res/res.qrc">
      <normaloff>:/res/image/icon/205.png</normaloff>:/res/image/icon/205.png</iconset>
    </property>
    <property name="text">
@@ -333,7 +334,7 @@
   </action>
   <action name="actionSave_Prj">
    <property name="icon">
-    <iconset>
+    <iconset resource="../res/res.qrc">
      <normaloff>:/res/image/icon/supply.png</normaloff>:/res/image/icon/supply.png</iconset>
    </property>
    <property name="text">
@@ -342,7 +343,7 @@
   </action>
   <action name="actionSave_Prj_As">
    <property name="icon">
-    <iconset>
+    <iconset resource="../res/res.qrc">
      <normaloff>:/res/image/icon/supply.png</normaloff>:/res/image/icon/supply.png</iconset>
    </property>
    <property name="text">
@@ -351,7 +352,7 @@
   </action>
   <action name="actionOpen_Prj">
    <property name="icon">
-    <iconset>
+    <iconset resource="../res/res.qrc">
      <normaloff>:/res/image/icon/03.png</normaloff>:/res/image/icon/03.png</iconset>
    </property>
    <property name="text">
@@ -360,7 +361,7 @@
   </action>
   <action name="actionImport_I">
    <property name="icon">
-    <iconset>
+    <iconset resource="../res/res.qrc">
      <normaloff>:/res/image/icon/218.png</normaloff>:/res/image/icon/218.png</iconset>
    </property>
    <property name="text">
@@ -372,7 +373,7 @@
   </action>
   <action name="actionSave_All_A">
    <property name="icon">
-    <iconset>
+    <iconset resource="../res/res.qrc">
      <normaloff>:/res/image/icon/33.png</normaloff>:/res/image/icon/33.png</iconset>
    </property>
    <property name="text">
@@ -387,7 +388,7 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset>
+    <iconset resource="../res/res.qrc">
      <normaloff>:/res/image/icon/browse.png</normaloff>:/res/image/icon/browse.png</iconset>
    </property>
    <property name="text">
@@ -402,7 +403,7 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset>
+    <iconset resource="../res/res.qrc">
      <normaloff>:/res/image/icon/flashlight.png</normaloff>:/res/image/icon/flashlight.png</iconset>
    </property>
    <property name="text">
@@ -417,7 +418,7 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset>
+    <iconset resource="../res/res.qrc">
      <normaloff>:/res/image/icon/order.png</normaloff>:/res/image/icon/order.png</iconset>
    </property>
    <property name="text">
@@ -429,7 +430,7 @@
   </action>
   <action name="actionNewMotion">
    <property name="icon">
-    <iconset>
+    <iconset resource="../res/res.qrc">
      <normaloff>:/res/image/icon/36.png</normaloff>:/res/image/icon/36.png</iconset>
    </property>
    <property name="text">
@@ -441,7 +442,7 @@
   </action>
   <action name="actionNewPVT">
    <property name="icon">
-    <iconset>
+    <iconset resource="../res/res.qrc">
      <normaloff>:/res/image/icon/document.png</normaloff>:/res/image/icon/document.png</iconset>
    </property>
    <property name="text">
@@ -450,7 +451,7 @@
   </action>
   <action name="actionScene">
    <property name="icon">
-    <iconset>
+    <iconset resource="../res/res.qrc">
      <normaloff>:/res/image/icon/group.png</normaloff>:/res/image/icon/group.png</iconset>
    </property>
    <property name="text">
@@ -459,7 +460,7 @@
   </action>
   <action name="actionProject">
    <property name="icon">
-    <iconset>
+    <iconset resource="../res/res.qrc">
      <normaloff>:/res/image/icon/manage.png</normaloff>:/res/image/icon/manage.png</iconset>
    </property>
    <property name="text">
@@ -468,7 +469,7 @@
   </action>
   <action name="actionDocs">
    <property name="icon">
-    <iconset>
+    <iconset resource="../res/res.qrc">
      <normaloff>:/res/image/icon/22.png</normaloff>:/res/image/icon/22.png</iconset>
    </property>
    <property name="text">
@@ -480,7 +481,7 @@
   </action>
   <action name="actionAngle_A">
    <property name="icon">
-    <iconset>
+    <iconset resource="../res/res.qrc">
      <normaloff>:/res/image/icon/331.png</normaloff>:/res/image/icon/331.png</iconset>
    </property>
    <property name="text">
@@ -489,7 +490,7 @@
   </action>
   <action name="actionDistance_D">
    <property name="icon">
-    <iconset>
+    <iconset resource="../res/res.qrc">
      <normaloff>:/res/image/icon/54.png</normaloff>:/res/image/icon/54.png</iconset>
    </property>
    <property name="text">
@@ -498,7 +499,7 @@
   </action>
   <action name="actionMotor_Panel">
    <property name="icon">
-    <iconset>
+    <iconset resource="../res/res.qrc">
      <normaloff>:/res/image/icon/manage.png</normaloff>:/res/image/icon/manage.png</iconset>
    </property>
    <property name="text">
@@ -515,7 +516,7 @@
   </action>
   <action name="actionPackage">
    <property name="icon">
-    <iconset>
+    <iconset resource="../res/res.qrc">
      <normaloff>:/res/image/icon/22.png</normaloff>:/res/image/icon/22.png</iconset>
    </property>
    <property name="text">
@@ -524,7 +525,7 @@
   </action>
   <action name="actionCamera">
    <property name="icon">
-    <iconset>
+    <iconset resource="../res/res.qrc">
      <normaloff>:/res/image/icon/camera.png</normaloff>:/res/image/icon/camera.png</iconset>
    </property>
    <property name="text">
@@ -546,7 +547,7 @@
   </action>
   <action name="actionExample">
    <property name="icon">
-    <iconset>
+    <iconset resource="../res/res.qrc">
      <normaloff>:/res/image/icon/22.png</normaloff>:/res/image/icon/22.png</iconset>
    </property>
    <property name="text">
@@ -555,7 +556,7 @@
   </action>
   <action name="actionPT">
    <property name="icon">
-    <iconset>
+    <iconset resource="../res/res.qrc">
      <normaloff>:/res/image/icon/document.png</normaloff>:/res/image/icon/document.png</iconset>
    </property>
    <property name="text">
@@ -564,7 +565,7 @@
   </action>
   <action name="actionInverse_Gap_Scan">
    <property name="icon">
-    <iconset>
+    <iconset resource="../res/res.qrc">
      <normaloff>:/res/image/icon2/settings_light.png</normaloff>:/res/image/icon2/settings_light.png</iconset>
    </property>
    <property name="text">
@@ -573,7 +574,7 @@
   </action>
   <action name="actionTorque_View">
    <property name="icon">
-    <iconset>
+    <iconset resource="../res/res.qrc">
      <normaloff>:/res/image/icon2/settings_light.png</normaloff>:/res/image/icon2/settings_light.png</iconset>
    </property>
    <property name="text">
@@ -582,7 +583,7 @@
   </action>
   <action name="actionDataSet">
    <property name="icon">
-    <iconset>
+    <iconset resource="../res/res.qrc">
      <normaloff>:/res/image/icon/22.png</normaloff>:/res/image/icon/22.png</iconset>
    </property>
    <property name="text">
@@ -591,7 +592,7 @@
   </action>
   <action name="actionReadMe">
    <property name="icon">
-    <iconset>
+    <iconset resource="../res/res.qrc">
      <normaloff>:/res/image/icon/22.png</normaloff>:/res/image/icon/22.png</iconset>
    </property>
    <property name="text">
@@ -603,7 +604,7 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset>
+    <iconset resource="../res/res.qrc">
      <normaloff>:/res/image/icon/playon.png</normaloff>:/res/image/icon/playon.png</iconset>
    </property>
    <property name="text">
@@ -624,7 +625,7 @@
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset>
+    <iconset resource="../res/res.qrc">
      <normaloff>:/res/image/icon/stop.png</normaloff>:/res/image/icon/stop.png</iconset>
    </property>
    <property name="text">
@@ -652,7 +653,7 @@
   </action>
   <action name="actionApp">
    <property name="icon">
-    <iconset>
+    <iconset resource="../res/res.qrc">
      <normaloff>:/res/image/icon/manage.png</normaloff>:/res/image/icon/manage.png</iconset>
    </property>
    <property name="text">
@@ -661,7 +662,7 @@
   </action>
   <action name="actionStop">
    <property name="icon">
-    <iconset>
+    <iconset resource="../res/res.qrc">
      <normaloff>:/res/image/icon/stop.png</normaloff>:/res/image/icon/stop.png</iconset>
    </property>
    <property name="text">
@@ -669,6 +670,15 @@
    </property>
    <property name="toolTip">
     <string>Stop without port closing</string>
+   </property>
+  </action>
+  <action name="actionErrant">
+   <property name="icon">
+    <iconset resource="../res/res.qrc">
+     <normaloff>:/res/image/icon/22.png</normaloff>:/res/image/icon/22.png</iconset>
+   </property>
+   <property name="text">
+    <string>Errant...</string>
    </property>
   </action>
  </widget>
@@ -681,7 +691,9 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="../res/res.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>actionExit</sender>

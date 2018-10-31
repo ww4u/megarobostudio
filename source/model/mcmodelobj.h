@@ -57,10 +57,12 @@ public:
     void setFilled( bool b );
     bool isFilled();
 
-    void setFile( bool b );
-    bool getFile();
+    void setShadow( bool b );
+    bool hasShadow();
 
     virtual int uploadSetting();
+
+    virtual int tryLoad();
 
     virtual void setName( const QString &name );
     QString &getName();
@@ -91,7 +93,7 @@ public:
 protected:
     bool mbGc;
     bool mbFilled;      //! has filled
-    bool mbFile;
+    bool mbShadow;
 
     QString mName;
     QString mPath;

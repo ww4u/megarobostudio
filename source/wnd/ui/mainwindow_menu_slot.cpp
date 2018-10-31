@@ -99,7 +99,7 @@ void MainWindow::newMrp( QString className )
     pNewModelObj->setName( comAssist::pureFileName( fDlg.selectedFiles().first() ) );
     pNewModelObj->setPath( fDlg.directory().absolutePath() );
 
-    pNewModelObj->setFile( true );
+    pNewModelObj->setShadow( true );
     pNewModelObj->setGc( true );
 
     pNewModelObj->set( mcModelObj::model_motion_file, pNewModelObj );
@@ -193,7 +193,7 @@ void MainWindow::on_itemx_active( mcModelObj* pObj )
 
     //! scene file
     else if ( pObj->getType() == mcModelObj::model_scene_file )
-    {logDbg();
+    {
         roboScene *pWorkScene;
         pWorkScene = new roboScene();
         Q_ASSERT( NULL != pWorkScene );
@@ -444,7 +444,7 @@ void MainWindow::on_actionNewPVT_triggered()
     pNewModelObj->setPath( fDlg.directory().absolutePath() );
 
     pNewModelObj->setGc( true );
-    pNewModelObj->setFile( true );
+    pNewModelObj->setShadow( true );
 
     pNewModelObj->set( mcModelObj::model_tpv, pNewModelObj );
 
@@ -478,7 +478,7 @@ void MainWindow::on_actionPT_triggered()
     pNewModelObj->setPath( fDlg.directory().absolutePath() );
 
     pNewModelObj->setGc( true );
-    pNewModelObj->setFile( true );
+    pNewModelObj->setShadow( true );
 
     pNewModelObj->set( mcModelObj::model_tp, pNewModelObj );
 
@@ -515,7 +515,7 @@ void MainWindow::on_actionScene_triggered()
     pNewModelObj->setName( comAssist::pureFileName( fDlg.selectedFiles().first() ) );
 
     pNewModelObj->setGc( true );
-    pNewModelObj->setFile( true );
+    pNewModelObj->setShadow( true );
     pNewModelObj->set( mcModelObj::model_scene_file, pNewModelObj );
 
     Q_ASSERT( NULL != pNewModelObj );
@@ -597,6 +597,23 @@ void MainWindow::on_actionReadMe_triggered()
             + QStringLiteral("doc")
             + QDir::separator()
             + QStringLiteral("readme.txt");
+    str.replace("/","\\");
+    args<<str;
+    //! \todo linux
+
+    QProcess::execute( "explorer.exe", args );
+}
+
+
+void MainWindow::on_actionErrant_triggered()
+{
+    QStringList args;
+    QString str;
+    str = QCoreApplication::applicationDirPath()
+            + QDir::separator()
+            + QStringLiteral("doc")
+            + QDir::separator()
+            + QStringLiteral("errant.txt");
     str.replace("/","\\");
     args<<str;
     //! \todo linux

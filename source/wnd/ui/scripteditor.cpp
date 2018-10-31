@@ -41,11 +41,11 @@ bool scriptEditor::matchModelObj(mcModelObj *pObj)
     { return false; }
 
     //! name match
-    if ( QString::compare( m_pModelObj->getName(), pObj->getName(),Qt::CaseInsensitive ) != 0 )
+    if ( !str_is( m_pModelObj->getName(), pObj->getName() ) )
     { return false; }
 
     //! path match
-    if ( QString::compare( m_pModelObj->getPath(), pObj->getPath(),Qt::CaseInsensitive ) != 0 )
+    if ( !str_is( m_pModelObj->getPath(), pObj->getPath() ) )
     { return false; }
 
     return true;

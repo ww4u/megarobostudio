@@ -176,75 +176,177 @@ H2MotionItem *H2MotionGroup::operator[]( int index )
     return mItems[ index ];
 }
 
+
+//stream<<mbEnable<<COL_SEP
+//      <<mName<<COL_SEP
+//      <<mT<<COL_SEP
+//      <<mX<<COL_SEP
+//      <<mY<<COL_SEP
+//      <<mComment<<ROW_SEP;
 int H2MotionGroup::save( const QString &fileName )
 {
-    QFile file( fileName );
+    MDataSet dataSet;
 
-    if ( !file.open( QFile::WriteOnly ) )
-    { return ERR_FILE_OPEN_FAIL; }
+    dataSet.setModel( mClassName );
+    QStringList headers;
+    headers<<"enable"<<"name"
+           <<"t"
+           <<"x"<<"y"
+           <<"comment";
+    dataSet.setHeaders( headers );
 
-    ImcStream text( &file );
-    QString colSep;
+    MDataSection *pSec;
+    pSec = dataSet.addSection();
+    if ( NULL == pSec )
+    { return -1; }
 
-    text<<HEAD_SEP<<className()<<ROW_SEP;
-    text<<HEAD_SEP;
+    //! export data
+    QString fmtStr = fmtString( headers );
 
-    colSep.clear();
-    foreach( QString colTitle, mTitleList )
-    {
-        text<<colSep<<colTitle;
-        colSep = COL_SEP;
-    }
-    text<<ROW_SEP;
-
+    //!
+    bool bRet;
     foreach( H2MotionItem *pItem, mItems )
     {
-        if ( 0 != pItem->serialOut( text ) )
-        {
-            return ERR_FILE_WRITE_FAIL;
-        }
+        Q_ASSERT( NULL != pItem );
+
+        bRet = pSec->addRow( QString("%1").arg( fmtStr )
+                                           .arg( pItem->mbEnable )
+                                           .arg( pItem->mName )
+                                           .arg( pItem->mT )
+                                           .arg( pItem->mX )
+                                           .arg( pItem->mY )
+                                           .arg( pItem->mComment ) );
+        if ( !bRet )
+        { return -1; }
     }
 
-    return 0;
+    //! save
+    return dataSet.save( fileName );
+
+//    QFile file( fileName );
+
+//    if ( !file.open( QFile::WriteOnly ) )
+//    { return ERR_FILE_OPEN_FAIL; }
+
+//    ImcStream text( &file );
+//    QString colSep;
+
+//    text<<HEAD_SEP<<className()<<ROW_SEP;
+//    text<<HEAD_SEP;
+
+//    colSep.clear();
+//    foreach( QString colTitle, mTitleList )
+//    {
+//        text<<colSep<<colTitle;
+//        colSep = COL_SEP;
+//    }
+//    text<<ROW_SEP;
+
+//    foreach( H2MotionItem *pItem, mItems )
+//    {
+//        if ( 0 != pItem->serialOut( text ) )
+//        {
+//            return ERR_FILE_WRITE_FAIL;
+//        }
+//    }
+
+//    return 0;
 }
 int H2MotionGroup::load( const QString &fileName )
 {
-    QFile file( fileName );
+    int ret;
 
-    if ( !file.open( QFile::ReadOnly ) )
-    { return ERR_FILE_OPEN_FAIL; }
+    //! load
+    MDataSet dataSet;
+    ret = dataSet.load( fileName );
+    if ( ret != 0 )
+    { return ret; }
 
-    //! remove all
+    if ( dataSet.isEmpty() )
+    { return -1; }
+
+    if ( dataSet.verifyHeader("t", "x", "y" ) )
+    {}
+    else
+    { return -1; }
+
+    MDataSection *pSec;
+    pSec = dataSet.section( 0 );
+    if ( NULL == pSec )
+    { return -2; }
+
+    deparse_column_index( t, "t" );
+    deparse_column_index( x, "x" );
+    deparse_column_index( y, "y" );
+
+    deparse_column_index( enable, "enable" );
+    deparse_column_index( comment, "comment" );
+    deparse_column_index( name, "name" );
+
     removeRows( 0, mItems.count(), QModelIndex() );
 
-    ImcStream text( &file );
-    ImcStream lineStream;
+    //! deload
+    if ( dataSet.model().isEmpty() )
+    {}
+    else
+    { mClassName = dataSet.model(); }
 
-    QString lineStr;
-
-    do
+    //! data
+    H2MotionItem item;
+    for ( int i = 0; i < pSec->rows(); i++ )
     {
-        lineStr = text.readLine();
-        lineStr = lineStr.trimmed();
+        if ( !pSec->cellValue( i, c_t, item.mT, 0 ) )
+        { continue; }
+        if ( !pSec->cellValue( i, c_x, item.mX, 0 ) )
+        { continue; }
+        if ( !pSec->cellValue( i, c_y, item.mY, 0 ) )
+        { continue; }
 
-        //! comment
-        if ( lineStr.startsWith("#") || lineStr.startsWith("//") )
-        {
-        }
-        else
-        {
-            H2MotionItem item;
-            lineStream.setString( &lineStr, QIODevice::ReadOnly );
-            if ( 0 != item.serialIn( lineStream ) )
-            {
-                return ERR_FILE_READ_FAIL;
-            }
+        pSec->cellValue( i, c_name, item.mName, "" );
+        pSec->cellValue( i, c_enable, item.mbEnable, true );
+        pSec->cellValue( i, c_comment, item.mComment, "" );
 
-            insertRow( mItems.size() );
-            *mItems[ mItems.size()- 1 ] = item;
-        }
+        //! append the item
+        insertRow( mItems.size() );
+        *mItems[ mItems.size()- 1 ] = item;
+    }
 
-    }while( !text.atEnd() );
+//    QFile file( fileName );
+
+//    if ( !file.open( QFile::ReadOnly ) )
+//    { return ERR_FILE_OPEN_FAIL; }
+
+//    //! remove all
+//    removeRows( 0, mItems.count(), QModelIndex() );
+
+//    ImcStream text( &file );
+//    ImcStream lineStream;
+
+//    QString lineStr;
+
+//    do
+//    {
+//        lineStr = text.readLine();
+//        lineStr = lineStr.trimmed();
+
+//        //! comment
+//        if ( lineStr.startsWith("#") || lineStr.startsWith("//") )
+//        {
+//        }
+//        else
+//        {
+//            H2MotionItem item;
+//            lineStream.setString( &lineStr, QIODevice::ReadOnly );
+//            if ( 0 != item.serialIn( lineStream ) )
+//            {
+//                return ERR_FILE_READ_FAIL;
+//            }
+
+//            insertRow( mItems.size() );
+//            *mItems[ mItems.size()- 1 ] = item;
+//        }
+
+//    }while( !text.atEnd() );
 
     emit dataChanged( index(0,0),
                       index(mItems.count(),

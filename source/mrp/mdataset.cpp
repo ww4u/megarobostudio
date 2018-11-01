@@ -11,9 +11,26 @@ MDataSet::~MDataSet()
     delete_all( mSections );
 }
 
+bool MDataSet::isEmpty()
+{
+    if ( mSections.size() < 1 )
+    { return true; }
+
+    Q_ASSERT( NULL != mSections.at(0) );
+    if ( mSections.at(0)->rows() < 1 )
+    { return true; }
+
+    return false;
+}
+
+void MDataSet::setModel( const QString &m )
+{ mModel = m; }
+
 QString MDataSet::model()
 { return mModel; }
 
+void MDataSet::setHeaders( const QStringList &strs )
+{ mHeaders = strs; }
 QStringList MDataSet::headers()
 { return mHeaders; }
 
@@ -35,6 +52,62 @@ int MDataSet::columns()
     return mHeaders.size();
 }
 
+bool MDataSet::verifyHeader( const QStringList &header )
+{
+    QString colName;
+    for( int i = 0; i < header.size(); i++ )
+    {
+        colName = header.at( i );
+
+        colName = colName.toLower();
+        colName = colName.simplified();
+
+        if ( mHeaders.contains(colName) )
+        { }
+        else
+        { return false; }
+    }
+
+    return true;
+}
+
+bool MDataSet::verifyHeader( const QString &str1 )
+{
+    QStringList strList;
+    strList<<str1;
+
+    return verifyHeader( strList );
+}
+bool MDataSet::verifyHeader( const QString &str1,
+                   const QString &str2 )
+{
+    QStringList strList;
+    strList<<str1<<str2;
+
+    return verifyHeader( strList );
+}
+bool MDataSet::verifyHeader( const QString &str1,
+                   const QString &str2,
+                   const QString &str3
+                   )
+{
+    QStringList strList;
+    strList<<str1<<str2<<str3;
+
+    return verifyHeader( strList );
+}
+bool MDataSet::verifyHeader( const QString &str1,
+                   const QString &str2,
+                   const QString &str3,
+                   const QString &str4
+                   )
+{
+    QStringList strList;
+    strList<<str1<<str2<<str3<<str4;
+
+    return verifyHeader( strList );
+}
+
 int MDataSet::columnIndex( const QString &name, int from )
 {
     //! lower case
@@ -51,6 +124,19 @@ QString MDataSet::columnName( int index )
     { return ""; }
     else
     { return mHeaders.at(index); }
+}
+
+MDataSection * MDataSet::addSection( )
+{
+    MDataSection *pSec = new MDataSection( mSections.size() );
+    if ( NULL == pSec )
+    { return NULL; }
+
+    pSec->setModel( mModel );
+    pSec->setHeaders( mHeaders );
+    mSections.append( pSec );
+
+    return pSec;
 }
 
 MDataSection * MDataSet::section( int id )

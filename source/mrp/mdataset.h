@@ -5,6 +5,8 @@
 
 #include "mdatarow.h"
 
+#define deparse_column_index( name, n )    int c_##name = dataSet.columnIndex( n );
+
 class MDataSet
 {
 public:
@@ -12,16 +14,37 @@ public:
     ~MDataSet();
 
 public:
+    bool isEmpty();
+
+    void setModel( const QString &m );
     QString model();
+
+    void setHeaders( const QStringList &strs );
     QStringList headers();
     QString header( int c );
 
     int sections();
     int columns();
 
+    bool verifyHeader( const QStringList &header );
+
+    bool verifyHeader( const QString &str1 );
+    bool verifyHeader( const QString &str1,
+                       const QString &str2 );
+    bool verifyHeader( const QString &str1,
+                       const QString &str2,
+                       const QString &str3
+                       );
+    bool verifyHeader( const QString &str1,
+                       const QString &str2,
+                       const QString &str3,
+                       const QString &str4
+                       );
+
     int columnIndex( const QString &name, int from=0 );
     QString columnName( int index );
 
+    MDataSection * addSection( );
     MDataSection * section( int id );
 
 public:

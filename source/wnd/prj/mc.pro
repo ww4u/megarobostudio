@@ -73,6 +73,7 @@ LIBS += -lrawrobo
 LIBS += -ldevice -lbus
 LIBS += -lpara
 LIBS += -lscpi
+LIBS += -lmrp
 
 win32 {
 # visa

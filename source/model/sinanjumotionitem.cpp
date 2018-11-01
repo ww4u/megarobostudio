@@ -41,6 +41,22 @@ QString SinanjuMotionItem::header( int col )
     { return QObject::tr("Comment"); }
 }
 
+QString SinanjuMotionItem::encodeAttr( quint32 attr )
+{
+    if ( attr != 0 )
+    { return QString("line=( enable = 1;)"); }
+    else
+    { return QString(); }
+}
+
+quint32 SinanjuMotionItem::decodeAttr( const QString &str )
+{
+    if ( str.isEmpty() )
+    { return 0; }
+    else
+    { return 1; }
+}
+
 SinanjuMotionItem::SinanjuMotionItem()
 {
 }
@@ -121,4 +137,5 @@ int SinanjuMotionItem::serialIn( ImcStream &stream )
 
     return 0;
 }
+
 

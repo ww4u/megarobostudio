@@ -1,8 +1,9 @@
 #include "tpgroup.h"
 
-TpGroup::TpGroup() :  MegaTableModel("","")
+TpGroup::TpGroup() :  MegaTableModel("joint","")
 {
     mViewMode = e_view_motor;
+
 }
 
 TpGroup::~TpGroup()
@@ -215,63 +216,144 @@ int TpGroup::clear()
 
 int TpGroup::save( const QString &fileName )
 {
-    QFile file( fileName );
+    MDataSet dataSet;
 
-    if ( !file.open( QFile::WriteOnly ) )
-    { return ERR_FILE_OPEN_FAIL; }
+    dataSet.setModel( mClassName );
+    QStringList headers;
+    headers<<"t"<<"p";
+    dataSet.setHeaders( headers );
 
-    ImcStream text( &file );
+    MDataSection *pSec;
+    pSec = dataSet.addSection();
+    if ( NULL == pSec )
+    { return -1; }
 
+    //! export data
+    QString fmtStr = fmtString( headers );
+
+    bool bRet;
     foreach( TpItem *pItem, mItems )
     {
-        if ( 0 != pItem->serialOut( text ) )
-        {
-            return ERR_FILE_WRITE_FAIL;
-        }
+        Q_ASSERT( NULL != pItem );
+
+        bRet = pSec->addRow( QString("%1").arg( fmtStr )
+                                               .arg( pItem->mT )
+                                               .arg( pItem->mP )
+                                                );
+        if ( !bRet )
+        { return -1; }
     }
+
+    //! save
+    return dataSet.save( fileName );
+
+//    QFile file( fileName );
+
+//    if ( !file.open( QFile::WriteOnly ) )
+//    { return ERR_FILE_OPEN_FAIL; }
+
+//    ImcStream text( &file );
+
+//    foreach( TpItem *pItem, mItems )
+//    {
+//        if ( 0 != pItem->serialOut( text ) )
+//        {
+//            return ERR_FILE_WRITE_FAIL;
+//        }
+//    }
 
     return 0;
 }
 int TpGroup::load( const QString &fileName )
 {
-    QFile file( fileName );
+    int ret;
 
-    if ( !file.open( QFile::ReadOnly ) )
-    { return ERR_FILE_OPEN_FAIL; }
+    //! load
+    MDataSet dataSet;
+    ret = dataSet.load( fileName );
+    if ( ret != 0 )
+    { return ret; }
 
-    //! remove all
+    if ( dataSet.isEmpty() )
+    { return -1; }
+
+    if ( dataSet.verifyHeader("t", "p") )
+    {}
+    else
+    { return -1; }
+
+    MDataSection *pSec;
+    pSec = dataSet.section( 0 );
+    if ( NULL == pSec )
+    { return -2; }
+
+    //! get cols
+    int cT = dataSet.columnIndex( "t" );
+    int cP = dataSet.columnIndex( "p" );
+
     removeRows( 0, mItems.count(), QModelIndex() );
 
-    ImcStream text( &file );
-    ImcStream lineStream;
+    //! deload
+    if ( dataSet.model().isEmpty() )
+    {}
+    else
+    { mClassName = dataSet.model(); }
 
-    QString lineStr;
-
-    int ret;
+    //! data
     TpItem item;
-    do
+    for ( int i = 0; i < pSec->rows(); i++ )
     {
-        lineStr = text.readLine();
-        lineStr = lineStr.trimmed();
+        //! \note t, p is key
+        if ( !pSec->cellValue( i, cT, item.mT, 0 ) )
+        { continue; }
 
-        //! comment
-        if ( lineStr.startsWith("#") || lineStr.startsWith("//") || lineStr.contains("[") || lineStr.length() < 3 )
-        {
-        }
-        else
-        {
-            //! to stream
-            lineStream.setString( &lineStr, QIODevice::ReadOnly );
-            ret = item.serialIn( lineStream );
-            if ( 0 != ret )
-            { return ERR_FILE_READ_FAIL; }
+        if ( !pSec->cellValue( i, cP, item.mP, 0 ) )
+        { continue; }
 
-            //! add item
-            insertRow( mItems.size() );
-            *mItems[ mItems.size()- 1 ] = item;
-        }
+        //! append the item
+        insertRow( mItems.size() );
+        *mItems[ mItems.size()- 1 ] = item;
+    }
 
-    }while( !text.atEnd() );
+
+//    QFile file( fileName );
+
+//    if ( !file.open( QFile::ReadOnly ) )
+//    { return ERR_FILE_OPEN_FAIL; }
+
+//    //! remove all
+//    removeRows( 0, mItems.count(), QModelIndex() );
+
+//    ImcStream text( &file );
+//    ImcStream lineStream;
+
+//    QString lineStr;
+
+//    int ret;
+//    TpItem item;
+//    do
+//    {
+//        lineStr = text.readLine();
+//        lineStr = lineStr.trimmed();
+
+//        //! comment
+//        if ( lineStr.startsWith("#") || lineStr.startsWith("//") || lineStr.contains("[") || lineStr.length() < 3 )
+//        {
+//        }
+//        else
+//        {
+//            //! to stream
+//            lineStream.setString( &lineStr, QIODevice::ReadOnly );
+//            ret = item.serialIn( lineStream );
+//            if ( 0 != ret )
+//            { return ERR_FILE_READ_FAIL; }
+
+//            //! add item
+//            insertRow( mItems.size() );
+//            *mItems[ mItems.size()- 1 ] = item;
+//        }
+
+//    }while( !text.atEnd() );
 
     emit dataChanged( index(0,0),
                       index(mItems.count(), TpItem::columns() - 1) );

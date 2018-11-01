@@ -696,7 +696,7 @@ void scriptMgr::slot_context_import()
     QStringList nameFilters;
     nameFilters<<tr("pvt (*.pvt)")
                <<tr("pt (*.pt)")
-               <<tr("motion (*.mc)")
+               <<tr("mrp (*.mrp)")
                <<tr("scene (*.sce)")
                <<tr("setup (*.stp)")
                <<tr("python (*.py)");

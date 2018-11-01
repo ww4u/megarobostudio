@@ -56,7 +56,6 @@ protected:
 
 public:
     QList< TpItem *> mItems;
-
     eViewMode mViewMode;
 };
 

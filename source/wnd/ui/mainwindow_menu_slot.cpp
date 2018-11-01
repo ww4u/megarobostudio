@@ -76,7 +76,7 @@ void MainWindow::newMrp( QString className )
     //! file name
     QFileDialog fDlg;
     fDlg.setAcceptMode( QFileDialog::AcceptSave );
-    fDlg.setNameFilter( tr("motion file (*.mc)") );
+    fDlg.setNameFilter( tr("mrp file (*.mrp)") );
     if ( fDlg.exec() != QFileDialog::Accepted )
     { return; }
 
@@ -386,7 +386,7 @@ void MainWindow::on_actionOpen_triggered()
     QFileDialog fDlg;
 
     fDlg.setAcceptMode( QFileDialog::AcceptOpen );
-    fDlg.setNameFilter( tr("motion file (*.mc);"
+    fDlg.setNameFilter( tr("mrp file (*.mrp);"
                            ";pvt file (*.pvt);"
                            ";pt file (*.pt);"
                            ";setup file (*.stp);"

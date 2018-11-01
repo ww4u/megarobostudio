@@ -39,8 +39,9 @@ tpvGroup* tpvGroup::createDemoGroup( float dT, float dP )
     return pGroup;
 }
 
-tpvGroup::tpvGroup() : MegaTableModel("","")
+tpvGroup::tpvGroup() : MegaTableModel("joint","")
 {
+
 }
 
 tpvGroup::~tpvGroup()
@@ -260,74 +261,167 @@ int tpvGroup::clear()
 
 int tpvGroup::save( const QString &fileName )
 {
-    QFile file( fileName );
+    MDataSet dataSet;
 
-    if ( !file.open( QFile::WriteOnly ) )
-    { return ERR_FILE_OPEN_FAIL; }
+    dataSet.setModel( mClassName );
+    QStringList headers;
+    headers<<"enable"<<"t"<<"p"<<"v"<<"comment";
+    dataSet.setHeaders( headers );
 
-    ImcStream text( &file );
+    MDataSection *pSec;
+    pSec = dataSet.addSection();
+    if ( NULL == pSec )
+    { return -1; }
 
+    //! export data
+    QString fmtStr = fmtString( headers );
+
+    bool bRet;
     foreach( tpvItem *pItem, mItems )
     {
-        if ( 0 != pItem->serialOut( text ) )
-        {
-            return ERR_FILE_WRITE_FAIL;
-        }
+        Q_ASSERT( NULL != pItem );
+
+        bRet = pSec->addRow( QString("%1").arg( fmtStr )
+                                               .arg( pItem->mValid )
+                                               .arg( pItem->mT )
+                                               .arg( pItem->mP )
+                                               .arg( pItem->mV )
+                                               .arg( pItem->mComment ) );
+        if ( !bRet )
+        { return -1; }
     }
 
-    return 0;
+    //! save
+    return dataSet.save( fileName );
+
+//    QFile file( fileName );
+
+//    if ( !file.open( QFile::WriteOnly ) )
+//    { return ERR_FILE_OPEN_FAIL; }
+
+//    ImcStream text( &file );
+
+//    foreach( tpvItem *pItem, mItems )
+//    {
+//        if ( 0 != pItem->serialOut( text ) )
+//        {
+//            return ERR_FILE_WRITE_FAIL;
+//        }
+//    }
+
+//    return 0;
 }
 int tpvGroup::load( const QString &fileName, pvtType flt )
 {
-    QFile file( fileName );
+    int ret;
 
-    if ( !file.open( QFile::ReadOnly ) )
-    { return ERR_FILE_OPEN_FAIL; }
+    //! load
+    MDataSet dataSet;
+    ret = dataSet.load( fileName );
+    if ( ret != 0 )
+    { return ret; }
 
-    //! remove all
+    if ( dataSet.isEmpty() )
+    { return -1; }
+
+    if ( dataSet.verifyHeader("t", "p") )
+    {}
+    else
+    { return -1; }
+
+    MDataSection *pSec;
+    pSec = dataSet.section( 0 );
+    if ( NULL == pSec )
+    { return -2; }
+
+    //! get cols
+    int cT = dataSet.columnIndex( "t" );
+    int cP = dataSet.columnIndex( "p" );
+    int cV = dataSet.columnIndex( "v" );
+    int cEnable = dataSet.columnIndex( "enable" );
+    int cComment = dataSet.columnIndex( "comment" );
+
     removeRows( 0, mItems.count(), QModelIndex() );
 
-    ImcStream text( &file );
-    ImcStream lineStream;
+    //! deload
+    if ( dataSet.model().isEmpty() )
+    {}
+    else
+    { mClassName = dataSet.model(); }
 
-    QString lineStr;
-
-    int ret;
-    do
+    //! data
+    tpvItem item;
+    for ( int i = 0; i < pSec->rows(); i++ )
     {
-        lineStr = text.readLine();
-        lineStr = lineStr.trimmed();
+        //! \note t, p is key
+        if ( !pSec->cellValue( i, cT, item.mT, 0 ) )
+        { continue; }
 
-        //! comment
-        if ( lineStr.startsWith("#") || lineStr.startsWith("//") || lineStr.contains("[") || lineStr.length() < 5 )
-        {
-        }
-        else
-        {
-            tpvItem item;
-            lineStream.setString( &lineStr, QIODevice::ReadOnly );
-            switch( flt )
-            {
-            case pvt_pvt:
-                ret = item.serialIn_pvt( lineStream );
-                break;
-            case pvt_tpv:
-                ret = item.serialIn_tpv( lineStream );
-                break;
-            default:
-                return ERR_FILE_DO_NOT_SUPPORT;
-            }
+        if ( !pSec->cellValue( i, cP, item.mP, 0 ) )
+        { continue; }
 
-            if ( 0 != ret )
-            {
-                return ERR_FILE_READ_FAIL;
-            }
+        pSec->cellValue( i, cV, item.mV, 0 );
 
-            insertRow( mItems.size() );
-            *mItems[ mItems.size()- 1 ] = item;
-        }
+        pSec->cellValue( i, cEnable, item.mValid, 1 );
 
-    }while( !text.atEnd() );
+        pSec->cellValue( i, cComment, item.mComment, "" );
+
+        //! append the item
+        insertRow( mItems.size() );
+        *mItems[ mItems.size()- 1 ] = item;
+    }
+
+//    return 0;
+
+//    QFile file( fileName );
+
+//    if ( !file.open( QFile::ReadOnly ) )
+//    { return ERR_FILE_OPEN_FAIL; }
+
+//    //! remove all
+//    removeRows( 0, mItems.count(), QModelIndex() );
+
+//    ImcStream text( &file );
+//    ImcStream lineStream;
+
+//    QString lineStr;
+
+//    int ret;
+//    do
+//    {
+//        lineStr = text.readLine();
+//        lineStr = lineStr.trimmed();
+
+//        //! comment
+//        if ( lineStr.startsWith("#") || lineStr.startsWith("//") || lineStr.contains("[") || lineStr.length() < 5 )
+//        {
+//        }
+//        else
+//        {
+//            tpvItem item;
+//            lineStream.setString( &lineStr, QIODevice::ReadOnly );
+//            switch( flt )
+//            {
+//            case pvt_pvt:
+//                ret = item.serialIn_pvt( lineStream );
+//                break;
+//            case pvt_tpv:
+//                ret = item.serialIn_tpv( lineStream );
+//                break;
+//            default:
+//                return ERR_FILE_DO_NOT_SUPPORT;
+//            }
+
+//            if ( 0 != ret )
+//            {
+//                return ERR_FILE_READ_FAIL;
+//            }
+
+//            insertRow( mItems.size() );
+//            *mItems[ mItems.size()- 1 ] = item;
+//        }
+
+//    }while( !text.atEnd() );
 
     emit dataChanged( index(0,0),
                       index(mItems.count(), tpvItem::columns() - 1) );

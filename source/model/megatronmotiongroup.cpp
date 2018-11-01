@@ -158,72 +158,190 @@ MegatronMotionItem *MegatronMotionGroup::operator[]( int index )
 
 int MegatronMotionGroup::save( const QString &fileName )
 {
-    QFile file( fileName );
+    MDataSet dataSet;
 
-    if ( !file.open( QFile::WriteOnly ) )
-    { return ERR_FILE_OPEN_FAIL; }
+    dataSet.setModel( mClassName );
+    QStringList headers;
+    headers<<"enable"<<"name"
+           <<"t"
+           <<"fx"<<"fz"
+           <<"bx"<<"bz"
+           <<"ly"<<"ry"
+           <<"comment";
+    dataSet.setHeaders( headers );
 
-    ImcStream text( &file );
-    text<<HEAD_SEP<<className()<<ROW_SEP;
-    text<<HEAD_SEP
-        <<"enable"<<COL_SEP
-        <<"name"<<COL_SEP
-        <<"t"<<COL_SEP
-        <<"fx"<<COL_SEP
-        <<"fz"<<COL_SEP
-        <<"bx"<<COL_SEP
-        <<"bz"<<COL_SEP
-        <<"ly"<<COL_SEP
-        <<"ry"<<COL_SEP
-        <<"comment"<<ROW_SEP;
+    MDataSection *pSec;
+    pSec = dataSet.addSection();
+    if ( NULL == pSec )
+    { return -1; }
+
+    //! export data
+    QString fmtStr = fmtString( headers );
+
+    bool bRet;
     foreach( MegatronMotionItem *pItem, mItems )
     {
-        if ( 0 != pItem->serialOut( text ) )
-        {
-            return ERR_FILE_WRITE_FAIL;
-        }
+        Q_ASSERT( NULL != pItem );
+
+        bRet = pSec->addRow( QString("%1").arg( fmtStr )
+                                               .arg( pItem->mbEnable )
+                                               .arg( pItem->mName )
+                                               .arg( pItem->mT )
+                                               .arg( pItem->mFx ).arg( pItem->mFz )
+                                               .arg( pItem->mBx ).arg( pItem->mBz )
+                                               .arg( pItem->mLy ).arg( pItem->mRy )
+                                               .arg( pItem->mComment ) );
+        if ( !bRet )
+        { return -1; }
     }
 
-    return 0;
+    //! save
+    return dataSet.save( fileName );
+
+
+//    QFile file( fileName );
+
+//    if ( !file.open( QFile::WriteOnly ) )
+//    { return ERR_FILE_OPEN_FAIL; }
+
+//    ImcStream text( &file );
+//    text<<HEAD_SEP<<className()<<ROW_SEP;
+//    text<<HEAD_SEP
+//        <<"enable"<<COL_SEP
+//        <<"name"<<COL_SEP
+//        <<"t"<<COL_SEP
+//        <<"fx"<<COL_SEP
+//        <<"fz"<<COL_SEP
+//        <<"bx"<<COL_SEP
+//        <<"bz"<<COL_SEP
+//        <<"ly"<<COL_SEP
+//        <<"ry"<<COL_SEP
+//        <<"comment"<<ROW_SEP;
+//    foreach( MegatronMotionItem *pItem, mItems )
+//    {
+//        if ( 0 != pItem->serialOut( text ) )
+//        {
+//            return ERR_FILE_WRITE_FAIL;
+//        }
+//    }
+
+//    return 0;
 }
 int MegatronMotionGroup::load( const QString &fileName )
 {
-    QFile file( fileName );
+    int ret;
 
-    if ( !file.open( QFile::ReadOnly ) )
-    { return ERR_FILE_OPEN_FAIL; }
+    //! load
+    MDataSet dataSet;
+    ret = dataSet.load( fileName );
+    if ( ret != 0 )
+    { return ret; }
 
-    //! remove all
+    if ( dataSet.isEmpty() )
+    { return -1; }
+
+    if ( dataSet.verifyHeader("t", "fx", "ly", "fz") )
+    {}
+    else
+    { return -1; }
+
+    if ( dataSet.verifyHeader("t", "bx", "ry", "bz") )
+    {}
+    else
+    { return -1; }
+
+    MDataSection *pSec;
+    pSec = dataSet.section( 0 );
+    if ( NULL == pSec )
+    { return -2; }
+
+    deparse_column_index( t, "t" );
+    deparse_column_index( fx, "fx" );
+    deparse_column_index( ly, "ly" );
+    deparse_column_index( fz, "fz" );
+
+    deparse_column_index( bx, "bx" );
+    deparse_column_index( ry, "ry" );
+    deparse_column_index( bz, "bz" );
+    deparse_column_index( enable, "enable" );
+
+    deparse_column_index( comment, "comment" );
+    deparse_column_index( name, "name" );
+
+
     removeRows( 0, mItems.count(), QModelIndex() );
 
-    ImcStream text( &file );
-    ImcStream lineStream;
+    //! deload
+    if ( dataSet.model().isEmpty() )
+    {}
+    else
+    { mClassName = dataSet.model(); }
 
-    QString lineStr;
-
-    do
+    //! data
+    MegatronMotionItem item;
+    for ( int i = 0; i < pSec->rows(); i++ )
     {
-        lineStr = text.readLine();
-        lineStr = lineStr.trimmed();
+        if ( !pSec->cellValue( i, c_t, item.mT, 0 ) )
+        { continue; }
+        if ( !pSec->cellValue( i, c_fx, item.mFx, 0 ) )
+        { continue; }
+        if ( !pSec->cellValue( i, c_fz, item.mFz, 0 ) )
+        { continue; }
+        if ( !pSec->cellValue( i, c_ly, item.mLy, 0 ) )
+        { continue; }
 
-        //! comment
-        if ( lineStr.startsWith("#") || lineStr.startsWith("//") )
-        {
-        }
-        else
-        {
-            MegatronMotionItem item;
-            lineStream.setString( &lineStr, QIODevice::ReadOnly );
-            if ( 0 != item.serialIn( lineStream ) )
-            {
-                return ERR_FILE_READ_FAIL;
-            }
+        if ( !pSec->cellValue( i, c_bx, item.mBx, 0 ) )
+        { continue; }
+        if ( !pSec->cellValue( i, c_bz, item.mBz, 0 ) )
+        { continue; }
+        if ( !pSec->cellValue( i, c_ry, item.mRy, 0 ) )
+        { continue; }
 
-            insertRow( mItems.size() );
-            *mItems[ mItems.size()- 1 ] = item;
-        }
+        pSec->cellValue( i, c_name, item.mName, "" );
+        pSec->cellValue( i, c_enable, item.mbEnable, true );
+        pSec->cellValue( i, c_comment, item.mComment, "" );
 
-    }while( !text.atEnd() );
+        //! append the item
+        insertRow( mItems.size() );
+        *mItems[ mItems.size()- 1 ] = item;
+    }
+
+//    QFile file( fileName );
+
+//    if ( !file.open( QFile::ReadOnly ) )
+//    { return ERR_FILE_OPEN_FAIL; }
+
+//    //! remove all
+//    removeRows( 0, mItems.count(), QModelIndex() );
+
+//    ImcStream text( &file );
+//    ImcStream lineStream;
+
+//    QString lineStr;
+
+//    do
+//    {
+//        lineStr = text.readLine();
+//        lineStr = lineStr.trimmed();
+
+//        //! comment
+//        if ( lineStr.startsWith("#") || lineStr.startsWith("//") )
+//        {
+//        }
+//        else
+//        {
+//            MegatronMotionItem item;
+//            lineStream.setString( &lineStr, QIODevice::ReadOnly );
+//            if ( 0 != item.serialIn( lineStream ) )
+//            {
+//                return ERR_FILE_READ_FAIL;
+//            }
+
+//            insertRow( mItems.size() );
+//            *mItems[ mItems.size()- 1 ] = item;
+//        }
+
+//    }while( !text.atEnd() );
 
     emit dataChanged( index(0,0),
                       index(mItems.count(), MegatronMotionItem::columns() - 1) );

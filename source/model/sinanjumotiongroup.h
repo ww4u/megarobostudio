@@ -63,6 +63,7 @@ public:
 public:
     virtual void reverse();
 
+
 public:
     QList< SinanjuMotionItem *> mItems;
 

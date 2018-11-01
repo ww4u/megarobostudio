@@ -72,6 +72,8 @@ MDataSection::MDataSection( int sec ) : mSection( sec )
 
         //! bool
         MDataSection::_keyw_types.insert( "enable", QVariant::Bool );
+
+        MDataSection::_keyw_types.insert( "comment", QVariant::String );
     }
 }
 
@@ -138,8 +140,16 @@ bool MDataSection::addRow( const QString &str1, QChar sep )
     return true;
 }
 
+int MDataSection::rows()
+{ return mRows.size(); }
+
 QVariant MDataSection::cell( int r, int c )
 {
+    //! invalid cell
+    if ( r < 0 || r >= mRows.size()
+         || c < 0 || c >= mHeaders.size() )
+    { return QVariant(); }
+
     QString cName = columnName( c );
 
     if ( MDataSection::_keyw_types.contains( cName ) )
@@ -152,6 +162,8 @@ QVariant MDataSection::cell( int r, int c )
         { var.setValue( rawCell( r, c ).toInt() ); }
         else if(  MDataSection::_keyw_types[ cName ] == QVariant::Bool )
         { var.setValue( rawCell( r, c ).toInt() > 0 ); }
+        else if(  MDataSection::_keyw_types[ cName ] == QVariant::String )
+        { var.setValue( rawCell( r, c )  ); }
         else
         { }
 
@@ -159,7 +171,7 @@ QVariant MDataSection::cell( int r, int c )
     }
     else
     {
-        QVariant var( QVariant::String );
+        QVariant var;
         var.setValue( rawCell( r, c) );
 
         return var;
@@ -169,6 +181,84 @@ QVariant MDataSection::cell( int r, int c )
 QString MDataSection::rawCell( int r, int c )
 {
     return mRows.at(r)->at( c );
+}
+
+bool MDataSection::cellValue( int r, int c,
+                bool &v, bool def,
+                bool bOv )
+{
+    QVariant var = cell( r, c );
+
+    bool ok;
+    ok = var.isValid();
+
+    if ( ok && !var.toString().isEmpty() )
+    {
+        v = var.toBool();
+    }
+    else if ( bOv )
+    { v = def; }
+    else
+    {}
+
+    return ok;
+}
+
+bool MDataSection::cellValue( int r, int c,
+                float &v, float def,
+                bool bOv )
+{
+    QVariant var = cell( r, c );
+    float localV;
+
+    bool ok;
+    localV = var.toFloat( &ok );
+    if ( ok )
+    { v = localV; }
+    else if ( bOv )
+    { v = def; }
+    else
+    {}
+
+    return ok;
+}
+bool MDataSection::cellValue( int r, int c,
+                int &v, int def,
+                bool bOv )
+{
+    QVariant var = cell( r, c );
+    int localV;
+
+    bool ok;
+    localV = var.toInt( &ok );
+    if ( ok )
+    { v = localV; }
+    else if ( bOv )
+    { v = def; }
+    else
+    {}
+
+    return ok;
+}
+bool MDataSection::cellValue( int r, int c,
+                QString &v, const QString &def,
+                bool bOv )
+{
+    QVariant var = cell( r, c );
+    QString localV;
+
+    bool ok;
+
+    localV   = var.toString();logDbg()<<localV;
+    ok = !localV.isEmpty();
+    if ( ok )
+    { v = localV; }
+    else if ( bOv )
+    { v = def; }
+    else
+    {}
+
+    return ok;
 }
 
 void MDataSection::dbgShow()

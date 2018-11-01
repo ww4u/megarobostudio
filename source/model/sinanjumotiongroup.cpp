@@ -205,74 +205,198 @@ SinanjuMotionItem *SinanjuMotionGroup::operator[]( int index )
 
 int SinanjuMotionGroup::save( const QString &fileName )
 {
-    QFile file( fileName );
+    MDataSet dataSet;
 
-    if ( !file.open( QFile::WriteOnly ) )
-    { return ERR_FILE_OPEN_FAIL; }
+    dataSet.setModel( mClassName );
+    QStringList headers;
+    headers<<"enable"<<"name"
+           <<"t"<<"x"<<"y"<<"z"<<"h"
+           <<"mode"
+           <<"comment";
+    dataSet.setHeaders( headers );
 
-    ImcStream text( &file );
+    MDataSection *pSec;
+    pSec = dataSet.addSection();
+    if ( NULL == pSec )
+    { return -1; }
 
-    text<<HEAD_SEP<<className()<<ROW_SEP;
-    text<<HEAD_SEP
-        <<"enable"<<COL_SEP
-        <<"name"<<COL_SEP
-        <<"t"<<COL_SEP
-        <<"x"<<COL_SEP
-        <<"y"<<COL_SEP
-        <<"z"<<COL_SEP
-        <<"h"<<COL_SEP
-        <<"attr"<<COL_SEP
-        <<"comment"<<ROW_SEP;
+    //! export data
+    QString fmtStr = fmtString( headers );
+
+    bool bRet;
     foreach( SinanjuMotionItem *pItem, mItems )
     {
-        if ( 0 != pItem->serialOut( text ) )
-        {
-            return ERR_FILE_WRITE_FAIL;
-        }
+        Q_ASSERT( NULL != pItem );
+
+        bRet = pSec->addRow( QString("%1").arg( fmtStr )
+                                               .arg( pItem->mbEnable )
+                                               .arg( pItem->mName )
+                                               .arg( pItem->mX )
+                                               .arg( pItem->mY )
+                                               .arg( pItem->mZ )
+                                               .arg( pItem->mH )
+                                               .arg( SinanjuMotionItem::encodeAttr( pItem->mIAttr ) )
+                                               .arg( pItem->mComment ) );
+        if ( !bRet )
+        { return -1; }
     }
 
-    return 0;
+    //! save
+    return dataSet.save( fileName );
+
+//    QFile file( fileName );
+
+//    if ( !file.open( QFile::WriteOnly ) )
+//    { return ERR_FILE_OPEN_FAIL; }
+
+//    ImcStream text( &file );
+
+//    text<<HEAD_SEP<<className()<<ROW_SEP;
+//    text<<HEAD_SEP
+//        <<"enable"<<COL_SEP
+//        <<"name"<<COL_SEP
+//        <<"t"<<COL_SEP
+//        <<"x"<<COL_SEP
+//        <<"y"<<COL_SEP
+//        <<"z"<<COL_SEP
+//        <<"h"<<COL_SEP
+//        <<"attr"<<COL_SEP
+//        <<"comment"<<ROW_SEP;
+//    foreach( SinanjuMotionItem *pItem, mItems )
+//    {
+//        if ( 0 != pItem->serialOut( text ) )
+//        {
+//            return ERR_FILE_WRITE_FAIL;
+//        }
+//    }
+
+//    return 0;
 }
+
+
+
 int SinanjuMotionGroup::load( const QString &fileName )
 {
-    QFile file( fileName );
+    int ret;
 
-    if ( !file.open( QFile::ReadOnly ) )
-    { return ERR_FILE_OPEN_FAIL; }
+    //! load
+    MDataSet dataSet;
+    ret = dataSet.load( fileName );
+    if ( ret != 0 )
+    { return ret; }
 
-    //! remove all
+    if ( dataSet.isEmpty() )
+    { return -1; }
+
+    if ( dataSet.verifyHeader("t", "x", "y", "z" ) )
+    {}
+    else
+    { return -1; }
+
+    MDataSection *pSec;
+    pSec = dataSet.section( 0 );
+    if ( NULL == pSec )
+    { return -2; }
+
+    deparse_column_index( enable, "enable" );
+    deparse_column_index( name, "name" );
+    deparse_column_index( t, "t" );
+    deparse_column_index( x, "x" );
+    deparse_column_index( y, "y" );
+    deparse_column_index( z, "z" );
+    deparse_column_index( h, "h" );
+    deparse_column_index( mode, "mode" );
+    deparse_column_index( comment, "comment" );
+
+//    headers<<"enable"<<"name"
+//           <<"t"<<"x"<<"y"<<"z"<<"h"
+//           <<"mode"
+//           <<"comment";
+
+//    //! get cols
+//    int cT = dataSet.columnIndex( "t" );
+//    int cX = dataSet.columnIndex( "p" );
+//    int cV = dataSet.columnIndex( "v" );
+//    int cEnable = dataSet.columnIndex( "enable" );
+//    int cComment = dataSet.columnIndex( "comment" );
+
     removeRows( 0, mItems.count(), QModelIndex() );
 
-    ImcStream text( &file );
-    ImcStream lineStream;
+    //! deload
+    if ( dataSet.model().isEmpty() )
+    {}
+    else
+    { mClassName = dataSet.model(); }
 
-    QString lineStr;
-
-    do
+    //! data
+    SinanjuMotionItem item;
+    QString strMode;
+    for ( int i = 0; i < pSec->rows(); i++ )
     {
-        lineStr = text.readLine();
-        lineStr = lineStr.trimmed();
+        //! \note t, x, y, z is key
+        if ( !pSec->cellValue( i, c_t, item.mT, 0 ) )
+        { continue; }
 
-        //! comment
-        if ( lineStr.startsWith("#") || lineStr.startsWith("//") )
-        {
-        }
-        else
-        {
-            SinanjuMotionItem item;
-            lineStream.setString( &lineStr, QIODevice::ReadOnly );
-            if ( 0 != item.serialIn( lineStream ) )
-            {
-                //! next item
-            }
-            else
-            {
-                insertRow( mItems.size() );
-                *mItems[ mItems.size()- 1 ] = item;
-            }
-        }
+        if ( !pSec->cellValue( i, c_x, item.mX, 0 ) )
+        { continue; }
 
-    }while( !text.atEnd() );
+        if ( !pSec->cellValue( i, c_y, item.mY, 0 ) )
+        { continue; }
+
+        if ( !pSec->cellValue( i, c_z, item.mZ, 0 ) )
+        { continue; }
+
+        pSec->cellValue( i, c_h, item.mH, 0, false );
+
+        pSec->cellValue( i, c_name, item.mName, "" );
+        pSec->cellValue( i, c_enable, item.mbEnable, true );
+        pSec->cellValue( i, c_comment, item.mComment, "" );
+        pSec->cellValue( i, c_mode, strMode, "" );
+        item.mIAttr = SinanjuMotionItem::decodeAttr( strMode );
+
+        //! append the item
+        insertRow( mItems.size() );
+        *mItems[ mItems.size()- 1 ] = item;
+    }
+
+//    QFile file( fileName );
+
+//    if ( !file.open( QFile::ReadOnly ) )
+//    { return ERR_FILE_OPEN_FAIL; }
+
+//    //! remove all
+//    removeRows( 0, mItems.count(), QModelIndex() );
+
+//    ImcStream text( &file );
+//    ImcStream lineStream;
+
+//    QString lineStr;
+
+//    do
+//    {
+//        lineStr = text.readLine();
+//        lineStr = lineStr.trimmed();
+
+//        //! comment
+//        if ( lineStr.startsWith("#") || lineStr.startsWith("//") )
+//        {
+//        }
+//        else
+//        {
+//            SinanjuMotionItem item;
+//            lineStream.setString( &lineStr, QIODevice::ReadOnly );
+//            if ( 0 != item.serialIn( lineStream ) )
+//            {
+//                //! next item
+//            }
+//            else
+//            {
+//                insertRow( mItems.size() );
+//                *mItems[ mItems.size()- 1 ] = item;
+//            }
+//        }
+
+//    }while( !text.atEnd() );
 
     emit dataChanged( index(0,0),
                       index(mItems.count(), SinanjuMotionItem::columns() - 1) );
@@ -304,3 +428,4 @@ void SinanjuMotionGroup::reverse()
     emit dataChanged( index(0,0),
                       index(mItems.count(), SinanjuMotionItem::columns() - 1) );
 }
+

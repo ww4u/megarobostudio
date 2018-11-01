@@ -42,7 +42,10 @@ QString H2ZMotionItem::header( int col )
 
 H2ZMotionItem::H2ZMotionItem()
 {
-
+    mT = 0;
+    mX = 0;
+    mY = 0;
+    mZ = 0;
 }
 
 int H2ZMotionItem::serialOut( ImcStream &stream )

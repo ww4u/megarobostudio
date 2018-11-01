@@ -4,6 +4,7 @@
 #include <QAbstractTableModel>
 
 #include "scriptfile.h"
+#include "../../mrp/mdataset.h"
 
 class MegaTableModel : public QAbstractTableModel, public scriptFile
 {
@@ -38,6 +39,8 @@ public:
     QList<bool> &sectionAbleList();
 
     QStringList exportOptList();
+
+    QString fmtString( const QStringList &list );
 
     virtual void setRpc( int row, RpcRequest &req );
 

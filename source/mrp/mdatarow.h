@@ -44,9 +44,23 @@ public:
     bool lineOut( QTextStream &stream );
 
     bool addRow( const QString &str1, QChar sep='/' );
+    int rows();
 
     QVariant cell( int r, int c );
     QString rawCell( int r, int c );
+
+    bool cellValue( int r, int c,
+                    bool &v, bool def,
+                    bool bOv=true );
+    bool cellValue( int r, int c,
+                    float &v, float def,
+                    bool bOv=true );
+    bool cellValue( int r, int c,
+                    int &v, int def,
+                    bool bOv=true );
+    bool cellValue( int r, int c,
+                    QString &v, const QString &def,
+                    bool bOv=true );
 
 public:
     void dbgShow();

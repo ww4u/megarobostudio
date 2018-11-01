@@ -64,7 +64,6 @@ protected:
 
 public:
     QList< tpvItem *> mItems;
-
 };
 
 #endif // TPVGROUP_H

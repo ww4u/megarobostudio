@@ -1,0 +1,283 @@
+#include "mdataset.h"
+#include "../../include/mcstd.h"
+
+MDataSet::MDataSet()
+{
+    m_pNowSection = NULL;
+}
+
+MDataSet::~MDataSet()
+{
+    delete_all( mSections );
+}
+
+QString MDataSet::model()
+{ return mModel; }
+
+QStringList MDataSet::headers()
+{ return mHeaders; }
+
+QString MDataSet::header( int c )
+{
+    if ( c < 0 || c > mHeaders.size() )
+    { return ""; }
+    else
+    { return mHeaders.at(c);}
+}
+
+int MDataSet::sections()
+{
+    return mSections.size();
+}
+
+int MDataSet::columns()
+{
+    return mHeaders.size();
+}
+
+int MDataSet::columnIndex( const QString &name, int from )
+{
+    //! lower case
+    QString normName;
+
+    normName = name.toLower();
+
+    return mHeaders.indexOf( normName, from );
+}
+
+QString MDataSet::columnName( int index )
+{
+    if ( index < 0 || index > mHeaders.size() )
+    { return ""; }
+    else
+    { return mHeaders.at(index); }
+}
+
+MDataSection * MDataSet::section( int id )
+{
+    if ( id < 0 || id >= mSections.size() )
+    { return NULL; }
+
+    return mSections.at( id );
+}
+
+int MDataSet::load( const QString &fullname )
+{
+    //! 1. open
+    QFile file( fullname );
+    if ( file.open(QIODevice::ReadOnly) )
+    { }
+    else
+    { return -1; }
+
+    //! 2. load
+    int ret;
+    ret = doLoad( file );
+
+    //! 3. close
+    file.close();
+
+    return ret;
+}
+
+int MDataSet::save( const QString &fullName )
+{
+    QFile file( fullName );
+    if ( file.open( QIODevice::WriteOnly ) )
+    { }
+    else
+    { return -1; }
+
+    int ret = doSave( file );
+
+    file.close();
+
+    return ret;
+}
+
+void MDataSet::dbgShow()
+{
+    logDbg()<<mModel;
+    logDbg()<<mHeaders;
+    logDbg()<<"sections:"<<mSections.size();
+    foreach( MDataSection *pSec, mSections )
+    {
+        pSec->dbgShow();
+    }
+}
+
+int MDataSet::doLoad( QFile &file )
+{
+    //! load the content
+    QByteArray rawLine;
+    QByteArray varLine;
+    QStringList dataLine;
+    while( !file.atEnd() )
+    {
+        rawLine = file.readLine();
+        varLine = rawLine;
+
+        //! filter
+        if ( filterLine(varLine) )
+        { continue; }
+
+        //! description
+        if ( varLine.startsWith( "[") )
+        {
+            extractDescription( varLine );
+
+            do
+            {
+                //! model
+                if ( mModel.isEmpty() )
+                {
+                    mModel = varLine;
+                    break;
+                }
+
+                //! header
+                if ( mHeaders.isEmpty() )
+                {
+                    mHeaders = extractStringList( varLine );
+                    break;
+                }
+
+                //! a new section
+                if ( str_is( varLine, "section" ) )
+                {
+                    do
+                    {
+                        if ( m_pNowSection != NULL )
+                        { m_pNowSection = new MDataSection( m_pNowSection->section() + 1 ); }
+                        else
+                        { m_pNowSection = new MDataSection( ); }
+
+                        if ( NULL == m_pNowSection )
+                        { return -1; }
+
+                        m_pNowSection->setModel( mModel );
+                        m_pNowSection->setHeaders( mHeaders );
+                        mSections.append( m_pNowSection );
+                    }while ( 0 );
+
+                    break;
+                }
+
+            }while( 0 );
+
+        }
+        //! data
+        else
+        {
+            //! data set
+            dataLine = extractStringList( varLine );
+            if ( dataLine.size() == mHeaders.size() )
+            {
+                //! current section
+                do
+                {
+                    if ( m_pNowSection != NULL )
+                    { break; }
+
+                    m_pNowSection = new MDataSection();
+                    if ( NULL == m_pNowSection )
+                    { return -1; }
+
+                    m_pNowSection->setModel( mModel );
+                    m_pNowSection->setHeaders( mHeaders );
+                    mSections.append( m_pNowSection );
+                }while ( 0 );
+
+                if ( m_pNowSection->lineIn( varLine ) )
+                {}
+                else
+                { return -1; }
+            }
+        }
+    }
+
+    return 0;
+}
+
+int MDataSet::doSave( QFile &file )
+{
+    QTextStream stream( &file );
+
+    stream<<"["<<mModel<<"]"<<line_seperator;
+    stream<<"["<<mHeaders.join(',')<<"]"<<line_seperator;
+
+    for ( int i = 0; i < mSections.size(); i++ )
+    {
+        if ( mSections[i]->lineOut( stream ) )
+        {}
+        else
+        { return -1; }
+    }
+
+    return 0;
+}
+
+bool MDataSet::verifyLine( QByteArray &ary )
+{
+    if ( ary.isEmpty())
+    { return false; }
+
+    return true;
+}
+
+bool MDataSet::commentLine( QByteArray &ary )
+{
+    if ( ary.startsWith('#') )
+    { return true; }
+
+    return false;
+}
+
+void MDataSet::normalLine( QByteArray &ary )
+{
+    ary = ary.simplified();
+
+    //! lower
+    ary = ary.toLower();
+}
+
+bool MDataSet::filterLine( QByteArray &ary )
+{
+    normalLine( ary );
+
+    if ( verifyLine(ary) )
+    { }
+    else
+    { return true; }
+
+    if ( commentLine(ary) )
+    { return true; }
+
+    return false;
+}
+
+void MDataSet::extractDescription( QByteArray &ary )
+{
+    ary = ary.replace( '[', ' ' );
+    ary = ary.replace( ']', ' ' );
+
+    ary = ary.simplified();
+}
+
+QStringList MDataSet::extractStringList( QByteArray &ary )
+{
+    QList<QByteArray> aryList = ary.split(',');
+
+    QStringList strList;
+
+    QByteArray localAry;
+//    foreach( QByteArray &ary, aryList )
+    for ( int i = 0; i < aryList.size(); i++ )
+    {
+        localAry = aryList.at(i);
+        strList << localAry.simplified();
+    }
+
+    return strList;
+}
+

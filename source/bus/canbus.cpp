@@ -107,65 +107,88 @@ int CANBus::open( const modelSysPref &pref,
         return -1;
     }
 
-    //! find
-    if ( busType == VCI_MR_LANCAN
-         || busType == VCI_MR_USBTMC )
-    {
-        //! the first time
-        //! find rsrc
-        if ( seqId == 0 )
-        {
-            _visaRsrc.clear();
+//    //! find
+//    if ( busType == VCI_MR_LANCAN
+//         || busType == VCI_MR_USBTMC )
+//    {
+//        //! the first time
+//        //! find rsrc
+//        if ( seqId == 0 )
+//        {
+//            _visaRsrc.clear();
 
-            char strs[ 1024 ] = { 0 };                          //! for the resources
-            if ( 0 == mApi.find( busType, strs, sizeof(strs) ) )
-            {
-                sysError( QObject::tr("device find fail") );
-                close();
-                return -1;
-            }
+//            char strs[ 1024 ] = { 0 };                          //! for the resources
+//            if ( 0 == mApi.find( busType, strs, sizeof(strs) ) )
+//            {
+//                sysError( QObject::tr("device find fail") );
+//                close();
+//                return -1;
+//            }
 
-            //! match the device id
-            QByteArray rawData;
-            rawData.setRawData( strs, qstrlen( strs ) );
+//            //! match the device id
+//            QByteArray rawData;
+//            rawData.setRawData( strs, qstrlen( strs ) );
 
-            _visaRsrc = QString( rawData );
-        }
-        else
-        {}
+//            _visaRsrc = QString( rawData );
+//        }
+//        else
+//        {}
 
-        QStringList rsrcList = _visaRsrc.split( ';', QString::SkipEmptyParts );
+//        QStringList rsrcList = _visaRsrc.split( ';', QString::SkipEmptyParts );
 
-        int id = rsrcList.indexOf( desc );
-        if ( id == -1 )
-        {
-            sysError( QObject::tr("no device: ") + desc );
-            close();
-        }
-        else
-        {
-            mDevId = id;
-            sysLog( desc, QString::number(mDevId) );
-        }
-    }
-    else if ( busType == VCI_MCP_CAN )
-    {
+//        int id = rsrcList.indexOf( desc );
+//        if ( id == -1 )
+//        {
+//            sysError( QObject::tr("no device: ") + desc );
+//            close();
+//        }
+//        else
+//        {
+//            mDevId = id;
+//            sysLog( desc, QString::number(mDevId) );
+//        }
+//    }
+//    else if ( busType == VCI_MCP_CAN )
+//    {
 
-    }
-    else if ( busType == VCI_MR_USBCAN )
-    {
+//    }
+//    else if ( busType == VCI_MR_USBCAN )
+//    {
 
-    }
-    else
-    { return -1; }
+//    }
+//    else
+//    { return -1; }
 
     //! open
-    mHandle = mApi.open( mDevType, mDevId, mCanId );
-    if ( mHandle != 1 )
+    int ret;
+    if ( mPId == 0 || mPId == 2 || mPId == 6 )
     {
-        sysError( QObject::tr("CAN open fail") );
-        close();
-        return -2;
+        char strs[ 1024 ] = { 0 };                          //! for the resources
+
+        ret = mApi.findExt( mDevType, strs, sizeof_array(strs)-1, &mDefRM );
+        if ( ret == 0 )
+        {
+            close();
+            return -1;
+        }
+
+        ret = mApi.openExt( mDevType, mDefRM, desc.toLatin1().data(), &mDevId );
+        if ( ret != 0 )
+        {
+            close();
+            return -2;
+        }
+    }
+    else
+    {
+        //! open
+        mHandle = mApi.open( mDevType, mDevId, mCanId );
+        if ( mHandle != 1 )
+        {
+            sysError( QObject::tr("CAN open fail") );
+            close();
+            return -2;
+        }
     }
 
     //! init
@@ -187,7 +210,7 @@ int CANBus::open( const modelSysPref &pref,
     {
         return -1;
     }
-logDbg();
+
     //! open cache
     Q_ASSERT( NULL == m_pRecvCache );
     m_pRecvCache = new receiveCache();

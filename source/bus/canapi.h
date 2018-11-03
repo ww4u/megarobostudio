@@ -20,8 +20,13 @@ namespace MegaDevice {
 #undef CALL
 #define CALL
 typedef unsigned int  CALL (*p_VCI_FindDevice)(unsigned int DeviceType,char* desc, int descLen );
-//typedef unsigned int  CALL (*p_VCI_FindDevice)(unsigned int DeviceType,char* desc );
 typedef unsigned int  CALL (*p_VCI_OpenDevice)(unsigned int DeviceType, unsigned int DeviceInd, unsigned int Reserved);
+
+typedef unsigned int  CALL (*p_VCI_FindDeviceExt)(unsigned int DeviceType, char* desc, int descLen, unsigned int *pDefRM );
+typedef unsigned int  CALL (*p_VCI_OpenDeviceExt)(unsigned int DeviceType,
+                                                  unsigned int defRM,
+                                                  unsigned int *pInstr );
+
 typedef unsigned int  CALL (*p_VCI_CloseDevice)(unsigned int DeviceType, unsigned int DeviceInd);
 
 typedef unsigned int  CALL (*p_VCI_InitCAN)(unsigned int DeviceType, unsigned int DeviceInd, unsigned int CANInd, P_INIT_CONFIG pInitConfig);
@@ -48,9 +53,16 @@ public:
 protected:
     bool loadApi( int portId );
 
+    bool load3RdApi( int portId );
+    bool loadMegaApi( int portId );
+
 public:
     p_VCI_FindDevice find;
     p_VCI_OpenDevice open;
+
+    p_VCI_FindDeviceExt findExt;
+    p_VCI_OpenDeviceExt openExt;
+
     p_VCI_CloseDevice close;
 
     p_VCI_InitCAN init;

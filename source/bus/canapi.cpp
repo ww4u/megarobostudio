@@ -5,8 +5,13 @@ namespace MegaDevice {
 
 CANApi::CANApi()
 {
+    find = NULL;
+
     open = NULL;
     close = NULL;
+
+    findExt = NULL;
+    openExt = NULL;
 
     init = NULL;
     getSize = NULL;

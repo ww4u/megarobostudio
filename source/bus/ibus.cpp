@@ -37,6 +37,7 @@ IBus::IBus()
     mSpeed = 1000000;
     mPId = 0;
     mDevId = 0;
+    mDefRM = 0;
 
     mLinkType = 0;
 }

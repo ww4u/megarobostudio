@@ -70,7 +70,7 @@ protected:
                           //! 1 -- usb can ii
                           //!
     int mDevId;           //! device id -- device handle
-
+    int mDefRM;
 
     QString mName;
 

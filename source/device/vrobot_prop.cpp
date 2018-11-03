@@ -26,6 +26,11 @@ QList<int> VRobot::subIDs( int ch )
 QString VRobot::deviceFullDesc()
 { return ""; }
 
+void VRobot::setPower( bool b )
+{ mbPwr = b; }
+bool VRobot::power()
+{ return mbPwr; }
+
 void VRobot::setCoord( eRoboCoord cord )
 { mCoord = cord; }
 eRoboCoord VRobot::getCoord( )

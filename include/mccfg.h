@@ -37,7 +37,7 @@
 
 //! file ext
 #define setup_ext                       "stp"
-#define motion_ext                      "mc"
+#define motion_ext                      "mrp"
 #define pvt_ext                         "pvt"
 #define pt_ext                          "pt"
 #define scene_ext                       "sce"
@@ -46,7 +46,7 @@
 
 //! file dext
 #define setup_d_ext                       ".stp"
-#define motion_d_ext                      ".mc"
+#define motion_d_ext                      ".mrp"
 #define pvt_d_ext                         ".pvt"
 #define scene_d_ext                       ".sce"
 

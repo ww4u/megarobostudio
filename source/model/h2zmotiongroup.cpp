@@ -240,8 +240,8 @@ int H2ZMotionGroup::load( const QString &fileName )
     if ( ret != 0 )
     { return ret; }
 
-    if ( dataSet.isEmpty() )
-    { return -1; }
+//    if ( dataSet.isEmpty() )
+//    { return -1; }
 
     if ( dataSet.verifyHeader("t", "x", "y" ) )
     {}

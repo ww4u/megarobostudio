@@ -4,6 +4,7 @@
 
 #include "megatron.h"
 #include "../../com/comassist.h"
+#include "../../com/scpiassist.h"
 
 #define DEF_ROBO()      robotMegatron *pRobo;\
                         pRobo = ((robotMegatron*)context->user_context);\
@@ -198,59 +199,132 @@ static scpi_result_t _scpi_gozero( scpi_t * context )
 //! ax, page, file
 static scpi_result_t _scpi_program( scpi_t * context )
 {
-    // read
     DEF_LOCAL_VAR();
 
+    //! para
     int ax, page;
+    QString file;
 
-    if ( SCPI_ParamInt32(context, &ax, true) != true )
+    if ( deload_ax_page_file( context, ax, page, file) == SCPI_RES_OK )
+    {}
+    else
     { scpi_ret( SCPI_RES_ERR ); }
 
-    if ( SCPI_ParamInt32(context, &page, true) != true )
-    { scpi_ret( SCPI_RES_ERR ); }
+    //! data set
+    MDataSet dataSet;
+    DEF_ROBO();
 
-    if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
-    { scpi_ret( SCPI_RES_ERR ); }logDbg()<<strLen<<pLocalStr;
-    if (strLen < 1)
-    { scpi_ret( SCPI_RES_ERR ); }
+    MDataSection *pSec;
+    pSec = dataSet.tryLoad( file,LOCAL_ROBO()->getClass(), headerlist("t/fx/ly/fz/bx/ry/bz") );
 
-    QList<float> dataset;
-    int col = 7;
-    QList<int> dataCols;
-    dataCols<<0<<1<<2<<3<<4<<5<<6;
-    if ( 0 != comAssist::loadDataset( pLocalStr, strLen, col, dataCols, dataset ) )
+    if ( NULL == pSec )
     { scpi_ret( SCPI_RES_ERR ); }
+    else
+    {}
 
-    //! point
-    if ( dataset.size() / col < 2 )
-    { scpi_ret( SCPI_RES_ERR ); }
+    deparse_column_index( enable, "enable" );
+    deparse_column_index( t, "t" );
+    deparse_column_index( fx, "fx" );
+    deparse_column_index( ly, "ly" );
+    deparse_column_index( fz, "fz" );
+    deparse_column_index( bx, "bx" );
+    deparse_column_index( ry, "ry" );
+    deparse_column_index( bz, "bz" );
 
+    //! deload
     MegatronKeyPointList curve;
     MegatronKeyPoint tp;
-    for ( int i = 0; i < dataset.size()/col; i++ )
+    bool bEn;
+    for ( int i = 0; i < pSec->rows(); i++ )
     {
-        //! fx ly fz bx ry bz t
-        tp.fx = dataset.at( i * col + 0 );
-        tp.ly = dataset.at( i * col + 1 );
-        tp.fz = dataset.at( i * col + 2 );
+        //! disabled
+        if ( pSec->cellValue( i, c_enable, bEn, true, true ) && !bEn )
+        { continue; }
 
-        tp.bx = dataset.at( i * col + 3 );
-        tp.ry = dataset.at( i * col + 4 );
-        tp.bz = dataset.at( i * col + 5 );
+        if ( !pSec->cellValue( i, c_t, tp.t, 0, false ) )
+        { continue; }
 
-        tp.t = dataset.at( i * col + 6 );
+        if ( !pSec->cellValue( i, c_fx, tp.fx, 0, false ) )
+        { continue; }
+        if ( !pSec->cellValue( i, c_ly, tp.ly, 0, false ) )
+        { continue; }
+        if ( !pSec->cellValue( i, c_fz, tp.fz, 0, false ) )
+        { continue; }
+
+        if ( !pSec->cellValue( i, c_bx, tp.bx, 0, false ) )
+        { continue; }
+        if ( !pSec->cellValue( i, c_ry, tp.ry, 0, false ) )
+        { continue; }
+        if ( !pSec->cellValue( i, c_bz, tp.bz, 0, false ) )
+        { continue; }
 
         curve.append( tp );
     }
 
-    //! robo op
-    DEF_ROBO();
+    //! check curve
+    if ( curve.size() < 2 )
+    { scpi_ret( SCPI_RES_ERR ); }
 
     CHECK_LINK();
 
-    pRobo->program( curve, tpvRegion(ax,page) );
+    if ( 0 != LOCAL_ROBO()->program( curve, tpvRegion( ax, page) ) )
+    { scpi_ret( SCPI_RES_ERR ); }
 
     return SCPI_RES_OK;
+
+//    // read
+//    DEF_LOCAL_VAR();
+
+//    int ax, page;
+
+//    if ( SCPI_ParamInt32(context, &ax, true) != true )
+//    { scpi_ret( SCPI_RES_ERR ); }
+
+//    if ( SCPI_ParamInt32(context, &page, true) != true )
+//    { scpi_ret( SCPI_RES_ERR ); }
+
+//    if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
+//    { scpi_ret( SCPI_RES_ERR ); }logDbg()<<strLen<<pLocalStr;
+//    if (strLen < 1)
+//    { scpi_ret( SCPI_RES_ERR ); }
+
+//    QList<float> dataset;
+//    int col = 7;
+//    QList<int> dataCols;
+//    dataCols<<0<<1<<2<<3<<4<<5<<6;
+//    if ( 0 != comAssist::loadDataset( pLocalStr, strLen, col, dataCols, dataset ) )
+//    { scpi_ret( SCPI_RES_ERR ); }
+
+//    //! point
+//    if ( dataset.size() / col < 2 )
+//    { scpi_ret( SCPI_RES_ERR ); }
+
+//    MegatronKeyPointList curve;
+//    MegatronKeyPoint tp;
+//    for ( int i = 0; i < dataset.size()/col; i++ )
+//    {
+//        //! fx ly fz bx ry bz t
+//        tp.fx = dataset.at( i * col + 0 );
+//        tp.ly = dataset.at( i * col + 1 );
+//        tp.fz = dataset.at( i * col + 2 );
+
+//        tp.bx = dataset.at( i * col + 3 );
+//        tp.ry = dataset.at( i * col + 4 );
+//        tp.bz = dataset.at( i * col + 5 );
+
+//        tp.t = dataset.at( i * col + 6 );
+
+//        curve.append( tp );
+//    }
+
+//    //! robo op
+//    DEF_ROBO();
+
+//    CHECK_LINK();
+
+//    pRobo->program( curve, tpvRegion(ax,page) );
+
+//    return SCPI_RES_OK;
 }
 
 //! ax,page,cycle, motionMode

@@ -181,6 +181,35 @@ int MDataSet::save( const QString &fullName )
     return ret;
 }
 
+MDataSection* MDataSet::tryLoad( const QString &fullName,
+                     const QString &modelStr,
+                     const QStringList &headers )
+{
+    int ret = load( fullName );
+    if ( ret != 0 )
+    { return NULL; }
+
+    //! check model
+    if ( modelStr.isEmpty() )
+    { }
+    else if ( !modelStr.isEmpty() && str_is( modelStr, model()) )
+    { }
+    else
+    { return NULL; }
+
+    //! check headers
+    if ( verifyHeader( headers ) )
+    {}
+    else
+    { return NULL; }
+
+    //! empty?
+    if ( isEmpty() )
+    { return NULL; }
+
+    return mSections.at( 0 );
+}
+
 void MDataSet::dbgShow()
 {
     logDbg()<<mModel;
@@ -194,13 +223,16 @@ void MDataSet::dbgShow()
 
 int MDataSet::doLoad( QFile &file )
 {
+    //! \note utf-8
+    QTextStream stream( &file );
+
     //! load the content
-    QByteArray rawLine;
-    QByteArray varLine;
+    QString rawLine;
+    QString varLine;
     QStringList dataLine;
-    while( !file.atEnd() )
+    while( !stream.atEnd() )
     {
-        rawLine = file.readLine();
+        rawLine = stream.readLine();
         varLine = rawLine;
 
         //! filter
@@ -303,7 +335,7 @@ int MDataSet::doSave( QFile &file )
     return 0;
 }
 
-bool MDataSet::verifyLine( QByteArray &ary )
+bool MDataSet::verifyLine( QString &ary )
 {
     if ( ary.isEmpty())
     { return false; }
@@ -311,7 +343,7 @@ bool MDataSet::verifyLine( QByteArray &ary )
     return true;
 }
 
-bool MDataSet::commentLine( QByteArray &ary )
+bool MDataSet::commentLine( QString &ary )
 {
     if ( ary.startsWith('#') )
     { return true; }
@@ -319,7 +351,7 @@ bool MDataSet::commentLine( QByteArray &ary )
     return false;
 }
 
-void MDataSet::normalLine( QByteArray &ary )
+void MDataSet::normalLine( QString &ary )
 {
     ary = ary.simplified();
 
@@ -327,7 +359,7 @@ void MDataSet::normalLine( QByteArray &ary )
     ary = ary.toLower();
 }
 
-bool MDataSet::filterLine( QByteArray &ary )
+bool MDataSet::filterLine( QString &ary )
 {
     normalLine( ary );
 
@@ -342,7 +374,7 @@ bool MDataSet::filterLine( QByteArray &ary )
     return false;
 }
 
-void MDataSet::extractDescription( QByteArray &ary )
+void MDataSet::extractDescription( QString &ary )
 {
     ary = ary.replace( '[', ' ' );
     ary = ary.replace( ']', ' ' );
@@ -350,13 +382,13 @@ void MDataSet::extractDescription( QByteArray &ary )
     ary = ary.simplified();
 }
 
-QStringList MDataSet::extractStringList( QByteArray &ary )
+QStringList MDataSet::extractStringList( QString &ary )
 {
-    QList<QByteArray> aryList = ary.split(',');
+    QStringList aryList = ary.split(',');
 
     QStringList strList;
 
-    QByteArray localAry;
+    QString localAry;
 //    foreach( QByteArray &ary, aryList )
     for ( int i = 0; i < aryList.size(); i++ )
     {

@@ -317,7 +317,8 @@ SOURCES += \
     ../../model/appmodel.cpp \
     ../../app/appmgr.cpp \
     ../../app/appprocess.cpp \
-    ../../widget/mfiledialog.cpp
+    ../../widget/mfiledialog.cpp \
+    ../../com/scpiassist.cpp
 
 
 HEADERS += \
@@ -502,7 +503,8 @@ HEADERS += \
     ../../model/appmodel.h \
     ../../app/appmgr.h \
     ../../app/appprocess.h \
-    ../../widget/mfiledialog.h
+    ../../widget/mfiledialog.h \
+    ../../com/scpiassist.h
 
 FORMS += \
         ../ui/mainwindow.ui \

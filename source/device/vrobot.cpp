@@ -56,6 +56,7 @@ VRobot::VRobot()
     mId = robot_unk;
 
     mCoord = robo_coord_body;
+    mbPwr = true;
                                         //! configs
     mAxes = 0;                          //! axes count
     mRegions = 10;                      //! region count for each axes

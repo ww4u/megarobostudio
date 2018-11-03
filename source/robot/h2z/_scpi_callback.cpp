@@ -4,6 +4,7 @@
 
 #include "h2z.h"
 #include "../../com/comassist.h"
+#include "../../com/scpiassist.h"
 
 #define DEF_ROBO()      robotH2Z *pRobo;\
                         pRobo = ((robotH2Z*)context->user_context);\
@@ -162,80 +163,66 @@ static scpi_result_t _scpi_preMove( scpi_t * context )
 //! ax, page, file
 static scpi_result_t _scpi_program( scpi_t * context )
 {
-    // read
     DEF_LOCAL_VAR();
 
+    //! para
     int ax, page;
+    QString file;
 
-    if ( SCPI_ParamInt32(context, &ax, true) != true )
+    if ( deload_ax_page_file( context, ax, page, file) == SCPI_RES_OK )
+    {}
+    else
     { scpi_ret( SCPI_RES_ERR ); }
 
-    if ( SCPI_ParamInt32(context, &page, true) != true )
+    //! data set
+    MDataSet dataSet;
+    DEF_ROBO();
+
+    MDataSection *pSec;
+    pSec = dataSet.tryLoad( file,LOCAL_ROBO()->getClass(), headerlist("t/x/y") );
+
+    if ( NULL == pSec )
     { scpi_ret( SCPI_RES_ERR ); }
+    else
+    {}
 
-    if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
-    { scpi_ret( SCPI_RES_ERR ); }logDbg()<<strLen<<pLocalStr;
-    if (strLen < 1)
-    { scpi_ret( SCPI_RES_ERR ); }
+    deparse_column_index( enable, "enable" );
+    deparse_column_index( t, "t" );
+    deparse_column_index( x, "x" );
+    deparse_column_index( y, "y" );
+    deparse_column_index( z, "z" );
 
-
-    QList<float> dataset;
-    int col = 6;
-    QList<int> dataCols;
-    QList<int> seqList;
-    int ret = 0;
-
-    do
-    {
-        //! #!enable,name,t,x,y,z,comment
-        col = 7;
-        dataCols<<2<<3<<4<<5;
-        seqList.clear();
-        seqList<<2<<3<<4<<5;
-        dataset.clear();
-
-        ret = comAssist::loadDataset( pLocalStr, strLen, col, dataCols, dataset );
-        if ( 0 == ret && ( dataset.size() / col ) > 1  )
-        { break; }
-
-        //! x,y,z,h,t,interp
-        col = 6;
-        dataCols<<0<<1<<2<<4;
-        seqList.clear();
-        seqList<<4<<0<<1<<2;
-        dataset.clear();
-        ret = comAssist::loadDataset( pLocalStr, strLen, col, dataCols, dataset );
-        if ( 0 == ret && ( dataset.size() / col ) > 1  )
-        { break; }
-
-    }while( 0 );
-
-    //! point
-    if ( dataset.size() / col < 2 )
-    { scpi_ret( SCPI_RES_ERR ); }
-
+    //! deload
     H2ZKeyPointList curve;
     H2ZKeyPoint tp;
-    for ( int i = 0; i < dataset.size()/col; i++ )
+    bool bEn;
+    for ( int i = 0; i < pSec->rows(); i++ )
     {
-        //! t
-        tp.datas[0] = dataset.at( i * col + seqList[0] );
+        //! disabled
+        if ( pSec->cellValue( i, c_enable, bEn, true, true ) && !bEn )
+        { continue; }
 
-        for ( int k = 1; k < 4; k++ )
-        {
-            tp.datas[k] = dataset.at( i * col + seqList[k]  );
-        }
+        if ( !pSec->cellValue( i, c_t, tp.t, 0, false ) )
+        { continue; }
+
+        if ( !pSec->cellValue( i, c_x, tp.x, 0, false ) )
+        { continue; }
+
+        if ( !pSec->cellValue( i, c_y, tp.y, 0, false ) )
+        { continue; }
+
+        pSec->cellValue( i, c_z, tp.z, 0, false );
 
         curve.append( tp );
     }
 
-    //! robo op
-    DEF_ROBO();
+    //! check curve
+    if ( curve.size() < 2 )
+    { scpi_ret( SCPI_RES_ERR ); }
 
     CHECK_LINK();
 
-    ret = LOCAL_ROBO()->program( curve, tpvRegion(ax,page) );
-    if ( ret != 0 )
+    if ( 0 != LOCAL_ROBO()->program( curve, tpvRegion( ax, page) ) )
     { scpi_ret( SCPI_RES_ERR ); }
 
     return SCPI_RES_OK;

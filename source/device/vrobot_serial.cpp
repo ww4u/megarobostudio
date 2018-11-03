@@ -64,6 +64,10 @@ int VRobot::load( const QString &name )
                                 return -1;
                             }
                         }
+                        else if ( reader.name() == "power" )
+                        {
+                            mbPwr = reader.readElementText().toInt() > 0;
+                        }
                         else if ( reader.name() == "axes" )
                         {
                             mAxesConnectionName.clear();
@@ -198,22 +202,24 @@ int VRobot::save( const QString &name )
 
         //! base
         writer.writeStartElement("meta");
-        writer.writeTextElement("class",mClass );
+
+            writer.writeTextElement("class", mClass );
+            writer.writeTextElement("power", QString::number( mbPwr) );
 
             writer.writeStartElement("axes");
-            writer.writeTextElement("count", QString::number(mAxes) );
+                writer.writeTextElement("count", QString::number(mAxes) );
 
-            for ( int i = 0; i < axes(); i++ )
-            {
-                writer.writeTextElement("name", mAxesConnectionName.at(i) );
-            }
+                for ( int i = 0; i < axes(); i++ )
+                {
+                    writer.writeTextElement("name", mAxesConnectionName.at(i) );
+                }
 
             writer.writeEndElement();
 
             writer.writeStartElement("zero_about");
-            writer.writeTextElement("speed", QString::number(mZeroSpeed) );
-            writer.writeTextElement("tmo", QString::number(mZeroTmo) );
-            writer.writeTextElement("tick", QString::number(mZeroTick) );
+                writer.writeTextElement("speed", QString::number(mZeroSpeed) );
+                writer.writeTextElement("tmo", QString::number(mZeroTmo) );
+                writer.writeTextElement("tick", QString::number(mZeroTick) );
             writer.writeEndElement();
 
             writer.writeStartElement("group");
@@ -254,7 +260,7 @@ int VRobot::save( const QString &name )
 
         //! extend
         writer.writeStartElement("setup");
-        ret = serialOut( writer );
+            ret = serialOut( writer );
         writer.writeEndElement();
 
     writer.writeEndElement();

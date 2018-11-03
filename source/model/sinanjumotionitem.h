@@ -15,8 +15,7 @@ public:
     static int columns();
     static QString header( int col );
 
-    static QString encodeAttr( quint32 attr );
-    static quint32 decodeAttr( const QString &str );
+
 
 public:
     SinanjuMotionItem();

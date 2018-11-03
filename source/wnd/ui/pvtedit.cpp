@@ -32,6 +32,10 @@ pvtEdit::pvtEdit(QWidget *parent) :
 
     m_pPlot = NULL;
 
+    //! timer
+    mDlySaveTimer.setSingleShot( true );
+    mDlySaveTimer.setInterval( 5000 );
+
     setupUi();
 
     buildConnection();
@@ -145,6 +149,10 @@ void pvtEdit::buildConnection()
 {
     connect( this, SIGNAL(sigLineChanged()),
              this, SLOT(slot_line_changed()) );
+
+    connect( &mDlySaveTimer, SIGNAL(timeout()),
+             this, SLOT(slot_timeout()) );
+
 }
 
 bool pvtEdit::checkChan( const QString &name,
@@ -528,6 +536,11 @@ void pvtEdit::stateIdle()
     ui->btnStop->setEnabled( false );
 }
 
+void pvtEdit::slot_timeout()
+{
+    emit sigSaveRequest( this );
+}
+
 void pvtEdit::on_btnBuild_clicked()
 {
     int ret = buildLine();
@@ -682,6 +695,8 @@ void pvtEdit::slot_data_changed()
 
     m_pContextActionClear->setEnabled( bHasItem );
     m_pContextActionDelete->setEnabled( bHasItem );
+
+    mDlySaveTimer.start( );
 }
 
 void pvtEdit::slot_line_changed()

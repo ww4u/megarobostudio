@@ -4,6 +4,7 @@
 
 #include "delta.h"
 #include "../../com/comassist.h"
+#include "../../com/scpiassist.h"
 
 #define DEF_ROBO()      robotDelta *pRobo;\
                         pRobo = ((robotDelta*)context->user_context);\
@@ -156,6 +157,86 @@ static scpi_result_t _scpi_preMove( scpi_t * context )
 //! ax, page, file
 static scpi_result_t _scpi_program( scpi_t * context )
 {
+    DEF_LOCAL_VAR();
+
+    int ax, page;
+    QString file;
+
+    if ( deload_ax_page_file( context, ax, page, file) == SCPI_RES_OK )
+    {}
+    else
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    //! data set
+    MDataSet dataSet;
+    DEF_ROBO();
+
+    MDataSection *pSec;
+    pSec = dataSet.tryLoad( file,LOCAL_ROBO()->getClass(), headerlist("t/x/y/z") );
+
+    if ( NULL == pSec )
+    { scpi_ret( SCPI_RES_ERR ); }
+    else
+    {}
+
+    deparse_column_index( enable, "enable" );
+    deparse_column_index( t, "t" );
+    deparse_column_index( x, "x" );
+    deparse_column_index( y, "y" );
+    deparse_column_index( z, "z" );
+    deparse_column_index( h, "terminal" );
+    deparse_column_index( mode, "mode" );
+
+    //! deload
+    TraceKeyPointList curve;
+    TraceKeyPoint tp;
+    bool bEn;
+    QString localStr;
+    for ( int i = 0; i < pSec->rows(); i++ )
+    {
+        //! disabled
+        if ( pSec->cellValue( i, c_enable, bEn, true, true ) && !bEn )
+        { continue; }
+
+        if ( !pSec->cellValue( i, c_t, tp.t, 0, false ) )
+        { continue; }
+
+        if ( !pSec->cellValue( i, c_x, tp.x, 0, false ) )
+        { continue; }
+
+        if ( !pSec->cellValue( i, c_y, tp.y, 0, false ) )
+        { continue; }
+
+        if ( !pSec->cellValue( i, c_z, tp.z, 0, false ) )
+        { continue; }
+
+        pSec->cellValue( i, c_h, tp.hand, 0, false );
+
+        if ( pSec->cellValue( i, c_mode, localStr,"", true ) )
+        {
+            tp.iMask = MotionRow::decodeAttr( localStr );
+        }
+        else
+        { tp.iMask = 0; }
+
+        curve.append( tp );
+    }
+
+    //! check curve
+    if ( curve.size() < 2 )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    CHECK_LINK();
+
+    if ( 0 != LOCAL_ROBO()->program( curve, tpvRegion( ax, page) ) )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    return SCPI_RES_OK;
+}
+
+//! ax, page, file
+static scpi_result_t __scpi_program( scpi_t * context )
+{
     // read
     DEF_LOCAL_VAR();
 
@@ -217,38 +298,6 @@ static scpi_result_t _scpi_program( scpi_t * context )
     CHECK_LINK();
 
     pRobo->program( curve, tpvRegion( ax, page) );
-
-    return SCPI_RES_OK;
-}
-
-//! ax, page, file
-//! file is tpv for each axes
-static scpi_result_t _scpi_download( scpi_t * context )
-{
-    DEF_LOCAL_VAR();
-
-    int ax, page;
-
-    if ( SCPI_ParamInt32(context, &ax, true) != true )
-    { scpi_ret( SCPI_RES_ERR ); }
-
-    if ( SCPI_ParamInt32(context, &page, true) != true )
-    { scpi_ret( SCPI_RES_ERR ); }
-
-    if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
-    { scpi_ret( SCPI_RES_ERR ); }logDbg()<<strLen<<pLocalStr;
-    if (strLen < 1)
-    { scpi_ret( SCPI_RES_ERR ); }
-
-    DEF_ROBO();
-
-    CHECK_LINK();
-
-    QByteArray fileName( pLocalStr, strLen );
-    int ret;
-    ret = pRobo->program( fileName, tpvRegion( ax, page) );
-    if ( ret != 0 )
-    { scpi_ret( SCPI_RES_ERR ); }
 
     return SCPI_RES_OK;
 }
@@ -367,7 +416,6 @@ static scpi_command_t _scpi_cmds[]=
     CMD_ITEM( "STATE?", _scpi_fsmState ),
 
     CMD_ITEM( "PROGRAM", _scpi_program ),
-    CMD_ITEM( "DOWNLOAD", _scpi_download ),
     CMD_ITEM( "CALL", _scpi_call ),
 
     CMD_ITEM( "CENTER", _scpi_zero ),

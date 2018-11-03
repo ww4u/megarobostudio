@@ -824,5 +824,6 @@ int deviceMRQ::ioOut( int id, int val  )
 
     return 0;
 }
-
 }
+
+

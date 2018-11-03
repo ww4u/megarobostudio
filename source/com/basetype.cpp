@@ -1,5 +1,5 @@
 #include "basetype.h"
-
+#include "../../include/mydebug.h"
 RpcRequest::RpcRequest( EnumRequest eReq,
                         EnumParaType pType)
 {
@@ -68,3 +68,34 @@ int RpcRequest::popInt()
 
     return v;
 }
+
+QString MotionRow::encodeAttr( quint32 attr )
+{
+    if ( attr != 0 )
+    { return QString("line=( enable = 1;)"); }
+    else
+    { return QString(); }
+}
+
+quint32 MotionRow::decodeAttr( const QString &str )
+{
+    if ( str.isEmpty() )
+    { return 0; }
+
+    bool bOk;
+    int iVal;
+    iVal = str.toInt( &bOk );
+    if ( bOk )
+    {
+        if ( iVal > 0 )
+        { return 1; }
+        else
+        { return 0; }
+    }
+
+    if ( str.contains( QRegExp("enable\\s?=\\s?1\\s?") ) )
+    { return 1; }
+    else
+    { return 0; }
+}
+

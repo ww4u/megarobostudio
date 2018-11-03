@@ -242,13 +242,19 @@ int scriptMgr::openMotionGroup( const QString &path, const QString &file )
     ary = fileRaw.readLine( 128 );
     fileRaw.close();
     QString lineStr(ary);
-    if ( lineStr.startsWith("#!") )
+    lineStr = lineStr.simplified();logDbg()<<lineStr;
+    if ( lineStr.startsWith("[") )
     {}
     else
-    { return ERR_FILE_DO_NOT_SUPPORT; }
+    {
+        sysError( file, "file header do not support" );
+        return ERR_FILE_DO_NOT_SUPPORT;
+    }
 
-    lineStr.remove("#!");
-    lineStr = lineStr.trimmed().toLower();
+    lineStr.remove( "[" );
+    lineStr.remove( "]" );
+    logDbg()<<lineStr;
+    lineStr = lineStr.simplified().toLower();
 
     MegaTableModel *pModel;
     pModel = scriptMgr::newMotion( lineStr );
@@ -258,7 +264,7 @@ int scriptMgr::openMotionGroup( const QString &path, const QString &file )
     int ret = pModel->load( file );
     if ( ret != 0 )
     {
-        sysError( file, "do not exist" );
+        sysError( file, "do not exist or load fail" );
         delete pModel;
         return ret;
     }

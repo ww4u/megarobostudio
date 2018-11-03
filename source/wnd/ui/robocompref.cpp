@@ -80,6 +80,7 @@ void RoboComPref::spyEdited()
 {
     QCheckBox *checkBoxes[]=
     {
+        ui->chkEn
     };
     QRadioButton *radBoxes[] = {
     };
@@ -116,6 +117,8 @@ void RoboComPref::updateUi()
     Q_ASSERT( m_pModelObj != NULL );
     VRobot *pBase = ( VRobot *)m_pModelObj;
     Q_ASSERT( NULL != pBase );
+
+    ui->chkEn->setChecked( pBase->power() );
 
     ui->widget->setAlias( pBase->getName() );
 
@@ -161,6 +164,8 @@ void RoboComPref::updateData()
     pRobo = (VRobot*)m_pModelObj;
     if ( NULL == pRobo )
     { return; }
+
+    pRobo->setPower( ui->chkEn->isChecked() );
 
     pRobo->setGroupSel( ui->widget->groupSel() );
     pRobo->setCanGroupId( ui->widget->groupId() );
@@ -216,9 +221,11 @@ int RoboComPref::applyGroupId()
         //! find device by connection name
         pMRQ = pRobo->findDevice( str, &axesId );
         if ( NULL == pMRQ )
-        {
-            return ERR_INVALID_DEVICE_NAME;
-        }
+        { return ERR_INVALID_DEVICE_NAME; }
+
+        //! set power
+        pMRQ->setDRIVER_STATE( axesId,
+                               ui->chkEn->isChecked() ? MRQ_SYSTEM_REVMOTION_ON : MRQ_SYSTEM_REVMOTION_OFF );
 
         //! set group id
         gpId = ui->widget->groupId();

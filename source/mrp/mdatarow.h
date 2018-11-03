@@ -11,10 +11,10 @@ public:
     MDataRow();
 
     MDataRow( const QStringList & );
-    MDataRow( const QByteArray & );
+    MDataRow( const QString & );
 
     MDataRow &operator=( const QStringList & );
-    MDataRow &operator=( const QByteArray & );
+    MDataRow &operator=( const QString & );
 
 public:
     void dbgShow();
@@ -40,7 +40,7 @@ public:
     void setSection( int sec );
     int section();
 
-    bool lineIn( QByteArray &ary );
+    bool lineIn( QString &ary );
     bool lineOut( QTextStream &stream );
 
     bool addRow( const QString &str1, QChar sep='/' );
@@ -54,6 +54,9 @@ public:
                     bool bOv=true );
     bool cellValue( int r, int c,
                     float &v, float def,
+                    bool bOv=true );
+    bool cellValue( int r, int c,
+                    double &v, double def,
                     bool bOv=true );
     bool cellValue( int r, int c,
                     int &v, int def,

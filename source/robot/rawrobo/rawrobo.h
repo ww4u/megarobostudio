@@ -10,8 +10,6 @@
 
 #include "../../arith/pathplan/pathplan.h"
 
-
-
 #define BIT_INTERP  0
 
 struct D1Point
@@ -498,5 +496,7 @@ public:
 //    virtual void onExit();
 //    virtual void onRst();
 };
+
+
 
 #endif

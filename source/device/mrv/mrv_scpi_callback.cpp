@@ -11,7 +11,7 @@
 #include "../mrv_board/_MRV_scpi_callback.cpp"
 
 #include "../../com/comassist.h"
-
+#include "../../com/scpiassist.h"
 #define DEF_MRV()   MegaDevice::deviceMRV* _localMrv = (GET_OBJ(context));
 #define LOCALMRV()  _localMrv
 
@@ -171,54 +171,115 @@ static scpi_result_t _scpi_program( scpi_t * context )
 {
     DEF_LOCAL_VAR();
 
+    DEF_MRV();
+
+    //! para
     int ax, page;
+    QString file;
 
-    if ( SCPI_RES_OK != SCPI_ParamInt32( context, &ax, true ) )
-    { scpi_ret( SCPI_RES_ERR ); }logDbg()<<ax;
-
-    if ( SCPI_RES_OK != SCPI_ParamInt32( context, &page, true ) )
-    { scpi_ret( SCPI_RES_ERR ); }logDbg()<<page;
-
-    if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
-    { scpi_ret( SCPI_RES_ERR ); }logDbg()<<strLen<<pLocalStr;
-    if (strLen < 1)
+    if ( deload_ax_page_file( context, ax, page, file) == SCPI_RES_OK )
+    {}
+    else
     { scpi_ret( SCPI_RES_ERR ); }
 
-    //! load
-    QList<float> dataSets;
-    int col = 2;
-    QList<int> dataCols;
-    dataCols<<0<<1;
-    if ( 0 != comAssist::loadDataset( pLocalStr, strLen, col, dataCols, dataSets ) )
+    //! data set
+    MDataSet dataSet;
+
+    MDataSection *pSec;
+    pSec = dataSet.tryLoad( file, "", headerlist("t/p") );
+
+    if ( NULL == pSec )
     { scpi_ret( SCPI_RES_ERR ); }
+    else
+    {}
 
-    int dotSize = dataSets.size()/col;
-    if ( (dotSize < 2) )
-    { scpi_ret( SCPI_RES_ERR ); }logDbg()<<dotSize;
+    deparse_column_index( enable, "enable" );
+    deparse_column_index( t, "t" );
+    deparse_column_index( p, "p" );
 
-    //! move data
-    QList<QPointF> dots;
-    QPointF dot;
-    for( int i = 0; i < dotSize; i++ )
+    //! deload
+    QList<QPointF> curve;
+    QPointF tp;
+    bool bEn;
+    qreal v;
+    for ( int i = 0; i < pSec->rows(); i++ )
     {
-        dot.setX( dataSets.at(i*col+ 0) );
-        dot.setY( dataSets.at(i*col+ 1) );
+        //! disabled
+        if ( pSec->cellValue( i, c_enable, bEn, true, true ) && !bEn )
+        { continue; }
 
-        dots.append( dot );
+        if ( !pSec->cellValue( i, c_t, v, 0, false ) )
+        { continue; }
+        tp.setX( v );
+
+        if ( !pSec->cellValue( i, c_p, v, 0, false ) )
+        { continue; }
+        tp.setY( v );
+
+        curve.append( tp );
     }
 
-    DEF_MRV();
+    //! check curve
+    if ( curve.size() < 2 )
+    { scpi_ret( SCPI_RES_ERR ); }
 
     CHECK_LINK( ax, page );
 
-    //! send
-    int ret = -1;
-    ret = LOCALMRV()->tpWrite( dots, ax );
-
-    if ( ret != 0 )
+    if ( 0 != LOCALMRV()->tpWrite( curve, ax ) )
     { scpi_ret( SCPI_RES_ERR ); }
-    else
-    { return SCPI_RES_OK; }
+
+    return SCPI_RES_OK;
+
+//    DEF_LOCAL_VAR();
+
+//    int ax, page;
+
+//    if ( SCPI_RES_OK != SCPI_ParamInt32( context, &ax, true ) )
+//    { scpi_ret( SCPI_RES_ERR ); }logDbg()<<ax;
+
+//    if ( SCPI_RES_OK != SCPI_ParamInt32( context, &page, true ) )
+//    { scpi_ret( SCPI_RES_ERR ); }logDbg()<<page;
+
+//    if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
+//    { scpi_ret( SCPI_RES_ERR ); }logDbg()<<strLen<<pLocalStr;
+//    if (strLen < 1)
+//    { scpi_ret( SCPI_RES_ERR ); }
+
+//    //! load
+//    QList<float> dataSets;
+//    int col = 2;
+//    QList<int> dataCols;
+//    dataCols<<0<<1;
+//    if ( 0 != comAssist::loadDataset( pLocalStr, strLen, col, dataCols, dataSets ) )
+//    { scpi_ret( SCPI_RES_ERR ); }
+
+//    int dotSize = dataSets.size()/col;
+//    if ( (dotSize < 2) )
+//    { scpi_ret( SCPI_RES_ERR ); }logDbg()<<dotSize;
+
+//    //! move data
+//    QList<QPointF> dots;
+//    QPointF dot;
+//    for( int i = 0; i < dotSize; i++ )
+//    {
+//        dot.setX( dataSets.at(i*col+ 0) );
+//        dot.setY( dataSets.at(i*col+ 1) );
+
+//        dots.append( dot );
+//    }
+
+//    DEF_MRV();
+
+//    CHECK_LINK( ax, page );
+
+//    //! send
+//    int ret = -1;
+//    ret = LOCALMRV()->tpWrite( dots, ax );
+
+//    if ( ret != 0 )
+//    { scpi_ret( SCPI_RES_ERR ); }
+//    else
+//    { return SCPI_RES_OK; }
 }
 
 //! TP ax,page

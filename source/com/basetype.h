@@ -177,6 +177,10 @@ public:
 class MotionRow
 {
 public:
+    static QString encodeAttr( quint32 attr );
+    static quint32 decodeAttr( const QString &str );
+
+public:
     tpvType mT;
     quint32 mIAttr;
 

@@ -4,6 +4,7 @@
 
 #include "h2.h"
 #include "../../com/comassist.h"
+#include "../../com/scpiassist.h"
 
 #define DEF_ROBO()      robotH2 *pRobo;\
                         pRobo = ((robotH2*)context->user_context);\
@@ -155,6 +156,71 @@ static scpi_result_t _scpi_preMove( scpi_t * context )
 
 //! page, file
 static scpi_result_t _scpi_program( scpi_t * context )
+{
+    DEF_LOCAL_VAR();
+
+    //! para
+    int ax, page;
+    QString file;
+
+    if ( deload_ax_page_file( context, ax, page, file) == SCPI_RES_OK )
+    {}
+    else
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    //! data set
+    MDataSet dataSet;
+    DEF_ROBO();
+
+    MDataSection *pSec;
+    pSec = dataSet.tryLoad( file,LOCAL_ROBO()->getClass(), headerlist("t/x/y") );
+
+    if ( NULL == pSec )
+    { scpi_ret( SCPI_RES_ERR ); }
+    else
+    {}
+
+    deparse_column_index( enable, "enable" );
+    deparse_column_index( t, "t" );
+    deparse_column_index( x, "x" );
+    deparse_column_index( y, "y" );
+
+    //! deload
+    H2KeyPointList curve;
+    H2KeyPoint tp;
+    bool bEn;
+    for ( int i = 0; i < pSec->rows(); i++ )
+    {
+        //! disabled
+        if ( pSec->cellValue( i, c_enable, bEn, true, true ) && !bEn )
+        { continue; }
+
+        if ( !pSec->cellValue( i, c_t, tp.t, 0, false ) )
+        { continue; }
+
+        if ( !pSec->cellValue( i, c_x, tp.x, 0, false ) )
+        { continue; }
+
+        if ( !pSec->cellValue( i, c_y, tp.y, 0, false ) )
+        { continue; }
+
+        curve.append( tp );
+    }
+
+    //! check curve
+    if ( curve.size() < 2 )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    CHECK_LINK();
+
+    if ( 0 != LOCAL_ROBO()->program( curve, tpvRegion( ax, page) ) )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    return SCPI_RES_OK;
+}
+
+//! page, file
+static scpi_result_t __scpi_program( scpi_t * context )
 {
     // read
     DEF_LOCAL_VAR();

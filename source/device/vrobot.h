@@ -254,6 +254,9 @@ public:
     virtual QList<int> subIDs( int ch );
     virtual QString deviceFullDesc();
 
+    virtual void setPower( bool b );
+    bool power();
+
     void setCoord( eRoboCoord cord );
     eRoboCoord getCoord( );
 
@@ -465,6 +468,7 @@ public:
 
     QMap<tpvRegion, int> mRobotStatus;  //! status
 
+    bool mbPwr;
                                         //! groupId
     int mSubGroup;
     int mSubGroupId;

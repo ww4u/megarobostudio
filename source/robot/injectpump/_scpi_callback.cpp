@@ -4,6 +4,7 @@
 
 #include "injectpump.h"
 #include "../../com/comassist.h"
+#include "../../com/scpiassist.h"
 
 #define DEF_ROBO()      robotInject *pRobo;\
                         pRobo = ((robotInject*)context->user_context);\
@@ -163,57 +164,118 @@ static scpi_result_t _scpi_program( scpi_t * context )
 {
     DEF_LOCAL_VAR();
 
+    //! para
     int ax, page;
+    QString file;
 
-    if ( SCPI_ParamInt32(context, &ax, true) != true )
+    if ( deload_ax_page_file( context, ax, page, file) == SCPI_RES_OK )
+    {}
+    else
     { scpi_ret( SCPI_RES_ERR ); }
 
-    if ( SCPI_ParamInt32(context, &page, true) != true )
+    //! data set
+    MDataSet dataSet;
+    DEF_ROBO();
+
+    MDataSection *pSec;
+    pSec = dataSet.tryLoad( file,LOCAL_ROBO()->getClass(), headerlist("t/x/y") );
+
+    if ( NULL == pSec )
     { scpi_ret( SCPI_RES_ERR ); }
+    else
+    {}
 
-    if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
-    { scpi_ret( SCPI_RES_ERR ); }logDbg()<<strLen<<pLocalStr;
-    if (strLen < 1)
-    { scpi_ret( SCPI_RES_ERR ); }
+    deparse_column_index( enable, "enable" );
+    deparse_column_index( t, "t" );
+    deparse_column_index( x, "x" );
+    deparse_column_index( y, "y" );
 
-    //! t, x1,y1,vx,vy
-    QList<float> dataset;
-    int col = 5;
-    QList<int> dataCols;
-    dataCols<<0<<1<<2<<3<<4;
-    if ( 0 != comAssist::loadDataset( pLocalStr, strLen, col, dataCols, dataset ) )
-    {  scpi_ret( SCPI_RES_ERR ); }
-
-    //! point
-    if ( dataset.size() / col < 2 )
-    { scpi_ret( SCPI_RES_ERR ); }
-
+    //! deload
     IPKeyPointList curve;
     IPKeyPoint tp;
-    for ( int i = 0; i < dataset.size()/col; i++ )
+    bool bEn;
+    for ( int i = 0; i < pSec->rows(); i++ )
     {
-        //! t
-        tp.datas[0] = dataset.at( i * col );
+        //! disabled
+        if ( pSec->cellValue( i, c_enable, bEn, true, true ) && !bEn )
+        { continue; }
 
-        //! xyv
-        for ( int j = 1; j < col; j++ )
-        {
-            tp.datas[j] = dataset.at( i * col + j );
-        }
+        if ( !pSec->cellValue( i, c_t, tp.t, 0, false ) )
+        { continue; }
+
+        if ( !pSec->cellValue( i, c_x, tp.x, 0, false ) )
+        { continue; }
+
+        if ( !pSec->cellValue( i, c_y, tp.y, 0, false ) )
+        { continue; }
 
         curve.append( tp );
     }
 
-    //! robo op
-    DEF_ROBO();
+    //! check curve
+    if ( curve.size() < 2 )
+    { scpi_ret( SCPI_RES_ERR ); }
 
     CHECK_LINK();
 
-    int ret = LOCAL_ROBO()->program( curve, tpvRegion(ax,page) );
-    if ( ret != 0 )
-    {  scpi_ret( SCPI_RES_ERR ); }
+    if ( 0 != LOCAL_ROBO()->program( curve, tpvRegion( ax, page) ) )
+    { scpi_ret( SCPI_RES_ERR ); }
 
     return SCPI_RES_OK;
+
+//    DEF_LOCAL_VAR();
+
+//    int ax, page;
+
+//    if ( SCPI_ParamInt32(context, &ax, true) != true )
+//    { scpi_ret( SCPI_RES_ERR ); }
+
+//    if ( SCPI_ParamInt32(context, &page, true) != true )
+//    { scpi_ret( SCPI_RES_ERR ); }
+
+//    if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
+//    { scpi_ret( SCPI_RES_ERR ); }logDbg()<<strLen<<pLocalStr;
+//    if (strLen < 1)
+//    { scpi_ret( SCPI_RES_ERR ); }
+
+//    //! t, x1,y1,vx,vy
+//    QList<float> dataset;
+//    int col = 5;
+//    QList<int> dataCols;
+//    dataCols<<0<<1<<2<<3<<4;
+//    if ( 0 != comAssist::loadDataset( pLocalStr, strLen, col, dataCols, dataset ) )
+//    {  scpi_ret( SCPI_RES_ERR ); }
+
+//    //! point
+//    if ( dataset.size() / col < 2 )
+//    { scpi_ret( SCPI_RES_ERR ); }
+
+//    IPKeyPointList curve;
+//    IPKeyPoint tp;
+//    for ( int i = 0; i < dataset.size()/col; i++ )
+//    {
+//        //! t
+//        tp.datas[0] = dataset.at( i * col );
+
+//        //! xyv
+//        for ( int j = 1; j < col; j++ )
+//        {
+//            tp.datas[j] = dataset.at( i * col + j );
+//        }
+
+//        curve.append( tp );
+//    }
+
+//    //! robo op
+//    DEF_ROBO();
+
+//    CHECK_LINK();
+
+//    int ret = LOCAL_ROBO()->program( curve, tpvRegion(ax,page) );
+//    if ( ret != 0 )
+//    {  scpi_ret( SCPI_RES_ERR ); }
+
+//    return SCPI_RES_OK;
 }
 
 //! ax, page, cycle, motionMode

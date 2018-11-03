@@ -50,6 +50,7 @@
 
 #define MRQ_DATA_DISTANCE   16
 
+
 //! bit
 enum AxesZeroOp
 {

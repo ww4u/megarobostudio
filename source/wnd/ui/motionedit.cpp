@@ -12,6 +12,9 @@ motionEdit::motionEdit(QWidget *parent) : tableEdit(parent),
 {
     ui->setupUi(this);
 
+    mDlySaveTime.setInterval( 5000 );
+    mDlySaveTime.setSingleShot( true );
+
     buildConnection();
 
     mFilePattern<<motion_desc<<motion_ext;
@@ -29,6 +32,9 @@ void motionEdit::buildConnection()
 {
     connect( this, SIGNAL(sig_joints_trace_changed()),
              this, SLOT(slot_joints_trace_changed()) );
+
+    connect( &mDlySaveTime, SIGNAL(timeout()),
+             this, SLOT(slot_timeout()) );
 }
 
 motionEdit::~motionEdit()
@@ -47,6 +53,10 @@ void motionEdit::setModelObj( mcModelObj *pObj )
     m_pMotionGroup = (MegaTableModel*)(pObj->getObj());
     Q_ASSERT( NULL != m_pMotionGroup );
     ui->tableView->setModel( m_pMotionGroup );
+
+    //! connect
+    connect( m_pMotionGroup, SIGNAL(signal_data_changed()),
+             this, SLOT(slot_data_changed()) );
 
     //! update ui
     QString strRoboName;

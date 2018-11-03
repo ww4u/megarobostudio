@@ -80,6 +80,8 @@ Q_SIGNALS:
     void sig_robo_changed( const QString &roboName );
 
 protected Q_SLOTS:
+    void slot_timeout();
+    void slot_data_changed();
     void slot_robo_changed( const QString &roboName );
     void slot_joints_trace_changed( );
 //    void slot_download_cancel( const QString &name, int id );
@@ -138,6 +140,8 @@ private:
     QList< int > mSectionList;
 
     MotionModel mMotionPref;
+
+    QTimer mDlySaveTime;
 };
 
 #endif // MOTIONEDIT_H

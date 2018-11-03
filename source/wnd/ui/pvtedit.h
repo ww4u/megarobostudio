@@ -83,6 +83,7 @@ Q_SIGNALS:
     void sigLineChanged();
 
 protected Q_SLOTS:
+    void slot_timeout();
     void on_btnBuild_clicked();     //! build line
 
     void on_btnDown_clicked();
@@ -125,6 +126,8 @@ private:
     modelPvtPref mPvtPref;
 
     dSpinDelegate *m_pSpinDelegate;
+
+    QTimer mDlySaveTimer;
 };
 
 #endif // PVTEDIT_H

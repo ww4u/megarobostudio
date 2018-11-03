@@ -4,6 +4,7 @@
 
 #include "sinanju.h"
 #include "../../com/comassist.h"
+#include "../../com/scpiassist.h"
 
 #define DEF_ROBO()      robotSinanju *pRobo;\
                         pRobo = ((robotSinanju*)context->user_context);\
@@ -691,93 +692,171 @@ static scpi_result_t _scpi_program( scpi_t * context )
     DEF_LOCAL_VAR();
 
     int ax, page;
+    QString file;
 
-    if ( SCPI_ParamInt32(context, &ax, true) != true )
+    if ( deload_ax_page_file( context, ax, page, file) == SCPI_RES_OK )
+    {}
+    else
     { scpi_ret( SCPI_RES_ERR ); }
 
-    if ( SCPI_ParamInt32(context, &page, true) != true )
-    { scpi_ret( SCPI_RES_ERR ); }
+    //! data set
+    MDataSet dataSet;
+    DEF_ROBO();
 
-    if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
-    { scpi_ret( SCPI_RES_ERR ); }logDbg()<<strLen<<pLocalStr;
-    if (strLen < 1)
-    { scpi_ret( SCPI_RES_ERR ); }
+    MDataSection *pSec;
+    pSec = dataSet.tryLoad( file,LOCAL_ROBO()->getClass(), headerlist("t/x/y/z") );
 
-    //! check motion mode
-    int motionMode = -1;
-    if ( SCPI_ParamInt32(context, &motionMode, true) != true )
-    { motionMode = -1; }
+    if ( NULL == pSec )
+    { scpi_ret( SCPI_RES_ERR ); }
     else
     {}
 
-    QList<float> dataset;
-    //! try .mc
-    int col = 0;
-    //! t,x,y,z,h,imask
-    QList<int> seqList;
-    QList<int> dataCols;
-    int ret;
-    do
-    {
-        //! en,name,t,x,y,z,h,mode,comment
-        col = 9;
-        dataset.clear();
-        dataCols.clear();
-        dataCols<<2<<3<<4<<5<<6<<7;     //! \note some string
-        ret = comAssist::loadDataset( pLocalStr, strLen, col, dataCols, dataset );
-        if ( 0 == ret && ( dataset.size() / col ) > 1  )
-        {
-            seqList<<2<<3<<4<<5<<6<<7;
-            break;
-        }
+    deparse_column_index( enable, "enable" );
+    deparse_column_index( t, "t" );
+    deparse_column_index( x, "x" );
+    deparse_column_index( y, "y" );
+    deparse_column_index( z, "z" );
+    deparse_column_index( h, "terminal" );
+    deparse_column_index( mode, "mode" );
 
-        //! x,y,z,h,t,interp
-        col = 6;
-        dataset.clear();
-        dataCols.clear();
-        dataCols<<0<<1<<2<<3<<4<<5;
-        if ( 0 == comAssist::loadDataset( pLocalStr, strLen, col, dataCols, dataset ) )
-        {
-            seqList<<4<<0<<1<<2<<3<<5;
-            break;
-        }
-
-        scpi_ret( SCPI_RES_ERR );
-    }while ( 0 );
-
-    //! point
-    if ( dataset.size() / col < 2 )
-    { scpi_ret( SCPI_RES_ERR ); }
-
+    //! deload
     TraceKeyPointList curve;
     TraceKeyPoint tp;
-
-    Q_ASSERT( seqList.size() == 6 );
-    for ( int i = 0; i < dataset.size()/col; i++ )
+    bool bEn;
+    QString localStr;
+    for ( int i = 0; i < pSec->rows(); i++ )
     {
-        //! 0 1 2 3 4 5
-        //! x,y,z,h,t,interp
-        tp.t = dataset.at( i * col + seqList.at(0) );
+        //! disabled
+        if ( pSec->cellValue( i, c_enable, bEn, true, true ) && !bEn )
+        { continue; }
 
-        tp.x = dataset.at( i * col + seqList.at(1) );
-        tp.y = dataset.at( i * col + seqList.at(2) );
-        tp.z = dataset.at( i * col + seqList.at(3) );
-        tp.hand = dataset.at( i * col + seqList.at(4) );
+        if ( !pSec->cellValue( i, c_t, tp.t, 0, false ) )
+        { continue; }
 
-        tp.iMask = dataset.at( i * col + seqList.at(5) );
+        if ( !pSec->cellValue( i, c_x, tp.x, 0, false ) )
+        { continue; }
+
+        if ( !pSec->cellValue( i, c_y, tp.y, 0, false ) )
+        { continue; }
+
+        if ( !pSec->cellValue( i, c_z, tp.z, 0, false ) )
+        { continue; }
+
+        pSec->cellValue( i, c_h, tp.hand, 0, false );
+
+        //! \todo localStr to mode
+        if ( pSec->cellValue( i, c_mode, localStr,"", true ) )
+        {
+            tp.iMask = MotionRow::decodeAttr( localStr );
+        }
+        else
+        { tp.iMask = 0; }
 
         curve.append( tp );
-
-//        logDbg()<<tp.t<<tp.x<<tp.y<<tp.z<<tp.hand<<tp.iMask;
     }
 
-    DEF_ROBO();
+    //! check curve
+    if ( curve.size() < 2 )
+    { scpi_ret( SCPI_RES_ERR ); }
 
     CHECK_LINK();
 
-    pRobo->program( curve, tpvRegion( ax, page, motionMode) );
+    if ( 0 != LOCAL_ROBO()->program( curve, tpvRegion( ax, page) ) )
+    { scpi_ret( SCPI_RES_ERR ); }
 
     return SCPI_RES_OK;
+
+//    // read
+//    DEF_LOCAL_VAR();
+
+//    int ax, page;
+
+//    if ( SCPI_ParamInt32(context, &ax, true) != true )
+//    { scpi_ret( SCPI_RES_ERR ); }
+
+//    if ( SCPI_ParamInt32(context, &page, true) != true )
+//    { scpi_ret( SCPI_RES_ERR ); }
+
+//    if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
+//    { scpi_ret( SCPI_RES_ERR ); }logDbg()<<strLen<<pLocalStr;
+//    if (strLen < 1)
+//    { scpi_ret( SCPI_RES_ERR ); }
+
+//    //! check motion mode
+//    int motionMode = -1;
+//    if ( SCPI_ParamInt32(context, &motionMode, true) != true )
+//    { motionMode = -1; }
+//    else
+//    {}
+
+//    QList<float> dataset;
+//    //! try .mc
+//    int col = 0;
+//    //! t,x,y,z,h,imask
+//    QList<int> seqList;
+//    QList<int> dataCols;
+//    int ret;
+//    do
+//    {
+//        //! en,name,t,x,y,z,h,mode,comment
+//        col = 9;
+//        dataset.clear();
+//        dataCols.clear();
+//        dataCols<<2<<3<<4<<5<<6<<7;     //! \note some string
+//        ret = comAssist::loadDataset( pLocalStr, strLen, col, dataCols, dataset );
+//        if ( 0 == ret && ( dataset.size() / col ) > 1  )
+//        {
+//            seqList<<2<<3<<4<<5<<6<<7;
+//            break;
+//        }
+
+//        //! x,y,z,h,t,interp
+//        col = 6;
+//        dataset.clear();
+//        dataCols.clear();
+//        dataCols<<0<<1<<2<<3<<4<<5;
+//        if ( 0 == comAssist::loadDataset( pLocalStr, strLen, col, dataCols, dataset ) )
+//        {
+//            seqList<<4<<0<<1<<2<<3<<5;
+//            break;
+//        }
+
+//        scpi_ret( SCPI_RES_ERR );
+//    }while ( 0 );
+
+//    //! point
+//    if ( dataset.size() / col < 2 )
+//    { scpi_ret( SCPI_RES_ERR ); }
+
+//    TraceKeyPointList curve;
+//    TraceKeyPoint tp;
+
+//    Q_ASSERT( seqList.size() == 6 );
+//    for ( int i = 0; i < dataset.size()/col; i++ )
+//    {
+//        //! 0 1 2 3 4 5
+//        //! x,y,z,h,t,interp
+//        tp.t = dataset.at( i * col + seqList.at(0) );
+
+//        tp.x = dataset.at( i * col + seqList.at(1) );
+//        tp.y = dataset.at( i * col + seqList.at(2) );
+//        tp.z = dataset.at( i * col + seqList.at(3) );
+//        tp.hand = dataset.at( i * col + seqList.at(4) );
+
+//        tp.iMask = dataset.at( i * col + seqList.at(5) );
+
+//        curve.append( tp );
+
+////        logDbg()<<tp.t<<tp.x<<tp.y<<tp.z<<tp.hand<<tp.iMask;
+//    }
+
+//    DEF_ROBO();
+
+//    CHECK_LINK();
+
+//    pRobo->program( curve, tpvRegion( ax, page, motionMode) );
+
+//    return SCPI_RES_OK;
 }
 
 //! ax, page, file

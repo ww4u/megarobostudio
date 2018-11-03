@@ -4,6 +4,7 @@ CONFIG += static
 
 TARGET = ../../../../lib/rawrobo
 
+
 OBJECTS_DIR = ./obj
 MOC_DIR = ./obj
 
@@ -16,7 +17,8 @@ SOURCES = \
     rawrobo_op.cpp \
     rawrobo_line.cpp \
     rawrobo_intf.cpp \
-    rawrobo_setup.cpp
+    rawrobo_setup.cpp \
+    rawrobo_scpi.cpp
 
 HEADERS = \
     rawrobo.h

@@ -73,7 +73,7 @@ QString MegaTableModel::fmtString( const QStringList &list )
     QStringList strList;
     for ( int i = 1; i <= list.size(); i++ )
     {
-        strList<<QString("%1").arg( i );
+        strList<<QString("\%%1").arg( i );
     }
 
     return strList.join('/');

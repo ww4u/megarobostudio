@@ -6,6 +6,9 @@
 #include "mdatarow.h"
 
 #define deparse_column_index( name, n )    int c_##name = dataSet.columnIndex( n );
+#define deparse_column_index_( name, sep )    int c_##name = dataSet.columnIndex( "name" );
+#define deparse_column_index__( name )    deparse_column_index_( name, n )
+#define headerlist( headers )              QString( headers ).split('/')
 
 class MDataSet
 {
@@ -51,20 +54,24 @@ public:
     int load( const QString &fullname );
     int save( const QString &fullName );
 
+    MDataSection * tryLoad( const QString &fullName,
+                 const QString &model,
+                 const QStringList &headers );
+
     void dbgShow();
 
 protected:
     int doLoad( QFile &file );
     int doSave( QFile &file );
 
-    bool verifyLine( QByteArray &ary );
-    bool commentLine( QByteArray &ary );
-    void normalLine( QByteArray &ary );
+    bool verifyLine( QString &ary );
+    bool commentLine( QString &ary );
+    void normalLine( QString &ary );
 
-    bool filterLine( QByteArray &ary );
+    bool filterLine( QString &ary );
 
-    void extractDescription( QByteArray &ary );
-    QStringList extractStringList( QByteArray &ary );
+    void extractDescription( QString &ary );
+    QStringList extractStringList( QString &ary );
 
 public:
     QString mModel;

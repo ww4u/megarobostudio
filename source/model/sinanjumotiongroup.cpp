@@ -210,7 +210,7 @@ int SinanjuMotionGroup::save( const QString &fileName )
     dataSet.setModel( mClassName );
     QStringList headers;
     headers<<"enable"<<"name"
-           <<"t"<<"x"<<"y"<<"z"<<"h"
+           <<"t"<<"x"<<"y"<<"z"<<"terminal"
            <<"mode"
            <<"comment";
     dataSet.setHeaders( headers );
@@ -231,11 +231,12 @@ int SinanjuMotionGroup::save( const QString &fileName )
         bRet = pSec->addRow( QString("%1").arg( fmtStr )
                                                .arg( pItem->mbEnable )
                                                .arg( pItem->mName )
+                                               .arg( pItem->mT )
                                                .arg( pItem->mX )
                                                .arg( pItem->mY )
                                                .arg( pItem->mZ )
                                                .arg( pItem->mH )
-                                               .arg( SinanjuMotionItem::encodeAttr( pItem->mIAttr ) )
+                                               .arg( MotionRow::encodeAttr( pItem->mIAttr ) )
                                                .arg( pItem->mComment ) );
         if ( !bRet )
         { return -1; }
@@ -285,8 +286,8 @@ int SinanjuMotionGroup::load( const QString &fileName )
     if ( ret != 0 )
     { return ret; }
 
-    if ( dataSet.isEmpty() )
-    { return -1; }
+//    if ( dataSet.isEmpty() )
+//    { return -1; }
 
     if ( dataSet.verifyHeader("t", "x", "y", "z" ) )
     {}
@@ -304,7 +305,7 @@ int SinanjuMotionGroup::load( const QString &fileName )
     deparse_column_index( x, "x" );
     deparse_column_index( y, "y" );
     deparse_column_index( z, "z" );
-    deparse_column_index( h, "h" );
+    deparse_column_index( h, "terminal" );
     deparse_column_index( mode, "mode" );
     deparse_column_index( comment, "comment" );
 
@@ -352,7 +353,7 @@ int SinanjuMotionGroup::load( const QString &fileName )
         pSec->cellValue( i, c_enable, item.mbEnable, true );
         pSec->cellValue( i, c_comment, item.mComment, "" );
         pSec->cellValue( i, c_mode, strMode, "" );
-        item.mIAttr = SinanjuMotionItem::decodeAttr( strMode );
+        item.mIAttr = MotionRow::decodeAttr( strMode );
 
         //! append the item
         insertRow( mItems.size() );

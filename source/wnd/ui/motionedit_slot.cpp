@@ -30,6 +30,16 @@ void motionEdit::context_clear()
     on_btnClr_clicked();
 }
 
+void motionEdit::slot_timeout()
+{
+    emit sigSaveRequest( this );
+}
+
+void motionEdit::slot_data_changed()
+{
+    mDlySaveTime.start();
+}
+
 //! get the hand action options
 void motionEdit::slot_robo_changed( const QString &roboName )
 {

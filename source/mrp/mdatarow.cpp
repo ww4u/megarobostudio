@@ -8,7 +8,7 @@ MDataRow::MDataRow() : QStringList()
 MDataRow::MDataRow( const QStringList &row ) : QStringList()
 { *this = row; }
 
-MDataRow::MDataRow( const QByteArray &row ) : QStringList()
+MDataRow::MDataRow( const QString &row ) : QStringList()
 { *this = row; }
 
 //! normalize to lower
@@ -26,13 +26,13 @@ MDataRow &MDataRow::operator=( const QStringList &row )
     return *this;
 }
 
-MDataRow &MDataRow::operator=( const QByteArray &row )
+MDataRow &MDataRow::operator=( const QString &row )
 {
     clear();
 
-    QByteArray localAry;
+    QString localAry;
 
-    QList<QByteArray> aryList = row.split(',');
+    QStringList aryList = row.split(',');
 
     for ( int i = 0;i < aryList.size(); i++ )
     {
@@ -64,7 +64,7 @@ MDataSection::MDataSection( int sec ) : mSection( sec )
         MDataSection::_keyw_types.insert( "x", QVariant::Double );
         MDataSection::_keyw_types.insert( "y", QVariant::Double );
         MDataSection::_keyw_types.insert( "z", QVariant::Double );
-        MDataSection::_keyw_types.insert( "h", QVariant::Double );
+        MDataSection::_keyw_types.insert( "terminal", QVariant::Double );
 
         MDataSection::_keyw_types.insert( "rx", QVariant::Double );
         MDataSection::_keyw_types.insert( "ry", QVariant::Double );
@@ -105,7 +105,7 @@ void MDataSection::setSection( int sec )
 int MDataSection::section()
 { return mSection; }
 
-bool MDataSection::lineIn( QByteArray &ary )
+bool MDataSection::lineIn( QString &ary )
 {
     MDataRow *pRow = new MDataRow( ary );
     if ( NULL == pRow )
@@ -190,12 +190,10 @@ bool MDataSection::cellValue( int r, int c,
     QVariant var = cell( r, c );
 
     bool ok;
-    ok = var.isValid();
+    ok = var.isValid() && !var.toString().isEmpty();
 
-    if ( ok && !var.toString().isEmpty() )
-    {
-        v = var.toBool();
-    }
+    if ( ok  )
+    { v = var.toBool(); }
     else if ( bOv )
     { v = def; }
     else
@@ -213,6 +211,24 @@ bool MDataSection::cellValue( int r, int c,
 
     bool ok;
     localV = var.toFloat( &ok );
+    if ( ok )
+    { v = localV; }
+    else if ( bOv )
+    { v = def; }
+    else
+    {}
+
+    return ok;
+}
+bool MDataSection::cellValue( int r, int c,
+                double &v, double def,
+                bool bOv )
+{
+    QVariant var = cell( r, c );
+    double localV;
+
+    bool ok;
+    localV = var.toDouble( &ok );
     if ( ok )
     { v = localV; }
     else if ( bOv )
@@ -249,7 +265,7 @@ bool MDataSection::cellValue( int r, int c,
 
     bool ok;
 
-    localV   = var.toString();logDbg()<<localV;
+    localV   = var.toString();
     ok = !localV.isEmpty();
     if ( ok )
     { v = localV; }

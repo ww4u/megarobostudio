@@ -4,6 +4,7 @@
 
 #include "motor.h"
 #include "../../com/comassist.h"
+#include "../../com/scpiassist.h"
 
 #define DEF_ROBO()      robotMotor *pRobo;\
                         pRobo = ((robotMotor*)context->user_context);\
@@ -186,58 +187,123 @@ static scpi_result_t _scpi_preMove( scpi_t * context )
 //! page, file, motionMode
 static scpi_result_t _scpi_program( scpi_t * context )
 {
-    // read
     DEF_LOCAL_VAR();
 
+    DEF_ROBO();
+
+    //! para
     int ax, page;
+    QString file;
 
-    if ( SCPI_ParamInt32(context, &ax, true) != true )
+    if ( deload_ax_page_file( context, ax, page, file) == SCPI_RES_OK )
+    {}
+    else
     { scpi_ret( SCPI_RES_ERR ); }
 
-    if ( SCPI_ParamInt32(context, &page, true) != true )
-    { scpi_ret( SCPI_RES_ERR ); }
+    //! data set
+    MDataSet dataSet;
 
-    if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
-    { scpi_ret( SCPI_RES_ERR ); }logDbg()<<strLen<<pLocalStr;
-    if (strLen < 1)
-    { scpi_ret( SCPI_RES_ERR ); }
+    MDataSection *pSec;
+    pSec = dataSet.tryLoad( file, "", headerlist("t/p") );
 
-    //! check motion mode
-    int motionMode = -1;
-    if ( SCPI_ParamInt32(context, &motionMode, true) != true )
-    { motionMode = -1; }
+    if ( NULL == pSec )
+    { scpi_ret( SCPI_RES_ERR ); }
     else
     {}
 
-    //! t, p, v
-    QList<float> dataset;
-    int col = 3;
-    QList<int> dataCols;
-    dataCols<<0<<1<<2;
-    if ( 0 != comAssist::loadDataset( pLocalStr, strLen, col, dataCols, dataset ) )
-    {  scpi_ret( SCPI_RES_ERR ); }
+    deparse_column_index( enable, "enable" );
+    deparse_column_index( t, "t" );
+    deparse_column_index( p, "p" );
+    deparse_column_index( v, "v" );
 
-    //! point
-    if ( dataset.size() / col < 2 )
-    { scpi_ret( SCPI_RES_ERR ); }
-
+    //! deload
     D1PointList curve;
     D1Point tp;
-    for ( int i = 0; i < dataset.size()/col; i++ )
+    bool bEn;
+    for ( int i = 0; i < pSec->rows(); i++ )
     {
-        //! t
-        tp.t = dataset.at( i * col + 0 );
-        tp.p = dataset.at( i * col + 1 );
-        tp.v = dataset.at( i * col + 2 );
+        //! disabled
+        if ( pSec->cellValue( i, c_enable, bEn, true, true ) && !bEn )
+        { continue; }
+
+        if ( !pSec->cellValue( i, c_t, tp.t, 0, false ) )
+        { continue; }
+
+        if ( !pSec->cellValue( i, c_p, tp.p, 0, false ) )
+        { continue; }
+
+        pSec->cellValue( i, c_v, tp.v, 0, true );
 
         curve.append( tp );
     }
 
-    //! robo op
-    DEF_ROBO();
-    int ret = LOCAL_ROBO()->program( curve, tpvRegion(ax,page,motionMode) );
+    //! check curve
+    if ( curve.size() < 2 )
+    { scpi_ret( SCPI_RES_ERR ); }
 
-    return ret == 0 ? SCPI_RES_OK : SCPI_RES_ERR;
+    CHECK_LINK( );
+
+    if ( 0 != LOCAL_ROBO()->program( curve, tpvRegion(ax,page) ) )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    return SCPI_RES_OK;
+
+
+//    // read
+//    DEF_LOCAL_VAR();
+
+//    int ax, page;
+
+//    if ( SCPI_ParamInt32(context, &ax, true) != true )
+//    { scpi_ret( SCPI_RES_ERR ); }
+
+//    if ( SCPI_ParamInt32(context, &page, true) != true )
+//    { scpi_ret( SCPI_RES_ERR ); }
+
+//    if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
+//    { scpi_ret( SCPI_RES_ERR ); }logDbg()<<strLen<<pLocalStr;
+//    if (strLen < 1)
+//    { scpi_ret( SCPI_RES_ERR ); }
+
+//    //! check motion mode
+//    int motionMode = -1;
+//    if ( SCPI_ParamInt32(context, &motionMode, true) != true )
+//    { motionMode = -1; }
+//    else
+//    {}
+
+//    //! t, p, v
+//    QList<float> dataset;
+//    int col = 3;
+//    QList<int> dataCols;
+//    dataCols<<0<<1<<2;
+//    if ( 0 != comAssist::loadDataset( pLocalStr, strLen, col, dataCols, dataset ) )
+//    {  scpi_ret( SCPI_RES_ERR ); }
+
+//    //! point
+//    if ( dataset.size() / col < 2 )
+//    { scpi_ret( SCPI_RES_ERR ); }
+
+//    D1PointList curve;
+//    D1Point tp;
+//    for ( int i = 0; i < dataset.size()/col; i++ )
+//    {
+//        //! t
+//        tp.t = dataset.at( i * col + 0 );
+//        tp.p = dataset.at( i * col + 1 );
+//        tp.v = dataset.at( i * col + 2 );
+
+//        curve.append( tp );
+//    }
+
+//    //! robo op
+//    DEF_ROBO();
+
+//    CHECK_LINK();
+
+//    int ret = LOCAL_ROBO()->program( curve, tpvRegion(ax,page,motionMode) );
+
+//    return ret == 0 ? SCPI_RES_OK : SCPI_RES_ERR;
 }
 
 //! ax, page, cycle, motionMode

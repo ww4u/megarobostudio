@@ -4,6 +4,7 @@
 
 #include "igus_delta.h"
 #include "../../com/comassist.h"
+#include "../../com/scpiassist.h"
 
 #define DEF_ROBO()      robotIgusDelta *pRobo;\
                         pRobo = ((robotIgusDelta*)context->user_context);\
@@ -161,69 +162,144 @@ static scpi_result_t _scpi_preMove( scpi_t * context )
 //! ax, page, file
 static scpi_result_t _scpi_program( scpi_t * context )
 {
-    // read
     DEF_LOCAL_VAR();
 
     int ax, page;
+    QString file;
 
-    if ( SCPI_ParamInt32(context, &ax, true) != true )
-    { scpi_ret( SCPI_RES_ERR ); }
-
-    if ( SCPI_ParamInt32(context, &page, true) != true )
-    { scpi_ret( SCPI_RES_ERR ); }
-
-    if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
-    { scpi_ret( SCPI_RES_ERR ); }
-    if (strLen < 1)
-    { scpi_ret( SCPI_RES_ERR ); }
-
-    //! find the input file
-    QByteArray byteName( pLocalStr, strLen );
-    QString fileInName( byteName );
-    if ( comAssist::ammendFileName( fileInName ) )
+    if ( deload_ax_page_file( context, ax, page, file) == SCPI_RES_OK )
     {}
     else
     { scpi_ret( SCPI_RES_ERR ); }
 
-    //! get the file
-    QList<float> dataset;
-    int col = 6;
-    QList<int> dataCols;
-    dataCols<<0<<1<<2<<3<<4<<5;
-    if ( 0 != comAssist::loadDataset( pLocalStr, strLen, col, dataCols, dataset ) )
-    { scpi_ret( SCPI_RES_ERR ); }
+    //! data set
+    MDataSet dataSet;
+    DEF_ROBO();
 
-    //! point
-    if ( dataset.size() / col < 2 )
-    { scpi_ret( SCPI_RES_ERR ); }
+    MDataSection *pSec;
+    pSec = dataSet.tryLoad( file,LOCAL_ROBO()->getClass(), headerlist("t/x/y/z") );
 
+    if ( NULL == pSec )
+    { scpi_ret( SCPI_RES_ERR ); }
+    else
+    {}
+
+    deparse_column_index( enable, "enable" );
+    deparse_column_index( t, "t" );
+    deparse_column_index( x, "x" );
+    deparse_column_index( y, "y" );
+    deparse_column_index( z, "z" );
+    deparse_column_index( h, "terminal" );
+    deparse_column_index( mode, "mode" );
+
+    //! deload
     TraceKeyPointList curve;
     TraceKeyPoint tp;
-    for ( int i = 0; i < dataset.size()/col; i++ )
+    bool bEn;
+    QString localStr;
+    for ( int i = 0; i < pSec->rows(); i++ )
     {
-        //! 0 1 2 3 4 5
-        //! x,y,z,h,t,interp
-        tp.t = dataset.at( i * col + 4 );
+        //! disabled
+        if ( pSec->cellValue( i, c_enable, bEn, true, true ) && !bEn )
+        { continue; }
 
-        tp.x = dataset.at( i * col + 0 );
-        tp.y = dataset.at( i * col + 1 );
-        tp.z = dataset.at( i * col + 2 );
-        tp.hand = dataset.at( i * col + 3 );
+        if ( !pSec->cellValue( i, c_t, tp.t, 0, false ) )
+        { continue; }
 
-        tp.iMask = dataset.at( i * col + 5 );
+        if ( !pSec->cellValue( i, c_x, tp.x, 0, false ) )
+        { continue; }
+
+        if ( !pSec->cellValue( i, c_y, tp.y, 0, false ) )
+        { continue; }
+
+        if ( !pSec->cellValue( i, c_z, tp.z, 0, false ) )
+        { continue; }
+
+        pSec->cellValue( i, c_h, tp.hand, 0, false );
+
+        if ( pSec->cellValue( i, c_mode, localStr,"", true ) )
+        { tp.iMask = MotionRow::decodeAttr( localStr ); }
+        else
+        { tp.iMask = 0; }
 
         curve.append( tp );
-
-//        logDbg()<<tp.t<<tp.x<<tp.y<<tp.z<<tp.hand<<tp.iMask;
     }
 
-    DEF_ROBO();
+    //! check curve
+    if ( curve.size() < 2 )
+    { scpi_ret( SCPI_RES_ERR ); }
 
     CHECK_LINK();
 
-    pRobo->program( curve, tpvRegion( ax, page) );
+    if ( 0 != LOCAL_ROBO()->program( curve, tpvRegion( ax, page) ) )
+    { scpi_ret( SCPI_RES_ERR ); }
 
     return SCPI_RES_OK;
+
+
+//    // read
+//    DEF_LOCAL_VAR();
+
+//    int ax, page;
+
+//    if ( SCPI_ParamInt32(context, &ax, true) != true )
+//    { scpi_ret( SCPI_RES_ERR ); }
+
+//    if ( SCPI_ParamInt32(context, &page, true) != true )
+//    { scpi_ret( SCPI_RES_ERR ); }
+
+//    if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
+//    { scpi_ret( SCPI_RES_ERR ); }
+//    if (strLen < 1)
+//    { scpi_ret( SCPI_RES_ERR ); }
+
+//    //! find the input file
+//    QByteArray byteName( pLocalStr, strLen );
+//    QString fileInName( byteName );
+//    if ( comAssist::ammendFileName( fileInName ) )
+//    {}
+//    else
+//    { scpi_ret( SCPI_RES_ERR ); }
+
+//    //! get the file
+//    QList<float> dataset;
+//    int col = 6;
+//    QList<int> dataCols;
+//    dataCols<<0<<1<<2<<3<<4<<5;
+//    if ( 0 != comAssist::loadDataset( pLocalStr, strLen, col, dataCols, dataset ) )
+//    { scpi_ret( SCPI_RES_ERR ); }
+
+//    //! point
+//    if ( dataset.size() / col < 2 )
+//    { scpi_ret( SCPI_RES_ERR ); }
+
+//    TraceKeyPointList curve;
+//    TraceKeyPoint tp;
+//    for ( int i = 0; i < dataset.size()/col; i++ )
+//    {
+//        //! 0 1 2 3 4 5
+//        //! x,y,z,h,t,interp
+//        tp.t = dataset.at( i * col + 4 );
+
+//        tp.x = dataset.at( i * col + 0 );
+//        tp.y = dataset.at( i * col + 1 );
+//        tp.z = dataset.at( i * col + 2 );
+//        tp.hand = dataset.at( i * col + 3 );
+
+//        tp.iMask = dataset.at( i * col + 5 );
+
+//        curve.append( tp );
+
+////        logDbg()<<tp.t<<tp.x<<tp.y<<tp.z<<tp.hand<<tp.iMask;
+//    }
+
+//    DEF_ROBO();
+
+//    CHECK_LINK();
+
+//    pRobo->program( curve, tpvRegion( ax, page) );
+
+//    return SCPI_RES_OK;
 }
 
 //! ax, page, file

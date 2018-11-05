@@ -88,7 +88,7 @@ int CANBus::open( const modelSysPref &pref,
         dllName = "MegaCanDevice.dll";
         busType = VCI_MR_USBTMC;
     }
-    else    //!  ( mPId == 2 )
+    else    //!  ( mPId == 2 )  //! lan
     {
         dllName = "MegaCanDevice.dll";
         busType = VCI_MR_LANCAN;
@@ -163,16 +163,16 @@ int CANBus::open( const modelSysPref &pref,
     int ret;
     if ( mPId == 0 || mPId == 2 || mPId == 6 )
     {
-        char strs[ 1024 ] = { 0 };                          //! for the resources
+//        char strs[ 1024 ] = { 0 };                          //! for the resources
 
-        ret = mApi.findExt( mDevType, strs, sizeof_array(strs)-1, &mDefRM );
-        if ( ret == 0 )
-        {
-            close();
-            return -1;
-        }
+//        ret = mApi.findExt( mDevType, strs, sizeof_array(strs)-1, &mDefRM );
+//        if ( ret == 0 )
+//        {
+//            close();
+//            return -1;
+//        }
 
-        ret = mApi.openExt( mDevType, mDefRM, desc.toLatin1().data(), &mDevId );
+        ret = mApi.openExt( mDevType, 0, desc.toLatin1().data(), &mDevId );
         if ( ret != 0 )
         {
             close();

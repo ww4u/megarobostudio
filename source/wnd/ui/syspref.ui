@@ -582,7 +582,7 @@
             <item row="5" column="0" colspan="2">
              <widget class="QTabWidget" name="tabWidget_2">
               <property name="currentIndex">
-               <number>1</number>
+               <number>4</number>
               </property>
               <widget class="QWidget" name="tab_5">
                <attribute name="title">
@@ -771,6 +771,16 @@
                <layout class="QVBoxLayout" name="verticalLayout_12">
                 <item>
                  <widget class="PortOption" name="portUsbSetting" native="true"/>
+                </item>
+               </layout>
+              </widget>
+              <widget class="QWidget" name="tab_9">
+               <attribute name="title">
+                <string>Setting</string>
+               </attribute>
+               <layout class="QGridLayout" name="gridLayout_10">
+                <item row="0" column="0">
+                 <widget class="PortOption" name="portESetting" native="true"/>
                 </item>
                </layout>
               </widget>

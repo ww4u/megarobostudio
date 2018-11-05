@@ -83,6 +83,9 @@ LIBS += -lvisa32
 DEFINES += NI_VISA
 DEFINES += ARCH_32
 
+INCLUDEPATH += "G:/work/mc/develope/installer"
+LIBS += -lmegacandevice
+
 }
 
 include("../../../prj/config.pri")

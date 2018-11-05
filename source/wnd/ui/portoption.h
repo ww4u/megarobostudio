@@ -16,6 +16,9 @@ public:
     ~PortOption();
 
 public:
+    void setPortType( int tpe );
+    int portType();
+
     void setValidateEnable( bool b );
     bool validateEnable();
 
@@ -52,6 +55,8 @@ private:
     Ui::PortOption *ui;
 
     bool mbVerifyAble;
+
+    int mPortType;
 };
 
 #endif // PORTOPTION_H

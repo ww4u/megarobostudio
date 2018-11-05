@@ -90,7 +90,7 @@ private slots:
 private:
     Ui::sysPref *ui;
     QWidget *m_pCANSetting, *m_pMRHTSetting;
-    QWidget *m_pRs232Setting, *m_pUsbSetting;
+    QWidget *m_pRs232Setting, *m_pUsbSetting, *m_pESetting;
 
 public:
     modelSysPref *m_pPref;

@@ -14,6 +14,7 @@ PortOption::PortOption(QWidget *parent) :
     ui->setupUi(this);
 
     mbVerifyAble = false;
+    mPortType = 0;
 
     //! slot
     on_cmbRsrcList_editTextChanged( ui->cmbRsrcList->currentText() );
@@ -24,6 +25,11 @@ PortOption::~PortOption()
 {
     delete ui;
 }
+
+void PortOption::setPortType( int tpe )
+{ mPortType = tpe; }
+int PortOption::portType()
+{ return mPortType; }
 
 void PortOption::setValidateEnable( bool b )
 {
@@ -72,24 +78,41 @@ int PortOption::tmo()
 void PortOption::searchRsrc( const QString &rsrcPattern,
                              QStringList &rsrcList )
 {
-#ifdef NI_VISA
-    ViStatus viStat;
-    ViSession viDef;
-    viStat = viOpenDefaultRM( &viDef );
-    if ( viStat != VI_SUCCESS )
-    { return; }
-
-    ViFindList viList;
-    ViChar rsrc[64];
-    ViUInt32 retCount;
-    viStat = viFindRsrc( viDef, rsrcPattern.toLatin1().data(), &viList, &retCount, rsrc  );
-    while( viStat == VI_SUCCESS )
+#ifdef NI_VISA    
+    if ( mPortType != 0 )
     {
-        rsrcList.append( rsrc );
-        viStat = viFindNext( viList, rsrc );
+        char descs[1024];
+        int ret;
+        //! find the device list
+        ret = VCI_FindDevice( mPortType, descs, sizeof(descs)-1 );
+        if ( ret == 0 )
+        { rsrcList.clear(); }
+        else
+        {
+            QString rawStr = QString( descs );
+            rsrcList = rawStr.split( ';', QString::SkipEmptyParts );
+        }
     }
+    else
+    {
+        ViStatus viStat;
+        ViSession viDef;
+        viStat = viOpenDefaultRM( &viDef );
+        if ( viStat != VI_SUCCESS )
+        { return; }
 
-    viClose( viDef );
+        ViFindList viList;
+        ViChar rsrc[64];
+        ViUInt32 retCount;
+        viStat = viFindRsrc( viDef, rsrcPattern.toLatin1().data(), &viList, &retCount, rsrc  );
+        while( viStat == VI_SUCCESS )
+        {
+            rsrcList.append( rsrc );
+            viStat = viFindNext( viList, rsrc );
+        }
+
+        viClose( viDef );
+    }
 
 #endif
 }

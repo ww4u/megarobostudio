@@ -47,10 +47,17 @@ sysPref::sysPref(QWidget *parent) :
     m_pMRHTSetting = ui->tabWidget_2->widget(1);
     m_pRs232Setting = ui->tabWidget_2->widget(2);
     m_pUsbSetting = ui->tabWidget_2->widget(3);
+    m_pESetting = ui->tabWidget_2->widget(4);
+
+    //! port type
+    ((PortOption*)m_pMRHTSetting)->setPortType( VCI_MR_LANCAN );
+    ((PortOption*)m_pUsbSetting)->setPortType( VCI_MR_USBTMC );
+    ((PortOption*)m_pESetting)->setPortType( VCI_MR_USBCAN );
 
     //! validate enable
     ui->portLanSetting->setValidateEnable( true );
 
+    ui->tabWidget_2->removeTab(4);
     ui->tabWidget_2->removeTab(3);
     ui->tabWidget_2->removeTab(2);
     ui->tabWidget_2->removeTab(1);
@@ -145,9 +152,9 @@ void sysPref::updateUi()
     //! search options
     //! ASRL[0-9]*::?*INSTR
     //! USB?*INSTR
-    ui->portLanSetting->searchOption( "TCPIP?*::?*INSTR");
-    ui->port232Setting->searchOption( "ASRL?*::?*INSTR");
-    ui->portUsbSetting->searchOption( "USB?*::?*INSTR");
+    ui->portLanSetting->searchOption( "TCPIP?*::?*INSTR" );
+    ui->port232Setting->searchOption( "ASRL?*::?*INSTR" );
+    ui->portUsbSetting->searchOption( "USB?*::?*INSTR" );
 
     //! rs232 settting
     uartConfig uCfg;

@@ -22,8 +22,18 @@ void modelSysPref::rst()
     mDeviceCount = 1;
 
     mVisaTmo = 2000;                //! 2s
-    mVisaAddr = "TCPIP::172.16.0.1::INSTR";
 
+    mVisaLanAddr = "TCPIP::172.16.0.1::INSTR";
+    mVisaLanList.clear();
+
+    mVisaUsbAddr.clear();
+    mVisaUsbList.clear();
+
+    mVisa232Addr.clear();
+    mVisa232List.clear();
+
+    mVisaEAddr.clear();
+    mVisaEList.clear();
                                     //! rs232
     mBaudIndex = 7;
     mDataWidthIndex = 0;
@@ -116,15 +126,19 @@ int modelSysPref::save( const QString &str )
     //! port
     writer.writeTextElement( "port", QString::number(mPort) );
     writer.writeTextElement( "speed", QString::number(mSpeed) );
+
     //! lan
-    writer.writeTextElement( "visa_addr",( mVisaAddr ) );
-    writer.writeTextElement( "visa_list", mVisaList.join(',') );
+    writer.writeTextElement( "visa_lan_addr",( mVisaLanAddr ) );
+    writer.writeTextElement( "visa_lan_list", mVisaLanList.join(',') );
     //! rs232
-    writer.writeTextElement( "serial_addr",( mRs232Addr ) );
-    writer.writeTextElement( "serial_list", mRs232List.join(',') );
+    writer.writeTextElement( "visa_232_addr",( mVisa232Addr ) );
+    writer.writeTextElement( "visa_232_list", mVisa232List.join(',') );
     //! usb
-    writer.writeTextElement( "usb_addr",( mUsbAddr ) );
-    writer.writeTextElement( "usb_list", mUsbList.join(',') );
+    writer.writeTextElement( "visa_usb_addr",( mVisaUsbAddr ) );
+    writer.writeTextElement( "visa_usb_list", mVisaUsbList.join(',') );
+    //! usb
+    writer.writeTextElement( "visa_e_addr",( mVisaEAddr ) );
+    writer.writeTextElement( "visa_e_list", mVisaEList.join(',') );
 
     writer.writeTextElement( "visa_tmo", QString::number( mVisaTmo ) );
 
@@ -321,25 +335,32 @@ int modelSysPref::load( const QString &str )
                 { mSpeed = reader.readElementText().toInt(); }
 
                 //! lan
-                else if ( reader.name() == "visa_addr" )
-                { mVisaAddr = reader.readElementText(); }
+                else if ( reader.name() == "visa_lan_addr" )
+                { mVisaLanAddr = reader.readElementText(); }
 
-                else if ( reader.name() == "visa_list" )
-                { mVisaList = reader.readElementText().split(',',QString::SkipEmptyParts); }
+                else if ( reader.name() == "visa_lan_list" )
+                { mVisaLanList = reader.readElementText().split(',',QString::SkipEmptyParts); }
 
                 //! rs232
-                else if ( reader.name() == "serial_addr" )
-                { mRs232Addr = reader.readElementText(); }
+                else if ( reader.name() == "visa_232_addr" )
+                { mVisa232Addr = reader.readElementText(); }
 
-                else if ( reader.name() == "serial_list" )
-                { mRs232List = reader.readElementText().split(',',QString::SkipEmptyParts); }
+                else if ( reader.name() == "visa_232_list" )
+                { mVisa232List = reader.readElementText().split(',',QString::SkipEmptyParts); }
 
                 //! usb
-                else if ( reader.name() == "usb_addr" )
-                { mUsbAddr = reader.readElementText(); }
+                else if ( reader.name() == "visa_usb_addr" )
+                { mVisaUsbAddr = reader.readElementText(); }
 
-                else if ( reader.name() == "usb_list" )
-                { mUsbList = reader.readElementText().split(',',QString::SkipEmptyParts); }
+                else if ( reader.name() == "visa_usb_list" )
+                { mVisaUsbList = reader.readElementText().split(',',QString::SkipEmptyParts); }
+
+                //! -e
+                else if ( reader.name() == "visa_e_addr" )
+                { mVisaEAddr = reader.readElementText(); }
+
+                else if ( reader.name() == "visa_e_list" )
+                { mVisaEList = reader.readElementText().split(',',QString::SkipEmptyParts); }
 
                 else if ( reader.name() == "rs232" )
                 {

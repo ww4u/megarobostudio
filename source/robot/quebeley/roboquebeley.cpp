@@ -69,8 +69,8 @@ void roboQuebeley::postCtor()
         mISIs = 0;
         mISOs = 2;
 
-        mUARTs = 1;
-        mUART_Sensors = 2;
+        mUARTs = 2;             //! 2 uarts, 1 sensor for each uart
+        mUART_Sensors = 1;
 
         mTemperatures = 1;      //! otp
         mAINs = 1;
@@ -91,7 +91,7 @@ void roboQuebeley::postCtor()
         mISIs = 0;
         mISOs = 1;
 
-        mUARTs = 2;
+        mUARTs = 1;             //! \note only one uart for sensor
         mUART_Sensors = 1;
 
         mTemperatures = 0;

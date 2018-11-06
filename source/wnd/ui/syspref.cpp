@@ -43,19 +43,21 @@ sysPref::sysPref(QWidget *parent) :
     connect( ui->cmbStyle, SIGNAL(activated(int)),
              this, SLOT(slot_styleLang_changed(int) ));
 
-    m_pCANSetting = ui->tabWidget_2->widget(0);
-    m_pMRHTSetting = ui->tabWidget_2->widget(1);
-    m_pRs232Setting = ui->tabWidget_2->widget(2);
-    m_pUsbSetting = ui->tabWidget_2->widget(3);
-    m_pESetting = ui->tabWidget_2->widget(4);
+    m_pCANSetting = ui->tab_5;
+    m_pMRHTSetting = ui->tab_6;
+    m_pRs232Setting = ui->tab_7;
+    m_pUsbSetting = ui->tab_8;
+    m_pESetting = ui->tab_9;
 
     //! port type
-    ((PortOption*)m_pMRHTSetting)->setPortType( VCI_MR_LANCAN );
-    ((PortOption*)m_pUsbSetting)->setPortType( VCI_MR_USBTMC );
-    ((PortOption*)m_pESetting)->setPortType( VCI_MR_USBCAN );
+    (ui->portESetting)->setPortType( VCI_MR_USBCAN );
+    (ui->portLanSetting)->setPortType( VCI_MR_LANCAN, "TCPIP?*::?*INSTR" );
+    (ui->portUsbSetting)->setPortType( VCI_MR_USBTMC, "USB?*::?*INSTR"  );
+    ui->port232Setting->setPortType( 0, "ASRL?*::?*INSTR" );
 
     //! validate enable
     ui->portLanSetting->setValidateEnable( true );
+    ui->portLanSetting->setIndicatorAble( true );
 
     ui->tabWidget_2->removeTab(4);
     ui->tabWidget_2->removeTab(3);
@@ -138,23 +140,31 @@ void sysPref::updateUi()
     ui->cmbSpeed->setCurrentText( QString::number(m_pPref->mSpeed) );
 
     //! lan
-    ui->portLanSetting->setCurrentRsrc( m_pPref->mVisaAddr );
-    ui->portLanSetting->setRsrcs( m_pPref->mVisaList );
+    ui->portLanSetting->setCurrentRsrc( m_pPref->mVisaLanAddr );
+    ui->portLanSetting->setRsrcs( m_pPref->mVisaLanList );
 
-    ui->port232Setting->setCurrentRsrc( m_pPref->mRs232Addr );
-    ui->port232Setting->setRsrcs( m_pPref->mRs232List );
+    ui->port232Setting->setCurrentRsrc( m_pPref->mVisa232Addr );
+    ui->port232Setting->setRsrcs( m_pPref->mVisa232List );
 
-    ui->portUsbSetting->setCurrentRsrc( m_pPref->mUsbAddr );
-    ui->portUsbSetting->setRsrcs( m_pPref->mUsbList );
+    ui->portUsbSetting->setCurrentRsrc( m_pPref->mVisaUsbAddr );
+    ui->portUsbSetting->setRsrcs( m_pPref->mVisaUsbList );
 
+    ui->portESetting->setCurrentRsrc( m_pPref->mVisaEAddr );
+    ui->portESetting->setRsrcs( m_pPref->mVisaEList );
+
+    //! tmo
     ui->portLanSetting->setTmo( m_pPref->mVisaTmo );
+    ui->port232Setting->setTmo( m_pPref->mVisaTmo );
+    ui->portUsbSetting->setTmo( m_pPref->mVisaTmo );
+    ui->portESetting->setTmo( m_pPref->mVisaTmo );
 
     //! search options
     //! ASRL[0-9]*::?*INSTR
     //! USB?*INSTR
-    ui->portLanSetting->searchOption( "TCPIP?*::?*INSTR" );
-    ui->port232Setting->searchOption( "ASRL?*::?*INSTR" );
+    ui->portESetting->searchOption("");
+//    ui->portLanSetting->searchOption( "TCPIP?*::?*INSTR" );
     ui->portUsbSetting->searchOption( "USB?*::?*INSTR" );
+    ui->port232Setting->searchOption( "ASRL?*::?*INSTR" );
 
     //! rs232 settting
     uartConfig uCfg;
@@ -249,14 +259,17 @@ void sysPref::updateData()
     m_pPref->mSpeed = ui->cmbSpeed->currentText().toInt();
 
     //! lan
-    m_pPref->mVisaAddr = ui->portLanSetting->currentRsrc();
-    m_pPref->mVisaList = ui->portLanSetting->rsrcs();
+    m_pPref->mVisaLanAddr = ui->portLanSetting->currentRsrc();
+    m_pPref->mVisaLanList = ui->portLanSetting->rsrcs();
 
-    m_pPref->mRs232Addr = ui->port232Setting->currentRsrc();
-    m_pPref->mRs232List = ui->port232Setting->rsrcs();
+    m_pPref->mVisa232Addr = ui->port232Setting->currentRsrc();
+    m_pPref->mVisa232List = ui->port232Setting->rsrcs();
 
-    m_pPref->mUsbAddr = ui->portUsbSetting->currentRsrc();
-    m_pPref->mUsbList = ui->portUsbSetting->rsrcs();
+    m_pPref->mVisaUsbAddr = ui->portUsbSetting->currentRsrc();
+    m_pPref->mVisaUsbList = ui->portUsbSetting->rsrcs();
+
+    m_pPref->mVisaEAddr = ui->portESetting->currentRsrc();
+    m_pPref->mVisaEList = ui->portESetting->rsrcs();
 
     //! rs232 setting
     uartConfig uCfg;
@@ -428,7 +441,7 @@ void sysPref::on_cmbPort_currentIndexChanged(const QString &arg1)
     {
          ui->labelCanPic->setPixmap( QPixmap(QString::fromUtf8(":/res/image/megacan.png")) );
 
-         ui->tabWidget_2->insertTab( 0, m_pCANSetting, QString( tr("Setting") ) );
+         ui->tabWidget_2->insertTab( 0, m_pESetting, QString( tr("Setting") ) );
 
          ui->gpAutoCanId->setVisible( true );
     }

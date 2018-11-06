@@ -2,6 +2,7 @@
 #define PORTOPTION_H
 
 #include <QWidget>
+#include "rsrcsearchthread.h"
 
 namespace Ui {
 class PortOption;
@@ -15,12 +16,18 @@ public:
     explicit PortOption(QWidget *parent = 0);
     ~PortOption();
 
+protected Q_SLOTS:
+    void slot_search_finished();
+
 public:
-    void setPortType( int tpe );
+    void setPortType( int tpe, const QString &rsrcPatte="" );
     int portType();
 
     void setValidateEnable( bool b );
     bool validateEnable();
+
+    void setIndicatorAble( bool b );
+    bool indicatorAble();
 
     void setCurrentRsrc( const QString &rsrc );
     QString currentRsrc();
@@ -51,12 +58,20 @@ private slots:
 
     void on_listMRTs_currentRowChanged(int currentRow);
 
+    void on_btnScan_clicked();
+
+    void on_tolIndicator_clicked(bool checked);
+
 private:
     Ui::PortOption *ui;
 
     bool mbVerifyAble;
+    bool mbIndicatAble;
 
     int mPortType;
+    QString mRsrcPatt;
+
+    RsrcSearchThread mSearchThread;
 };
 
 #endif // PORTOPTION_H

@@ -107,77 +107,18 @@ int CANBus::open( const modelSysPref &pref,
         return -1;
     }
 
-//    //! find
-//    if ( busType == VCI_MR_LANCAN
-//         || busType == VCI_MR_USBTMC )
-//    {
-//        //! the first time
-//        //! find rsrc
-//        if ( seqId == 0 )
-//        {
-//            _visaRsrc.clear();
-
-//            char strs[ 1024 ] = { 0 };                          //! for the resources
-//            if ( 0 == mApi.find( busType, strs, sizeof(strs) ) )
-//            {
-//                sysError( QObject::tr("device find fail") );
-//                close();
-//                return -1;
-//            }
-
-//            //! match the device id
-//            QByteArray rawData;
-//            rawData.setRawData( strs, qstrlen( strs ) );
-
-//            _visaRsrc = QString( rawData );
-//        }
-//        else
-//        {}
-
-//        QStringList rsrcList = _visaRsrc.split( ';', QString::SkipEmptyParts );
-
-//        int id = rsrcList.indexOf( desc );
-//        if ( id == -1 )
-//        {
-//            sysError( QObject::tr("no device: ") + desc );
-//            close();
-//        }
-//        else
-//        {
-//            mDevId = id;
-//            sysLog( desc, QString::number(mDevId) );
-//        }
-//    }
-//    else if ( busType == VCI_MCP_CAN )
-//    {
-
-//    }
-//    else if ( busType == VCI_MR_USBCAN )
-//    {
-
-//    }
-//    else
-//    { return -1; }
-
     //! open
     int ret;
     if ( mPId == 0 || mPId == 2 || mPId == 6 )
-    {
-//        char strs[ 1024 ] = { 0 };                          //! for the resources
-
-//        ret = mApi.findExt( mDevType, strs, sizeof_array(strs)-1, &mDefRM );
-//        if ( ret == 0 )
-//        {
-//            close();
-//            return -1;
-//        }
-
-        ret = mApi.openExt( mDevType, 0, desc.toLatin1().data(), &mDevId );
+    {logDbg()<<mDevType<<desc;
+        ret = mApi.openExt( mDevType, desc.toLatin1().data(), &mDevId );
         if ( ret != 0 )
-        {
+        {logDbg()<<ret;
             close();
             return -2;
         }
+
+        mHandle = (int)mDevId;
     }
     else
     {
@@ -721,10 +662,10 @@ int CANBus::autoEnumerate( const modelSysPref &pref )
     int ret;
 
     ret = collectHash();
-    if ( ret != 0 ) return ret;
+    if ( ret != 0 ) { logDbg(); return ret; }
 
     ret = assignIds( pref );
-    if ( ret != 0 ) return ret;
+    if ( ret != 0 ) { logDbg(); return ret; }
 
     return ret;
 }
@@ -821,7 +762,7 @@ logDbg();
     ret = doFrameRead( broadId, frameIds, readBuf, collectFrameSize, frame );
 //sysLog( QString::number(ret), QString::number(__LINE__) );
     if ( ret != frame )
-    { return -1; }
+    { logDbg(); return -1; }
 logDbg();
     //! 4. all frames
     DeviceId *pDeviceId;
@@ -831,7 +772,7 @@ logDbg();
     {
         pDeviceId = new DeviceId();
         if ( NULL == pDeviceId )
-        { return -1; }
+        { logDbg(); return -1; }
 
         //! get hash id
         memcpy( &hashId, (readBuf + i * collectFrameSize) + 2, 4 );

@@ -153,18 +153,23 @@ int InstMgr::probeCanBus()
     QStringList rsrcList;
     if ( m_pMainModel->mSysPref.mPort == MRH_T_PORT )
     {
-        devCount = m_pMainModel->mSysPref.mVisaList.count();
-        rsrcList = m_pMainModel->mSysPref.mVisaList;
+        devCount = m_pMainModel->mSysPref.mVisaLanList.count();
+        rsrcList = m_pMainModel->mSysPref.mVisaLanList;
     }
     else if ( m_pMainModel->mSysPref.mPort == RS232_PORT )
     {
-        devCount = m_pMainModel->mSysPref.mRs232List.count();
-        rsrcList = m_pMainModel->mSysPref.mRs232List;
+        devCount = m_pMainModel->mSysPref.mVisa232List.count();
+        rsrcList = m_pMainModel->mSysPref.mVisa232List;
     }
     else if ( m_pMainModel->mSysPref.mPort == USB_PORT )
     {
-        devCount = m_pMainModel->mSysPref.mUsbList.count();
-        rsrcList = m_pMainModel->mSysPref.mUsbList;
+        devCount = m_pMainModel->mSysPref.mVisaUsbList.count();
+        rsrcList = m_pMainModel->mSysPref.mVisaUsbList;
+    }
+    else if ( m_pMainModel->mSysPref.mPort == MRH_E_PORT )
+    {
+        devCount = m_pMainModel->mSysPref.mVisaEList.count();
+        rsrcList = m_pMainModel->mSysPref.mVisaEList;
     }
     else
     { devCount = m_pMainModel->mSysPref.mDeviceCount; }

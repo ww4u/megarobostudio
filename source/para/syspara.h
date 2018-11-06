@@ -31,22 +31,24 @@ public:
     int mDeviceId;
     int mDeviceCount;
 
-    QString mVisaAddr;      //! lan
-    QStringList mVisaList;
+    QString mVisaLanAddr;   //! lan
+    QStringList mVisaLanList;
 
-    QString mRs232Addr;
-    QStringList mRs232List;
-
-    QString mUsbAddr;
-    QStringList mUsbList;
-
+                            //! usb
+    QString mVisaUsbAddr;
+    QStringList mVisaUsbList;
+                            //! 232
+    QString mVisa232Addr;
+    QStringList mVisa232List;
+                            //! -e
+    QString mVisaEAddr;
+    QStringList mVisaEList;
                             //! uart baud
     int mBaudIndex;
     int mDataWidthIndex;
     int mParityIndex;
     int mStopIndex;
     int mFlowControlIndex;
-
 
     int mVisaTmo;           //! common to each
 

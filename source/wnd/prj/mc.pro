@@ -83,9 +83,6 @@ LIBS += -lvisa32
 DEFINES += NI_VISA
 DEFINES += ARCH_32
 
-INCLUDEPATH += "G:/work/mc/develope/installer"
-LIBS += -lmegacandevice
-
 }
 
 include("../../../prj/config.pri")
@@ -321,7 +318,8 @@ SOURCES += \
     ../../app/appmgr.cpp \
     ../../app/appprocess.cpp \
     ../../widget/mfiledialog.cpp \
-    ../../com/scpiassist.cpp
+    ../../com/scpiassist.cpp \
+    ../ui/rsrcsearchthread.cpp
 
 
 HEADERS += \
@@ -507,7 +505,8 @@ HEADERS += \
     ../../app/appmgr.h \
     ../../app/appprocess.h \
     ../../widget/mfiledialog.h \
-    ../../com/scpiassist.h
+    ../../com/scpiassist.h \
+    ../ui/rsrcsearchthread.h
 
 FORMS += \
         ../ui/mainwindow.ui \

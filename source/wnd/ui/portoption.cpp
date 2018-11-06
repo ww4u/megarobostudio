@@ -14,11 +14,15 @@ PortOption::PortOption(QWidget *parent) :
     ui->setupUi(this);
 
     mbVerifyAble = false;
+    mbIndicatAble = false;
     mPortType = 0;
 
     //! slot
     on_cmbRsrcList_editTextChanged( ui->cmbRsrcList->currentText() );
     on_listMRTs_currentRowChanged( ui->listMRTs->currentRow() );
+
+    connect( &mSearchThread, SIGNAL(finished()),
+             this, SLOT(slot_search_finished()) );
 }
 
 PortOption::~PortOption()
@@ -26,8 +30,25 @@ PortOption::~PortOption()
     delete ui;
 }
 
-void PortOption::setPortType( int tpe )
-{ mPortType = tpe; }
+void PortOption::slot_search_finished()
+{
+    ui->btnScan->setEnabled( true );
+
+    QStringList retList;
+    retList = mSearchThread.searchList();
+
+    //! end
+    ui->cmbRsrcList->clear();
+    ui->cmbRsrcList->addItems( retList );
+
+    QApplication::setOverrideCursor(QCursor(Qt::ArrowCursor));
+}
+
+void PortOption::setPortType( int tpe, const QString &rsrcPattern )
+{
+    mPortType = tpe;
+    mRsrcPatt = rsrcPattern;
+}
 int PortOption::portType()
 { return mPortType; }
 
@@ -38,6 +59,11 @@ void PortOption::setValidateEnable( bool b )
 }
 bool PortOption::validateEnable()
 { return ui->btnVerify_2->isEnabled(); }
+
+void PortOption::setIndicatorAble( bool b )
+{ mbIndicatAble = b; }
+bool PortOption::indicatorAble()
+{ return mbIndicatAble; }
 
 void PortOption::setCurrentRsrc( const QString &rsrc )
 {
@@ -73,23 +99,34 @@ void PortOption::setTmo( int tmoms )
 int PortOption::tmo()
 { return ui->spinVisaTmo->value(); }
 
-//! ASRL[0-9]*::?*INSTR
-//! USB?*INSTR
+#include "../../bus/canapi.h"
+
 void PortOption::searchRsrc( const QString &rsrcPattern,
                              QStringList &rsrcList )
 {
 #ifdef NI_VISA    
     if ( mPortType != 0 )
     {
-        char descs[1024];
+        char descs[1024]={0};
         int ret;
-        //! find the device list
-        ret = VCI_FindDevice( mPortType, descs, sizeof(descs)-1 );
-        if ( ret == 0 )
-        { rsrcList.clear(); }
+
+        MegaDevice::CANApi api;
+
+        if ( api.load( "megacandevice.dll", mPortType ) )
+        { logDbg()<<mPortType; }
         else
+        {logDbg()<<mPortType;
+            return;
+        }
+
+        ret = api.find( mPortType, descs, sizeof(descs)-1 );
+
+        api.unload();
+
+        if ( ret != 0 )
         {
             QString rawStr = QString( descs );
+            logDbg()<<rawStr;
             rsrcList = rawStr.split( ';', QString::SkipEmptyParts );
         }
     }
@@ -176,11 +213,13 @@ void PortOption::on_btnVerify_2_clicked()
     {
         MegaMessageBox::information( this, tr("Info"), tr("Connect success ") + strIdn );
         ui->btnAddT->setEnabled( true );
+        ui->tolIndicator->setEnabled( true && mbIndicatAble );
     }
     else
     {
         MegaMessageBox::warning( this, tr("Info"), tr("Connect fail") );
         ui->btnAddT->setEnabled( false );
+        ui->tolIndicator->setEnabled( false && mbIndicatAble );
     }
     QApplication::restoreOverrideCursor();
 }
@@ -217,10 +256,27 @@ void PortOption::on_cmbRsrcList_editTextChanged(const QString &arg1)
 {
     ui->btnVerify_2->setEnabled( arg1.length() > 0 && mbVerifyAble );
     ui->btnAddT->setEnabled( arg1.length() > 0 );
+    ui->tolIndicator->setEnabled( arg1.length() > 0 && mbIndicatAble );
 }
 
 void PortOption::on_listMRTs_currentRowChanged(int currentRow)
 {
     ui->btnRemove->setEnabled( currentRow >= 0 );
     ui->btnClear->setEnabled( ui->listMRTs->count() > 0 );
+}
+
+void PortOption::on_btnScan_clicked()
+{
+    ui->btnScan->setEnabled( false );
+
+    mSearchThread.setOption( mPortType, mRsrcPatt );
+
+    mSearchThread.start();
+
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+}
+
+void PortOption::on_tolIndicator_clicked(bool checked)
+{
+    //! \todo indicator
 }

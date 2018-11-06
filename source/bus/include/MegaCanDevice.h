@@ -121,29 +121,135 @@ typedef struct _tagChgDesIPAndPort
 //#define CALL  __stdcall 
 //#define CALL  __cdecl
 #define CALL
-MEGACANDEVICE_API unsigned int  CALL VCI_OpenDevice(unsigned int DeviceType, unsigned int DeviceInd, unsigned int Reserved);
-MEGACANDEVICE_API unsigned int  CALL VCI_CloseDevice(unsigned int DeviceType, unsigned int DeviceInd);
 
-MEGACANDEVICE_API unsigned int  CALL VCI_InitCAN(unsigned int DeviceType, unsigned int DeviceInd, unsigned int CANInd, P_INIT_CONFIG pInitConfig);
+/***********************************************************************************************
+* 函 数 名：VCI_FindDevice
+* 功    能：查找设备
+* 输入参数： DeviceType: 设备类型
+*            desc_len  : 设备描述符长度
+* 输出参数： desc[]    : 设备描述符；设备描述符用 ";" 隔开
+* 返 回 值：返回值 = 0，没有设备； 大于0，查找到的资源的个数
+* 说    明：
+* ********************************************************************************************/
+unsigned int VCI_FindDevice(unsigned int DeviceType, char desc[], int desc_len);
 
-MEGACANDEVICE_API unsigned int  CALL VCI_ReadBoardInfo(unsigned int DeviceType, unsigned int DeviceInd, P_BOARD_INFO pInfo);
-MEGACANDEVICE_API unsigned int  CALL VCI_ReadErrInfo(unsigned int DeviceType, unsigned int DeviceInd, unsigned int CANInd, P_ERR_INFO pErrInfo);
-MEGACANDEVICE_API unsigned int  CALL VCI_ReadCANStatus(unsigned int DeviceType, unsigned int DeviceInd, unsigned int CANInd, P_CAN_STATUS pCANStatus);
+/***********************************************************************************************
+* 函 数 名：VCI_OpenDevice
+* 功    能：打开设备
+* 输入参数： DeviceType: 设备类型
+*       desc[]    : 设备描述符
+* 输出参数： instr     : 设备句柄
+* 返 回 值：返回值 = 0，打开成功；否则打开失败
+* 说    明：
+* ********************************************************************************************/
+unsigned int VCI_OpenDevice(unsigned int DeviceType, char desc[], unsigned int* instr);
 
-MEGACANDEVICE_API unsigned int  CALL VCI_GetReference(unsigned int DeviceType, unsigned int DeviceInd, unsigned int CANInd, unsigned int RefType, void* pData);
-MEGACANDEVICE_API unsigned int  CALL VCI_SetReference(unsigned int DeviceType, unsigned int DeviceInd, unsigned int CANInd, unsigned int RefType, void* pData);
+/***********************************************************************************************
+* 函 数 名：VCI_CloseDevice
+* 功    能：关闭设备
+* 输入参数： DeviceType: 设备类型
+*            handle    : 需要关闭的句柄
+* 输出参数：
+* 返 回 值：返回值 = 0，关闭成功；否则关闭失败
+* 说    明：
+* ********************************************************************************************/
+unsigned int VCI_CloseDevice(unsigned int DeviceType, unsigned int handle);
 
- MEGACANDEVICE_API unsigned int  CALL VCI_GetReceiveNum(unsigned int DeviceType, unsigned int DeviceInd, unsigned int CANInd);
-MEGACANDEVICE_API unsigned int  CALL VCI_ClearBuffer(unsigned int DeviceType, unsigned int DeviceInd, unsigned int CANInd);
+/***********************************************************************************************
+* 函 数 名：VCI_InitCAN
+* 功    能：初始化can
+* 输入参数： DeviceType  : 设备类型
+*            instr       : 设备资源句柄
+*			 CANInd      : can id
+*            pInitConfig : can 配置信息
+* 输出参数：
+* 返 回 值：返回值 = 0，初始化成功；否则初始化失败
+* 说    明：
+* ********************************************************************************************/
+unsigned int VCI_InitCAN(unsigned int DeviceType, unsigned int instr, unsigned int CANInd, P_INIT_CONFIG pInitConfig);
 
-MEGACANDEVICE_API unsigned int  CALL VCI_StartCAN(unsigned int DeviceType, unsigned int DeviceInd, unsigned int CANInd);
-MEGACANDEVICE_API unsigned int  CALL VCI_ResetCAN(unsigned int DeviceType, unsigned int DeviceInd, unsigned int CANInd);
+/***********************************************************************************************
+* 函 数 名：VCI_ClearBuffer
+* 功    能：清空设备缓存
+* 输入参数： DeviceType  : 设备类型
+*            instr       : 设备资源句柄
+*			 CANInd      : can id
+* 输出参数：
+* 返 回 值：返回值 = 0，成功；否则失败
+* 说    明：
+* ********************************************************************************************/
+unsigned int  VCI_ClearBuffer(unsigned int DeviceType, unsigned int instr, unsigned int CANInd);
 
-MEGACANDEVICE_API unsigned int  CALL VCI_Transmit(unsigned int DeviceType, unsigned int DeviceInd, unsigned int CANInd, P_CAN_OBJ pSend, unsigned int Len);
-MEGACANDEVICE_API unsigned int  CALL VCI_Receive(unsigned int DeviceType, unsigned int DeviceInd, unsigned int CANInd, P_CAN_OBJ pReceive, unsigned int Len, int WaitTime);
 
-MEGACANDEVICE_API unsigned int CALL VCI_Write(unsigned int DeviceType, unsigned int DeviceInd, char * data, unsigned int Len);
-MEGACANDEVICE_API unsigned int CALL VCI_Read(unsigned int DeviceType, unsigned int DeviceInd, char* pReceive, unsigned int Length, int WaitTime);
+/***********************************************************************************************
+* 函 数 名：VCI_ResetCAN
+* 功    能：复位can
+* 输入参数： DeviceType  : 设备类型
+*            instr       : 设备资源句柄
+*			 CANInd      : can id
+* 输出参数：
+* 返 回 值：返回值 = 0，成功；否则失败
+* 说    明：
+* ********************************************************************************************/
+MEGACANDEVICE_API unsigned int  CALL VCI_ResetCAN(unsigned int DeviceType, unsigned int instr, unsigned int CANInd);
 
-MEGACANDEVICE_API unsigned int CALL VCI_FindDevice(unsigned int DeviceType, char* desc, int desc_len );
+
+/***********************************************************************************************
+* 函 数 名：VCI_Transmit
+* 功    能：传输数据
+* 输入参数： DeviceType  : 设备类型
+*            instr       : 设备资源句柄
+*			 CANInd      : can id
+*			 pSend       : 需要发送的can帧
+*			 Len		 : 要发送的帧结构体数组的长度（发送的帧数量）。 最大1000
+* 输出参数：
+* 返 回 值：返回值 = 0，表示操作失败；否则为发送的CAN帧数
+* 说    明：MRH-T USB 暂时只支持单个can帧发送
+* ********************************************************************************************/
+MEGACANDEVICE_API unsigned int  CALL VCI_Transmit(unsigned int DeviceType, unsigned int instr, unsigned int CANInd, P_CAN_OBJ pSend, unsigned int Len);
+
+
+/***********************************************************************************************
+* 函 数 名：VCI_Receive
+* 功    能：回读数据
+* 输入参数： DeviceType  : 设备类型
+*            instr       : 设备资源句柄
+*			 CANInd      : can id
+*			 pReceive    : 接收can帧的缓存区
+*			 Len		 : 接收can帧缓存区的长度
+*			 WaitTime    : 超时时间（只支持MRH-E配置超时）
+* 输出参数：
+* 返 回 值：返回值 = 0，表示操作失败；否则为发送的CAN帧数
+* 说    明：
+* ********************************************************************************************/
+MEGACANDEVICE_API unsigned int  CALL VCI_Receive(unsigned int DeviceType, unsigned int instr, unsigned int CANInd, P_CAN_OBJ pReceive, unsigned int Len, int WaitTime);
+
+
+/***********************************************************************************************
+* 函 数 名：VCI_Write
+* 功    能：发送数据
+* 输入参数： DeviceType  : 设备类型
+*            instr       : 设备资源句柄
+*			 data        : 所发送的数据
+*			 Len		 : 发送的数据长度
+* 输出参数：
+* 返 回 值：返回值 = 0，表示发送成功；否则为发送失败
+* 说    明：
+* ********************************************************************************************/
+MEGACANDEVICE_API unsigned int CALL VCI_Write(unsigned int DeviceType, unsigned int instr, char * data, unsigned int Len);
+
+/***********************************************************************************************
+* 函 数 名：VCI_Read
+* 功    能：回读数据
+* 输入参数： DeviceType  : 设备类型
+*            instr       : 设备资源句柄
+*			 pReceive    : 回读数据缓存区
+*			 Length		 : 回读数据缓存区长度
+*            WaitTime    : 超时时间（只支持MRH-E配置超时）
+* 输出参数：
+* 返 回 值：返回值 = 0，表示发送成功；成功：返回回读数据长度
+* 说    明：
+* ********************************************************************************************/
+MEGACANDEVICE_API unsigned int CALL VCI_Read(unsigned int DeviceType, unsigned int instr, char* pReceive, unsigned int Length, int WaitTime);
+
 #endif // MEGA_CAN_DEVICE_H_

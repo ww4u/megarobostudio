@@ -65,28 +65,17 @@ bool CANApi::load3RdApi( int portId )
     if ( !receive )
     { logDbg();return false; }
 
-    if ( portId == 0
-         || portId == 2 )
-    {
-        write = (p_VCI_Write)mDll.resolve("VCI_Write");
-        if ( !write )
-        { logDbg();return false; }
-
-        read = (p_VCI_Read)mDll.resolve("VCI_Read");
-        if ( !read )
-        { logDbg();return false; }
-    }
 
     return true;
 }
 bool CANApi::loadMegaApi( int portId )
 {
-    findExt = (p_VCI_FindDeviceExt)mDll.resolve("VCI_FindDevice");
+    find = (p_VCI_FindDevice)mDll.resolve("VCI_FindDevice");
     if ( !find )
     { logDbg();return false; }
 
     openExt = (p_VCI_OpenDeviceExt)mDll.resolve("VCI_OpenDevice");
-    if ( !open )
+    if ( !openExt )
     { logDbg();return false; }
 
     close = (p_VCI_CloseDevice)mDll.resolve("VCI_CloseDevice");

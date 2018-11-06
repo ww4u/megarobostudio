@@ -69,7 +69,7 @@ protected:
     int mPId;             //! productId: 0 -- mega can
                           //! 1 -- usb can ii
                           //!
-    int mDevId;           //! device id -- device handle
+    unsigned int mDevId;           //! device id -- device handle
     int mDefRM;
 
     QString mName;

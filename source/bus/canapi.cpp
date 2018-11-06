@@ -10,7 +10,6 @@ CANApi::CANApi()
     open = NULL;
     close = NULL;
 
-    findExt = NULL;
     openExt = NULL;
 
     init = NULL;

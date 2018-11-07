@@ -12,6 +12,9 @@ public:
     sceneWidget( QWidget *parent = 0 );
     ~sceneWidget();
 
+protected:
+    virtual void paintEvent( QPaintEvent *evt );
+
 Q_SIGNALS:
     void editingFinished( sceneWidget *pWig, const QString &name );
 

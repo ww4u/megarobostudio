@@ -30,6 +30,26 @@ sceneWidget::~sceneWidget()
     }
 }
 
+void sceneWidget::paintEvent( QPaintEvent *evt )
+{
+    if ( mbSelected )
+    {}
+    else
+    { return QLabel::paintEvent( evt ); }
+
+
+    QLabel::paintEvent( evt );
+
+    //! draw border
+    QPainter painter( this );
+
+    QPen pen( Qt::DashLine );
+    pen.setWidth( 2 );
+    pen.setColor( Qt::blue );
+    painter.setPen( pen );
+    painter.drawRect( rect() );
+}
+
 void sceneWidget::slot_editingFinished()
 {
     emit editingFinished( this, mpLabel->text() );
@@ -76,7 +96,11 @@ mcModelObj *sceneWidget::getModelObj()
 { return m_pModel; }
 
 void sceneWidget::setSelected( bool b )
-{ mbSelected = b; }
+{
+    mbSelected = b;
+
+    update();
+}
 bool sceneWidget::getSelected()
 { return mbSelected; }
 

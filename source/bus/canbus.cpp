@@ -107,13 +107,14 @@ int CANBus::open( const modelSysPref &pref,
         return -1;
     }
 
+#ifdef ARCH_32
     //! open
     int ret;
     if ( mPId == 0 || mPId == 2 || mPId == 6 )
-    {logDbg()<<mDevType<<desc;
+    {
         ret = mApi.openExt( mDevType, desc.toLatin1().data(), &mDevId );
         if ( ret != 0 )
-        {logDbg()<<ret;
+        {
             close();
             return -2;
         }
@@ -121,6 +122,7 @@ int CANBus::open( const modelSysPref &pref,
         mHandle = (int)mDevId;
     }
     else
+#endif
     {
         //! open
         mHandle = mApi.open( mDevType, mDevId, mCanId );

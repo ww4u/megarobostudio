@@ -100,15 +100,6 @@
 <file>image/logo/full.png</file>
 <file>image/logo/m.png</file>
 
-<file>image/joint/mrx-t4.png</file>
-<file>image/joint/mrx-h2.png</file>
-<file>image/joint/mrx-h2z.png</file>
-<file>image/joint/mrx-h2m.png</file>
-<file>image/joint/mrx-as.png</file>
-<file>image/joint/mrx-dt.png</file>
-
-<file>image/joint/mrx-inj2.png</file>
-<file>image/joint/igus-drylin.png</file>
 
 <file>image/joint/mrx-h2_geo.png</file>
 <file>image/joint/mrx-h2z_geo.png</file>
@@ -118,8 +109,6 @@
 <file>image/joint/t4geo.png</file>
 <file>image/joint/h2geo.png</file>
 <file>image/joint/h2zgeo.png</file>
-<file>image/joint/motor.png</file>
-
 <file>image/joint/igus-drylingeo.png</file>
 
 <file>image/slice/down_arrow.png</file>

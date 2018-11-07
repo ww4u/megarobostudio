@@ -17,8 +17,10 @@ roboScene::roboScene(QWidget *parent) :
 
     buildConnection();
 
-    m_pLayout = new FlowLayout( this );
+    m_pLayout = new FlowLayout( ui->scrollArea );
     Q_ASSERT( NULL != m_pLayout );
+
+//    m_pLayout->setSizeConstraint( QLayout::SetMinAndMaxSize );
 }
 
 roboScene::~roboScene()
@@ -235,8 +237,9 @@ sceneWidget * roboScene::addRobot( mcModelObj *pBase )
 
     //! change type
     pBase->setType( mcModelObj::model_scene_variable );
-    sceneWidget *pItem = new sceneWidget( ui->scrollArea );   //! has parent, no need to delete
+    sceneWidget *pItem = new sceneWidget( /*ui->scrollArea*/ );   //! has parent, no need to delete
     Q_ASSERT( NULL != pItem );
+    m_pLayout->addWidget( pItem );
 
     pItem->setModelObj( pBase );                    //! attach robot
 

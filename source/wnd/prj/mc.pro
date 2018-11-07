@@ -23,7 +23,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-VERSION = 0.1.0.20
+VERSION = 0.1.0.21
 
 OBJECTS_DIR = ./obj
 MOC_DIR = ./obj
@@ -32,17 +32,6 @@ INCLUDEPATH += $$PWD/../ui
 
 INCLUDEPATH += $$PWD/../../scpi-parser/libscpi/inc
 INCLUDEPATH += $$PWD/../../widget
-
-## for pvt path
-#INCLUDEPATH += "D:/Program Files (x86)/IAR Systems/Embedded Workbench 7.5/arm/CMSIS/Include"
-#INCLUDEPATH += $$PWD/../../arith/pvt/GelgoogProject/APP/Sources/Common
-#INCLUDEPATH += $$PWD/../../arith/pvt/GelgoogProject/APP/Sources
-#INCLUDEPATH += $$PWD/../../arith/pvt/GelgoogProject/BSP/BSP
-
-#INCLUDEPATH += $$PWD/../../arith/pvt/GelgoogProject/BSP/BSP
-#INCLUDEPATH += $$PWD/../../arith/pvt/GelgoogProject/BSP/HardwareStdlib/CMSIS
-#INCLUDEPATH += $$PWD/../../arith/pvt/GelgoogProject/BSP/HardwareStdlib/Source/STM32F4xx_StdPeriph_Driver/inc
-
 
 DEFINES += ARM_MATH_CM4
 DEFINES += STM32F427_437xx USE_STDPERIPH_DRIVER
@@ -506,7 +495,8 @@ HEADERS += \
     ../../app/appprocess.h \
     ../../widget/mfiledialog.h \
     ../../com/scpiassist.h \
-    ../ui/rsrcsearchthread.h
+    ../ui/rsrcsearchthread.h \
+    ../main_help.h
 
 FORMS += \
         ../ui/mainwindow.ui \
@@ -618,7 +608,7 @@ FORMS += \
     ../../widget/mfiledialog.ui
 
 
-RESOURCES = ../res/res.qrc
+#RESOURCES = ../res/res.qrc
 
 RC_ICONS = ../res/image/logo/megarobo.ico
 

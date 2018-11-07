@@ -19,7 +19,6 @@
      <property name="widgetResizable">
       <bool>true</bool>
      </property>
-
     </widget>
    </item>
   </layout>

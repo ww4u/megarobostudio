@@ -585,3 +585,8 @@ void sysPref::on_btnFont_clicked()
         ui->labelFont->setText( m_pPref->mFontFamily + ":" + QString::number( m_pPref->mPointSize) );
     }
 }
+#include "../main_help.h"
+void sysPref::on_cmbStyle_currentIndexChanged(int index)
+{
+//    CommonHelper::selectStyle( index );
+}

@@ -2,16 +2,18 @@
 #include <QApplication>
 #include "./ui/notice.h"
 #include "../com/comassist.h"
-class CommonHelper
-{
-public:
-    static void setStyle(const QString &style) {
-        QFile qss(style);
-        qss.open(QFile::ReadOnly);
-        qApp->setStyleSheet(qss.readAll());
-        qss.close();
-    }
-};
+
+#include "main_help.h"
+//class CommonHelper
+//{
+//public:
+//    static void setStyle(const QString &style) {
+//        QFile qss(style);
+//        qss.open(QFile::ReadOnly);
+//        qApp->setStyleSheet(qss.readAll());
+//        qss.close();
+//    }
+//};
 
 #include "main_dbg.cpp"
 
@@ -96,20 +98,23 @@ int main(int argc, char *argv[])
                                         QObject::tr("language loss"));
             }
         }
-        if ( pref.mStyleIndex != 0 )
-        {
-            //! style
-            CommonHelper::setStyle( a.applicationDirPath() + "/style" + "/mega.qss" );
 
-            QResource::registerResource( a.applicationDirPath() + "/style" + "/res.rcc" );
-        }
-        else
-        {
-            //! style
-            CommonHelper::setStyle( a.applicationDirPath() + "/style" + "/classic.qss" );
+        CommonHelper::selectStyle( pref.mStyleIndex );
 
-            QResource::registerResource( a.applicationDirPath() + "/style" + "/black.rcc" );
-        }
+//        if ( pref.mStyleIndex != 0 )
+//        {
+//            //! style
+//            CommonHelper::setStyle( a.applicationDirPath() + "/style" + "/mega.qss" );
+
+//            QResource::registerResource( a.applicationDirPath() + "/style" + "/res.rcc" );
+//        }
+//        else
+//        {
+//            //! style
+//            CommonHelper::setStyle( a.applicationDirPath() + "/style" + "/classic.qss" );
+
+//            QResource::registerResource( a.applicationDirPath() + "/style" + "/black.rcc" );
+//        }
     }
 
     //! notice

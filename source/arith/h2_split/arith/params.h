@@ -15,5 +15,5 @@
 /// 4:posIn -- 逆解为输入的末端点，正解为关节角度， 5：vin -- 正解为0 逆解为末端速度，6:len -- 求解点的个数，7：mode --求解模式 0为正解 ，1为逆解
 /// 8:movementMode 0:旋转运动，1：直线运动
 /// 输出参数：res-- 求解的返回值
-extern "C" __declspec(dllexport) int SolveStructureKinematics(double* armLength, int* inputParam, double* P0, double* posIn, double*vIn, double* tIn, int len, double* res);
+/*extern "C" __declspec(dllexport)*/ int SolveStructureKinematics(double* armLength, int* inputParam, double* P0, double* posIn, double*vIn, double* tIn, int len, double* res);
 

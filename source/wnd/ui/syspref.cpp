@@ -439,11 +439,15 @@ void sysPref::on_cmbPort_currentIndexChanged(const QString &arg1)
 
     if ( str_is( arg1, port_can_mrh_e )  )
     {
-         ui->labelCanPic->setPixmap( QPixmap(QString::fromUtf8(":/res/image/megacan.png")) );
+        ui->labelCanPic->setPixmap( QPixmap(QString::fromUtf8(":/res/image/megacan.png")) );
 
-         ui->tabWidget_2->insertTab( 0, m_pESetting, QString( tr("Setting") ) );
+#ifdef ARCH_32
+        ui->tabWidget_2->insertTab( 0, m_pESetting, QString( tr("Setting") ) );
+#else
+        ui->tabWidget_2->insertTab( 0, m_pCANSetting, QString( tr("Setting") ) );
+#endif
 
-         ui->gpAutoCanId->setVisible( true );
+        ui->gpAutoCanId->setVisible( true );
     }
 
     else if ( str_is( arg1, port_usb_ii )  )
@@ -585,8 +589,4 @@ void sysPref::on_btnFont_clicked()
         ui->labelFont->setText( m_pPref->mFontFamily + ":" + QString::number( m_pPref->mPointSize) );
     }
 }
-#include "../main_help.h"
-void sysPref::on_cmbStyle_currentIndexChanged(int index)
-{
-//    CommonHelper::selectStyle( index );
-}
+

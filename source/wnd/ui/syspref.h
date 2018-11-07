@@ -87,8 +87,6 @@ private slots:
 
     void on_btnFont_clicked();
 
-    void on_cmbStyle_currentIndexChanged(int index);
-
 private:
     Ui::sysPref *ui;
     QWidget *m_pCANSetting, *m_pMRHTSetting;

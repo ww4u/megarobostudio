@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>489</width>
+    <width>497</width>
     <height>537</height>
    </rect>
   </property>
@@ -142,7 +142,7 @@
             <item row="5" column="5">
              <widget class="QCheckBox" name="chkInvWrist">
               <property name="enabled">
-               <bool>false</bool>
+               <bool>true</bool>
               </property>
               <property name="text">
                <string/>
@@ -159,7 +159,7 @@
             <item row="2" column="5">
              <widget class="QCheckBox" name="chkInvBase">
               <property name="enabled">
-               <bool>false</bool>
+               <bool>true</bool>
               </property>
               <property name="text">
                <string/>
@@ -196,7 +196,7 @@
             <item row="3" column="5">
              <widget class="QCheckBox" name="chkInvBA">
               <property name="enabled">
-               <bool>false</bool>
+               <bool>true</bool>
               </property>
               <property name="text">
                <string/>
@@ -223,7 +223,7 @@
             <item row="4" column="5">
              <widget class="QCheckBox" name="chkInvSA">
               <property name="enabled">
-               <bool>false</bool>
+               <bool>true</bool>
               </property>
               <property name="text">
                <string/>
@@ -443,7 +443,7 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>485</width>
+           <width>493</width>
            <height>72</height>
           </rect>
          </property>

@@ -346,7 +346,7 @@ int CANBus::doWrite( byte *pBuf, int len )
     IBus::lock();
     int ret = mApi.write( mDevType, mDevId, (char*)pBuf, len );
     IBus::unlock();
-    if ( ret != 1 )
+    if ( ret != 0 )
     { return -2; }
 
     return 0;

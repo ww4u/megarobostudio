@@ -86,6 +86,36 @@ int robotH2::preMove( QList<H2KeyPoint> &curve,
     return ret;
 }
 
+bool robotH2::checkZeroValid()
+{
+    int ax;
+    MegaDevice::deviceMRQ *pMrq;
+
+    //! get ax pos
+    quint16 dio, subBits;
+    for ( int jId = 0; jId < axes(); jId++ )
+    {
+        pMrq = jointDevice( jId, &ax );
+        Q_ASSERT( NULL != pMrq );
+
+        //! get the dio
+        if ( 0 == pMrq->getSYSTEM_DIOSTATE( &dio ) )
+        {}
+        else
+        {
+            sysError( QObject::tr("Invalid init"), QString::number( dio, 16) );
+            return false;
+        }
+
+        //! get the pos
+        subBits = ( dio >> (4 * ax) ) & 0x03;
+        if ( subBits != 3 )
+        { return false; }
+    }
+
+    return true;
+}
+
 int robotH2::goZero( const tpvRegion &region,
                      int jointId, bool bCcw )
 {
@@ -221,6 +251,16 @@ int robotH2::getPOSE( float pos[] )
 int robotH2::zeroAxesTask( void *pArg )
 {
     Q_ASSERT( NULL != pArg );
+
+    //! check valid
+    //! assure the pos is not zero
+    if ( checkZeroValid() )
+    {}
+    else
+    {
+        sysError( QObject::tr("Invlaid init pos") );
+        return -1;
+    }
 
     tpvRegion region;
     int ret;
@@ -416,13 +456,15 @@ int robotH2::angle( int jId, float &fAng )
     pMrq = jointDevice( jId, &ax );
     Q_ASSERT( NULL != pMrq );
 
-    int abcCount;
-    int ret = pMrq->getMOTION_ABCOUNT( ax, &abcCount );
-    if ( ret != 0 )
-    { return -1; }
+//    int abcCount;
+//    int ret = pMrq->getMOTION_ABCOUNT( ax, &abcCount );
+//    if ( ret != 0 )
+//    { return -1; }
 
     //! line -> angle
-    fAng = abcCount * 360.0f/mLines * mEncoderDirs.at( jId );
+//    fAng = abcCount * 360.0f/mLines *
+
+    fAng = pMrq->getIncAngle( ax ) * mEncoderDirs.at( jId );
 
     return 0;
 }
@@ -456,13 +498,12 @@ int robotH2::pose( float &x, float &y )
     //! invert x
 //    x = -x;
 //    y = -y;
-
     //! coord
     H2KeyPoint keyP;
-    keyP.x = x;
+    keyP.x = x;logDbg()<<x<<y;
     keyP.y = y;
     coordIRotate( keyP );
-    x = keyP.x;
+    x = keyP.x;logDbg()<<keyP.x<<keyP.y;
     y = keyP.y;
 
     return ret;

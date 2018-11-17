@@ -131,6 +131,8 @@ void roboProp::setupUi( int id )
               || VRobot::robot_h2z == id
               )
     {
+        m_pSketch = new_widget( RoboSketch, ":/res/image/icon2/settings_light.png", tr("Icon") );
+        m_pSketch->setSketch( ":/res/image/joint/mrx-h2_geo.png");
         m_pH2Pref = new_widget( H2Pref, ":/res/image/icon2/settings_light.png", tr("Zero") );
         m_pH2Config = new_widget( H2Config, ":/res/image/icon2/settings_light.png", tr("Pref") );
     }

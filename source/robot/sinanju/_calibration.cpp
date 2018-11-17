@@ -13,12 +13,12 @@ int robotSinanju::goFactory( const tpvRegion &region )
         aimAngles.append( mJointFactoryList.at(i) + mInitAngles.at( i ) );
     }
 
-    return toAimSession( region, aimAngles, true );
+    return toAimSession( region, aimAngles, mJointFactorySeperateList );
 }
 
 int robotSinanju::goZero( const tpvRegion &region )
 {
-    return toAimSession( region, mInitAngles );
+    return toAimSession( region, mInitAngles, mSeperateAngles );
 }
 
 int robotSinanju::goZero( const tpvRegion &region,
@@ -43,8 +43,10 @@ int robotSinanju::goZero( const tpvRegion &region,
         double angleZero = mInitAngles.at( jointId );
         float angleNow = pMrq->getAbsAngle( subAx );
 
+        //! deduce
         float deltaAngle;
-        deltaAngle = comAssist::diffAngle( angleNow, angleZero, mAngleDir.at(jointId) );
+        deltaAngle = deduceAngle( angleNow, angleZero,mSeperateAngles.at( jointId),
+                                  mAngleDir.at( jointId ) );
 
         sysLog( QString::number(deltaAngle) );
         Q_ASSERT( mZeroSpeed > 0 );
@@ -120,6 +122,47 @@ int  robotSinanju::setZero( int jointTabId, float zero )
     return pMrq->setEncoderZero( subAx, zero );
 }
 
+int robotSinanju::align( const tpvRegion &region )
+{
+    //! angle1 + angle2 + angle3 = 0
+    float angles[4], dAngles[4];
+
+    if ( nowAngle( angles ) != 0 )
+    { return -1; }
+
+    //! delta angles
+    for ( int i = 1; i < 4; i++ )
+    {
+        dAngles[i] = toDeltaAngle( i, angles[i] );
+    }
+
+    //! dstAngle
+    float angle3 = -( dAngles[1] + dAngles[2] );
+    float dAngle3 = dAngles[3] - angle3;
+    logDbg()<<dAngles[1]<<dAngles[2]<<angle3<<dAngle3;
+
+    dAngle3 = comAssist::normalizeDegreeN180_180( dAngle3 );
+
+    //! device
+    MegaDevice::deviceMRQ *pMrq;
+    int subAx;
+
+    pMrq = jointDevice( region.axes(), &subAx );
+    Q_ASSERT( NULL != pMrq );
+
+    tpvRegion localRegion;
+    localRegion = region;
+    localRegion.setAx( subAx );
+
+    //! now rotate
+    if ( mAngleDir.at( region.axes() ) )
+    { pMrq->rotate( localRegion, qAbs(dAngle3)/mZeroSpeed,dAngle3  ); }
+    else
+    { pMrq->rotate( localRegion, qAbs(dAngle3)/mZeroSpeed ,-dAngle3  ); }
+
+    return 0;
+}
+
 int robotSinanju::getPOSE( float pos[] )
 {
     int ret;
@@ -147,6 +190,23 @@ float robotSinanju::toDeltaAngle(int jointId, float angle)
     return dAngle;
 }
 
+float robotSinanju::deduceAngle( float fNow, float fAim, float fSep, bool dir )
+{
+    //! normalize to [0~360)
+    float deltaAngle;
+    deltaAngle = comAssist::normalizeDegree360( fNow - fAim );
+
+    //! select the other
+    if ( deltaAngle > fSep )
+    { deltaAngle = deltaAngle - 360; }
+    else
+    {  }
+
+    deltaAngle *= dir ? -1 : 1;
+
+    return deltaAngle;
+}
+
 int robotSinanju::zeroAxesTask( void *pArg )
 {
     int ret;
@@ -156,7 +216,7 @@ int robotSinanju::zeroAxesTask( void *pArg )
     //! to zero
     onLine();
 
-    ret = toAim( pZArg->mRegion, pZArg->mAimAngles, pZArg->mbStick );
+    ret = toAim( pZArg->mRegion, pZArg->mAimAngles, pZArg->mSepAngles );
     if ( ret != 0 )
     { return ret; }
 
@@ -169,7 +229,7 @@ int robotSinanju::zeroAxesTask( void *pArg )
     {
         onLine();
 
-        ret = toAimd( pZArg->mRegion, pZArg->mAimAngles );
+        ret = toAimd( pZArg->mRegion, pZArg->mAimAngles, pZArg->mSepAngles );
         if ( ret != 0 )
         { return ret; }
 
@@ -183,7 +243,7 @@ int robotSinanju::zeroAxesTask( void *pArg )
 
 int robotSinanju::toAimSession( const tpvRegion &region,
                                 const QList<double> &aimAngles,
-                                bool bStick )
+                                const QList<double> &sepAngles )
 {
     //! new
     RoboTaskRequest *pReq;
@@ -200,7 +260,8 @@ int robotSinanju::toAimSession( const tpvRegion &region,
     pArg->mRegion = region;
 
     pArg->mAimAngles = aimAngles;
-    pArg->mbStick = bStick;
+    pArg->mSepAngles = sepAngles;
+
 
     //! request
     pReq->request( this,
@@ -217,8 +278,8 @@ int robotSinanju::toAimSession( const tpvRegion &region,
 
 int robotSinanju::goX( const tpvRegion &region,
                        const QList<double> &aimAngles,
-                       float handT, float handP, float handV,
-                       bool bStick )
+                       const QList<double> &sepAngles,
+                       float handT, float handP, float handV )
 {
     //! get
     float angles[4];
@@ -229,15 +290,10 @@ int robotSinanju::goX( const tpvRegion &region,
 
     Q_ASSERT( aimAngles.size() >= 4 );
 
+    //! deduce the angle
     for ( int i = 0; i < 4; i++ )
     {
-        distAngles[i] = comAssist::diffAngle(
-                                              angles[i],
-                                              aimAngles.at(i),
-                                              mAngleDir.at(i),
-                                              bStick ? mAngleStickAble.at(i) : false,
-                                              mAngleStickDir.at(i)
-                                            );
+        distAngles[i] = deduceAngle( angles[i], aimAngles.at(i), sepAngles.at(i), mAngleDir.at( i ) );
     }
 
     float maxAngle;
@@ -292,7 +348,7 @@ int robotSinanju::goX( const tpvRegion &region,
 
 int robotSinanju::toAim( const tpvRegion &region,
                          const QList<double> &aimAngles,
-                         bool bStick )
+                         const QList<double> &sepAngles )
 {
     int ret;
 
@@ -322,15 +378,16 @@ int robotSinanju::toAim( const tpvRegion &region,
 
     ret = goX( region,
                aimAngles,
-               handT, handP, handV,
-               bStick );
+               sepAngles,
+               handT, handP, handV );
 
     return ret;
 }
 
 int robotSinanju::toAimd( const tpvRegion &region,
                           const QList<double> &aimAngles,
-                          bool bStick )
+                          const QList<double> &sepAngles
+                           )
 {
     int ret;
 
@@ -360,8 +417,8 @@ int robotSinanju::toAimd( const tpvRegion &region,
 
     ret = goX( region,
                aimAngles,
-               handT, handP, handV,
-               bStick );
+               sepAngles,
+               handT, handP, handV );
 
     return ret;
 }

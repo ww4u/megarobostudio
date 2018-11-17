@@ -23,7 +23,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-VERSION = 0.1.0.21
+VERSION = 1.1.0.21
 
 OBJECTS_DIR = ./obj
 MOC_DIR = ./obj
@@ -308,7 +308,9 @@ SOURCES += \
     ../../app/appprocess.cpp \
     ../../widget/mfiledialog.cpp \
     ../../com/scpiassist.cpp \
-    ../ui/rsrcsearchthread.cpp
+    ../ui/rsrcsearchthread.cpp \
+    ../ui/roboview.cpp \
+    ../ui/robosketch.cpp
 
 
 HEADERS += \
@@ -496,7 +498,9 @@ HEADERS += \
     ../../widget/mfiledialog.h \
     ../../com/scpiassist.h \
     ../ui/rsrcsearchthread.h \
-    ../main_help.h
+    ../main_help.h \
+    ../ui/roboview.h \
+    ../ui/robosketch.h
 
 FORMS += \
         ../ui/mainwindow.ui \
@@ -605,7 +609,8 @@ FORMS += \
     ../ui/pagecontrol.ui \
     ../ui/dlghelp.ui \
     ../ui/dlgapp.ui \
-    ../../widget/mfiledialog.ui
+    ../../widget/mfiledialog.ui \
+    ../ui/robosketch.ui
 
 
 #RESOURCES = ../res/res.qrc

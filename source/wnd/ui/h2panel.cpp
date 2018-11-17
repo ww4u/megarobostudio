@@ -2,9 +2,10 @@
 #include "ui_h2panel.h"
 
 H2Panel::H2Panel(mcModel *pModel,
+                 VRobot *pRobo,
                  const QString &roboName,
                  QWidget *parent) :
-    RoboPanel(pModel, roboName, parent),
+    RoboPanel(pModel, pRobo, roboName, parent),
     ui(new Ui::H2Panel)
 
 {

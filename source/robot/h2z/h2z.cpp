@@ -38,7 +38,7 @@ robotH2Z::robotH2Z()
               <<QObject::tr("Z");
 
     mImage = QImage::fromData( _megaimage, sizeof(_megaimage) );
-    setJointPanelAble( true );
+    setJointPanelAble( false );
     setRoboPanelAble( true );
     setMrpAble( true );
 
@@ -54,7 +54,7 @@ robotH2Z::robotH2Z()
     mJointZeroCcw.clear();
     mJointZeroCcw<<false<<false<<false;
 
-    mZeroX = 32.7;
+    mZeroX = 0;
     mZeroY = 0;
 
     mAngleDir.clear();
@@ -81,7 +81,6 @@ robotH2Z::robotH2Z()
     m_pRoboTask = new H2ZTask();
     Q_ASSERT( NULL != m_pRoboTask );
 
-    mLines = 1000;          //! for encoder
     mEncoderDirs.clear();
     mEncoderDirs<<1<<1<<1;
 }

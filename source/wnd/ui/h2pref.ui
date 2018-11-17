@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>398</width>
-    <height>491</height>
+    <height>498</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,6 +20,9 @@
       <string>Zero Config</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_3">
+      <item row="0" column="0">
+       <widget class="PageOption" name="widget" native="true"/>
+      </item>
       <item row="1" column="0" colspan="2">
        <widget class="QGroupBox" name="groupBox_5">
         <property name="title">
@@ -121,9 +124,6 @@
         </layout>
        </widget>
       </item>
-      <item row="0" column="0">
-       <widget class="PageOption" name="widget" native="true"/>
-      </item>
       <item row="2" column="0">
        <widget class="QGroupBox" name="groupBox_4">
         <property name="title">
@@ -171,6 +171,93 @@
        </widget>
       </item>
       <item row="2" column="1">
+       <widget class="QGroupBox" name="groupBox_3">
+        <property name="title">
+         <string>Misc</string>
+        </property>
+        <layout class="QFormLayout" name="formLayout_2">
+         <property name="horizontalSpacing">
+          <number>3</number>
+         </property>
+         <property name="verticalSpacing">
+          <number>3</number>
+         </property>
+         <property name="topMargin">
+          <number>9</number>
+         </property>
+         <property name="rightMargin">
+          <number>3</number>
+         </property>
+         <property name="bottomMargin">
+          <number>3</number>
+         </property>
+         <item row="0" column="0">
+          <widget class="QLabel" name="label_12">
+           <property name="text">
+            <string>Speed</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QDoubleSpinBox" name="spinZeroSpeed">
+           <property name="suffix">
+            <string>/s</string>
+           </property>
+           <property name="minimum">
+            <double>0.000000000000000</double>
+           </property>
+           <property name="maximum">
+            <double>100.000000000000000</double>
+           </property>
+           <property name="value">
+            <double>5.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="label_13">
+           <property name="text">
+            <string>Timeout</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="label_18">
+           <property name="text">
+            <string>Tick</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QDoubleSpinBox" name="spinZeroTmo">
+           <property name="suffix">
+            <string>s</string>
+           </property>
+           <property name="minimum">
+            <double>1.000000000000000</double>
+           </property>
+           <property name="maximum">
+            <double>1000.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QDoubleSpinBox" name="spinZeroTick">
+           <property name="suffix">
+            <string>s</string>
+           </property>
+           <property name="minimum">
+            <double>0.100000000000000</double>
+           </property>
+           <property name="maximum">
+            <double>10.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item row="3" column="0">
        <widget class="QGroupBox" name="gpZGap">
         <property name="title">
          <string>ZGap</string>
@@ -222,139 +309,51 @@
    <item>
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
-      <string>Zero Axes</string>
+      <string>Zero Control</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="2" column="2">
-       <widget class="QPushButton" name="btnZeroZ">
-        <property name="text">
-         <string>Zero</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="2">
-       <widget class="QPushButton" name="btnZeroX">
-        <property name="text">
-         <string>Zero</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="label_2">
-        <property name="text">
-         <string>Y</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="2">
-       <widget class="QPushButton" name="btnZeroY">
-        <property name="text">
-         <string>Zero</string>
-        </property>
-       </widget>
-      </item>
       <item row="0" column="0">
-       <widget class="QLabel" name="label">
+       <widget class="QPushButton" name="btnZeroX">
         <property name="text">
          <string>X</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="labelZ">
+      <item row="0" column="2">
+       <widget class="QPushButton" name="btnZeroZ">
         <property name="text">
          <string>Z</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="1">
-       <widget class="QCheckBox" name="chkCcw">
-        <property name="text">
-         <string>CCW</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QCheckBox" name="chkCcwY">
-        <property name="text">
-         <string>CCW</string>
-        </property>
-       </widget>
-      </item>
       <item row="0" column="1">
-       <widget class="QCheckBox" name="chkCcwX">
+       <widget class="QPushButton" name="btnZeroY">
         <property name="text">
-         <string>CCW</string>
+         <string>Y</string>
         </property>
        </widget>
       </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
-    <widget class="QGroupBox" name="groupBox_2">
-     <property name="title">
-      <string>Zero Body</string>
-     </property>
-     <layout class="QFormLayout" name="formLayout">
-      <item row="0" column="0">
+      <item row="1" column="0" colspan="2">
        <widget class="QPushButton" name="btnZeroBody">
         <property name="text">
-         <string>Zero</string>
+         <string>Home</string>
         </property>
        </widget>
       </item>
+      <item row="0" column="3">
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
      </layout>
-    </widget>
-   </item>
-   <item>
-    <widget class="QScrollArea" name="scrollArea">
-     <property name="frameShadow">
-      <enum>QFrame::Raised</enum>
-     </property>
-     <property name="lineWidth">
-      <number>0</number>
-     </property>
-     <property name="widgetResizable">
-      <bool>true</bool>
-     </property>
-     <widget class="QWidget" name="scrollAreaWidgetContents">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>378</width>
-        <height>69</height>
-       </rect>
-      </property>
-      <layout class="QVBoxLayout" name="verticalLayout_2">
-       <item>
-        <widget class="QLabel" name="label_3">
-         <property name="maximumSize">
-          <size>
-           <width>240</width>
-           <height>150</height>
-          </size>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Plain</enum>
-         </property>
-         <property name="lineWidth">
-          <number>0</number>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="pixmap">
-          <pixmap>:/res/image/joint/mrx-h2_geo.png</pixmap>
-         </property>
-         <property name="scaledContents">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
     </widget>
    </item>
    <item>

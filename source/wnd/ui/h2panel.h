@@ -17,6 +17,7 @@ class H2Panel : public RoboPanel
 
 public:
     explicit H2Panel(mcModel *pModel,
+                     VRobot *pRobo,
                      const QString &roboName,
                      QWidget *parent = 0);
     ~H2Panel();

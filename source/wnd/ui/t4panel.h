@@ -17,6 +17,7 @@ class T4Panel : public RoboPanel
 
 public:
     explicit T4Panel(mcModel *pModel,
+                     VRobot *pRobo,
                      const QString &roboName,
                      QWidget *parent = 0);
     ~T4Panel();

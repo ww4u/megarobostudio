@@ -128,7 +128,7 @@ float comAssist::normalizeDegreeN180_180( float degree[], int n )
 }
 
 float comAssist::diffAngle( float a, float b, bool bCw,
-                            bool bStickAble, bool bStickCcw )
+                            bool bStickAble,bool bStickCcw )
 {
     float distab, distba;
 

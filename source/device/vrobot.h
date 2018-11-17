@@ -222,9 +222,12 @@ public:
                         const QList<int> &jointList,
                         const QList<bool> &ccwList );
 
+
     virtual bool checkZeroValid();
     virtual float getZero( int jointTabId );
     virtual int  setZero( int jointTabId, float val );
+
+    virtual int align( const tpvRegion &region );
 
     virtual int getPOSE( float pos[] ); //! mPOSITION
     virtual float toDeltaAngle( int jointId, float angle );
@@ -328,6 +331,7 @@ public:
     int uartSensors();
 
     QStringList uartSensorList();
+    QStringList uartNameList();
 
     void setAbsEncAlarms( int n );
     int absEncAlarms();
@@ -431,6 +435,7 @@ protected:
     int mAlarms;
 
     QStringList mSensorNameList;
+    QStringList mUartNameList;
 
     int mTrigSrcs;                      //! 5,2
     QList<int> mTrigIdsList;
@@ -484,6 +489,7 @@ public:
 
     QList<bool> mJointCcwMask;          //! ccw for each angle
     QList<bool> mJointZeroCcw;          //! zero ccw for each joint
+    QList<bool> mJointAlignAble;
 
     QList<bool> mAngleDir;              //! true: +
 
@@ -497,6 +503,7 @@ public:
     QList <double> mArchAngles;         //! arch angles
 
     QList <double> mInitAngles;         //! init angle
+    QList <double> mSeperateAngles;
     QList <double> mInitPos;            //! sinanju:x,y,z
 
     QList <double> mArmLengths;         //! arm lengths from base:[0]

@@ -43,12 +43,15 @@ void motionEdit::slot_data_changed()
 //! get the hand action options
 void motionEdit::slot_robo_changed( const QString &roboName )
 {
+    //! \note no roboName
+    if ( roboName.isEmpty() )
+    { return; }
+
     VRobot *pRobot;
     if ( checkRobotLive( &pRobot ) )
     {}
     else
     {
-        sysError( tr("Invalid robot") );
         return;
     }
 
@@ -113,7 +116,6 @@ void motionEdit::on_btnDown_clicked()
     {}
     else
     {
-        sysPrompt( tr("Invalid robot") );
         return;
     }
 
@@ -270,7 +272,6 @@ void motionEdit::on_spinLoop_valueChanged(int arg1)
     {}
     else
     {
-        sysPrompt( tr("Invalid robot") );
         return;
     }
 

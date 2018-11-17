@@ -16,6 +16,7 @@ int VRobot::tryLoad()
     {
         if ( load( fullName ) == 0 )
         {
+            sysLog( fullName +" " + QObject::tr("load success") );
             setShadow( true );
             setPath( rawPath );
             //! \note name have been set

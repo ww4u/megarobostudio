@@ -6,9 +6,11 @@
 #include "../../device/mrq/deviceMRQ.h"
 #include "../../widget/megamessagebox.h"
 roboAxes::roboAxes(mcModel *pModel,
+                   VRobot *pRobo,
                    const QString &roboName,
                    QWidget *parent) :
-    DlgView( pModel, parent ),
+                    RoboView( pRobo, RoboView::view_joint,
+                              pModel, parent ),
     ui(new Ui::roboAxes)
 {
     ui->setupUi(this);
@@ -157,6 +159,11 @@ void roboAxes::slot_joint_zero( int id, bool bCcw )
     zero( id, bCcw );
 }
 
+void roboAxes::slot_joint_align( int jId )
+{
+    align( jId );
+}
+
 void roboAxes::slot_robo_changed( const QString &roboName )
 {
     //! find robo
@@ -225,6 +232,14 @@ void roboAxes::adapteUiToRobot( VRobot *pRobo )
         mJoints[jointId]->setCcwVisible( pRobo->mJointCcwMask[jointId] );
     }
 
+    //! align able
+    for ( jointId = 0; jointId < pRobo->axes(); jointId++ )
+    {
+        Q_ASSERT( jointId < pRobo->mJointAlignAble.size() );
+
+        mJoints[ jointId ]->setAlignAble( pRobo->mJointAlignAble.at( jointId ) );
+    }
+
     //! ccw checked
     QList<bool> ccwList = pRobo->jointZeroCcwList();
     for ( int i = 0; i < ccwList.size(); i++ )
@@ -266,6 +281,9 @@ void roboAxes::buildConnection()
 
         connect( p, SIGNAL(signal_zeroClicked(int,bool)),
                  this, SLOT(slot_joint_zero(int,bool)));
+
+        connect( p, SIGNAL(signal_align_clicked(int)),
+                 this, SLOT(slot_joint_align(int)) );
     }
 
     connect( ui->widget->getComb(), SIGNAL(currentIndexChanged(int)),
@@ -344,6 +362,18 @@ void roboAxes::zero( int jointId,
     }
 
     pRobo->goZero( tpvRegion(0, ui->widget->page() ), jointId, bCcw );
+}
+
+void roboAxes::align( int jId )
+{
+    VRobot *pRobo = Robot();
+    if ( NULL == pRobo )
+    {
+        sysError( tr("Invalid robot") );
+        return;
+    }
+
+    pRobo->align( tpvRegion( jId, ui->widget->page() ) );
 }
 
 void roboAxes::on_btnZero_clicked()

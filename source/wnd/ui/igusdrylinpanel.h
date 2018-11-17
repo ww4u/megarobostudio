@@ -16,6 +16,7 @@ class IgusDrylinPanel : public RoboPanel
 
 public:
     explicit IgusDrylinPanel(mcModel *pModel,
+                             VRobot *pRobo,
                              const QString &roboName,
                              QWidget *parent = 0);
     ~IgusDrylinPanel();

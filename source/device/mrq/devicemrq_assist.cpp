@@ -30,13 +30,27 @@ float deviceMRQ::slowRatio( int ax )
     //! rot
     if ( mMOTOR_TYPE[ax] == MRQ_MOTOR_TYPE_ROTARY )
     {
-        Q_ASSERT( mMOTOR_GEARRATIODEN[ax] > 0 );
+        if ( mMOTOR_GEARRATIODEN[ax] > 0 )
+        {}
+        else
+        {
+            sysError( QObject::tr("Invalid slow ratio") );
+            return 1.0;
+        }
 
         return (float)mMOTOR_GEARRATIONUM[ax] / mMOTOR_GEARRATIODEN[ax];
     }
     //! lead
     else
     {
+        if ( mMOTOR_LEAD[ax] > 0 )
+        {}
+        else
+        {
+            sysError( QObject::tr("Invalid slow ratio") );
+            return 1.0;
+        }
+
         return  360.0f / mMOTOR_LEAD[ax];
     }
 }

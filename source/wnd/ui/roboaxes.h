@@ -6,7 +6,7 @@
 #include <QLabel>
 #include <QLCDNumber>
 #include "../../device/vrobot.h"
-#include "dlgview.h"
+#include "roboview.h"
 #include "megalcdnumber.h"
 
 namespace Ui {
@@ -14,12 +14,13 @@ class roboAxes;
 }
 
 class RoboJoint;
-class roboAxes : public DlgView
+class roboAxes : public RoboView
 {
     Q_OBJECT
 
 public:
     explicit roboAxes( mcModel *pModel,
+                       VRobot *pRobo,
                        const QString &roboName,
                        QWidget *parent = 0);
     ~roboAxes();
@@ -35,6 +36,7 @@ protected Q_SLOTS:
     void slot_joint_action( int id, float dt, float angle, float ev );
     void slot_joint_stop( int id );
     void slot_joint_zero( int id, bool bCcw );
+    void slot_joint_align( int jId );
 
     void slot_robo_changed( const QString &roboName );
     void slot_device_changed();
@@ -54,6 +56,8 @@ protected:
 
     void zero( int jointId,
                bool bCcw );
+
+    void align( int jId );
 
 private slots:
 

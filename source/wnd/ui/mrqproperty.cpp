@@ -97,7 +97,7 @@ void mrqProperty::setModelObj( mcModelObj *pObj )
     //! \todo pobj memory leak
 
     pObj->setGc( false );
-
+    MegaDevice::deviceMRQ* pMrq = (MegaDevice::deviceMRQ*)( pObj );
     //! foreach apply
     foreach( modelView *pView, mViewPages )
     {
@@ -198,7 +198,7 @@ void mrqProperty::setupUi()
 
     if ( m_pRefModel->uarts() > 0 )
     {
-        m_pSensorPage = new mrqSensor();
+        m_pSensorPage = new mrqSensor( m_pRefModel->uartNameList() );
         Q_ASSERT( NULL != m_pSensorPage );
         mViewPages.append( m_pSensorPage );
     }

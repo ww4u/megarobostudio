@@ -61,6 +61,11 @@ void RoboJoint::setCcwChecked( bool b )
 bool RoboJoint::isCcwChecked()
 { return ui->chkInvert->isChecked(); }
 
+void RoboJoint::setAlignAble( bool b )
+{ ui->btnNorm->setVisible( b );}
+bool RoboJoint::alignAble()
+{ return ui->btnNorm->isVisible(); }
+
 void RoboJoint::setStepTime( float t )
 { mStepTime = t; }
 float RoboJoint::stepTime()
@@ -97,7 +102,7 @@ void RoboJoint::stop()
 
 void RoboJoint::on_doubleSpinBox_valueChanged(double arg1)
 {
-    ui->horizontalSlider->setValue( arg1 );
+    ui->horizontalSlider->setValue( arg1 );logDbg();
 }
 
 void RoboJoint::on_horizontalSlider_valueChanged(int value)
@@ -136,6 +141,11 @@ void RoboJoint::on_pushButton_clicked()
     }
 }
 
+void RoboJoint::on_btnNorm_clicked()
+{
+    emit signal_align_clicked( mId );
+}
+
 //! step by click
 void RoboJoint::slot_step( float stp )
 {
@@ -169,5 +179,4 @@ void RoboJoint::slot_step( float stp, bool b )
     else
     { stop(); }
 }
-
 

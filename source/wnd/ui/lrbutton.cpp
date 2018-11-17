@@ -15,10 +15,10 @@ LRButton::~LRButton()
 
 void LRButton::setStep( float stp )
 {
-    ui->doubleSpinBox->setValue( stp );
+    ui->singleSpin->setValue( stp );
 }
 float LRButton::step()
-{ return ui->doubleSpinBox->value(); }
+{ return ui->singleSpin->value(); }
 
 void LRButton::on_btnLeft_clicked()
 {

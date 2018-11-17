@@ -6,6 +6,7 @@
 #include "roboinfo.h"
 #include "robodesc.h"
 #include "robocompref.h"
+#include "robosketch.h"
 
 #include "megatronpref.h"
 
@@ -83,6 +84,7 @@ private:
     RoboDesc *m_pDetailPage;
 
     QWidget *m_pComPref;
+    RoboSketch *m_pSketch;
 
     MegatronPref *m_pMegatronPref;
 

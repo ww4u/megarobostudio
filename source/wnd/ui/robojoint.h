@@ -27,6 +27,9 @@ public:
     void setCcwChecked( bool b );
     bool isCcwChecked();
 
+    void setAlignAble( bool b );
+    bool alignAble();
+
     void setStepTime( float );
     float stepTime();
 
@@ -42,6 +45,7 @@ Q_SIGNALS:
     void signal_actionChanged( int id, float time, float val, float ev );
     void signal_stop( int id );
     void signal_zeroClicked( int id, bool bCcw );
+    void signal_align_clicked( int id );
 
 private slots:
     void on_doubleSpinBox_valueChanged(double arg1);
@@ -55,9 +59,12 @@ private slots:
     void on_horizontalSlider_sliderMoved(int position);
 
     void on_pushButton_clicked();
+    void on_btnNorm_clicked();
 
     void slot_step( float stp );
     void slot_step( float stp, bool b );
+
+
 
 private:
     Ui::RoboJoint *ui;

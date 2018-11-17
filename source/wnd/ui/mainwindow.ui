@@ -145,6 +145,7 @@
     <addaction name="actionOpen_Prj"/>
     <addaction name="actionSave_Prj"/>
     <addaction name="actionSave_Prj_As"/>
+    <addaction name="actionClose_Prj"/>
     <addaction name="separator"/>
     <addaction name="actionSave_All_A"/>
     <addaction name="separator"/>
@@ -679,6 +680,15 @@
    </property>
    <property name="text">
     <string>Errant...</string>
+   </property>
+  </action>
+  <action name="actionClose_Prj">
+   <property name="icon">
+    <iconset resource="../res/res.qrc">
+     <normaloff>:/res/image/icon/delete.png</normaloff>:/res/image/icon/delete.png</iconset>
+   </property>
+   <property name="text">
+    <string>Close Prj</string>
    </property>
   </action>
  </widget>

@@ -1677,3 +1677,5 @@ void MainWindow::slot_process_exit( int code, QProcess::ExitStatus stat )
     ui->actionRun_Script->setEnabled( true );
 }
 
+
+

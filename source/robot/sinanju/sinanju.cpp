@@ -66,6 +66,9 @@ robotSinanju::robotSinanju()
     mJointZeroCcw.clear();
     mJointZeroCcw<<false<<false<<false<<false<<true;
 
+    mJointAlignAble.clear();
+    mJointAlignAble<<false<<false<<false<<true<<false;
+
     //! angle dir
     mAngleDir.clear();
     mAngleDir<<true<<false<<true<<false;        //! big arm invert
@@ -84,6 +87,10 @@ robotSinanju::robotSinanju()
     //! must be caled
     mInitAngles.clear();
     mInitAngles<<1.553<<5.504<<318<<182.9;
+
+    //! [0~360)
+    mSeperateAngles.clear();
+    mSeperateAngles<<180<<180<<270<<270;
 
     mInitPos.clear();
     mInitPos<<250<<0<<(257+255);
@@ -148,6 +155,9 @@ robotSinanju::robotSinanju()
     mbHandAble = true;
     mJointFactoryList.clear();
     mJointFactoryList<<0<<-20<<-65<<100;  //! \ref to the zero
+
+    mJointFactorySeperateList.clear();
+    mJointFactorySeperateList<<180<<160<<335<<30;
 
     //! transfer
     for ( int i = 0; i < sizeof_array(mTransferR); i++ )

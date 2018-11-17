@@ -4,11 +4,17 @@
 
 #define interval_unit_time  (0.001f)
 
-mrqSensor::mrqSensor(QWidget *parent) :
+mrqSensor::mrqSensor( const QStringList &sensorList, QWidget *parent) :
     mrqView(parent),
     ui(new Ui::mrqSensor)
 {
     ui->setupUi(this);
+
+    //! set tabs
+    for ( int i = 0; i < sensorList.size() && i < ui->tabWidget->count(); i++ )
+    {
+        ui->tabWidget->setTabText( i, sensorList.at(i) );
+    }
 
     setupUi();
 

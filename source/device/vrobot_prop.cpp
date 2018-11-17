@@ -51,11 +51,14 @@ int VRobot::setAxes(int n)
     mJointAngleMask.clear();
     mJointDeltaAngleMask.clear();
     mJointCcwMask.clear();
+    mJointAlignAble.clear();
     for ( int i = 0; i <n; i++ )
     {
         mJointAngleMask<<false;
         mJointDeltaAngleMask<<false;
         mJointCcwMask<<false;
+
+        mJointAlignAble<<false;
     }
 
     //! init lvtable
@@ -188,6 +191,8 @@ int VRobot::uartSensors()
 
 QStringList VRobot::uartSensorList()
 { return mSensorNameList; }
+QStringList VRobot::uartNameList()
+{ return mUartNameList; }
 
 void VRobot::setAbsEncAlarms( int n )
 { mAbsEncoderAlarms = n; }

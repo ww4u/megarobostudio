@@ -416,7 +416,7 @@ void roboScene::setupUi()
                                            this,
                                            SLOT(context_option()));
 
-    m_pNewMrp = m_pContextMenu->addAction( tr("New mrp"),
+    m_pNewMrp = m_pContextMenu->addAction( tr("New mrp..."),
                                            this,
                                            SLOT(context_new_mrp()));
 

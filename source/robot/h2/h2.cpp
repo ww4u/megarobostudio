@@ -37,7 +37,7 @@ robotH2::robotH2()
               <<QObject::tr("Right");
 
     mImage = QImage::fromData( _megaimage, sizeof(_megaimage) );
-    setJointPanelAble( true );
+    setJointPanelAble( false );
     setRoboPanelAble( true );
     setMrpAble( true );
 
@@ -62,7 +62,7 @@ robotH2::robotH2()
     mJointAngleMask<<true<<true;
     setAngleType( robo_angle_inc );
 
-    mZeroX = 32.7;
+    mZeroX = 0;
     mZeroY = 0;
 
     mAngleDir.clear();
@@ -89,7 +89,7 @@ robotH2::robotH2()
     m_pRoboTask = new H2Task();
     Q_ASSERT( NULL != m_pRoboTask );
 
-    mLines = 1000;
+//    mLines = 1000;
     mEncoderDirs<<1<<1;
 
 //    mbTransferAble = false;

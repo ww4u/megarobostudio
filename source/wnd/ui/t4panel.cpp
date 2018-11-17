@@ -2,9 +2,10 @@
 #include "ui_t4panel.h"
 
 T4Panel::T4Panel(mcModel *pModel,
+                 VRobot *pRobo,
                  const QString &roboName,
                  QWidget *parent) :
-    RoboPanel( pModel, roboName, parent),
+    RoboPanel( pModel, pRobo, roboName, parent),
     ui(new Ui::T4Panel)
 
 {

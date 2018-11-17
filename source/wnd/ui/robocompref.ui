@@ -172,7 +172,7 @@
    <item>
     <widget class="QGroupBox" name="groupBox_2">
      <property name="title">
-      <string>Connection</string>
+      <string>Connection Configuration</string>
      </property>
      <layout class="QFormLayout" name="formLayout_2">
       <property name="horizontalSpacing">

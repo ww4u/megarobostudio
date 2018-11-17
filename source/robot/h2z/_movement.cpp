@@ -281,6 +281,16 @@ int robotH2Z::zeroAxesTask( void *pArg )
 {
     Q_ASSERT( NULL != pArg );
 
+    //! check valid
+    //! assure the pos is not zero
+    if ( checkZeroValid() )
+    {}
+    else
+    {
+        sysError( QObject::tr("Invlaid init pos") );
+        return -1;
+    }
+
     tpvRegion region;
     int ret;
 

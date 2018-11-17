@@ -1,13 +1,14 @@
 #ifndef ROBOPANEL_H
 #define ROBOPANEL_H
 
-#include "dlgview.h"
+#include "roboview.h"
 
-class RoboPanel : public DlgView
+class RoboPanel : public RoboView
 {
     Q_OBJECT
 public:
     RoboPanel( mcModel *pModel,
+               VRobot *pRobo,
                const QString &roboName,
                QWidget *parent = 0 );
 
@@ -16,6 +17,7 @@ protected Q_SLOTS:
 
 protected:
     QString mPanelName;
+
 };
 
 #endif // ROBOPANEL_H

@@ -197,7 +197,7 @@ int h2Pose( const QList<double> &armLengthes,
 
     ret = SolveStructureKinematics( armLength, inputParam, P0,
                                     pIn, vIn, tIn,
-                                    0,                  //! angle->x,y
+                                    1,                  //! angle->x,y
                                     xys
                                       );
 

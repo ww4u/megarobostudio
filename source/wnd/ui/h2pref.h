@@ -45,11 +45,11 @@ private slots:
 
     void on_btnZeroZ_clicked();
 
-    void on_chkCcwX_clicked(bool checked);
+//    void on_chkCcwX_clicked(bool checked);
 
-    void on_chkCcwY_clicked(bool checked);
+//    void on_chkCcwY_clicked(bool checked);
 
-    void on_chkCcw_clicked(bool checked);
+//    void on_chkCcw_clicked(bool checked);
 
 private:
     Ui::H2Pref *ui;

@@ -312,6 +312,22 @@ void MainWindow::on_actionSave_Prj_As_triggered()
     savePrjAs( path, name );
 }
 
+void MainWindow::on_actionClose_Prj_triggered()
+{
+    slot_wndcloseAll();
+
+    m_pScriptMgr->reNew( "", "" );
+
+    //! save latest prj
+    mMcModel.mSysPref.setLatestPrj( "",
+                                    "" );
+
+    setWindowTitle( "" );
+
+    //! request save
+    emit sig_pref_request_save();
+}
+
 //! save the current file
 void MainWindow::on_actionSave_triggered()
 {

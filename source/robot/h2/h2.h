@@ -95,6 +95,8 @@ public:
     int preMove( QList<H2KeyPoint> &curve,
               const tpvRegion &region );
 
+    bool checkZeroValid();
+
     //! jId -- 0: x
     virtual int goZero( const tpvRegion &region,
                         int jointId, bool bCcw );
@@ -192,7 +194,7 @@ protected:
     QList <int> mAxesDirs;      //! realX = dir * x + zeroX
 
     QList<int> mEncoderDirs;    //! 1 or -1
-    int mLines;
+//    int mLines;
 
                                 //! transfer matrix
 //    bool mbTransferAble;

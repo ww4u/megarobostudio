@@ -17,7 +17,8 @@ class roboSinanjuTaskArgument : public RoboTaskArgument
 {
 public:
     QList<double> mAimAngles;
-    bool mbStick;
+    QList<double> mSepAngles;
+
 public:
     roboSinanjuTaskArgument()
     {}
@@ -60,8 +61,13 @@ public:
     virtual float getZero( int jointTabId );
     virtual int  setZero( int jointTabId, float zero );
 
+    virtual int align( const tpvRegion &region );
+
     virtual int getPOSE( float pos[] );
     virtual float toDeltaAngle(int jointId, float angle);
+
+protected:
+    float deduceAngle( float fNow, float fAim, float fSep, bool dir );
 
 public:
     int zeroAxesTask( void *pArg );
@@ -69,18 +75,18 @@ public:
 protected:
     int toAimSession( const tpvRegion &region,
                       const QList<double> &aimAngles,
-                      bool bStick=false);
+                      const QList<double> &sepAngles );
 
     int goX( const tpvRegion &region,
              const QList<double> &aimAngles,
-             float handT, float handP, float handV,
-             bool bStick=false);
+             const QList<double> &sepAngles,
+             float handT, float handP, float handV );
     int toAim( const tpvRegion &region,
                const QList<double> &aimAngles,
-               bool bStick=false );
+               const QList<double> &sepAngles );
     int toAimd( const tpvRegion &region,
                 const QList<double> &aimAngles,
-                bool bStick=false );
+                const QList<double> &sepAngles );
 
 public:
     virtual int loopNow();
@@ -238,6 +244,7 @@ protected:
 
     bool mbHandAble;
     QList< double > mJointFactoryList;
+    QList< double > mJointFactorySeperateList;
 
 //    bool mbTransferable;
     double mTransferR[3*3], mTransferRInv[3*3];

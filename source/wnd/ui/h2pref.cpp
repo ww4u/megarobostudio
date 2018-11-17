@@ -2,6 +2,9 @@
 #include "ui_h2pref.h"
 
 #include "megamessagebox.h"
+#include "../../com/comassist.h"
+
+#define time_unit   (1.0e-6f)
 
 H2Pref::H2Pref(QWidget *parent) :
     modelView(parent),
@@ -86,17 +89,23 @@ void H2Pref::updateData()
                    ui->spinGapZTime->value(),
                    ui->spinGapZDist->value() );
 
-    //! ccw
-    if ( ui->chkCcwX->isVisible() )
-    { pRobo->setJointZeroCcw( 0, ui->chkCcwX->isChecked() ); }
-    if ( ui->chkCcwY->isVisible() )
-    { pRobo->setJointZeroCcw( 1, ui->chkCcwY->isChecked() ); }
-    if ( ui->chkCcw->isVisible() )
-    { pRobo->setJointZeroCcw( 2, ui->chkCcw->isChecked() ); }
+//    //! ccw
+//    if ( ui->chkCcwX->isVisible() )
+//    { pRobo->setJointZeroCcw( 0, ui->chkCcwX->isChecked() ); }
+//    if ( ui->chkCcwY->isVisible() )
+//    { pRobo->setJointZeroCcw( 1, ui->chkCcwY->isChecked() ); }
+//    if ( ui->chkCcw->isVisible() )
+//    { pRobo->setJointZeroCcw( 2, ui->chkCcw->isChecked() ); }
 
     //! zero movement, corner
     pRobo->setZeroCorner( ui->cmbZeroCorner->currentIndex() );
     pRobo->setZeroMovement( ui->cmbZeroMovement->currentIndex() );
+
+    //! zero speed
+    pRobo->setZeroPref( ui->spinZeroSpeed->value(),
+                        comAssist::align( ui->spinZeroTmo->value(), time_unit ),
+                        comAssist::align( ui->spinZeroTick->value(), time_unit )
+                        );
 }
 
 void H2Pref::updateUi()
@@ -122,13 +131,13 @@ void H2Pref::updateUi()
     ui->spinGapZTime->setValue( gapZTime );
     ui->spinGapZDist->setValue( gapZDistance );
 
-    //! check
-    if ( ui->chkCcwX->isVisible() )
-    { ui->chkCcwX->setChecked( pRobo->jointZeroCcwList().at(0) ); }
-    if ( ui->chkCcwY->isVisible() )
-    { ui->chkCcwY->setChecked( pRobo->jointZeroCcwList().at(1) ); }
-    if ( ui->chkCcw->isVisible() )
-    { ui->chkCcw->setChecked( pRobo->jointZeroCcwList().at(2) ); }
+//    //! check
+//    if ( ui->chkCcwX->isVisible() )
+//    { ui->chkCcwX->setChecked( pRobo->jointZeroCcwList().at(0) ); }
+//    if ( ui->chkCcwY->isVisible() )
+//    { ui->chkCcwY->setChecked( pRobo->jointZeroCcwList().at(1) ); }
+//    if ( ui->chkCcw->isVisible() )
+//    { ui->chkCcw->setChecked( pRobo->jointZeroCcwList().at(2) ); }
 
     //! movement, corner
     int index;
@@ -137,6 +146,15 @@ void H2Pref::updateUi()
 
     index = pRobo->zeroMovement();
     ui->cmbZeroMovement->setCurrentIndex( index );
+
+    //! zero speed
+    double spd;
+    int zeroTmo, zeroTick;
+    pBase->zeroPref( spd, zeroTmo, zeroTick );
+    ui->spinZeroSpeed->setValue( spd );
+    ui->spinZeroTmo->setValue( zeroTmo * time_unit );
+    ui->spinZeroTick->setValue( zeroTick * time_unit );
+
 }
 
 void H2Pref::adaptUi()
@@ -161,26 +179,26 @@ void H2Pref::adaptUi()
     else
     {}
 
-    //! x,y,ccw visible
-    ui->chkCcwX->setVisible( pBase->jointZeroCcwVisibleList().at(0) );
-    ui->chkCcwY->setVisible( pBase->jointZeroCcwVisibleList().at(1) );
+//    //! x,y,ccw visible
+//    ui->chkCcwX->setVisible( pBase->jointZeroCcwVisibleList().at(0) );
+//    ui->chkCcwY->setVisible( pBase->jointZeroCcwVisibleList().at(1) );
 
-    ui->chkCcwX->setChecked( pBase->jointZeroCcwList().at(0) );
-    ui->chkCcwY->setChecked( pBase->jointZeroCcwList().at(1) );
+//    ui->chkCcwX->setChecked( pBase->jointZeroCcwList().at(0) );
+//    ui->chkCcwY->setChecked( pBase->jointZeroCcwList().at(1) );
 
     //! z enable
-    ui->labelZ->setVisible( bZ );
+//    ui->labelZ->setVisible( bZ );
     ui->btnZeroZ->setVisible( bZ );
-    ui->chkCcw->setVisible( bZ );
+//    ui->chkCcw->setVisible( bZ );
     ui->gpZGap->setVisible( bZ );
 
     //! ccw list
-    if ( bZ )
-    {
-        ui->chkCcw->setChecked( pBase->jointZeroCcwList().at(2) );
-    }
+//    if ( bZ )
+//    {
+//        ui->chkCcw->setChecked( pBase->jointZeroCcwList().at(2) );
+//    }
 
-    ui->label_3->setPixmap( QPixmap(strPixmapGeo) );
+//    ui->label_3->setPixmap( QPixmap(strPixmapGeo) );
 }
 
 void H2Pref::zeroJoint( int jointId, bool bCcw )
@@ -209,12 +227,12 @@ void H2Pref::slot_joint_zero( int jId, bool bCcw )
 #define sig_joint( id, bccw )    emit signal_joint_zero( id, bccw );
 void H2Pref::on_btnZeroX_clicked()
 {
-    sig_joint( 0, ui->chkCcwX->isChecked() );
+    sig_joint( 0, false );
 }
 
 void H2Pref::on_btnZeroY_clicked()
 {
-    sig_joint( 1, ui->chkCcwY->isChecked() );
+    sig_joint( 1, false );
 }
 
 void H2Pref::on_btnZeroBody_clicked()
@@ -234,20 +252,20 @@ void H2Pref::on_btnZeroBody_clicked()
     //! x + y
     QList<int> jList;
     QList<bool> ccwList;
-    if ( ui->chkCcw->isVisible() )
+    if ( ui->btnZeroZ->isVisible() )
     {
         jList<<0<<1<<2;
 
-        ccwList<<ui->chkCcwX->isChecked()
-               <<ui->chkCcwY->isChecked()
-               <<ui->chkCcw->isChecked();
+        ccwList<<false
+               <<false
+               <<false;
     }
     else
     {
         jList<<0<<1;
 
-        ccwList<<ui->chkCcwX->isChecked()
-               <<ui->chkCcwY->isChecked();
+        ccwList<<false
+               <<false;
 
     }
     pBase->goZero( tpvRegion(0,ui->widget->page()),
@@ -258,32 +276,32 @@ void H2Pref::on_btnZeroBody_clicked()
 
 void H2Pref::on_btnZeroZ_clicked()
 {
-    sig_joint( 2, ui->chkCcw->isChecked() );
+    sig_joint( 2, false );
 }
 
-void H2Pref::on_chkCcwX_clicked(bool checked)
-{
-    Q_ASSERT( m_pModelObj != NULL );
-    VRobot *pBase = ( VRobot *)m_pModelObj;
-    Q_ASSERT( NULL != pBase );
+//void H2Pref::on_chkCcwX_clicked(bool checked)
+//{
+//    Q_ASSERT( m_pModelObj != NULL );
+//    VRobot *pBase = ( VRobot *)m_pModelObj;
+//    Q_ASSERT( NULL != pBase );
 
-    pBase->setJointZeroCcw( 0, checked );
-}
+//    pBase->setJointZeroCcw( 0, checked );
+//}
 
-void H2Pref::on_chkCcwY_clicked(bool checked)
-{
-    Q_ASSERT( m_pModelObj != NULL );
-    VRobot *pBase = ( VRobot *)m_pModelObj;
-    Q_ASSERT( NULL != pBase );
+//void H2Pref::on_chkCcwY_clicked(bool checked)
+//{
+//    Q_ASSERT( m_pModelObj != NULL );
+//    VRobot *pBase = ( VRobot *)m_pModelObj;
+//    Q_ASSERT( NULL != pBase );
 
-    pBase->setJointZeroCcw( 1, checked );
-}
+//    pBase->setJointZeroCcw( 1, checked );
+//}
 
-void H2Pref::on_chkCcw_clicked(bool checked)
-{
-    Q_ASSERT( m_pModelObj != NULL );
-    VRobot *pBase = ( VRobot *)m_pModelObj;
-    Q_ASSERT( NULL != pBase );
+//void H2Pref::on_chkCcw_clicked(bool checked)
+//{
+//    Q_ASSERT( m_pModelObj != NULL );
+//    VRobot *pBase = ( VRobot *)m_pModelObj;
+//    Q_ASSERT( NULL != pBase );
 
-    pBase->setJointZeroCcw( 2, checked );
-}
+//    pBase->setJointZeroCcw( 2, checked );
+//}

@@ -2,9 +2,10 @@
 #include "ui_igusdrylinpanel.h"
 
 IgusDrylinPanel::IgusDrylinPanel( mcModel *pModel,
+                                  VRobot *pRobo,
                                   const QString &roboName,
                                   QWidget *parent) :
-    RoboPanel(pModel, roboName, parent),
+    RoboPanel(pModel, pRobo, roboName, parent),
     ui(new Ui::IgusDrylinPanel)
 {
     ui->setupUi(this);

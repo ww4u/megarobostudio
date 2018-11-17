@@ -13,7 +13,7 @@ class mrqSensor : public mrqView
     Q_OBJECT
 
 public:
-    explicit mrqSensor(QWidget *parent = 0);
+    explicit mrqSensor(const QStringList &sensorList, QWidget *parent = 0);
     ~mrqSensor();
 
 public:

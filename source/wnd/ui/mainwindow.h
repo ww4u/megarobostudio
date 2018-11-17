@@ -237,6 +237,7 @@ public slots:
     void on_actionOpen_Prj_triggered();
     void on_actionSave_Prj_triggered();
     void on_actionSave_Prj_As_triggered();
+    void on_actionClose_Prj_triggered();
 
     void on_actionSave_triggered();
     void on_actionSave_As_triggered();
@@ -297,6 +298,8 @@ private slots:
     void on_actionConsole_triggered();
 
     void on_actionApp_triggered();
+
+
 
 
 private:

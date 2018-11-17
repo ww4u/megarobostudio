@@ -1,9 +1,11 @@
 #include "robopanel.h"
 
 RoboPanel::RoboPanel( mcModel *pModel,
+                      VRobot *pRobo,
                       const QString &roboName,
-                      QWidget *parent ) : DlgView( pModel, parent )
+                      QWidget *parent ) : RoboView( pRobo, RoboView::view_robo, pModel, parent )
 {
+
     mPanelName = roboName;
 
     setWindowTitle( roboName );

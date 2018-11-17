@@ -61,6 +61,9 @@
        <property name="decimals">
         <number>3</number>
        </property>
+       <property name="minimum">
+        <double>-360.000000000000000</double>
+       </property>
        <property name="maximum">
         <double>360.000000000000000</double>
        </property>
@@ -68,17 +71,20 @@
         <double>0.100000000000000</double>
        </property>
        <property name="value">
-        <double>180.000000000000000</double>
+        <double>0.000000000000000</double>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QSlider" name="sliderValue">
+       <property name="minimum">
+        <number>-360</number>
+       </property>
        <property name="maximum">
         <number>360</number>
        </property>
        <property name="value">
-        <number>180</number>
+        <number>0</number>
        </property>
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
@@ -215,15 +221,15 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>PageOption</class>
-   <extends>QWidget</extends>
-   <header>pageoption.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>LRButton</class>
    <extends>QWidget</extends>
    <header>lrbutton.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>PageOption</class>
+   <extends>QWidget</extends>
+   <header>pageoption.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

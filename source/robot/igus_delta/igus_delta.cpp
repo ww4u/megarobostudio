@@ -37,7 +37,7 @@ robotIgusDelta::robotIgusDelta()
               <<QObject::tr("Hand");
 
     mImage = QImage::fromData( _megaimage, sizeof(_megaimage) );
-    setJointPanelAble( true );
+    setJointPanelAble( false );
     setRoboPanelAble( true );
     setMrpAble( true );
 

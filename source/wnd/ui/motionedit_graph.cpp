@@ -123,7 +123,7 @@ bool motionEdit::checkRobotLive( VRobot **ppRobot )
     pRobo = currentRobot();
     if ( NULL == pRobo )
     {
-        sysError( tr("invalid robot name"),  m_pmcModel->mConn.getRoboName() );
+        sysError( tr("Invalid robot name"),  m_pmcModel->mConn.getRoboName() );
         return false;
     }
 
@@ -131,7 +131,7 @@ bool motionEdit::checkRobotLive( VRobot **ppRobot )
     {}
     else
     {
-        sysError( tr("Invalid robot link") );
+        sysError( tr("Invalid robot link"), pRobo->name() );
         return false;
     }
 

@@ -17,6 +17,7 @@ class H2ZPanel : public RoboPanel
 
 public:
     explicit H2ZPanel(mcModel *pModel,
+                      VRobot *pRobo,
                       const QString &roboName,
                       QWidget *parent = 0);
     ~H2ZPanel();

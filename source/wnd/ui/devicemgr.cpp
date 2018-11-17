@@ -522,6 +522,9 @@ void deviceMgr::on_treeWidget_itemActivated(QTreeWidgetItem *item, int column)
         var = item->data( 0, Qt::UserRole );
         VRobot *pRobot = var.value<VRobot*>();
 
+        if ( NULL == pRobot )
+        { return; }
+
         //! default to panel
         if ( pRobot->roboPanelAble() )
         {
@@ -533,7 +536,8 @@ void deviceMgr::on_treeWidget_itemActivated(QTreeWidgetItem *item, int column)
         else
         {
             //! try load setup?
-            pRobot->tryLoad();
+            if ( robot_is_robot( pRobot->getId() ) )
+            { pRobot->tryLoad(); }
 
             emit itemXActivated( (mcModelObj*)pRobot );
         }
@@ -664,7 +668,6 @@ void deviceMgr::context_mrq_panel()
 void deviceMgr::context_mrq_prop()
 {
     Q_ASSERT( NULL != m_pRobo );
-
     emit itemXActivated( (mcModelObj*)m_pRobo );
 }
 
@@ -735,9 +738,18 @@ void deviceMgr::context_robo_axes()
     Q_ASSERT( NULL != m_pmcModel );
     Q_ASSERT( NULL != m_pRobo );
 
-    roboAxes *pRoboPanel;
+    //! find exist
+    RoboView *pView;
+    pView = RoboView::findView( m_pRobo, RoboView::view_joint );
+    if ( NULL != pView )
+    {
+        pView->activateWindow();
+        return;
+    }
 
+    roboAxes *pRoboPanel;
     pRoboPanel = new roboAxes( m_pmcModel,
+                               m_pRobo,
                                QString("%1@%2").arg(m_pRobo->name()).arg( mCurrNodeName ),
                                this );
     if ( pRoboPanel == NULL )
@@ -753,16 +765,27 @@ void deviceMgr::context_robo_panel()
     Q_ASSERT( NULL != m_pRobo );
 
     //! creator
-    RoboPanel *pRoboPanel = NULL;
 
+    RoboView *pView;
+    //! check exist
+    pView = RoboView::findView( m_pRobo, RoboView::view_robo );
+    if ( NULL == pView )
+    {}
+    else
+    {
+        pView->activateWindow();
+        return;
+    }
+    RoboPanel *pRoboPanel = NULL;
     VRobot::robotEnum rId;
     rId = m_pRobo->getId();
 
     QString roboName = QString("%1@%2").arg(m_pRobo->name()).arg( mCurrNodeName );
-    logDbg()<<roboName;
+
     if ( rId == VRobot::robot_sinanju )
     {
         pRoboPanel = new T4Panel( m_pmcModel,
+                                  m_pRobo,
                                    roboName,
                                    this );
     }
@@ -770,18 +793,21 @@ void deviceMgr::context_robo_panel()
               || rId == VRobot::robot_h2_m )
     {
         pRoboPanel = new H2Panel( m_pmcModel,
+                                  m_pRobo,
                                    roboName,
                                    this );
     }
     else if ( rId == VRobot::robot_h2z )
     {
         pRoboPanel = new H2ZPanel( m_pmcModel,
+                                   m_pRobo,
                                    roboName,
                                    this );
     }
     else if ( rId == VRobot::robot_igus_delta )
     {
         pRoboPanel = new IgusDrylinPanel( m_pmcModel,
+                                          m_pRobo,
                                           roboName,
                                           this );
     }
@@ -801,6 +827,11 @@ void deviceMgr::context_robo_prop()
 {
     Q_ASSERT( NULL != m_pmcModel );
     Q_ASSERT( NULL != m_pRobo );
+
+    if ( robot_is_robot( m_pRobo->getId()) )
+    {
+        m_pRobo->tryLoad();
+    }
 
     emit itemXActivated( (mcModelObj*)m_pRobo );
 }

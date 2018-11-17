@@ -67,6 +67,9 @@ protected:
     bool checkName( const QString &name,
                     sceneWidget *pSelf = NULL );
 
+    sceneWidget * findSceneWidget( QLabel *pLabel );
+    sceneWidget * findSceneWidget( QPoint pos );
+
 protected:
     void init();
     void deInit();

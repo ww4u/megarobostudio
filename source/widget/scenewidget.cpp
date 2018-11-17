@@ -1,24 +1,28 @@
 #include "scenewidget.h"
 
-sceneWidget::sceneWidget( QWidget *parent ) : QLabel( parent )
+#include "ui_scenewidget.h"
+
+sceneWidget::sceneWidget( QWidget *parent ) : QWidget( parent ), ui(new Ui::sceneWidget)
 {
+    ui->setupUi(this);
+
     mbSelected = false;
 
     m_pBase = NULL;
     m_pModel = NULL;
 
-    mpLabel = new QLineEdit( tr("untitled"), this );
-    mpLabel->setSizePolicy( QSizePolicy::Minimum,
+//    ui->mpLabel = new QLineEdit( tr("untitled"), this );
+    ui->mpLabel->setSizePolicy( QSizePolicy::Minimum,
                             QSizePolicy::Preferred );
 
-    connect( mpLabel, SIGNAL(editingFinished()),
+    connect( ui->mpLabel, SIGNAL(editingFinished()),
              this, SLOT(slot_editingFinished()) );
 
-    setScaledContents( true );
+    ui->image->setScaledContents( true );
 
     //! max width
-    setMaximumSize( 200,200 );
-    mpLabel->setMaximumWidth( 200 );
+//    setMaximumSize( 200,220 );
+//    ui->mpLabel->setMaximumWidth( 200 );
 }
 
 sceneWidget::~sceneWidget()
@@ -33,26 +37,25 @@ sceneWidget::~sceneWidget()
 void sceneWidget::paintEvent( QPaintEvent *evt )
 {
     if ( mbSelected )
-    {}
+    { }
     else
-    { return QLabel::paintEvent( evt ); }
+    { return QWidget::paintEvent( evt); }
 
-
-    QLabel::paintEvent( evt );
+    QWidget::paintEvent( evt );
 
     //! draw border
     QPainter painter( this );
 
     QPen pen( Qt::DashLine );
-    pen.setWidth( 2 );
+    pen.setWidth( 3 );
     pen.setColor( Qt::blue );
     painter.setPen( pen );
-    painter.drawRect( rect() );
+    painter.drawRoundRect( rect(), 3, 3 );
 }
 
 void sceneWidget::slot_editingFinished()
 {
-    emit editingFinished( this, mpLabel->text() );
+    emit editingFinished( this, ui->mpLabel->text() );
 }
 
 void sceneWidget::setRobot( VRobot *pBase )
@@ -61,17 +64,17 @@ void sceneWidget::setRobot( VRobot *pBase )
     m_pBase = pBase;
     pBase->setGc( true );
     QImage img = pBase->getImage();
-    setPixmap( QPixmap::fromImage( img ) );
+    ui->image->setPixmap( QPixmap::fromImage( img ) );
 
-    QRect rawGeo;
-    rawGeo = mpLabel->geometry();
+//    QRect rawGeo;
+//    rawGeo = mpLabel->geometry();
 
-    mpLabel->setGeometry( QRect( rawGeo.x(),
-                                 rawGeo.y(),
-                                 img.width(),
-                                 rawGeo.height() ) );
+//    mpLabel->setGeometry( QRect( rawGeo.x(),
+//                                 rawGeo.y(),
+//                                 img.width(),
+//                                 rawGeo.height() ) );
 
-    setGeometry( QRect(0,0,img.width(),img.height()));
+//    setGeometry( QRect(0,0,img.width(),img.height()));
 }
 VRobot *sceneWidget::getRobot()
 {
@@ -95,6 +98,14 @@ void sceneWidget::setModelObj( mcModelObj *pBase )
 mcModelObj *sceneWidget::getModelObj()
 { return m_pModel; }
 
+bool sceneWidget::matchWidget( QLabel *plabel )
+{
+    if ( plabel == ui->image )
+    { return true; }
+    else
+    { return false; }
+}
+
 void sceneWidget::setSelected( bool b )
 {
     mbSelected = b;
@@ -106,10 +117,11 @@ bool sceneWidget::getSelected()
 
 void sceneWidget::setName( const QString &name )
 {
-    mpLabel->setText( name );
+    mName = name;
+    ui->mpLabel->setText( name );
 }
 QString sceneWidget::getName()
-{ return mpLabel->text(); }
+{ return mName; }
 
 void sceneWidget::focusOnName()
-{ mpLabel->selectAll(); }
+{ ui->mpLabel->selectAll(); }

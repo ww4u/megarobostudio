@@ -39,13 +39,21 @@ void roboScene::mouseMoveEvent(QMouseEvent *event)
     if ( y < 0 )
     { y = 0; }
 
+    bool bReqSave = false;
     foreach( sceneWidget*pItem, mItemList )
     {
         if ( pItem->getSelected() )
         {
             pItem->move( x, y );
+            bReqSave = true;
         }
     }
+
+    if ( bReqSave )
+    {
+        emit sigSaveRequest( this );
+    }
+
 }
 
 void roboScene::mousePressEvent(QMouseEvent *event)
@@ -53,18 +61,19 @@ void roboScene::mousePressEvent(QMouseEvent *event)
     selectAll( false );
 
     //! dynamic cast
-    sceneWidget *pWidget = dynamic_cast<sceneWidget*>( childAt( event->pos() ) );
+    sceneWidget *pWidget = findSceneWidget( event->pos() );
+    if ( NULL == pWidget )
+    { return; }
 
-    if ( NULL != pWidget )
+    if ( pWidget != NULL )
     {
         pWidget->setFocus();
-
         pWidget->setSelected(true);
 
         pWidget->raise();
-        pWidget->setFrameShape( QFrame::StyledPanel );
 
         mRefPoint = pWidget->mapFromParent( event->pos() );
+        return;
     }
 }
 
@@ -98,15 +107,10 @@ void roboScene::keyReleaseEvent(QKeyEvent *event)
 
 void roboScene::mouseDoubleClickEvent(QMouseEvent *event)
 {
-    sceneWidget *pWidget = (sceneWidget*)childAt( event->pos() );
+    sceneWidget *pWidget = findSceneWidget( event->pos() );
     if ( NULL == pWidget )
     { return; }
 
-//    VRobot *pRobo = (VRobot*)pWidget->getModelObj();
-//    if ( NULL == pRobo )
-//    { return; }
-
-//    if ( )
     if ( NULL != pWidget )
     {
         //! try load
@@ -178,6 +182,7 @@ void roboScene::slot_editingFinished( sceneWidget *pWig, const QString &str )
     else
     {
         MegaMessageBox::warning( this, tr("Warning"), tr("Name Inavlid") );
+        pWig->setName( pWig->getName() );
         pWig->focusOnName();
     }
 }
@@ -397,6 +402,44 @@ bool roboScene::checkName( const QString &name,
     return true;
 }
 
+sceneWidget * roboScene::findSceneWidget( QLabel *pLabel )
+{
+    foreach( sceneWidget *pWig, mItemList )
+    {
+        Q_ASSERT( NULL != pWig );
+
+        if ( pWig->matchWidget( pLabel ) )
+        { return pWig; }
+    }
+
+    return NULL;
+}
+
+//! pos ref the the scene
+sceneWidget * roboScene::findSceneWidget( QPoint pos )
+{
+    //! dynamic cast
+    sceneWidget *pWidget = NULL;
+    do
+    {
+        //! try scene widget
+        pWidget = dynamic_cast<sceneWidget*>( childAt( pos ) );
+        if ( NULL != pWidget )
+        { break; }
+
+        //! try label
+        QLabel *pLabel = dynamic_cast<QLabel*>( childAt( pos ) );
+        if ( NULL != pLabel )
+        {
+            pWidget = findSceneWidget( pLabel );
+            if ( NULL != pWidget )
+            { break; }
+        }
+    }while( 0 );
+
+    return pWidget;
+}
+
 void roboScene::init()
 {
     m_pContextMenu = NULL;
@@ -476,14 +519,14 @@ void roboScene::updateSelecte()
     foreach( sceneWidget*pItem, mItemList )
     {
         Q_ASSERT( NULL != pItem );
-        if ( pItem->getSelected() )
-        {
-            pItem->setFrameShape( QFrame::StyledPanel );
-        }
-        else
-        {
-            pItem->setFrameShape( QFrame::NoFrame );
-        }
+//        if ( pItem->getSelected() )
+//        {
+//            pItem->setFrameShape( QFrame::StyledPanel );
+//        }
+//        else
+//        {
+//            pItem->setFrameShape( QFrame::NoFrame );
+//        }
     }
 }
 

@@ -5,7 +5,12 @@
 #include "../../robot/robotfact.h"
 #include "../../model/mcmodelobj.h"
 
-class sceneWidget : public QLabel
+namespace Ui {
+class sceneWidget;
+}
+
+
+class sceneWidget : public QWidget
 {
     Q_OBJECT
 public:
@@ -28,6 +33,8 @@ public:
     void setModelObj( mcModelObj *pBase );
     mcModelObj *getModelObj();
 
+    bool matchWidget( QLabel *plabel );
+
     void setSelected( bool b );
     bool getSelected();
 
@@ -41,7 +48,10 @@ protected:
     mcModelObj *m_pModel;
 
     bool mbSelected;
-    QLineEdit *mpLabel;
+    QString mName;
+
+private:
+    Ui::sceneWidget *ui;
 
 };
 

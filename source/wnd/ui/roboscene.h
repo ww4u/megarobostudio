@@ -32,6 +32,8 @@ protected:
 
     virtual void mouseDoubleClickEvent(QMouseEvent *event);
 
+    virtual void dragEnterEvent(QDragEnterEvent *event);
+    virtual void dropEvent(QDropEvent *event);
 Q_SIGNALS:
     void itemXActivated( mcModelObj*, mcModelObj_Op op=model_obj_op_none );
     void signal_itemXHelp( eItemHelp helpId );

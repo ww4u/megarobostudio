@@ -17,6 +17,8 @@ roboScene::roboScene(QWidget *parent) :
 
     buildConnection();
 
+    setAcceptDrops( true );
+
 //    m_pLayout = new FlowLayout( ui->scrollArea );
 //    Q_ASSERT( NULL != m_pLayout );
 
@@ -118,6 +120,15 @@ void roboScene::mouseDoubleClickEvent(QMouseEvent *event)
 
         emit itemXActivated( pWidget->getModelObj() );
     }
+}
+
+void roboScene::dragEnterEvent(QDragEnterEvent *event)
+{
+    logDbg();
+}
+void roboScene::dropEvent(QDropEvent *event)
+{
+    logDbg();
 }
 
 void roboScene::context_delete()

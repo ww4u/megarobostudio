@@ -30,6 +30,9 @@ protected:
     //! move aim
     void moveA( float x, float y, float dt );
 
+    void decideAB( float dx, float dy,
+                   QPointF &a, QPointF &b );
+
     void stop();
 
 private slots:
@@ -56,18 +59,19 @@ private slots:
     void on_btnMarkUser_clicked();
 
     void on_btnMarkNow_clicked();
+    void on_btnMarkNow_2_clicked();
 
-    void on_btnXP_pressed();
-    void on_btnXP_released();
+    void on_btnXP_2_pressed();
+    void on_btnXP_2_released();
 
-    void on_btnXN_pressed();
-    void on_btnXN_released();
+    void on_btnXN_2_pressed();
+    void on_btnXN_2_released();
 
-    void on_btnYP_pressed();
-    void on_btnYP_released();
+    void on_btnYP_2_pressed();
+    void on_btnYP_2_released();
 
-    void on_btnYN_pressed();
-    void on_btnYN_released();
+    void on_btnYN_2_pressed();
+    void on_btnYN_2_released();
 
 private:
     Ui::H2Panel *ui;

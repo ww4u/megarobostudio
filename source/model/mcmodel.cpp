@@ -37,6 +37,19 @@ void mcModel::deinit()
     MegaDevice::InstMgr::free();
 }
 
+void mcModel::startCommunicate()
+{
+    //! reset again
+    if ( mSysPref.mMisaEn )
+    {
+        Q_ASSERT( NULL != m_pInstMgr );
+        if ( m_pInstMgr->start( mSysPref.mMisaSocket, mSysPref.mMisaPortCnt ) )
+        { sysLog( QObject::tr("port"), QString::number( mSysPref.mMisaSocket ), QObject::tr("open success") ); }
+        else
+        { sysError( QObject::tr("port"), QString::number( mSysPref.mMisaSocket ), QObject::tr("open fail") ); }
+    }
+}
+
 void mcModel::stopCommunicate()
 {
     Q_ASSERT( NULL != m_pInstMgr );
@@ -52,13 +65,6 @@ void mcModel::resetCommunicate()
     //! stop
     stopCommunicate();
 
-    //! reset again
-    if ( mSysPref.mMisaEn )
-    {
-        Q_ASSERT( NULL != m_pInstMgr );
-        if ( m_pInstMgr->start( mSysPref.mMisaSocket, mSysPref.mMisaPortCnt ) )
-        { sysLog( QObject::tr("port"), QString::number( mSysPref.mMisaSocket ), QObject::tr("open success") ); }
-        else
-        { sysError( QObject::tr("port"), QString::number( mSysPref.mMisaSocket ), QObject::tr("open fail") ); }
-    }
+    //! start again
+    startCommunicate();
 }

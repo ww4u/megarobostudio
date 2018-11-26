@@ -8,9 +8,10 @@ int robotSinanju::goFactory( const tpvRegion &region )
 {
     QList<double> aimAngles;
 
+    //! normalize
     for ( int i = 0; i < 4; i++ )
     {
-        aimAngles.append( mJointFactoryList.at(i) + mInitAngles.at( i ) );
+        aimAngles.append( comAssist::normalizeDegree360( mJointFactoryList.at(i) + mInitAngles.at( i ) ) );
     }
 
     return toAimSession( region, aimAngles, mJointFactorySeperateList );
@@ -194,16 +195,16 @@ float robotSinanju::deduceAngle( float fNow, float fAim, float fSep, bool dir )
 {
     //! normalize to [0~360)
     float deltaAngle;
-    deltaAngle = comAssist::normalizeDegree360( fNow - fAim );
-
+    deltaAngle = comAssist::normalizeDegree360( fAim - fNow );
+logDbg()<<deltaAngle<<fAim<<fNow;
     //! select the other
     if ( deltaAngle > fSep )
     { deltaAngle = deltaAngle - 360; }
     else
     {  }
 
-    deltaAngle *= dir ? -1 : 1;
-
+    deltaAngle *= dir ? 1 : -1;
+logDbg()<<deltaAngle;
     return deltaAngle;
 }
 

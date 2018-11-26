@@ -517,7 +517,7 @@ public:
 };
 
 Q_DECLARE_METATYPE( VRobot )
-Q_DECLARE_METATYPE( VRobot * )
+Q_DECLARE_METATYPE( VRobot* )
 
 class RoboTaskArgument
 {

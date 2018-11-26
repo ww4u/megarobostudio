@@ -964,155 +964,159 @@ int InstMgr::probeCANBus( IBus *pNewBus,
 
     sysProgress( 5, tr("enumerate") );
 
-    //! enumerate
-    ret = pNewBus->enumerate( m_pMainModel->mSysPref );
-    if ( ret != 0 )
-    { logDbg()<<ret; return ret; }
-
-    sysProgress( 30, tr("enumerate") );
-
-    //! create the device
-    deviceMRQ *pMRQ;
-    VRobot *pRobo;
-
-    //! a robo list
     roboList.attachBus( pNewBus );
 
-    int uiProgBase = 30;
-    float uiProgStep = 0;
-    if ( pNewBus->mDevices.size() > 0 )
-    { uiProgStep = 60/( pNewBus->mDevices.size()*2); }
-    int uiStep = 1;
-
-    //! apply for each id
-    foreach( DeviceId * pId, pNewBus->mDevices )
+    VRobot *pRobo;
+    //! enumerate for device
+    ret = pNewBus->enumerate( m_pMainModel->mSysPref );
+//    if ( ret != 0 )
+//    { logDbg()<<ret; return ret; }
+    if ( ret == 0 )
     {
-        //! detect device
-        if ( pNewBus->busType() == IBus::e_bus_can )
+        sysProgress( 30, tr("enumerate") );
+
+        //! create the device
+        deviceMRQ *pMRQ;
+
+        //! a robo list
+//        roboList.attachBus( pNewBus );
+
+        int uiProgBase = 30;
+        float uiProgStep = 0;
+        if ( pNewBus->mDevices.size() > 0 )
+        { uiProgStep = 60/( pNewBus->mDevices.size()*2); }
+        int uiStep = 1;
+
+        //! apply for each id
+        foreach( DeviceId * pId, pNewBus->mDevices )
         {
-            pMRQ = new deviceMRQ();
-            Q_ASSERT( NULL != pMRQ );
-
-            //! bus config
-            pMRQ->setInterval( m_pMainModel->mSysPref.mInterval );
-            pMRQ->setTimeout( m_pMainModel->mSysPref.mTimeout );
-
-            pMRQ->attachBus( pNewBus );
-            pNewBus->setDeviceId( *pId );
-            pMRQ->setInstMgr( this );
-
-            //! iter ref the sibling
-            ret = pMRQ->applyDeviceId( *pId );
-            if ( ret != 0 )
+            //! detect device
+            if ( pNewBus->busType() == IBus::e_bus_can )
             {
-                logDbg()<<ret;
+                pMRQ = new deviceMRQ();
+                Q_ASSERT( NULL != pMRQ );
+
+                //! bus config
+                pMRQ->setInterval( m_pMainModel->mSysPref.mInterval );
+                pMRQ->setTimeout( m_pMainModel->mSysPref.mTimeout );
+
+                pMRQ->attachBus( pNewBus );
+                pNewBus->setDeviceId( *pId );
+                pMRQ->setInstMgr( this );
+
+                //! iter ref the sibling
+                ret = pMRQ->applyDeviceId( *pId );
+                if ( ret != 0 )
+                {
+                    logDbg()<<ret;
+                    delete pMRQ;
+                    return ret;
+                }
+
                 delete pMRQ;
-                return ret;
-            }
-
-            delete pMRQ;
-        }
-    }
-
-    //! iterate
-    foreach( DeviceId * pId, pNewBus->mDevices )
-    {
-        //! detect device
-        {
-            pMRQ = new deviceMRQ();
-            Q_ASSERT( NULL != pMRQ );
-
-            //! bus config
-            pMRQ->setInterval( m_pMainModel->mSysPref.mInterval );
-            pMRQ->setTimeout( m_pMainModel->mSysPref.mTimeout );
-
-            pMRQ->attachBus( pNewBus );
-            pNewBus->setDeviceId( *pId );
-            pMRQ->setInstMgr( this );
-
-            //! iter ref the sibling
-            ret = pMRQ->setDeviceId( *pId );
-            if ( ret != 0 )
-            {
-                logDbg()<<ret;
-                delete pMRQ;
-                return ret;
-            }
-
-            //! get info
-            MRQ_SYSTEM_WORKMODE wm;
-            if ( pMRQ->getSYSTEM_WORKMODE( &wm ) == 0 )
-            {
-                pMRQ->uploadDesc();
-            }
-            else
-            {
             }
         }
-        sysProgress( uiProgBase + (uiStep++)*uiProgStep, tr("device") );
 
-        //! gen robo
+        //! iterate
+        foreach( DeviceId * pId, pNewBus->mDevices )
         {
-            //! get class
-            QString roboClass;
-            QString deviceDesc;
-
-            //! info
-            deviceDesc = pMRQ->getDesc();
-
-            //! class
-            roboClass = m_pMainModel->mDeviceDbs.findClass( deviceDesc );
-            delete pMRQ;
-
-            pRobo = robotFact::createRobot( roboClass );
-            if ( NULL == pRobo )
-            { return ERR_ALLOC_FAIL; }
-
-            //! delete the robo
-            //! bus config
-            pRobo->setInterval( m_pMainModel->mSysPref.mInterval );
-            pRobo->setTimeout( m_pMainModel->mSysPref.mTimeout );
-
-            pRobo->attachBus( pNewBus );
-            pRobo->setInstMgr( this );
-
-            //! iter ref the sibling
-            ret = pRobo->setDeviceId( *pId );
-            if ( ret != 0 )
+            //! detect device
             {
-                logDbg()<<ret;
-                delete pMRQ;
-                return ret;
-            }
+                pMRQ = new deviceMRQ();
+                Q_ASSERT( NULL != pMRQ );
 
-            //! get info
-            if ( deviceDesc.length() > 0 )
-            {
-                pRobo->rst();
-                pRobo->upload();
-            }
-            //! only for id
-            else
-            {
-                pRobo->upload( VDevice::e_device_content_id );
-            }
+                //! bus config
+                pMRQ->setInterval( m_pMainModel->mSysPref.mInterval );
+                pMRQ->setTimeout( m_pMainModel->mSysPref.mTimeout );
 
-            //! auto load setup
-            if ( m_pMainModel->mSysPref.mbAutoLoadSetup )
-            {
-                if ( 0!= pRobo->uploadSetting() )
-                { sysError( tr("load fail") ) ; }
+                pMRQ->attachBus( pNewBus );
+                pNewBus->setDeviceId( *pId );
+                pMRQ->setInstMgr( this );
+
+                //! iter ref the sibling
+                ret = pMRQ->setDeviceId( *pId );
+                if ( ret != 0 )
+                {
+                    logDbg()<<ret;
+                    delete pMRQ;
+                    return ret;
+                }
+
+                //! get info
+                MRQ_SYSTEM_WORKMODE wm;
+                if ( pMRQ->getSYSTEM_WORKMODE( &wm ) == 0 )
+                {
+                    pMRQ->uploadDesc();
+                }
                 else
-                { sysLog( tr("load success"), pRobo->name() );}
+                {
+                }
             }
+            sysProgress( uiProgBase + (uiStep++)*uiProgStep, tr("device") );
 
-            //! add robot
-            roboList.append( pRobo );
+            //! gen robo
+            {
+                //! get class
+                QString roboClass;
+                QString deviceDesc;
 
-            //! open scpi
-            pRobo->open();
+                //! info
+                deviceDesc = pMRQ->getDesc();
+
+                //! class
+                roboClass = m_pMainModel->mDeviceDbs.findClass( deviceDesc );
+                delete pMRQ;
+
+                pRobo = robotFact::createRobot( roboClass );
+                if ( NULL == pRobo )
+                { return ERR_ALLOC_FAIL; }
+
+                //! delete the robo
+                //! bus config
+                pRobo->setInterval( m_pMainModel->mSysPref.mInterval );
+                pRobo->setTimeout( m_pMainModel->mSysPref.mTimeout );
+
+                pRobo->attachBus( pNewBus );
+                pRobo->setInstMgr( this );
+
+                //! iter ref the sibling
+                ret = pRobo->setDeviceId( *pId );
+                if ( ret != 0 )
+                {
+                    logDbg()<<ret;
+                    delete pMRQ;
+                    return ret;
+                }
+
+                //! get info
+                if ( deviceDesc.length() > 0 )
+                {
+                    pRobo->rst();
+                    pRobo->upload();
+                }
+                //! only for id
+                else
+                {
+                    pRobo->upload( VDevice::e_device_content_id );
+                }
+
+                //! auto load setup
+                if ( m_pMainModel->mSysPref.mbAutoLoadSetup )
+                {
+                    if ( 0!= pRobo->uploadSetting() )
+                    { sysError( tr("load fail") ) ; }
+                    else
+                    { sysLog( tr("load success"), pRobo->name() );}
+                }
+
+                //! add robot
+                roboList.append( pRobo );
+
+                //! open scpi
+                pRobo->open();
+            }
+            sysProgress( uiProgBase + (uiStep++)*uiProgStep, tr("robo") );
         }
-        sysProgress( uiProgBase + (uiStep++)*uiProgStep, tr("robo") );
     }
 
     //! hub for e
@@ -1129,7 +1133,9 @@ int InstMgr::probeCANBus( IBus *pNewBus,
         roboList.append( pRobo );
     }
     //! hub for t
-    if ( pNewBus->pId() == MRH_T_PORT )
+    else if ( pNewBus->pId() == MRH_T_PORT
+              || pNewBus->pId() == USB_PORT
+              )
     {
         pRobo = new Mrh_t();
         if ( NULL == pRobo )
@@ -1141,6 +1147,8 @@ int InstMgr::probeCANBus( IBus *pNewBus,
         pRobo->open();
         roboList.append( pRobo );
     }
+    else
+    {  return ret; }
 
     return 0;
 }

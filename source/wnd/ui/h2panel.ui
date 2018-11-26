@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>572</width>
+    <width>531</width>
     <height>494</height>
    </rect>
   </property>
@@ -58,11 +58,7 @@
          </size>
         </property>
         <property name="text">
-         <string>...</string>
-        </property>
-        <property name="icon">
-         <iconset>
-          <normaloff>:/res/image/icon3/address.png</normaloff>:/res/image/icon3/address.png</iconset>
+         <string>Home</string>
         </property>
         <property name="iconSize">
          <size>
@@ -96,7 +92,7 @@
       <property name="spacing">
        <number>3</number>
       </property>
-      <item row="4" column="0" colspan="4">
+      <item row="3" column="0" colspan="2">
        <widget class="QGroupBox" name="groupBox_3">
         <property name="layoutDirection">
          <enum>Qt::LeftToRight</enum>
@@ -149,7 +145,7 @@
             <string>GO</string>
            </property>
            <property name="icon">
-            <iconset>
+            <iconset resource="../res/res.qrc">
              <normaloff>:/res/image/icon/skip.png</normaloff>:/res/image/icon/skip.png</iconset>
            </property>
            <property name="iconSize">
@@ -217,7 +213,7 @@
             <string>Mark</string>
            </property>
            <property name="icon">
-            <iconset>
+            <iconset resource="../res/res.qrc">
              <normaloff>:/res/image/icon/addition.png</normaloff>:/res/image/icon/addition.png</iconset>
            </property>
            <property name="iconSize">
@@ -260,62 +256,7 @@
         </layout>
        </widget>
       </item>
-      <item row="3" column="0" colspan="4">
-       <widget class="QGroupBox" name="groupBox_7">
-        <property name="title">
-         <string>Nominal</string>
-        </property>
-        <layout class="QGridLayout" name="gridLayout_5">
-         <item row="0" column="0">
-          <widget class="QLabel" name="label_4">
-           <property name="text">
-            <string>X</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="2">
-          <widget class="QLabel" name="label_11">
-           <property name="text">
-            <string>Y</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QDoubleSpinBox" name="spinNX">
-           <property name="suffix">
-            <string>mm</string>
-           </property>
-           <property name="decimals">
-            <number>3</number>
-           </property>
-           <property name="minimum">
-            <double>-1000000.000000000000000</double>
-           </property>
-           <property name="maximum">
-            <double>1000000.000000000000000</double>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="3">
-          <widget class="QDoubleSpinBox" name="spinNY">
-           <property name="suffix">
-            <string>mm</string>
-           </property>
-           <property name="decimals">
-            <number>3</number>
-           </property>
-           <property name="minimum">
-            <double>-1000000.000000000000000</double>
-           </property>
-           <property name="maximum">
-            <double>1000000.000000000000000</double>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </item>
-      <item row="1" column="0" rowspan="2" colspan="4">
+      <item row="1" column="0" rowspan="2" colspan="2">
        <widget class="QGroupBox" name="groupBox_8">
         <property name="title">
          <string>Current Position</string>
@@ -428,7 +369,54 @@
      </layout>
     </widget>
    </item>
-   <item row="2" column="0">
+   <item row="0" column="1">
+    <widget class="QGroupBox" name="groupBox_9">
+     <property name="title">
+      <string/>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <widget class="QLabel" name="label_8">
+        <property name="maximumSize">
+         <size>
+          <width>200</width>
+          <height>200</height>
+         </size>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="pixmap">
+         <pixmap resource="../res/res.qrc">:/res/image/joint/mrx-h2_geo.png</pixmap>
+        </property>
+        <property name="scaledContents">
+         <bool>true</bool>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="0" column="2">
+    <spacer name="horizontalSpacer_2">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>40</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="2" column="0" colspan="2">
     <widget class="QGroupBox" name="groupBox_6">
      <property name="title">
       <string/>
@@ -460,197 +448,328 @@
         <property name="title">
          <string/>
         </property>
-        <layout class="QGridLayout" name="gridLayout">
-         <property name="leftMargin">
-          <number>3</number>
-         </property>
-         <property name="topMargin">
-          <number>3</number>
-         </property>
-         <property name="rightMargin">
-          <number>3</number>
-         </property>
-         <property name="bottomMargin">
-          <number>3</number>
-         </property>
-         <property name="spacing">
-          <number>3</number>
-         </property>
-         <item row="1" column="1">
-          <widget class="QToolButton" name="btnMarkNow">
-           <property name="enabled">
-            <bool>true</bool>
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <item>
+          <widget class="QGroupBox" name="groupBox_7">
+           <property name="title">
+            <string/>
            </property>
-           <property name="maximumSize">
-            <size>
-             <width>32</width>
-             <height>32</height>
-            </size>
-           </property>
-           <property name="toolTip">
-            <string>Smart Add</string>
-           </property>
-           <property name="text">
-            <string>PushButton</string>
-           </property>
-           <property name="icon">
-            <iconset>
-             <normaloff>:/res/image/icon/addition.png</normaloff>:/res/image/icon/addition.png</iconset>
-           </property>
-           <property name="iconSize">
-            <size>
-             <width>32</width>
-             <height>32</height>
-            </size>
-           </property>
+           <layout class="QGridLayout" name="gridLayout_5">
+            <item row="0" column="1">
+             <widget class="QToolButton" name="btnXP">
+              <property name="maximumSize">
+               <size>
+                <width>32</width>
+                <height>32</height>
+               </size>
+              </property>
+              <property name="toolTip">
+               <string>Step X</string>
+              </property>
+              <property name="text">
+               <string>...</string>
+              </property>
+              <property name="icon">
+               <iconset resource="../res/res.qrc">
+                <normaloff>:/res/image/icon/c_add.png</normaloff>:/res/image/icon/c_add.png</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>32</width>
+                <height>32</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QToolButton" name="btnYN">
+              <property name="maximumSize">
+               <size>
+                <width>32</width>
+                <height>32</height>
+               </size>
+              </property>
+              <property name="toolTip">
+               <string>Step Y</string>
+              </property>
+              <property name="text">
+               <string>...</string>
+              </property>
+              <property name="icon">
+               <iconset resource="../res/res.qrc">
+                <normaloff>:/res/image/icon/c_back.png</normaloff>:/res/image/icon/c_back.png</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>32</width>
+                <height>32</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QToolButton" name="btnMarkNow">
+              <property name="enabled">
+               <bool>true</bool>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>32</width>
+                <height>32</height>
+               </size>
+              </property>
+              <property name="toolTip">
+               <string>Smart Add</string>
+              </property>
+              <property name="text">
+               <string>PushButton</string>
+              </property>
+              <property name="icon">
+               <iconset resource="../res/res.qrc">
+                <normaloff>:/res/image/icon/addition.png</normaloff>:/res/image/icon/addition.png</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>32</width>
+                <height>32</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="2">
+             <widget class="QToolButton" name="btnYP">
+              <property name="maximumSize">
+               <size>
+                <width>32</width>
+                <height>32</height>
+               </size>
+              </property>
+              <property name="toolTip">
+               <string>Step Y</string>
+              </property>
+              <property name="text">
+               <string>...</string>
+              </property>
+              <property name="icon">
+               <iconset resource="../res/res.qrc">
+                <normaloff>:/res/image/icon/c_more.png</normaloff>:/res/image/icon/c_more.png</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>32</width>
+                <height>32</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QToolButton" name="btnXN">
+              <property name="maximumSize">
+               <size>
+                <width>32</width>
+                <height>32</height>
+               </size>
+              </property>
+              <property name="toolTip">
+               <string>Step X</string>
+              </property>
+              <property name="text">
+               <string>...</string>
+              </property>
+              <property name="icon">
+               <iconset resource="../res/res.qrc">
+                <normaloff>:/res/image/icon/c_subtract.png</normaloff>:/res/image/icon/c_subtract.png</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>32</width>
+                <height>32</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </widget>
          </item>
-         <item row="0" column="1">
-          <widget class="QToolButton" name="btnXP">
-           <property name="maximumSize">
-            <size>
-             <width>32</width>
-             <height>32</height>
-            </size>
+         <item>
+          <widget class="QGroupBox" name="groupBox_10">
+           <property name="title">
+            <string/>
            </property>
-           <property name="toolTip">
-            <string>Step X</string>
-           </property>
-           <property name="text">
-            <string>...</string>
-           </property>
-           <property name="icon">
-            <iconset>
-             <normaloff>:/res/image/icon/c_add.png</normaloff>:/res/image/icon/c_add.png</iconset>
-           </property>
-           <property name="iconSize">
-            <size>
-             <width>32</width>
-             <height>32</height>
-            </size>
-           </property>
+           <layout class="QGridLayout" name="gridLayout_9">
+            <property name="leftMargin">
+             <number>9</number>
+            </property>
+            <property name="topMargin">
+             <number>9</number>
+            </property>
+            <property name="rightMargin">
+             <number>9</number>
+            </property>
+            <property name="bottomMargin">
+             <number>9</number>
+            </property>
+            <property name="spacing">
+             <number>6</number>
+            </property>
+            <item row="0" column="1">
+             <widget class="QToolButton" name="btnXP_2">
+              <property name="maximumSize">
+               <size>
+                <width>32</width>
+                <height>32</height>
+               </size>
+              </property>
+              <property name="toolTip">
+               <string>Continous X</string>
+              </property>
+              <property name="text">
+               <string>...</string>
+              </property>
+              <property name="icon">
+               <iconset resource="../res/res.qrc">
+                <normaloff>:/res/image/icon/r_arrowup.png</normaloff>:/res/image/icon/r_arrowup.png</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>32</width>
+                <height>32</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QToolButton" name="btnYN_2">
+              <property name="maximumSize">
+               <size>
+                <width>32</width>
+                <height>32</height>
+               </size>
+              </property>
+              <property name="toolTip">
+               <string>Continous Y</string>
+              </property>
+              <property name="text">
+               <string>...</string>
+              </property>
+              <property name="icon">
+               <iconset resource="../res/res.qrc">
+                <normaloff>:/res/image/icon/g_arrowleft.png</normaloff>:/res/image/icon/g_arrowleft.png</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>32</width>
+                <height>32</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="2">
+             <widget class="QToolButton" name="btnYP_2">
+              <property name="maximumSize">
+               <size>
+                <width>32</width>
+                <height>32</height>
+               </size>
+              </property>
+              <property name="toolTip">
+               <string>Continous Y</string>
+              </property>
+              <property name="text">
+               <string>...</string>
+              </property>
+              <property name="icon">
+               <iconset resource="../res/res.qrc">
+                <normaloff>:/res/image/icon/g_arrowright.png</normaloff>:/res/image/icon/g_arrowright.png</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>32</width>
+                <height>32</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QToolButton" name="btnMarkNow_2">
+              <property name="enabled">
+               <bool>true</bool>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>32</width>
+                <height>32</height>
+               </size>
+              </property>
+              <property name="toolTip">
+               <string>Smart Add</string>
+              </property>
+              <property name="text">
+               <string>PushButton</string>
+              </property>
+              <property name="icon">
+               <iconset resource="../res/res.qrc">
+                <normaloff>:/res/image/icon/addition.png</normaloff>:/res/image/icon/addition.png</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>32</width>
+                <height>32</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QToolButton" name="btnXN_2">
+              <property name="maximumSize">
+               <size>
+                <width>32</width>
+                <height>32</height>
+               </size>
+              </property>
+              <property name="toolTip">
+               <string>Continous X</string>
+              </property>
+              <property name="text">
+               <string>...</string>
+              </property>
+              <property name="icon">
+               <iconset resource="../res/res.qrc">
+                <normaloff>:/res/image/icon/r_arrowdown.png</normaloff>:/res/image/icon/r_arrowdown.png</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>32</width>
+                <height>32</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </widget>
          </item>
-         <item row="1" column="0">
-          <widget class="QToolButton" name="btnYN">
-           <property name="maximumSize">
-            <size>
-             <width>32</width>
-             <height>32</height>
-            </size>
-           </property>
-           <property name="toolTip">
-            <string>Step Y</string>
-           </property>
-           <property name="text">
-            <string>...</string>
-           </property>
-           <property name="icon">
-            <iconset>
-             <normaloff>:/res/image/icon/c_back.png</normaloff>:/res/image/icon/c_back.png</iconset>
-           </property>
-           <property name="iconSize">
-            <size>
-             <width>32</width>
-             <height>32</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="2">
-          <widget class="QToolButton" name="btnYP">
-           <property name="maximumSize">
-            <size>
-             <width>32</width>
-             <height>32</height>
-            </size>
-           </property>
-           <property name="toolTip">
-            <string>Step Y</string>
-           </property>
-           <property name="text">
-            <string>...</string>
-           </property>
-           <property name="icon">
-            <iconset>
-             <normaloff>:/res/image/icon/c_more.png</normaloff>:/res/image/icon/c_more.png</iconset>
-           </property>
-           <property name="iconSize">
-            <size>
-             <width>32</width>
-             <height>32</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="4">
-          <spacer name="horizontalSpacer">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item row="2" column="1">
-          <widget class="QToolButton" name="btnXN">
-           <property name="maximumSize">
-            <size>
-             <width>32</width>
-             <height>32</height>
-            </size>
-           </property>
-           <property name="toolTip">
-            <string>Step X</string>
-           </property>
-           <property name="text">
-            <string>...</string>
-           </property>
-           <property name="icon">
-            <iconset>
-             <normaloff>:/res/image/icon/c_subtract.png</normaloff>:/res/image/icon/c_subtract.png</iconset>
-           </property>
-           <property name="iconSize">
-            <size>
-             <width>32</width>
-             <height>32</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="3" rowspan="3">
+         <item>
           <widget class="QGroupBox" name="groupBox_5">
            <property name="title">
             <string/>
            </property>
            <layout class="QGridLayout" name="gridLayout_3">
             <property name="leftMargin">
-             <number>3</number>
+             <number>9</number>
             </property>
             <property name="topMargin">
-             <number>6</number>
+             <number>9</number>
             </property>
             <property name="rightMargin">
-             <number>3</number>
+             <number>9</number>
             </property>
             <property name="bottomMargin">
-             <number>3</number>
+             <number>9</number>
             </property>
             <property name="spacing">
-             <number>3</number>
+             <number>6</number>
             </property>
-            <item row="1" column="0">
-             <widget class="QLabel" name="label_5">
-              <property name="text">
-               <string>t</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="1">
+            <item row="0" column="1">
              <widget class="QDoubleSpinBox" name="spinStepT">
               <property name="suffix">
                <string>s</string>
@@ -666,14 +785,21 @@
               </property>
              </widget>
             </item>
-            <item row="2" column="0">
+            <item row="1" column="0">
              <widget class="QLabel" name="label_6">
               <property name="text">
                <string>Step</string>
               </property>
              </widget>
             </item>
-            <item row="2" column="1">
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_5">
+              <property name="text">
+               <string>t</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
              <widget class="QDoubleSpinBox" name="spinStepV">
               <property name="suffix">
                <string>mm</string>
@@ -689,74 +815,40 @@
               </property>
              </widget>
             </item>
-            <item row="0" column="0" colspan="2">
-             <widget class="QCheckBox" name="chkSingle">
-              <property name="layoutDirection">
-               <enum>Qt::LeftToRight</enum>
+            <item row="2" column="1">
+             <spacer name="verticalSpacer_2">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
               </property>
-              <property name="text">
-               <string>Single</string>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
               </property>
-              <property name="checked">
-               <bool>true</bool>
-              </property>
-             </widget>
+             </spacer>
             </item>
            </layout>
           </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
          </item>
         </layout>
        </widget>
       </item>
      </layout>
     </widget>
-   </item>
-   <item row="0" column="1">
-    <widget class="QGroupBox" name="groupBox_9">
-     <property name="title">
-      <string/>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-     </property>
-     <layout class="QVBoxLayout" name="verticalLayout">
-      <item>
-       <widget class="QLabel" name="label_8">
-        <property name="maximumSize">
-         <size>
-          <width>200</width>
-          <height>200</height>
-         </size>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="pixmap">
-         <pixmap>:/res/image/joint/mrx-h2_geo.png</pixmap>
-        </property>
-        <property name="scaledContents">
-         <bool>true</bool>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="0" column="2">
-    <spacer name="horizontalSpacer_2">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>40</width>
-       <height>20</height>
-      </size>
-     </property>
-    </spacer>
    </item>
   </layout>
  </widget>
@@ -773,6 +865,8 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="../res/res.qrc"/>
+ </resources>
  <connections/>
 </ui>

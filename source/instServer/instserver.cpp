@@ -85,18 +85,19 @@ void instServer::slot_newConnection( QObject *pObj )
 
 //    qDebug()<<__FUNCTION__<<__LINE__<<pSocket->peerAddress()<<pSocket->peerName();
 
-    //! ready ready
-    connect( pSocket,
-             SIGNAL(readyRead()),
-             &mSignalMap,
-             SLOT(map()) );
-    mSignalMap.setMapping( pSocket, pSocket );
-
-    connect( &mSignalMap, SIGNAL(mapped(QObject*)),
-             SLOT(slot_readyRead(QObject*)));
-
     //! destroy
     mServiceMutex.lock();
+
+        //! ready ready
+        connect( pSocket,
+                 SIGNAL(readyRead()),
+                 &mSignalMap,
+                 SLOT(map()) );
+        mSignalMap.setMapping( pSocket, pSocket );
+
+        connect( &mSignalMap, SIGNAL(mapped(QObject*)),
+                 SLOT(slot_readyRead(QObject*)));
+
         mServiceSockets.append( pSocket );
         connect( pSocket, SIGNAL(destroyed(QObject*)),
                  this, SLOT(slot_destroyConnection(QObject *)));
@@ -106,7 +107,7 @@ void instServer::slot_newConnection( QObject *pObj )
     connect( pSocket, SIGNAL(disconnected()),
              pSocket, SLOT(deleteLater()));
 
-    qDebug()<<__FUNCTION__<<__LINE__;
+    qDebug()<<__FUNCTION__<<__LINE__<<mServiceSockets.size();
 }
 
 void instServer::slot_readyRead( QObject *pObj )
@@ -160,6 +161,12 @@ bool instServer::start( quint32 port, int portCnt )
 
     bool bRet;
 
+    if ( portCnt != mServerList.size() )
+    {}
+    else
+    { return true; }
+
+    //! start again
     clear();
 
     //! create listen
@@ -193,22 +200,23 @@ bool instServer::start( quint32 port, int portCnt )
 }
 void instServer::stop()
 {
+    //! server
+//    clear();
+
     //! for the sockets
     mServiceMutex.lock();
         foreach( QTcpSocket *pSock, mServiceSockets )
         {
             Q_ASSERT( NULL != pSock );
             pSock->close();
+            mSignalMap.removeMappings( pSock );
         }
         mServiceSockets.clear();
+//        mSignalMap.
     mServiceMutex.unlock();
-
-    //! server
-    clear();
 }
 bool instServer::isListening()
 {
-//    return mServer.isListening();
     return mServerList.size() > 0 ;
 }
 

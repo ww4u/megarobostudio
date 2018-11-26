@@ -10,20 +10,22 @@
 
 #include "itemhelp.h"
 
-namespace Ui {
-class roboMgr;
-}
+//namespace Ui {
+//class roboMgr;
+//}
 
-class roboMgr : public QWidget
+class roboMgr : public QListWidget
 {
     Q_OBJECT
 
 public:
-    explicit roboMgr(QWidget *parent = 0);
+    explicit roboMgr(QListWidget *parent = 0);
     ~roboMgr();
 
 protected:
-    virtual QSize sizeHint() const;
+//    virtual QSize sizeHint() const;
+    virtual QMimeData *mimeData(const QList<QListWidgetItem *> items) const;
+    virtual QStringList mimeTypes() const;
 
 public:
     void setModel( const modelRobotMgr &mgr );
@@ -41,7 +43,7 @@ private slots:
     void on_listWidget_itemActivated(QListWidgetItem *item);
 
 private:
-    Ui::roboMgr *ui;
+//    Ui::roboMgr *ui;
 
     QList< VRobot * > mRobots;
 

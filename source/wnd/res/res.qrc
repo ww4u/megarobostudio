@@ -13,6 +13,16 @@
         <file>image/statediagram.png</file>
         <file>image/h2arch.png</file>
 
+<file>image/icon/g_arrowdown.png</file>
+<file>image/icon/g_arrowup.png</file>
+<file>image/icon/g_arrowleft.png</file>
+<file>image/icon/g_arrowright.png</file>
+
+<file>image/icon/r_arrowdown.png</file>
+<file>image/icon/r_arrowup.png</file>
+<file>image/icon/r_arrowleft.png</file>
+<file>image/icon/r_arrowright.png</file>
+
 <file>image/icon/triangle.png</file>
 <file>image/icon/world.png</file>
 <file>image/icon/03.png</file>

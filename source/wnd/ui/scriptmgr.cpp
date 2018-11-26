@@ -83,7 +83,8 @@ void scriptMgr::contextMenuEvent(QContextMenuEvent *event)
     //! script mgr
     if ( ui->tabWidget->currentWidget()->objectName() == "scriptView" )
     {
-        QModelIndex index = ui->scriptView->indexAt( event->pos() );
+        QPoint posView = ui->scriptView->mapFrom( this, event->pos() );
+        QModelIndex index = ui->scriptView->indexAt( posView );
 
         if ( index.isValid() )
         {}
@@ -97,6 +98,7 @@ void scriptMgr::contextMenuEvent(QContextMenuEvent *event)
         //! is root?
         scriptNode *pNode = static_cast<scriptNode*>(index.internalPointer());
         Q_ASSERT( NULL != pNode );
+        logDbg()<<pNode->name();
         m_pRemoveAction->setVisible( pNode->getParent() != 0 );
 
         m_pImportAction->setEnabled( getPath().length() > 0 );

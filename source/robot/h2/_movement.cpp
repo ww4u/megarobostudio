@@ -109,7 +109,7 @@ bool robotH2::checkZeroValid()
 
         //! get the pos
         subBits = ( dio >> (4 * ax) ) & 0x03;
-        if ( subBits != 3 )
+        if ( subBits != 0 )
         { return false; }
     }
 
@@ -484,7 +484,7 @@ int robotH2::pose( float &x, float &y )
 
     //! convert
     QList<int> gantry;
-    gantry<<mToothType<<mToothGear<<mPDirIndex<<mMotionIndex;
+    gantry<<mToothType<<mToothGear<<mPDirIndex<<0;      //! \note 0 for angle in
 
     QList<double> zeroXy;
     zeroXy.append( mZeroX );

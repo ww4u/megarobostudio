@@ -860,6 +860,64 @@ static scpi_result_t _scpi_encoderZero( scpi_t * context )
     return SCPI_RES_OK;
 }
 
+//! ax, acc%, dec%
+static scpi_result_t _scpi_slew( scpi_t * context )
+{
+    DEF_LOCAL_VAR();
+
+    DEF_MRQ();
+
+    int ax;
+    float acc, dec;
+
+    if ( SCPI_RES_OK != SCPI_ParamInt32( context, &ax, true ) )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    if ( SCPI_RES_OK != SCPI_ParamFloat( context, &acc, true ) )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    if ( SCPI_RES_OK != SCPI_ParamFloat( context, &dec, true ) )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    //! check ax acc dec
+    if ( ax < 0 || ax >= LOCALMRQ()->axes() )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    if ( acc <= 0 || dec <=0 || (acc+dec)>=100 )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    LOCALMRQ()->setAccScale( ax, acc/0.1 );
+    LOCALMRQ()->setDecScale( ax, dec/0.1 );
+
+    return SCPI_RES_OK;
+}
+
+static scpi_result_t _scpi_q_slew( scpi_t * context )
+{
+    DEF_LOCAL_VAR();
+
+    DEF_MRQ();
+
+    int ax;
+
+    if ( SCPI_RES_OK != SCPI_ParamInt32( context, &ax, true ) )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    //! check ax acc dec
+    if ( ax < 0 || ax >= LOCALMRQ()->axes() )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    int acc, dec;
+
+    acc = LOCALMRQ()->getAccScale( ax );
+    dec = LOCALMRQ()->getDecScale( ax );
+
+    QString str = QString("%1,%2").arg( acc*0.1).arg( dec*0.1 );
+    SCPI_ResultText( context, str.toLatin1().data() );
+
+    return SCPI_RES_OK;
+}
+
 static scpi_result_t _scpi_busFrames( scpi_t * context )
 {
     DEF_LOCAL_VAR();
@@ -1067,6 +1125,9 @@ static scpi_command_t _mrq_scpi_cmds[]=
 
     CMD_ITEM( "ENCODER:ZEROVALID?", _scpi_encoderZeroValid ),
     CMD_ITEM( "ENCODER:ZERO?", _scpi_encoderZero ),
+
+    CMD_ITEM( "SLEW", _scpi_slew ),
+    CMD_ITEM( "SLEW?", _scpi_q_slew ),
 
     CMD_ITEM( "FRAMES?", _scpi_busFrames ),
 

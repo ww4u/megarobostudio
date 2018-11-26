@@ -180,6 +180,18 @@ float comAssist::eulcidenDistance( float x1, float y1, float z1,
     return qSqrt( pow(x1-x2,2 ) + pow( y1-y2, 2 ) + pow(z1-z2, 2 ) );
 }
 
+float comAssist::eulcidenTime( float x1, float y1, float z1,
+                              float x2, float y2, float z2,
+                              float v )
+{
+    float dist = comAssist::eulcidenDistance( x1, y1, z1,
+                                              x2, y2, z2 );
+    Q_ASSERT( v != 0 );
+
+    return dist/qAbs( v );
+}
+
+
 bool comAssist::convertDataset( const QStringList &line,
                                float *pData,
                                int cols,

@@ -1,26 +1,65 @@
 #include "robomgr.h"
-#include "ui_robomgr.h"
+//#include "ui_robomgr.h"
 
 #include "../../robot/robotfact.h"
 
-roboMgr::roboMgr(QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::roboMgr)
+roboMgr::roboMgr(QListWidget *parent) :
+    QListWidget(parent)
+//  ,
+//    ui(new Ui::roboMgr)
 {
-    ui->setupUi(this);
+//    ui->setupUi(this);
 
     mbOperable = false;
+
+    setViewMode( IconMode );
+    setIconSize( QSize(48,48) );
+
+    setDragDropMode( NoDragDrop );
+    setEditTriggers( NoEditTriggers );
+
+    setResizeMode( Adjust );
+    setMovement( Free );
+
+
 }
 
 roboMgr::~roboMgr()
 {
     delete_all( mRobots );
 
-    delete ui;
+//    delete ui;
 }
 
-QSize roboMgr::sizeHint() const
-{ return QSize(180,0);}
+QMimeData *roboMgr::mimeData(const QList<QListWidgetItem *> items) const
+{
+    if ( items.size() == 1 )
+    {}
+    else
+    { return NULL; }
+
+    QListWidgetItem *pItem = items.at(0);
+
+    QMimeData *pMime = new QMimeData();
+    if ( NULL == pMime )
+    { return NULL; }
+
+    //! get role
+    QVariant var = pItem->data( Qt::UserRole );
+    VRobot *pBase = var.value<VRobot *>();
+
+    pMime->setData( "robomgr/robot", pBase->getClass().toLatin1() );
+    return pMime;
+}
+
+QStringList roboMgr::mimeTypes() const
+{
+    QStringList mimeList;
+    return mimeList<<"robomgr/robot";
+}
+
+//QSize roboMgr::sizeHint() const
+//{ return QSize(180,0);}
 
 void roboMgr::setModel( const modelRobotMgr &mgr )
 {
@@ -49,7 +88,8 @@ void roboMgr::setupData()
         pItem->setData( Qt::UserRole, QVariant::fromValue( pRobo ) );
         pItem->setToolTip( pRobo->getClass() );
 
-        ui->listWidget->addItem( pItem );
+//        ui->listWidget->addItem( pItem );
+        addItem( pItem );
     }
 }
 
@@ -58,6 +98,7 @@ void roboMgr::setOperable( bool b )
 bool roboMgr::operAble()
 { return mbOperable; }
 
+//! double click
 void roboMgr::on_listWidget_itemActivated(QListWidgetItem *item)
 {
     if ( NULL == item )

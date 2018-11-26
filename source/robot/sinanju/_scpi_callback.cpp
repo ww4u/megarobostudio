@@ -370,6 +370,65 @@ static scpi_result_t _scpi_premovet( scpi_t * context )
     return SCPI_RES_OK;
 }
 
+//! goto ax,page,motionMode,step
+//! x1,y1,z1,v
+static scpi_result_t _scpi_routeTo( scpi_t * context )
+{
+    DEF_LOCAL_VAR();
+
+    int ax, page, motionMode;
+    float step;
+
+    if ( SCPI_ParamInt32(context, &ax, true) != true )
+    { scpi_ret( SCPI_RES_ERR ); }
+    if ( SCPI_ParamInt32(context, &page, true) != true )
+    { scpi_ret( SCPI_RES_ERR ); }
+    if ( SCPI_ParamInt32(context, &motionMode, true) != true )
+    { scpi_ret( SCPI_RES_ERR ); }
+    if ( SCPI_ParamFloat(context, &step, true) != true )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    float vals[4];
+
+    for ( int i = 0; i < sizeof_array(vals); i++ )
+    {
+        if ( SCPI_RES_OK != SCPI_ParamFloat( context, vals+i, true ) )
+        { scpi_ret( SCPI_RES_ERR ); }
+    }
+
+    //! robo op
+    DEF_ROBO();
+
+    CHECK_LINK();
+
+    //! current
+    TraceKeyPoint pose;
+    int ret = pRobo->nowPose( pose );
+    if ( ret != 0 )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    //! guess the time by speed
+    float guessT = comAssist::eulcidenTime( pose.x, pose.y, pose.z,
+                                       vals[0], vals[1], vals[2],
+                                       vals[3] );
+
+    //! default interp
+    TraceKeyPoint pt1( 0, pose.x, pose.y, pose.z, 0 );
+    TraceKeyPoint pt2( guessT, vals[0], vals[1], vals[2], 0 );
+
+    //! check the step
+    if ( step > 0 )
+    { pt1.iMask = 1; }
+
+    TraceKeyPointList curve;
+    curve.append( pt1 );
+    curve.append( pt2 );
+
+    pRobo->move( curve, tpvRegion(ax,page,motionMode) );
+
+    return SCPI_RES_OK;
+}
+
 //! goto ax,page,motionMode,
 //! x1,y1,z1,t
 static scpi_result_t _scpi_goto( scpi_t * context )
@@ -704,20 +763,10 @@ static scpi_result_t _scpi_steph( scpi_t * context )
     return SCPI_RES_OK;
 }
 
-//! ax, page, file, motionMode = -1
-static scpi_result_t _scpi_program( scpi_t * context )
+static scpi_result_t _scpi_load_mrp( scpi_t * context,
+                                     int ax, int page,
+                                     const QString &file )
 {
-    // read
-    DEF_LOCAL_VAR();
-
-    int ax, page;
-    QString file;
-
-    if ( deload_ax_page_file( context, ax, page, file) == SCPI_RES_OK )
-    {}
-    else
-    { scpi_ret( SCPI_RES_ERR ); }
-
     //! data set
     MDataSet dataSet;
     DEF_ROBO();
@@ -784,98 +833,110 @@ static scpi_result_t _scpi_program( scpi_t * context )
     { scpi_ret( SCPI_RES_ERR ); }
 
     return SCPI_RES_OK;
+}
 
-//    // read
-//    DEF_LOCAL_VAR();
+static scpi_result_t _scpi_load_pre_ver( scpi_t * context,
+                                     int ax, int page,
+                                     const QString &file )
+{
+    // read
+    DEF_LOCAL_VAR();
 
-//    int ax, page;
+    //! check motion mode
+    int motionMode = -1;
 
-//    if ( SCPI_ParamInt32(context, &ax, true) != true )
-//    { scpi_ret( SCPI_RES_ERR ); }
+    QList<float> dataset;
+    //! try .mc
+    int col = 0;
+    //! t,x,y,z,h,imask
+    QList<int> seqList;
+    QList<int> dataCols;
+    int ret;
+    do
+    {
+        //! en,name,t,x,y,z,h,mode,comment
+        col = 9;
+        dataset.clear();
+        dataCols.clear();
+        dataCols<<2<<3<<4<<5<<6<<7;     //! \note some string
+        ret = comAssist::loadDataset( file, col, dataCols, dataset );
+        if ( 0 == ret && ( dataset.size() / col ) > 1  )
+        {
+            seqList<<2<<3<<4<<5<<6<<7;
+            break;
+        }
 
-//    if ( SCPI_ParamInt32(context, &page, true) != true )
-//    { scpi_ret( SCPI_RES_ERR ); }
+        //! x,y,z,h,t,interp
+        col = 6;
+        dataset.clear();
+        dataCols.clear();
+        dataCols<<0<<1<<2<<3<<4<<5;
+        if ( 0 == comAssist::loadDataset( file, col, dataCols, dataset ) )
+        {
+            seqList<<4<<0<<1<<2<<3<<5;
+            break;
+        }
 
-//    if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
-//    { scpi_ret( SCPI_RES_ERR ); }logDbg()<<strLen<<pLocalStr;
-//    if (strLen < 1)
-//    { scpi_ret( SCPI_RES_ERR ); }
+        scpi_ret( SCPI_RES_ERR );
+    }while ( 0 );
 
-//    //! check motion mode
-//    int motionMode = -1;
-//    if ( SCPI_ParamInt32(context, &motionMode, true) != true )
-//    { motionMode = -1; }
-//    else
-//    {}
+    //! point
+    if ( dataset.size() / col < 2 )
+    { scpi_ret( SCPI_RES_ERR ); }
 
-//    QList<float> dataset;
-//    //! try .mc
-//    int col = 0;
-//    //! t,x,y,z,h,imask
-//    QList<int> seqList;
-//    QList<int> dataCols;
-//    int ret;
-//    do
-//    {
-//        //! en,name,t,x,y,z,h,mode,comment
-//        col = 9;
-//        dataset.clear();
-//        dataCols.clear();
-//        dataCols<<2<<3<<4<<5<<6<<7;     //! \note some string
-//        ret = comAssist::loadDataset( pLocalStr, strLen, col, dataCols, dataset );
-//        if ( 0 == ret && ( dataset.size() / col ) > 1  )
-//        {
-//            seqList<<2<<3<<4<<5<<6<<7;
-//            break;
-//        }
+    TraceKeyPointList curve;
+    TraceKeyPoint tp;
 
-//        //! x,y,z,h,t,interp
-//        col = 6;
-//        dataset.clear();
-//        dataCols.clear();
-//        dataCols<<0<<1<<2<<3<<4<<5;
-//        if ( 0 == comAssist::loadDataset( pLocalStr, strLen, col, dataCols, dataset ) )
-//        {
-//            seqList<<4<<0<<1<<2<<3<<5;
-//            break;
-//        }
+    Q_ASSERT( seqList.size() == 6 );
+    for ( int i = 0; i < dataset.size()/col; i++ )
+    {
+        //! 0 1 2 3 4 5
+        //! x,y,z,h,t,interp
+        tp.t = dataset.at( i * col + seqList.at(0) );
 
-//        scpi_ret( SCPI_RES_ERR );
-//    }while ( 0 );
+        tp.x = dataset.at( i * col + seqList.at(1) );
+        tp.y = dataset.at( i * col + seqList.at(2) );
+        tp.z = dataset.at( i * col + seqList.at(3) );
+        tp.hand = dataset.at( i * col + seqList.at(4) );
 
-//    //! point
-//    if ( dataset.size() / col < 2 )
-//    { scpi_ret( SCPI_RES_ERR ); }
+        tp.iMask = dataset.at( i * col + seqList.at(5) );
 
-//    TraceKeyPointList curve;
-//    TraceKeyPoint tp;
+        curve.append( tp );
 
-//    Q_ASSERT( seqList.size() == 6 );
-//    for ( int i = 0; i < dataset.size()/col; i++ )
-//    {
-//        //! 0 1 2 3 4 5
-//        //! x,y,z,h,t,interp
-//        tp.t = dataset.at( i * col + seqList.at(0) );
+//        logDbg()<<tp.t<<tp.x<<tp.y<<tp.z<<tp.hand<<tp.iMask;
+    }
 
-//        tp.x = dataset.at( i * col + seqList.at(1) );
-//        tp.y = dataset.at( i * col + seqList.at(2) );
-//        tp.z = dataset.at( i * col + seqList.at(3) );
-//        tp.hand = dataset.at( i * col + seqList.at(4) );
+    DEF_ROBO();
 
-//        tp.iMask = dataset.at( i * col + seqList.at(5) );
+    CHECK_LINK();
 
-//        curve.append( tp );
+    pRobo->program( curve, tpvRegion( ax, page, motionMode) );
 
-////        logDbg()<<tp.t<<tp.x<<tp.y<<tp.z<<tp.hand<<tp.iMask;
-//    }
+    return SCPI_RES_OK;
+}
 
-//    DEF_ROBO();
+//! ax, page, file, motionMode = -1
+static scpi_result_t _scpi_program( scpi_t * context )
+{
+    // read
+    DEF_LOCAL_VAR();
 
-//    CHECK_LINK();
+    int ax, page;
+    QString file;
 
-//    pRobo->program( curve, tpvRegion( ax, page, motionMode) );
+    if ( deload_ax_page_file( context, ax, page, file) == SCPI_RES_OK )
+    {}
+    else
+    { scpi_ret( SCPI_RES_ERR ); }
 
-//    return SCPI_RES_OK;
+    //! mrp
+    scpi_result_t lRet = _scpi_load_mrp( context, ax, page, file );
+    if ( lRet == SCPI_RES_OK )
+    { return lRet; }
+
+    //! lret
+    lRet = _scpi_load_pre_ver( context, ax, page, file );
+    return lRet;
 }
 
 //! ax, page, file
@@ -1181,6 +1242,9 @@ static scpi_command_t _scpi_cmds[]=
 
     CMD_ITEM( "MOVET", _scpi_movet ),
     CMD_ITEM( "PREMOVET", _scpi_premovet ),
+
+
+    CMD_ITEM( "ROUTE", _scpi_routeTo ),
 
     CMD_ITEM( "GOTO", _scpi_goto ),
     CMD_ITEM( "GOTOJ", _scpi_goto ),

@@ -90,7 +90,7 @@ robotSinanju::robotSinanju()
 
     //! [0~360)
     mSeperateAngles.clear();
-    mSeperateAngles<<180<<180<<270<<270;
+    mSeperateAngles<<180<<180<<90<<270;
 
     mInitPos.clear();
     mInitPos<<250<<0<<(257+255);
@@ -157,7 +157,7 @@ robotSinanju::robotSinanju()
     mJointFactoryList<<0<<-20<<-65<<100;  //! \ref to the zero
 
     mJointFactorySeperateList.clear();
-    mJointFactorySeperateList<<180<<160<<335<<30;
+    mJointFactorySeperateList<<180<<160<<25<<10;
 
     //! transfer
     for ( int i = 0; i < sizeof_array(mTransferR); i++ )

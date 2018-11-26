@@ -337,7 +337,8 @@ void MainWindow::on_actionSave_triggered()
         Q_ASSERT( NULL != pView );
 
         QString str;
-        m_pStateBar->showState( tr("Saving...") );
+//        m_pStateBar->showState( tr("Saving...") );
+//        on_signalReport( 0, ("Saving...") );
         int ret = pView->save(str);
         on_signalReport( ret, str );
         if ( ret == 0 )

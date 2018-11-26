@@ -37,6 +37,9 @@ public:
 
     static float   eulcidenDistance( float x1, float y1, float z1,
                                      float x2, float y2, float z2 );
+    static float   eulcidenTime( float x1, float y1, float z1,
+                              float x2, float y2, float z2,
+                              float v );
 
     static bool    ammendFileName( QString &fileName );
 

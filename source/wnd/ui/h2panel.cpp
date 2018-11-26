@@ -52,13 +52,22 @@ void H2Panel::moveD( float dx, float dy, bool bKeep )
         if ( NULL == pRobo )
         { break; }
 
+        //! guess the a,b
+        QPointF a,b;
+
+        decideAB( dx, dy, a, b );
+
         if ( bKeep )
         {
-            pRobo->move( ui->spinNX->value(),
-                         ui->spinNY->value(),
+            pRobo->move(
+//                         ui->spinNX->value(),
+//                         ui->spinNY->value(),
 
-                         ui->spinNX->value() + dx,
-                         ui->spinNY->value() + dy,
+//                         ui->spinNX->value() + dx,
+//                         ui->spinNY->value() + dy,
+
+                         a.x(),a.y(),
+                         b.x(),b.y(),
 
                          ui->spinStepT->value(),
                          dx / ui->spinStepT->value(),
@@ -67,19 +76,22 @@ void H2Panel::moveD( float dx, float dy, bool bKeep )
         }
         else
         {
-            pRobo->move( ui->spinNX->value(),
-                         ui->spinNY->value(),
+            pRobo->move(
+//                         ui->spinNX->value(),
+//                         ui->spinNY->value(),
 
-                         ui->spinNX->value() + dx,
-                         ui->spinNY->value() + dy,
+//                         ui->spinNX->value() + dx,
+//                         ui->spinNY->value() + dy,
+                         a.x(),a.y(),
+                         b.x(),b.y(),
 
                          ui->spinStepT->value(),
                          0,
                          0,
                          tpvRegion(0,ui->widget->page()));
 
-            ui->spinNX->setValue( ui->spinNX->value() + dx );
-            ui->spinNY->setValue( ui->spinNY->value() + dy );
+//            ui->spinNX->setValue( ui->spinNX->value() + dx );
+//            ui->spinNY->setValue( ui->spinNY->value() + dy );
         }
 
     }while( 0 );
@@ -114,10 +126,36 @@ void H2Panel::moveA( float x, float y, float dt )
 
         pRobo->move( curve, tpvRegion(0,ui->widget->page()) );
 
-        ui->spinNX->setValue( x );
-        ui->spinNY->setValue( y );
+//        ui->spinNX->setValue( x );
+//        ui->spinNY->setValue( y );
 
     }while( 0 );
+}
+
+void H2Panel::decideAB( float dx, float dy,
+               QPointF &a, QPointF &b )
+{
+    if ( dx >= 0 )
+    {
+        a.setX( 0 );
+        b.setX( dx );
+    }
+    else
+    {
+        a.setX( -dx );
+        b.setX( 0 );
+    }
+
+    if ( dy >=0 )
+    {
+        a.setY( 0 );
+        b.setY( dy );
+    }
+    else
+    {
+        a.setY( -dy );
+        b.setY( 0 );
+    }
 }
 
 void H2Panel::stop()
@@ -186,25 +224,25 @@ void H2Panel::on_widget_signal_stop_clicked()
 
 void H2Panel::on_btnYN_clicked()
 {
-    if ( ui->chkSingle->isChecked() )
+//    if ( ui->chkSingle->isChecked() )
     { moveD( 0, -ui->spinStepV->value() ); }
 }
 
 void H2Panel::on_btnYP_clicked()
 {
-    if ( ui->chkSingle->isChecked() )
+//    if ( ui->chkSingle->isChecked() )
     { moveD( 0, ui->spinStepV->value() ); }
 }
 
 void H2Panel::on_btnXP_clicked()
 {
-    if ( ui->chkSingle->isChecked() )
+//    if ( ui->chkSingle->isChecked() )
     { moveD( ui->spinStepV->value(), 0 ); }
 }
 
 void H2Panel::on_btnXN_clicked()
 {
-    if ( ui->chkSingle->isChecked() )
+//    if ( ui->chkSingle->isChecked() )
     { moveD( -ui->spinStepV->value(), 0 ); }
 }
 
@@ -214,8 +252,6 @@ void H2Panel::on_btnCenter_clicked()
     if ( NULL != pRobo )
     {
         pRobo->goZero( tpvRegion(0,ui->widget->page()) );
-        ui->spinNX->setValue( 0 );
-        ui->spinNY->setValue( 0 );
     }
 }
 
@@ -248,66 +284,47 @@ void H2Panel::on_btnMarkNow_clicked()
     sysRpc( h2Rpc );
 }
 
-void H2Panel::on_btnXP_pressed()
+void H2Panel::on_btnMarkNow_2_clicked()
 {
-    if ( ui->chkSingle->isChecked() )
-    { return; }
+    on_btnMarkNow_clicked();
+}
 
+void H2Panel::on_btnXP_2_pressed()
+{
     moveD( ui->spinStepV->value(), 0, true );
 }
 
-void H2Panel::on_btnXP_released()
+void H2Panel::on_btnXP_2_released()
 {
-    if ( ui->chkSingle->isChecked() )
-    { return; }
-
     stop();
 }
 
-void H2Panel::on_btnXN_pressed()
+void H2Panel::on_btnXN_2_pressed()
 {
-    if ( ui->chkSingle->isChecked() )
-    { return; }
-
     moveD( -ui->spinStepV->value(), 0, true );
 }
 
-void H2Panel::on_btnXN_released()
+void H2Panel::on_btnXN_2_released()
 {
-    if ( ui->chkSingle->isChecked() )
-    { return; }
-
     stop();
 }
 
-void H2Panel::on_btnYP_pressed()
+void H2Panel::on_btnYP_2_pressed()
 {
-    if ( ui->chkSingle->isChecked() )
-    { return; }
-
     moveD( 0, ui->spinStepV->value(), true );
 }
 
-void H2Panel::on_btnYP_released()
+void H2Panel::on_btnYP_2_released()
 {
-    if ( ui->chkSingle->isChecked() )
-    { return; }
-
     stop();
 }
 
-void H2Panel::on_btnYN_pressed()
+void H2Panel::on_btnYN_2_pressed()
 {
-    if ( ui->chkSingle->isChecked() )
-    { return; }
-
     moveD( 0, -ui->spinStepV->value(), true );
 }
 
-void H2Panel::on_btnYN_released()
+void H2Panel::on_btnYN_2_released()
 {
-    if ( ui->chkSingle->isChecked() )
-    { return; }
-
     stop();
 }

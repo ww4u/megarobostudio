@@ -53,8 +53,10 @@ public:
     virtual int save( QString &outFileName );
     virtual int saveAs( QString &name );
 
-    sceneWidget * addRobot( mcModelObj *pBase );
+    sceneWidget * addRobot( mcModelObj *pBase, QPoint pt=QPoint(0,0) );
     sceneWidget * addRobot( mcModelObj *pBase, sceneModel *pModel );
+
+    sceneWidget * addRobot( const QString &cls, QPoint pt=QPoint(0,0) );
 
     int load( const QString &name, const QString &path );
 

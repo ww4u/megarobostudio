@@ -34,6 +34,7 @@ typedef unsigned int  CALL (*p_VCI_GetReceiveNum)(unsigned int DeviceType, unsig
 typedef unsigned int  CALL (*p_VCI_ClearBuffer)(unsigned int DeviceType, unsigned int DeviceInd, unsigned int CANInd);
 
 typedef unsigned int  CALL (*p_VCI_StartCAN)(unsigned int DeviceType, unsigned int DeviceInd, unsigned int CANInd);
+typedef unsigned int  CALL (*p_VCI_ResetCAN)(unsigned int DeviceType, unsigned int DeviceInd, unsigned int CANInd);
 
 typedef unsigned int  CALL (*p_VCI_Transmit)(unsigned int DeviceType, unsigned int DeviceInd, unsigned int CANInd, P_CAN_OBJ pSend, unsigned int Len);
 typedef unsigned int  CALL (*p_VCI_Receive)(unsigned int DeviceType, unsigned int DeviceInd, unsigned int CANInd, P_CAN_OBJ pReceive, unsigned int Len, int WaitTime);
@@ -69,6 +70,7 @@ public:
     p_VCI_ClearBuffer clear;
 
     p_VCI_StartCAN start;
+    p_VCI_ResetCAN reset;
 
     p_VCI_Transmit transmit;
     p_VCI_Receive receive;

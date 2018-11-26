@@ -4,18 +4,23 @@
 #include "../com/comassist.h"
 
 #include "main_help.h"
-//class CommonHelper
-//{
-//public:
-//    static void setStyle(const QString &style) {
-//        QFile qss(style);
-//        qss.open(QFile::ReadOnly);
-//        qApp->setStyleSheet(qss.readAll());
-//        qss.close();
-//    }
-//};
 
 #include "main_dbg.cpp"
+
+
+QDataStream &operator<<(QDataStream &out, const VRobot* &myObj)
+{
+    out.writeRawData( (const char*)myObj, 4 );
+    return out;
+}
+QDataStream &operator>>(QDataStream &in, VRobot* &myObj)
+{
+    quint32 data;
+    in.readRawData( (char*)(&data), 4 );
+    myObj = (VRobot*)data;
+
+    return in;
+}
 
 int main(int argc, char *argv[])
 {
@@ -46,6 +51,10 @@ int main(int argc, char *argv[])
     qRegisterMetaType<eventId>();
     qRegisterMetaType<frameData>();
     qRegisterMetaType<RpcRequest>();
+
+    //! vrobot
+    qRegisterMetaType<VRobot*>();
+    qRegisterMetaTypeStreamOperators<VRobot*>();
 
     //! --splash
     QPixmap pixmap( QApplication::applicationDirPath() + "/image/full.png" );

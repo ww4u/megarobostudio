@@ -124,11 +124,28 @@ void roboScene::mouseDoubleClickEvent(QMouseEvent *event)
 
 void roboScene::dragEnterEvent(QDragEnterEvent *event)
 {
-    logDbg();
+//    logDbg()<<event->mimeData()->formats();
+
+    if (event->mimeData()->hasFormat("robomgr/robot"))
+    {
+        event->acceptProposedAction();
+    }
 }
 void roboScene::dropEvent(QDropEvent *event)
 {
-    logDbg();
+//    logDbg();
+    if (event->mimeData()->hasFormat("robomgr/robot"))
+    {
+        logDbg()<<event->mimeData()->data("robomgr/robot");
+
+        event->acceptProposedAction();
+
+        QPoint pt;
+        pt = ui->scrollArea->mapFrom( this, event->pos() );
+
+        addRobot( event->mimeData()->data("robomgr/robot"), pt );
+    }
+
 }
 
 void roboScene::context_delete()
@@ -247,7 +264,7 @@ int roboScene::saveAs( QString &name )
     return lSceneModel.save( name );
 }
 
-sceneWidget * roboScene::addRobot( mcModelObj *pBase )
+sceneWidget * roboScene::addRobot( mcModelObj *pBase, QPoint pt  )
 {
     Q_ASSERT( NULL != pBase );
 
@@ -255,7 +272,15 @@ sceneWidget * roboScene::addRobot( mcModelObj *pBase )
     pBase->setType( mcModelObj::model_scene_variable );
     sceneWidget *pItem = new sceneWidget( ui->scrollArea );   //! has parent, no need to delete
     Q_ASSERT( NULL != pItem );
-//    m_pLayout->addWidget( pItem );
+
+    //! centerlized
+    int l, t;
+    l = pt.x() - pItem->rect().width() / 2;
+    t = pt.y() - pItem->rect().height() / 2;
+    l = qMax( 0, l );
+    t = qMax( 0, t );
+
+    pItem->move( l, t );
 
     pItem->setModelObj( pBase );                    //! attach robot
 
@@ -285,6 +310,20 @@ sceneWidget * roboScene::addRobot( mcModelObj *pBase, sceneModel *pModel )
     pWig->setGeometry( pModel->mX, pModel->mY,
                        pModel->mW, pModel->mH );
     return pWig;
+}
+
+//! from the template
+sceneWidget * roboScene::addRobot( const QString &str, QPoint pt )
+{
+    //! create a new robot
+    //! delete on the view
+    VRobot *pNewRobot = robotFact::createRobot( str );
+    Q_ASSERT( NULL != pNewRobot );
+
+    pNewRobot->setName( str );
+    pNewRobot->set( mcModelObj::model_robot, pNewRobot );
+
+    return addRobot( pNewRobot, pt);
 }
 
 int roboScene::load( const QString &name, const QString &path )

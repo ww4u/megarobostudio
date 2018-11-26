@@ -57,6 +57,10 @@ bool CANApi::load3RdApi( int portId )
     if ( !start )
     { logDbg();return false; }
 
+//    reset = (p_VCI_ResetCAN)mDll.resolve("VCI_ResetCAN");
+//    if ( !reset )
+//    { logDbg();return false; }
+
     transmit = (p_VCI_Transmit)mDll.resolve("VCI_Transmit");
     if ( !transmit )
     { logDbg();return false; }
@@ -64,7 +68,6 @@ bool CANApi::load3RdApi( int portId )
     receive = (p_VCI_Receive)mDll.resolve("VCI_Receive");
     if ( !receive )
     { logDbg();return false; }
-
 
     return true;
 }

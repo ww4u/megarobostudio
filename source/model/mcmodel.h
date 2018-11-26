@@ -22,6 +22,7 @@ protected:
     void init();
     void deinit();
 public:
+    void startCommunicate();
     void stopCommunicate();
     void resetCommunicate();
 
@@ -35,3 +36,4 @@ public:
 };
 
 #endif // MCMODEL_H
+

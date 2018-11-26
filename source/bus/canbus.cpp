@@ -124,6 +124,13 @@ int CANBus::open( const modelSysPref &pref,
     else
 #endif
     {
+//        //! reset
+//        if ( 0 == mApi.reset( mDevType, mDevId, mCanId ) )
+//        {
+//            sysError( QObject::tr("CAN reset fail") );
+//            return -2;
+//        }
+
         //! open
         mHandle = mApi.open( mDevType, mDevId, mCanId );
         if ( mHandle != 1 )
@@ -132,6 +139,7 @@ int CANBus::open( const modelSysPref &pref,
             close();
             return -2;
         }
+        logDbg()<<mHandle;
     }
 
     //! init
@@ -185,7 +193,15 @@ void CANBus::close()
         }
 
         int ret;
+
+//        mApi.reset( );
+
+//        mApi.reset( mDevType, mDevId, mCanId );
+
         ret = mApi.close( mDevType, mDevId );
+        logDbg()<<ret;
+//        mApi.reset( mDevType, mDevId, mCanId );
+
 //        logDbg()<<ret<<mDevType<<mDevId;
         mHandle = 0;
 
@@ -225,6 +241,8 @@ static canSpeedTimer _bps_timer_matrix[]
 
 int CANBus::initBus()
 {
+//    mApi.reset( mDevType, mDevId, mCanId );
+
     mApi.clear( mDevType, mDevId, mCanId );
 
     INIT_CONFIG canConfig;

@@ -8,6 +8,7 @@ EXPORTS
 	VCI_GetReceiveNum
 	VCI_ClearBuffer
 	VCI_StartCAN
+	VCI_ResetCAN
 	VCI_Transmit
 
 	VCI_Receive

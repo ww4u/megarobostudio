@@ -18,6 +18,7 @@ CANApi::CANApi()
     clear = NULL;
 
     start = NULL;
+    reset = NULL;
 
     transmit = NULL;
     receive = NULL;

@@ -26,57 +26,41 @@ EncoderAlarmPage::~EncoderAlarmPage()
 
 #define align_angle_value( angle )    \
                                         ( ( \
-                                         MegaDevice::deviceMRQ::absAngleToValue( angle)\
+                                         MegaDevice::deviceMRQ::s_absAngleToValue( angle)\
                                          ) )
 
 #define align_value_angle( value )     ( ( \
-                                        MegaDevice::deviceMRQ::valueToAbsAngle( value ) \
+                                        MegaDevice::deviceMRQ::s_valueToAbsAngle( value ) \
                                         ) )
 
 void EncoderAlarmPage::setData( EncoderAlarmConfig &config )
 {
     float valDown, valUp;
-    float zero;
 
-    float rangeL, rangeU;
+    ui->checkBox->setChecked( config.mbEn );
 
     //! vals from reg
     valDown = align_angle_value( config.mDownLimit);
     valUp = align_angle_value(config.mUpLimit);
-    zero = align_angle_value( config.mZero);
 
-    //! convert
-    limitToRange( valDown, valUp, zero, config.mZeroPos == 1, rangeL, rangeU );
+    ui->doubleSpinBox->setValue(  valUp );
+    ui->doubleSpinBox_2->setValue(  valDown );
 
-    ui->checkBox->setChecked( config.mbEn );
-    ui->doubleSpinBox->setValue(  rangeU );
-    ui->doubleSpinBox_2->setValue(  rangeL );
-    ui->doubleSpinBox_3->setValue( zero );
-
-    ui->comboBox->setCurrentIndex( config.mZeroPos );
+    ui->doubleSpinBox_3->setValue( align_angle_value(config.mZero) );
 }
 void EncoderAlarmPage::data( EncoderAlarmConfig &config )
 {
     float limitL, limitU;
-    bool bZeroRoll;
 
-    //! convert
-    rangeToLimit( ui->doubleSpinBox_2->value(),
-                  ui->doubleSpinBox->value(),
-                  ui->doubleSpinBox_3->value(),
-                  bZeroRoll,
-                  limitL,
-                  limitU );
+    limitU = ui->doubleSpinBox->value();
+    limitL = ui->doubleSpinBox_2->value();
 
     config.mbEn = ui->checkBox->isChecked();
+
     config.mUpLimit =  align_value_angle( limitU );
     config.mDownLimit =  align_value_angle( limitL );
 
     config.mZero =  align_value_angle( ui->doubleSpinBox_3->value() );
-
-    config.mZeroPos = bZeroRoll ? 1 : 0;
-
-    ui->comboBox->setCurrentIndex( config.mZeroPos );
 }
 
 void EncoderAlarmPage::setZeroEnable( bool b )
@@ -107,7 +91,7 @@ void EncoderAlarmPage::spyEdited()
     };
 
     QComboBox *comboxes[]={
-        ui->comboBox,
+//        ui->comboBox,
     };
 
     install_spy();

@@ -21,14 +21,14 @@ roboMgr::roboMgr(QListWidget *parent) :
     setResizeMode( Adjust );
     setMovement( Free );
 
-
+    //! activated
+    connect( this, SIGNAL(itemActivated(QListWidgetItem*)),
+             this, SLOT(slot_itemActivated(QListWidgetItem*)) );
 }
 
 roboMgr::~roboMgr()
 {
     delete_all( mRobots );
-
-//    delete ui;
 }
 
 QMimeData *roboMgr::mimeData(const QList<QListWidgetItem *> items) const
@@ -99,16 +99,16 @@ bool roboMgr::operAble()
 { return mbOperable; }
 
 //! double click
-void roboMgr::on_listWidget_itemActivated(QListWidgetItem *item)
+void roboMgr::slot_itemActivated(QListWidgetItem *item)
 {
     if ( NULL == item )
     { return; }
-
+logDbg();
     if ( mbOperable )
     {}
     else
     { return; }
-
+logDbg();
     QVariant var = item->data( Qt::UserRole );
 
     VRobot *pBase = var.value<VRobot *>();

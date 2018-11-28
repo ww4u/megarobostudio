@@ -24,7 +24,8 @@ roboGeo51::roboGeo51()
 
     mMicrostepBase = 2;
 
-    setUarts( 2 );
+//    setUarts( 2 );
+    setUarts( 1 );
     setUartSensors( 4 );
 
     mUartNameList.clear();
@@ -37,6 +38,15 @@ roboGeo51::roboGeo51()
     setTunningAble( true );
 
     mImage = QImage::fromData( _megaimage, sizeof(_megaimage) );
+}
+
+void roboGeo51::postCtor()
+{
+    MegaDevice::deviceMRQ::postCtor();
+
+    mAngleDir.clear();
+
+    mAngleDir<<true<<false<<true<<false;    //! true: +
 }
 
 int roboGeo51::serialIn( QXmlStreamReader &reader )

@@ -23,7 +23,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-VERSION = 0.1.0.22
+VERSION = 0.1.0.23
 
 OBJECTS_DIR = ./obj
 MOC_DIR = ./obj
@@ -613,7 +613,7 @@ FORMS += \
     ../ui/robosketch.ui
 
 
-RESOURCES = ../res/res.qrc
+#RESOURCES = ../res/res.qrc
 
 RC_ICONS = ../res/image/logo/megarobo.ico
 

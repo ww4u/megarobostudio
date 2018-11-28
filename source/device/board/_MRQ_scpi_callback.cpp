@@ -6579,10 +6579,10 @@ static scpi_result_t _scpi_setABSENCALARM_UPLIMIT( scpi_t * context )
 	if ( MRQ_IDENTITY_LABEL_1_toValue( pLocalStr, &val0) != 0 ) 
         { return SCPI_RES_ERR; }
 
-	uint32 val1;
+	int32 val1;
 	if ( SCPI_ParamInt32(context, &localIntVal, true) != SCPI_RES_OK ) 
         { return SCPI_RES_ERR; }
-	val1 = (uint32)localIntVal;
+	val1 = (int32)localIntVal;
 
 	(SET_OBJ(context))->setABSENCALARM_UPLIMIT( val0, val1 );
 	return SCPI_RES_OK;
@@ -6600,7 +6600,7 @@ static scpi_result_t _scpi_getABSENCALARM_UPLIMIT( scpi_t * context )
 	if ( MRQ_IDENTITY_LABEL_1_toValue( pLocalStr, &val0) != 0 ) 
         { return SCPI_RES_ERR; }
 
-	uint32 oval0;
+	int32 oval0;
 
 	(GET_OBJ(context))->getABSENCALARM_UPLIMIT( val0, &oval0 );
 	SCPI_ResultInt32(context, oval0);
@@ -6621,10 +6621,10 @@ static scpi_result_t _scpi_setABSENCALARM_DOWNLIMIT( scpi_t * context )
 	if ( MRQ_IDENTITY_LABEL_1_toValue( pLocalStr, &val0) != 0 ) 
         { return SCPI_RES_ERR; }
 
-	uint32 val1;
+	int32 val1;
 	if ( SCPI_ParamInt32(context, &localIntVal, true) != SCPI_RES_OK ) 
         { return SCPI_RES_ERR; }
-	val1 = (uint32)localIntVal;
+	val1 = (int32)localIntVal;
 
 	(SET_OBJ(context))->setABSENCALARM_DOWNLIMIT( val0, val1 );
 	return SCPI_RES_OK;
@@ -6642,7 +6642,7 @@ static scpi_result_t _scpi_getABSENCALARM_DOWNLIMIT( scpi_t * context )
 	if ( MRQ_IDENTITY_LABEL_1_toValue( pLocalStr, &val0) != 0 ) 
         { return SCPI_RES_ERR; }
 
-	uint32 oval0;
+	int32 oval0;
 
 	(GET_OBJ(context))->getABSENCALARM_DOWNLIMIT( val0, &oval0 );
 	SCPI_ResultInt32(context, oval0);

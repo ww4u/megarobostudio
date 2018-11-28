@@ -30,6 +30,7 @@ protected:
 
     int applyGroupId();
 
+
 private:
     Ui::RoboComPref *ui;
 

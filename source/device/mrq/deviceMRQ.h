@@ -76,6 +76,9 @@ public:
     static float absAngleToValue( quint32 angle );
     static quint32 valueToAbsAngle( float val );
 
+    static float s_absAngleToValue( qint32 angle );
+    static qint32 s_valueToAbsAngle( float val );
+
     static float incAngleToValue( quint32 angle );
     static quint32 valueToIncAngle( float val );
 
@@ -324,7 +327,11 @@ protected:
     float stepAngle( int ax );
     float microStep( int ax );
 
+public:
+    QList< bool > mAngleDir;
+
 protected:
+
     QMap< tpvRegion, int > mSlewCache;
 
     QMap< tpvRegion, int > mTpvIndexes;

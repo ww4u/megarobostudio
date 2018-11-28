@@ -40,7 +40,7 @@ Q_SIGNALS:
     void signal_itemXHelp( eItemHelp helpId );
 
 private slots:
-    void on_listWidget_itemActivated(QListWidgetItem *item);
+    void slot_itemActivated(QListWidgetItem *item);
 
 private:
 //    Ui::roboMgr *ui;

@@ -52,6 +52,7 @@ int VRobot::setAxes(int n)
     mJointDeltaAngleMask.clear();
     mJointCcwMask.clear();
     mJointAlignAble.clear();
+    mAngleDir.clear();
     for ( int i = 0; i <n; i++ )
     {
         mJointAngleMask<<false;
@@ -59,6 +60,7 @@ int VRobot::setAxes(int n)
         mJointCcwMask<<false;
 
         mJointAlignAble<<false;
+        mAngleDir<<true;
     }
 
     //! init lvtable

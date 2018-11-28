@@ -4688,10 +4688,10 @@ int MRQ::getABSENCALARM_STATE( MRQ_IDENTITY_LABEL_1 val0, MRQ_SYSTEM_REVMOTION *
 	*val1 = (MRQ_SYSTEM_REVMOTION)lval0;
 	return 0;
 }
-//! ENUM,U32
+//! ENUM,S32
 //! S1|S2|S3|S4
 int MRQ::setABSENCALARM_UPLIMIT( MRQ_IDENTITY_LABEL_1 val0
-,uint32 val1 )
+,int32 val1 )
 {
 	//! 93 2
 	int ret; 
@@ -4706,22 +4706,22 @@ int MRQ::setABSENCALARM_UPLIMIT( MRQ_IDENTITY_LABEL_1 val0
 }
 //! ENUM
 //! S1|S2|S3|S4
-int MRQ::getABSENCALARM_UPLIMIT( MRQ_IDENTITY_LABEL_1 val0, uint32 * val1, bool bQuery )
+int MRQ::getABSENCALARM_UPLIMIT( MRQ_IDENTITY_LABEL_1 val0, int32 * val1, bool bQuery )
 {
 	//! 93 3
 	int ret = 0;
 
-	uint32 lval0 = 0;
+	int32 lval0 = 0;
 	ret = m_pBus->read( DEVICE_RECEIVE_ID, (byte)93, (byte)3 , (byte)val0, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
 	*val1 = lval0;
 	return 0;
 }
-//! ENUM,U32
+//! ENUM,S32
 //! S1|S2|S3|S4
 int MRQ::setABSENCALARM_DOWNLIMIT( MRQ_IDENTITY_LABEL_1 val0
-,uint32 val1 )
+,int32 val1 )
 {
 	//! 93 4
 	int ret; 
@@ -4736,12 +4736,12 @@ int MRQ::setABSENCALARM_DOWNLIMIT( MRQ_IDENTITY_LABEL_1 val0
 }
 //! ENUM
 //! S1|S2|S3|S4
-int MRQ::getABSENCALARM_DOWNLIMIT( MRQ_IDENTITY_LABEL_1 val0, uint32 * val1, bool bQuery )
+int MRQ::getABSENCALARM_DOWNLIMIT( MRQ_IDENTITY_LABEL_1 val0, int32 * val1, bool bQuery )
 {
 	//! 93 5
 	int ret = 0;
 
-	uint32 lval0 = 0;
+	int32 lval0 = 0;
 	ret = m_pBus->read( DEVICE_RECEIVE_ID, (byte)93, (byte)5 , (byte)val0, &lval0, bQuery);
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;

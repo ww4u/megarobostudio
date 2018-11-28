@@ -297,8 +297,8 @@ int deviceMRQ::loadEncoderZero()
                                             &mABSENCALARM_UPLIMIT[i] ) );
         checked_call( getABSENCALARM_DOWNLIMIT( (MRQ_IDENTITY_LABEL_1)i,
                                             &mABSENCALARM_DOWNLIMIT[i] ) );
-        checked_call( getABSENCALARM_ZEROVALUE( (MRQ_IDENTITY_LABEL_1)i,
-                                            &mABSENCALARM_ZEROVALUE[i] ) );
+//        checked_call( getABSENCALARM_ZEROVALUE( (MRQ_IDENTITY_LABEL_1)i,
+//                                            &mABSENCALARM_ZEROVALUE[i] ) );
 
         checked_call( getABSENCALARM_ZEROPOSITION( (MRQ_IDENTITY_LABEL_1)i,
                                             &mABSENCALARM_ZEROPOSITION[i] ) );

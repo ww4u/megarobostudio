@@ -520,11 +520,11 @@ int setABSENCALARM_STATE( MRQ_IDENTITY_LABEL_1 val0
 ,MRQ_SYSTEM_REVMOTION val1 );
 int getABSENCALARM_STATE( MRQ_IDENTITY_LABEL_1 val0, MRQ_SYSTEM_REVMOTION * val1, bool bQuery=true );
 int setABSENCALARM_UPLIMIT( MRQ_IDENTITY_LABEL_1 val0
-,uint32 val1 );
-int getABSENCALARM_UPLIMIT( MRQ_IDENTITY_LABEL_1 val0, uint32 * val1, bool bQuery=true );
+,int32 val1 );
+int getABSENCALARM_UPLIMIT( MRQ_IDENTITY_LABEL_1 val0, int32 * val1, bool bQuery=true );
 int setABSENCALARM_DOWNLIMIT( MRQ_IDENTITY_LABEL_1 val0
-,uint32 val1 );
-int getABSENCALARM_DOWNLIMIT( MRQ_IDENTITY_LABEL_1 val0, uint32 * val1, bool bQuery=true );
+,int32 val1 );
+int getABSENCALARM_DOWNLIMIT( MRQ_IDENTITY_LABEL_1 val0, int32 * val1, bool bQuery=true );
 int setABSENCALARM_ZEROVALUE( MRQ_IDENTITY_LABEL_1 val0
 ,uint32 val1 );
 int getABSENCALARM_ZEROVALUE( MRQ_IDENTITY_LABEL_1 val0, uint32 * val1, bool bQuery=true );

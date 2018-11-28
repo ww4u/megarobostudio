@@ -1328,7 +1328,7 @@ int MRQ_model::saveSubAngleAlarm( int sub, QXmlStreamWriter &writer )
     writer.writeTextElement("mABSENCALARM_DOWNLIMIT", DeviceModel::toString(mABSENCALARM_DOWNLIMIT[sub]));
     writer.writeTextElement("mABSENCALARM_ZEROVALUE", DeviceModel::toString(mABSENCALARM_ZEROVALUE[sub]));
 
-    writer.writeTextElement("mABSENCALARM_ZEROPOSITION", toString(mABSENCALARM_ZEROPOSITION[sub]));
+//    writer.writeTextElement("mABSENCALARM_ZEROPOSITION", toString(mABSENCALARM_ZEROPOSITION[sub]));
     writer.writeTextElement("mABSENCALARM_RESPONSE", toString(mABSENCALARM_RESPONSE));
 
     return 0;
@@ -1345,8 +1345,8 @@ int MRQ_model::loadSubAngleAlarm( int sub, QXmlStreamReader &reader )
         else if (reader.name() == "mABSENCALARM_DOWNLIMIT" )
         { DeviceModel::toValue( reader.readElementText(), &mABSENCALARM_DOWNLIMIT[sub]); }
 
-        else if (reader.name() == "mABSENCALARM_ZEROPOSITION" )
-        { toValue( reader.readElementText(), &mABSENCALARM_ZEROPOSITION[sub]); }
+//        else if (reader.name() == "mABSENCALARM_ZEROPOSITION" )
+//        { toValue( reader.readElementText(), &mABSENCALARM_ZEROPOSITION[sub]); }
         else if (reader.name() == "mABSENCALARM_RESPONSE" )
         { toValue( reader.readElementText(), &mABSENCALARM_RESPONSE); }
 

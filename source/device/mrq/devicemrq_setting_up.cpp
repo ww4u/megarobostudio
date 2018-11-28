@@ -295,8 +295,8 @@ int deviceMRQ::_uploadSetting()
             checked_call( getABSENCALARM_ZEROVALUE( (MRQ_IDENTITY_LABEL_1)i,
                                                 &mABSENCALARM_ZEROVALUE[i] ) );
 
-            checked_call( getABSENCALARM_ZEROPOSITION( (MRQ_IDENTITY_LABEL_1)i,
-                                                &mABSENCALARM_ZEROPOSITION[i] ) );
+//            checked_call( getABSENCALARM_ZEROPOSITION( (MRQ_IDENTITY_LABEL_1)i,
+//                                                &mABSENCALARM_ZEROPOSITION[i] ) );
 
         }
         checked_call( getABSENCALARM_RESPONSE(

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>138</height>
+    <height>112</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -28,37 +28,23 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="label_3">
-     <property name="text">
-      <string>Lower Limit</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0">
-    <widget class="QLabel" name="label_4">
-     <property name="text">
-      <string>Zero</string>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="label_5">
-     <property name="text">
-      <string>Zero Roll</string>
-     </property>
-    </widget>
-   </item>
    <item row="1" column="1">
     <widget class="QDoubleSpinBox" name="doubleSpinBox">
      <property name="toolTip">
       <string>Up Limit</string>
      </property>
      <property name="maximum">
-      <double>180.000000000000000</double>
+      <double>360.000000000000000</double>
      </property>
      <property name="value">
       <double>180.000000000000000</double>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="label_3">
+     <property name="text">
+      <string>Lower Limit</string>
      </property>
     </widget>
    </item>
@@ -68,13 +54,20 @@
       <string>Down Limit</string>
      </property>
      <property name="minimum">
-      <double>-180.000000000000000</double>
+      <double>-360.000000000000000</double>
      </property>
      <property name="maximum">
       <double>0.000000000000000</double>
      </property>
      <property name="value">
       <double>-180.000000000000000</double>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="label_4">
+     <property name="text">
+      <string>Zero</string>
      </property>
     </widget>
    </item>
@@ -86,26 +79,6 @@
      <property name="maximum">
       <double>360.000000000000000</double>
      </property>
-    </widget>
-   </item>
-   <item row="4" column="1">
-    <widget class="QComboBox" name="comboBox">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-     <property name="toolTip">
-      <string>Zero at</string>
-     </property>
-     <item>
-      <property name="text">
-       <string>N</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Y</string>
-      </property>
-     </item>
     </widget>
    </item>
   </layout>

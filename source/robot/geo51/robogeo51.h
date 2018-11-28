@@ -8,7 +8,7 @@ class roboGeo51 : public MegaDevice::deviceMRQ
 {
 public:
     roboGeo51();
-
+    virtual void postCtor();
 protected:
     virtual int serialIn( QXmlStreamReader &reader );
     virtual int serialOut( QXmlStreamWriter &writer );

@@ -1189,11 +1189,11 @@ mABSENCALARM_STATE[i0] = (MRQ_SYSTEM_REVMOTION)0;
 }
 for ( int i0=0; i0 < 4; i0++ )
 {
-mABSENCALARM_UPLIMIT[i0] = (uint32)0;
+mABSENCALARM_UPLIMIT[i0] = (int32)0;
 }
 for ( int i0=0; i0 < 4; i0++ )
 {
-mABSENCALARM_DOWNLIMIT[i0] = (uint32)0;
+mABSENCALARM_DOWNLIMIT[i0] = (int32)0;
 }
 
 for ( int i0=0; i0 < 4; i0++ )
@@ -5308,10 +5308,10 @@ int _MRQ_model::getABSENCALARM_STATE( MRQ_IDENTITY_LABEL_1 val0, MRQ_SYSTEM_REVM
 	*val1 = mABSENCALARM_STATE[ (int)val0 ];
 	return 0;
 }
-//! ENUM,U32
+//! ENUM,S32
 //! S1|S2|S3|S4
 int _MRQ_model::setABSENCALARM_UPLIMIT( MRQ_IDENTITY_LABEL_1 val0
-,uint32 val1 )
+,int32 val1 )
 {
 	//! 93 2
 	int ret=0; 
@@ -5321,19 +5321,19 @@ int _MRQ_model::setABSENCALARM_UPLIMIT( MRQ_IDENTITY_LABEL_1 val0
 }
 //! ENUM
 //! S1|S2|S3|S4
-int _MRQ_model::getABSENCALARM_UPLIMIT( MRQ_IDENTITY_LABEL_1 val0, uint32 * val1, bool bQuery )
+int _MRQ_model::getABSENCALARM_UPLIMIT( MRQ_IDENTITY_LABEL_1 val0, int32 * val1, bool bQuery )
 {
 	//! 93 3
 	int ret = 0;
 
-	uint32 lval0 = 0;
+	int32 lval0 = 0;
 	*val1 = mABSENCALARM_UPLIMIT[ (int)val0 ];
 	return 0;
 }
-//! ENUM,U32
+//! ENUM,S32
 //! S1|S2|S3|S4
 int _MRQ_model::setABSENCALARM_DOWNLIMIT( MRQ_IDENTITY_LABEL_1 val0
-,uint32 val1 )
+,int32 val1 )
 {
 	//! 93 4
 	int ret=0; 
@@ -5343,12 +5343,12 @@ int _MRQ_model::setABSENCALARM_DOWNLIMIT( MRQ_IDENTITY_LABEL_1 val0
 }
 //! ENUM
 //! S1|S2|S3|S4
-int _MRQ_model::getABSENCALARM_DOWNLIMIT( MRQ_IDENTITY_LABEL_1 val0, uint32 * val1, bool bQuery )
+int _MRQ_model::getABSENCALARM_DOWNLIMIT( MRQ_IDENTITY_LABEL_1 val0, int32 * val1, bool bQuery )
 {
 	//! 93 5
 	int ret = 0;
 
-	uint32 lval0 = 0;
+	int32 lval0 = 0;
 	*val1 = mABSENCALARM_DOWNLIMIT[ (int)val0 ];
 	return 0;
 }

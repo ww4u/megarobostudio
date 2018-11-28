@@ -74,14 +74,15 @@ void MrqAlarm::updateUi()
 
     //! angle configs
     EncoderAlarmConfig encAlarmConfig;
+    int angleDir;
     for ( int i = 0; i < 4; i++ )
     {
+        angleDir = m_pMrqModel->mAngleDir.at(i) ? 1 : -1;
         encAlarmConfig.mbEn = m_pMrqModel->mABSENCALARM_STATE[i];
-        encAlarmConfig.mUpLimit = m_pMrqModel->mABSENCALARM_UPLIMIT[i];
-        encAlarmConfig.mDownLimit = m_pMrqModel->mABSENCALARM_DOWNLIMIT[i];
+        encAlarmConfig.mUpLimit = m_pMrqModel->mABSENCALARM_UPLIMIT[i] * angleDir;
+        encAlarmConfig.mDownLimit = m_pMrqModel->mABSENCALARM_DOWNLIMIT[i] * angleDir;
         encAlarmConfig.mZero = m_pMrqModel->mABSENCALARM_ZEROVALUE[i];
 
-        encAlarmConfig.mZeroPos = m_pMrqModel->mABSENCALARM_ZEROPOSITION[i];
         mAnglePages.at(i)->setData( encAlarmConfig );
 
         if ( m_pmcModel->mSysPref.mSysMode == sys_normal )
@@ -112,24 +113,27 @@ int MrqAlarm::applyAngleAlarm()
     Q_ASSERT( NULL != pDevice );
 
     EncoderAlarmConfig encAlarmConfig;
+    int angleDir;
     for ( int i = 0; i < 4; i++ )
     {
+        angleDir = m_pMrqModel->mAngleDir.at(i) ? 1 : -1;
+
         mAnglePages.at(i)->data( encAlarmConfig );
 
         pDevice->setABSENCALARM_STATE( (MRQ_IDENTITY_LABEL_1)i,
                                         (MRQ_SYSTEM_REVMOTION)encAlarmConfig.mbEn );
 
         pDevice->setABSENCALARM_UPLIMIT( (MRQ_IDENTITY_LABEL_1)i,
-                                         encAlarmConfig.mUpLimit );
+                                         encAlarmConfig.mUpLimit*angleDir );
 
         pDevice->setABSENCALARM_DOWNLIMIT( (MRQ_IDENTITY_LABEL_1)i,
-                                         encAlarmConfig.mDownLimit );
+                                         encAlarmConfig.mDownLimit*angleDir );
 
         pDevice->setABSENCALARM_ZEROVALUE( (MRQ_IDENTITY_LABEL_1)i,
                                          encAlarmConfig.mZero );
 
-        pDevice->setABSENCALARM_ZEROPOSITION( (MRQ_IDENTITY_LABEL_1)i,
-                                         (MRQ_ABSENCALARM_ZEROPOSITION_1)encAlarmConfig.mZeroPos );
+//        pDevice->setABSENCALARM_ZEROPOSITION( (MRQ_IDENTITY_LABEL_1)i,
+//                                         (MRQ_ABSENCALARM_ZEROPOSITION_1)encAlarmConfig.mZeroPos );
     }
 
     pDevice->setABSENCALARM_RESPONSE( (MRQ_MOTIONPLAN_OOSLINERESPONSE_1)ui->comboBox->currentIndex() );

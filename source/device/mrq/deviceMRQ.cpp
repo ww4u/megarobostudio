@@ -24,6 +24,25 @@ float deviceMRQ::absAngleToValue( quint32 angle )
 quint32 deviceMRQ::valueToAbsAngle( float val )
 { return VALUE_TO_ABS_ANGLE(val); }
 
+float deviceMRQ::s_absAngleToValue( qint32 angle )
+{
+    if ( angle < 0  )
+    {
+        return -absAngleToValue( -angle );
+    }
+    else
+    {
+        return absAngleToValue( angle );
+    }
+}
+qint32 deviceMRQ::s_valueToAbsAngle( float val )
+{
+    if ( val < 0 )
+    { return -valueToAbsAngle( -val ); }
+    else
+    { return valueToAbsAngle(val); }
+}
+
 float deviceMRQ::incAngleToValue( quint32 angle )
 { return INC_ANGLE_TO_DEG( angle ); }
 quint32 deviceMRQ::valueToIncAngle( float val )
@@ -135,10 +154,13 @@ void deviceMRQ::postCtor()
 
     mAccList.clear();
     mDecList.clear();
+    mAngleDir.clear();
 
     //! foreach axes
     for ( int i = 0; i < axes(); i++ )
     {
+        mAngleDir<<true;
+
         //! default acc/dec list
         mAccList<<300;
         mDecList<<300;

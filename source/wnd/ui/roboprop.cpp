@@ -138,6 +138,9 @@ void roboProp::setupUi( int id )
     }
     else if ( VRobot::robot_sinanju == id )
     {
+        m_pSketch = new_widget( RoboSketch, ":/res/image/icon2/settings_light.png", tr("Icon") );
+        m_pSketch->setSketch( ":/res/image/joint/sinanju_pn_256px_nor@2x.png");
+
         m_pSinanjuPref  = new_widget( SinanjuPref, ":/res/image/icon2/settings_light.png", tr("Zero") );
         m_pSinanjuConfig = new_widget( SinanjuConfig, ":/res/image/icon2/settings_light.png", tr("Pref") );
     }

@@ -13,7 +13,7 @@ struct EncoderAlarmConfig
     bool mbEn;
     quint32 mUpLimit, mDownLimit;
     quint32 mZero;
-    int     mZeroPos;
+//    int     mZeroPos;
 };
 
 class EncoderAlarmPage : public modelView

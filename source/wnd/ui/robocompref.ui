@@ -62,30 +62,7 @@
          <number>3</number>
         </property>
         <item row="0" column="0">
-         <widget class="QCheckBox" name="chkEn">
-          <property name="layoutDirection">
-           <enum>Qt::RightToLeft</enum>
-          </property>
-          <property name="text">
-           <string>Joint Power</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="0">
          <widget class="RobotAddr" name="widget" native="true"/>
-        </item>
-        <item row="0" column="1">
-         <spacer name="horizontalSpacer">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
         </item>
        </layout>
       </widget>

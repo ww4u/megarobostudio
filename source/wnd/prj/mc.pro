@@ -621,6 +621,7 @@ TRANSLATIONS = ../../translate/megarobostudio_zh_CN.ts \
                 ../../translate/megarobostudio_zh_TW.ts
 DISTFILES += \
     ../../../installer/doc/readme.txt \
-    ../../../installer/doc/errant.txt
+    ../../../installer/doc/errant.txt \
+    ../../../readme.md
 
 

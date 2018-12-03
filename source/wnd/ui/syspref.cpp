@@ -205,6 +205,8 @@ void sysPref::updateUi()
     ui->chkAutoExpand->setChecked( m_pPref->mAutoExpand );
     ui->chkAutoLoadSet->setChecked( m_pPref->mbAutoLoadSetup );
     ui->chkSearch->setChecked( m_pPref->mbSearchOnOpen );
+    ui->chkStopAllOnSearch->setChecked( m_pPref->mbStopOnSearch );
+
     ui->chkMaximize->setChecked( m_pPref->mbMaximizeStartup );
     ui->chkShowNotice->setChecked( m_pPref->mbShowNotice );
     ui->chkHelp->setChecked( m_pPref->mbShowHelp );
@@ -218,7 +220,7 @@ void sysPref::updateUi()
     ui->cmbLang->setCurrentIndex( m_pPref->mLangIndex );
 
     //! db
-    ui->chkUpload->setChecked( m_pPref->mDbMeta.mbUpload );
+    ui->gpDb->setChecked( m_pPref->mDbMeta.mbUpload );
     ui->edtDbName->setText( m_pPref->mDbMeta.mDbName );
     ui->edtHost->setText( m_pPref->mDbMeta.mHostName );
     ui->edtTableName->setText( m_pPref->mDbMeta.mTableName );
@@ -244,6 +246,9 @@ void sysPref::updateUi()
     ui->spinAngleError->setValue( m_pPref->mAngleResolution );
     ui->chkOmit->setChecked( m_pPref->mOmitEn );
     ui->spinOmit->setValue( m_pPref->mOmitThreshold );
+
+    ui->spinMaxSpeed->setValue( m_pPref->mMaxSpeed );
+    ui->spinMaxTerminalSpeed->setValue( m_pPref->mMaxTerminalSpeed );
 
     ui->labelFont->setText( m_pPref->mFontFamily + ":" + QString::number( m_pPref->mPointSize) );
 
@@ -310,6 +315,7 @@ void sysPref::updateData()
     m_pPref->mAutoExpand = ui->chkAutoExpand->isChecked();
     m_pPref->mbAutoLoadSetup = ui->chkAutoLoadSet->isChecked();
     m_pPref->mbSearchOnOpen = ui->chkSearch->isChecked();
+    m_pPref->mbStopOnSearch = ui->chkStopAllOnSearch->isChecked();
     m_pPref->mbMaximizeStartup = ui->chkMaximize->isChecked();
 
     m_pPref->mbShowNotice = ui->chkShowNotice->isChecked();
@@ -324,7 +330,7 @@ void sysPref::updateData()
     m_pPref->mLangIndex = ui->cmbLang->currentIndex();
 
     //! db meta
-    m_pPref->mDbMeta.mbUpload = ui->chkUpload->isChecked();
+    m_pPref->mDbMeta.mbUpload = ui->gpDb->isChecked();
     m_pPref->mDbMeta.mDbName = ui->edtDbName->text() ;
     m_pPref->mDbMeta.mHostName = ui->edtHost->text();
     m_pPref->mDbMeta.mTableName = ui->edtTableName->text();
@@ -350,6 +356,9 @@ void sysPref::updateData()
     m_pPref->mAngleResolution = ui->spinAngleError->value();
     m_pPref->mOmitEn = ui->chkOmit->isChecked();
     m_pPref->mOmitThreshold = ui->spinOmit->value();
+
+    m_pPref->mMaxSpeed = ui->spinMaxSpeed->value();
+    m_pPref->mMaxTerminalSpeed = ui->spinMaxTerminalSpeed->value();
 }
 
 bool sysPref::validateDb()

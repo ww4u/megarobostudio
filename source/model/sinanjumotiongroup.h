@@ -62,7 +62,7 @@ public:
 
 public:
     virtual void reverse();
-
+    virtual void autoTime( double speed, double speedTerminal );
 
 public:
     QList< SinanjuMotionItem *> mItems;

@@ -5,6 +5,30 @@
 
 QStringList comAssist::_mRemotePath;
 
+QList<int> comAssist::descRows( QItemSelectionModel *pModel )
+{
+    QList<int> selRows;
+
+    if ( NULL == pModel )
+    { return selRows; }
+
+    //! selected
+    QModelIndexList selList = pModel->selectedIndexes();
+    foreach( QModelIndex index, selList )
+    {
+        if ( index.isValid() )
+        {
+            if ( !selRows.contains( index.row()) )
+            { selRows.append( index.row()); }
+        }
+    }
+
+    //! sort the rows
+    qSort(selRows.begin(), selRows.end(), qGreater<int>());
+
+    return selRows;
+}
+
 void comAssist::setRemotePath( const QStringList &path )
 { _mRemotePath = path; }
 QStringList &comAssist::remotePath()
@@ -186,6 +210,23 @@ float comAssist::eulcidenTime( float x1, float y1, float z1,
 {
     float dist = comAssist::eulcidenDistance( x1, y1, z1,
                                               x2, y2, z2 );
+    Q_ASSERT( v != 0 );
+
+    return dist/qAbs( v );
+}
+
+float comAssist::eulcidenDistance( float x1, float y1, float z1, float h1,
+                                 float x2, float y2, float z2, float h2 )
+{
+    return qSqrt( pow(x1-x2,2 ) + pow( y1-y2, 2 ) + pow(z1-z2, 2 ) + pow(h1-h2, 2 ) );
+}
+
+float comAssist::eulcidenTime( float x1, float y1, float z1, float h1,
+                              float x2, float y2, float z2, float h2,
+                              float v )
+{
+    float dist = comAssist::eulcidenDistance( x1, y1, z1, h1,
+                                              x2, y2, z2, h2 );
     Q_ASSERT( v != 0 );
 
     return dist/qAbs( v );

@@ -43,7 +43,7 @@
         <bool>false</bool>
        </property>
        <property name="toolTip">
-        <string>Download</string>
+        <string>Compile and Download</string>
        </property>
        <property name="text">
         <string>...</string>

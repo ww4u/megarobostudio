@@ -15,6 +15,8 @@ namespace MegaDevice {
 #define check_handle()      if ( mHandle <= 0 )\
                             { return -1; }
 
+#define x_pages             128
+
 //#define REPORT_MODE     MRQ_MOTION_STATEREPORT_ACTIVE
 //                        MRQ_MOTION_STATEREPORT_QUERY
 
@@ -681,7 +683,7 @@ int CANBus::autoEnumerate( const modelSysPref &pref )
 {
     int ret;
 
-    ret = collectHash();
+    ret = collectHash( pref );
     if ( ret != 0 ) { logDbg(); return ret; }
 
     ret = assignIds( pref );
@@ -695,7 +697,8 @@ int CANBus::rawEnumerate( const modelSysPref &pref )
 
     //! send-hash
     QMap< int, quint32 > sendHashMap;
-    ret = collectHash( sendHashMap );
+    ret = collectHash( pref,
+                       sendHashMap );
     if ( ret != 0 )
     { return ret; }
 
@@ -732,7 +735,7 @@ logDbg();
     return 0;
 }
 
-int CANBus::collectHash( )
+int CANBus::collectHash( const modelSysPref &pref )
 {
     byte buf[] = { MRQ_mc_CAN, MRQ_sc_CAN_NETMANAGEHASH_Q };
     int ret;
@@ -740,8 +743,18 @@ int CANBus::collectHash( )
     Q_ASSERT( m_pRecvCache != NULL );
     m_pRecvCache->clear();
 
-    //! 0. can intf
     DeviceId broadId( CAN_BROAD_ID );
+
+    //! -1. stop all
+    if ( pref.mbStopOnSearch )
+    {
+        byte bufstp[] = { MRQ_mc_MOTION, MRQ_sc_MOTION_SWITCH, CAN_BROAD_CHAN, MRQ_MOTION_SWITCH_EMERGSTOP, x_pages };
+        ret = doWrite( broadId, bufstp, sizeof(bufstp) );
+        if ( ret != 0 )
+        { return ret; }
+    }
+
+    //! 0. can intf
     byte buf0[] = { MRQ_mc_LINK, MRQ_sc_LINK_INTFC, mLinkType };
     ret = doWrite( broadId, buf0, sizeof(buf0) );
     if ( ret != 0 )
@@ -821,15 +834,26 @@ logDbg();
 }
 
 //! send: hash
-int CANBus::collectHash( QMap< int, quint32 > &sendHashMap )
+int CANBus::collectHash( const modelSysPref &pref,
+                         QMap< int, quint32 > &sendHashMap )
 {
     int ret;
 
     Q_ASSERT( m_pRecvCache != NULL );
     m_pRecvCache->clear();
 
-    //! 0. can intf
     DeviceId broadId( CAN_BROAD_ID );
+
+    if ( pref.mbStopOnSearch )
+    {
+        //! -1. stop
+        byte bufstp[] = { MRQ_mc_MOTION, MRQ_sc_MOTION_SWITCH, CAN_BROAD_CHAN, MRQ_MOTION_SWITCH_EMERGSTOP, x_pages };
+        ret = doWrite( broadId, bufstp, sizeof(bufstp) );
+        if ( ret != 0 )
+        { return ret; }
+    }
+
+    //! 0. can intf
     byte buf0[] = { MRQ_mc_LINK, MRQ_sc_LINK_INTFC, mLinkType };
     ret = doWrite( broadId, buf0, sizeof(buf0) );logDbg();
     if ( ret != 0 )

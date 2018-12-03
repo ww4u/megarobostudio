@@ -88,6 +88,11 @@ QString &mcModelObj::getName()
 QString &mcModelObj::name()
 { return mName; }
 
+void mcModelObj::setFullName( const QString &fullName )
+{ mFullName = fullName; }
+QString mcModelObj::fullName()
+{ return mFullName; }
+
 QString mcModelObj::getFullDesc( int axesId )
 { return "unk"; }
 

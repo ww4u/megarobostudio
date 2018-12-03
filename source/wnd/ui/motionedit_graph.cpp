@@ -34,6 +34,16 @@ void motionEdit::on_btnReverse_clicked()
     m_pMotionGroup->reverse();
 }
 
+void motionEdit::on_btnAutoTime_clicked()
+{
+    Q_ASSERT( NULL != m_pMotionGroup );
+
+    //! auto time
+    m_pMotionGroup->autoTime( m_pmcModel->mSysPref.mMaxSpeed * ui->spinSpeed->value()/100,
+                              m_pmcModel->mSysPref.mMaxTerminalSpeed * ui->spinSpeed->value()/100
+                              );
+}
+
 void motionEdit::updatePlot()
 {
     for ( int i = 0; i < mJointsTpvGroup.size(); i++ )

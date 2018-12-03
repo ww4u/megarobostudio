@@ -108,6 +108,8 @@ void MainWindow::init()
     m_pSampleThread = NULL;
 
     m_pProcess = NULL;
+
+    mLastExceptionStopTs = 0;
 }
 void MainWindow::deinit()
 {
@@ -799,8 +801,6 @@ void MainWindow::on_itemXActivated( mcModelObj *pObj, mcModelObj_Op op )
     { on_itemx_new_mrp( pObj ); }
     else
     {}
-
-
 }
 
 //! model updated
@@ -1159,6 +1159,22 @@ modelView *MainWindow::findView( mcModelObj *pModel )
             { delete pModel; }
             return pView;
         }
+    }
+
+    return NULL;
+}
+
+modelView *MainWindow::findView( const QString &fullName )
+{
+    if ( fullName.length() < 1 )
+    { return NULL; }
+
+    foreach( modelView *pView, mModelViews )
+    {
+        Q_ASSERT( NULL != pView );
+
+        if ( str_is( fullName, pView->getModelObj()->fullName() ) )
+        { return pView; }
     }
 
     return NULL;

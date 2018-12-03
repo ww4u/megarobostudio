@@ -68,6 +68,9 @@ public:
     QString &getName();
     QString &name();
 
+    void setFullName( const QString &fullName );
+    QString fullName();
+
     virtual QString getFullDesc( int axesId = -1 );
 
     void setPath( const QString &path );
@@ -97,6 +100,8 @@ protected:
 
     QString mName;
     QString mPath;
+
+    QString mFullName;
 
     obj_type mType;
     void *m_pObj;

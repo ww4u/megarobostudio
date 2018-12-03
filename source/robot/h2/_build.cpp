@@ -31,6 +31,13 @@ int robotH2::build( MegaTableModel *pModel,
     }
 
     int ret;
+
+    //! verify
+    ret = verifyTrace( curve );
+    if ( ret != 0 )
+    { return ret; }
+
+    //! build
     ret = buildTrace( curve, tpvGroups, sectionList );
     if ( ret != 0 )
     { return ret; }

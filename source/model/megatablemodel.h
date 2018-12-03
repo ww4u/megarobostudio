@@ -18,6 +18,8 @@ public:
 
 public:
     virtual void reverse();
+    virtual void autoTime( double speed,
+                           double speedT );
 
 public:
     QString className();
@@ -27,6 +29,9 @@ public:
 
     void setPrefAble( bool b );
     bool prefAble();
+
+    void setAutoTimeAble( bool b );
+    bool autoTimeAble();
 
     bool smartEditable();
 
@@ -44,6 +49,9 @@ public:
 
     virtual void setRpc( int row, RpcRequest &req );
 
+protected:
+    double aligndT( double t );
+
 Q_SIGNALS:
     void signal_data_changed();
 
@@ -52,6 +60,8 @@ protected:
 
     bool mbStepAble;
     bool mbPrefAble;
+
+    bool mbAutoTimeAble;
 
     QList <bool> mSectionAble;              //! 0,1,2
     QStringList mExportOptList;

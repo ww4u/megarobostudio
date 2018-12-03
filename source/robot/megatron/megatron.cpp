@@ -156,16 +156,16 @@ int robotMegatron::download( VRobot *pSetup )
     return 0;
 }
 
-int robotMegatron::run( const tpvRegion &region  )
-{
-    lpc()->postMsg( (eRoboMsg)(MegaDevice::mrq_msg_run), region );
-    return 0;
-}
-int robotMegatron::stop( const tpvRegion &region  )
-{
-    lpc()->postMsg( (eRoboMsg)(MegaDevice::mrq_msg_stop), region );
-    return 0;
-}
+//int robotMegatron::run( const tpvRegion &region  )
+//{
+//    lpc()->postMsg( (eRoboMsg)(MegaDevice::mrq_msg_run), region );
+//    return 0;
+//}
+//int robotMegatron::stop( const tpvRegion &region  )
+//{
+//    lpc()->postMsg( (eRoboMsg)(MegaDevice::mrq_msg_stop), region );
+//    return 0;
+//}
 
 int robotMegatron::loopNow()
 { return 0; }

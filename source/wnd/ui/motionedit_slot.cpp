@@ -3,6 +3,8 @@
 
 #include "../widget/megamessagebox.h"
 
+#include "../../com/comassist.h"
+
 //! context menu
 void motionEdit::context_remove()
 {
@@ -38,6 +40,11 @@ void motionEdit::slot_timeout()
 void motionEdit::slot_data_changed()
 {
     mDlySaveTime.start();
+
+    //! check valid
+    bool bValid = m_pMotionGroup->rowCount() >= 2;
+    ui->toolButton->setEnabled( bValid );
+    ui->btnDown->setEnabled( bValid );
 }
 
 //! get the hand action options
@@ -62,10 +69,10 @@ void motionEdit::slot_robo_changed( const QString &roboName )
 //! update the status by
 void motionEdit::slot_joints_trace_changed( )
 {
-    if ( mJointsTpvGroup.size() > 0 )
-    { ui->btnDown->setEnabled(true); }
-    else
-    { ui->btnDown->setEnabled(false); }
+//    if ( mJointsTpvGroup.size() > 0 )
+//    { ui->btnDown->setEnabled(true); }
+//    else
+//    { ui->btnDown->setEnabled(false); }
 
     if ( mJointsTpvGroup.size() > 0 )
     {
@@ -97,7 +104,18 @@ void motionEdit::on_btnAdd_clicked()
 void motionEdit::on_btnDel_clicked()
 {
     Q_ASSERT( NULL != m_pMotionGroup );
-    m_pMotionGroup->removeRow( ui->tableView->currentIndex().row() );
+//    m_pMotionGroup->removeRow( ui->tableView->currentIndex().row() );
+
+    QList<int> selRows;
+
+    //! collect the rows
+    QItemSelectionModel *pModel = ui->tableView->selectionModel();
+    selRows = comAssist::descRows( pModel );
+
+    foreach( int r, selRows )
+    {
+        m_pMotionGroup->removeRow( r );
+    }
 }
 void motionEdit::on_btnClr_clicked()
 {
@@ -116,6 +134,15 @@ void motionEdit::on_btnDown_clicked()
     {}
     else
     {
+        MegaMessageBox::warning( this, tr("Invalid robot"), tr("Invalid robot")  );
+        return;
+    }
+
+    //! compile
+    int ret = doCompile();
+    if ( ret != 0 )
+    {
+        MegaMessageBox::warning( this, tr("Compile fail"), tr("Compile fail")  );
         return;
     }
 
@@ -133,7 +160,8 @@ void motionEdit::on_btnStart_clicked()
     ui->btnStart->setEnabled( false );
 
     //! download motion
-    pRobot->run( tpvRegion(0, m_pmcModel->mConn.roboPage() ) );
+    pRobot->onLine();
+    pRobot->call( tpvRegion(0, m_pmcModel->mConn.roboPage() ) );
 }
 
 void motionEdit::on_btnStop_clicked()
@@ -150,12 +178,7 @@ void motionEdit::on_btnStop_clicked()
 //! compile
 void motionEdit::on_toolButton_clicked()
 {
-    preCompileTrace();
-
-    int ret;
-    ret = compileTrace();
-
-    postCompileTrace( ret );
+    doCompile();
 }
 
 void motionEdit::on_btnPref_clicked()

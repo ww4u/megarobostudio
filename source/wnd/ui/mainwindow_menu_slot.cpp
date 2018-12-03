@@ -98,6 +98,7 @@ void MainWindow::newMrp( QString className )
     //! init obj
     pNewModelObj->setName( comAssist::pureFileName( fDlg.selectedFiles().first() ) );
     pNewModelObj->setPath( fDlg.directory().absolutePath() );
+    pNewModelObj->setFullName( fDlg.selectedFiles().first() );
 
     pNewModelObj->setShadow( true );
     pNewModelObj->setGc( true );
@@ -113,10 +114,10 @@ void MainWindow::on_itemx_active( mcModelObj* pObj )
     { return; }
 
     //! find view
-    modelView *pView = findView( pObj );logDbg();
+    modelView *pView = findView( pObj );
+    int index;
     if ( NULL != pView )
     {
-        int index;
         index = ui->widget->indexOf( pView );
         if ( index >= 0 )
         {
@@ -129,6 +130,21 @@ void MainWindow::on_itemx_active( mcModelObj* pObj )
             Q_ASSERT( false );
             return;
         }
+    }
+
+    //! close precedent
+    pView = findView( pObj->fullName() );
+    if ( pView != NULL )
+    {logDbg()<<pObj->fullName();
+        index = ui->widget->indexOf( pView );
+        if ( index >= 0 )
+        { ui->widget->removeTab( index ); }
+        else
+        { Q_ASSERT(false); }
+
+        pView->close();
+
+        mModelViews.removeAll( pView );
     }
 
     //! new view
@@ -459,6 +475,7 @@ void MainWindow::on_actionNewPVT_triggered()
 
     pNewModelObj->setName( comAssist::pureFileName( fDlg.selectedFiles().first() ) );
     pNewModelObj->setPath( fDlg.directory().absolutePath() );
+    pNewModelObj->setFullName( fDlg.selectedFiles().first() );
 
     pNewModelObj->setGc( true );
     pNewModelObj->setShadow( true );
@@ -493,6 +510,7 @@ void MainWindow::on_actionPT_triggered()
 
     pNewModelObj->setName( comAssist::pureFileName( fDlg.selectedFiles().first() ) );
     pNewModelObj->setPath( fDlg.directory().absolutePath() );
+    pNewModelObj->setFullName( fDlg.selectedFiles().first() );
 
     pNewModelObj->setGc( true );
     pNewModelObj->setShadow( true );
@@ -530,6 +548,7 @@ void MainWindow::on_actionScene_triggered()
 
     pNewModelObj->setPath( fDlg.directory().absolutePath() );
     pNewModelObj->setName( comAssist::pureFileName( fDlg.selectedFiles().first() ) );
+    pNewModelObj->setFullName( fDlg.selectedFiles().first() );
 
     pNewModelObj->setGc( true );
     pNewModelObj->setShadow( true );

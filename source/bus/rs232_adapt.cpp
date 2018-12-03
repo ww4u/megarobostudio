@@ -118,10 +118,10 @@ int Rs232Bus::doReceive( QList<frameData> &canFrames )
 int Rs232Bus::rawEnumerate( const modelSysPref &pref )
 {
     int ret;
-logDbg();
+
     //! send-hash
     QMap< int, quint32 > sendHashMap;
-    ret = collectHash( sendHashMap );
+    ret = collectHash( pref, sendHashMap );
     if ( ret != 0 )
     { return ret; }
 

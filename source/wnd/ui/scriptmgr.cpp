@@ -308,6 +308,8 @@ int scriptMgr::openTpv( const QString &path, const QString &file )
     pGroup->set( mcModelObj::model_tpv,
                  pGroup );
 
+    pGroup->setFullName( QDir::cleanPath( file ) );
+
     emit itemXActivated( pGroup );
 
     return ERR_NONE;
@@ -336,6 +338,8 @@ int scriptMgr::openTp( const QString &path, const QString &file )
 
     pGroup->set( mcModelObj::model_tp,
                  pGroup );
+
+    pGroup->setFullName( QDir::cleanPath( file ) );
 
     emit itemXActivated( pGroup );
 
@@ -388,6 +392,8 @@ int scriptMgr::openSetup( const QString &path, const QString &file )
 
     pRealRobo->set( mcModelObj::model_scene_variable, pRealRobo );
 
+    pRealRobo->setFullName( QDir::cleanPath( file ) );
+
     emit itemXActivated( pRealRobo );
 
     return 0;
@@ -405,6 +411,8 @@ int scriptMgr::openPy( const QString &path, const QString &file )
     pModel->setShadow( true );
 
     pModel->set( mcModelObj::model_py_file, pModel );
+
+    pModel->setFullName( QDir::cleanPath( file ) );
 
     emit itemXActivated( pModel );
 
@@ -546,6 +554,7 @@ QStringList scriptMgr::fileList()
 
         absPath = prjDir.absoluteFilePath( refFile );
         absPath = QDir::fromNativeSeparators( absPath );
+        absPath = QDir::cleanPath( absPath );
 
         absFullList<<absPath;
     }
@@ -607,6 +616,8 @@ roboSceneModel *scriptMgr::createScene( const QString &path,
 
     pModel->set( mcModelObj::model_scene_file, pModel );
 
+    pModel->setFullName( file );
+
     return pModel;
 
 }
@@ -635,7 +646,7 @@ void scriptMgr::buildConnection()
 bool scriptMgr::isExist( const QString &fullName )
 {
     QStringList fullFileList = fileList();
-
+//    logDbg()<<fullFileList<<fullName;
     if( fullFileList.contains( fullName, Qt::CaseInsensitive ) )
     { return true; }
     else
@@ -658,9 +669,13 @@ void scriptMgr::on_scriptView_activated(const QModelIndex &index)
     {
     }
 
-    QString path = m_pRootModel->getPath() + QDir::separator() + pFile->getPath();
-    QString fullName;
+    QString path;
+    if ( QDir::isAbsolutePath( pFile->getPath() ) )
+    { path = pFile->getPath(); }
+    else
+    { path = m_pRootModel->getPath() + QDir::separator() + pFile->getPath(); }
 
+    QString fullName;
     fullName = path + QDir::separator() + pFile->getName();
 
     path = QDir::fromNativeSeparators( path );
@@ -747,6 +762,7 @@ void scriptMgr::slot_file_import( const QString &fileName )
     post_file_import( fileName );
 
     emit signal_prj_edited();
+
 }
 
 void scriptMgr::post_file_import( const QString &fileName )
@@ -762,8 +778,10 @@ void scriptMgr::post_file_import( const QString &fileName )
     //! base path
     QDir dir( m_pRootModel->getPath() );
     QString refPath = dir.relativeFilePath( fileName ).remove( pureFileName);
+
     //! remove the last
-    refPath.remove( refPath.size() - 1, 1);
+
+//    refPath.remove( refPath.size() - 1, 1);
     pFile->setPath( refPath );
 
     m_pRootModel->appendNode( ui->scriptView->currentIndex(), pFile );

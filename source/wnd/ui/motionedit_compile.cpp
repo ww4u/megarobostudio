@@ -1,6 +1,18 @@
 #include "motionedit.h"
 #include "ui_motionedit.h"
 
+int motionEdit::doCompile()
+{
+    preCompileTrace();
+
+    int ret;
+    ret = compileTrace();
+
+    postCompileTrace( ret );
+
+    return ret;
+}
+
 int motionEdit::compileTrace()
 {
     int ret;

@@ -1,5 +1,7 @@
 #include "h2motiongroup.h"
 
+#include "../../com/comassist.h"
+
 H2MotionGroup::H2MotionGroup( const QString &className, const QString &fileName )
                              : MegaTableModel( className, fileName)
 {
@@ -8,6 +10,7 @@ H2MotionGroup::H2MotionGroup( const QString &className, const QString &fileName 
 
     setStepAble( false );
     setPrefAble( false );
+    setAutoTimeAble( true );
 
     mSectionAble.clear();
     mSectionAble<<true;
@@ -380,4 +383,41 @@ void H2MotionGroup::reverse()
     emit dataChanged( index(0,0),
                       index(mItems.count(),
                       mHeaderList.size() - 1 ) );
+}
+
+void H2MotionGroup::autoTime( double speed, double speedTerminal )
+{
+    //! extract the enabled item
+    QList< H2MotionItem *> validItems;
+
+    for ( int i = 0; i < mItems.size(); i++ )
+    {
+        if ( mItems.at(i)->mbEnable )
+        { validItems.append( mItems.at(i)); }
+    }
+
+    if ( validItems.size() > 1 )
+    { }
+    else
+    { return; }
+
+    //! set the t
+    float t, dt;
+    validItems[0]->mT = 0;
+    t = 0;
+    for ( int i = 1; i < validItems.size(); i++ )
+    {
+        //! body time
+        dt = comAssist::eulcidenTime(
+                                        validItems[i - 1]->mX, validItems[ i - 1]->mY, 0,
+                                        validItems[i]->mX, validItems[ i ]->mY, 0,
+                                        speed );
+        //! timeline
+        t += aligndT( dt );
+
+        validItems[ i ]->mT = t;
+    }
+
+    emit dataChanged( index(0,0),
+                      index(mItems.count(), H2MotionItem::columns() - 1) );
 }

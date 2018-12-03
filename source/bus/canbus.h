@@ -74,9 +74,10 @@ protected:
     int autoEnumerate( const modelSysPref &pref );
     virtual int rawEnumerate( const modelSysPref &pref );
 
-    int collectHash( );
+    int collectHash( const modelSysPref &pref );
 
-    int collectHash( QMap< int, quint32 > &sendHashMap );
+    int collectHash( const modelSysPref &pref,
+                     QMap< int, quint32 > &sendHashMap );
     int collectSendId( QMap< int, quint32 > &sendSendMap );
     int collectRecvId( QMap< int, quint32 > &sendRecvMap );
 

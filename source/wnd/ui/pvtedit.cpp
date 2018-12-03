@@ -2,6 +2,7 @@
 #include "ui_pvtedit.h"
 
 #include "tpvplot.h"
+#include "../../com/comassist.h"
 
 #include "../../device/mrq/deviceMRQ.h"
 #include "../../../include/mcstd.h"
@@ -402,6 +403,9 @@ int pvtEdit::checkLine()
         if ( pItem->getT() < fT )
         {
             sysError( tr("Invalid time at line "), QString::number(i) );
+            //! to the error time
+            QModelIndex index = ui->tableView->model()->index( i, 1 );
+            ui->tableView->setCurrentIndex( index );
             return ERR_INVALID_DATA;
         }
         else
@@ -554,8 +558,25 @@ void pvtEdit::on_btnBuild_clicked()
 void pvtEdit::on_btnDown_clicked()
 {
     if ( !checkChan() )
-    { return; }
+    {
+        MegaMessageBox::warning( this, tr("Invalid CH"), tr("Invalid CH") );
+        return;
+    }
 
+    //! build
+    int ret = buildLine();
+    if ( ret == 0 )
+    {
+        sysLog( tr("Line build completed"), QString::number( mTPs.size()), QString::number( mTVs.size() ) );
+        emit sigLineChanged();
+    }
+    else
+    {
+        MegaMessageBox::warning( this, tr("Fail"), tr("Build Fail") );
+        return;
+    }
+
+    //! post download
     post_request_prog( msg_download_pvt, pvtEdit, Download );
 }
 void pvtEdit::on_btnStart_clicked()
@@ -595,7 +616,18 @@ void pvtEdit::on_btnAdd_clicked()
 
 void pvtEdit::on_btnDel_clicked()
 {
-    mTpvGroup->removeRow( ui->tableView->currentIndex().row() );
+//    mTpvGroup->removeRow( ui->tableView->currentIndex().row() );
+
+    QList<int> selRows;
+
+    //! collect the rows
+    QItemSelectionModel *pModel = ui->tableView->selectionModel();
+    selRows = comAssist::descRows( pModel );
+
+    foreach( int r, selRows )
+    {
+        mTpvGroup->removeRow( r );
+    }
 }
 
 void pvtEdit::on_btnClr_clicked()
@@ -682,10 +714,12 @@ void pvtEdit::slot_data_changed()
 
     if ( mTpvGroup->rowCount(QModelIndex()) < 2 )       //! not enough points
     {
+        ui->btnDown->setEnabled( false );
         ui->btnBuild->setEnabled( false );
     }
     else
     {
+        ui->btnDown->setEnabled( true );
         ui->btnBuild->setEnabled( true );
     }
                                                         //! ui en
@@ -703,7 +737,7 @@ void pvtEdit::slot_line_changed()
 {
     if ( mTPs.size() > 0 )
     {
-        ui->btnDown->setEnabled( true );
+//        ui->btnDown->setEnabled( true );
         ui->btnGraph->setEnabled( true );
 
         //! update plot
@@ -712,7 +746,7 @@ void pvtEdit::slot_line_changed()
     }
     else
     {
-        ui->btnDown->setEnabled( false);
+//        ui->btnDown->setEnabled( false);
         ui->btnGraph->setEnabled( false );
     }
 }

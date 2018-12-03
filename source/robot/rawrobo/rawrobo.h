@@ -247,6 +247,7 @@ public:
 public:
     virtual int run( const tpvRegion &region=0  );
     virtual int stop( const tpvRegion &region=0  );
+    virtual int call( const tpvRegion &region=0  );
 
     virtual int setLoop( int n, const tpvRegion &region=0 );
 

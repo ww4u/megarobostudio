@@ -94,7 +94,7 @@ int Mrh_e::write( byte *pData,
     m_pBus->flush( localId );
 
     int ret = m_pBus->write( m_pBuf, len );
-
+logDbg()<<ret;
     return ret;
 }
 int Mrh_e::read( byte *pData, int len, int tmo, int &retLen )
@@ -103,7 +103,7 @@ int Mrh_e::read( byte *pData, int len, int tmo, int &retLen )
     Q_ASSERT( NULL != m_pBus );
 
     int ret = m_pBus->read( pData, len, tmo, retLen );
-
+logDbg()<<ret;
     return ret;
 }
 

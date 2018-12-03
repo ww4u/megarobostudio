@@ -34,6 +34,7 @@ public:
 
 public:
     virtual void reverse();
+    virtual void autoTime( double speed, double speedTerminal );
 
 public:
     QList< H2ZMotionItem *> mItems;

@@ -45,8 +45,8 @@ public:
 
     virtual int download( VRobot *pSetup );
 
-    virtual int run( const tpvRegion &region=0  );  //! just run
-    virtual int stop( const tpvRegion &region=0 );  //! stop
+//    virtual int run( const tpvRegion &region=0  );  //! just run
+//    virtual int stop( const tpvRegion &region=0 );  //! stop
 
     virtual int goFactory( const tpvRegion &region=0 );
 

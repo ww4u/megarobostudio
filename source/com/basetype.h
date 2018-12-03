@@ -188,7 +188,7 @@ public:
     MotionRow()
     {
         mT = 0;
-        mIAttr = 1;
+        mIAttr = 0;
     }
     virtual ~MotionRow()
     {}

@@ -57,8 +57,8 @@ public:
 
 
 public:
-    virtual int run( const tpvRegion &region=0  );
-    virtual int stop( const tpvRegion &region=0  );
+//    virtual int run( const tpvRegion &region=0  );
+//    virtual int stop( const tpvRegion &region=0  );
 
     virtual int goZero( const tpvRegion &region=0 );
     virtual int goZero( const tpvRegion &region,

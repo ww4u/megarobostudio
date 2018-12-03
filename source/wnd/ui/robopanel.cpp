@@ -3,7 +3,7 @@
 RoboPanel::RoboPanel( mcModel *pModel,
                       VRobot *pRobo,
                       const QString &roboName,
-                      QWidget *parent ) : RoboView( pRobo, RoboView::view_robo, pModel, parent )
+                      QWidget *parent ) : RoboView( pRobo, RoboView::view_robo, 0, pModel, parent )
 {
 
     mPanelName = roboName;

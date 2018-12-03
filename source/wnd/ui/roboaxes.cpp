@@ -9,7 +9,7 @@ roboAxes::roboAxes(mcModel *pModel,
                    VRobot *pRobo,
                    const QString &roboName,
                    QWidget *parent) :
-                    RoboView( pRobo, RoboView::view_joint,
+                    RoboView( pRobo, RoboView::view_joint, 0,
                               pModel, parent ),
     ui(new Ui::roboAxes)
 {

@@ -76,6 +76,10 @@ void motionEdit::setModelObj( mcModelObj *pObj )
 
     ui->btnPref->setVisible( m_pMotionGroup->prefAble() );
 
+    //! autotime able
+    ui->btnAutoTime->setVisible( m_pMotionGroup->autoTimeAble() );
+    ui->spinSpeed->setVisible( m_pMotionGroup->autoTimeAble() );
+
     setExportOpt( m_pMotionGroup->exportOptList() );
 
     //! smart edit
@@ -83,6 +87,8 @@ void motionEdit::setModelObj( mcModelObj *pObj )
 
     //! robo change
     slot_robo_changed( m_pmcModel->mConn.getRoboName() );
+
+    slot_data_changed();
 }
 
 int motionEdit::save( QString &outFileName )
@@ -147,14 +153,15 @@ void motionEdit::onMotionStatus( int axes,
 
     MegaDevice::mrqState cvtStat = (MegaDevice::mrqState)stat;
     //! dis link
-    if ( MegaDevice::mrq_state_idle == cvtStat )
-    {
-        setLink( false );
-    }
+//    if ( MegaDevice::mrq_state_idle == cvtStat )
+//    {
+//        setLink( false );
+//    }
 
     if ( MegaDevice::mrq_state_idle == cvtStat )
     {
-        down_start_stop( true, false, false );
+//        down_start_stop( true, false, false );
+        down_start_stop( true, true, false );
     }
     else if ( MegaDevice::mrq_state_run_reqed == cvtStat )
     {
@@ -174,7 +181,7 @@ void motionEdit::onMotionStatus( int axes,
     }
     else if ( MegaDevice::mrq_state_standby == cvtStat )
     {
-        down_start_stop( true, true, false );
+        down_start_stop( true, false, false );
     }
     else if ( MegaDevice::mrq_state_prerun == cvtStat )
     {

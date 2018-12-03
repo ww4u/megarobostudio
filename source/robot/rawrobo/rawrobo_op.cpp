@@ -14,6 +14,12 @@ int RawRobo::stop( const tpvRegion &region  )
     return 0;
 }
 
+int RawRobo::call( const tpvRegion &region )
+{
+    lpc()->postMsg( (eRoboMsg)(MegaDevice::mrq_msg_call), region );
+    return 0;
+}
+
 int RawRobo::setLoop( int n, const tpvRegion &region )
 {
 //    Q_ASSERT( n > 0 );

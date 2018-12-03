@@ -7,7 +7,7 @@ MegaTableModel::MegaTableModel( const QString &className,
 
     mbStepAble = false;
     mbPrefAble = false;
-
+    mbAutoTimeAble = false;
 
     mSectionAble<<true;     //! joint,hand,geometry
 
@@ -31,6 +31,9 @@ MegaTableModel::MegaTableModel( const QString &className,
 void MegaTableModel::reverse()
 {}
 
+void MegaTableModel::autoTime( double speed, double speedT )
+{}
+
 QString MegaTableModel::className()
 { return mClassName; }
 
@@ -43,6 +46,12 @@ void MegaTableModel::setPrefAble( bool b )
 { mbPrefAble = b; }
 bool MegaTableModel::prefAble()
 { return mbPrefAble; }
+
+void MegaTableModel::setAutoTimeAble( bool b )
+{ mbAutoTimeAble = b; }
+
+bool MegaTableModel::autoTimeAble()
+{ return mbAutoTimeAble; }
 
 bool MegaTableModel::smartEditable()
 { return mbSmartEditable; }
@@ -81,4 +90,16 @@ QString MegaTableModel::fmtString( const QStringList &list )
 
 void MegaTableModel::setRpc( int row, RpcRequest &req )
 {}
+
+//! align to .5
+double MegaTableModel::aligndT( double t )
+{
+    int normt;
+    //! align time
+    normt = (int)(t * 10);
+    if ( normt == 0 )
+    { normt = 1; }
+
+    return (((normt + 4)/5)*5) / 10.0;
+}
 

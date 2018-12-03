@@ -1,6 +1,8 @@
 #include "sinanjumotiongroup.h"
 #include <QColor>
 
+#include "../../com/comassist.h"
+
 SinanjuMotionGroup::SinanjuMotionGroup( const QString &className,
                                         const QString &name ): MegaTableModel( className, name)
 {
@@ -12,6 +14,7 @@ SinanjuMotionGroup::SinanjuMotionGroup( const QString &className,
 
     mbStepAble = true;
     mbPrefAble = true;
+    setAutoTimeAble( true );
 
     mbSmartEditable = true;
     mSmartEditColumns.clear();
@@ -430,3 +433,46 @@ void SinanjuMotionGroup::reverse()
                       index(mItems.count(), SinanjuMotionItem::columns() - 1) );
 }
 
+void SinanjuMotionGroup::autoTime( double speed,
+                                           double speedT )
+{
+    //! extract the enabled item
+    QList< SinanjuMotionItem *> validItems;
+
+    for ( int i = 0; i < mItems.size(); i++ )
+    {
+        if ( mItems.at(i)->mbEnable )
+        { validItems.append( mItems.at(i)); }
+    }
+
+    if ( validItems.size() > 1 )
+    { }
+    else
+    { return; }
+
+    //! set the t
+    float t, dt, th;
+    validItems[0]->mT = 0;
+    t = 0;
+    for ( int i = 1; i < validItems.size(); i++ )
+    {
+        //! body time
+        dt = comAssist::eulcidenTime(
+                                        validItems[i - 1]->mX, validItems[ i - 1]->mY, validItems[ i - 1]->mZ,
+                                        validItems[i]->mX, validItems[ i ]->mY, validItems[ i ]->mZ,
+                                        speed );
+        //! hand time
+        th = qAbs( validItems[i]->mH - validItems[i-1]->mH ) / speedT;
+
+        //! max time
+        dt = qMax( dt, th );
+
+        //! timeline
+        t += aligndT( dt );
+
+        validItems[ i ]->mT = t;
+    }
+
+    emit dataChanged( index(0,0),
+                      index(mItems.count(), SinanjuMotionItem::columns() - 1) );
+}

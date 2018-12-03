@@ -56,6 +56,7 @@ void modelSysPref::rst()
 
     mAutoExpand = true;
     mbSearchOnOpen = true;
+    mbStopOnSearch = false;
     mbMaximizeStartup = true;
     mbAutoLoadPrj = true;
     mbAffirmZero = true;
@@ -91,6 +92,9 @@ void modelSysPref::rst()
     mAngleResolution = 0.01;    //! deg
     mOmitEn = true;
     mOmitThreshold = 0.5;       //! deg
+
+    mMaxSpeed = 100;
+    mMaxTerminalSpeed = 100;
 
     //! font
     mFontFamily = "arial";
@@ -199,6 +203,7 @@ int modelSysPref::save( const QString &str )
 
     writer.writeTextElement( "auto_expand", QString::number( mAutoExpand) );
     writer.writeTextElement( "search_onopen", QString::number( mbSearchOnOpen) );
+    writer.writeTextElement( "stop_on_search", QString::number( mbStopOnSearch) );
     writer.writeTextElement( "sample_tick", QString::number( mSampleTick) );
     writer.writeTextElement( "auto_load", QString::number( mbAutoLoadSetup) );
     writer.writeTextElement( "max_startup", QString::number( mbMaximizeStartup) );
@@ -256,6 +261,9 @@ int modelSysPref::save( const QString &str )
 
     writer.writeTextElement( "omit_enable", QString::number(mOmitEn) );
     writer.writeTextElement( "omit_threshold", QString::number(mOmitThreshold) );
+
+    writer.writeTextElement( "max_speed", QString::number(mMaxSpeed) );
+    writer.writeTextElement( "max_terminal_speed", QString::number(mMaxTerminalSpeed) );
 
     writer.writeEndElement();
 
@@ -456,6 +464,8 @@ int modelSysPref::load( const QString &str )
                         { mAutoExpand = reader.readElementText().toInt() > 0; }
                         else if ( reader.name() == "search_onopen" )
                         { mbSearchOnOpen = reader.readElementText().toInt() > 0; }
+                        else if ( reader.name() == "stop_on_search" )
+                        { mbStopOnSearch = reader.readElementText().toInt() > 0; }
                         else if ( reader.name() == "sample_tick" )
                         { mSampleTick = reader.readElementText().toInt(); }
                         else if ( reader.name() == "auto_load" )
@@ -538,6 +548,10 @@ int modelSysPref::load( const QString &str )
                         { mOmitEn = reader.readElementText().toInt() > 0; }
                         else if ( reader.name() == "omit_threshold" )
                         { mOmitThreshold = reader.readElementText().toDouble(); }
+                        else if ( reader.name() == "max_speed" )
+                        { mMaxSpeed = reader.readElementText().toDouble(); }
+                        else if ( reader.name() == "max_terminal_speed" )
+                        { mMaxTerminalSpeed = reader.readElementText().toDouble(); }
                         else
                         { reader.skipCurrentElement(); }
                     }

@@ -53,7 +53,8 @@ void interruptHandler::slot_event( eventId id,
                           (int)id,              //! event id
                           (int)data.devId(),    //! device id
                            data.frameId(),      //! frame id
-                          (QByteArray)data
+                          (QByteArray)data,
+                          data.timeStamp()
                           );
 }
 

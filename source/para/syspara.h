@@ -68,6 +68,7 @@ public:
     QString mEventLogFile;
 
     bool mbSearchOnOpen;
+    bool mbStopOnSearch;
     bool mbAutoLoadSetup;
     bool mbMaximizeStartup;
     bool mbAutoLoadPrj;
@@ -93,6 +94,9 @@ public:
     double mAngleResolution;        //! degree
     bool   mOmitEn;
     double mOmitThreshold;
+
+    double mMaxSpeed, mMaxTerminalSpeed;
+
                                     //! font
     QString mFontFamily;
     int     mPointSize;

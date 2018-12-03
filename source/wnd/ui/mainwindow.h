@@ -194,6 +194,8 @@ protected Q_SLOTS:
 
 protected:
     modelView *findView( mcModelObj *pModel );
+    modelView *findView( const QString &fullName );
+
     modelView *createModelView( modelView *pView, mcModelObj *pModel );
     void destroyModelView( modelView *pView );
 
@@ -371,6 +373,8 @@ private:
 
     QMutex mDiagnosisMutex;
     QStringList mDiagnosisLog;
+
+    quint64 mLastExceptionStopTs;
 };
 
 #endif // MAINWINDOW_H

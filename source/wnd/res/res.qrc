@@ -3,15 +3,15 @@
 
 <file>image/help/new robo.png</file>
 
-        <file>image/can2.png</file>
-        <file>image/megacan.png</file>
-        <file>image/mrh-t.png</file>
-        <file>image/miniusbcan.png</file>
-        <file>image/mcp251x.png</file>
-        <file>image/usb.png</file>
-        <file>image/rs232.png</file>
-        <file>image/statediagram.png</file>
-        <file>image/h2arch.png</file>
+<file>image/can2.png</file>
+<file>image/megacan.png</file>
+<file>image/mrh-t.png</file>
+<file>image/miniusbcan.png</file>
+<file>image/mcp251x.png</file>
+<file>image/usb.png</file>
+<file>image/rs232.png</file>
+<file>image/statediagram.png</file>
+<file>image/h2arch.png</file>
 
 <file>image/icon/g_arrowdown.png</file>
 <file>image/icon/g_arrowup.png</file>
@@ -122,6 +122,16 @@
 <file>image/joint/igus-drylingeo.png</file>
 
 <file>image/joint/sinanju_pn_256px_nor@2x.png</file>
+
+<!-- image for motion wizard-->
+<file>image/joint/mrx-t4.png</file>
+<file>image/joint/mrx-as.png</file>
+<file>image/joint/mrx-dt.png</file>
+<file>image/joint/mrx-h2.png</file>
+<file>image/joint/mrx-h2m.png</file>
+<file>image/joint/mrx-h2z.png</file>
+<file>image/joint/mrx-inj2.png</file>
+<file>image/joint/igus-drylin.png</file>
 
 <file>image/slice/down_arrow.png</file>
 <file>image/slice/down_arrow_disabled.png</file>

@@ -292,16 +292,16 @@ int robotSinanju::download( VRobot *pSetup )
     return 0;
 }
 
-int robotSinanju::run( const tpvRegion &region  )
-{
-    lpc()->postMsg( (eRoboMsg)(MegaDevice::mrq_msg_run), region );
-    return 0;
-}
-int robotSinanju::stop( const tpvRegion &region  )
-{
-    lpc()->postMsg( (eRoboMsg)(MegaDevice::mrq_msg_stop), region );
-    return 0;
-}
+//int robotSinanju::run( const tpvRegion &region  )
+//{
+//    lpc()->postMsg( (eRoboMsg)(MegaDevice::mrq_msg_run), region );
+//    return 0;
+//}
+//int robotSinanju::stop( const tpvRegion &region  )
+//{
+//    lpc()->postMsg( (eRoboMsg)(MegaDevice::mrq_msg_stop), region );
+//    return 0;
+//}
 
 int robotSinanju::loopNow()
 { return 0; }

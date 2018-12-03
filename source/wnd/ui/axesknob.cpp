@@ -4,9 +4,11 @@
 #include "../../device/mrq/deviceMRQ.h"
 
 axesKnob::axesKnob( mcModel *pMcModel,
+                    int subAx,
                     const QString &connStr,
                     QWidget *parent) :
-    DlgView( pMcModel, parent),
+    //! \note (VRobot *)pMcModel
+    RoboView( (VRobot *)pMcModel, RoboView::view_axes, subAx, pMcModel, parent ),
     ui(new Ui::axesKnob)
 {    
     ui->setupUi(this);

@@ -653,7 +653,17 @@ void deviceMgr::context_mrq_panel()
     Q_ASSERT( NULL != m_pMRQ );
     Q_ASSERT( NULL != m_pmcModel );
 
+    //! check exist
+    RoboView* pView;
+    pView = RoboView::findView( (VRobot*)m_pmcModel, RoboView::view_axes, mCurrentAxes );
+    if ( NULL != pView )
+    {
+        pView->activateWindow();
+        return;
+    }
+
     axesKnob *pKnob = new axesKnob( m_pmcModel,
+                                    mCurrentAxes,
                                     QString("CH%1@%2").arg(mCurrentAxes+1).arg(m_pMRQ->name() ),
                                     this );
     if ( NULL == pKnob )

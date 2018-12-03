@@ -10,6 +10,8 @@ class comAssist
 private:
     static QStringList _mRemotePath;
 public:
+    static QList<int> descRows( QItemSelectionModel *pModel );
+
     static void setRemotePath( const QStringList &path );
     static QStringList &remotePath();
 
@@ -39,6 +41,12 @@ public:
                                      float x2, float y2, float z2 );
     static float   eulcidenTime( float x1, float y1, float z1,
                               float x2, float y2, float z2,
+                              float v );
+
+    static float   eulcidenDistance( float x1, float y1, float z1, float h1,
+                                     float x2, float y2, float z2, float h2 );
+    static float   eulcidenTime( float x1, float y1, float z1, float h1,
+                              float x2, float y2, float z2, float h2,
                               float v );
 
     static bool    ammendFileName( QString &fileName );

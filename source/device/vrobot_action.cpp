@@ -44,6 +44,10 @@ int VRobot::stop( const tpvRegion &region  )
 {
     return 0;
 }
+int VRobot::call( const tpvRegion &region  )
+{
+    return 0;
+}
 
 int VRobot::goFactory( const tpvRegion &region )
 { return 0; }

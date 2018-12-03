@@ -10,16 +10,19 @@
 #include "../../device/vdevice.h"
 #include "dlgview.h"
 
+#include "roboview.h"
+
 namespace Ui {
 class axesKnob;
 }
 
-class axesKnob : public DlgView
+class axesKnob : public RoboView
 {
     Q_OBJECT
 
 public:
     explicit axesKnob( mcModel *pMcModel,
+                       int subAx,
                        const QString &connectStr,
                        QWidget *parent = 0);
     ~axesKnob();

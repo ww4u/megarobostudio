@@ -11,18 +11,20 @@ public:
         view_none,
         view_joint,
         view_robo,
+        view_axes,
     };
 
 public:
     static RoboView *findView( VRobot *pRobo,
-                               RoboView::eRoboViewId vid );
+                               RoboView::eRoboViewId vid,
+                               int subId = 0 );
 protected:
     static QList<RoboView*> _liveWindows;
 
     Q_OBJECT
 
 public:
-    RoboView( VRobot *pRobo, RoboView::eRoboViewId vid,
+    RoboView( VRobot *pRobo, RoboView::eRoboViewId vid, int subId,
               mcModel *pModel, QWidget *parent=NULL);
 
 protected:
@@ -31,6 +33,8 @@ protected:
 protected:
     VRobot *m_pRobo;
     eRoboViewId mViewId;
+
+    int mSubId;
 };
 
 #endif // ROBOVIEW_H

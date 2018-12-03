@@ -10,7 +10,7 @@ void MainWindow::exceptionProc( const QString &name,
     Q_ASSERT( NULL != mMcModel.mSysPref.mEventActionModel.items() );
 
     int actId;
-    quint64 ts = 0;
+
     foreach( EventAction *pAction, *mMcModel.mSysPref.mEventActionModel.items() )
     {
         Q_ASSERT( NULL != pAction );
@@ -27,9 +27,14 @@ void MainWindow::exceptionProc( const QString &name,
                  || exceptionAction == e_device_action_prompt_stop )
             {
                 //! filter by timestamp
-                if ( (msg.timeStamp() - ts) > 64 )
-                { on_actionForceStop_triggered(); }
-                ts = msg.timeStamp();
+                if ( /*msg.timeStamp() > mLastExceptionStopTs && */
+                     (msg.timeStamp() - mLastExceptionStopTs) > 100 )
+                {
+                    on_actionForceStop_triggered();
+                    mLastExceptionStopTs = msg.timeStamp();
+//                    mLastExceptionStopTs = sysTimeStamp();
+                }
+
             }
             else
             {}

@@ -53,8 +53,6 @@ protected:
     void beginDownload( void *pPara);
     void endDownload( int ret, void *pPara );
 
-//    ProgressGroup *progress();
-
     VRobot *currentRobot();
 
     void setExportOpt( const QStringList &optList );
@@ -107,6 +105,7 @@ protected Q_SLOTS:
     void on_btnGraph_clicked();
 
     void on_btnReverse_clicked();
+    void on_btnAutoTime_clicked();
 
 protected:
     void updatePlot();
@@ -119,11 +118,15 @@ protected:
     void beginStart( void *pPara );
     void endStart( int ret, void *pPara );
 
+    int doCompile();
+
 protected:
     virtual void context_remove();
     virtual void context_add_before();
     virtual void context_add_below();
     virtual void context_clear();    
+
+
 
 private:
     Ui::motionEdit *ui;

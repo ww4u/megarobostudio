@@ -418,6 +418,11 @@ bool sysPref::updateValidateEn()
         { return false; }
     }
 
+    if ( ui->gpDb->isChecked() )
+    {}
+    else
+    { return false; }
+
     return true;
 }
 

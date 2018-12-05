@@ -103,20 +103,20 @@ int PositiveCalc(double* pIn, double* t, int length, double* result)
 			}
 			// 计算x
 			result[3 * i] = 0.25 * (tmp1 - tmp2) - deltP[0];
-			// 工作区间判断												
-			if (fabs(result[2 * i] - workSpace[0]) < 0
-				|| fabs(result[2 * i] - workSpace[1]) < 0)
-			{
-				return ERROR_OUT_OF_WORK_SPACE;
-			}
+//			// 工作区间判断
+//			if (fabs(result[2 * i] - workSpace[0]) < 0
+//				|| fabs(result[2 * i] - workSpace[1]) < 0)
+//			{
+//				return ERROR_OUT_OF_WORK_SPACE;
+//			}
 			// 计算y
 			result[3 * i + 1] = 0.25 * (tmp1 + tmp2) - deltP[1];
 			// T
 			result[3 * i + 2] = t[i];
-			if (fabs(result[2 * i + 1] - workSpace[2]) < 0 || fabs(result[2 * i + 1] - workSpace[3]) < 0)
-			{
-				return ERROR_OUT_OF_WORK_SPACE;
-			}
+//			if (fabs(result[2 * i + 1] - workSpace[2]) < 0 || fabs(result[2 * i + 1] - workSpace[3]) < 0)
+//			{
+//				return ERROR_OUT_OF_WORK_SPACE;
+//			}
 		}
 		// 顺时针
 		else
@@ -133,20 +133,20 @@ int PositiveCalc(double* pIn, double* t, int length, double* result)
 			}
 			// 计算x
 			result[3 * i] = 0.25 * (tmp1 - tmp2) - deltP[0];
-			// 工作区间判断												
-			if (fabs(result[2 * i] - workSpace[0]) < 0
-				|| fabs(result[2 * i] - workSpace[1]) < 0)
-			{
-				return ERROR_OUT_OF_WORK_SPACE;
-			}
+//			// 工作区间判断
+//			if (fabs(result[2 * i] - workSpace[0]) < 0
+//				|| fabs(result[2 * i] - workSpace[1]) < 0)
+//			{
+//				return ERROR_OUT_OF_WORK_SPACE;
+//			}
 			// 计算y
 			result[3 * i + 1] = 0.25 * (tmp1 + tmp2) - deltP[1];
 			// T
 			result[3 * i + 2] = t[i];
-			if (fabs(result[2 * i + 1] - workSpace[2]) < 0 || fabs(result[2 * i + 1] - workSpace[3]) < 0)
-			{
-				return ERROR_OUT_OF_WORK_SPACE;
-			}
+//			if (fabs(result[2 * i + 1] - workSpace[2]) < 0 || fabs(result[2 * i + 1] - workSpace[3]) < 0)
+//			{
+//				return ERROR_OUT_OF_WORK_SPACE;
+//			}
 		}
 	}
 	return 0;
@@ -163,17 +163,17 @@ int OppositeCalc(double* pIn, double* v, double* t, int length, double* result)
 		{
 			pIn[3 * i] = pIn[3 * i] + deltP[0];
 			pIn[3 * i + 1] = pIn[3 * i + 1] + deltP[1];
-			/* x超出工作区间 */
-			if (pIn[3 * i] - workSpace[0] < 0
-				|| pIn[3 * i] - workSpace[1]>0)
-			{
-				return ERROR_OUT_OF_WORK_SPACE;
-			}
-			/* y超出工作区间 */
-			if (pIn[3 * i + 1] - workSpace[2] < 0 || pIn[3 * i + 1] - workSpace[3]>0)
-			{
-				return ERROR_OUT_OF_WORK_SPACE;
-			}
+//			/* x超出工作区间 */
+//			if (pIn[3 * i] - workSpace[0] < 0
+//				|| pIn[3 * i] - workSpace[1]>0)
+//			{
+//				return ERROR_OUT_OF_WORK_SPACE;
+//			}
+//			/* y超出工作区间 */
+//			if (pIn[3 * i + 1] - workSpace[2] < 0 || pIn[3 * i + 1] - workSpace[3]>0)
+//			{
+//				return ERROR_OUT_OF_WORK_SPACE;
+//			}
 			if (moveMode == 0)
 			{
 				// 逆解求解
@@ -203,17 +203,17 @@ int OppositeCalc(double* pIn, double* v, double* t, int length, double* result)
 		{
 			pIn[3 * i] = pIn[3 * i] + deltP[0];
 			pIn[3 * i + 1] = pIn[3 * i + 1] + deltP[1];
-			/* x超出工作区间 */
-			if (pIn[3 * i] - workSpace[0] < 0
-				|| pIn[3 * i] - workSpace[1]>0)
-			{
-				return ERROR_OUT_OF_WORK_SPACE;
-			}
-			/* y超出工作区间 */
-			if (pIn[3 * i + 1] - workSpace[2] < 0 || pIn[3 * i + 1] - workSpace[3]>0)
-			{
-				return ERROR_OUT_OF_WORK_SPACE;
-			}
+//			/* x超出工作区间 */
+//			if (pIn[3 * i] - workSpace[0] < 0
+//				|| pIn[3 * i] - workSpace[1]>0)
+//			{
+//				return ERROR_OUT_OF_WORK_SPACE;
+//			}
+//			/* y超出工作区间 */
+//			if (pIn[3 * i + 1] - workSpace[2] < 0 || pIn[3 * i + 1] - workSpace[3]>0)
+//			{
+//				return ERROR_OUT_OF_WORK_SPACE;
+//			}
 			if (moveMode == 0)
 			{
 				// 逆解求解

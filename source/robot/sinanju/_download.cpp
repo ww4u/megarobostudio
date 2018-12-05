@@ -80,10 +80,14 @@ int robotSinanju::buildTpvGroup( xxxGroup<jointsTrace> &jointsPlan,
 
     int ret;
     //! for each axis
+    int axisDir;
+
     for ( int i = 0; i < 4; i++ )
     {
         tpvGroup *pGroup = new tpvGroup();
         Q_ASSERT( NULL != pGroup );
+
+        axisDir = 1;
 
         //! for each data
         for ( int j = 0; j < jointsPlan.size(); j++ )

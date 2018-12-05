@@ -246,7 +246,8 @@ protected:
     QList< double > mJointFactoryList;
     QList< double > mJointFactorySeperateList;
 
-//    bool mbTransferable;
+    QList<bool> mArithDirs;      //! 1 -- Positive
+
     double mTransferR[3*3], mTransferRInv[3*3];
     double mTransferS[3*1];
 

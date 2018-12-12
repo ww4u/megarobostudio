@@ -55,8 +55,9 @@ struct MegatronKeyPoint
         struct
         {
             float t;
-            float fx, ly, fz;   //! x1, y1, z1
-            float bx, ry, bz;   //! x2, y2, z2
+//            float fx, ly, fz;   //! x1, y1, z1
+//            float bx, ry, bz;   //! x2, y2, z2
+            float fx, fz, bx, bz, ly, ry;
         };
         float datas[7];
     };

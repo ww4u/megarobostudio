@@ -47,6 +47,24 @@ void roboProp::setModelObj( mcModelObj *pObj )
     }
 }
 
+bool roboProp::matchModelObj(mcModelObj *pObj)
+{
+    Q_ASSERT( NULL != pObj );
+
+//    if ( pObj->getType() != m_pModelObj->getType() )
+//    { return false; }
+
+    //! name match
+    if ( !str_is( m_pModelObj->getName(), pObj->getName() ) )
+    { return false; }
+
+    //! path match
+    if ( !str_is( m_pModelObj->getPath(), pObj->getPath() ) )
+    { return false; }
+
+    return true;
+}
+
 void roboProp::setMcModel( mcModel *pMcModel )
 {
     Q_ASSERT( NULL != pMcModel );

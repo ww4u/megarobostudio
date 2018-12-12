@@ -1,5 +1,5 @@
 #include "mcmodelobj.h"
-
+#include "../../include/mydebug.h"
 QList<mcModelObj *> mcModelObj::_model_objs;
 
 mcModelObj * mcModelObj::allocate( mcModelObj::obj_type type, void *pObj )

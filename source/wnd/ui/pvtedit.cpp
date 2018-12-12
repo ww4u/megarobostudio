@@ -535,7 +535,7 @@ void pvtEdit::updatePlot()
 //! need setting again
 void pvtEdit::stateIdle()
 {
-    ui->btnDown->setEnabled( false );
+    ui->btnDown->setEnabled( true );
     ui->btnStart->setEnabled( false );
     ui->btnStop->setEnabled( false );
 }
@@ -737,7 +737,6 @@ void pvtEdit::slot_line_changed()
 {
     if ( mTPs.size() > 0 )
     {
-//        ui->btnDown->setEnabled( true );
         ui->btnGraph->setEnabled( true );
 
         //! update plot
@@ -746,7 +745,6 @@ void pvtEdit::slot_line_changed()
     }
     else
     {
-//        ui->btnDown->setEnabled( false);
         ui->btnGraph->setEnabled( false );
     }
 }

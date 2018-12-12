@@ -48,7 +48,12 @@ Q_SIGNALS:
 
     void signal_instmgr_changed( bool bEnd, MegaDevice::InstMgr *pMgr );
 
+    void signal_scene_robo_changed( MegaDevice::InstMgr *pMgr );
+    void signal_device_changed( MegaDevice::InstMgr *pMgr );
+
     void signal_btnState_clicked();
+
+    void signal_device_busy( bool b );
 
 public Q_SLOTS:
     void on_pushButton_clicked();
@@ -57,6 +62,8 @@ protected Q_SLOTS:
     void on_btnTest_clicked();
 
     void on_treeWidget_itemActivated(QTreeWidgetItem *item, int column);
+
+    void slot_device_busy( bool b );
 
     //! mrq
     void context_import();
@@ -129,6 +136,9 @@ protected:
     QString subGroupString( QList<int> subGps );
     QString subGroupString( int index, int id );
 
+    void setBusy( bool b );
+    bool isBusy();
+
     int doTest( appMsg msg, void *pPara );
 
 public:
@@ -147,7 +157,8 @@ public:
     Ui::deviceMgr *ui;
 
     QMenu *m_pDeviceMenu;
-    QAction *m_pDeviceImportAction;
+    QAction *m_pDeviceImportAction, *m_pDeviceUploadAction;
+    QAction *m_pMrvImportAction, *m_pMrvUploadAction;
 
     QMenu *m_pMRVMenu;
 
@@ -176,6 +187,7 @@ public:
     StateDiagram *m_pDiagram;
     int mAxesCount;
 
+    bool mbDeviceBusy;
 private slots:
     void on_toolState_clicked();
     void on_chkOnLine_clicked(bool checked);

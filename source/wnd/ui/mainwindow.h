@@ -132,6 +132,9 @@ Q_SIGNALS:
 
     void sig_pref_request_save();
 
+    void sig_view_added( const QString &str );
+    void sig_view_removed( const QString &str );
+
 protected Q_SLOTS:
     void slot_downloadbar_clicked();
 
@@ -157,6 +160,10 @@ protected Q_SLOTS:
     void slot_modelView_modified( modelView *pView, bool b );
 
     void slot_instmgr_changed( bool bEnd, MegaDevice::InstMgr *pMgr );
+
+    void slot_instmgr_scene_robo_changed( MegaDevice::InstMgr *pMgr );
+    void slot_instmgr_device_changed( MegaDevice::InstMgr *pMgr );
+
     void slot_device_active_changed( const QString &name );
 
     void slot_net_event( const QString &name,

@@ -204,13 +204,16 @@ void roboScene::slot_editingFinished( sceneWidget *pWig, const QString &str )
 {
     if( checkName( str, pWig ) )
     {
+        //! valid name
+        pWig->setName( str );
+
         emit sigSaveRequest( this );
         emit signalSceneChanged();
     }
     else
     {
         MegaMessageBox::warning( this, tr("Warning"), tr("Name Inavlid") );
-        pWig->setName( pWig->getName() );
+        pWig->setName( pWig->getShadowName() );
         pWig->focusOnName();
     }
 }
@@ -424,7 +427,7 @@ void roboScene::fromSceneModel( roboSceneModel *pSceneModel,
             sysLog( fullName, tr("loaded!") );
         }
 
-        pNewRobot->setPath( path );
+        pNewRobot->setPath( QDir::toNativeSeparators(path) );
 
         //! add to scene
         addRobot( pNewRobot, pModel );

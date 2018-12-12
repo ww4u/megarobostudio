@@ -430,6 +430,11 @@ void MainWindow::buildConnection()
              SLOT(slot_instmgr_changed(bool, MegaDevice::InstMgr*)) );
 
     connect( m_pDeviceMgr,
+             SIGNAL(signal_instmgr_changed(bool, MegaDevice::InstMgr*)),
+             this,
+             SLOT(slot_instmgr_changed(bool, MegaDevice::InstMgr*)) );
+
+    connect( m_pDeviceMgr,
              SIGNAL(signal_btnState_clicked()),
              this,
              SLOT(on_actionMotor_Panel_triggered()) );
@@ -785,6 +790,8 @@ void MainWindow::cfgTab_tabCloseRequested( int index )
     {}
 
     //! close the tab
+    emit sig_view_removed( ui->widget->tabText( index ) );
+
     ui->widget->widget(index)->close();
     ui->widget->removeTab( index );
 }
@@ -956,6 +963,11 @@ void MainWindow::slot_instmgr_changed( bool bEnd, MegaDevice::InstMgr *pMgr )
         m_pMotorMonitor->setMonitors( mMcModel.m_pInstMgr->getChans() );
     }
 }
+
+void MainWindow::slot_instmgr_scene_robo_changed( MegaDevice::InstMgr *pMgr )
+{}
+void MainWindow::slot_instmgr_device_changed( MegaDevice::InstMgr *pMgr )
+{}
 
 //! device changed
 void MainWindow::slot_device_active_changed( const QString &name )
@@ -1189,8 +1201,11 @@ modelView *MainWindow::createModelView( modelView *pView,
     pView->setMcModel( &mMcModel );
     pView->setModelObj( pObj );
 
-    ui->widget->addTab( pView, comAssist::pureFileName(pObj->getName()) );
+    QString strName;
+    strName = comAssist::pureFileName(pObj->getName());
+    ui->widget->addTab( pView, strName );
     ui->widget->setCurrentWidget( pView );
+    emit sig_view_added( ui->widget->tabText( ui->widget->currentIndex() ) );
 
     //! wnd manage
     connect( pView,
@@ -1366,6 +1381,12 @@ void MainWindow::on_actionWindows_W_triggered(bool checked)
                  this, SLOT(slot_wndHide()));
         connect( m_pDlgWndList, SIGNAL(rejected()),
                  this, SLOT(slot_wndHide()));
+
+        connect( this, SIGNAL(sig_view_added( const QString &)),
+                 m_pDlgWndList, SLOT(slot_view_added(const QString & ) ) );
+
+        connect( this, SIGNAL(sig_view_removed( const QString &)),
+                 m_pDlgWndList, SLOT(slot_view_removed(const QString & ) ) );
     }
 
     m_pDlgWndList->clear();

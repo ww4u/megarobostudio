@@ -91,8 +91,8 @@ void tpvPlot::on_btnImage_clicked()
     nameFilter = fDlg.selectedNameFilter();
 
     //! image
-    if ( nameFilter == "PNG (*.png )"
-         || nameFilter == "BMP(*.bmp)" )
+    if ( str_is( nameFilter, "PNG (*.png )" )
+         || str_is( nameFilter, "BMP (*.bmp)" ) )
     {
         QPixmap pixmap = ui->tabWidget->currentWidget()->grab();
         pixmap.save( fDlg.selectedFiles().first() );

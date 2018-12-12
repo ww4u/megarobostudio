@@ -43,6 +43,7 @@ public:
     ~roboProp();
 
     virtual void setModelObj( mcModelObj *pObj );
+    virtual bool matchModelObj(mcModelObj *pObj);
     virtual void setMcModel( mcModel *pMcModel );
 
     virtual int  save( QString &outFileName );

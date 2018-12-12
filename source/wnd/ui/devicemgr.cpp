@@ -64,6 +64,8 @@ void deviceMgr::init()
     m_pProgress = NULL;
     m_pDiagram = NULL;
     mAxesCount = 0;
+
+    mbDeviceBusy = false;
 }
 void deviceMgr::deinit()
 {
@@ -84,7 +86,7 @@ void deviceMgr::setupUi()
                               this,
                               SLOT(context_import()) );
     m_pDeviceMenu->addSeparator();
-    m_pDeviceMenu->addAction( QIcon( ":/res/image/icon/332.png" ),
+    m_pDeviceUploadAction = m_pDeviceMenu->addAction( QIcon( ":/res/image/icon/332.png" ),
                               tr("Upload from device"),
                               this,
                               SLOT(context_upload()) );
@@ -112,12 +114,12 @@ void deviceMgr::setupUi()
                               tr("Export setup..."),
                               this,
                               SLOT(context_mrv_export()) );
-    /*m_pDeviceImportAction =*/ m_pMRVMenu->addAction( QIcon( ":/res/image/icon/218.png" ),
+    m_pMrvImportAction = m_pMRVMenu->addAction( QIcon( ":/res/image/icon/218.png" ),
                               tr("Import setup..."),
                               this,
                               SLOT(context_mrv_import()) );
     m_pMRVMenu->addSeparator();
-    m_pMRVMenu->addAction( QIcon( ":/res/image/icon/332.png" ),
+    m_pMrvUploadAction = m_pMRVMenu->addAction( QIcon( ":/res/image/icon/332.png" ),
                               tr("Upload from device"),
                               this,
                               SLOT(context_mrv_upload()) );
@@ -191,6 +193,9 @@ void deviceMgr::buildConnection()
 {
     connect( ui->btnPanel, SIGNAL(clicked(bool)),
              this, SIGNAL(signal_btnState_clicked()));
+
+    connect( this, SIGNAL(signal_device_busy(bool)),
+             this, SLOT(slot_device_busy(bool)) );
 }
 
 //! fill info from the db
@@ -423,6 +428,8 @@ int deviceMgr::postLoadOn( appMsg msg, void *pPara )
 }
 void deviceMgr::beginLoadOn( void *pPara )
 {
+    setBusy( true );
+
     ui->pushButton->setEnabled( false );
 
     sysProgress( 0, tr("Begin load") );
@@ -449,6 +456,8 @@ void deviceMgr::endLoadOn( int ret, void *pPara )
         Q_ASSERT( NULL != m_pRobo );
         emit signalModelUpdated( m_pRobo );
     }
+
+    setBusy( false );
 }
 
 int deviceMgr::postImport( appMsg msg, void *pPara )
@@ -535,6 +544,11 @@ void deviceMgr::on_treeWidget_itemActivated(QTreeWidgetItem *item, int column)
         }
         else
         {
+            if ( isBusy() )
+            {
+                MegaMessageBox::information( this, tr("Info"), tr("Busy now, please wait!") );
+                return;
+            }
             //! try load setup?
             if ( robot_is_robot( pRobot->getId() ) )
             { pRobot->tryLoad(); }
@@ -561,6 +575,15 @@ void deviceMgr::on_treeWidget_itemActivated(QTreeWidgetItem *item, int column)
     }
     else
     {}
+}
+
+void deviceMgr::slot_device_busy( bool b )
+{
+    m_pDeviceImportAction->setEnabled( !b );
+    m_pDeviceUploadAction->setEnabled( !b );
+
+    m_pMrvImportAction->setEnabled( !b );
+    m_pMrvUploadAction->setEnabled( !b );
 }
 
 //! quick

@@ -10,7 +10,7 @@ class roboGouf : public MegaDevice::deviceMRV
 {
 public:
     roboGouf();
-
+    ~roboGouf();
 public:
 //    virtual QString trigSrcAlias( int ax, int iTrig );
 

@@ -25,6 +25,10 @@ Q_SIGNALS:
     void signal_closeAll();
 
 private slots:
+
+    void slot_view_removed( const QString &str );
+    void slot_view_added( const QString &str );
+
     void on_btnCloseAll_clicked();
 
     void on_btnActivate_clicked();
@@ -32,6 +36,10 @@ private slots:
     void on_listWidget_itemDoubleClicked(QListWidgetItem *item);
 
     void on_listWidget_itemSelectionChanged();
+
+    void on_listWidget_currentRowChanged(int currentRow);
+
+    void on_listWidget_currentTextChanged(const QString &currentText);
 
 private:
     Ui::dlgWndList *ui;

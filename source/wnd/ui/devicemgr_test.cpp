@@ -233,3 +233,11 @@ QString deviceMgr::subGroupString( int index, int id )
 {
     return QString("ID%1:0X%2").arg(index + 1).arg( id, 0, 16 );
 }
+
+void deviceMgr::setBusy( bool b )
+{
+    mbDeviceBusy = b;
+    emit signal_device_busy( b );
+}
+bool deviceMgr::isBusy()
+{ return mbDeviceBusy; }

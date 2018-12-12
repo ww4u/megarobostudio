@@ -687,9 +687,6 @@ void StandbyMrqUnit::onEnter( RoboMsg &detail )
                                                   MRQ_MOTION_SWITCH_RUN,
                                                   (MRQ_MOTION_SWITCH_1)selfFsm()->page() );
 
-        if ( selfFsm()->axes() == 3 )
-        { logDbg(); }
-
         if ( ret != 0  )
         { toState(mrq_state_idle, detail );  sysLog( __FUNCTION__, QString::number(__LINE__) ); }
         else

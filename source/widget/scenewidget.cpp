@@ -11,7 +11,6 @@ sceneWidget::sceneWidget( QWidget *parent ) : QWidget( parent ), ui(new Ui::scen
     m_pBase = NULL;
     m_pModel = NULL;
 
-//    ui->mpLabel = new QLineEdit( tr("untitled"), this );
     ui->mpLabel->setSizePolicy( QSizePolicy::Minimum,
                             QSizePolicy::Preferred );
 
@@ -58,23 +57,13 @@ void sceneWidget::slot_editingFinished()
     emit editingFinished( this, ui->mpLabel->text() );
 }
 
-void sceneWidget::setRobot( VRobot *pBase )
-{
+void sceneWidget::attachRobot( VRobot *pBase )
+{logDbg();
     Q_ASSERT( NULL != pBase );
     m_pBase = pBase;
-    pBase->setGc( true );
+//    pBase->setGc( true );
     QImage img = pBase->getImage();
     ui->image->setPixmap( QPixmap::fromImage( img ) );
-
-//    QRect rawGeo;
-//    rawGeo = mpLabel->geometry();
-
-//    mpLabel->setGeometry( QRect( rawGeo.x(),
-//                                 rawGeo.y(),
-//                                 img.width(),
-//                                 rawGeo.height() ) );
-
-//    setGeometry( QRect(0,0,img.width(),img.height()));
 }
 VRobot *sceneWidget::getRobot()
 {
@@ -89,7 +78,7 @@ void sceneWidget::setModelObj( mcModelObj *pBase )
     //! model
     if ( m_pModel->getType() == mcModelObj::model_scene_variable )
     {
-        setRobot( (VRobot*)m_pModel );
+        attachRobot( (VRobot*)m_pModel );
         setName( pBase->getName() );
     }
     else
@@ -121,7 +110,22 @@ void sceneWidget::setName( const QString &name )
     ui->mpLabel->setText( name );
 }
 QString sceneWidget::getName()
+{ return ui->mpLabel->text(); }
+
+QString sceneWidget::getShadowName()
 { return mName; }
 
 void sceneWidget::focusOnName()
 { ui->mpLabel->selectAll(); }
+
+void sceneWidget::on_mpLabel_textChanged(const QString &arg1)
+{
+    Q_ASSERT( NULL != m_pModel );
+    if ( arg1.length() > 0 )
+    { m_pModel->setName( arg1 ); }
+}
+
+void sceneWidget::on_mpLabel_textEdited(const QString &arg1)
+{
+    emit editingFinished( this, arg1 );
+}

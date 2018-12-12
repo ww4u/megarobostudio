@@ -27,7 +27,7 @@ protected Q_SLOTS:
     void slot_editingFinished();
 
 public:
-    void setRobot( VRobot *pBase );
+    void attachRobot( VRobot *pBase );
     VRobot *getRobot();
 
     void setModelObj( mcModelObj *pBase );
@@ -40,6 +40,7 @@ public:
 
     void setName( const QString &name );
     QString getName();
+    QString getShadowName();
 
     void focusOnName();
 
@@ -49,6 +50,11 @@ protected:
 
     bool mbSelected;
     QString mName;
+
+private slots:
+    void on_mpLabel_textChanged(const QString &arg1);
+
+    void on_mpLabel_textEdited(const QString &arg1);
 
 private:
     Ui::sceneWidget *ui;

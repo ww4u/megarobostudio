@@ -63,17 +63,17 @@ void MrvProp::on_btnReset_clicked()
 }
 
 void MrvProp::setModelObj( mcModelObj *pObj )
-{
-    //! \todo pobj memory leak
+{logDbg()<<pObj->getGc()<<pObj->name();
+    mrvView::setModelObj( pObj );
 
+    //! \note noly view gc needed
+    pObj->setGc( false );
     //! foreach apply
     foreach( modelView *pView, mViewPages )
     {
         Q_ASSERT( NULL != pView );
         pView->setModelObj(pObj);
     }
-
-    mrvView::setModelObj( pObj );
 }
 
 void MrvProp::setMcModel( mcModel *pMcModel )

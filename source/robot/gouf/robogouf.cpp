@@ -17,3 +17,5 @@ roboGouf::roboGouf( )
     mImage = QImage::fromData( _megaimage, sizeof(_megaimage) );
 }
 
+roboGouf::~roboGouf( )
+{  }

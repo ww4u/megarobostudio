@@ -15,8 +15,6 @@ public:
     static int columns();
     static QString header( int col );
 
-
-
 public:
     SinanjuMotionItem();
     SinanjuMotionItem( const SinanjuMotionItem &item );

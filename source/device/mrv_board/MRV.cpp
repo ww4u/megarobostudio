@@ -6,10 +6,21 @@ MRV::MRV()
 }
 //! ENUM
 //! NONE|CAN|RS232
-int MRV::setLINK_INTFC( MRV_LINK_INTFC val0 )
+int MRV::setLINK_INTFC( MRV_LINK_INTFC val0 , bool bDiff )
 {
 	//! 1 0
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+		do{
+			if( MRV_model::mLINK_INTFC!=val0){ break; }
+			return 0;
+		}while(false);
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)1, (byte)0 , (unsigned char)val0 );
 
 	if ( ret == 0) 
@@ -53,10 +64,21 @@ int MRV::getLINK_DEVICEINFO(  MRV_LINK_DEVICEINFO * val0, MRV_LINK_DEVICEINFO_1 
 }
 //! ENUM
 //! NORMAL|NONE
-int MRV::setSYSTEM_WORKMODE( MRV_SYSTEM_WORKMODE val0 )
+int MRV::setSYSTEM_WORKMODE( MRV_SYSTEM_WORKMODE val0 , bool bDiff )
 {
 	//! 2 0
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+		do{
+			if( MRV_model::mSYSTEM_WORKMODE!=val0){ break; }
+			return 0;
+		}while(false);
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)2, (byte)0 , (unsigned char)val0 );
 
 	if ( ret == 0) 
@@ -82,10 +104,21 @@ int MRV::getSYSTEM_WORKMODE(  MRV_SYSTEM_WORKMODE * val0, bool bQuery )
 }
 //! ENUM
 //! DEFAULT|LAST
-int MRV::setSYSTEM_POWERON( MRV_SYSTEM_POWERON val0 )
+int MRV::setSYSTEM_POWERON( MRV_SYSTEM_POWERON val0 , bool bDiff )
 {
 	//! 2 2
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+		do{
+			if( MRV_model::mSYSTEM_POWERON!=val0){ break; }
+			return 0;
+		}while(false);
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)2, (byte)2 , (unsigned char)val0 );
 
 	if ( ret == 0) 
@@ -225,10 +258,17 @@ int MRV::getSYSTEM_ERROR(  char * val0, char * val1, char * val2, char * val3, c
 }
 //! U8
 //! [CHANNUM]
-int MRV::setSYSTEM_WARNCLEAR( byte val0 )
+int MRV::setSYSTEM_WARNCLEAR( byte val0 , bool bDiff )
 {
 	//! 2 10
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)2, (byte)10 , val0 );
 
 	if ( ret == 0) 
@@ -240,10 +280,21 @@ int MRV::setSYSTEM_WARNCLEAR( byte val0 )
 }
 //! ENUM
 //! 4800|7200|9600|14400|19200|38400|57600|115200|128000
-int MRV::setRS232_BAUD( MRV_RS232_BAUD val0 )
+int MRV::setRS232_BAUD( MRV_RS232_BAUD val0 , bool bDiff )
 {
 	//! 3 0
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+		do{
+			if( MRV_model::mRS232_BAUD!=val0){ break; }
+			return 0;
+		}while(false);
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)3, (byte)0 , (unsigned char)val0 );
 
 	if ( ret == 0) 
@@ -269,10 +320,21 @@ int MRV::getRS232_BAUD(  MRV_RS232_BAUD * val0, bool bQuery )
 }
 //! ENUM
 //! 8|9
-int MRV::setRS232_WORDLEN( MRV_RS232_WORDLEN val0 )
+int MRV::setRS232_WORDLEN( MRV_RS232_WORDLEN val0 , bool bDiff )
 {
 	//! 3 2
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+		do{
+			if( MRV_model::mRS232_WORDLEN!=val0){ break; }
+			return 0;
+		}while(false);
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)3, (byte)2 , (unsigned char)val0 );
 
 	if ( ret == 0) 
@@ -298,10 +360,21 @@ int MRV::getRS232_WORDLEN(  MRV_RS232_WORDLEN * val0, bool bQuery )
 }
 //! ENUM
 //! NONE|RTS|CTS|RTS&CTS
-int MRV::setRS232_FLOWCTL( MRV_RS232_FLOWCTL val0 )
+int MRV::setRS232_FLOWCTL( MRV_RS232_FLOWCTL val0 , bool bDiff )
 {
 	//! 3 4
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+		do{
+			if( MRV_model::mRS232_FLOWCTL!=val0){ break; }
+			return 0;
+		}while(false);
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)3, (byte)4 , (unsigned char)val0 );
 
 	if ( ret == 0) 
@@ -327,10 +400,21 @@ int MRV::getRS232_FLOWCTL(  MRV_RS232_FLOWCTL * val0, bool bQuery )
 }
 //! ENUM
 //! NONE|EVEN|ODD
-int MRV::setRS232_PARITY( MRV_RS232_PARITY val0 )
+int MRV::setRS232_PARITY( MRV_RS232_PARITY val0 , bool bDiff )
 {
 	//! 3 6
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+		do{
+			if( MRV_model::mRS232_PARITY!=val0){ break; }
+			return 0;
+		}while(false);
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)3, (byte)6 , (unsigned char)val0 );
 
 	if ( ret == 0) 
@@ -356,10 +440,21 @@ int MRV::getRS232_PARITY(  MRV_RS232_PARITY * val0, bool bQuery )
 }
 //! ENUM
 //! 1|0.5|2|1.5
-int MRV::setRS232_STOPBIT( MRV_RS232_STOPBIT val0 )
+int MRV::setRS232_STOPBIT( MRV_RS232_STOPBIT val0 , bool bDiff )
 {
 	//! 3 8
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+		do{
+			if( MRV_model::mRS232_STOPBIT!=val0){ break; }
+			return 0;
+		}while(false);
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)3, (byte)8 , (unsigned char)val0 );
 
 	if ( ret == 0) 
@@ -385,10 +480,17 @@ int MRV::getRS232_STOPBIT(  MRV_RS232_STOPBIT * val0, bool bQuery )
 }
 //! 
 //! 
-int MRV::setRS232_APPLYPARA(  )
+int MRV::setRS232_APPLYPARA(    bool bDiff )
 {
 	//! 3 10
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)3, (byte)10  );
 
 	if ( ret == 0) 
@@ -400,10 +502,21 @@ int MRV::setRS232_APPLYPARA(  )
 }
 //! ENUM
 //! A|B
-int MRV::setCAN_TYPE( MRV_CAN_TYPE val0 )
+int MRV::setCAN_TYPE( MRV_CAN_TYPE val0 , bool bDiff )
 {
 	//! 4 0
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+		do{
+			if( MRV_model::mCAN_TYPE!=val0){ break; }
+			return 0;
+		}while(false);
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)4, (byte)0 , (unsigned char)val0 );
 
 	if ( ret == 0) 
@@ -429,10 +542,21 @@ int MRV::getCAN_TYPE(  MRV_CAN_TYPE * val0, bool bQuery )
 }
 //! ENUM
 //! 1000|500|250|125|100|50|20|10
-int MRV::setCAN_BAUD( MRV_CAN_BAUD val0 )
+int MRV::setCAN_BAUD( MRV_CAN_BAUD val0 , bool bDiff )
 {
 	//! 4 2
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+		do{
+			if( MRV_model::mCAN_BAUD!=val0){ break; }
+			return 0;
+		}while(false);
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)4, (byte)2 , (unsigned char)val0 );
 
 	if ( ret == 0) 
@@ -458,10 +582,21 @@ int MRV::getCAN_BAUD(  MRV_CAN_BAUD * val0, bool bQuery )
 }
 //! U8
 //! 
-int MRV::setCAN_GROUP( byte val0 )
+int MRV::setCAN_GROUP( byte val0 , bool bDiff )
 {
 	//! 4 4
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+		do{
+			if( MRV_model::mCAN_GROUP!=val0){ break; }
+			return 0;
+		}while(false);
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)4, (byte)4 , val0 );
 
 	if ( ret == 0) 
@@ -487,10 +622,21 @@ int MRV::getCAN_GROUP(  byte * val0, bool bQuery )
 }
 //! U32
 //! 
-int MRV::setCAN_SENDID( uint32 val0 )
+int MRV::setCAN_SENDID( uint32 val0 , bool bDiff )
 {
 	//! 4 6
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+		do{
+			if( MRV_model::mCAN_SENDID!=val0){ break; }
+			return 0;
+		}while(false);
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)4, (byte)6 , val0 );
 
 	if ( ret == 0) 
@@ -516,10 +662,21 @@ int MRV::getCAN_SENDID(  uint32 * val0, bool bQuery )
 }
 //! U32
 //! 
-int MRV::setCAN_RECEIVEID( uint32 val0 )
+int MRV::setCAN_RECEIVEID( uint32 val0 , bool bDiff )
 {
 	//! 4 8
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+		do{
+			if( MRV_model::mCAN_RECEIVEID!=val0){ break; }
+			return 0;
+		}while(false);
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)4, (byte)8 , val0 );
 
 	if ( ret == 0) 
@@ -545,10 +702,21 @@ int MRV::getCAN_RECEIVEID(  uint32 * val0, bool bQuery )
 }
 //! U32
 //! 
-int MRV::setCAN_GROUPID1( uint32 val0 )
+int MRV::setCAN_GROUPID1( uint32 val0 , bool bDiff )
 {
 	//! 4 10
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+		do{
+			if( MRV_model::mCAN_GROUPID1!=val0){ break; }
+			return 0;
+		}while(false);
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)4, (byte)10 , val0 );
 
 	if ( ret == 0) 
@@ -574,10 +742,21 @@ int MRV::getCAN_GROUPID1(  uint32 * val0, bool bQuery )
 }
 //! U32
 //! 
-int MRV::setCAN_GROUPID2( uint32 val0 )
+int MRV::setCAN_GROUPID2( uint32 val0 , bool bDiff )
 {
 	//! 4 12
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+		do{
+			if( MRV_model::mCAN_GROUPID2!=val0){ break; }
+			return 0;
+		}while(false);
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)4, (byte)12 , val0 );
 
 	if ( ret == 0) 
@@ -603,10 +782,21 @@ int MRV::getCAN_GROUPID2(  uint32 * val0, bool bQuery )
 }
 //! U32
 //! 
-int MRV::setCAN_BROADCASTID( uint32 val0 )
+int MRV::setCAN_BROADCASTID( uint32 val0 , bool bDiff )
 {
 	//! 4 14
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+		do{
+			if( MRV_model::mCAN_BROADCASTID!=val0){ break; }
+			return 0;
+		}while(false);
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)4, (byte)14 , val0 );
 
 	if ( ret == 0) 
@@ -632,10 +822,17 @@ int MRV::getCAN_BROADCASTID(  uint32 * val0, bool bQuery )
 }
 //! 
 //! 
-int MRV::setCAN_APPLYPARA(  )
+int MRV::setCAN_APPLYPARA(    bool bDiff )
 {
 	//! 4 16
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)4, (byte)16  );
 
 	if ( ret == 0) 
@@ -647,10 +844,17 @@ int MRV::setCAN_APPLYPARA(  )
 }
 //! ENUM
 //! OFF|ON
-int MRV::setCAN_NETMANAGELED( MRV_CAN_NETMANAGELED val0 )
+int MRV::setCAN_NETMANAGELED( MRV_CAN_NETMANAGELED val0 , bool bDiff )
 {
 	//! 4 17
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)4, (byte)17 , (unsigned char)val0 );
 
 	if ( ret == 0) 
@@ -662,10 +866,21 @@ int MRV::setCAN_NETMANAGELED( MRV_CAN_NETMANAGELED val0 )
 }
 //! ENUM
 //! IDLE|HASH|SIGNATURE
-int MRV::setCAN_NETMANAGESTATE( MRV_CAN_NETMANAGESTATE val0 )
+int MRV::setCAN_NETMANAGESTATE( MRV_CAN_NETMANAGESTATE val0 , bool bDiff )
 {
 	//! 4 18
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+		do{
+			if( MRV_model::mCAN_NETMANAGESTATE!=val0){ break; }
+			return 0;
+		}while(false);
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)4, (byte)18 , (unsigned char)val0 );
 
 	if ( ret == 0) 
@@ -691,10 +906,21 @@ int MRV::getCAN_NETMANAGESTATE(  MRV_CAN_NETMANAGESTATE * val0, bool bQuery )
 }
 //! U32
 //! 
-int MRV::setCAN_NETMANAGEID( uint32 val0 )
+int MRV::setCAN_NETMANAGEID( uint32 val0 , bool bDiff )
 {
 	//! 4 20
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+		do{
+			if( MRV_model::mCAN_NETMANAGEID!=val0){ break; }
+			return 0;
+		}while(false);
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)4, (byte)20 , val0 );
 
 	if ( ret == 0) 
@@ -720,10 +946,21 @@ int MRV::getCAN_NETMANAGEID(  uint32 * val0, bool bQuery )
 }
 //! U32
 //! 
-int MRV::setCAN_NETMANAGEHASH( uint32 val0 )
+int MRV::setCAN_NETMANAGEHASH( uint32 val0 , bool bDiff )
 {
 	//! 4 22
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+		do{
+			if( MRV_model::mCAN_NETMANAGEHASH!=val0){ break; }
+			return 0;
+		}while(false);
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)4, (byte)22 , val0 );
 
 	if ( ret == 0) 
@@ -749,10 +986,21 @@ int MRV::getCAN_NETMANAGEHASH(  uint32 * val0, bool bQuery )
 }
 //! U32
 //! 
-int MRV::setCAN_NETMANAGESIGNATURE( uint32 val0 )
+int MRV::setCAN_NETMANAGESIGNATURE( uint32 val0 , bool bDiff )
 {
 	//! 4 24
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+		do{
+			if( MRV_model::mCAN_NETMANAGESIGNATURE!=val0){ break; }
+			return 0;
+		}while(false);
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)4, (byte)24 , val0 );
 
 	if ( ret == 0) 
@@ -780,10 +1028,17 @@ int MRV::getCAN_NETMANAGESIGNATURE(  uint32 * val0, bool bQuery )
 //! [CHANNUM],RESET|STOP|RUN,MAIN|RESSERVE1
 int MRV::setMOTION_SWITCH( byte val0
 ,MRV_MOTION_SWITCH val1
-,MRV_MOTION_SWITCH_1 val2 )
+,MRV_MOTION_SWITCH_1 val2 , bool bDiff )
 {
 	//! 21 0
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)21, (byte)0 , val0, (unsigned char)val1, (unsigned char)val2 );
 
 	if ( ret == 0) 
@@ -811,10 +1066,21 @@ int MRV::getMOTION_STATE( byte val0
 //! U8,ENUM
 //! [CHANNUM],ACTIVE|QUERY
 int MRV::setMOTION_STATEREPORT( byte val0
-,MRV_MOTION_STATEREPORT val1 )
+,MRV_MOTION_STATEREPORT val1 , bool bDiff )
 {
 	//! 21 2
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+		do{
+			if( MRV_model::mMOTION_STATEREPORT[ (int)val0 ]!=val1){ break; }
+			return 0;
+		}while(false);
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)21, (byte)2 , val0, (unsigned char)val1 );
 
 	if ( ret == 0) 
@@ -842,10 +1108,21 @@ int MRV::getMOTION_STATEREPORT( byte val0, MRV_MOTION_STATEREPORT * val1, bool b
 //! [CHANNUM],GROUP1|GROUP2
 int MRV::setGLOBAL_GROUP( byte val0
 ,MRV_GLOBAL_GROUP val1
-,byte val2 )
+,byte val2 , bool bDiff )
 {
 	//! 22 0
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+		do{
+			if( MRV_model::mGLOBAL_GROUP[ (int)val0 ][ (int)val1 ]!=val2){ break; }
+			return 0;
+		}while(false);
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)22, (byte)0 , val0, (unsigned char)val1, val2 );
 
 	if ( ret == 0) 
@@ -873,10 +1150,21 @@ int MRV::getGLOBAL_GROUP( byte val0
 //! U8,ENUM
 //! [CHANNUM],OFF|ON
 int MRV::setGLOBAL_DISTINGUISH( byte val0
-,MRV_CAN_NETMANAGELED val1 )
+,MRV_CAN_NETMANAGELED val1 , bool bDiff )
 {
 	//! 22 2
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+		do{
+			if( MRV_model::mGLOBAL_DISTINGUISH[ (int)val0 ]!=val1){ break; }
+			return 0;
+		}while(false);
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)22, (byte)2 , val0, (unsigned char)val1 );
 
 	if ( ret == 0) 
@@ -903,10 +1191,21 @@ int MRV::getGLOBAL_DISTINGUISH( byte val0, MRV_CAN_NETMANAGELED * val1, bool bQu
 //! U8,ENUM
 //! [CHANNUM],VALVE|MOTOR
 int MRV::setVALVECTRL_DEVICE( byte val0
-,MRV_VALVECTRL_DEVICE val1 )
+,MRV_VALVECTRL_DEVICE val1 , bool bDiff )
 {
 	//! 51 0
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+		do{
+			if( MRV_model::mVALVECTRL_DEVICE[ (int)val0 ]!=val1){ break; }
+			return 0;
+		}while(false);
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)51, (byte)0 , val0, (unsigned char)val1 );
 
 	if ( ret == 0) 
@@ -932,10 +1231,21 @@ int MRV::getVALVECTRL_DEVICE( byte val0, MRV_VALVECTRL_DEVICE * val1, bool bQuer
 }
 //! U32
 //! 
-int MRV::setVALVECTRL_PWMFREQ( uint32 val0 )
+int MRV::setVALVECTRL_PWMFREQ( uint32 val0 , bool bDiff )
 {
 	//! 51 2
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+		do{
+			if( MRV_model::mVALVECTRL_PWMFREQ!=val0){ break; }
+			return 0;
+		}while(false);
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)51, (byte)2 , val0 );
 
 	if ( ret == 0) 
@@ -962,10 +1272,21 @@ int MRV::getVALVECTRL_PWMFREQ(  uint32 * val0, bool bQuery )
 //! U8,U32
 //! [CHANNUM]
 int MRV::setVALVECTRL_RTDUTY( byte val0
-,uint32 val1 )
+,uint32 val1 , bool bDiff )
 {
 	//! 51 4
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+		do{
+			if( MRV_model::mVALVECTRL_RTDUTY[ (int)val0 ]!=val1){ break; }
+			return 0;
+		}while(false);
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)51, (byte)4 , val0, val1 );
 
 	if ( ret == 0) 
@@ -992,10 +1313,21 @@ int MRV::getVALVECTRL_RTDUTY( byte val0, uint32 * val1, bool bQuery )
 //! U8,ENUM
 //! [CHANNUM],OFF|ON|IDLE
 int MRV::setVALVECTRL_ACTION( byte val0
-,MRV_VALVECTRL_ACTION val1 )
+,MRV_VALVECTRL_ACTION val1 , bool bDiff )
 {
 	//! 51 6
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+		do{
+			if( MRV_model::mVALVECTRL_ACTION[ (int)val0 ]!=val1){ break; }
+			return 0;
+		}while(false);
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)51, (byte)6 , val0, (unsigned char)val1 );
 
 	if ( ret == 0) 
@@ -1022,10 +1354,21 @@ int MRV::getVALVECTRL_ACTION( byte val0, MRV_VALVECTRL_ACTION * val1, bool bQuer
 //! U8,U32
 //! [CHANNUM]
 int MRV::setVALVECTRL_IDLEDUTY( byte val0
-,uint32 val1 )
+,uint32 val1 , bool bDiff )
 {
 	//! 51 8
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+		do{
+			if( MRV_model::mVALVECTRL_IDLEDUTY[ (int)val0 ]!=val1){ break; }
+			return 0;
+		}while(false);
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)51, (byte)8 , val0, val1 );
 
 	if ( ret == 0) 
@@ -1052,10 +1395,21 @@ int MRV::getVALVECTRL_IDLEDUTY( byte val0, uint32 * val1, bool bQuery )
 //! U8,U32
 //! [CHANNUM]
 int MRV::setVALVECTRL_HOLDDUTY( byte val0
-,uint32 val1 )
+,uint32 val1 , bool bDiff )
 {
 	//! 51 10
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+		do{
+			if( MRV_model::mVALVECTRL_HOLDDUTY[ (int)val0 ]!=val1){ break; }
+			return 0;
+		}while(false);
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)51, (byte)10 , val0, val1 );
 
 	if ( ret == 0) 
@@ -1082,10 +1436,21 @@ int MRV::getVALVECTRL_HOLDDUTY( byte val0, uint32 * val1, bool bQuery )
 //! U8,U32
 //! [CHANNUM]
 int MRV::setVALVECTRL_OPENDUTY( byte val0
-,uint32 val1 )
+,uint32 val1 , bool bDiff )
 {
 	//! 51 12
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+		do{
+			if( MRV_model::mVALVECTRL_OPENDUTY[ (int)val0 ]!=val1){ break; }
+			return 0;
+		}while(false);
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)51, (byte)12 , val0, val1 );
 
 	if ( ret == 0) 
@@ -1112,10 +1477,21 @@ int MRV::getVALVECTRL_OPENDUTY( byte val0, uint32 * val1, bool bQuery )
 //! U8,U16
 //! [CHANNUM]
 int MRV::setVALVECTRL_OPENDLYTIME( byte val0
-,uint16 val1 )
+,uint16 val1 , bool bDiff )
 {
 	//! 51 14
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+		do{
+			if( MRV_model::mVALVECTRL_OPENDLYTIME[ (int)val0 ]!=val1){ break; }
+			return 0;
+		}while(false);
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)51, (byte)14 , val0, val1 );
 
 	if ( ret == 0) 
@@ -1142,10 +1518,21 @@ int MRV::getVALVECTRL_OPENDLYTIME( byte val0, uint16 * val1, bool bQuery )
 //! U8,U16
 //! [CHANNUM]
 int MRV::setVALVECTRL_OPENTIME( byte val0
-,uint16 val1 )
+,uint16 val1 , bool bDiff )
 {
 	//! 51 16
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+		do{
+			if( MRV_model::mVALVECTRL_OPENTIME[ (int)val0 ]!=val1){ break; }
+			return 0;
+		}while(false);
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)51, (byte)16 , val0, val1 );
 
 	if ( ret == 0) 
@@ -1172,10 +1559,21 @@ int MRV::getVALVECTRL_OPENTIME( byte val0, uint16 * val1, bool bQuery )
 //! U8,ENUM
 //! [CHANNUM],OFF|ON
 int MRV::setVALVECTRL_RECORDSTATE( byte val0
-,MRV_CAN_NETMANAGELED val1 )
+,MRV_CAN_NETMANAGELED val1 , bool bDiff )
 {
 	//! 51 18
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+		do{
+			if( MRV_model::mVALVECTRL_RECORDSTATE[ (int)val0 ]!=val1){ break; }
+			return 0;
+		}while(false);
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)51, (byte)18 , val0, (unsigned char)val1 );
 
 	if ( ret == 0) 
@@ -1215,10 +1613,17 @@ int MRV::getVALVECTRL_ONNUMS( byte val0, uint32 * val1, bool bQuery )
 }
 //! U8
 //! [CHANNUM]
-int MRV::setVALVECTRL_ONNUMSCLEAR( byte val0 )
+int MRV::setVALVECTRL_ONNUMSCLEAR( byte val0 , bool bDiff )
 {
 	//! 51 21
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)51, (byte)21 , val0 );
 
 	if ( ret == 0) 
@@ -1244,10 +1649,17 @@ int MRV::getVALVECTRL_OFFNUMS( byte val0, uint32 * val1, bool bQuery )
 }
 //! U8
 //! [CHANNUM]
-int MRV::setVALVECTRL_OFFNUMSCLEAR( byte val0 )
+int MRV::setVALVECTRL_OFFNUMSCLEAR( byte val0 , bool bDiff )
 {
 	//! 51 23
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)51, (byte)23 , val0 );
 
 	if ( ret == 0) 
@@ -1273,10 +1685,17 @@ int MRV::getVALVECTRL_TIME( byte val0, uint32 * val1, bool bQuery )
 }
 //! U8
 //! [CHANNUM]
-int MRV::setVALVECTRL_TIMECLEAR( byte val0 )
+int MRV::setVALVECTRL_TIMECLEAR( byte val0 , bool bDiff )
 {
 	//! 51 25
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)51, (byte)25 , val0 );
 
 	if ( ret == 0) 
@@ -1289,10 +1708,21 @@ int MRV::setVALVECTRL_TIMECLEAR( byte val0 )
 //! U8,U16
 //! [CHANNUM]
 int MRV::setTHRESHOLD_HIGHPRESSURE( byte val0
-,uint16 val1 )
+,uint16 val1 , bool bDiff )
 {
 	//! 52 0
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+		do{
+			if( MRV_model::mTHRESHOLD_HIGHPRESSURE[ (int)val0 ]!=val1){ break; }
+			return 0;
+		}while(false);
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)52, (byte)0 , val0, val1 );
 
 	if ( ret == 0) 
@@ -1319,10 +1749,21 @@ int MRV::getTHRESHOLD_HIGHPRESSURE( byte val0, uint16 * val1, bool bQuery )
 //! U8,ENUM
 //! [CHANNUM],NONE|WARN|STOP
 int MRV::setTHRESHOLD_HIPRESSUREACTION( byte val0
-,MRV_THRESHOLD_HIPRESSUREACTION val1 )
+,MRV_THRESHOLD_HIPRESSUREACTION val1 , bool bDiff )
 {
 	//! 52 2
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+		do{
+			if( MRV_model::mTHRESHOLD_HIPRESSUREACTION[ (int)val0 ]!=val1){ break; }
+			return 0;
+		}while(false);
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)52, (byte)2 , val0, (unsigned char)val1 );
 
 	if ( ret == 0) 
@@ -1349,10 +1790,21 @@ int MRV::getTHRESHOLD_HIPRESSUREACTION( byte val0, MRV_THRESHOLD_HIPRESSUREACTIO
 //! U8,U16
 //! [CHANNUM]
 int MRV::setTHRESHOLD_LOWPRESSURE( byte val0
-,uint16 val1 )
+,uint16 val1 , bool bDiff )
 {
 	//! 52 4
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+		do{
+			if( MRV_model::mTHRESHOLD_LOWPRESSURE[ (int)val0 ]!=val1){ break; }
+			return 0;
+		}while(false);
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)52, (byte)4 , val0, val1 );
 
 	if ( ret == 0) 
@@ -1379,10 +1831,21 @@ int MRV::getTHRESHOLD_LOWPRESSURE( byte val0, uint16 * val1, bool bQuery )
 //! U8,ENUM
 //! [CHANNUM],NONE|WARN|STOP
 int MRV::setTHRESHOLD_LOWPRESSUREACTION( byte val0
-,MRV_THRESHOLD_HIPRESSUREACTION val1 )
+,MRV_THRESHOLD_HIPRESSUREACTION val1 , bool bDiff )
 {
 	//! 52 6
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+		do{
+			if( MRV_model::mTHRESHOLD_LOWPRESSUREACTION[ (int)val0 ]!=val1){ break; }
+			return 0;
+		}while(false);
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)52, (byte)6 , val0, (unsigned char)val1 );
 
 	if ( ret == 0) 
@@ -1409,10 +1872,21 @@ int MRV::getTHRESHOLD_LOWPRESSUREACTION( byte val0, MRV_THRESHOLD_HIPRESSUREACTI
 //! U8,U16
 //! [CHANNUM]
 int MRV::setTHRESHOLD_HIGHCURRENT( byte val0
-,uint16 val1 )
+,uint16 val1 , bool bDiff )
 {
 	//! 52 8
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+		do{
+			if( MRV_model::mTHRESHOLD_HIGHCURRENT[ (int)val0 ]!=val1){ break; }
+			return 0;
+		}while(false);
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)52, (byte)8 , val0, val1 );
 
 	if ( ret == 0) 
@@ -1439,10 +1913,21 @@ int MRV::getTHRESHOLD_HIGHCURRENT( byte val0, uint16 * val1, bool bQuery )
 //! U8,ENUM
 //! [CHANNUM],NONE|WARN|STOP
 int MRV::setTHRESHOLD_HICURRENTACTION( byte val0
-,MRV_THRESHOLD_HIPRESSUREACTION val1 )
+,MRV_THRESHOLD_HIPRESSUREACTION val1 , bool bDiff )
 {
 	//! 52 10
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+		do{
+			if( MRV_model::mTHRESHOLD_HICURRENTACTION[ (int)val0 ]!=val1){ break; }
+			return 0;
+		}while(false);
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)52, (byte)10 , val0, (unsigned char)val1 );
 
 	if ( ret == 0) 
@@ -1469,10 +1954,21 @@ int MRV::getTHRESHOLD_HICURRENTACTION( byte val0, MRV_THRESHOLD_HIPRESSUREACTION
 //! U8,U16
 //! [CHANNUM]
 int MRV::setTHRESHOLD_LOWCURRENT( byte val0
-,uint16 val1 )
+,uint16 val1 , bool bDiff )
 {
 	//! 52 12
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+		do{
+			if( MRV_model::mTHRESHOLD_LOWCURRENT[ (int)val0 ]!=val1){ break; }
+			return 0;
+		}while(false);
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)52, (byte)12 , val0, val1 );
 
 	if ( ret == 0) 
@@ -1499,10 +1995,21 @@ int MRV::getTHRESHOLD_LOWCURRENT( byte val0, uint16 * val1, bool bQuery )
 //! U8,ENUM
 //! [CHANNUM],NONE|WARN|STOP
 int MRV::setTHRESHOLD_LOWCURRENTACTION( byte val0
-,MRV_THRESHOLD_HIPRESSUREACTION val1 )
+,MRV_THRESHOLD_HIPRESSUREACTION val1 , bool bDiff )
 {
 	//! 52 14
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+		do{
+			if( MRV_model::mTHRESHOLD_LOWCURRENTACTION[ (int)val0 ]!=val1){ break; }
+			return 0;
+		}while(false);
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)52, (byte)14 , val0, (unsigned char)val1 );
 
 	if ( ret == 0) 
@@ -1529,10 +2036,21 @@ int MRV::getTHRESHOLD_LOWCURRENTACTION( byte val0, MRV_THRESHOLD_HIPRESSUREACTIO
 //! U8,U32
 //! [CHANNUM]
 int MRV::setTHRESHOLD_ONNUMS( byte val0
-,uint32 val1 )
+,uint32 val1 , bool bDiff )
 {
 	//! 52 16
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+		do{
+			if( MRV_model::mTHRESHOLD_ONNUMS[ (int)val0 ]!=val1){ break; }
+			return 0;
+		}while(false);
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)52, (byte)16 , val0, val1 );
 
 	if ( ret == 0) 
@@ -1559,10 +2077,21 @@ int MRV::getTHRESHOLD_ONNUMS( byte val0, uint32 * val1, bool bQuery )
 //! U8,ENUM
 //! [CHANNUM],NONE|WARN|STOP
 int MRV::setTHRESHOLD_NUMSACTION( byte val0
-,MRV_THRESHOLD_HIPRESSUREACTION val1 )
+,MRV_THRESHOLD_HIPRESSUREACTION val1 , bool bDiff )
 {
 	//! 52 18
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+		do{
+			if( MRV_model::mTHRESHOLD_NUMSACTION[ (int)val0 ]!=val1){ break; }
+			return 0;
+		}while(false);
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)52, (byte)18 , val0, (unsigned char)val1 );
 
 	if ( ret == 0) 
@@ -1589,10 +2118,21 @@ int MRV::getTHRESHOLD_NUMSACTION( byte val0, MRV_THRESHOLD_HIPRESSUREACTION * va
 //! U8,U32
 //! [CHANNUM]
 int MRV::setTHRESHOLD_TIME( byte val0
-,uint32 val1 )
+,uint32 val1 , bool bDiff )
 {
 	//! 52 20
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+		do{
+			if( MRV_model::mTHRESHOLD_TIME[ (int)val0 ]!=val1){ break; }
+			return 0;
+		}while(false);
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)52, (byte)20 , val0, val1 );
 
 	if ( ret == 0) 
@@ -1619,10 +2159,21 @@ int MRV::getTHRESHOLD_TIME( byte val0, uint32 * val1, bool bQuery )
 //! U8,ENUM
 //! [CHANNUM],NONE|WARN|STOP
 int MRV::setTHRESHOLD_TIMEACTION( byte val0
-,MRV_THRESHOLD_HIPRESSUREACTION val1 )
+,MRV_THRESHOLD_HIPRESSUREACTION val1 , bool bDiff )
 {
 	//! 52 22
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+		do{
+			if( MRV_model::mTHRESHOLD_TIMEACTION[ (int)val0 ]!=val1){ break; }
+			return 0;
+		}while(false);
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)52, (byte)22 , val0, (unsigned char)val1 );
 
 	if ( ret == 0) 
@@ -1649,10 +2200,21 @@ int MRV::getTHRESHOLD_TIMEACTION( byte val0, MRV_THRESHOLD_HIPRESSUREACTION * va
 //! U8,ENUM
 //! [CHANNUM],RT|NCYCLE|FIFO
 int MRV::setPVT_EXECMODE( byte val0
-,MRV_PVT_EXECMODE val1 )
+,MRV_PVT_EXECMODE val1 , bool bDiff )
 {
 	//! 53 0
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+		do{
+			if( MRV_model::mPVT_EXECMODE[ (int)val0 ]!=val1){ break; }
+			return 0;
+		}while(false);
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)53, (byte)0 , val0, (unsigned char)val1 );
 
 	if ( ret == 0) 
@@ -1678,10 +2240,17 @@ int MRV::getPVT_EXECMODE( byte val0, MRV_PVT_EXECMODE * val1, bool bQuery )
 }
 //! U8
 //! [CHANNUM]
-int MRV::setPVT_RESET( byte val0 )
+int MRV::setPVT_RESET( byte val0 , bool bDiff )
 {
 	//! 53 2
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)53, (byte)2 , val0 );
 
 	if ( ret == 0) 
@@ -1694,10 +2263,21 @@ int MRV::setPVT_RESET( byte val0 )
 //! U8,U32
 //! [CHANNUM]
 int MRV::setPVT_CYCLES( byte val0
-,uint32 val1 )
+,uint32 val1 , bool bDiff )
 {
 	//! 53 3
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+		do{
+			if( MRV_model::mPVT_CYCLES[ (int)val0 ]!=val1){ break; }
+			return 0;
+		}while(false);
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)53, (byte)3 , val0, val1 );
 
 	if ( ret == 0) 
@@ -1725,10 +2305,21 @@ int MRV::getPVT_CYCLES( byte val0, uint32 * val1, bool bQuery )
 //! [CHANNUM]
 int MRV::setPVT_GRADE( byte val0
 ,byte val1
-,uint32 val2 )
+,uint32 val2 , bool bDiff )
 {
 	//! 53 5
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+		do{
+			if( MRV_model::mPVT_GRADE[ (int)val0 ][ (int)val1 ]!=val2){ break; }
+			return 0;
+		}while(false);
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)53, (byte)5 , val0, val1, val2 );
 
 	if ( ret == 0) 
@@ -1769,10 +2360,21 @@ int MRV::getPVT_BUFFERCHECK( byte val0, uint32 * val1, bool bQuery )
 }
 //! U8
 //! [CHANNUM]
-int MRV::setPVT_START( byte val0 )
+int MRV::setPVT_START( byte val0 , bool bDiff )
 {
 	//! 53 8
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+		do{
+			if( MRV_model::mPVT_START!=val0){ break; }
+			return 0;
+		}while(false);
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)53, (byte)8 , val0 );
 
 	if ( ret == 0) 
@@ -1798,10 +2400,21 @@ int MRV::getPVT_START(  byte * val0, bool bQuery )
 }
 //! U8
 //! [CHANNUM]
-int MRV::setPVT_END( byte val0 )
+int MRV::setPVT_END( byte val0 , bool bDiff )
 {
 	//! 53 10
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+		do{
+			if( MRV_model::mPVT_END!=val0){ break; }
+			return 0;
+		}while(false);
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)53, (byte)10 , val0 );
 
 	if ( ret == 0) 
@@ -1828,10 +2441,21 @@ int MRV::getPVT_END(  byte * val0, bool bQuery )
 //! U16,U32
 //! 
 int MRV::setPVT_PDATA( uint16 val0
-,uint32 val1 )
+,uint32 val1 , bool bDiff )
 {
 	//! 53 12
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+		do{
+			if( MRV_model::mPVT_PDATA[ (int)val0 ]!=val1){ break; }
+			return 0;
+		}while(false);
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)53, (byte)12 , val0, val1 );
 
 	if ( ret == 0) 
@@ -1858,10 +2482,21 @@ int MRV::getPVT_PDATA( uint16 val0, uint32 * val1, bool bQuery )
 //! U16,F32
 //! 
 int MRV::setPVT_TDATA( uint16 val0
-,f32 val1 )
+,f32 val1 , bool bDiff )
 {
 	//! 53 14
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+		do{
+			if( MRV_model::mPVT_TDATA[ (int)val0 ]!=val1){ break; }
+			return 0;
+		}while(false);
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)53, (byte)14 , val0, val1 );
 
 	if ( ret == 0) 
@@ -1888,10 +2523,21 @@ int MRV::getPVT_TDATA( uint16 val0, f32 * val1, bool bQuery )
 //! U8,ENUM
 //! [CHANNUM],TRUE|FALSE
 int MRV::setPVT_HOLD( byte val0
-,MRV_PVT_HOLD val1 )
+,MRV_PVT_HOLD val1 , bool bDiff )
 {
 	//! 53 16
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+		do{
+			if( MRV_model::mPVT_HOLD[ (int)val0 ]!=val1){ break; }
+			return 0;
+		}while(false);
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)53, (byte)16 , val0, (unsigned char)val1 );
 
 	if ( ret == 0) 
@@ -1917,10 +2563,21 @@ int MRV::getPVT_HOLD( byte val0, MRV_PVT_HOLD * val1, bool bQuery )
 }
 //! U8
 //! 
-int MRV::setPVT_SAVE( byte val0 )
+int MRV::setPVT_SAVE( byte val0 , bool bDiff )
 {
 	//! 53 18
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+		do{
+			if( MRV_model::mPVT_SAVE!=val0){ break; }
+			return 0;
+		}while(false);
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)53, (byte)18 , val0 );
 
 	if ( ret == 0) 
@@ -1947,10 +2604,21 @@ int MRV::getPVT_SAVE(  byte * val0, bool bQuery )
 //! U8,ENUM
 //! [CHANNUM],NONE|OPEN|CLOSE
 int MRV::setCALIBRATION_TYPE( byte val0
-,MRV_CALIBRATION_TYPE val1 )
+,MRV_CALIBRATION_TYPE val1 , bool bDiff )
 {
 	//! 54 0
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+		do{
+			if( MRV_model::mCALIBRATION_TYPE[ (int)val0 ]!=val1){ break; }
+			return 0;
+		}while(false);
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)54, (byte)0 , val0, (unsigned char)val1 );
 
 	if ( ret == 0) 
@@ -1977,10 +2645,21 @@ int MRV::getCALIBRATION_TYPE( byte val0, MRV_CALIBRATION_TYPE * val1, bool bQuer
 //! U8,ENUM
 //! [CHANNUM],222KHz|176KHz|142KHz|47KHz
 int MRV::setCALIBRATION_SAMPLERATE( byte val0
-,MRV_CALIBRATION_SAMPLERATE val1 )
+,MRV_CALIBRATION_SAMPLERATE val1 , bool bDiff )
 {
 	//! 54 2
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+		do{
+			if( MRV_model::mCALIBRATION_SAMPLERATE[ (int)val0 ]!=val1){ break; }
+			return 0;
+		}while(false);
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)54, (byte)2 , val0, (unsigned char)val1 );
 
 	if ( ret == 0) 
@@ -2007,10 +2686,21 @@ int MRV::getCALIBRATION_SAMPLERATE( byte val0, MRV_CALIBRATION_SAMPLERATE * val1
 //! U8,U16
 //! [CHANNUM]
 int MRV::setCALIBRATION_OPENTIME( byte val0
-,uint16 val1 )
+,uint16 val1 , bool bDiff )
 {
 	//! 54 4
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+		do{
+			if( MRV_model::mCALIBRATION_OPENTIME[ (int)val0 ]!=val1){ break; }
+			return 0;
+		}while(false);
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)54, (byte)4 , val0, val1 );
 
 	if ( ret == 0) 
@@ -2037,10 +2727,21 @@ int MRV::getCALIBRATION_OPENTIME( byte val0, uint16 * val1, bool bQuery )
 //! U8,U16
 //! [CHANNUM]
 int MRV::setCALIBRATION_HOLDTIME( byte val0
-,uint16 val1 )
+,uint16 val1 , bool bDiff )
 {
 	//! 54 6
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+		do{
+			if( MRV_model::mCALIBRATION_HOLDTIME[ (int)val0 ]!=val1){ break; }
+			return 0;
+		}while(false);
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)54, (byte)6 , val0, val1 );
 
 	if ( ret == 0) 
@@ -2067,10 +2768,21 @@ int MRV::getCALIBRATION_HOLDTIME( byte val0, uint16 * val1, bool bQuery )
 //! U8,U16
 //! [CHANNUM]
 int MRV::setCALIBRATION_CLOSETIME( byte val0
-,uint16 val1 )
+,uint16 val1 , bool bDiff )
 {
 	//! 54 8
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+		do{
+			if( MRV_model::mCALIBRATION_CLOSETIME[ (int)val0 ]!=val1){ break; }
+			return 0;
+		}while(false);
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)54, (byte)8 , val0, val1 );
 
 	if ( ret == 0) 
@@ -2097,10 +2809,21 @@ int MRV::getCALIBRATION_CLOSETIME( byte val0, uint16 * val1, bool bQuery )
 //! U8,U32
 //! [CHANNUM]
 int MRV::setCALIBRATION_OPENDUTY( byte val0
-,uint32 val1 )
+,uint32 val1 , bool bDiff )
 {
 	//! 54 10
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+		do{
+			if( MRV_model::mCALIBRATION_OPENDUTY[ (int)val0 ]!=val1){ break; }
+			return 0;
+		}while(false);
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)54, (byte)10 , val0, val1 );
 
 	if ( ret == 0) 
@@ -2127,10 +2850,21 @@ int MRV::getCALIBRATION_OPENDUTY( byte val0, uint32 * val1, bool bQuery )
 //! U8,U32
 //! [CHANNUM]
 int MRV::setCALIBRATION_HOLDDUTY( byte val0
-,uint32 val1 )
+,uint32 val1 , bool bDiff )
 {
 	//! 54 12
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+		do{
+			if( MRV_model::mCALIBRATION_HOLDDUTY[ (int)val0 ]!=val1){ break; }
+			return 0;
+		}while(false);
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)54, (byte)12 , val0, val1 );
 
 	if ( ret == 0) 
@@ -2171,10 +2905,17 @@ int MRV::getCALIBRATION_DATALENGTH( byte val0, uint16 * val1, bool bQuery )
 //! U8,ENUM
 //! [CHANNUM],START|STOP
 int MRV::setCALIBRATION_DATAUPCTRL( byte val0
-,MRV_CALIBRATION_DATAUPCTRL val1 )
+,MRV_CALIBRATION_DATAUPCTRL val1 , bool bDiff )
 {
 	//! 54 15
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)54, (byte)15 , val0, (unsigned char)val1 );
 
 	if ( ret == 0) 
@@ -2188,10 +2929,17 @@ int MRV::setCALIBRATION_DATAUPCTRL( byte val0
 //! 
 int MRV::setCALIBRATION_DATAUP( uint16 val0
 ,uint16 val1
-,uint16 val2 )
+,uint16 val2 , bool bDiff )
 {
 	//! 54 16
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)54, (byte)16 , val0, val1, val2 );
 
 	if ( ret == 0) 
@@ -2205,10 +2953,21 @@ int MRV::setCALIBRATION_DATAUP( uint16 val0
 //! [CHANNUM],Current|Pressure|Position|Cycle,OFF|ON
 int MRV::setREPORT_STATE( byte val0
 ,MRV_REPORT_STATE val1
-,MRV_CAN_NETMANAGELED val2 )
+,MRV_CAN_NETMANAGELED val2 , bool bDiff )
 {
 	//! 55 0
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+		do{
+			if( MRV_model::mREPORT_STATE[ (int)val0 ][ (int)val1 ]!=val2){ break; }
+			return 0;
+		}while(false);
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)55, (byte)0 , val0, (unsigned char)val1, (unsigned char)val2 );
 
 	if ( ret == 0) 
@@ -2237,10 +2996,21 @@ int MRV::getREPORT_STATE( byte val0
 //! [CHANNUM],Current|Pressure|Position|Cycle
 int MRV::setREPORT_PERIOD( byte val0
 ,MRV_REPORT_STATE val1
-,uint32 val2 )
+,uint32 val2 , bool bDiff )
 {
 	//! 55 2
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+		do{
+			if( MRV_model::mREPORT_PERIOD[ (int)val0 ][ (int)val1 ]!=val2){ break; }
+			return 0;
+		}while(false);
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)55, (byte)2 , val0, (unsigned char)val1, val2 );
 
 	if ( ret == 0) 
@@ -2283,10 +3053,21 @@ int MRV::getREPORT_DATA( byte val0
 //! U8,ENUM
 //! [CHANNUM],UART|SWITCH
 int MRV::setIOCONFIG_IOFUNCSEL( byte val0
-,MRV_IOCONFIG_IOFUNCSEL val1 )
+,MRV_IOCONFIG_IOFUNCSEL val1 , bool bDiff )
 {
 	//! 56 0
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+		do{
+			if( MRV_model::mIOCONFIG_IOFUNCSEL[ (int)val0 ]!=val1){ break; }
+			return 0;
+		}while(false);
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)56, (byte)0 , val0, (unsigned char)val1 );
 
 	if ( ret == 0) 
@@ -2313,10 +3094,21 @@ int MRV::getIOCONFIG_IOFUNCSEL( byte val0, MRV_IOCONFIG_IOFUNCSEL * val1, bool b
 //! U8,U16
 //! [CHANNUM]
 int MRV::setIOCONFIG_SWFILTERDELAY( byte val0
-,uint16 val1 )
+,uint16 val1 , bool bDiff )
 {
 	//! 56 2
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+		do{
+			if( MRV_model::mIOCONFIG_SWFILTERDELAY[ (int)val0 ]!=val1){ break; }
+			return 0;
+		}while(false);
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)56, (byte)2 , val0, val1 );
 
 	if ( ret == 0) 
@@ -2343,10 +3135,21 @@ int MRV::getIOCONFIG_SWFILTERDELAY( byte val0, uint16 * val1, bool bQuery )
 //! U8,U16
 //! [CHANNUM]
 int MRV::setIOCONFIG_SWFILTERCOUNTER( byte val0
-,uint16 val1 )
+,uint16 val1 , bool bDiff )
 {
 	//! 56 4
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+		do{
+			if( MRV_model::mIOCONFIG_SWFILTERCOUNTER[ (int)val0 ]!=val1){ break; }
+			return 0;
+		}while(false);
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)56, (byte)4 , val0, val1 );
 
 	if ( ret == 0) 
@@ -2373,10 +3176,21 @@ int MRV::getIOCONFIG_SWFILTERCOUNTER( byte val0, uint16 * val1, bool bQuery )
 //! U8,ENUM
 //! [CHANNUM],NONE|RISE|FALL|BOTH
 int MRV::setIOCONFIG_TRIGEDGE( byte val0
-,MRV_IOCONFIG_TRIGEDGE val1 )
+,MRV_IOCONFIG_TRIGEDGE val1 , bool bDiff )
 {
 	//! 56 6
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+		do{
+			if( MRV_model::mIOCONFIG_TRIGEDGE[ (int)val0 ]!=val1){ break; }
+			return 0;
+		}while(false);
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)56, (byte)6 , val0, (unsigned char)val1 );
 
 	if ( ret == 0) 
@@ -2403,10 +3217,21 @@ int MRV::getIOCONFIG_TRIGEDGE( byte val0, MRV_IOCONFIG_TRIGEDGE * val1, bool bQu
 //! U8,ENUM
 //! [CHANNUM],4800|7200|9600|14400|19200|38400|57600|115200|128000
 int MRV::setIOCONFIG_BAUD( byte val0
-,MRV_RS232_BAUD val1 )
+,MRV_RS232_BAUD val1 , bool bDiff )
 {
 	//! 56 8
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+		do{
+			if( MRV_model::mIOCONFIG_BAUD[ (int)val0 ]!=val1){ break; }
+			return 0;
+		}while(false);
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)56, (byte)8 , val0, (unsigned char)val1 );
 
 	if ( ret == 0) 
@@ -2433,10 +3258,21 @@ int MRV::getIOCONFIG_BAUD( byte val0, MRV_RS232_BAUD * val1, bool bQuery )
 //! U8,ENUM
 //! [CHANNUM],8|9
 int MRV::setIOCONFIG_WORDLEN( byte val0
-,MRV_RS232_WORDLEN val1 )
+,MRV_RS232_WORDLEN val1 , bool bDiff )
 {
 	//! 56 10
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+		do{
+			if( MRV_model::mIOCONFIG_WORDLEN[ (int)val0 ]!=val1){ break; }
+			return 0;
+		}while(false);
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)56, (byte)10 , val0, (unsigned char)val1 );
 
 	if ( ret == 0) 
@@ -2463,10 +3299,21 @@ int MRV::getIOCONFIG_WORDLEN( byte val0, MRV_RS232_WORDLEN * val1, bool bQuery )
 //! U8,ENUM
 //! [CHANNUM],NONE|RTS|CTS|RTS_CTS
 int MRV::setIOCONFIG_FLOWCTL( byte val0
-,MRV_IOCONFIG_FLOWCTL val1 )
+,MRV_IOCONFIG_FLOWCTL val1 , bool bDiff )
 {
 	//! 56 12
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+		do{
+			if( MRV_model::mIOCONFIG_FLOWCTL[ (int)val0 ]!=val1){ break; }
+			return 0;
+		}while(false);
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)56, (byte)12 , val0, (unsigned char)val1 );
 
 	if ( ret == 0) 
@@ -2493,10 +3340,21 @@ int MRV::getIOCONFIG_FLOWCTL( byte val0, MRV_IOCONFIG_FLOWCTL * val1, bool bQuer
 //! U8,ENUM
 //! [CHANNUM],NONE|EVEN|ODD
 int MRV::setIOCONFIG_PARITY( byte val0
-,MRV_RS232_PARITY val1 )
+,MRV_RS232_PARITY val1 , bool bDiff )
 {
 	//! 56 14
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+		do{
+			if( MRV_model::mIOCONFIG_PARITY[ (int)val0 ]!=val1){ break; }
+			return 0;
+		}while(false);
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)56, (byte)14 , val0, (unsigned char)val1 );
 
 	if ( ret == 0) 
@@ -2523,10 +3381,21 @@ int MRV::getIOCONFIG_PARITY( byte val0, MRV_RS232_PARITY * val1, bool bQuery )
 //! U8,ENUM
 //! [CHANNUM],1|0.5|2|1.5
 int MRV::setIOCONFIG_STOPBIT( byte val0
-,MRV_RS232_STOPBIT val1 )
+,MRV_RS232_STOPBIT val1 , bool bDiff )
 {
 	//! 56 16
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+		do{
+			if( MRV_model::mIOCONFIG_STOPBIT[ (int)val0 ]!=val1){ break; }
+			return 0;
+		}while(false);
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)56, (byte)16 , val0, (unsigned char)val1 );
 
 	if ( ret == 0) 
@@ -2552,10 +3421,17 @@ int MRV::getIOCONFIG_STOPBIT( byte val0, MRV_RS232_STOPBIT * val1, bool bQuery )
 }
 //! U8
 //! [CHANNUM]
-int MRV::setIOCONFIG_APPLYPARA( byte val0 )
+int MRV::setIOCONFIG_APPLYPARA( byte val0 , bool bDiff )
 {
 	//! 56 18
 	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+	}
+
 	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)56, (byte)18 , val0 );
 
 	if ( ret == 0) 

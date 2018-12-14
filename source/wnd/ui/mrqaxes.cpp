@@ -144,18 +144,6 @@ void mrqAxes::adaptUi()
     }
 }
 
-
-#define diff_set( api, pre, now )   if ( pDevice->pre != now ) { pDevice->api( mAxesId, now ); }
-
-#define diff_set_ax_comb( api, pre, type, nowCmb )    if ( pDevice->pre[mAxesId] != (type)ui->nowCmb->currentIndex() )\
-                                                      { pDevice->api( mAxesId, (type)ui->nowCmb->currentIndex() ); }
-
-#define diff_set_ax_v( api, pre, type, v )          if ( pDevice->pre[mAxesId] != (type)v )\
-                                                    { pDevice->api( mAxesId, (type)v ); }
-
-#define diff_set_member( member, nowCmb )          if ( pDevice->m##member[mAxesId] != (MRQ_##member)ui->nowCmb->currentIndex() )\
-                                                    { pDevice->set##member( mAxesId, (MRQ_##member)ui->nowCmb->currentIndex() ); }
-
 //! view->model
 int mrqAxes::apply()
 {
@@ -164,41 +152,47 @@ int mrqAxes::apply()
     Q_ASSERT( NULL != pDevice );
 
     //! for each data
-    diff_set_member( MOTOR_SIZE, cmbSize )
-    diff_set_member( MOTOR_STEPANGLE, cmbStepAngle )
-    diff_set_member( MOTOR_TYPE, cmbMotionType )
+    pDevice->setMOTOR_SIZE( mAxesId,
+                           (MRQ_MOTOR_SIZE)ui->cmbSize->currentIndex(), DIFF_APPLY );
 
+    pDevice->setMOTOR_STEPANGLE( mAxesId,
+                                 (MRQ_MOTOR_STEPANGLE)ui->cmbStepAngle->currentIndex(),DIFF_APPLY );
+
+    pDevice->setMOTOR_TYPE( mAxesId,
+                                (MRQ_MOTOR_TYPE)ui->cmbMotionType->currentIndex(), DIFF_APPLY );
     if ( (MRQ_MOTOR_TYPE)ui->cmbMotionType->currentIndex() == MRQ_MOTOR_TYPE_ROTARY )
     {
-        diff_set_member( MOTOR_POSITIONUNIT, cmbPosUnit )
+        pDevice->setMOTOR_POSITIONUNIT( mAxesId,
+                                        (MRQ_MOTOR_POSITIONUNIT)ui->cmbPosUnit->currentIndex(), DIFF_APPLY );
     }
     else
     {
-        diff_set_ax_v( setMOTOR_POSITIONUNIT, mMOTOR_POSITIONUNIT, MRQ_MOTOR_POSITIONUNIT, MRQ_MOTOR_POSITIONUNIT_MILLIMETER )
+        pDevice->setMOTOR_POSITIONUNIT( mAxesId,
+                                        MRQ_MOTOR_POSITIONUNIT_MILLIMETER, DIFF_APPLY );
     }
 
     //! volt
-    pDevice->setMOTOR_VOLTAGE( mAxesId, comAssist::align( ui->spinMaxVolt->value(),motor_volt_unit) );
-    pDevice->setMOTOR_CURRENT( mAxesId, comAssist::align( ui->spinMaxCurrent->value(),motor_current_unit) );
-    pDevice->setMOTOR_PEAKSPEED( mAxesId, ui->spinMaxVelocity->value() );
-    pDevice->setMOTOR_PEAKACCELERATION( mAxesId, ui->spinMaxAcc->value() );
+    pDevice->setMOTOR_VOLTAGE( mAxesId, comAssist::align( ui->spinMaxVolt->value(),motor_volt_unit), DIFF_APPLY );
+    pDevice->setMOTOR_CURRENT( mAxesId, comAssist::align( ui->spinMaxCurrent->value(),motor_current_unit), DIFF_APPLY );
+    pDevice->setMOTOR_PEAKSPEED( mAxesId, ui->spinMaxVelocity->value(), DIFF_APPLY );
+    pDevice->setMOTOR_PEAKACCELERATION( mAxesId, ui->spinMaxAcc->value(), DIFF_APPLY );
 
     //! driver
     if ( m_pMrqModel->driverId() == VRobot::motor_driver_262 )
     {
-        pDevice->setDRIVER_STATE( mAxesId, (MRQ_SYSTEM_REVMOTION)ui->gb_driver->isChecked() );
-        pDevice->setDRIVER_IDLECURRENT( mAxesId, comAssist::align( ui->spinIdleCurrent->value(),motor_current_unit) );
-        pDevice->setDRIVER_SWITCHTIME( mAxesId, comAssist::align( ui->spinIdleTime->value(),driver_time_unit) );
+        pDevice->setDRIVER_STATE( mAxesId, (MRQ_SYSTEM_REVMOTION)ui->gb_driver->isChecked(), DIFF_APPLY );
+        pDevice->setDRIVER_IDLECURRENT( mAxesId, comAssist::align( ui->spinIdleCurrent->value(),motor_current_unit), DIFF_APPLY );
+        pDevice->setDRIVER_SWITCHTIME( mAxesId, comAssist::align( ui->spinIdleTime->value(),driver_time_unit), DIFF_APPLY );
 
-        pDevice->setDRIVER_CURRENT( mAxesId, comAssist::align( ui->dblCurrent->value(),driver_current_unit) );
-        pDevice->setDRIVER_MICROSTEPS( mAxesId, (MRQ_DRIVER_MICROSTEPS)ui->cmbDrvVernier->value() );
+        pDevice->setDRIVER_CURRENT( mAxesId, comAssist::align( ui->dblCurrent->value(),driver_current_unit), DIFF_APPLY );
+        pDevice->setDRIVER_MICROSTEPS( mAxesId, (MRQ_DRIVER_MICROSTEPS)ui->cmbDrvVernier->value(), DIFF_APPLY );
     }
     else if ( m_pMrqModel->driverId() == VRobot::motor_driver_820 )
     {
-        pDevice->setNEWDRIVER_STATE( mAxesId, (MRQ_SYSTEM_REVMOTION)ui->gpSt820->isChecked() );
+        pDevice->setNEWDRIVER_STATE( mAxesId, (MRQ_SYSTEM_REVMOTION)ui->gpSt820->isChecked(), DIFF_APPLY );
 
-        pDevice->setNEWDRIVER_CURRENT( comAssist::align( ui->spin820Current->value(),driver_current_unit) );
-        pDevice->setNEWDRIVER_MICROSTEPS( (MRQ_NEWDRIVER_MICROSTEPS)ui->cmb820MicroStep->value() );
+        pDevice->setNEWDRIVER_CURRENT( comAssist::align( ui->spin820Current->value(),driver_current_unit), DIFF_APPLY );
+        pDevice->setNEWDRIVER_MICROSTEPS( (MRQ_NEWDRIVER_MICROSTEPS)ui->cmb820MicroStep->value(), DIFF_APPLY );
     }
     else
     {}
@@ -206,74 +200,24 @@ int mrqAxes::apply()
     //! encoder
     if ( m_pMrqModel->encoderAble() )
     {
-        pDevice->setENCODER_STATE( mAxesId, (MRQ_ENCODER_STATE)ui->cmbEncState->currentIndex() );
+        pDevice->setENCODER_STATE( mAxesId, (MRQ_ENCODER_STATE)ui->cmbEncState->currentIndex(), DIFF_APPLY );
         pDevice->setENCODER_TYPE( mAxesId,
-                                      (MRQ_ENCODER_TYPE)ui->cmbEncType->currentIndex() );
+                                      (MRQ_ENCODER_TYPE)ui->cmbEncType->currentIndex(), DIFF_APPLY );
         pDevice->setENCODER_CHANNELNUM( mAxesId,
-                                            (MRQ_ENCODER_CHANNELNUM)ui->cmbEncChs->currentIndex() );
+                                            (MRQ_ENCODER_CHANNELNUM)ui->cmbEncChs->currentIndex(), DIFF_APPLY );
         pDevice->setENCODER_MULTIPLE( mAxesId,
-                                          (MRQ_ENCODER_MULTIPLE)ui->cmbEncMul->currentIndex() );
+                                          (MRQ_ENCODER_MULTIPLE)ui->cmbEncMul->currentIndex(), DIFF_APPLY );
         pDevice->setENCODER_LINENUM( mAxesId,
-                                     ui->spinEncLine->value() );
+                                     ui->spinEncLine->value(), DIFF_APPLY );
 
-        pDevice->setENCODER_FEEDBACKRATIO( mAxesId, ui->spinEncFb->value() );
+        pDevice->setENCODER_FEEDBACKRATIO( mAxesId, ui->spinEncFb->value(), DIFF_APPLY );
     }
 
     //! lead
-    pDevice->setMOTOR_GEARRATIONUM( mAxesId, ui->spinSlowMotor->value() );
-    pDevice->setMOTOR_GEARRATIODEN( mAxesId, ui->spinSlowGear->value() );
+    pDevice->setMOTOR_GEARRATIONUM( mAxesId, ui->spinSlowMotor->value(), DIFF_APPLY );
+    pDevice->setMOTOR_GEARRATIODEN( mAxesId, ui->spinSlowGear->value(), DIFF_APPLY );
 
-    pDevice->setMOTOR_LEAD( mAxesId, ui->spinDistance->value() );
-
-
-    ////////////////////////////////
-    //! volt
-    pDevice->setMOTOR_VOLTAGE( mAxesId, comAssist::align( ui->spinMaxVolt->value(),motor_volt_unit) );
-    pDevice->setMOTOR_CURRENT( mAxesId, comAssist::align( ui->spinMaxCurrent->value(),motor_current_unit) );
-    pDevice->setMOTOR_PEAKSPEED( mAxesId, ui->spinMaxVelocity->value() );
-    pDevice->setMOTOR_PEAKACCELERATION( mAxesId, ui->spinMaxAcc->value() );
-
-    //! driver
-    if ( m_pMrqModel->driverId() == VRobot::motor_driver_262 )
-    {
-        pDevice->setDRIVER_STATE( mAxesId, (MRQ_SYSTEM_REVMOTION)ui->gb_driver->isChecked() );
-        pDevice->setDRIVER_IDLECURRENT( mAxesId, comAssist::align( ui->spinIdleCurrent->value(),motor_current_unit) );
-        pDevice->setDRIVER_SWITCHTIME( mAxesId, comAssist::align( ui->spinIdleTime->value(),driver_time_unit) );
-
-        pDevice->setDRIVER_CURRENT( mAxesId, comAssist::align( ui->dblCurrent->value(),driver_current_unit) );
-        pDevice->setDRIVER_MICROSTEPS( mAxesId, (MRQ_DRIVER_MICROSTEPS)ui->cmbDrvVernier->value() );
-    }
-    else if ( m_pMrqModel->driverId() == VRobot::motor_driver_820 )
-    {
-        pDevice->setNEWDRIVER_STATE( mAxesId, (MRQ_SYSTEM_REVMOTION)ui->gpSt820->isChecked() );
-
-        pDevice->setNEWDRIVER_CURRENT( comAssist::align( ui->spin820Current->value(),driver_current_unit) );
-        pDevice->setNEWDRIVER_MICROSTEPS( (MRQ_NEWDRIVER_MICROSTEPS)ui->cmb820MicroStep->value() );
-    }
-    else
-    {}
-
-    //! encoder
-    if ( m_pMrqModel->encoderAble() )
-    {
-        pDevice->setENCODER_STATE( mAxesId, (MRQ_ENCODER_STATE)ui->cmbEncState->currentIndex() );
-        pDevice->setENCODER_TYPE( mAxesId,
-                                      (MRQ_ENCODER_TYPE)ui->cmbEncType->currentIndex() );
-        pDevice->setENCODER_CHANNELNUM( mAxesId,
-                                            (MRQ_ENCODER_CHANNELNUM)ui->cmbEncChs->currentIndex() );
-        pDevice->setENCODER_MULTIPLE( mAxesId,
-                                          (MRQ_ENCODER_MULTIPLE)ui->cmbEncMul->currentIndex() );
-        pDevice->setENCODER_LINENUM( mAxesId,
-                                     ui->spinEncLine->value() );
-
-        pDevice->setENCODER_FEEDBACKRATIO( mAxesId, ui->spinEncFb->value() );
-    }
-
-    //! lead
-    pDevice->setMOTOR_GEARRATIONUM( mAxesId, ui->spinSlowMotor->value() );
-    pDevice->setMOTOR_GEARRATIODEN( mAxesId, ui->spinSlowGear->value() );
-
-    pDevice->setMOTOR_LEAD( mAxesId, ui->spinDistance->value() );
+    pDevice->setMOTOR_LEAD( mAxesId, ui->spinDistance->value(), DIFF_APPLY );
 
     return 0;
 }

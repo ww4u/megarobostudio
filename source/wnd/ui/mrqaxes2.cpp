@@ -113,54 +113,54 @@ int mrqAxes2::apply()
         checked_call( pDevice->setMOTIONPLAN_EXECUTEMODE( mAxesId,
                                                          nPage,
                                                (MRQ_MOTIONPLAN_EXECUTEMODE_1)ui->cmbExecMode->currentIndex()
-                                               ) );
+                                               , DIFF_APPLY ) );
 
         checked_call( pDevice->setMOTIONPLAN_MOTIONMODE( mAxesId,
                                                          nPage,
                                                (MRQ_MOTIONPLAN_MOTIONMODE_1)ui->cmbTuneMode->currentIndex()
-                                               ) );
+                                               , DIFF_APPLY ) );
         checked_call( pDevice->setMOTIONPLAN_MODIFYDUTY( mAxesId,
                                                          nPage,
                                                (MRQ_MOTIONPLAN_MODIFYDUTY_1)ui->cmbTimeWidth->currentIndex()
-                                               ) );
+                                               , DIFF_APPLY ) );
         checked_call( pDevice->setMOTIONPLAN_PLANMODE( mAxesId,
                                                        nPage,
                                                (MRQ_MOTIONPLAN_PLANMODE_1)ui->cmbPlanMode->value()
-                                               ) );
+                                               , DIFF_APPLY ) );
 
         checked_call( pDevice->setMOTIONPLAN_WARNPOINT( mAxesId,
                                                        nPage,
                                                ui->spinWarnPoint->value()
-                                               ) );
+                                               , DIFF_APPLY ) );
 
         checked_call( pDevice->setMOTIONPLAN_ENDSTATE( mAxesId,
                                                        nPage,
                                                (MRQ_MOTIONPLAN_ENDSTATE_1)ui->cmbEndState->currentIndex()
-                                               ) );
+                                               , DIFF_APPLY ) );
         //! stop
         checked_call( pDevice->setMOTIONPLAN_STOPMODE( mAxesId,
                                                        nPage,
                                         (MRQ_MOTIONPLAN_STOPMODE_1)ui->cmbStopMode->currentIndex()
-                                        ) );
+                                        , DIFF_APPLY) );
         checked_call( pDevice->setMOTIONPLAN_STOPDISTANCE( mAxesId,
                                                            nPage,
                                         ui->spinStopDistance->value()
-                                        ) );
+                                        , DIFF_APPLY) );
         checked_call( pDevice->setMOTIONPLAN_STOPTIME( mAxesId,
                                                        nPage,
                                         ui->spinStopTime->value()
-                                        ) );
+                                        , DIFF_APPLY) );
 
         //! out of line
         checked_call( pDevice->setMOTIONPLAN_OOSLINESTATE( mAxesId,
                                                            nPage,
-                                          (MRQ_SYSTEM_REVMOTION)ui->gb_limit->isChecked() ) );
+                                          (MRQ_SYSTEM_REVMOTION)ui->gb_limit->isChecked(), DIFF_APPLY ) );
         checked_call( pDevice->setMOTIONPLAN_OOSLINEOUTNUM( mAxesId,
                                                             nPage,
-                                          ui->spinOutOfLine->value() ) );
+                                          ui->spinOutOfLine->value(), DIFF_APPLY ) );
         checked_call( pDevice->setMOTIONPLAN_OOSLINERESPONSE( mAxesId,
                                                               nPage,
-                                            (MRQ_MOTIONPLAN_OOSLINERESPONSE_1)ui->cmbLineResponse->currentIndex() ) );
+                                            (MRQ_MOTIONPLAN_OOSLINERESPONSE_1)ui->cmbLineResponse->currentIndex(), DIFF_APPLY ) );
     }
 
     return ret;

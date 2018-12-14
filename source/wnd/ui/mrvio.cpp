@@ -59,26 +59,26 @@ int MrvIo::apply()
     Q_ASSERT( NULL != m_pMRV );
 
     //! mode
-    m_pMRV->setIOCONFIG_IOFUNCSEL( mAxesId, (MRV_IOCONFIG_IOFUNCSEL)ui->cmbMode->currentIndex() );
+    m_pMRV->setIOCONFIG_IOFUNCSEL( mAxesId, (MRV_IOCONFIG_IOFUNCSEL)ui->cmbMode->currentIndex(), DIFF_APPLY );
 
     //! uart
     uartConfig uCfg;
     ui->pageUart->getConfig( uCfg );
 
-    m_pMRV->setIOCONFIG_BAUD( mAxesId, (MRV_RS232_BAUD)uCfg.mBaudInd );
-    m_pMRV->setIOCONFIG_WORDLEN( mAxesId, (MRV_RS232_WORDLEN)uCfg.mDataInd );
-    m_pMRV->setIOCONFIG_PARITY( mAxesId, (MRV_RS232_PARITY)uCfg.mParityInd );
-    m_pMRV->setIOCONFIG_STOPBIT( mAxesId, (MRV_RS232_STOPBIT)uCfg.mStopInd );
+    m_pMRV->setIOCONFIG_BAUD( mAxesId, (MRV_RS232_BAUD)uCfg.mBaudInd, DIFF_APPLY );
+    m_pMRV->setIOCONFIG_WORDLEN( mAxesId, (MRV_RS232_WORDLEN)uCfg.mDataInd, DIFF_APPLY );
+    m_pMRV->setIOCONFIG_PARITY( mAxesId, (MRV_RS232_PARITY)uCfg.mParityInd, DIFF_APPLY );
+    m_pMRV->setIOCONFIG_STOPBIT( mAxesId, (MRV_RS232_STOPBIT)uCfg.mStopInd, DIFF_APPLY );
 
-    m_pMRV->setIOCONFIG_FLOWCTL( mAxesId, (MRV_IOCONFIG_FLOWCTL)uCfg.mFlowInd );
+    m_pMRV->setIOCONFIG_FLOWCTL( mAxesId, (MRV_IOCONFIG_FLOWCTL)uCfg.mFlowInd, DIFF_APPLY );
 
     //! switch
     switchConfig sCfg;
     ui->pageSwitch->getConifig( sCfg );
 
-    m_pMRV->setIOCONFIG_SWFILTERCOUNTER( mAxesId, sCfg.mFilterCount );
-    m_pMRV->setIOCONFIG_SWFILTERDELAY( mAxesId, sCfg.mFilterDelay );
-    m_pMRV->setIOCONFIG_TRIGEDGE( mAxesId, (MRV_IOCONFIG_TRIGEDGE)sCfg.mTrigEdge );
+    m_pMRV->setIOCONFIG_SWFILTERCOUNTER( mAxesId, sCfg.mFilterCount, DIFF_APPLY );
+    m_pMRV->setIOCONFIG_SWFILTERDELAY( mAxesId, sCfg.mFilterDelay, DIFF_APPLY );
+    m_pMRV->setIOCONFIG_TRIGEDGE( mAxesId, (MRV_IOCONFIG_TRIGEDGE)sCfg.mTrigEdge, DIFF_APPLY );
 
     //! apply
     m_pMRV->setIOCONFIG_APPLYPARA( mAxesId );

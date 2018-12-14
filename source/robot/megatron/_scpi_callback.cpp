@@ -222,6 +222,11 @@ static scpi_result_t _scpi_program( scpi_t * context )
     else
     {}
 
+    //! timebase
+    MegaTableModel::timeType tType = MegaTableModel::time_abs;
+    MegaTableModel::toValue( pSec->getAttribute(attr_timebase), tType );
+    TimebaseHelp helpT( tType );
+
     deparse_column_index( enable, "enable" );
     deparse_column_index( t, "t" );
     deparse_column_index( fx, "fx" );
@@ -257,6 +262,8 @@ static scpi_result_t _scpi_program( scpi_t * context )
         { continue; }
         if ( !pSec->cellValue( i, c_bz, tp.bz, 0, false ) )
         { continue; }
+
+        tp.t = helpT.accT( curve.size(), tp.t );
 
         curve.append( tp );
     }

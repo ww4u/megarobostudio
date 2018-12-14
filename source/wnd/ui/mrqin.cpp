@@ -69,13 +69,13 @@ int MrqIn::apply()
         ui->tab->getConfig( cfg );
 
         checked_call( pDevice->setISOLATORIN_STATE(
-                                      (MRQ_SYSTEM_REVMOTION)cfg.mbEn ) );
+                                      (MRQ_SYSTEM_REVMOTION)cfg.mbEn, DIFF_APPLY ) );
         checked_call( pDevice->setISOLATORIN_TYPE(
-                                         (MRQ_TRIGGER_LEVELTYPE_1)cfg.mTypeIndex ) );
-        checked_call( pDevice->setISOLATORIN_RESPONSE( (MRQ_MOTIONPLAN_OOSLINERESPONSE_1)cfg.mRespIndex ) );
-        checked_call( pDevice->setISOLATORIN_RESPCHAN( (byte)cfg.mRespCH) );
+                                         (MRQ_TRIGGER_LEVELTYPE_1)cfg.mTypeIndex, DIFF_APPLY ) );
+        checked_call( pDevice->setISOLATORIN_RESPONSE( (MRQ_MOTIONPLAN_OOSLINERESPONSE_1)cfg.mRespIndex, DIFF_APPLY ) );
+        checked_call( pDevice->setISOLATORIN_RESPCHAN( (byte)cfg.mRespCH, DIFF_APPLY) );
 
-        checked_call( pDevice->setISOLATORIN_SPERIOD( (uint32)comAssist::align( cfg.mPeri, peri_unit) ) );
+        checked_call( pDevice->setISOLATORIN_SPERIOD( (uint32)comAssist::align( cfg.mPeri, peri_unit), DIFF_APPLY ) );
     }
 
     //! for ai
@@ -85,11 +85,11 @@ int MrqIn::apply()
         ui->tab_5->getConfig( cfg );
 
         checked_call( pDevice->setANALOGIN_STATE(
-                                      (MRQ_SYSTEM_REVMOTION)cfg.mbEn ) );
-        checked_call( pDevice->setANALOGIN_THRESHOLDH( cfg.mHT ) );
-        checked_call( pDevice->setANALOGIN_THRESHOLDL( cfg.mLT ) );
-        checked_call( pDevice->setANALOGIN_RESPONSEH( (MRQ_MOTIONPLAN_OOSLINERESPONSE_1)cfg.mHResp) );
-        checked_call( pDevice->setANALOGIN_RESPONSEL( (MRQ_MOTIONPLAN_OOSLINERESPONSE_1)cfg.mLResp) );
+                                      (MRQ_SYSTEM_REVMOTION)cfg.mbEn, DIFF_APPLY ) );
+        checked_call( pDevice->setANALOGIN_THRESHOLDH( cfg.mHT, DIFF_APPLY ) );
+        checked_call( pDevice->setANALOGIN_THRESHOLDL( cfg.mLT, DIFF_APPLY ) );
+        checked_call( pDevice->setANALOGIN_RESPONSEH( (MRQ_MOTIONPLAN_OOSLINERESPONSE_1)cfg.mHResp, DIFF_APPLY) );
+        checked_call( pDevice->setANALOGIN_RESPONSEL( (MRQ_MOTIONPLAN_OOSLINERESPONSE_1)cfg.mLResp, DIFF_APPLY) );
     }
 
     return 0;

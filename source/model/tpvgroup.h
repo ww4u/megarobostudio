@@ -47,6 +47,10 @@ public:
     tpvItem * operator[]( int id );
     QList< tpvItem *> * getRows();
     QList< tpvItem *> * getRows( QList<tpvRow*> &rows );
+    QList< tpvItem *> * getRows( QList<tpvRow> &rows );
+
+    void trimRows( tpvGroup &gp );
+    void abstimeRows( tpvGroup &gp );
 
 public:
     int addItem( tpvType t, tpvType p, tpvType v=0 );
@@ -55,15 +59,18 @@ public:
     int remove( int id );
     int clear();
 
+    virtual tpvType getAbsT( int index );
 public:
     int save( const QString &fileName );
     int load( const QString &fileName, pvtType flt );
 
 protected:
     tpvItem * findItem( tpvType t );
+    virtual void switchTimeType( timeType pre, timeType nxt );
 
 public:
     QList< tpvItem *> mItems;
+
 };
 
 #endif // TPVGROUP_H

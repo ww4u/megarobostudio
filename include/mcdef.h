@@ -23,6 +23,9 @@
 
 #define str_equ( a, b )         ( QString::compare( (a),(b), Qt::CaseSensitive) == 0 )
 
+//! diff apply
+#define DIFF_APPLY      true
+
 //! bit ops
 #define set_bit( val, bitN )     val |= (1<<(bitN));
 #define unset_bit( val, bitN )     val &= (~(1<<(bitN)));

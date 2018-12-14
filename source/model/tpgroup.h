@@ -51,8 +51,13 @@ public:
     int save( const QString &fileName );
     int load( const QString &fileName );
 
+    virtual tpvType getAbsT( int index );
+protected:
+    virtual void switchTimeType( timeType pre, timeType nxt );
+
 protected:
     TpItem * findItem( tpvType t );
+
 
 public:
     QList< TpItem *> mItems;

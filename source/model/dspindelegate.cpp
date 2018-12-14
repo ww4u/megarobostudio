@@ -49,4 +49,10 @@ void dSpinDelegate::updateEditorGeometry(QWidget *editor,
     editor->setGeometry(option.rect);
 }
 
+void dSpinDelegate::setMax( double v )
+{ mMax = v; }
+void dSpinDelegate::setMin( double v )
+{ mMin = v; }
+void dSpinDelegate::setDecimal( int d )
+{ mDecimal = d; }
 

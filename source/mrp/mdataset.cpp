@@ -235,6 +235,14 @@ int MDataSet::doLoad( QFile &file )
         rawLine = stream.readLine();
         varLine = rawLine;
 
+        //! attr
+        if ( isAttributeLine(varLine) )
+        {
+            if ( NULL != m_pNowSection )
+            { m_pNowSection->setAttribute( varLine ); }
+            continue;
+        }
+
         //! filter
         if ( filterLine(varLine) )
         { continue; }
@@ -343,9 +351,17 @@ bool MDataSet::verifyLine( QString &ary )
     return true;
 }
 
-bool MDataSet::commentLine( QString &ary )
+bool MDataSet::isComment( QString &ary )
 {
-    if ( ary.startsWith('#') )
+    if ( ary.startsWith( comment_header ) )
+    { return true; }
+
+    return false;
+}
+
+bool MDataSet::isAttribute( QString &ary )
+{
+    if ( ary.startsWith( attr_header ) )
     { return true; }
 
     return false;
@@ -368,7 +384,22 @@ bool MDataSet::filterLine( QString &ary )
     else
     { return true; }
 
-    if ( commentLine(ary) )
+    if ( isComment(ary) )
+    { return true; }
+
+    return false;
+}
+
+bool MDataSet::isAttributeLine( QString &ary )
+{
+    normalLine( ary );
+
+    if ( verifyLine(ary) )
+    { }
+    else
+    { return false; }
+
+    if ( isAttribute(ary) )
     { return true; }
 
     return false;
@@ -389,7 +420,7 @@ QStringList MDataSet::extractStringList( QString &ary )
     QStringList strList;
 
     QString localAry;
-//    foreach( QByteArray &ary, aryList )
+
     for ( int i = 0; i < aryList.size(); i++ )
     {
         localAry = aryList.at(i);

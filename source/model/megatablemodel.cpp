@@ -1,5 +1,38 @@
 #include "megatablemodel.h"
 
+//! attrs
+#define time_absolute   "time_absolute"
+#define time_relative   "time_relative"
+
+QString MegaTableModel::toString( timeType tp )
+{
+    if ( tp == time_abs )
+    { return QStringLiteral( time_absolute ); }
+    else if ( tp == time_rel )
+    { return QStringLiteral( time_relative ); }
+    else
+    {logDbg()<<(int)tp;
+        Q_ASSERT(false);
+        return "";
+    }
+}
+
+bool MegaTableModel::toValue( const QString &str, timeType &tp )
+{
+    if ( str_is(str, time_absolute) )
+    {
+        tp = time_abs;
+        return true;
+    }
+    else if ( str_is(str, time_relative ) )
+    {
+        tp = time_rel;
+        return true;
+    }
+    else
+    { return false; }
+}
+
 MegaTableModel::MegaTableModel( const QString &className,
                                 const QString &name )
 {
@@ -26,6 +59,8 @@ MegaTableModel::MegaTableModel( const QString &className,
 
     connect( this, SIGNAL(modelReset()),
              this, SIGNAL(signal_data_changed()));
+
+    mtType = time_abs;
 }
 
 void MegaTableModel::reverse()
@@ -91,6 +126,29 @@ QString MegaTableModel::fmtString( const QStringList &list )
 void MegaTableModel::setRpc( int row, RpcRequest &req )
 {}
 
+void MegaTableModel::setTimeType( timeType tp )
+{
+    //! change
+    if ( mtType != tp )
+    {
+        if ( tp == time_abs )
+        { switchTimeType( mtType, tp ); }
+        else if ( tp == time_rel )
+        { switchTimeType( mtType, tp ); }
+        else
+        { Q_ASSERT( false ); }
+    }
+    else
+    {}
+
+    mtType = tp;
+}
+MegaTableModel::timeType MegaTableModel::getTimeType()
+{ return mtType; }
+
+tpvType MegaTableModel::getAbsT( int index )
+{ return 0; }
+
 //! align to .5
 double MegaTableModel::aligndT( double t )
 {
@@ -102,4 +160,32 @@ double MegaTableModel::aligndT( double t )
 
     return (((normt + 4)/5)*5) / 10.0;
 }
+
+void MegaTableModel::switchTimeType( timeType pre, timeType nxt )
+{}
+
+
+TimebaseHelp::TimebaseHelp( MegaTableModel::timeType tp )
+{
+    mTimebase = tp;
+    mAccT = 0;
+}
+
+tpvType TimebaseHelp::accT( int size, tpvType t )
+{
+    //! first t
+    if ( size == 0 )
+    { mAccT = t; }
+    else
+    {
+        if ( mTimebase == MegaTableModel::time_abs )
+        { mAccT = t; }
+        else
+        { mAccT +=t; }
+    }
+    return mAccT;
+}
+
+tpvType TimebaseHelp::getAccT( )
+{ return mAccT; }
 

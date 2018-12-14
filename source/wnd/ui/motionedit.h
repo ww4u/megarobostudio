@@ -7,6 +7,8 @@
 #include "../../model/megatronmotiongroup.h"
 
 #include "../../model/comboxdelegate.h"
+#include "../../model/dspindelegate.h"
+#include "../../model/checkdelegate.h"
 
 #include "../../arith/pathplan/pathplan.h"
 #include "../../arith/sinanju_split/sinanju_split.h"
@@ -128,6 +130,9 @@ protected:
 
 
 
+private slots:
+    void on_cmbTimebase_currentIndexChanged(int index);
+
 private:
     Ui::motionEdit *ui;
 
@@ -138,6 +143,8 @@ private:
     xxxGroup< jointsTrace > mJointsPlan;
 
     comboxDelegate *m_pActionDelegate;
+    dSpinDelegate *m_ptDelegate;
+    checkDelegate * m_pboolDelegate;
 
     QList< tpvGroup *> mJointsTpvGroup;
     QList< int > mSectionList;

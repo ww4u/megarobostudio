@@ -37,6 +37,10 @@ public:
     virtual void reverse();
     virtual void autoTime( double speed, double speedTerminal );
 
+    virtual tpvType getAbsT( int index );
+protected:
+    virtual void switchTimeType( timeType pre, timeType nxt );
+
 public:
     QList< H2MotionItem *> mItems;
 };

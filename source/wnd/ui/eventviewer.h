@@ -7,6 +7,7 @@
 
 #include "../../../model/eventactionmodel.h"
 #include "../../../model/comboxdelegate.h"
+#include "../../../model/checkdelegate.h"
 
 #include "../../model/mcmodel.h"
 
@@ -66,6 +67,7 @@ private:
 
     QStringList mActionStringList;
     comboxDelegate mActionDelegate;
+    checkDelegate mBoolDelegate;
 
 };
 

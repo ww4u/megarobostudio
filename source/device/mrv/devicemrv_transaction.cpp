@@ -129,11 +129,11 @@ void deviceMRV::preSet( int ax )
 void deviceMRV::postSet( int ax )
 {}
 
-int deviceMRV::setVALVECTRL_DEVICE( byte val0, MRV_VALVECTRL_DEVICE val1 )
+int deviceMRV::setVALVECTRL_DEVICE( byte val0, MRV_VALVECTRL_DEVICE val1, bool bDiff )
 {
     preSet( val0 );
 
-    return MRV::setVALVECTRL_DEVICE( val0, val1 );
+    return MRV::setVALVECTRL_DEVICE( val0, val1, bDiff );
 }
 
 }

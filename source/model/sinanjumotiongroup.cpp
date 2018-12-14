@@ -50,6 +50,13 @@ QVariant SinanjuMotionGroup::data(const QModelIndex &index, int role) const
         }
     }
 
+    //! alignment
+    //! enable
+    if ( role == Qt::TextAlignmentRole && col == 0 )
+    {
+        return QVariant( Qt::AlignCenter );
+    }
+
     if ( role != Qt::DisplayRole && role != Qt::EditRole )
     { return QVariant(); }
 
@@ -223,6 +230,9 @@ int SinanjuMotionGroup::save( const QString &fileName )
     if ( NULL == pSec )
     { return -1; }
 
+    //! section
+    pSec->addAttribute( attr_timebase, MegaTableModel::toString( mtType ) );
+
     //! export data
     QString fmtStr = fmtString( headers );
 
@@ -289,9 +299,6 @@ int SinanjuMotionGroup::load( const QString &fileName )
     if ( ret != 0 )
     { return ret; }
 
-//    if ( dataSet.isEmpty() )
-//    { return -1; }
-
     if ( dataSet.verifyHeader("t", "x", "y", "z" ) )
     {}
     else
@@ -301,6 +308,8 @@ int SinanjuMotionGroup::load( const QString &fileName )
     pSec = dataSet.section( 0 );
     if ( NULL == pSec )
     { return -2; }
+
+    MegaTableModel::toValue( pSec->getAttribute( attr_timebase), mtType );
 
     deparse_column_index( enable, "enable" );
     deparse_column_index( name, "name" );
@@ -468,11 +477,64 @@ void SinanjuMotionGroup::autoTime( double speed,
         dt = qMax( dt, th );
 
         //! timeline
-        t += aligndT( dt );
+        if ( mtType == time_abs )
+        { t += aligndT( dt ); }
+        else
+        { t = aligndT( dt ); }
 
         validItems[ i ]->mT = t;
     }
 
+    emit dataChanged( index(0,0),
+                      index(mItems.count(), SinanjuMotionItem::columns() - 1) );
+}
+
+tpvType SinanjuMotionGroup::getAbsT( int index )
+{
+    Q_ASSERT( index >= 0 && index < mItems.size() );
+
+    if ( mtType == time_rel )
+    {
+        if ( index == 0 )
+        { mSumT = mItems.at(index)->T(); }
+        else
+        {
+            mSumT += mItems.at(index)->T();
+        }
+
+        return mSumT;
+    }
+    else
+    {
+        return mItems.at(index)->T();
+    }
+}
+
+void SinanjuMotionGroup::switchTimeType( timeType pre, timeType nxt )
+{
+    if ( pre == nxt )
+    { return; }
+
+    //! rel-> abs
+    if ( nxt == time_abs )
+    {
+        for ( int i = 1; i < mItems.size(); i++ )
+        {
+            mItems[i]->setT( mItems[i]->T() + mItems[i-1]->T() );
+        }
+    }
+    //! rel->abs
+    else if ( nxt == time_rel )
+    {
+        for ( int i = mItems.size()-1; i > 0; i-- )
+        {
+            mItems[i]->setT( mItems[i]->T() - mItems[i-1]->T() );
+        }
+    }
+    else
+    {}
+
+    //! changed
     emit dataChanged( index(0,0),
                       index(mItems.count(), SinanjuMotionItem::columns() - 1) );
 }

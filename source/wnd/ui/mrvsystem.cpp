@@ -57,8 +57,8 @@ int MrvSystem::apply()
     Q_ASSERT( NULL != m_pMRV );
 
     int ret;
-    checked_call( m_pMRV->setSYSTEM_POWERON( (MRV_SYSTEM_POWERON)ui->cmbPwr->currentIndex() ) );
-    checked_call( m_pMRV->setVALVECTRL_PWMFREQ( (uint32)ui->spinPwm->value() ) );
+    checked_call( m_pMRV->setSYSTEM_POWERON( (MRV_SYSTEM_POWERON)ui->cmbPwr->currentIndex(), DIFF_APPLY ) );
+    checked_call( m_pMRV->setVALVECTRL_PWMFREQ( (uint32)ui->spinPwm->value(), DIFF_APPLY ) );
 
     return 0;
 }

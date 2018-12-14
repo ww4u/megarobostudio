@@ -76,13 +76,13 @@ int mrqIo::apply()
         MRQ_ISOLATOROUTPUT_STATE isoCH = (MRQ_ISOLATOROUTPUT_STATE)i;
 
         checked_call( pDevice->setISOLATOROUTPUT_STATE( isoCH,
-                                          (MRQ_DIGITALOUTPUT_STATE_1)cfg.mbEn ) );
+                                          (MRQ_DIGITALOUTPUT_STATE_1)cfg.mbEn, DIFF_APPLY ) );
         checked_call( pDevice->setISOLATOROUTPUT_SOURCE( isoCH,
-                                           cfg.mSrcIndex ) );
+                                           cfg.mSrcIndex, DIFF_APPLY ) );
         checked_call( pDevice->setISOLATOROUTPUT_CONDITION( isoCH,
-                                              (MRQ_DIGITALOUTPUT_CONDITION_1)cfg.mCondIndex ) );
+                                              (MRQ_DIGITALOUTPUT_CONDITION_1)cfg.mCondIndex, DIFF_APPLY ) );
         checked_call( pDevice->setISOLATOROUTPUT_RESPONSE( isoCH,
-                                             (MRQ_ISOLATOROUTPUT_RESPONSE_1)cfg.mRespIndex ) );
+                                             (MRQ_ISOLATOROUTPUT_RESPONSE_1)cfg.mRespIndex, DIFF_APPLY ) );
     }
 
     //! for do apply
@@ -96,18 +96,18 @@ int mrqIo::apply()
         doCH = (MRQ_DIGITALOUTPUT_STATE)i;
 
         checked_call( pDevice->setDIGITALOUTPUT_STATE( doCH,
-                                      (MRQ_DIGITALOUTPUT_STATE_1)cfg.mbEn ) );
+                                      (MRQ_DIGITALOUTPUT_STATE_1)cfg.mbEn, DIFF_APPLY ) );
         checked_call( pDevice->setDIGITALOUTPUT_POLARITY( doCH,
-                                         (MRQ_DIGITALOUTPUT_POLARITY_1)cfg.mPolarityIndex ) );
-        checked_call( pDevice->setDIGITALOUTPUT_PERIOD( doCH, (quint32)comAssist::align( cfg.mPeri, peri_unit) ) );
-        checked_call( pDevice->setDIGITALOUTPUT_DUTY( doCH, (quint16)comAssist::align( cfg.mDuty, duty_unit) ) );
+                                         (MRQ_DIGITALOUTPUT_POLARITY_1)cfg.mPolarityIndex, DIFF_APPLY ) );
+        checked_call( pDevice->setDIGITALOUTPUT_PERIOD( doCH, (quint32)comAssist::align( cfg.mPeri, peri_unit), DIFF_APPLY ) );
+        checked_call( pDevice->setDIGITALOUTPUT_DUTY( doCH, (quint16)comAssist::align( cfg.mDuty, duty_unit), DIFF_APPLY ) );
 
         checked_call( pDevice->setDIGITALOUTPUT_SOURCE( doCH,
-                                                        cfg.mSrcIndex ) );
+                                                        cfg.mSrcIndex, DIFF_APPLY ) );
         checked_call( pDevice->setDIGITALOUTPUT_CONDITION( doCH,
-                                          (MRQ_DIGITALOUTPUT_CONDITION_1)cfg.mCondIndex ) );
+                                          (MRQ_DIGITALOUTPUT_CONDITION_1)cfg.mCondIndex, DIFF_APPLY ) );
         checked_call( pDevice->setDIGITALOUTPUT_SIGNAL( doCH,
-                                       (MRQ_DIGITALOUTPUT_SIGNAL_1)cfg.mSignalIndex ) );
+                                       (MRQ_DIGITALOUTPUT_SIGNAL_1)cfg.mSignalIndex, DIFF_APPLY ) );
     }
 
     return 0;

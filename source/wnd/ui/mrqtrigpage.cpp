@@ -57,7 +57,7 @@ int MrqTrigPage::apply()
     trigLevelConfig levelConifg;
     trigPatternConfig pattConfig;
 
-    pDevice->setTRIGGER_MODE( mAxesId, (MRQ_TRIGGER_MODE)ui->comboBox->currentIndex() );
+    pDevice->setTRIGGER_MODE( mAxesId, (MRQ_TRIGGER_MODE)ui->comboBox->currentIndex(), DIFF_APPLY );
 
     MRQ_TRIGGER_LEVELSTATE trigId;
     for ( int i = 0; i < mTrigChans.size(); i++ )
@@ -70,26 +70,26 @@ int MrqTrigPage::apply()
 
         pDevice->setTRIGGER_LEVELSTATE( mAxesId,
                                         trigId,
-                                        (MRQ_SYSTEM_REVMOTION)levelConifg.mbOnOff );
+                                        (MRQ_SYSTEM_REVMOTION)levelConifg.mbOnOff, DIFF_APPLY );
 
         pDevice->setTRIGGER_LEVELTYPE( mAxesId,
                                         trigId,
-                                        (MRQ_TRIGGER_LEVELTYPE_1)levelConifg.mTypeIndex );
+                                        (MRQ_TRIGGER_LEVELTYPE_1)levelConifg.mTypeIndex, DIFF_APPLY );
 
         pDevice->setTRIGGER_LEVELRESP( mAxesId,
                                         trigId,
-                                        (MRQ_TRIGGER_LEVELRESP_1)levelConifg.mRespIndex );
+                                        (MRQ_TRIGGER_LEVELRESP_1)levelConifg.mRespIndex, DIFF_APPLY );
 
         pDevice->setTRIGGER_LEVELSPERIOD( mAxesId,
                                         trigId,
-                                         levelConifg.mPeriod );
+                                         levelConifg.mPeriod, DIFF_APPLY );
 
         //! run able
         if ( pDevice->runWaveAble() )
         {
             pDevice->setTRIGGER_LEVELRUNWAVE( mAxesId,
                                             trigId,
-                                            (MRQ_MOTION_SWITCH_1)levelConifg.mRunIndex);
+                                            (MRQ_MOTION_SWITCH_1)levelConifg.mRunIndex, DIFF_APPLY);
         }
 
         //! \todo patt

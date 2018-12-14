@@ -24,7 +24,8 @@ int robotDelta::build(   MegaTableModel *pModel,
         //! check enable
         if ( pGroup->mItems.at(i)->enable() )
         {
-            keyP.t = pGroup->mItems.at(i)->T();
+//            keyP.t = pGroup->mItems.at(i)->T();
+            keyP.t = pGroup->getAbsT( i );
             keyP.x = pGroup->mItems.at(i)->X();
             keyP.y = pGroup->mItems.at(i)->Y();
             keyP.z = pGroup->mItems.at(i)->Z();

@@ -118,6 +118,7 @@ eventViewer::eventViewer(
     }
     mActionDelegate.setItems( mActionStringList, vals );
 
+    ui->eventView->setItemDelegateForColumn( 0, &mBoolDelegate );
     ui->eventView->setItemDelegateForColumn( 1, &mEventDelegate );
     ui->eventView->setItemDelegateForColumn( 2, &mActionDelegate );
 

@@ -63,7 +63,7 @@ void MrvProp::on_btnReset_clicked()
 }
 
 void MrvProp::setModelObj( mcModelObj *pObj )
-{logDbg()<<pObj->getGc()<<pObj->name();
+{
     mrvView::setModelObj( pObj );
 
     //! \note noly view gc needed

@@ -779,6 +779,11 @@ static scpi_result_t _scpi_load_mrp( scpi_t * context,
     else
     {}
 
+    //! timebase
+    MegaTableModel::timeType tType = MegaTableModel::time_abs;
+    MegaTableModel::toValue( pSec->getAttribute(attr_timebase), tType );
+    TimebaseHelp helpT( tType );
+
     deparse_column_index( enable, "enable" );
     deparse_column_index( t, "t" );
     deparse_column_index( x, "x" );
@@ -809,6 +814,9 @@ static scpi_result_t _scpi_load_mrp( scpi_t * context,
 
         if ( !pSec->cellValue( i, c_z, tp.z, 0, false ) )
         { continue; }
+
+        //! proc the t
+        tp.t = helpT.accT( curve.size(), tp.t );
 
         pSec->cellValue( i, c_h, tp.hand, 0, false );
 

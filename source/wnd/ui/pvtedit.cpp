@@ -44,6 +44,14 @@ pvtEdit::pvtEdit(QWidget *parent) :
     //! delegate
     m_pSpinDelegate = new dSpinDelegate( this );
     Q_ASSERT( NULL != m_pSpinDelegate );
+
+    m_ptDelegate = new dSpinDelegate(this);
+    Q_ASSERT( NULL != m_ptDelegate );
+    m_ptDelegate->setMin( 0 );
+
+    //! check box
+    m_pboolDelegate =new checkDelegate(this);
+    Q_ASSERT( NULL != m_pboolDelegate );
 }
 
 pvtEdit::~pvtEdit()
@@ -63,7 +71,13 @@ void pvtEdit::setModelObj( mcModelObj *pObj )
     mTpvGroup = (tpvGroup*)pObj->getObj();
 
     ui->tableView->setModel( mTpvGroup );
-    ui->tableView->setItemDelegateForColumn( 1, m_pSpinDelegate );
+
+    //! time type
+    ui->comboBox->setCurrentIndex( mTpvGroup->getTimeType() );
+    logDbg()<<mTpvGroup->getTimeType();
+
+    ui->tableView->setItemDelegateForColumn( 0, m_pboolDelegate );
+    ui->tableView->setItemDelegateForColumn( 1, m_ptDelegate );
     ui->tableView->setItemDelegateForColumn( 2, m_pSpinDelegate );
     ui->tableView->setItemDelegateForColumn( 3, m_pSpinDelegate );
 
@@ -261,8 +275,17 @@ int pvtEdit::postDownload( appMsg msg, void *pPara )
     if ( ret != 0 )
     { return ret; }
 
-    QList<tpvRow*> tpvRows;
-    mTpvGroup->getRows( tpvRows );
+    //! trim
+    tpvGroup trimGroup;
+    mTpvGroup->trimRows( trimGroup );
+
+    //! abs
+    tpvGroup abstGroup;
+    trimGroup.abstimeRows( abstGroup );
+
+    //! valid rows
+    QList<tpvRow> tpvRows;
+    abstGroup.getRows( tpvRows );
 
     //! download
     ret = pMrq->pvtWrite( tpvRegion(axesId, page ), tpvRows );
@@ -400,7 +423,8 @@ int pvtEdit::checkLine()
         Q_ASSERT( NULL != pItem );
 
         //! check input
-        if ( pItem->getT() < fT )
+//        if ( pItem->getT() < fT )
+        if ( mTpvGroup->getAbsT( i) < fT )
         {
             sysError( tr("Invalid time at line "), QString::number(i) );
             //! to the error time
@@ -410,7 +434,8 @@ int pvtEdit::checkLine()
         }
         else
         {
-            fT = pItem->getT();
+//            fT = pItem->getT();
+            fT = mTpvGroup->getAbsT( i );
         }
     }
 
@@ -418,28 +443,32 @@ int pvtEdit::checkLine()
 }
 int pvtEdit::compileLine()
 {
-    int dotLine;
-
-    QList< tpvItem *> *pRows;
-    pRows = mTpvGroup->getRows();
-
-    dotLine = pRows->size();
-
     //! copy data
     tpvItem *pItem;
     QList< QVector3D > ends;
 
+    //! trim group
+    tpvGroup trimGroup;
+    mTpvGroup->trimRows( trimGroup );
+
+    //! valid rows
+    QList< tpvItem *> *pRows;
+    pRows = trimGroup.getRows();
+
+    int dotLine;
+    dotLine = pRows->size();
+
     for ( int i = 0; i < dotLine; i++ )
     {
-        pItem = pRows->at( i );
+        pItem = pRows->at(i);
         Q_ASSERT( NULL != pItem );
-        if ( pItem->getValid() )
-        {
-            ends.append( QVector3D( pItem->getT(),
-                                    pItem->getP(),
-                                    pItem->getV()
-                                  ) );
-        }
+
+        ends.append( QVector3D(
+                                trimGroup.getAbsT( i ),
+                                pItem->getP(),
+                                pItem->getV()
+                              ) );
+
     }
 
     //! compile
@@ -749,3 +778,8 @@ void pvtEdit::slot_line_changed()
     }
 }
 
+//! to abs or relative
+void pvtEdit::on_comboBox_currentIndexChanged(int index)
+{
+    mTpvGroup->setTimeType( (MegaTableModel::timeType)index );
+}

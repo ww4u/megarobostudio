@@ -15,6 +15,11 @@ TpEdit::TpEdit(QWidget *parent) :
 
     m_pTpGroup = NULL;
     m_pPlot = NULL;
+
+    m_ptDelegate = new dSpinDelegate( this );
+    Q_ASSERT( NULL != m_ptDelegate );
+    m_ptDelegate->setMin( 0 );
+
     connect( this, SIGNAL(sigLineChanged()),
              this, SLOT(slot_line_changed()) );
 }
@@ -34,6 +39,7 @@ void TpEdit::setModelObj( mcModelObj *pObj )
     m_pTpGroup = (TpGroup*)pObj->getObj();
 
     ui->tableView->setModel( m_pTpGroup );
+    ui->tableView->setItemDelegateForColumn( 0, m_ptDelegate );
 
     connect( m_pTpGroup, SIGNAL(signal_data_changed()),
              this, SLOT(slot_data_changed()) );
@@ -236,7 +242,8 @@ int TpEdit::buildLine()
     {
         pItem = pRows->at( i );
         Q_ASSERT(NULL!=pItem);
-        pt.setX( pItem->getT() );
+//        pt.setX( pItem->getT() );
+        pt.setX( m_pTpGroup->getAbsT( i ) );
         pt.setY( pItem->getP() );
         mTPs.append( pt );
     }

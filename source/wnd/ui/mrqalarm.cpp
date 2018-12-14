@@ -121,22 +121,22 @@ int MrqAlarm::applyAngleAlarm()
         mAnglePages.at(i)->data( encAlarmConfig );
 
         pDevice->setABSENCALARM_STATE( (MRQ_IDENTITY_LABEL_1)i,
-                                        (MRQ_SYSTEM_REVMOTION)encAlarmConfig.mbEn );
+                                        (MRQ_SYSTEM_REVMOTION)encAlarmConfig.mbEn, DIFF_APPLY );
 
         pDevice->setABSENCALARM_UPLIMIT( (MRQ_IDENTITY_LABEL_1)i,
-                                         encAlarmConfig.mUpLimit*angleDir );
+                                         encAlarmConfig.mUpLimit*angleDir, DIFF_APPLY );
 
         pDevice->setABSENCALARM_DOWNLIMIT( (MRQ_IDENTITY_LABEL_1)i,
-                                         encAlarmConfig.mDownLimit*angleDir );
+                                         encAlarmConfig.mDownLimit*angleDir, DIFF_APPLY );
 
         pDevice->setABSENCALARM_ZEROVALUE( (MRQ_IDENTITY_LABEL_1)i,
-                                         encAlarmConfig.mZero );
+                                         encAlarmConfig.mZero, DIFF_APPLY );
 
 //        pDevice->setABSENCALARM_ZEROPOSITION( (MRQ_IDENTITY_LABEL_1)i,
 //                                         (MRQ_ABSENCALARM_ZEROPOSITION_1)encAlarmConfig.mZeroPos );
     }
 
-    pDevice->setABSENCALARM_RESPONSE( (MRQ_MOTIONPLAN_OOSLINERESPONSE_1)ui->comboBox->currentIndex() );
+    pDevice->setABSENCALARM_RESPONSE( (MRQ_MOTIONPLAN_OOSLINERESPONSE_1)ui->comboBox->currentIndex(), DIFF_APPLY );
 
     return 0;
 }
@@ -152,16 +152,16 @@ int MrqAlarm::applyDistanceAlarm()
         mDistPages.at(i)->data( distConfig );
 
         pDevice->setDISTANCEALARM_STATE( (MRQ_IDENTITY_LABEL_1)i,
-                                        (MRQ_SYSTEM_REVMOTION)distConfig.mbEn );
+                                        (MRQ_SYSTEM_REVMOTION)distConfig.mbEn, DIFF_APPLY );
 
         pDevice->setDISTANCEALARM_ALARM1DIST( (MRQ_IDENTITY_LABEL_1)i,
-                                         distConfig.mDist[0]);
+                                         distConfig.mDist[0], DIFF_APPLY);
 
         pDevice->setDISTANCEALARM_ALARM2DIST( (MRQ_IDENTITY_LABEL_1)i,
-                                         distConfig.mDist[1]);
+                                         distConfig.mDist[1], DIFF_APPLY);
 
         pDevice->setDISTANCEALARM_ALARM3DIST( (MRQ_IDENTITY_LABEL_1)i,
-                                         distConfig.mDist[2]);
+                                         distConfig.mDist[2], DIFF_APPLY);
     }
 
     return 0;

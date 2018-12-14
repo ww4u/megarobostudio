@@ -11,6 +11,15 @@ class MegaTableModel : public QAbstractTableModel, public scriptFile
     Q_OBJECT
 
 public:
+    enum timeType
+    {
+        time_abs,
+        time_rel,
+    };
+
+    static QString toString( timeType tp );
+    static bool toValue( const QString &str, timeType &tp );
+public:
     MegaTableModel( const QString &className,
                     const QString &name="" );
     virtual ~MegaTableModel()
@@ -49,8 +58,15 @@ public:
 
     virtual void setRpc( int row, RpcRequest &req );
 
+public:
+    void setTimeType( timeType tp );
+    timeType getTimeType();
+
+    tpvType getAbsT( int index );
+
 protected:
     double aligndT( double t );
+    virtual void switchTimeType( timeType pre, timeType nxt );
 
 Q_SIGNALS:
     void signal_data_changed();
@@ -72,6 +88,24 @@ protected:
     RpcRequest::EnumParaType mRpcType;
 
     QStringList mHeaderList, mTitleList;
+
+protected:                                  //! ref type
+    timeType mtType;
+    tpvType mSumT;
+};
+
+class TimebaseHelp
+{
+public:
+    TimebaseHelp( MegaTableModel::timeType tp );
+
+public:
+    tpvType accT( int size, tpvType t );
+    tpvType getAccT( );
+
+protected:
+    MegaTableModel::timeType mTimebase;
+    tpvType mAccT;
 };
 
 #endif // MEGATABLEMODEL_H

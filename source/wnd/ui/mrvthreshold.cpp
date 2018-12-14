@@ -77,25 +77,25 @@ int MrvThreshold::apply()
     Q_ASSERT( NULL != m_pMRV );
 
     //! pressure
-    m_pMRV->setTHRESHOLD_HIPRESSUREACTION( mAxesId, (MRV_THRESHOLD_HIPRESSUREACTION)ui->cmbHighPAction->currentIndex() );
-    m_pMRV->setTHRESHOLD_HIGHPRESSURE( mAxesId, comAssist::align( ui->spinHighPLimit->value(), pressure_unit ) );
+    m_pMRV->setTHRESHOLD_HIPRESSUREACTION( mAxesId, (MRV_THRESHOLD_HIPRESSUREACTION)ui->cmbHighPAction->currentIndex(), DIFF_APPLY );
+    m_pMRV->setTHRESHOLD_HIGHPRESSURE( mAxesId, comAssist::align( ui->spinHighPLimit->value(), pressure_unit ), DIFF_APPLY );
 
-    m_pMRV->setTHRESHOLD_LOWPRESSUREACTION( mAxesId, (MRV_THRESHOLD_HIPRESSUREACTION)ui->cmbLowPAction->currentIndex() );
-    m_pMRV->setTHRESHOLD_LOWPRESSURE( mAxesId, comAssist::align( ui->spinLowPLimit->value(), pressure_unit ) );
+    m_pMRV->setTHRESHOLD_LOWPRESSUREACTION( mAxesId, (MRV_THRESHOLD_HIPRESSUREACTION)ui->cmbLowPAction->currentIndex(), DIFF_APPLY );
+    m_pMRV->setTHRESHOLD_LOWPRESSURE( mAxesId, comAssist::align( ui->spinLowPLimit->value(), pressure_unit ), DIFF_APPLY );
 
     //! current
-    m_pMRV->setTHRESHOLD_HICURRENTACTION( mAxesId, (MRV_THRESHOLD_HIPRESSUREACTION)ui->cmbHighCurrentAction->currentIndex() );
-    m_pMRV->setTHRESHOLD_HIGHCURRENT( mAxesId, comAssist::align( ui->spinHighCurrentLimit->value(), current_unit ) );
+    m_pMRV->setTHRESHOLD_HICURRENTACTION( mAxesId, (MRV_THRESHOLD_HIPRESSUREACTION)ui->cmbHighCurrentAction->currentIndex(), DIFF_APPLY );
+    m_pMRV->setTHRESHOLD_HIGHCURRENT( mAxesId, comAssist::align( ui->spinHighCurrentLimit->value(), current_unit ), DIFF_APPLY );
 
-    m_pMRV->setTHRESHOLD_LOWCURRENTACTION( mAxesId, (MRV_THRESHOLD_HIPRESSUREACTION)ui->cmbLowCurrentAction->currentIndex() );
-    m_pMRV->setTHRESHOLD_LOWCURRENT( mAxesId, comAssist::align( ui->spinLowCurrentLimit->value(), current_unit ) );
+    m_pMRV->setTHRESHOLD_LOWCURRENTACTION( mAxesId, (MRV_THRESHOLD_HIPRESSUREACTION)ui->cmbLowCurrentAction->currentIndex(), DIFF_APPLY );
+    m_pMRV->setTHRESHOLD_LOWCURRENT( mAxesId, comAssist::align( ui->spinLowCurrentLimit->value(), current_unit ), DIFF_APPLY );
 
     //! on num
-    m_pMRV->setTHRESHOLD_NUMSACTION( mAxesId, (MRV_THRESHOLD_HIPRESSUREACTION)ui->cmbOnNumAction->currentIndex() );
+    m_pMRV->setTHRESHOLD_NUMSACTION( mAxesId, (MRV_THRESHOLD_HIPRESSUREACTION)ui->cmbOnNumAction->currentIndex(), DIFF_APPLY );
     m_pMRV->setTHRESHOLD_ONNUMS( mAxesId, ui->spinOnNumLimit->value() );
 
-    m_pMRV->setTHRESHOLD_TIMEACTION( mAxesId, (MRV_THRESHOLD_HIPRESSUREACTION)ui->cmbTimeAction->currentIndex() );
-    m_pMRV->setTHRESHOLD_TIME( mAxesId, comAssist::align( ui->spinTimeLimit->value(), time_unit ) );
+    m_pMRV->setTHRESHOLD_TIMEACTION( mAxesId, (MRV_THRESHOLD_HIPRESSUREACTION)ui->cmbTimeAction->currentIndex(), DIFF_APPLY );
+    m_pMRV->setTHRESHOLD_TIME( mAxesId, comAssist::align( ui->spinTimeLimit->value(), time_unit ), DIFF_APPLY );
 
     return 0;
 }

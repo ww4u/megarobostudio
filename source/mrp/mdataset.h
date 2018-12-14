@@ -65,10 +65,14 @@ protected:
     int doSave( QFile &file );
 
     bool verifyLine( QString &ary );
-    bool commentLine( QString &ary );
+
+    bool isComment( QString &ary );
+    bool isAttribute( QString &ary );
+
     void normalLine( QString &ary );
 
     bool filterLine( QString &ary );
+    bool isAttributeLine( QString &ary );
 
     void extractDescription( QString &ary );
     QStringList extractStringList( QString &ary );
@@ -81,6 +85,8 @@ public:
 protected:
     MDataSection *m_pNowSection;
     QList< MDataSection * > mSections;
+
+
 
 };
 

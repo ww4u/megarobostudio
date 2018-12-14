@@ -79,17 +79,17 @@ int mrqSensor::apply()
 
         //! port
         checked_call( pDevice->setSENSORUART_BAUD( sensPort,
-                                     (MRQ_SENSORUART_BAUD_1)uCfg.mBaudInd ) );
+                                     (MRQ_SENSORUART_BAUD_1)uCfg.mBaudInd, DIFF_APPLY ) );
 
         checked_call( pDevice->setSENSORUART_WORDLEN( sensPort,
-                                        (MRQ_RS232_WORDLEN)uCfg.mDataInd ) );
+                                        (MRQ_RS232_WORDLEN)uCfg.mDataInd, DIFF_APPLY ) );
 
         checked_call( pDevice->setSENSORUART_PARITY( sensPort,
-                                       (MRQ_RS232_PARITY)uCfg.mParityInd ) );
+                                       (MRQ_RS232_PARITY)uCfg.mParityInd, DIFF_APPLY ) );
         checked_call( pDevice->setSENSORUART_STOPBIT( sensPort,
-                                        (MRQ_RS232_STOPBIT)uCfg.mStopInd ) );
+                                        (MRQ_RS232_STOPBIT)uCfg.mStopInd, DIFF_APPLY ) );
         checked_call( pDevice->setSENSORUART_FLOWCTL( sensPort,
-                                        (MRQ_RS232_FLOWCTL)uCfg.mFlowInd ) );
+                                        (MRQ_RS232_FLOWCTL)uCfg.mFlowInd, DIFF_APPLY ) );
 
         for ( int j = 0; j < m_pMrqModel->uartSensors(); j++ )
         {
@@ -98,15 +98,15 @@ int mrqSensor::apply()
             subSens = (MRQ_IDENTITY_LABEL_1)j;
 
             //! sens
-            checked_call( pDevice->setSENSORUART_SOF( sensPort, subSens, suCfg.mSof ) );
-            checked_call( pDevice->setSENSORUART_FRAMELEN( sensPort, subSens, suCfg.mLength ) );
-            checked_call( pDevice->setSENSORUART_RECEIVENUM( sensPort, subSens, suCfg.mReceiveNum ) );
+            checked_call( pDevice->setSENSORUART_SOF( sensPort, subSens, suCfg.mSof, DIFF_APPLY ) );
+            checked_call( pDevice->setSENSORUART_FRAMELEN( sensPort, subSens, suCfg.mLength, DIFF_APPLY ) );
+            checked_call( pDevice->setSENSORUART_RECEIVENUM( sensPort, subSens, suCfg.mReceiveNum, DIFF_APPLY ) );
             checked_call( pDevice->setSENSORUART_SWITCHTIME( sensPort, subSens,
-                                                             comAssist::align( suCfg.mInterval, interval_unit_time) ) );
+                                                             comAssist::align( suCfg.mInterval, interval_unit_time), DIFF_APPLY ) );
 
             checked_call( pDevice->setSENSORUART_STATE( sensPort,
                                                         subSens,
-                                                        (MRQ_SYSTEM_REVMOTION)suCfg.mbOnOff ) );
+                                                        (MRQ_SYSTEM_REVMOTION)suCfg.mbOnOff, DIFF_APPLY ) );
 
         }
 

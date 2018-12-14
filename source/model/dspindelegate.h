@@ -20,6 +20,11 @@ public:
     void updateEditorGeometry(QWidget *editor,
         const QStyleOptionViewItem &option, const QModelIndex &index) const override;
 
+public:
+    void setMax( double v );
+    void setMin( double v );
+    void setDecimal( int d );
+
 protected:
     int mDecimal;
     double mMax, mMin;

@@ -329,6 +329,20 @@
       </widget>
      </item>
      <item>
+      <widget class="QComboBox" name="comboBox">
+       <item>
+        <property name="text">
+         <string>absolute</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>relative</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item>
       <widget class="ValueComboBox" name="cmbPlanMode">
        <property name="toolTip">
         <string>Curve</string>

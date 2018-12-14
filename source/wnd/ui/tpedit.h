@@ -5,6 +5,7 @@
 
 #include "tableedit.h"
 #include "../model/tpgroup.h"
+#include "../model/dspindelegate.h"
 
 #include "tpvplot.h"
 
@@ -86,6 +87,8 @@ private:
     Ui::TpEdit *ui;
 
     TpGroup *m_pTpGroup;
+    dSpinDelegate *m_ptDelegate;
+
     tpvPlot *m_pPlot;
 
     QList<QPointF> mTPs;

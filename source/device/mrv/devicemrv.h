@@ -77,7 +77,7 @@ public:
 
 public:
     //! over write
-    int setVALVECTRL_DEVICE( byte val0, MRV_VALVECTRL_DEVICE val1 );
+    int setVALVECTRL_DEVICE( byte val0, MRV_VALVECTRL_DEVICE val1, bool bDiff = false );
 
 public:
     void acquireDownloader();

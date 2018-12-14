@@ -20,7 +20,8 @@ int robotMegatron::build( MegaTableModel *pModel,
     {
         if ( pGroup->mItems.at(i)->enable() )
         {
-            keyP.t = pGroup->mItems.at(i)->T();
+//            keyP.t = pGroup->mItems.at(i)->T();
+            keyP.t = pGroup->getAbsT( i );
             keyP.fx = pGroup->mItems.at(i)->Fx();
             keyP.ly = pGroup->mItems.at(i)->Ly();
             keyP.fz = pGroup->mItems.at(i)->Fz();

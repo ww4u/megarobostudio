@@ -1,4 +1,5 @@
 #include "megatronmotiongroup.h"
+#include <QColor>
 
 MegatronMotionGroup::MegatronMotionGroup( const QString &className, const QString &name )
                                          : MegaTableModel( className, name)
@@ -25,11 +26,27 @@ QVariant MegatronMotionGroup::data(const QModelIndex &index, int role) const
     if ( !index.isValid() )
     { return QVariant(); }
 
-    if ( role != Qt::DisplayRole && role != Qt::EditRole )
-    { return QVariant(); }
-
     int col = index.column();
     int row = index.row();
+
+    //! color
+    if ( role == Qt::BackgroundColorRole )
+    {
+        if ( !mItems[row]->enable() )
+        {
+            return QVariant( QColor( Qt::lightGray ) );
+        }
+    }
+
+    //! alignment
+    //! enable
+    if ( role == Qt::TextAlignmentRole && col == 0 )
+    {
+        return QVariant( Qt::AlignCenter );
+    }
+
+    if ( role != Qt::DisplayRole && role != Qt::EditRole )
+    { return QVariant(); }
 
     if ( col == 0 )
     { return QVariant( mItems[row]->enable() ); }
@@ -175,6 +192,8 @@ int MegatronMotionGroup::save( const QString &fileName )
     if ( NULL == pSec )
     { return -1; }
 
+    pSec->addAttribute( attr_timebase, MegaTableModel::toString( mtType ));
+
     //! export data
     QString fmtStr = fmtString( headers );
 
@@ -254,6 +273,8 @@ int MegatronMotionGroup::load( const QString &fileName )
     pSec = dataSet.section( 0 );
     if ( NULL == pSec )
     { return -2; }
+
+    MegaTableModel::toValue( pSec->getAttribute( attr_timebase), mtType );
 
     deparse_column_index( t, "t" );
     deparse_column_index( fx, "fx" );
@@ -373,3 +394,54 @@ void MegatronMotionGroup::reverse()
     emit dataChanged( index(0,0),
                       index(mItems.count(), MegatronMotionItem::columns() - 1) );
 }
+
+tpvType MegatronMotionGroup::getAbsT( int index )
+{
+    Q_ASSERT( index >= 0 && index < mItems.size() );
+
+    if ( mtType == time_rel )
+    {
+        if ( index == 0 )
+        { mSumT = mItems.at(index)->T(); }
+        else
+        {
+            mSumT += mItems.at(index)->T();
+        }
+
+        return mSumT;
+    }
+    else
+    {
+        return mItems.at(index)->T();
+    }
+}
+
+void MegatronMotionGroup::switchTimeType( timeType pre, timeType nxt )
+{
+    if ( pre == nxt )
+    { return; }
+
+    //! rel-> abs
+    if ( nxt == time_abs )
+    {
+        for ( int i = 1; i < mItems.size(); i++ )
+        {
+            mItems[i]->setT( mItems[i]->T() + mItems[i-1]->T() );
+        }
+    }
+    //! rel->abs
+    else if ( nxt == time_rel )
+    {
+        for ( int i = mItems.size()-1; i > 0; i-- )
+        {
+            mItems[i]->setT( mItems[i]->T() - mItems[i-1]->T() );
+        }
+    }
+    else
+    {}
+
+    //! changed
+    emit dataChanged( index(0,0),
+                      index(mItems.count(), SinanjuMotionItem::columns() - 1) );
+}
+

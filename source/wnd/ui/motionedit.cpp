@@ -23,6 +23,16 @@ motionEdit::motionEdit(QWidget *parent) : tableEdit(parent),
 
     m_pActionDelegate = NULL;
 
+    m_ptDelegate = new dSpinDelegate(this);
+    Q_ASSERT( NULL != m_ptDelegate );
+    m_ptDelegate->setMin( 0 );
+    ui->tableView->setItemDelegateForColumn( 2, m_ptDelegate );
+
+    //! check box
+    m_pboolDelegate =new checkDelegate(this);
+    Q_ASSERT( NULL != m_pboolDelegate );
+    ui->tableView->setItemDelegateForColumn( 0, m_pboolDelegate );
+
     //! debug
     setAgent( "test_2" );
     setLink( true );
@@ -53,6 +63,9 @@ void motionEdit::setModelObj( mcModelObj *pObj )
     m_pMotionGroup = (MegaTableModel*)(pObj->getObj());
     Q_ASSERT( NULL != m_pMotionGroup );
     ui->tableView->setModel( m_pMotionGroup );
+
+    //! timebase
+    ui->cmbTimebase->setCurrentIndex( m_pMotionGroup->getTimeType() );
 
     //! connect
     connect( m_pMotionGroup, SIGNAL(signal_data_changed()),
@@ -256,5 +269,7 @@ logDbg();
     doDownload( groups, joints );
 }
 
-
-
+void motionEdit::on_cmbTimebase_currentIndexChanged(int index)
+{
+    m_pMotionGroup->setTimeType( (MegaTableModel::timeType)index );
+}

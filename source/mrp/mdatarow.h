@@ -5,6 +5,11 @@
 
 #define line_seperator    "\n"
 
+#define attr_header "#! "
+#define comment_header "#"
+
+#define attr_timebase   "timebase"
+
 class MDataRow : public QStringList
 {
 public:
@@ -36,6 +41,12 @@ public:
     void setHeaders( const QStringList &header );
     QStringList headers();
     QString columnName( int c );
+
+    void setAttribute( const QString &str );
+    void addAttribute( const QString &str, const QString &name );
+    QStringList attributes();
+
+    QString getAttribute( const QString &strName );
 
     void setSection( int sec );
     int section();
@@ -74,6 +85,8 @@ public:
 
     int mSection;
     QList< MDataRow *> mRows;
+
+    QStringList mAttributes;
 };
 
 #endif // MDATAROW_H

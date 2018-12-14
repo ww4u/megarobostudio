@@ -72,10 +72,10 @@ int mrqSys::apply()
     //! otp
     if ( m_pMrqModel->temperatures() > 0 )
     {
-        pDevice->setOTP_STATE( (MRQ_SYSTEM_REVMOTION)ui->chkOtp->isChecked() );
-        pDevice->setOTP_THRESHOLD( comAssist::align(  ui->spinHighT->value(),otp_temprature_unit) );
+        pDevice->setOTP_STATE( (MRQ_SYSTEM_REVMOTION)ui->chkOtp->isChecked(), DIFF_APPLY );
+        pDevice->setOTP_THRESHOLD( comAssist::align(  ui->spinHighT->value(),otp_temprature_unit), DIFF_APPLY );
         pDevice->setOTP_RESPONSE(
-                    (MRQ_MOTIONPLAN_OOSLINERESPONSE_1)ui->cmbTResp->currentIndex()
+                    (MRQ_MOTIONPLAN_OOSLINERESPONSE_1)ui->cmbTResp->currentIndex(), DIFF_APPLY
                     );
     }
 

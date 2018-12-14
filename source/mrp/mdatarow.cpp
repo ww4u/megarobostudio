@@ -100,6 +100,48 @@ QString MDataSection::columnName( int c )
     return mHeaders.at( c );
 }
 
+void MDataSection::setAttribute( const QString &str )
+{
+    QString cleanStr = str;
+
+    cleanStr.replace("#!","");
+    cleanStr = cleanStr.simplified();
+
+    mAttributes.append( cleanStr );
+}
+//! name=value
+void MDataSection::addAttribute( const QString &str, const QString &name )
+{
+    QString strAttr = QString("%1=%2").arg( str ).arg( name );
+    mAttributes.append( strAttr );
+}
+QStringList MDataSection::attributes()
+{
+    return mAttributes;
+}
+
+QString MDataSection::getAttribute( const QString &strName )
+{
+    QString str;
+    QStringList pairs;
+    for( int i = 0; i < mAttributes.size(); i++ )
+    {
+        str = mAttributes.at( i );
+
+        pairs = str.split( '=', QString::SkipEmptyParts );
+        //! name=value
+        if ( pairs.size() == 2 )
+        {
+            if ( str_is( pairs[0], strName ) )
+            { return pairs[1]; }
+        }
+        else
+        { continue; }
+    }
+
+    return QStringLiteral("");
+}
+
 void MDataSection::setSection( int sec )
 { mSection = sec; }
 int MDataSection::section()
@@ -119,6 +161,17 @@ bool MDataSection::lineOut( QTextStream &stream )
 {
     //! section name
     stream<<"[section]"<<line_seperator;
+
+    //! attributes
+    if ( mAttributes.size() > 0 )
+    {
+        for ( int i = 0; i < mAttributes.size(); i++ )
+        {
+            stream<<attr_header<<mAttributes.at(i)<<line_seperator;
+        }
+    }
+
+    //! foreach row
     for ( int i = 0; i < mRows.size(); i++ )
     {
         stream<<mRows[i]->join(',')<<line_seperator;

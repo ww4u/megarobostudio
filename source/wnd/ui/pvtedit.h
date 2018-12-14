@@ -13,6 +13,7 @@
 #include "pvtpref.h"
 
 #include "../model/dspindelegate.h"
+#include "../model/checkdelegate.h"
 
 namespace Ui {
 class pvtEdit;
@@ -107,7 +108,7 @@ protected Q_SLOTS:
     void slot_line_changed();
 
 private slots:
-
+    void on_comboBox_currentIndexChanged(int index);
 
 private:
     Ui::pvtEdit *ui;
@@ -126,6 +127,9 @@ private:
     modelPvtPref mPvtPref;
 
     dSpinDelegate *m_pSpinDelegate;
+    dSpinDelegate *m_ptDelegate;
+
+    checkDelegate *m_pboolDelegate;
 
     QTimer mDlySaveTimer;
 };

@@ -33,30 +33,6 @@ public:
 public:
     SinanjuMotionItem *operator[]( int index );
 
-//    template<typename fType >
-//    int fetech( fType *pT, int skipT,
-//                 fType *pX, int skipX,
-//                 fType *pY, int skipY,
-//                 fType *pZ, int skipZ,
-//                 int count )
-//    {
-//        Q_ASSERT( NULL != pT );
-//        Q_ASSERT( NULL != pX );
-//        Q_ASSERT( NULL != pY );
-//        Q_ASSERT( NULL != pZ );
-
-//        int i = 0;
-//        for ( i = 0; i < mItems.size() && i < count; i++ )
-//        {
-//            pT[i*skipT] = mItems[i]->mT;
-//            pX[i*skipX] = mItems[i]->mX;
-//            pY[i*skipY] = mItems[i]->mY;
-//            pZ[i*skipZ] = mItems[i]->mZ;
-//        }
-
-//        return i;
-//    }
-
     virtual int save( const QString &fileName );
     virtual int load( const QString &fileName );
 
@@ -64,9 +40,12 @@ public:
     virtual void reverse();
     virtual void autoTime( double speed, double speedTerminal );
 
+    virtual tpvType getAbsT( int index );
+protected:
+    virtual void switchTimeType( timeType pre, timeType nxt );
+
 public:
     QList< SinanjuMotionItem *> mItems;
-
 };
 
 #endif // MOTIONGROUP_H

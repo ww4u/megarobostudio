@@ -41,7 +41,8 @@ tpvGroup* tpvGroup::createDemoGroup( float dT, float dP )
 
 tpvGroup::tpvGroup() : MegaTableModel("joint","")
 {
-
+    mtType = time_abs;
+    mSumT = 0;
 }
 
 tpvGroup::~tpvGroup()
@@ -70,6 +71,13 @@ QVariant tpvGroup::data(const QModelIndex &index, int role) const
         {
             return QVariant( QColor( Qt::lightGray ) );
         }
+    }
+
+    //! alignment
+    //! enable
+    if ( role == Qt::TextAlignmentRole && col == 0 )
+    {
+        return QVariant( Qt::AlignCenter );
     }
 
     if ( role != Qt::DisplayRole && role != Qt::EditRole )
@@ -207,14 +215,74 @@ QList< tpvItem *> * tpvGroup::getRows( QList<tpvRow*> &rows )
     return ( &mItems );
 }
 
+QList< tpvItem *> * tpvGroup::getRows( QList<tpvRow> &rows )
+{
+    foreach (tpvItem *pItem, mItems)
+    {
+        Q_ASSERT( NULL != pItem );
+
+        if ( pItem->mValid )
+        {
+            rows.append( tpvRow( pItem->getT(), pItem->getP(), pItem->getV() ) );
+        }
+    }
+
+    return ( &mItems );
+}
+
+//! trim rows
+//! remove the invalid rows
+void tpvGroup::trimRows( tpvGroup &gp )
+{
+    //! timebase is same
+    gp.setTimeType( mtType );
+
+    foreach (tpvItem *pItem, mItems)
+    {
+        Q_ASSERT( NULL != pItem );
+
+        if ( pItem->mValid )
+        {
+            gp.addItem( pItem->getT(), pItem->getP(), pItem->getV() );
+        }
+    }
+}
+
+//! abs time
+//! all are valid
+void tpvGroup::abstimeRows( tpvGroup &gp )
+{
+    //! copy only
+    if ( mtType == time_abs )
+    {
+        foreach (tpvItem *pItem, mItems)
+        {
+            Q_ASSERT( NULL != pItem );
+
+            gp.addItem( pItem->getT(), pItem->getP(), pItem->getV() );
+        }
+    }
+    //! rel
+    else
+    {
+        for ( int i = 0; i < mItems.size(); i++ )
+        {
+            gp.addItem( getAbsT( i ), mItems[i]->getP(), mItems[i]->getV() );
+        }
+    }
+
+    //! abs
+    gp.setTimeType( time_abs );
+}
+
 int tpvGroup::addItem( tpvType t, tpvType p, tpvType v )
 {
     tpvItem *pItem;
 
-    pItem = findItem( t );
+//    pItem = findItem( t );
 
-    if ( NULL != pItem )
-    { logDbg()<<t; return -1; }
+//    if ( NULL != pItem )
+//    { logDbg()<<t; return -1; }
 
     pItem = new tpvItem( t, p, v );
     if ( NULL == pItem )
@@ -259,6 +327,27 @@ int tpvGroup::clear()
     return 0;
 }
 
+tpvType tpvGroup::getAbsT( int index )
+{
+    Q_ASSERT( index >= 0 && index < mItems.size() );
+
+    if ( mtType == time_rel )
+    {
+        if ( index == 0 )
+        { mSumT = mItems.at(index)->getT(); }
+        else
+        {
+            mSumT += mItems.at(index)->getT();
+        }
+
+        return mSumT;
+    }
+    else
+    {
+        return mItems.at(index)->getT();
+    }
+}
+
 int tpvGroup::save( const QString &fileName )
 {
     MDataSet dataSet;
@@ -272,6 +361,9 @@ int tpvGroup::save( const QString &fileName )
     pSec = dataSet.addSection();
     if ( NULL == pSec )
     { return -1; }
+
+    //! attr
+    pSec->addAttribute(attr_timebase, tpvGroup::toString( mtType ) );
 
     //! export data
     QString fmtStr = fmtString( headers );
@@ -348,6 +440,9 @@ int tpvGroup::load( const QString &fileName, pvtType flt )
     {}
     else
     { mClassName = dataSet.model(); }
+
+    //! attribute
+    MegaTableModel::toValue( pSec->getAttribute( attr_timebase ), mtType );
 
     //! data
     tpvItem item;
@@ -442,4 +537,32 @@ tpvItem * tpvGroup::findItem( tpvType t )
     return NULL;
 }
 
+void tpvGroup::switchTimeType( timeType pre, timeType nxt )
+{
+    if ( pre == nxt )
+    { return; }
+
+    //! rel-> abs
+    if ( nxt == time_abs )
+    {
+        for ( int i = 1; i < mItems.size(); i++ )
+        {
+            mItems[i]->setT( mItems[i]->getT() + mItems[i-1]->getT() );
+        }
+    }
+    //! rel->abs
+    else if ( nxt == time_rel )
+    {
+        for ( int i = mItems.size()-1; i > 0; i-- )
+        {
+            mItems[i]->setT( mItems[i]->getT() - mItems[i-1]->getT() );
+        }
+    }
+    else
+    {}
+
+    //! changed
+    emit dataChanged( index(0,0),
+                      index(mItems.count(), tpvItem::columns() - 1) );
+}
 

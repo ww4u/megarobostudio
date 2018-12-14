@@ -228,6 +228,8 @@ int TpGroup::save( const QString &fileName )
     if ( NULL == pSec )
     { return -1; }
 
+    pSec->addAttribute( attr_timebase, MegaTableModel::toString(mtType) );
+
     //! export data
     QString fmtStr = fmtString( headers );
 
@@ -286,6 +288,8 @@ int TpGroup::load( const QString &fileName )
     pSec = dataSet.section( 0 );
     if ( NULL == pSec )
     { return -2; }
+
+    MegaTableModel::toValue( pSec->getAttribute(attr_timebase), mtType );
 
     //! get cols
     int cT = dataSet.columnIndex( "t" );
@@ -361,6 +365,56 @@ int TpGroup::load( const QString &fileName )
     return 0;
 }
 
+tpvType TpGroup::getAbsT( int index )
+{
+    Q_ASSERT( index >= 0 && index < mItems.size() );
+
+    if ( mtType == time_rel )
+    {
+        if ( index == 0 )
+        { mSumT = mItems.at(index)->getT(); }
+        else
+        {
+            mSumT += mItems.at(index)->getT();
+        }
+
+        return mSumT;
+    }
+    else
+    {
+        return mItems.at(index)->getT();
+    }
+}
+
+void TpGroup::switchTimeType( timeType pre, timeType nxt )
+{
+    if ( pre == nxt )
+    { return; }
+
+    //! rel-> abs
+    if ( nxt == time_abs )
+    {
+        for ( int i = 1; i < mItems.size(); i++ )
+        {
+            mItems[i]->setT( mItems[i]->getT() + mItems[i-1]->getT() );
+        }
+    }
+    //! rel->abs
+    else if ( nxt == time_rel )
+    {
+        for ( int i = mItems.size()-1; i > 0; i-- )
+        {
+            mItems[i]->setT( mItems[i]->getT() - mItems[i-1]->getT() );
+        }
+    }
+    else
+    {}
+
+    //! changed
+    emit dataChanged( index(0,0),
+                      index(mItems.count(), SinanjuMotionItem::columns() - 1) );
+}
+
 TpItem * TpGroup::findItem( tpvType t )
 {
     foreach( TpItem *pItem, mItems )
@@ -373,3 +427,5 @@ TpItem * TpGroup::findItem( tpvType t )
 
     return NULL;
 }
+
+

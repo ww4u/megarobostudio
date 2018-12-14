@@ -128,12 +128,12 @@ public:
         };
         bool mbGc;              //! gc on used
 public:
-        tpvRow( )
+        tpvRow( tpvType t = 0, tpvType p = 0, tpvType v = 0 )
         {
             mbGc = false;
-            mT = 0;
-            mP = 0;
-            mV = 0;
+            mT = t;
+            mP = p;
+            mV = v;
         }
 
         void setGc( bool b )

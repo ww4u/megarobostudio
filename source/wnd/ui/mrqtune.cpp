@@ -69,16 +69,16 @@ int MrqTune::apply()
     else
     { return 0; }
 
-    pDevice->setTUNING_STATE( mAxesId, (MRQ_SYSTEM_REVMOTION)ui->chkOnOff->isChecked() );
-    pDevice->setTUNING_MINICURRRATIO( mAxesId, (MRQ_DRIVER_MINICURRRATIO)ui->cmbMiniRatio->currentIndex() );
+    pDevice->setTUNING_STATE( mAxesId, (MRQ_SYSTEM_REVMOTION)ui->chkOnOff->isChecked(), DIFF_APPLY );
+    pDevice->setTUNING_MINICURRRATIO( mAxesId, (MRQ_DRIVER_MINICURRRATIO)ui->cmbMiniRatio->currentIndex(), DIFF_APPLY );
 
     pDevice->setTUNING_ENERGYEFFIC( mAxesId,
                                     comAssist::align( ui->spinUp->value(), reg_unit ),
-                                    comAssist::align( ui->spinDown->value(), reg_unit ) );
+                                    comAssist::align( ui->spinDown->value(), reg_unit ), DIFF_APPLY );
 
     pDevice->setTUNING_CURRREGULATE( mAxesId,
                                      (MRQ_TUNING_CURRREGULATE)ui->cmbRegRise->currentIndex(),
-                                     (MRQ_TUNING_CURRREGULATE_1)ui->cmbRegFall->currentIndex() );
+                                     (MRQ_TUNING_CURRREGULATE_1)ui->cmbRegFall->currentIndex(), DIFF_APPLY );
 
     return 0;
 }

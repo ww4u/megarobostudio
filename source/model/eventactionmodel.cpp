@@ -73,6 +73,9 @@ QVariant EventActionModel::data(const QModelIndex &index, int role) const
     int col = index.column();
     int row = index.row();
 
+    if ( role == Qt::TextAlignmentRole && col == 0 )
+    { return QVariant(Qt::AlignCenter );}
+
     if ( role != Qt::DisplayRole && role != Qt::EditRole )
     { return QVariant(); }
 

@@ -32,8 +32,12 @@ namespace test
             MRQ dev1 = new MRQ();
             dev1.miOpen("device1", "127.0.0.1", 1234 );
 
+            string idn;
+            if (0 == dev1.getIdn(out idn))
+            { Console.WriteLine(idn); }
+
             MRQ dev2 = new MRQ();
-            dev2.miOpen("device2", "127.0.0.1", 1235 );
+            dev2.miOpen("device1", "127.0.0.1");
 
             MRQ[] devs = { dev1, dev2 };
 

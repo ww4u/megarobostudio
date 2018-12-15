@@ -1,6 +1,7 @@
 build*/
 
-installer/
+installer_debug/
+installer_release/
 unittest/
 
 *.o

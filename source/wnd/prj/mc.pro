@@ -620,8 +620,8 @@ RC_ICONS = ../res/image/logo/megarobo.ico
 TRANSLATIONS = ../../translate/megarobostudio_zh_CN.ts \
                 ../../translate/megarobostudio_zh_TW.ts
 DISTFILES += \
-    ../../../installer/doc/readme.txt \
-    ../../../installer/doc/errant.txt \
+    ../../../installer_debug/doc/readme.txt \
+    ../../../installer_debug/doc/errant.txt \
     ../../../readme.md
 
 

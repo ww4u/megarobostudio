@@ -35,6 +35,14 @@ DlgApp::~DlgApp()
     delete ui;
 }
 
+void DlgApp::changeEvent( QEvent *event )
+{
+    QDialog::changeEvent( event );
+
+    if ( event->type() == QEvent::LanguageChange )
+    { ui->retranslateUi( this ); }
+}
+
 #define model_      (*m_pModel)
 void DlgApp::slot_toolbar_add()
 {

@@ -18,6 +18,14 @@ MrqSubUart::~MrqSubUart()
     delete ui;
 }
 
+void MrqSubUart::changeEvent(QEvent * event)
+{
+    modelView::changeEvent( event );
+
+    if (event->type() == QEvent::LanguageChange)
+    { ui->retranslateUi( this ); }
+}
+
 void MrqSubUart::setConfig(
              subUartConfig &cfg )
 {

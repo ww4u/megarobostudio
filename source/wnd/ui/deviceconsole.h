@@ -17,6 +17,10 @@ public:
     explicit deviceConsole(QWidget *parent = 0);
     ~deviceConsole();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
+public:
     void setShell( scpiShell *pShell );
     scpiShell *getShell();
 

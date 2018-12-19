@@ -13,6 +13,14 @@ RobotAddr::~RobotAddr()
     delete ui;
 }
 
+void RobotAddr::changeEvent(QEvent * event)
+{
+    QWidget::changeEvent( event );
+
+    if (event->type() == QEvent::LanguageChange)
+    { ui->retranslateUi( this ); }
+}
+
 void RobotAddr::setAlias( QString &str )
 { ui->edtAlias->setText(str); }
 QString RobotAddr::alias()

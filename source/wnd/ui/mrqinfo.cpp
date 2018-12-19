@@ -21,6 +21,19 @@ mrqInfo::~mrqInfo()
     deinitModel();
 }
 
+void mrqInfo::changeEvent(QEvent * event)
+{
+    mrqView::changeEvent( event );
+
+    if (event->type() == QEvent::LanguageChange)
+    {
+        ui->retranslateUi( this );
+
+        //! set data
+        tranalate();
+    }
+}
+
 void mrqInfo::buildConnection()
 {
 
@@ -52,6 +65,15 @@ void mrqInfo::initModel()
     }
 
     //! init data
+    tranalate();
+}
+
+void mrqInfo::deinitModel()
+{
+}
+
+void mrqInfo::tranalate()
+{
     mTableItems.at(0)->setText( tr("Model") );
     mTableItems.at(2)->setText( tr("Serial") );
     mTableItems.at(4)->setText( tr("Hardware version") );
@@ -66,10 +88,6 @@ void mrqInfo::initModel()
     mTableItems.at(18)->setText( tr("Signature") );
     mTableItems.at(20)->setText( tr("Capacity") );
     mTableItems.at(22)->setText( tr("Buffer") );
-}
-
-void mrqInfo::deinitModel()
-{
 }
 
 void mrqInfo::updateUi()

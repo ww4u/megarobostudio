@@ -16,6 +16,10 @@ public:
     explicit MrqSensorPage(QWidget *parent = 0);
     ~MrqSensorPage();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
+public:
     void setUartConfig(
                      uartConfig &cfg
                      );

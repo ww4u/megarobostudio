@@ -21,6 +21,14 @@ logOut::~logOut()
 QSize logOut::sizeHint() const
 { return QSize(0,60); }
 
+void logOut::changeEvent(QEvent * event)
+{
+    QWidget::changeEvent( event );
+
+    if (event->type() == QEvent::LanguageChange)
+    { ui->retranslateUi( this ); }
+}
+
 void logOut::on_btnExport_clicked()
 {
     QFileDialog fDlg;

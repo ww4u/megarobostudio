@@ -18,6 +18,9 @@ public:
     explicit ProgressGroup(QWidget *parent = 0);
     ~ProgressGroup();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
 Q_SIGNALS:
     void sigCancel( const QString &name, int id );
 

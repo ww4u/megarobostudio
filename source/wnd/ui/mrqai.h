@@ -23,6 +23,9 @@ public:
     explicit MrqAi(QWidget *parent = 0);
     ~MrqAi();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
 public:
     void setConfig( AiConfig &cfg );
     void getConfig( AiConfig &cfg );

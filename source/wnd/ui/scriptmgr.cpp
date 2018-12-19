@@ -115,6 +115,20 @@ void scriptMgr::contextMenuEvent(QContextMenuEvent *event)
 QSize scriptMgr::sizeHint() const
 { return QSize(180,0);}
 
+void scriptMgr::changeEvent(QEvent * event)
+{
+    QWidget::changeEvent( event );
+
+    if (event->type() == QEvent::LanguageChange)
+    {
+        ui->retranslateUi( this );
+
+        m_pNewGroupAction->setText( tr("New Group") );
+        m_pImportAction->setText( tr("Import...") );
+        m_pRemoveAction->setText( tr("Remove") );
+    }
+}
+
 void scriptMgr::setExpand( bool b )
 {
     if ( b )

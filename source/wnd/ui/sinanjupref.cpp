@@ -41,6 +41,14 @@ SinanjuPref::~SinanjuPref()
     delete ui;
 }
 
+void SinanjuPref::changeEvent(QEvent * event)
+{
+    modelView::changeEvent( event );
+
+    if (event->type() == QEvent::LanguageChange)
+    { ui->retranslateUi( this ); }
+}
+
 void SinanjuPref::setModelObj( mcModelObj *pObj )
 {
     modelView::setModelObj( pObj );

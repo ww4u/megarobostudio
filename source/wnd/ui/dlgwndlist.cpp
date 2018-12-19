@@ -14,6 +14,14 @@ dlgWndList::~dlgWndList()
     delete ui;
 }
 
+void dlgWndList::changeEvent( QEvent *event )
+{
+    QDialog::changeEvent( event );
+
+    if ( event->type() == QEvent::LanguageChange )
+    { ui->retranslateUi( this ); }
+}
+
 void dlgWndList::addWnd( const QString &str )
 {
     ui->listWidget->addItem( str );

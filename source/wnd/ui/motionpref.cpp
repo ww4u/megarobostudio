@@ -15,6 +15,14 @@ MotionPref::~MotionPref()
     delete ui;
 }
 
+void MotionPref::changeEvent(QEvent * event)
+{
+    QDialog::changeEvent( event );
+
+    if (event->type() == QEvent::LanguageChange)
+    { ui->retranslateUi( this ); }
+}
+
 void MotionPref::setModel( MotionModel *pModel )
 {
     Q_ASSERT( NULL != pModel );

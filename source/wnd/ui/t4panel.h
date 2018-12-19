@@ -22,6 +22,9 @@ public:
                      QWidget *parent = 0);
     ~T4Panel();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
 protected Q_SLOTS:
     void slot_timeout();
 

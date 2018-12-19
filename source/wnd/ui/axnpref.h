@@ -13,7 +13,10 @@ class AxnPref : public modelView
 
 public:
     explicit AxnPref(QWidget *parent = 0);
-    ~AxnPref();
+    ~AxnPref();    
+
+protected:
+    virtual void changeEvent( QEvent *event );
 
 public:
     virtual void setModelObj( mcModelObj *pObj );

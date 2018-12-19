@@ -15,6 +15,9 @@ public:
     explicit H2Pref(QWidget *parent = 0);
     ~H2Pref();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
 public:
     virtual void setModelObj( mcModelObj *pObj );
     virtual int setApply();

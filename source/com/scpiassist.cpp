@@ -33,7 +33,9 @@ scpi_result_t deload_ax_page_file( scpi_t * context,
 
     //! find the input file
     QByteArray byteName( pLocalStr, strLen );
-    QString fileInName( byteName );
+
+    QString fileInName ( byteName.data() );
+
     if ( comAssist::ammendFileName( fileInName ) )
     { file = fileInName; }
     else

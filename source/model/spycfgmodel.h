@@ -64,6 +64,9 @@ public:
     void setCacheLen( const QString &name, const QString &item, int len );
     int cacheLen( const QString &name, const QString &item );
 
+    void resetCache();
+    void trigDataChanged();
+
     int save( const QString &fileName );
     int load( const QString &fileName );
 

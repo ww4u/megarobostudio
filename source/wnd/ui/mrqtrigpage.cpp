@@ -17,6 +17,14 @@ MrqTrigPage::~MrqTrigPage()
     delete ui;
 }
 
+void MrqTrigPage::changeEvent(QEvent * event)
+{
+    mrqView::changeEvent( event );
+
+    if (event->type() == QEvent::LanguageChange)
+    { ui->retranslateUi( this ); }
+}
+
 int MrqTrigPage::setApply()
 {
     return apply();

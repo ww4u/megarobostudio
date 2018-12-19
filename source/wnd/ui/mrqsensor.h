@@ -16,6 +16,9 @@ public:
     explicit mrqSensor(const QStringList &sensorList, QWidget *parent = 0);
     ~mrqSensor();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
 public:
     virtual int setApply();
 public:

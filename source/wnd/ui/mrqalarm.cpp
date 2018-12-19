@@ -32,6 +32,14 @@ MrqAlarm::~MrqAlarm()
     delete ui;
 }
 
+void MrqAlarm::changeEvent(QEvent * event)
+{
+    mrqView::changeEvent( event );
+
+    if (event->type() == QEvent::LanguageChange)
+    { ui->retranslateUi( this ); }
+}
+
 int MrqAlarm::setApply()
 {
     int ret;

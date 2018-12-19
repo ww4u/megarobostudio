@@ -22,6 +22,9 @@ public:
     ~IgusDrylinPanel();
 
 protected:
+    virtual void changeEvent( QEvent *event );
+
+protected:
     robotIgusDelta *Robot();
 
     //! move delta

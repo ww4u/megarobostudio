@@ -16,6 +16,9 @@ public:
     explicit MrqIn(QWidget *parent = 0);
     ~MrqIn();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
 public:
     virtual int setApply();
 public:

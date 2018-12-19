@@ -32,6 +32,9 @@ public:
     virtual ~motionEdit();
 
 protected:
+    virtual void changeEvent( QEvent *event );
+
+protected:
     void buildConnection();
 
 public:

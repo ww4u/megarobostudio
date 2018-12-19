@@ -23,6 +23,14 @@ deviceConsole::~deviceConsole()
     delete ui;
 }
 
+void deviceConsole::changeEvent( QEvent *event )
+{
+    QDialog::changeEvent( event );
+
+    if ( event->type() == QEvent::LanguageChange )
+    { ui->retranslateUi( this ); }
+}
+
 void deviceConsole::setShell( scpiShell *pShell )
 {
     Q_ASSERT( NULL != pShell );
@@ -142,7 +150,8 @@ void deviceConsole::doWrite( const QString &str )
     sendStr = str + "\r\n";
 
     //! send
-    m_pScpiShell->write( sendStr.toLatin1().data(),
+    m_pScpiShell->write( //sendStr.toLatin1().data(),
+                         sendStr.toUtf8().data(),
                          sendStr.length() );
 }
 

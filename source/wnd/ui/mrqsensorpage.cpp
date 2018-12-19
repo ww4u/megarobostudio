@@ -27,6 +27,14 @@ MrqSensorPage::~MrqSensorPage()
     delete ui;
 }
 
+void MrqSensorPage::changeEvent(QEvent * event)
+{
+    modelView::changeEvent( event );
+
+    if (event->type() == QEvent::LanguageChange)
+    { ui->retranslateUi( this ); }
+}
+
 void MrqSensorPage::setUartConfig(
                  uartConfig &cfg
                  )

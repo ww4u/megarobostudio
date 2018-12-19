@@ -15,6 +15,9 @@ public:
     explicit MrvThreshold(QWidget *parent = 0);
     ~MrvThreshold();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
 public:
     virtual int setApply();
 public:

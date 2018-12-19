@@ -16,6 +16,9 @@ public:
     explicit PortOption(QWidget *parent = 0);
     ~PortOption();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
 protected Q_SLOTS:
     void slot_search_finished();
 

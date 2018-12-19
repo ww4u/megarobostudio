@@ -34,6 +34,14 @@ T4Panel::~T4Panel()
     delete ui;
 }
 
+void T4Panel::changeEvent(QEvent * event)
+{
+    RoboPanel::changeEvent( event );
+
+    if (event->type() == QEvent::LanguageChange)
+    { ui->retranslateUi( this ); }
+}
+
 void T4Panel::slot_timeout()
 {
     if ( isVisible() )

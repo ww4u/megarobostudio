@@ -253,6 +253,86 @@ void MainWindow::on_itemx_new_mrp( mcModelObj* pObj )
     newMrp( pRobo->getClass() );
 }
 
+void MainWindow::changeLang( int langIndex )
+{
+    if ( langIndex == 0 )
+    {
+        ui->actionEnglish->setChecked( true );
+        ui->actionChinese->setChecked( false );
+        ui->actionTraditional_Chinese->setChecked( false );
+    }
+    else if ( langIndex == 1 )
+    {
+        ui->actionEnglish->setChecked( false );
+        ui->actionChinese->setChecked( true );
+        ui->actionTraditional_Chinese->setChecked( false );
+    }
+    else if ( langIndex == 2 )
+    {
+        ui->actionEnglish->setChecked( false );
+        ui->actionChinese->setChecked( false );
+        ui->actionTraditional_Chinese->setChecked( true );
+    }
+    else
+    { return; }
+
+    //! set lang
+    do
+    {
+        QLocale::Language lang;
+        QLocale::Country area;
+        if ( langIndex == 0 )
+        {
+            lang = QLocale::English;
+            area = QLocale::AnyCountry;
+        }
+        else if ( langIndex == 1 )
+        {
+            lang = QLocale::Chinese;
+            area = QLocale::China;
+        }
+        else if ( langIndex == 2 )
+        {
+            lang = QLocale::Chinese;
+            area = QLocale::Taiwan;
+        }
+        else
+        {
+            lang = QLocale::AnyLanguage;
+            area = QLocale::AnyCountry;
+
+            return;
+        }
+
+        if ( mTranslator.isEmpty() )
+        {}
+        else
+        { qApp->removeTranslator( &mTranslator ); }
+
+        //! local
+        QLocale local( lang, area );
+        local.setDefault( QLocale(QLocale::English) );
+
+        logDbg()<<local.uiLanguages();
+
+        if ( mTranslator.load( local,
+                              QLatin1String("megarobostudio"),
+                              QLatin1String("_"),
+                              qApp->applicationDirPath() + "/translate"
+                              )
+             && qApp->installTranslator(&mTranslator) )
+        {
+        }
+        else
+        {
+            QMessageBox::information( NULL,
+                                    QObject::tr("Info"),
+                                    QObject::tr("language loss"));
+        }
+    }while( 0 );
+
+}
+
 //! new prj
 void MainWindow::on_actionProject_triggered()
 {
@@ -666,7 +746,7 @@ void MainWindow::on_actionpref_triggered( )
 
     if ( QDialog::Accepted == dlg.exec() )
     {
-        mMcModel.mSysPref.save( pref_file_name );
+        mMcModel.mSysPref.save( user_pref_file_name );
 
         applyConfigs();
 

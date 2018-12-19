@@ -18,6 +18,9 @@ public:
     explicit AngleMonitor(QWidget *parent = 0);
     ~AngleMonitor();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
 public:
     void setModel( mcModel *pModle );
     void setConnections( const QStringList &conn );

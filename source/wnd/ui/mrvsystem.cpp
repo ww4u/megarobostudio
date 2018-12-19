@@ -13,6 +13,14 @@ MrvSystem::~MrvSystem()
     delete ui;
 }
 
+void MrvSystem::changeEvent(QEvent * event)
+{
+    mrvView::changeEvent( event );
+
+    if (event->type() == QEvent::LanguageChange)
+    { ui->retranslateUi( this ); }
+}
+
 int MrvSystem::setApply()
 {
     return apply();

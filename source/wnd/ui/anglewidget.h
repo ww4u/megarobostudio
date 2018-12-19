@@ -15,6 +15,9 @@ public:
     explicit AngleWidget(QWidget *parent = 0);
     ~AngleWidget();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
 public:
     void setConnections( const QStringList &conns );
 

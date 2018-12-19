@@ -37,6 +37,14 @@ DeltaConfig::~DeltaConfig()
     delete ui;
 }
 
+void DeltaConfig::changeEvent( QEvent *event )
+{
+    modelView::changeEvent( event );
+
+    if ( event->type() == QEvent::LanguageChange )
+    { ui->retranslateUi( this ); }
+}
+
 void DeltaConfig::setModelObj( mcModelObj *pObj )
 {
     modelView::setModelObj(pObj);

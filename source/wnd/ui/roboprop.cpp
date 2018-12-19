@@ -29,6 +29,31 @@ roboProp::~roboProp()
     desetupUi();
 }
 
+void roboProp::changeEvent(QEvent * event)
+{
+    modelView::changeEvent( event );
+
+    if (event->type() == QEvent::LanguageChange)
+    {
+        ui->retranslateUi( this );
+
+        //! post event
+        for ( int i = 0; i < ui->stackedWidget->count(); i++ )
+        {
+            qApp->postEvent( ui->stackedWidget->widget(i),
+                             new QEvent(QEvent::LanguageChange) );
+        }
+
+        //! for the list
+        QMap<QListWidgetItem*, QString>::iterator iter = mLocalPages.begin();
+        while (iter != mLocalPages.end())
+        {
+            ((QListWidgetItem*)iter.key())->setText( tr( iter.value().toLatin1() ) );
+            ++iter;
+        }
+    }
+}
+
 void roboProp::setModelObj( mcModelObj *pObj )
 {
     Q_ASSERT( NULL != pObj );
@@ -115,33 +140,37 @@ void roboProp::updateScreen()
  void roboProp::updateModel()
 {}
 
-#define new_widget( widget, icon, name )  ( names.append(name), \
+#define new_widget( widget, icon, name, rawname )  ( names.append(name), rawNames.append(rawname),\
                                             icons.append(icon), \
                                             mPrefPages.append( new widget()),\
                                             (widget*)mPrefPages.last() )
 void roboProp::setupUi( int id )
 {
-    QStringList icons,names;
+    QStringList icons,names, rawNames;
 
     //! new
-    m_pInfoPage = new_widget( roboInfo, ":/res/image/icon2/info.png", tr("Info") );
-    m_pDetailPage = new_widget( RoboDesc, ":/res/image/icon2/info.png", tr("Detail") );
+    m_pInfoPage = new_widget( roboInfo, ":/res/image/icon2/info.png", tr("Info"), "Info" );
+    m_pDetailPage = new_widget( RoboDesc, ":/res/image/icon2/info.png", tr("Detail"), "Detail" );
 
     //! pref
     if ( VRobot::robot_motors == id )
-    { m_pComPref = new_widget( MotorsPref, ":/res/image/icon2/settings_light.png", tr("Option") ); }
+    {
+        m_pComPref = new_widget( MotorsPref, ":/res/image/icon2/settings_light.png", tr("Option"), "Option" );
+    }
     else
-    { m_pComPref  = new_widget( RoboComPref, ":/res/image/icon2/settings_light.png", tr("Option") ); }
+    {
+        m_pComPref  = new_widget( RoboComPref, ":/res/image/icon2/settings_light.png", tr("Option"), "Option" );
+    }
 
     //! special prop
     if ( VRobot::robot_delta == id )
     {
-        m_pDeltaPref  = new_widget( DeltaPref, ":/res/image/icon2/settings_light.png", tr("Zero") );
-        m_pDeltaConfig   = new_widget( DeltaConfig, ":/res/image/icon2/settings_light.png", tr("Pref") );
+        m_pDeltaPref  = new_widget( DeltaPref, ":/res/image/icon2/settings_light.png", tr("Zero"), "Zero" );
+        m_pDeltaConfig   = new_widget( DeltaConfig, ":/res/image/icon2/settings_light.png", tr("Pref"), "Pref" );
     }
     else if ( VRobot::robot_megatron == id )
     {
-        m_pMegatronPref  = new_widget( MegatronPref, ":/res/image/icon2/settings_light.png", tr("Zero") );
+        m_pMegatronPref  = new_widget( MegatronPref, ":/res/image/icon2/settings_light.png", tr("Zero"), "Zero" );
     }
     //! h2 && h2z
     else if ( VRobot::robot_h2 == id
@@ -149,38 +178,38 @@ void roboProp::setupUi( int id )
               || VRobot::robot_h2z == id
               )
     {
-        m_pSketch = new_widget( RoboSketch, ":/res/image/icon2/settings_light.png", tr("Icon") );
+        m_pSketch = new_widget( RoboSketch, ":/res/image/icon2/settings_light.png", tr("Icon"), "Icon" );
         m_pSketch->setSketch( ":/res/image/joint/mrx-h2_geo.png");
-        m_pH2Pref = new_widget( H2Pref, ":/res/image/icon2/settings_light.png", tr("Zero") );
-        m_pH2Config = new_widget( H2Config, ":/res/image/icon2/settings_light.png", tr("Pref") );
+        m_pH2Pref = new_widget( H2Pref, ":/res/image/icon2/settings_light.png", tr("Zero"), "Zero" );
+        m_pH2Config = new_widget( H2Config, ":/res/image/icon2/settings_light.png", tr("Pref"), "Pref" );
     }
     else if ( VRobot::robot_sinanju == id )
     {
-        m_pSketch = new_widget( RoboSketch, ":/res/image/icon2/settings_light.png", tr("Icon") );
+        m_pSketch = new_widget( RoboSketch, ":/res/image/icon2/settings_light.png", tr("Icon"), "Icon" );
         m_pSketch->setSketch( ":/res/image/joint/sinanju_pn_256px_nor@2x.png");
 
-        m_pSinanjuPref  = new_widget( SinanjuPref, ":/res/image/icon2/settings_light.png", tr("Zero") );
-        m_pSinanjuConfig = new_widget( SinanjuConfig, ":/res/image/icon2/settings_light.png", tr("Pref") );
+        m_pSinanjuPref  = new_widget( SinanjuPref, ":/res/image/icon2/settings_light.png", tr("Zero"), "Zero" );
+        m_pSinanjuConfig = new_widget( SinanjuConfig, ":/res/image/icon2/settings_light.png", tr("Pref"), "Pref" );
     }
     else if ( VRobot::robot_motor == id )
     {
-        m_pMotorPref = new_widget( MotorPref, ":/res/image/icon2/settings_light.png", tr("Zero") );
+        m_pMotorPref = new_widget( MotorPref, ":/res/image/icon2/settings_light.png", tr("Zero"), "Zero" );
     }
     else if (
               VRobot::robot_slide == id
               )
     {
-        m_pAxnPref = new_widget( AxnPref, ":/res/image/icon2/settings_light.png", tr("Pref") );
+        m_pAxnPref = new_widget( AxnPref, ":/res/image/icon2/settings_light.png", tr("Pref"), "Pref" );
     }
     else if ( VRobot::robot_ip == id )
     {
-        m_pIpPref = new_widget( IPPref, ":/res/image/icon2/settings_light.png", tr("Pref") );
-        m_pIpConfig = new_widget( IPConfig, ":/res/image/icon2/settings_light.png", tr("Config") );
+        m_pIpPref = new_widget( IPPref, ":/res/image/icon2/settings_light.png", tr("Pref"), "Pref" );
+        m_pIpConfig = new_widget( IPConfig, ":/res/image/icon2/settings_light.png", tr("Config"), "Config" );
     }
     else if ( VRobot::robot_igus_delta == id )
     {
-        m_pIgusPref = new_widget( IgusDeltaPref, ":/res/image/icon2/settings_light.png", tr("Zero") );
-        m_pIgusConfig = new_widget( IgusConfig, ":/res/image/icon2/settings_light.png", tr("Pref") );
+        m_pIgusPref = new_widget( IgusDeltaPref, ":/res/image/icon2/settings_light.png", tr("Zero"), "Zero" );
+        m_pIgusConfig = new_widget( IgusConfig, ":/res/image/icon2/settings_light.png", tr("Pref"), "Pref" );
     }
     else
     {}
@@ -202,6 +231,9 @@ void roboProp::setupUi( int id )
         pItem->setText( names.at(i) );
         pItem->setIcon( QIcon( icons.at(i) ) );
         ui->listWidget->addItem( pItem );
+
+        //! cache pages
+        mLocalPages.insert( pItem, rawNames.at(i) );
     }
 
     //! modified

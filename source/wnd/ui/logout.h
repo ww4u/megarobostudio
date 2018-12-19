@@ -17,6 +17,7 @@ public:
 
 protected:
     virtual QSize sizeHint() const;
+    virtual void changeEvent(QEvent *);
 
 Q_SIGNALS:
     void sig_log_item( const QString &str );

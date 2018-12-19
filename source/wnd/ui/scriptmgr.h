@@ -26,6 +26,9 @@ public:
     ~scriptMgr();
 
 protected:
+    virtual void changeEvent( QEvent *event );
+
+protected:
     virtual void contextMenuEvent(QContextMenuEvent *event);
     virtual QSize sizeHint() const;
 public:

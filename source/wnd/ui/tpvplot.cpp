@@ -78,6 +78,14 @@ tpvPlot::~tpvPlot()
     delete ui;
 }
 
+void tpvPlot::changeEvent(QEvent * event)
+{
+    QDialog::changeEvent( event );
+
+    if (event->type() == QEvent::LanguageChange)
+    { ui->retranslateUi( this ); }
+}
+
 void tpvPlot::on_btnImage_clicked()
 {
     QFileDialog fDlg;

@@ -17,6 +17,14 @@ MrqDO::~MrqDO()
     delete ui;
 }
 
+void MrqDO::changeEvent(QEvent * event)
+{
+    mrqView::changeEvent( event );
+
+    if (event->type() == QEvent::LanguageChange)
+    { ui->retranslateUi( this ); }
+}
+
 void MrqDO::setConfig( DoConfig &cfg )
 {
     ui->chkDo->setChecked( cfg.mbEn );

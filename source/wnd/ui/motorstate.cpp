@@ -45,6 +45,14 @@ MotorState::~MotorState()
 QSize MotorState::sizeHint() const
 { return QSize(320,64); }
 
+void MotorState::changeEvent(QEvent * event)
+{
+    QWidget::changeEvent( event );
+
+    if (event->type() == QEvent::LanguageChange)
+    { ui->retranslateUi( this ); }
+}
+
 void MotorState::setName( const QString &name )
 { ui->labelName->setText( name ); }
 QString MotorState::name()

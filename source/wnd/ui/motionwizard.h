@@ -15,6 +15,9 @@ public:
     explicit MotionWizard(QWidget *parent = 0);
     ~MotionWizard();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
 public:
     QString motionName();
 

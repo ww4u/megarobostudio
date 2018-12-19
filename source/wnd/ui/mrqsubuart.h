@@ -25,6 +25,9 @@ public:
     explicit MrqSubUart(QWidget *parent = 0);
     ~MrqSubUart();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
 Q_SIGNALS:
     void signal_live_changed();
 

@@ -19,10 +19,15 @@ public:
     ~mrvInfo();
 
 protected:
+    virtual void changeEvent( QEvent *event );
+
+protected:
     void buildConnection();
 
     void initModel();
     void deinitModel();
+
+    void translate();
 
 public:
     void updateUi();

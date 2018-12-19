@@ -21,6 +21,10 @@ public:
     explicit MotorMonitor(QWidget *parent = 0);
     ~MotorMonitor();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
+public:
     void setModel( mcModel *pModel );
 
     void setMonitors( const QStringList &conns );

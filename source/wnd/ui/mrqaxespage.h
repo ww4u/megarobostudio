@@ -15,6 +15,9 @@ public:
     explicit MrqAxesPage(QWidget *parent = 0);
     ~MrqAxesPage();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
 public:
     virtual void setMcModel( mcModel *pMcModel );
     virtual void setModelObj( mcModelObj *pObj );

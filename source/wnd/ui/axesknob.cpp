@@ -44,6 +44,14 @@ axesKnob::~axesKnob()
     delete ui;
 }
 
+void axesKnob::changeEvent( QEvent *event )
+{
+    RoboView::changeEvent( event );
+
+    if ( event->type() == QEvent::LanguageChange )
+    { ui->retranslateUi( this ); }
+}
+
 MegaDevice::deviceMRQ * axesKnob::currentDevice( int &ax )
 {
     Q_ASSERT( NULL != m_pMcModel );

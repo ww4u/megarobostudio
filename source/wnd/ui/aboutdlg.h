@@ -18,6 +18,9 @@ public:
     ~aboutDlg();
 
 protected:
+    virtual void changeEvent( QEvent *event );
+
+protected:
     virtual void keyReleaseEvent(QKeyEvent *event );
 
 private:

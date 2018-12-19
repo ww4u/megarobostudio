@@ -12,3 +12,11 @@ MrvRecord::~MrvRecord()
 {
     delete ui;
 }
+
+void MrvRecord::changeEvent(QEvent * event)
+{
+    QWidget::changeEvent( event );
+
+    if (event->type() == QEvent::LanguageChange)
+    { ui->retranslateUi( this ); }
+}

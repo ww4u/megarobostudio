@@ -29,6 +29,18 @@ TpEdit::~TpEdit()
     delete ui;
 }
 
+void TpEdit::changeEvent(QEvent * event)
+{
+    tableEdit::changeEvent( event );
+
+    if (event->type() == QEvent::LanguageChange)
+    {
+        ui->retranslateUi( this );
+
+        retranslateContextMenu();
+    }
+}
+
 void TpEdit::setModelObj( mcModelObj *pObj )
 {
     Q_ASSERT( NULL != pObj );

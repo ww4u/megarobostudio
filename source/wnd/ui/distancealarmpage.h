@@ -21,6 +21,9 @@ public:
     explicit DistanceAlarmPage(QWidget *parent = 0);
     ~DistanceAlarmPage();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
 public:
     void setData( DistAlarmConfig &config );
     void data( DistAlarmConfig &config );

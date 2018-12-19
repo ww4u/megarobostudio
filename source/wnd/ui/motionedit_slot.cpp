@@ -49,19 +49,20 @@ void motionEdit::slot_data_changed()
 
 //! get the hand action options
 void motionEdit::slot_robo_changed( const QString &roboName )
-{
+{logDbg();
     //! \note no roboName
     if ( roboName.isEmpty() )
     { return; }
-
+logDbg();
     VRobot *pRobot;
     if ( checkRobotLive( &pRobot ) )
-    {}
+    {logDbg();}
     else
-    {
+    {logDbg();
         return;
     }
 
+    Q_ASSERT( NULL != pRobot );
     //! coord able
     ui->coordOption->setVisible( pRobot->coordAble() );
 }

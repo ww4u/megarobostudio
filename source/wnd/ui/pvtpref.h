@@ -29,6 +29,9 @@ public:
     explicit PvtPref(QWidget *parent = 0);
     ~PvtPref();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
 public:
     void setModel( modelPvtPref *pref );
     modelPvtPref *model();

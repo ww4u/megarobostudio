@@ -16,6 +16,9 @@ public:
     explicit IPConfig(QWidget *parent = 0);
     ~IPConfig();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
 public:
     virtual void setModelObj( mcModelObj *pObj );
     virtual int setApply();

@@ -53,6 +53,14 @@ MegatronPref::~MegatronPref()
     delete ui;
 }
 
+void MegatronPref::changeEvent(QEvent * event)
+{
+    modelView::changeEvent( event );
+
+    if (event->type() == QEvent::LanguageChange)
+    { ui->retranslateUi( this ); }
+}
+
 void MegatronPref::setModelObj( mcModelObj *pObj )
 {
     modelView::setModelObj( pObj );

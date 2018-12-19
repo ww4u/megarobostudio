@@ -21,6 +21,14 @@ ProgressElement::~ProgressElement()
     delete ui;
 }
 
+void ProgressElement::changeEvent(QEvent * event)
+{
+    QWidget::changeEvent( event );
+
+    if (event->type() == QEvent::LanguageChange)
+    { ui->retranslateUi( this ); }
+}
+
 void ProgressElement::hideEvent(QHideEvent *event )
 {
     mLatestProg = -1;

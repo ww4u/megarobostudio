@@ -16,6 +16,9 @@ public:
     explicit MrvSystem(QWidget *parent = 0);
     ~MrvSystem();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
 public:
     virtual int setApply();
 public:

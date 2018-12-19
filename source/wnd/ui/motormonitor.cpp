@@ -21,6 +21,14 @@ MotorMonitor::~MotorMonitor()
     delete ui;
 }
 
+void MotorMonitor::changeEvent(QEvent * event)
+{
+    QDialog::changeEvent( event );
+
+    if (event->type() == QEvent::LanguageChange)
+    { ui->retranslateUi( this ); }
+}
+
 void MotorMonitor::setModel( mcModel *pModel )
 {
     Q_ASSERT( NULL != pModel );

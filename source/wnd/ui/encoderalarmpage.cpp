@@ -22,6 +22,14 @@ EncoderAlarmPage::~EncoderAlarmPage()
     delete ui;
 }
 
+void EncoderAlarmPage::changeEvent( QEvent *event )
+{
+    modelView::changeEvent( event );
+
+    if ( event->type() == QEvent::LanguageChange )
+    { ui->retranslateUi( this ); }
+}
+
 #define angle_error     (1e-6)
 
 #define align_angle_value( angle )    \

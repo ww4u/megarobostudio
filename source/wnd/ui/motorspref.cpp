@@ -24,6 +24,14 @@ MotorsPref::~MotorsPref()
     delete ui;
 }
 
+void MotorsPref::changeEvent(QEvent * event)
+{
+    modelView::changeEvent( event );
+
+    if (event->type() == QEvent::LanguageChange)
+    { ui->retranslateUi( this ); }
+}
+
 #define model_      ((robotMotors*)m_pModelObj)->getModel()
 #define base_       ( (VRobot *)m_pModelObj )
 

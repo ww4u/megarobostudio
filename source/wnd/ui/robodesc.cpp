@@ -15,6 +15,14 @@ RoboDesc::~RoboDesc()
     delete ui;
 }
 
+void RoboDesc::changeEvent(QEvent * event)
+{
+    modelView::changeEvent( event );
+
+    if (event->type() == QEvent::LanguageChange)
+    { ui->retranslateUi( this ); }
+}
+
 void RoboDesc::setModelObj( mcModelObj *pObj )
 {
     modelView::setModelObj( pObj );

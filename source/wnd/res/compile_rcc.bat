@@ -28,7 +28,7 @@ ren w_icon3 icon3
 
 cd ..
 
-set dst=G:\work\mc\develope\installer\style
+set dst=G:\work\mc\develope\installer_release\style
 
 for %%d in ( res.rcc black.rcc ) do ( copy %%d %dst%\%%d ) 
 

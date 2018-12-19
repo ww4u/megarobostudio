@@ -131,6 +131,14 @@ eventViewer::~eventViewer()
     delete ui;
 }
 
+void eventViewer::changeEvent( QEvent *event )
+{
+    QDialog::changeEvent( event );
+
+    if ( event->type() == QEvent::LanguageChange )
+    { ui->retranslateUi( this ); }
+}
+
 void eventViewer::setMcModel( mcModel *pObj )
 {
     Q_ASSERT( NULL != pObj );

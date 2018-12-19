@@ -15,6 +15,9 @@ public:
     explicit DeltaConfig(QWidget *parent = 0);
     ~DeltaConfig();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
 public:
     virtual void setModelObj( mcModelObj *pObj );
     virtual int setApply();

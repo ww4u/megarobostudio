@@ -21,6 +21,18 @@ mrvInfo::~mrvInfo()
     deinitModel();
 }
 
+void mrvInfo::changeEvent(QEvent * event)
+{
+    mrvView::changeEvent( event );
+
+    if (event->type() == QEvent::LanguageChange)
+    {
+        ui->retranslateUi( this );
+
+        translate();
+    }
+}
+
 void mrvInfo::buildConnection()
 {
 
@@ -52,6 +64,16 @@ void mrvInfo::initModel()
     }
 
     //! init data
+    translate();
+}
+
+void mrvInfo::deinitModel()
+{
+
+}
+
+void mrvInfo::translate()
+{
     mTableItems.at(0)->setText( tr("Model") );
     mTableItems.at(2)->setText( tr("Serial") );
     mTableItems.at(4)->setText( tr("Hardware version") );
@@ -63,11 +85,6 @@ void mrvInfo::initModel()
     mTableItems.at(12)->setText( tr("Receive ID") );
     mTableItems.at(14)->setText( tr("Boradcast ID") );
     mTableItems.at(16)->setText( tr("Signature") );
-}
-
-void mrvInfo::deinitModel()
-{
-
 }
 
 void mrvInfo::updateUi()

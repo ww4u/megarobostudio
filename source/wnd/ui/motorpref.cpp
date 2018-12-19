@@ -20,6 +20,14 @@ MotorPref::~MotorPref()
     delete ui;
 }
 
+void MotorPref::changeEvent(QEvent * event)
+{
+    modelView::changeEvent( event );
+
+    if (event->type() == QEvent::LanguageChange)
+    { ui->retranslateUi( this ); }
+}
+
 void MotorPref::setModelObj( mcModelObj *pObj )
 {
     modelView::setModelObj( pObj );

@@ -21,6 +21,9 @@ public:
     explicit roboScene(QWidget *parent = 0);
     ~roboScene();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
 public:
 //    virtual QSize sizeHint() const;
 

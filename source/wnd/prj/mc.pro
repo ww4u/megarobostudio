@@ -23,7 +23,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-VERSION = 0.1.0.25
+VERSION = 0.1.0.26
 
 OBJECTS_DIR = ./obj
 MOC_DIR = ./obj
@@ -310,7 +310,8 @@ SOURCES += \
     ../../com/scpiassist.cpp \
     ../ui/rsrcsearchthread.cpp \
     ../ui/roboview.cpp \
-    ../ui/robosketch.cpp
+    ../ui/robosketch.cpp \
+    ../ui/emergestop.cpp
 
 
 HEADERS += \
@@ -500,7 +501,8 @@ HEADERS += \
     ../ui/rsrcsearchthread.h \
     ../main_help.h \
     ../ui/roboview.h \
-    ../ui/robosketch.h
+    ../ui/robosketch.h \
+    ../ui/emergestop.h
 
 FORMS += \
         ../ui/mainwindow.ui \
@@ -610,7 +612,8 @@ FORMS += \
     ../ui/dlghelp.ui \
     ../ui/dlgapp.ui \
     ../../widget/mfiledialog.ui \
-    ../ui/robosketch.ui
+    ../ui/robosketch.ui \
+    ../ui/emergestop.ui
 
 
 #RESOURCES = ../res/res.qrc
@@ -618,10 +621,11 @@ FORMS += \
 RC_ICONS = ../res/image/logo/megarobo.ico
 
 TRANSLATIONS = ../../translate/megarobostudio_zh_CN.ts \
-                ../../translate/megarobostudio_zh_TW.ts
+                ../../translate/megarobostudio_zh_TW.ts \
+                ../../translate/megarobostudio_en.ts
 DISTFILES += \
-    ../../../installer_debug/doc/readme.txt \
-    ../../../installer_debug/doc/errant.txt \
+    ../../../installer_release/doc/readme.txt \
+    ../../../installer_release/doc/errant.txt \
     ../../../readme.md
 
 

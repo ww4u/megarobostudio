@@ -18,6 +18,9 @@ public:
     explicit MrqTrigPage(QWidget *parent = 0);
     ~MrqTrigPage();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
 public:
     virtual int setApply();
 public:

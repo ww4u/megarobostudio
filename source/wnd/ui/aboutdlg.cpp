@@ -24,6 +24,14 @@ aboutDlg::~aboutDlg()
     delete ui;
 }
 
+void aboutDlg::changeEvent( QEvent *event )
+{
+    QDialog::changeEvent( event );
+
+    if ( event->type() == QEvent::LanguageChange )
+    { ui->retranslateUi( this ); }
+}
+
 //! ctrl + f1
 void aboutDlg::keyReleaseEvent(QKeyEvent *event )
 {

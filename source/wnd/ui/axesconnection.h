@@ -14,6 +14,10 @@ class axesConnection : public QWidget
 public:
     explicit axesConnection(QWidget *parent = 0);
     ~axesConnection();
+
+protected:
+    virtual void changeEvent( QEvent *event );
+
 public:
     void setDeviceNames( const QStringList &strList );
     void setCurrentName( const QString &str );

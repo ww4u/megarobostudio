@@ -269,18 +269,6 @@
         <translation type="unfinished">零位</translation>
     </message>
     <message>
-        <source>Zero Roll</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>N</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Y</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Up Limit</source>
         <translation type="unfinished"></translation>
     </message>
@@ -290,10 +278,6 @@
     </message>
     <message>
         <source>Only enabled in admin mode</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Zero at</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -419,10 +403,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Nominal</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>X</source>
         <translation type="unfinished"></translation>
     </message>
@@ -463,10 +443,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Single</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Step Y</source>
         <translation type="unfinished"></translation>
     </message>
@@ -480,6 +456,30 @@
     </message>
     <message>
         <source>Step</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Redo</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Home</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>To</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Current Position</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Continous X</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Continous Y</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1019,7 +1019,7 @@
     </message>
     <message>
         <source>View(&amp;V)</source>
-        <translation type="unfinished">视图(&amp;V)</translation>
+        <translation type="unfinished">View(&amp;V)</translation>
     </message>
     <message>
         <source>Control(&amp;C)</source>
@@ -1255,7 +1255,7 @@
     </message>
     <message>
         <source>status</source>
-        <translation type="unfinished">状态</translation>
+        <translation type="obsolete">状态</translation>
     </message>
     <message>
         <source>Angle</source>
@@ -1339,7 +1339,7 @@
     </message>
     <message>
         <source>Saving...</source>
-        <translation type="unfinished">存储中...</translation>
+        <translation type="obsolete">存储中...</translation>
     </message>
     <message>
         <source>fali</source>
@@ -1503,6 +1503,26 @@
     </message>
     <message>
         <source>pt file (*.pt)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Language</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>English</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Chinese</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Traditional Chinese</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Robo</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3225,10 +3245,6 @@
         <translation type="unfinished">零位</translation>
     </message>
     <message>
-        <source>Joint Power</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Step)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4333,6 +4349,14 @@
         <source>Joint...</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Info</source>
+        <translation type="unfinished">信息</translation>
+    </message>
+    <message>
+        <source>Busy now, please wait!</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>dlgWndList</name>
@@ -4535,7 +4559,7 @@
     </message>
     <message>
         <source>LogOn</source>
-        <translation type="unfinished">输出记录</translation>
+        <translation type="obsolete">输出记录</translation>
     </message>
     <message>
         <source>log file (*.txt )</source>
@@ -4641,7 +4665,7 @@
     <name>motionEdit</name>
     <message>
         <source>Download</source>
-        <translation type="unfinished">下载</translation>
+        <translation type="obsolete">下载</translation>
     </message>
     <message>
         <source>Build</source>
@@ -4721,7 +4745,7 @@
     </message>
     <message>
         <source>Invalid robot</source>
-        <translation type="obsolete">无效机器人</translation>
+        <translation type="unfinished">无效机器人</translation>
     </message>
     <message>
         <source>Build Fail</source>
@@ -4821,6 +4845,30 @@
     </message>
     <message>
         <source>start fail</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Compile and Download</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Auto calc the time</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>absolute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>relative</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Compile fail</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -5997,7 +6045,7 @@
     </message>
     <message>
         <source>Download</source>
-        <translation type="unfinished">下载</translation>
+        <translation type="obsolete">下载</translation>
     </message>
     <message>
         <source>Build</source>
@@ -6127,6 +6175,30 @@
         <source>S curve</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Compile and Download</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>absolute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>relative</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid CH</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fail</source>
+        <translation type="unfinished">连接失败</translation>
+    </message>
+    <message>
+        <source>Build Fail</source>
+        <translation type="unfinished">构建失败</translation>
+    </message>
 </context>
 <context>
     <name>queryMgr</name>
@@ -6204,7 +6276,7 @@
     </message>
     <message>
         <source>spy config (*.spy)</source>
-        <translation type="unfinished">监视配置五文件 (*.spy)</translation>
+        <translation type="unfinished">监视配置文件 (*.spy)</translation>
     </message>
     <message>
         <source>Export the items</source>
@@ -6669,10 +6741,6 @@
         <source>Form</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>untitled</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>scriptEditor</name>
@@ -6855,7 +6923,7 @@
     </message>
     <message>
         <source>Upload</source>
-        <translation type="unfinished">上传开关</translation>
+        <translation type="obsolete">上传开关</translation>
     </message>
     <message>
         <source>Host</source>
@@ -7006,18 +7074,6 @@
         <translation type="unfinished">风格</translation>
     </message>
     <message>
-        <source>Language</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>English</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Chinese</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Classic</source>
         <translation type="unfinished"></translation>
     </message>
@@ -7027,7 +7083,7 @@
     </message>
     <message>
         <source>Note: Style, Language need be retarted.</source>
-        <translation type="unfinished">说明：风格，语言更新后需要重启.</translation>
+        <translation type="obsolete">说明：风格，语言更新后需要重启.</translation>
     </message>
     <message>
         <source>Auto Load Last Project</source>
@@ -7136,10 +7192,6 @@
     <message>
         <source>Angle</source>
         <translation type="unfinished">弧度</translation>
-    </message>
-    <message>
-        <source>Traditional Chinese</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Show Notice on Startup</source>
@@ -7313,6 +7365,30 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Confirm to reset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Note: Style need be retarted.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Stop All on Search</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Time</source>
+        <translation type="unfinished">时间</translation>
+    </message>
+    <message>
+        <source>Speed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pos.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Terminal</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

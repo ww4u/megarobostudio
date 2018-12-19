@@ -12,3 +12,11 @@ QuickTool::~QuickTool()
 {
     delete ui;
 }
+
+void QuickTool::changeEvent(QEvent * event)
+{
+    QWidget::changeEvent( event );
+
+    if (event->type() == QEvent::LanguageChange)
+    { ui->retranslateUi( this ); }
+}

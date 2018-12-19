@@ -15,6 +15,9 @@ public:
     explicit MrqAxesPlan(QWidget *parent = 0);
     ~MrqAxesPlan();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
 public:
     virtual int setApply();
 public:

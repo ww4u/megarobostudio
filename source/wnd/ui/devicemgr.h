@@ -26,6 +26,8 @@ public:
 protected:
     virtual QSize sizeHint() const;
 
+    virtual void changeEvent( QEvent *event );
+
 public:
     virtual void setMcModel( mcModel *pMcModel );
 
@@ -35,6 +37,9 @@ protected:
 
     void setupUi();
     void desetupUi();
+
+    void setupMenu();
+    void desetupMenu();
 
     void buildConnection();
 
@@ -155,6 +160,8 @@ public:
 
 public:
     Ui::deviceMgr *ui;
+
+    QList<QMenu*> mMenuList;        //! menu list
 
     QMenu *m_pDeviceMenu;
     QAction *m_pDeviceImportAction, *m_pDeviceUploadAction;

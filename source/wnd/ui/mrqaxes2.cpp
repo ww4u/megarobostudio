@@ -23,6 +23,14 @@ mrqAxes2::~mrqAxes2()
     desetupUi();
 }
 
+void mrqAxes2::changeEvent(QEvent * event)
+{
+    mrqView::changeEvent( event );
+
+    if (event->type() == QEvent::LanguageChange)
+    { ui->retranslateUi( this ); }
+}
+
 int mrqAxes2::setApply()
 {
     return apply();
@@ -46,6 +54,8 @@ void mrqAxes2::spyEdited()
     QSpinBox *spinBoxes[]={
         ui->spinOutOfLine,
         ui->spinWarnPoint,
+
+        ui->spinFifoBuffer,
     };
     QDoubleSpinBox *doubleSpinBoxes[]={
 
@@ -115,6 +125,11 @@ int mrqAxes2::apply()
                                                (MRQ_MOTIONPLAN_EXECUTEMODE_1)ui->cmbExecMode->currentIndex()
                                                , DIFF_APPLY ) );
 
+        checked_call( pDevice->setMOTIONPLAN_FIFOBUFFERTIME( mAxesId,
+                                                             nPage,
+                                                            (uint32)ui->spinFifoBuffer->value()
+                                                            , DIFF_APPLY ) );
+
         checked_call( pDevice->setMOTIONPLAN_MOTIONMODE( mAxesId,
                                                          nPage,
                                                (MRQ_MOTIONPLAN_MOTIONMODE_1)ui->cmbTuneMode->currentIndex()
@@ -170,7 +185,8 @@ int mrqAxes2::updateUi()
     Q_ASSERT( NULL != m_pMrqModel );
 
     //! motion
-    ui->cmbExecMode->setCurrentIndex( m_pMrqModel->mMOTIONPLAN_EXECUTEMODE[mAxesId][0] );
+    ui->cmbExecMode->setCurrentIndex( m_pMrqModel->mMOTIONPLAN_EXECUTEMODE[mAxesId][0] );on_cmbExecMode_currentIndexChanged( m_pMrqModel->mMOTIONPLAN_EXECUTEMODE[mAxesId][0] );
+    ui->spinFifoBuffer->setValue( m_pMrqModel->mMOTIONPLAN_FIFOBUFFERTIME[mAxesId][0] );
     ui->cmbTuneMode->setCurrentIndex( m_pMrqModel->mMOTIONPLAN_MOTIONMODE[mAxesId][0] );on_cmbTuneMode_currentIndexChanged( m_pMrqModel->mMOTIONPLAN_MOTIONMODE[mAxesId][0] );
     ui->cmbTimeWidth->setCurrentIndex( ( m_pMrqModel->mMOTIONPLAN_MODIFYDUTY[mAxesId][0]));
     ui->cmbPlanMode->setValue( m_pMrqModel->mMOTIONPLAN_PLANMODE[mAxesId][0] );on_cmbPlanMode_currentIndexChanged( m_pMrqModel->mMOTIONPLAN_PLANMODE[mAxesId][0] );
@@ -236,4 +252,18 @@ void mrqAxes2::on_spinSDec_valueChanged(double arg1)
 {
     if ( ui->spinSAcc->value() > 100-arg1 )
     { ui->spinSAcc->setValue( 100 - arg1); }
+}
+
+void mrqAxes2::on_cmbExecMode_currentIndexChanged(int index)
+{
+    if ( index == 0 )
+    {
+        ui->spinFifoBuffer->setVisible( false );
+        ui->label_15->setVisible( false );
+    }
+    else
+    {
+        ui->spinFifoBuffer->setVisible( true );
+        ui->label_15->setVisible( true );
+    }
 }

@@ -40,6 +40,9 @@ public:
 
     void setPref( modelSysPref *pPref );
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
 public:
     void updateUi();
     void updateData();

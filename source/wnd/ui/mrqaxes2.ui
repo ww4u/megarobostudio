@@ -61,7 +61,7 @@
          <string>Motion</string>
         </property>
         <layout class="QGridLayout" name="gridLayout">
-         <item row="1" column="5">
+         <item row="3" column="5">
           <spacer name="horizontalSpacer">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
@@ -74,7 +74,41 @@
            </property>
           </spacer>
          </item>
-         <item row="1" column="1" colspan="2">
+         <item row="3" column="0">
+          <widget class="QLabel" name="label_22">
+           <property name="minimumSize">
+            <size>
+             <width>64</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>Mode</string>
+           </property>
+          </widget>
+         </item>
+         <item row="7" column="0">
+          <widget class="QLabel" name="label_5">
+           <property name="text">
+            <string>Warn Point</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1" colspan="2">
+          <widget class="QComboBox" name="cmbExecMode">
+           <item>
+            <property name="text">
+             <string>CYCLE</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>FIFO</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item row="3" column="1" colspan="2">
           <widget class="QComboBox" name="cmbTuneMode">
            <property name="minimumSize">
             <size>
@@ -99,56 +133,8 @@
            </item>
           </widget>
          </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="label_22">
-           <property name="minimumSize">
-            <size>
-             <width>64</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>Mode</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1" colspan="2">
-          <widget class="QComboBox" name="cmbExecMode">
-           <item>
-            <property name="text">
-             <string>CYCLE</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>FIFO</string>
-            </property>
-           </item>
-          </widget>
-         </item>
-         <item row="3" column="1" colspan="2">
-          <widget class="ValueComboBox" name="cmbPlanMode"/>
-         </item>
-         <item row="5" column="0">
-          <widget class="QLabel" name="label_5">
-           <property name="text">
-            <string>Warn Point</string>
-           </property>
-          </widget>
-         </item>
-         <item row="6" column="0">
-          <widget class="QLabel" name="label_6">
-           <property name="text">
-            <string>End State</string>
-           </property>
-          </widget>
-         </item>
          <item row="5" column="1" colspan="2">
-          <widget class="QSpinBox" name="spinWarnPoint">
-           <property name="maximum">
-            <number>255</number>
-           </property>
-          </widget>
+          <widget class="ValueComboBox" name="cmbPlanMode"/>
          </item>
          <item row="0" column="0">
           <widget class="QLabel" name="label_4">
@@ -157,14 +143,41 @@
            </property>
           </widget>
          </item>
-         <item row="3" column="0">
+         <item row="5" column="0">
           <widget class="QLabel" name="label_9">
            <property name="text">
             <string>Plan Mode</string>
            </property>
           </widget>
          </item>
-         <item row="2" column="1" colspan="2">
+         <item row="8" column="0">
+          <widget class="QLabel" name="label_6">
+           <property name="text">
+            <string>End State</string>
+           </property>
+          </widget>
+         </item>
+         <item row="7" column="1" colspan="2">
+          <widget class="QSpinBox" name="spinWarnPoint">
+           <property name="maximum">
+            <number>255</number>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="0">
+          <widget class="QLabel" name="label_23">
+           <property name="minimumSize">
+            <size>
+             <width>64</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>Time Duty</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="1" colspan="2">
           <widget class="QComboBox" name="cmbTimeWidth">
            <property name="editable">
             <bool>false</bool>
@@ -191,7 +204,7 @@
            </item>
           </widget>
          </item>
-         <item row="6" column="1" colspan="2">
+         <item row="8" column="1" colspan="2">
           <widget class="QComboBox" name="cmbEndState">
            <item>
             <property name="text">
@@ -205,34 +218,28 @@
            </item>
           </widget>
          </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="label_23">
-           <property name="minimumSize">
-            <size>
-             <width>64</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>Time Duty</string>
-           </property>
-          </widget>
-         </item>
          <item row="0" column="3">
-          <widget class="QLabel" name="label_12">
+          <widget class="QLabel" name="label_15">
            <property name="text">
-            <string>Comp. P(deg)</string>
+            <string>FIFO Buffer Time</string>
            </property>
           </widget>
          </item>
-         <item row="1" column="3">
+         <item row="4" column="3">
           <widget class="QLabel" name="label_13">
            <property name="text">
             <string>Comp. T(s)</string>
            </property>
           </widget>
          </item>
-         <item row="1" column="4">
+         <item row="3" column="3">
+          <widget class="QLabel" name="label_12">
+           <property name="text">
+            <string>Comp. P(deg)</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="4">
           <widget class="QDoubleSpinBox" name="spinCompT">
            <property name="suffix">
             <string>s</string>
@@ -248,13 +255,26 @@
            </property>
           </widget>
          </item>
-         <item row="0" column="4">
+         <item row="3" column="4">
           <widget class="QDoubleSpinBox" name="spinCompP">
            <property name="maximum">
             <double>360.000000000000000</double>
            </property>
            <property name="value">
             <double>0.500000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="4">
+          <widget class="QSpinBox" name="spinFifoBuffer">
+           <property name="suffix">
+            <string>ms</string>
+           </property>
+           <property name="minimum">
+            <number>1</number>
+           </property>
+           <property name="maximum">
+            <number>1000000</number>
            </property>
           </widget>
          </item>

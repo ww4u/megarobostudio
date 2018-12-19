@@ -106,6 +106,7 @@ MRQ_PROGRESS( 10, ("MOTION") );
     foreach_page()
     {
         checked_call( setMOTIONPLAN_EXECUTEMODE( _i, _axPage, mMOTIONPLAN_EXECUTEMODE[_i][_j] ) );
+        checked_call( setMOTIONPLAN_FIFOBUFFERTIME( _i, _axPage, mMOTIONPLAN_FIFOBUFFERTIME[_i][_j] ) );
 
         checked_call( setMOTIONPLAN_PLANMODE( _i, _axPage, mMOTIONPLAN_PLANMODE[_i][_j] ) );
         checked_call( setMOTIONPLAN_MOTIONMODE( _i, _axPage, mMOTIONPLAN_MOTIONMODE[_i][_j]) );

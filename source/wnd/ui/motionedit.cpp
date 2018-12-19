@@ -54,6 +54,18 @@ motionEdit::~motionEdit()
     delete_all( mJointsTpvGroup );
 }
 
+void motionEdit::changeEvent(QEvent * event)
+{
+    tableEdit::changeEvent( event );
+
+    if (event->type() == QEvent::LanguageChange)
+    {
+        ui->retranslateUi( this );
+
+        retranslateContextMenu();
+    }
+}
+
 void motionEdit::setModelObj( mcModelObj *pObj )
 {
     Q_ASSERT( NULL != pObj );
@@ -237,6 +249,8 @@ void motionEdit::onRequest( RpcRequest &req )
 
 VRobot *motionEdit::currentRobot()
 {
+    Q_ASSERT( NULL != m_pmcModel );
+    Q_ASSERT( NULL != m_pmcModel->m_pInstMgr );
     return m_pmcModel->m_pInstMgr->findRobot( m_pmcModel->mConn.getRoboName() );
 }
 

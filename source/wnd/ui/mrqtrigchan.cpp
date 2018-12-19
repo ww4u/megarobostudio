@@ -15,6 +15,14 @@ MrqTrigChan::~MrqTrigChan()
     delete ui;
 }
 
+void MrqTrigChan::changeEvent(QEvent * event)
+{
+    modelView::changeEvent( event );
+
+    if (event->type() == QEvent::LanguageChange)
+    { ui->retranslateUi( this ); }
+}
+
 void MrqTrigChan::setConfig(
                 trigLevelConfig &levConfig,
                 trigPatternConfig &pattConifg

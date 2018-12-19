@@ -18,6 +18,14 @@ MrvVertical::~MrvVertical()
     delete ui;
 }
 
+void MrvVertical::changeEvent(QEvent * event)
+{
+    mrvView::changeEvent( event );
+
+    if (event->type() == QEvent::LanguageChange)
+    { ui->retranslateUi( this ); }
+}
+
 int MrvVertical::setApply()
 {
     return apply();

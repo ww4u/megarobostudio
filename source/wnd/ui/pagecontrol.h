@@ -15,6 +15,9 @@ public:
     explicit PageControl(QWidget *parent = 0);
     ~PageControl();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
 Q_SIGNALS:
     void signal_run_clicked();
     void signal_stop_clicked();

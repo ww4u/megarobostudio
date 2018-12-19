@@ -23,6 +23,9 @@ public:
     ~H2Panel();
 
 protected:
+    virtual void changeEvent( QEvent *event );
+
+protected:
     robotH2 *Robot();
 
     //! move delta

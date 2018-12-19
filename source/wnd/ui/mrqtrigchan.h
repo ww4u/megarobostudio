@@ -30,6 +30,9 @@ public:
     explicit MrqTrigChan(QWidget *parent = 0);
     ~MrqTrigChan();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
 public:
     void setConfig(
                     trigLevelConfig &levConfig,

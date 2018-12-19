@@ -4,7 +4,7 @@
 #include <QtCore>
 
 #include "../../include/mcstd.h"
-
+#include <float.h>
 class comAssist
 {
 private:
@@ -75,6 +75,45 @@ public:
                                 const char &lineSep='\n' );
 public:
     comAssist();
+
+};
+
+template <typename tType>
+class MeasVector
+{
+public:
+    tType mMax, mMin, mAvg;
+    bool mbValid;
+public:
+    MeasVector()
+    {
+        mbValid = false;
+        mMax = 0;
+        mMin = 0;
+        mAvg = 0;
+    }
+
+    void push( tType v )
+    {
+        if ( mbValid )
+        {
+            if ( v > mMax )
+            { mMax = v; }
+
+            if ( v < mMin )
+            { mMin = v; }
+        }
+        else
+        {
+            mMax = v;
+            mMin = v;
+
+            mbValid = true;
+        }
+    }
+
+    void setAvg( tType v )
+    { mAvg = v; }
 
 };
 

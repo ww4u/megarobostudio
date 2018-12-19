@@ -21,6 +21,9 @@ public:
     explicit TpEdit(QWidget *parent = 0);
     ~TpEdit();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
 public:
     virtual void setModelObj( mcModelObj *pObj );
     virtual int save( QString &outFileName );

@@ -12,3 +12,11 @@ RoboConfig::~RoboConfig()
 {
     delete ui;
 }
+
+void RoboConfig::changeEvent(QEvent * event)
+{
+    QWidget::changeEvent( event );
+
+    if (event->type() == QEvent::LanguageChange)
+    { ui->retranslateUi( this ); }
+}

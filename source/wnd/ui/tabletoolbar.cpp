@@ -22,6 +22,14 @@ TableToolbar::~TableToolbar()
     delete ui;
 }
 
+void TableToolbar::changeEvent(QEvent * event)
+{
+    QWidget::changeEvent( event );
+
+    if (event->type() == QEvent::LanguageChange)
+    { ui->retranslateUi( this ); }
+}
+
 void TableToolbar::setAddEnable( bool b )
 { ui->btnAdd->setEnabled(b);}
 void TableToolbar::setDelEnable( bool b )

@@ -15,6 +15,9 @@ public:
     explicit StateDiagram(QWidget *parent = 0);
     ~StateDiagram();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
 private:
     Ui::StateDiagram *ui;
 };

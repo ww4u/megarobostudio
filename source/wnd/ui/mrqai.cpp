@@ -17,6 +17,14 @@ MrqAi::~MrqAi()
     delete ui;
 }
 
+void MrqAi::changeEvent(QEvent * event)
+{
+    mrqView::changeEvent( event );
+
+    if (event->type() == QEvent::LanguageChange)
+    { ui->retranslateUi( this ); }
+}
+
 void MrqAi::setConfig( AiConfig &cfg )
 {
     ui->checkBox->setChecked( cfg.mbEn );

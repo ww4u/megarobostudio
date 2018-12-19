@@ -31,6 +31,9 @@ public:
                           QWidget *parent = 0);
     ~mrqProperty();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
 protected Q_SLOTS:
     void slot_page_changed( int index );
     void on_btnApply_clicked();
@@ -85,6 +88,9 @@ public:
 
     QList<modelView *> mViewPages;
     QList< bool > mbtnEnableSnap;
+
+    QMap< QListWidgetItem *, QString > mLocalMap;
+
 private slots:
 
 };

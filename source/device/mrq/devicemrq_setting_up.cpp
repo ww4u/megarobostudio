@@ -117,6 +117,7 @@ int deviceMRQ::_uploadSetting()
     foreach_page()
     {
         checked_call( getMOTIONPLAN_EXECUTEMODE( _i, _axPage, mMOTIONPLAN_EXECUTEMODE[_i]+_j ) );
+        checked_call( getMOTIONPLAN_FIFOBUFFERTIME( _i, _axPage, mMOTIONPLAN_FIFOBUFFERTIME[_i]+_j ) );
 
         checked_call( getMOTIONPLAN_PLANMODE( _i, _axPage, mMOTIONPLAN_PLANMODE[_i]+_j ) );
         checked_call( getMOTIONPLAN_MOTIONMODE( _i, _axPage, mMOTIONPLAN_MOTIONMODE[_i]+_j) );

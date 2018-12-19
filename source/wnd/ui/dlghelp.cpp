@@ -13,6 +13,14 @@ DlgHelp::~DlgHelp()
     delete ui;
 }
 
+void DlgHelp::changeEvent( QEvent *event )
+{
+    QDialog::changeEvent( event );
+
+    if ( event->type() == QEvent::LanguageChange )
+    { ui->retranslateUi( this ); }
+}
+
 void DlgHelp::showHelp( const QString &info,
                         const QString &img )
 {

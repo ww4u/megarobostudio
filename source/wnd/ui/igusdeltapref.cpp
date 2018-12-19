@@ -48,6 +48,14 @@ IgusDeltaPref::~IgusDeltaPref()
     delete ui;
 }
 
+void IgusDeltaPref::changeEvent( QEvent *event )
+{
+    modelView::changeEvent( event );
+
+    if ( event->type() == QEvent::LanguageChange )
+    { ui->retranslateUi( this ); }
+}
+
 void IgusDeltaPref::setModelObj( mcModelObj *pObj )
 {
     modelView::setModelObj( pObj );

@@ -19,10 +19,15 @@ public:
     ~mrqInfo();    
 
 protected:
+    virtual void changeEvent( QEvent *event );
+
+protected:
     void buildConnection();
 
     void initModel();
     void deinitModel();
+
+    void tranalate();
 
 public:
     void updateUi();

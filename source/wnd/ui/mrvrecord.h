@@ -15,6 +15,9 @@ public:
     explicit MrvRecord(QWidget *parent = 0);
     ~MrvRecord();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
 private:
     Ui::MrvRecord *ui;
 };

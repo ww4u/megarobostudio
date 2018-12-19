@@ -42,6 +42,20 @@ deviceMgr::~deviceMgr()
 QSize deviceMgr::sizeHint() const
 { return QSize(200,0);}
 
+void deviceMgr::changeEvent( QEvent *event )
+{
+    modelView::changeEvent( event );
+
+    if ( event->type() == QEvent::LanguageChange )
+    {
+        ui->retranslateUi( this );
+
+        desetupMenu();
+
+        setupMenu();
+    }
+}
+
 void deviceMgr::setMcModel( mcModel *pMcModel )
 {
     modelView::setMcModel( pMcModel );
@@ -73,9 +87,18 @@ void deviceMgr::deinit()
 
 void deviceMgr::setupUi()
 {
+    setupMenu();
+}
+
+void deviceMgr::desetupUi()
+{}
+
+void deviceMgr::setupMenu()
+{
     //! device menu
     m_pDeviceMenu = new QMenu( this );
     Q_ASSERT( NULL != m_pDeviceMenu );
+    mMenuList.append( m_pDeviceMenu );
 
     m_pDeviceMenu->addAction( QIcon( ":/res/image/icon/219.png" ),
                               tr("Export setup..."),
@@ -109,6 +132,7 @@ void deviceMgr::setupUi()
     //! mrv menu
     m_pMRVMenu = new QMenu( this );
     Q_ASSERT( NULL != m_pMRVMenu );
+    mMenuList.append( m_pMRVMenu );
 
     m_pMRVMenu->addAction( QIcon( ":/res/image/icon/219.png" ),
                               tr("Export setup..."),
@@ -141,6 +165,7 @@ void deviceMgr::setupUi()
 
     //! axes menu
     m_pAxesMenu = new QMenu(this);
+    mMenuList.append( m_pAxesMenu );
     m_pAxesMenu->addAction( QIcon( ":/res/image/icon2/mobile.png" ),
                               tr("Panel..."),
                               this,
@@ -149,11 +174,7 @@ void deviceMgr::setupUi()
 
     //! robo menu
     m_pRoboMenu = new QMenu( this );
-//    m_pRoboMenu->addAction( QIcon( ":/res/image/icon/54.png" ),
-//                              tr("Alias..."),
-//                              this,
-//                              SLOT( context_robo_alias() ) );
-//    m_pRoboMenu->addSeparator();
+    mMenuList.append( m_pRoboMenu );
     m_pRoboMenu->addAction( QIcon( ":/res/image/icon/55.png" ),
                               tr("Console..."),
                               this,
@@ -174,6 +195,7 @@ void deviceMgr::setupUi()
 
     //! hub menu
     m_pHubMenu = new QMenu( this );
+    mMenuList.append( m_pHubMenu );
     m_pHubMenu->addAction( QIcon( ":/res/image/icon/54.png" ),
                               tr("Alias..."),
                               this,
@@ -183,11 +205,12 @@ void deviceMgr::setupUi()
                               tr("Console..."),
                               this,
                               SLOT( context_hub_console() ) );
-
 }
 
-void deviceMgr::desetupUi()
-{}
+void deviceMgr::desetupMenu()
+{
+    delete_all( mMenuList );
+}
 
 void deviceMgr::buildConnection()
 {

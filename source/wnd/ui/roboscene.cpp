@@ -30,6 +30,20 @@ roboScene::~roboScene()
     delete ui;
 }
 
+void roboScene::changeEvent(QEvent * event)
+{
+    modelView::changeEvent( event );
+
+    if (event->type() == QEvent::LanguageChange)
+    {
+        ui->retranslateUi( this );
+
+        m_pDelete->setText( tr("Delete") );
+        m_pOption->setText( tr("Option...") );
+        m_pNewMrp->setText( tr("New mrp...") );
+    }
+}
+
 void roboScene::mouseMoveEvent(QMouseEvent *event)
 {
     //! left/top

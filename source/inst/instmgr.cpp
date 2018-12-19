@@ -642,10 +642,12 @@ VRobot * InstMgr::findRobot( const QString &name, const QString &bus )
 VRobot * InstMgr::findRobot( const QString &fullname )
 {
     QStringList strList = fullname.split( "@", QString::SkipEmptyParts );
-    if ( strList.size() == 0 )
-    { return NULL; }
+    if ( strList.size() < 2 )
+    {
+        sysError( "Invalid robot name", fullname );
+        return NULL;
+    }
 
-    Q_ASSERT( strList.size() >  1 );
     return findRobot( strList[0], strList[1] );
 }
 

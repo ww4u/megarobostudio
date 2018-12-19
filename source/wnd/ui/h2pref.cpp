@@ -23,6 +23,14 @@ H2Pref::~H2Pref()
     delete ui;
 }
 
+void H2Pref::changeEvent( QEvent *event )
+{
+    modelView::changeEvent( event );
+
+    if ( event->type() == QEvent::LanguageChange )
+    { ui->retranslateUi( this ); }
+}
+
 void H2Pref::setModelObj( mcModelObj *pObj )
 {
     modelView::setModelObj( pObj );

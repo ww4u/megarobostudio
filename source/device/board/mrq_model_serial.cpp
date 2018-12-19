@@ -547,6 +547,7 @@ int MRQ_model::saveSubMotionPlanPage( int id, int page,
 {
     writer.writeTextElement( "mMOTIONPLAN_PRESETSTATE", toString( mMOTIONPLAN_PRESETSTATE[id][page] ) );
     writer.writeTextElement( "mMOTIONPLAN_EXECUTEMODE", toString( mMOTIONPLAN_EXECUTEMODE[id][page] ) );
+    writer.writeTextElement( "mMOTIONPLAN_FIFOBUFFERTIME", DeviceModel::toString( mMOTIONPLAN_FIFOBUFFERTIME[id][page] ) );
     writer.writeTextElement( "mMOTIONPLAN_PLANMODE", toString( mMOTIONPLAN_PLANMODE[id][page] ) );
     writer.writeTextElement( "mMOTIONPLAN_MOTIONMODE", toString( mMOTIONPLAN_MOTIONMODE[id][page] ) );
 
@@ -579,6 +580,8 @@ int MRQ_model::loadSubMotionPlanPage( int id, int page,
         { toValue( reader.readElementText(), &mMOTIONPLAN_PRESETSTATE[id][page] ); }
         else if ( reader.name() == "mMOTIONPLAN_EXECUTEMODE" )
         { toValue( reader.readElementText(), &mMOTIONPLAN_EXECUTEMODE[id][page] ); }
+        else if ( reader.name() == "mMOTIONPLAN_FIFOBUFFERTIME" )
+        { DeviceModel::toValue( reader.readElementText(), &mMOTIONPLAN_FIFOBUFFERTIME[id][page] ); }
         else if ( reader.name() == "mMOTIONPLAN_PLANMODE" )
         { toValue( reader.readElementText(), &mMOTIONPLAN_PLANMODE[id][page] ); }
         else if ( reader.name() == "mMOTIONPLAN_MOTIONMODE" )
@@ -648,7 +651,8 @@ int MRQ_model::loadReport( QXmlStreamReader &reader )
 
 int MRQ_model::saveSubReport( int ax, QXmlStreamWriter &writer )
 {
-    for ( int j = 0; j < 15; j++ )
+    //! \note items
+    for ( int j = 0; j <= (int)MRQ_REPORT_STATE_ABSENC; j++ )
     {
         writer.writeStartElement("item");
         writer.writeTextElement( "mREPORT_STATE", toString( mREPORT_STATE[ax][j] ) );

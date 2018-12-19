@@ -24,6 +24,10 @@ public:
     explicit MrqXI(QWidget *parent = 0);
     ~MrqXI();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
+public:
     void setConfig( XiConfig &cfg );
     void getConfig( XiConfig &cfg );
 

@@ -16,6 +16,9 @@ public:
     explicit TestProp(QWidget *parent = 0);
     ~TestProp();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
 private:
     Ui::TestProp *ui;
 };

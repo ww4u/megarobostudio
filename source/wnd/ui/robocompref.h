@@ -15,6 +15,9 @@ public:
     explicit RoboComPref(QWidget *parent = 0);
     ~RoboComPref();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
 public:
     virtual void setModelObj( mcModelObj *pObj );
     virtual int setApply();

@@ -32,6 +32,31 @@ mrqProperty::~mrqProperty()
     desetupUi();
 }
 
+void mrqProperty::changeEvent(QEvent * event)
+{
+    mrqView::changeEvent( event );
+
+    if (event->type() == QEvent::LanguageChange)
+    {
+        ui->retranslateUi( this );
+
+        //! post event
+        for ( int i = 0; i < ui->stackedWidget->count(); i++ )
+        {
+            qApp->postEvent( ui->stackedWidget->widget(i),
+                             new QEvent(QEvent::LanguageChange) );
+        }
+
+        //! for the list
+        QMap<QListWidgetItem*, QString>::iterator iter = mLocalMap.begin();
+        while (iter != mLocalMap.end())
+        {
+            ((QListWidgetItem*)iter.key())->setText( tr( iter.value().toLatin1() ) );
+            ++iter;
+        }
+    }
+}
+
 void mrqProperty::slot_page_changed( int index )
 {
     Q_ASSERT( index < ui->stackedWidget->count() );
@@ -249,15 +274,15 @@ void mrqProperty::setupUi()
     pItem = new QListWidgetItem();
     Q_ASSERT( NULL != pItem );
     pItem->setText( tr("Info") );
+    mLocalMap.insert( pItem, "Info" );
     pItem->setIcon( QIcon(":/res/image/icon2/info.png") );
     ui->listWidget->addItem( pItem );
 
     QString str;
-    QString strAxes = tr("Axes");
     for ( int i = 0; i < m_pRefModel->axes(); i++ )
     {
         //! axes 0
-        str = strAxes + QString("%1").arg(i+1);
+        str = QString("CH%1").arg(i+1);
         pItem = new QListWidgetItem();
         Q_ASSERT( NULL != pItem );
         pItem->setText( str );
@@ -281,6 +306,7 @@ void mrqProperty::setupUi()
         pItem = new QListWidgetItem();
         Q_ASSERT( NULL != pItem );
         pItem->setText( tr("Output") );
+        mLocalMap.insert( pItem, "Output" );
         pItem->setIcon( QIcon(":/res/image/icon2/link.png") );
         ui->listWidget->addItem( pItem );
     }
@@ -290,6 +316,7 @@ void mrqProperty::setupUi()
         pItem = new QListWidgetItem();
         Q_ASSERT( NULL != pItem );
         pItem->setText( tr("Input") );
+        mLocalMap.insert( pItem, "Input" );
         pItem->setIcon( QIcon(":/res/image/icon2/link.png") );
         ui->listWidget->addItem( pItem );
     }
@@ -308,6 +335,7 @@ void mrqProperty::setupUi()
         pItem = new QListWidgetItem();
         Q_ASSERT( NULL != pItem );
         pItem->setText( tr("Alarm") );
+        mLocalMap.insert( pItem, "Alarm" );
         pItem->setIcon( QIcon(":/res/image/icon/remind.png") );
         ui->listWidget->addItem( pItem );
     }
@@ -315,6 +343,7 @@ void mrqProperty::setupUi()
     pItem = new QListWidgetItem();
     Q_ASSERT( NULL != pItem );
     pItem->setText( tr("System") );
+    mLocalMap.insert( pItem, "System" );
     pItem->setIcon( QIcon(":/res/image/icon2/settings_light.png") );
     ui->listWidget->addItem( pItem );
 

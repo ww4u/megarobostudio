@@ -16,6 +16,9 @@ public:
     ~ProgressElement();
 
 protected:
+    virtual void changeEvent( QEvent *event );
+
+protected:
     virtual void hideEvent(QHideEvent *event );
 
 public:

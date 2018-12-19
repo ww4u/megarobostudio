@@ -23,6 +23,10 @@ public:
     explicit MrqYO(QWidget *parent = 0);
     ~MrqYO();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
+public:
     void setConfig( YoConfig &cfg );
     void getConfig( YoConfig &cfg );
 

@@ -289,6 +289,11 @@ int setMOTIONPLAN_OOSTOTALRESPONSE( byte val0
 ,MRQ_MOTIONPLAN_OOSLINERESPONSE_1 val2 , bool bDiff=false );
 int getMOTIONPLAN_OOSTOTALRESPONSE( byte val0
 ,MRQ_MOTION_SWITCH_1 val1, MRQ_MOTIONPLAN_OOSLINERESPONSE_1 * val2, bool bQuery=true );
+int setMOTIONPLAN_FIFOBUFFERTIME( byte val0
+,MRQ_MOTION_SWITCH_1 val1
+,uint32 val2 , bool bDiff=false );
+int getMOTIONPLAN_FIFOBUFFERTIME( byte val0
+,MRQ_MOTION_SWITCH_1 val1, uint32 * val2, bool bQuery=true );
 int setPOSITION( byte val0
 ,MRQ_MOTION_SWITCH_1 val1
 ,byte val2

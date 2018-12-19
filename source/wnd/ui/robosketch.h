@@ -18,6 +18,9 @@ public:
     explicit RoboSketch(QWidget *parent = 0);
     ~RoboSketch();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
 public:
     void setSketch( const QString &rsrc );
 

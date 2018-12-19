@@ -13,6 +13,14 @@ H2Config::~H2Config()
     delete ui;
 }
 
+void H2Config::changeEvent( QEvent *event )
+{
+    modelView::changeEvent( event );
+
+    if ( event->type() == QEvent::LanguageChange )
+    { ui->retranslateUi( this ); }
+}
+
 void H2Config::setModelObj( mcModelObj *pObj )
 {
     modelView::setModelObj( pObj );

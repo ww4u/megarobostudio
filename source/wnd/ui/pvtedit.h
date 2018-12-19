@@ -28,6 +28,9 @@ public:
     explicit pvtEdit(QWidget *parent = 0);
     ~pvtEdit();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
 public:
     virtual void setModelObj( mcModelObj *pObj );
     virtual int save( QString &outFileName );

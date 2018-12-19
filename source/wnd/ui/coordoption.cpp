@@ -23,6 +23,14 @@ CoordOption::~CoordOption()
     delete ui;
 }
 
+void CoordOption::changeEvent( QEvent *event )
+{
+    QWidget::changeEvent( event );
+
+    if ( event->type() == QEvent::LanguageChange )
+    { ui->retranslateUi( this ); }
+}
+
 void CoordOption::setOption( int index )
 {
     Q_ASSERT( index >=0 && index < _buttons.size() );

@@ -47,10 +47,17 @@ void tableEdit::setupUi()
 {
     m_pEditMenu = new QMenu( this );
 
-    m_pEditMenu->addAction( QIcon(":/res/image/icon/addition.png"), tr("Insert before"), this, SLOT(slot_context_add_before()) );
-    m_pEditMenu->addAction( QIcon(":/res/image/icon/addition.png"), tr("Insert below"), this, SLOT(slot_context_add_below()) );
+    m_pContextActionInsertBefore = m_pEditMenu->addAction( QIcon(":/res/image/icon/addition.png"), tr("Insert before"), this, SLOT(slot_context_add_before()) );
+    m_pContextActionInsertAfter = m_pEditMenu->addAction( QIcon(":/res/image/icon/addition.png"), tr("Insert below"), this, SLOT(slot_context_add_below()) );
     m_pEditMenu->addSeparator();
-    m_pContextActionDelete = m_pEditMenu->addAction( QIcon(":/res/image/icon/delete.png"), tr("Delete Line"), this, SLOT(slot_context_remove()) );
+    m_pContextActionDelete = m_pEditMenu->addAction( QIcon(":/res/image/icon/delete.png"), tr("Delete line"), this, SLOT(slot_context_remove()) );
     m_pEditMenu->addSeparator();
     m_pContextActionClear = m_pEditMenu->addAction( QIcon(":/res/image/icon/trash.png"), tr("Clear"), this, SLOT(slot_context_clear()) );
+}
+void tableEdit::retranslateContextMenu()
+{
+    m_pContextActionInsertBefore->setText( tr("Insert before"));
+    m_pContextActionInsertAfter->setText( tr("Insert below"));
+    m_pContextActionDelete->setText( tr("Delete line"));
+    m_pContextActionClear->setText( tr("Clear"));
 }

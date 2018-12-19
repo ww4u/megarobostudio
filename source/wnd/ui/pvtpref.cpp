@@ -38,6 +38,14 @@ PvtPref::~PvtPref()
     delete ui;
 }
 
+void PvtPref::changeEvent(QEvent * event)
+{
+    QDialog::changeEvent( event );
+
+    if (event->type() == QEvent::LanguageChange)
+    { ui->retranslateUi( this ); }
+}
+
 void PvtPref::setModel( modelPvtPref *pref )
 {
     Q_ASSERT( NULL != pref );

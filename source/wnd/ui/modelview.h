@@ -31,6 +31,9 @@ public:
     modelView( QWidget *parent = 0 );
     virtual ~modelView();
 
+public:
+    virtual void retranslate();
+
 protected:
     void buildConnection();
 

@@ -21,6 +21,18 @@ roboInfo::~roboInfo()
     delete ui;
 }
 
+void roboInfo::changeEvent(QEvent * event)
+{
+    modelView::changeEvent( event );
+
+    if (event->type() == QEvent::LanguageChange)
+    {
+        ui->retranslateUi( this );
+
+        translate();
+    }
+}
+
 void roboInfo::setModelObj( mcModelObj *pObj )
 {
     modelView::setModelObj( pObj );
@@ -50,14 +62,19 @@ void roboInfo::initModel()
         pItem->setFlags( Qt::ItemIsSelectable );
     }
 
-    mItems[0]->setText( tr("Model") );
-    mItems[2]->setText( tr("Axes") );
-    mItems[4]->setText( tr("Id") );
+    translate();
 }
 
 void roboInfo::deInitModel()
 {
 
+}
+
+void roboInfo::translate()
+{
+    mItems[0]->setText( tr("Model") );
+    mItems[2]->setText( tr("Axes") );
+    mItems[4]->setText( tr("Id") );
 }
 
 void roboInfo::updateUi()

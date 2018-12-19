@@ -15,6 +15,9 @@ public:
     explicit IPPref(QWidget *parent = 0);
     ~IPPref();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
 public:
     virtual void setModelObj( mcModelObj *pObj );
     virtual int setApply();

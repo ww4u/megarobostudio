@@ -20,6 +20,14 @@ RoboHand::~RoboHand()
     delete ui;
 }
 
+void RoboHand::changeEvent(QEvent * event)
+{
+    modelView::changeEvent( event );
+
+    if (event->type() == QEvent::LanguageChange)
+    { ui->retranslateUi( this ); }
+}
+
 void RoboHand::spyEdited()
 {
 

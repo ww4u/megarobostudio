@@ -15,6 +15,14 @@ MrqTune::~MrqTune()
     delete ui;
 }
 
+void MrqTune::changeEvent(QEvent * event)
+{
+    mrqView::changeEvent( event );
+
+    if (event->type() == QEvent::LanguageChange)
+    { ui->retranslateUi( this ); }
+}
+
 int MrqTune::setApply()
 {
     return apply();

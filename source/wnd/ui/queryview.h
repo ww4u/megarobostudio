@@ -15,6 +15,10 @@ public:
     explicit queryView(QWidget *parent = 0);
     ~queryView();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
+public:
     void setModel( QAbstractItemModel *pModel,
                    const QString &name="",
                    const QString &comment="" );

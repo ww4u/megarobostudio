@@ -24,6 +24,9 @@ public:
     explicit EncoderAlarmPage(QWidget *parent = 0);
     ~EncoderAlarmPage();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
 public:
     void setData( EncoderAlarmConfig &config );
     void data( EncoderAlarmConfig &config );

@@ -15,6 +15,9 @@ public:
     explicit QuickTool(QWidget *parent = 0);
     ~QuickTool();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
 private:
     Ui::QuickTool *ui;
 };

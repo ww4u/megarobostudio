@@ -31,6 +31,31 @@ MrvProp::~MrvProp()
     delete ui;
 }
 
+void MrvProp::changeEvent(QEvent * event)
+{
+    mrvView::changeEvent( event );
+
+    if (event->type() == QEvent::LanguageChange)
+    {
+        ui->retranslateUi( this );
+
+        //! lang change
+        for ( int i = 0; i < mViewPages.size(); i++ )
+        {
+            qApp->postEvent( mViewPages.at(i),
+                             new QEvent( QEvent::LanguageChange ) );
+        }
+
+        //! list
+        QString str;
+        for ( int i = 0; i < ui->listWidget->count(); i++ )
+        {
+            str = mTitles.at( i );
+            ( (QListWidgetItem*)ui->listWidget->item( i ) )->setText( ( tr( str.toLatin1() ) ) );
+        }
+    }
+}
+
 void MrvProp::slot_page_changed( int index )
 {
     Q_ASSERT( index < ui->stackedWidget->count() );

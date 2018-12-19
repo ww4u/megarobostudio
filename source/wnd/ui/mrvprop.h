@@ -23,6 +23,9 @@ public:
              QWidget *pParent = 0 );
     ~MrvProp();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
 protected Q_SLOTS:
     void slot_page_changed(int index );
 

@@ -3629,6 +3629,58 @@ static scpi_result_t _scpi_getMOTIONPLAN_OOSTOTALRESPONSE( scpi_t * context )
 
 	return SCPI_RES_OK;
 }
+static scpi_result_t _scpi_setMOTIONPLAN_FIFOBUFFERTIME( scpi_t * context )
+{
+	// write
+	CHECK_CONTEXT();
+	DEF_LOCAL_VAR();
+
+	byte val0;
+	if ( SCPI_ParamInt32(context, &localIntVal, true) != SCPI_RES_OK ) 
+        { return SCPI_RES_ERR; }
+	val0 = (byte)localIntVal;
+
+	MRQ_MOTION_SWITCH_1 val1;
+	if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
+        { return SCPI_RES_ERR; }
+	if (strLen < 1)
+        { return SCPI_RES_ERR; }
+	if ( MRQ_MOTION_SWITCH_1_toValue( pLocalStr, &val1) != 0 ) 
+        { return SCPI_RES_ERR; }
+
+	uint32 val2;
+	if ( SCPI_ParamInt32(context, &localIntVal, true) != SCPI_RES_OK ) 
+        { return SCPI_RES_ERR; }
+	val2 = (uint32)localIntVal;
+
+	(SET_OBJ(context))->setMOTIONPLAN_FIFOBUFFERTIME( val0, val1, val2 );
+	return SCPI_RES_OK;
+}
+static scpi_result_t _scpi_getMOTIONPLAN_FIFOBUFFERTIME( scpi_t * context )
+{
+	// read
+	DEF_LOCAL_VAR();
+
+	byte val0;
+	if ( SCPI_ParamInt32(context, &localIntVal, true) != SCPI_RES_OK ) 
+        { return SCPI_RES_ERR; }
+	val0 = (byte)localIntVal;
+
+	MRQ_MOTION_SWITCH_1 val1;
+	if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
+        { return SCPI_RES_ERR; }
+	if (strLen < 1)
+        { return SCPI_RES_ERR; }
+	if ( MRQ_MOTION_SWITCH_1_toValue( pLocalStr, &val1) != 0 ) 
+        { return SCPI_RES_ERR; }
+
+	uint32 oval0;
+
+	(GET_OBJ(context))->getMOTIONPLAN_FIFOBUFFERTIME( val0, val1, &oval0 );
+	SCPI_ResultInt32(context, oval0);
+
+	return SCPI_RES_OK;
+}
 static scpi_result_t _scpi_setPOSITION( scpi_t * context )
 {
 	// write

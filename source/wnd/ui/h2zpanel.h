@@ -23,6 +23,9 @@ public:
     ~H2ZPanel();
 
 protected:
+    virtual void changeEvent( QEvent *event );
+
+protected:
     robotH2Z *Robot();
 
     //! move delta

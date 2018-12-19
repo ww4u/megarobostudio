@@ -15,6 +15,9 @@ public:
     explicit TableToolbar(QWidget *parent = 0);
     ~TableToolbar();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
 Q_SIGNALS:
     void signal_add_clicked();
     void signal_del_clicked();

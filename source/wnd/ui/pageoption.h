@@ -15,6 +15,9 @@ public:
     explicit PageOption(QWidget *parent = 0);
     ~PageOption();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
 public:
     QComboBox *getComb();
 

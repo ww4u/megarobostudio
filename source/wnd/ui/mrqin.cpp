@@ -22,6 +22,14 @@ MrqIn::~MrqIn()
     desetupUi();
 }
 
+void MrqIn::changeEvent(QEvent * event)
+{
+    mrqView::changeEvent( event );
+
+    if (event->type() == QEvent::LanguageChange)
+    { ui->retranslateUi( this ); }
+}
+
 int MrqIn::setApply()
 {
     return apply();

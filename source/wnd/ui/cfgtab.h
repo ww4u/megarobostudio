@@ -15,6 +15,9 @@ public:
     explicit cfgTab(QWidget *parent = 0);
     ~cfgTab();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
 private slots:
     void on_cfgTab_currentChanged(int index);
 

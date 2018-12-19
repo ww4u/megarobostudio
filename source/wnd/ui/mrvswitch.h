@@ -22,6 +22,9 @@ public:
     ~MrvSwitch();
 
 protected:
+    virtual void changeEvent( QEvent *event );
+
+protected:
     void spyEdited();
 
 public:

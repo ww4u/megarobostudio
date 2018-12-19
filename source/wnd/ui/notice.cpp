@@ -14,6 +14,14 @@ Notice::~Notice()
     delete ui;
 }
 
+void Notice::changeEvent(QEvent * event)
+{
+    QDialog::changeEvent( event );
+
+    if (event->type() == QEvent::LanguageChange)
+    { ui->retranslateUi( this ); }
+}
+
 bool Notice::load( QString &str )
 {
     QFile file( str );

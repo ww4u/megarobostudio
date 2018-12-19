@@ -17,6 +17,14 @@ MrqXI::~MrqXI()
     delete ui;
 }
 
+void MrqXI::changeEvent(QEvent * event)
+{
+    mrqView::changeEvent( event );
+
+    if (event->type() == QEvent::LanguageChange)
+    { ui->retranslateUi( this ); }
+}
+
 void MrqXI::setConfig( XiConfig &cfg )
 {
     ui->chkIsiEn->setChecked( cfg.mbEn );

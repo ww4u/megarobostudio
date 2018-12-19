@@ -29,6 +29,14 @@ AngleMonitor::~AngleMonitor()
     delete ui;
 }
 
+void AngleMonitor::changeEvent( QEvent *event )
+{
+    QDialog::changeEvent( event );
+
+    if ( event->type() == QEvent::LanguageChange )
+    { ui->retranslateUi( this ); }
+}
+
 void AngleMonitor::setModel( mcModel *pModel )
 {
     Q_ASSERT( NULL != pModel );

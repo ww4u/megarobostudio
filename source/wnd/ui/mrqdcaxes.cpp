@@ -14,5 +14,14 @@ MrqDcAxes::~MrqDcAxes()
 {
     delete ui;
 }
+
+void MrqDcAxes::changeEvent(QEvent * event)
+{
+    mrqView::changeEvent( event );
+
+    if (event->type() == QEvent::LanguageChange)
+    { ui->retranslateUi( this ); }
+}
+
 void MrqDcAxes::spyEdited()
 {}

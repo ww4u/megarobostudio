@@ -15,6 +15,9 @@ public:
     explicit MotorPref(QWidget *parent = 0);
     ~MotorPref();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
 public:
     virtual void setModelObj( mcModelObj *pObj );
     virtual int setApply();

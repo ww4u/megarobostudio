@@ -22,6 +22,14 @@ AxnPref::~AxnPref()
     delete ui;
 }
 
+void AxnPref::changeEvent( QEvent *event )
+{
+    modelView::changeEvent( event );
+
+    if ( event->type() == QEvent::LanguageChange )
+    { ui->retranslateUi( this ); }
+}
+
 void AxnPref::setModelObj( mcModelObj *pObj )
 {
     modelView::setModelObj( pObj );

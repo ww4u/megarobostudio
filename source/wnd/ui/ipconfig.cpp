@@ -15,6 +15,14 @@ IPConfig::~IPConfig()
     delete ui;
 }
 
+void IPConfig::changeEvent( QEvent *event )
+{
+    modelView::changeEvent( event );
+
+    if ( event->type() == QEvent::LanguageChange )
+    { ui->retranslateUi( this ); }
+}
+
 void IPConfig::setModelObj( mcModelObj *pObj )
 {
     modelView::setModelObj( pObj );

@@ -16,6 +16,9 @@ public:
     explicit mrqAxes2(QWidget *parent = 0);
     ~mrqAxes2();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
 protected Q_SLOTS:
 
 
@@ -42,6 +45,8 @@ private slots:
     void on_spinSAcc_valueChanged(double arg1);
 
     void on_spinSDec_valueChanged(double arg1);
+
+    void on_cmbExecMode_currentIndexChanged(int index);
 
 private:
     Ui::mrqaxes2 *ui;

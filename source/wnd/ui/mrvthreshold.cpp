@@ -19,6 +19,14 @@ MrvThreshold::~MrvThreshold()
     delete ui;
 }
 
+void MrvThreshold::changeEvent(QEvent * event)
+{
+    mrvView::changeEvent( event );
+
+    if (event->type() == QEvent::LanguageChange)
+    { ui->retranslateUi( this ); }
+}
+
 int MrvThreshold::setApply()
 {
     return apply();

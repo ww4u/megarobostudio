@@ -22,6 +22,9 @@ public:
     explicit MotionPref(QWidget *parent = 0);
     ~MotionPref();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
 public:
     void setModel( MotionModel *pModel );
     MotionModel *model();

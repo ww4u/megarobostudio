@@ -15,6 +15,10 @@ public:
     explicit DlgHelp(QWidget *parent = 0);
     ~DlgHelp();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
+public:
     void showHelp( const QString &info,
                    const QString &img );
 

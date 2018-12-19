@@ -15,6 +15,10 @@ public:
     explicit RoboJoint(QWidget *parent = 0);
     ~RoboJoint();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
+public:
     void setId( int id );
     void setTitle( const QString &title );
 

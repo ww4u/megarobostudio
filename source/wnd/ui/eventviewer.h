@@ -31,6 +31,10 @@ public:
                           QWidget *parent = 0);
     ~eventViewer();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
+public:
     void setMcModel( mcModel *pObj );
 
 Q_SIGNALS:

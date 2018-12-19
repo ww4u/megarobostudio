@@ -15,6 +15,14 @@ MotionWizard::~MotionWizard()
     delete ui;
 }
 
+void MotionWizard::changeEvent(QEvent * event)
+{
+    QDialog::changeEvent( event );
+
+    if (event->type() == QEvent::LanguageChange)
+    { ui->retranslateUi( this ); }
+}
+
 QString MotionWizard::motionName()
 {
     return ui->listWidget->currentItem()->text().toLower();

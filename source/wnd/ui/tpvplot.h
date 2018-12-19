@@ -49,6 +49,9 @@ public:
     explicit tpvPlot(QWidget *parent = 0);
     ~tpvPlot();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
 protected Q_SLOTS:
     void on_btnImage_clicked();
     void on_btnZoomOut_clicked();

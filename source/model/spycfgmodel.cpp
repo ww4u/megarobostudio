@@ -73,6 +73,13 @@ QVariant spyCfgModel::data(const QModelIndex &index, int role) const
         }
     }
 
+    //! alignment
+    //! enable
+    if ( role == Qt::TextAlignmentRole && col == 1 )
+    {
+        return QVariant( Qt::AlignCenter );
+    }
+
     //! disp + edit
     if ( role == Qt::DisplayRole || role == Qt::EditRole )
     {}
@@ -254,6 +261,20 @@ int spyCfgModel::cacheLen( const QString &name, const QString &item )
     { return 0; }
     else
     { return pSpyItem->mCacheLen; }
+}
+
+void spyCfgModel::trigDataChanged()
+{
+    emit dataChanged( index(0,0),
+                      index(mItems.count(), spyCfgItem::columns() - 1) );
+}
+
+void spyCfgModel::resetCache()
+{
+    for ( int i = 0; i < mItems.count(); i++ )
+    {
+        mItems[i]->mCacheLen = 0;
+    }
 }
 
 int spyCfgModel::save( const QString &fileName )

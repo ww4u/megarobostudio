@@ -15,6 +15,14 @@ DistanceAlarmPage::~DistanceAlarmPage()
     delete ui;
 }
 
+void DistanceAlarmPage::changeEvent( QEvent *event )
+{
+    modelView::changeEvent( event );
+
+    if ( event->type() == QEvent::LanguageChange )
+    { ui->retranslateUi( this ); }
+}
+
 void DistanceAlarmPage::setData( DistAlarmConfig &config )
 {
     ui->checkBox->setChecked( config.mbEn );

@@ -19,6 +19,14 @@ mrqSys::~mrqSys()
     delete ui;
 }
 
+void mrqSys::changeEvent(QEvent * event)
+{
+    mrqView::changeEvent( event );
+
+    if (event->type() == QEvent::LanguageChange)
+    { ui->retranslateUi( this ); }
+}
+
 int mrqSys::setApply()
 {
     return apply();

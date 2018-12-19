@@ -15,6 +15,14 @@ IPPref::~IPPref()
     delete ui;
 }
 
+void IPPref::changeEvent( QEvent *event )
+{
+    modelView::changeEvent( event );
+
+    if ( event->type() == QEvent::LanguageChange )
+    { ui->retranslateUi( this ); }
+}
+
 void IPPref::setModelObj( mcModelObj *pObj )
 {
     modelView::setModelObj( pObj );

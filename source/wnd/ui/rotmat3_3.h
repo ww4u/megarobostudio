@@ -15,6 +15,9 @@ public:
     explicit RotMat3_3(QWidget *parent = 0);
     ~RotMat3_3();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
 public:
     void setRotateMatrix( double rot[3*3] );
     void roateMatrix( double rot[3*3] );

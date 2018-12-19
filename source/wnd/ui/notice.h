@@ -16,6 +16,10 @@ public:
     explicit Notice(QWidget *parent = 0);
     ~Notice();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
+public:
     bool load( QString &file );
 
     bool nextShowAble();

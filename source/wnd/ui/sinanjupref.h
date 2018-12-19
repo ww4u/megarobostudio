@@ -17,6 +17,9 @@ public:
     explicit SinanjuPref(QWidget *parent = 0);
     ~SinanjuPref();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
 public:
     virtual void setModelObj( mcModelObj *pObj );
     virtual int setApply();

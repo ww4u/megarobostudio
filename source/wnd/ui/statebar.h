@@ -15,6 +15,10 @@ public:
     explicit stateBar(QWidget *parent = 0);
     ~stateBar();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
+public:
     void showInfo( const QString &str );
 
     void showProgress( int from, int to, int now,

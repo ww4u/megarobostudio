@@ -19,6 +19,14 @@ MrvCh::~MrvCh()
     delete ui;
 }
 
+void MrvCh::changeEvent(QEvent * event)
+{
+    mrvView::changeEvent( event );
+
+    if (event->type() == QEvent::LanguageChange)
+    { ui->retranslateUi( this ); }
+}
+
 #define FOREACH_SUBVIEW( api, para )    foreach( mrvView *pSubView, mSubViews )\
                                         { pSubView->api( para ); }
 #define FOREACH_SUBVIEW_CALL( api )     foreach( mrvView *pSubView, mSubViews )\

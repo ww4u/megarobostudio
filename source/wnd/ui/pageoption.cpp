@@ -13,6 +13,14 @@ PageOption::~PageOption()
     delete ui;
 }
 
+void PageOption::changeEvent(QEvent * event)
+{
+    QWidget::changeEvent( event );
+
+    if (event->type() == QEvent::LanguageChange)
+    { ui->retranslateUi( this ); }
+}
+
 QComboBox *PageOption::getComb()
 { return ui->comboBox; }
 

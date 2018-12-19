@@ -19,6 +19,14 @@ stateBar::~stateBar()
     delete ui;
 }
 
+void stateBar::changeEvent(QEvent * event)
+{
+    QWidget::changeEvent( event );
+
+    if (event->type() == QEvent::LanguageChange)
+    { ui->retranslateUi( this ); }
+}
+
 void stateBar::showInfo( const QString &str )
 { ui->labeIInfo->setText(str); }
 

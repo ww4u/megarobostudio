@@ -28,6 +28,10 @@ public:
     explicit MrqDO(QWidget *parent = 0);
     ~MrqDO();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
+public:
     void setConfig( DoConfig &cfg );
     void getConfig( DoConfig &cfg );
 

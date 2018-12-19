@@ -15,6 +15,10 @@ public:
     explicit LRButton(QWidget *parent = 0);
     ~LRButton();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
+public:
     void setStep( float stp );
     float step();
 

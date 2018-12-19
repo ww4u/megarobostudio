@@ -20,6 +20,14 @@ ProgressGroup::~ProgressGroup()
     delete m_pProgList;
 }
 
+void ProgressGroup::changeEvent(QEvent * event)
+{
+    QWidget::changeEvent( event );
+
+    if (event->type() == QEvent::LanguageChange)
+    { ui->retranslateUi( this ); }
+}
+
 void ProgressGroup::progressInfo( const QString &name, int id, const QString &str )
 { progress( name, id )->progressInfo( str ); }
 void ProgressGroup::progressProg( const QString &name, int id, int n )

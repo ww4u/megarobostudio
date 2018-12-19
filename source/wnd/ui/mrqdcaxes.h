@@ -16,6 +16,9 @@ public:
     ~MrqDcAxes();
 
 protected:
+    virtual void changeEvent( QEvent *event );
+
+protected:
     void spyEdited();
 
 private:

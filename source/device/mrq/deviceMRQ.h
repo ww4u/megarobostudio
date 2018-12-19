@@ -16,6 +16,8 @@
 
 #include "devicemrq_msg.h"
 
+#include "../../com/comassist.h"
+
 #define pvt_region        const tpvRegion &region
 #define pvt_region_p      region
 
@@ -256,8 +258,15 @@ public:
     int  getTpvIndex( pvt_region );
     void accTpvIndex( pvt_region );
 
+    bool baseVerify( pvt_region,
+                     QList<tpvRow *> &list );
+
     bool pvtVerify( pvt_region,
                     QList<tpvRow *> &list );
+
+    bool measStepTime( pvt_region,
+                       QList<tpvRow *> &list,
+                       MeasVector<float> &measV );
 
     void terminate( pvt_region );
 

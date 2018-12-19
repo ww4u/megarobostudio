@@ -118,9 +118,9 @@ int deviceMRQ::beginTpvDownload( const tpvRegion &region )
     ((MrqFsm*)Fsm( region ))->setState( MegaDevice::mrq_state_program );
 
     //! \errant exec mode to cycle
-    checked_call( setMOTIONPLAN_EXECUTEMODE( pvt_page_p,
-                                             MRQ_MOTIONPLAN_EXECUTEMODE_1_CYCLE) );
-//    checked_call( setMOTION_STATEREPORT( ax, MRQ_MOTION_STATEREPORT_QUERY ) );
+//    checked_call( setMOTIONPLAN_EXECUTEMODE( pvt_page_p,
+//                                             MRQ_MOTIONPLAN_EXECUTEMODE_1_CYCLE) );
+
 
     setTpvIndex( pvt_region_p, 0 );
 
@@ -294,6 +294,15 @@ int deviceMRQ::pvtWrite( pvt_region,
         sysPrompt( QObject::tr("pvt verify fail: memory overflow") );
         return ERR_CAN_NOT_RUN;
     }
+
+    //! log the statistic meas
+    MeasVector<float> measV;
+    if ( measStepTime( region, list, measV ) )
+    {
+        sysLog( QString("Meas max:%1,min:%2,avg:%3").arg(measV.mMax).arg(measV.mMin).arg(measV.mMin) );
+    }
+    else
+    {}
 
     Q_ASSERT( mMrqFsms.contains(region) );
     mMrqFsms[ region ]->setState( mrq_state_program );
@@ -500,8 +509,8 @@ void deviceMRQ::accTpvIndex( pvt_region )
     {}
 }
 
-bool deviceMRQ::pvtVerify( pvt_region,
-                QList<tpvRow *> &list )
+bool deviceMRQ::baseVerify( pvt_region,
+                 QList<tpvRow *> &list )
 {
     //! region ax
     if ( region.axes() < 0 || region.axes() >= axes() )
@@ -524,13 +533,29 @@ bool deviceMRQ::pvtVerify( pvt_region,
         return false;
     }
 
+    //! check angle
+    if ( stepAngle( region.axes()) <= 0 )
+    {
+        sysError( QObject::tr("Invalid angle %1").arg( stepAngle( region.axes()) ) );
+        return false;
+    }
+
+    return true;
+}
+
+bool deviceMRQ::pvtVerify( pvt_region,
+                QList<tpvRow *> &list )
+{
+    if ( baseVerify( region, list ) )
+    {}
+    else
+    { return false; }
+
     float dist = 0;
     for( int i = 1; i < list.size(); i++ )
     {
         dist += qAbs( list.at(i)->mP - list.at(i-1)->mP );
     }
-
-    Q_ASSERT( stepAngle( region.axes() ) > 0 );
 
     //! calc the mem
     //! dist * slow ratio * micro / step angle
@@ -538,11 +563,6 @@ bool deviceMRQ::pvtVerify( pvt_region,
                     * slowRatio( region.axes() )
                     * microStep( region.axes() )
                     / stepAngle( region.axes() );
-    if ( memDot < 0 )
-    {
-        Q_ASSERT( memDot >= 0 );
-        logDbg()<<dist<<deviceMRQ::_mPBase<<slowRatio( region.axes() )<<microStep( region.axes() )<<stepAngle( region.axes() );
-    }
 
     if ( memDot > getTpvBuf( region ) )
     {
@@ -556,6 +576,62 @@ bool deviceMRQ::pvtVerify( pvt_region,
 //                QString::number(list.size()) );
         return true;
     }
+}
+
+
+bool deviceMRQ::measStepTime( pvt_region, QList<tpvRow *> &list,
+                              MeasVector<float> &measV )
+{
+    if ( baseVerify( region, list ) )
+    {}
+    else
+    { return false; }
+
+    float dist = 0;
+    float accT = 0;
+
+    float aRatio;
+    float stepDist, stepTime, stepT;
+
+    aRatio = deviceMRQ::_mPBase
+            * slowRatio( region.axes() )
+            * microStep( region.axes() )
+            / stepAngle( region.axes() );
+
+    for( int i = 1; i < list.size(); i++ )
+    {
+        stepDist = qAbs( list.at(i)->mP - list.at(i-1)->mP );
+        stepTime = qAbs( list.at(i)->mT - list.at(i-1)->mT );
+
+        dist += stepDist;
+        accT += stepTime;
+
+        //! 0
+        if ( (stepDist*aRatio) < 1 )
+        {  }
+        else
+        {
+            stepT = stepTime / (stepDist * aRatio);
+
+            measV.push( stepT );
+        }
+    }
+
+    //! calc the mem
+    //! dist * slow ratio * micro / step angle
+    float memDot = dist * deviceMRQ::_mPBase
+                    * slowRatio( region.axes() )
+                    * microStep( region.axes() )
+                    / stepAngle( region.axes() );
+
+    if ( memDot < 1 )
+    {
+        return false;
+    }
+    else
+    { measV.setAvg( accT / memDot ); }
+
+    return true;
 }
 
 }

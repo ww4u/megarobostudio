@@ -42,6 +42,10 @@ public:
     explicit roboProp( int roboId, QWidget *parent = 0);
     ~roboProp();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
+public:
     virtual void setModelObj( mcModelObj *pObj );
     virtual bool matchModelObj(mcModelObj *pObj);
     virtual void setMcModel( mcModel *pMcModel );
@@ -111,6 +115,8 @@ private:
     int mPrefId;                //! id by robot
     QList<modelView*> mPrefPages;
     QList< bool > mbtnEnableSnap;
+
+    QMap<QListWidgetItem*, QString > mLocalPages;
 };
 
 #endif // ROBOPROP_H

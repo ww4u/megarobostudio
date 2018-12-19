@@ -38,8 +38,6 @@ sysPref::sysPref(QWidget *parent) :
     connect( ui->edtPassword, SIGNAL(textChanged(const QString &)),
              this, SLOT(slot_updateValidateEn()) );
 
-    connect( ui->cmbLang, SIGNAL(activated(int)),
-             this, SLOT(slot_styleLang_changed(int) ));
     connect( ui->cmbStyle, SIGNAL(activated(int)),
              this, SLOT(slot_styleLang_changed(int) ));
 
@@ -107,6 +105,14 @@ sysPref::sysPref(QWidget *parent) :
 sysPref::~sysPref()
 {
     delete ui;
+}
+
+void sysPref::changeEvent(QEvent * event)
+{
+    QDialog::changeEvent( event );
+
+    if (event->type() == QEvent::LanguageChange)
+    { ui->retranslateUi( this ); }
 }
 
 void sysPref::setPref( modelSysPref *pPref )
@@ -217,7 +223,6 @@ void sysPref::updateUi()
     ui->chkAutoStatus->setChecked( m_pPref->mbAutoStatusView );
 
     ui->cmbStyle->setCurrentIndex( m_pPref->mStyleIndex );
-    ui->cmbLang->setCurrentIndex( m_pPref->mLangIndex );
 
     //! db
     ui->gpDb->setChecked( m_pPref->mDbMeta.mbUpload );
@@ -327,7 +332,6 @@ void sysPref::updateData()
     m_pPref->mbAutoStatusView = ui->chkAutoStatus->isChecked();
 
     m_pPref->mStyleIndex = ui->cmbStyle->currentIndex();
-    m_pPref->mLangIndex = ui->cmbLang->currentIndex();
 
     //! db meta
     m_pPref->mDbMeta.mbUpload = ui->gpDb->isChecked();

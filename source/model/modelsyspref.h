@@ -24,6 +24,9 @@ public:
     virtual int save( const QString &str );
     virtual int load( const QString &str );
 
+public:
+    int load( const QString &a, const QString &b );
+
 protected:
     int loadFromTo( QXmlStreamReader &reader, int &from, int &to );
     int loadDatabase( QXmlStreamReader &reader );

@@ -27,6 +27,15 @@ RoboJoint::~RoboJoint()
 {
     delete ui;
 }
+
+void RoboJoint::changeEvent(QEvent * event)
+{
+    QWidget::changeEvent( event );
+
+    if (event->type() == QEvent::LanguageChange)
+    { ui->retranslateUi( this ); }
+}
+
 void RoboJoint::setId( int id )
 {
     mId = id;

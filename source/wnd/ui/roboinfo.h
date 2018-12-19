@@ -17,12 +17,17 @@ public:
     explicit roboInfo(QWidget *parent = 0);
     ~roboInfo();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
 public:
     virtual void setModelObj( mcModelObj *pObj );
     virtual void updateScreen();
 protected:
     void initModel();
     void deInitModel();
+
+    void translate();
 
     void updateUi();
 private:

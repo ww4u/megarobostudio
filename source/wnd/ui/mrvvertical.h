@@ -15,6 +15,9 @@ public:
     explicit MrvVertical(QWidget *parent = 0);
     ~MrvVertical();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
 public:
     virtual int setApply();
 public:

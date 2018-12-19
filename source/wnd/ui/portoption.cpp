@@ -30,6 +30,14 @@ PortOption::~PortOption()
     delete ui;
 }
 
+void PortOption::changeEvent(QEvent * event)
+{
+    QWidget::changeEvent( event );
+
+    if (event->type() == QEvent::LanguageChange)
+    { ui->retranslateUi( this ); }
+}
+
 void PortOption::slot_search_finished()
 {
     ui->btnScan->setEnabled( true );

@@ -15,6 +15,14 @@ AngleWidget::~AngleWidget()
     delete ui;
 }
 
+void AngleWidget::changeEvent( QEvent *event )
+{
+    QWidget::changeEvent( event );
+
+    if ( event->type() == QEvent::LanguageChange )
+    { ui->retranslateUi( this ); }
+}
+
 void AngleWidget::setConnections( const QStringList &conns )
 {
     ui->cmbConn->clear();

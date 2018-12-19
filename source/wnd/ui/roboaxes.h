@@ -25,6 +25,9 @@ public:
                        QWidget *parent = 0);
     ~roboAxes();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
 Q_SIGNALS:
     void sig_close();
 

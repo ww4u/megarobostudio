@@ -15,6 +15,9 @@ public:
     explicit RoboDesc(QWidget *parent = 0);
     ~RoboDesc();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
 public:
     virtual void setModelObj( mcModelObj *pObj );
 

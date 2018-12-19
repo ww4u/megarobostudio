@@ -27,6 +27,14 @@ IgusDrylinPanel::~IgusDrylinPanel()
     delete ui;
 }
 
+void IgusDrylinPanel::changeEvent( QEvent *event )
+{
+    RoboPanel::changeEvent( event );
+
+    if ( event->type() == QEvent::LanguageChange )
+    { ui->retranslateUi( this ); }
+}
+
 robotIgusDelta *IgusDrylinPanel::Robot()
 {
     Q_ASSERT( NULL != m_pMcModel );

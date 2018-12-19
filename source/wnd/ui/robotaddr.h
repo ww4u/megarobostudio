@@ -15,6 +15,9 @@ public:
     explicit RobotAddr(QWidget *parent = 0);
     ~RobotAddr();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
 public:
     void setAlias( QString &str );
     QString alias();

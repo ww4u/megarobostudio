@@ -40,6 +40,9 @@ modelView::~modelView()
     }
 }
 
+void modelView::retranslate()
+{}
+
 void modelView::buildConnection()
 {
     connect( this,

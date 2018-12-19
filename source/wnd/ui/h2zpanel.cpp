@@ -27,6 +27,14 @@ H2ZPanel::~H2ZPanel()
     delete ui;
 }
 
+void H2ZPanel::changeEvent( QEvent *event )
+{
+    RoboPanel::changeEvent( event );
+
+    if ( event->type() == QEvent::LanguageChange )
+    { ui->retranslateUi( this ); }
+}
+
 robotH2Z *H2ZPanel::Robot()
 {
     Q_ASSERT( NULL != m_pMcModel );

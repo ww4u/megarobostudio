@@ -18,6 +18,9 @@ public:
     explicit mrqAxes(QWidget *parent = 0);
     ~mrqAxes();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
 public:
     virtual int setApply();
 public:

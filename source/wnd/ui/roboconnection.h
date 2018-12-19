@@ -15,6 +15,9 @@ public:
     explicit roboConnection(QWidget *parent = 0);
     ~roboConnection();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
 public:
     void setRoboNames( const QStringList &strList );
     void setCurrentName( const QString &str );

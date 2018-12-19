@@ -14,6 +14,14 @@ WarnPrompt::~WarnPrompt()
     delete ui;
 }
 
+void WarnPrompt::changeEvent(QEvent * event)
+{
+    QDialog::changeEvent( event );
+
+    if (event->type() == QEvent::LanguageChange)
+    { ui->retranslateUi( this ); }
+}
+
 void WarnPrompt::setInfo( const QString &str )
 {
     while ( ui->listWidget->count() >= mCapcity )

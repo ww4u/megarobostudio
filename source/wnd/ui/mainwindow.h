@@ -84,6 +84,8 @@ protected:
 
     virtual void closeEvent( QCloseEvent *event );
 
+    virtual void changeEvent( QEvent * event );
+
 public:
     deviceMgr *getDeviceMgr();
     mcModel *  getMcModel();
@@ -238,6 +240,8 @@ protected:
     void on_itemx_active( mcModelObj* );
     void on_itemx_new_mrp( mcModelObj* );
 
+    void changeLang( int langIndex );
+
 Q_SIGNALS:
     void itemXActivated( mcModelObj*, mcModelObj_Op op=model_obj_op_none );
 
@@ -308,8 +312,11 @@ private slots:
 
     void on_actionApp_triggered();
 
+    void on_actionEnglish_triggered(bool checked);
 
+    void on_actionChinese_triggered(bool checked);
 
+    void on_actionTraditional_Chinese_triggered(bool checked);
 
 private:
     //! uis
@@ -321,7 +328,7 @@ private:
     //! toolbar
     QToolBar *m_pToolbarRoboConn;
     QToolBar *m_pToolbarAxesConn;
-    QToolBar *m_pToolbarQuickOp;
+    QToolBar *m_pBaseToolbarQuickOp, *m_pToolbarQuickOp;
 
     roboConnection *m_pRoboConnTool;
     axesConnection *m_pAxesConnTool;
@@ -382,6 +389,12 @@ private:
     QStringList mDiagnosisLog;
 
     quint64 mLastExceptionStopTs;
+
+    QTranslator mTranslator;
+
+    //! ui elements
+    QList<QDockWidget *> mDockWidgets;
+    QList<QAction *> mDockActions;
 };
 
 #endif // MAINWINDOW_H

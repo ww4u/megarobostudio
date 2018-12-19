@@ -17,6 +17,9 @@ public:
     explicit IgusDeltaPref(QWidget *parent = 0);
     ~IgusDeltaPref();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
 public:
     virtual void setModelObj( mcModelObj *pObj );
     virtual int setApply();

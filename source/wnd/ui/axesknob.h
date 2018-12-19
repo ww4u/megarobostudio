@@ -28,6 +28,9 @@ public:
     ~axesKnob();
 
 protected:
+    virtual void changeEvent( QEvent *event );
+
+protected:
     MegaDevice::deviceMRQ * currentDevice( int &ax );
 
     void actionChanged( const QDateTime &time, int valEnd  );

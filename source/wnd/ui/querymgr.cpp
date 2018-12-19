@@ -32,6 +32,18 @@ queryMgr::~queryMgr()
     delete ui;
 }
 
+void queryMgr::changeEvent(QEvent * event)
+{
+    QDialog::changeEvent( event );
+
+    if (event->type() == QEvent::LanguageChange)
+    {
+        ui->retranslateUi( this );
+
+        m_pDataAction->setText( tr("Data...") );
+    }
+}
+
 void queryMgr::setModal( spyCfgModel *pModel )
 {
     Q_ASSERT( NULL != pModel );
@@ -95,8 +107,8 @@ void queryMgr::contextMenuEvent(QContextMenuEvent *event)
     else
     {
         m_pDataAction->setEnabled( true );
+        m_pContextMenu->popup( mapToGlobal( event->pos() ) );
     }
-    m_pContextMenu->popup( mapToGlobal( event->pos() ) );
 }
 
 void queryMgr::setupUi()
@@ -311,4 +323,14 @@ void queryMgr::on_btnClearCache_clicked()
 {
     Q_ASSERT( NULL != m_pSampleThread );
     m_pSampleThread->clear();
+
+    slot_model_changed();
+
+    spyCfgModel *pModel;
+    pModel = ((spyCfgModel*)ui->tableView->model());
+    if ( NULL == pModel )
+    { return; }
+
+    pModel->resetCache();
+    pModel->trigDataChanged();
 }

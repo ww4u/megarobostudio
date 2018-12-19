@@ -21,6 +21,9 @@ public:
                      QWidget *parent = 0 );
     ~DlgApp();    
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
 protected slots:
     void slot_toolbar_add();
     void slot_toolbar_del();

@@ -18,6 +18,7 @@ static void outputData( uint8_t /*chanNum*/,
                  BufferOperateEnum /*bufferOperate*/,
                  void *pContext )
 {
+//    return;
 
     //! check
     Q_ASSERT( pContext != NULL );
@@ -186,7 +187,7 @@ int pvtInterpProc(
 
     //! calc
     ret = pvtSegmentCalc( &THAT, 0 );
-
+    logDbg()<<ret;
     return ret;
 }
 

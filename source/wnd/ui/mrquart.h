@@ -25,6 +25,10 @@ public:
     explicit MrqUart(QWidget *parent = 0);
     ~MrqUart();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
+public:
     void setConfig(  uartConfig &cfg );
     void getConfig( uartConfig &cfg );
 protected:

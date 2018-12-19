@@ -18,6 +18,14 @@ MrqUart::~MrqUart()
     delete ui;
 }
 
+void MrqUart::changeEvent(QEvent * event)
+{
+    modelView::changeEvent( event );
+
+    if (event->type() == QEvent::LanguageChange)
+    { ui->retranslateUi( this ); }
+}
+
 //! dir = true :: to screen
 #define exchange_index( control, val, dir )  \
                                         if ( dir )\

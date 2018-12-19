@@ -13,6 +13,14 @@ LRButton::~LRButton()
     delete ui;
 }
 
+void LRButton::changeEvent(QEvent * event)
+{
+    QWidget::changeEvent( event );
+
+    if (event->type() == QEvent::LanguageChange)
+    { ui->retranslateUi( this ); }
+}
+
 void LRButton::setStep( float stp )
 {
     ui->singleSpin->setValue( stp );

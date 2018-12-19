@@ -15,6 +15,9 @@ public:
     explicit MrvCh(QWidget *parent = 0);
     ~MrvCh();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
 public:
     virtual void setMcModel( mcModel *pMcModel );
     virtual void setModelObj( mcModelObj *pObj );

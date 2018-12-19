@@ -16,6 +16,9 @@ public:
     explicit mrqIo(QWidget *parent = 0);
     ~mrqIo();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
 public:
     virtual int setApply();
 public:

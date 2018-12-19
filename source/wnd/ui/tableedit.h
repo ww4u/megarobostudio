@@ -27,9 +27,13 @@ protected Q_SLOTS:
 
 protected:
     void setupUi();
+    void retranslateContextMenu();
 
 protected:
     QMenu *m_pEditMenu;
+
+    QAction *m_pContextActionInsertBefore;
+    QAction *m_pContextActionInsertAfter;
 
     QAction *m_pContextActionClear;
     QAction *m_pContextActionDelete;

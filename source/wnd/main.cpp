@@ -66,64 +66,49 @@ int main(int argc, char *argv[])
     //! load pref
     //! translator
     modelSysPref pref;
-    QTranslator translator;
-    {
-        pref.load( pref_file_name );
-        if ( pref.mLangIndex != 0 )
-        {
-            QLocale::Language lang;
-            QLocale::Country area;
-            if ( pref.mLangIndex == 1 )
-            {
-                lang = QLocale::Chinese;
-                area = QLocale::China;
-            }
-            else if ( pref.mLangIndex == 2 )
-            {
-                lang = QLocale::Chinese;
-                area = QLocale::Taiwan;
-            }
-            else
-            {
-                lang = QLocale::AnyLanguage;
-                area = QLocale::AnyCountry;
-            }
+//    QTranslator translator;
+    {logDbg()<<user_pref_file_name;
+        pref.load( user_pref_file_name, pref_file_name );
+//        if ( pref.mLangIndex != 0 )
+//        {
+//            QLocale::Language lang;
+//            QLocale::Country area;
+//            if ( pref.mLangIndex == 1 )
+//            {
+//                lang = QLocale::Chinese;
+//                area = QLocale::China;
+//            }
+//            else if ( pref.mLangIndex == 2 )
+//            {
+//                lang = QLocale::Chinese;
+//                area = QLocale::Taiwan;
+//            }
+//            else
+//            {
+//                lang = QLocale::AnyLanguage;
+//                area = QLocale::AnyCountry;
+//            }
 
-            QLocale local( lang, area );
-            local.setDefault( QLocale( QLocale::English) );
+//            QLocale local( lang, area );
+//            local.setDefault( QLocale( QLocale::English) );
 
-            if ( translator.load( local,
-                                  QLatin1String("megarobostudio"),
-                                  QLatin1String("_"),
-                                  a.applicationDirPath() + "/translate"
-                                  )
-                 && a.installTranslator(&translator) )
-            {
-            }
-            else
-            {
-                QMessageBox::information( NULL,
-                                        QObject::tr("Info"),
-                                        QObject::tr("language loss"));
-            }
-        }
+//            if ( translator.load( local,
+//                                  QLatin1String("megarobostudio"),
+//                                  QLatin1String("_"),
+//                                  a.applicationDirPath() + "/translate"
+//                                  )
+//                 && a.installTranslator(&translator) )
+//            {
+//            }
+//            else
+//            {
+//                QMessageBox::information( NULL,
+//                                        QObject::tr("Info"),
+//                                        QObject::tr("language loss"));
+//            }
+//        }
 
         CommonHelper::selectStyle( pref.mStyleIndex );
-
-//        if ( pref.mStyleIndex != 0 )
-//        {
-//            //! style
-//            CommonHelper::setStyle( a.applicationDirPath() + "/style" + "/mega.qss" );
-
-//            QResource::registerResource( a.applicationDirPath() + "/style" + "/res.rcc" );
-//        }
-//        else
-//        {
-//            //! style
-//            CommonHelper::setStyle( a.applicationDirPath() + "/style" + "/classic.qss" );
-
-//            QResource::registerResource( a.applicationDirPath() + "/style" + "/black.rcc" );
-//        }
     }
 
     //! notice
@@ -150,7 +135,7 @@ int main(int argc, char *argv[])
         noticeDlg.exec();
 
         pref.mbShowNotice = noticeDlg.nextShowAble();
-        pref.save( pref_file_name );
+        pref.save( user_pref_file_name );
 
     }while( 0 );
 

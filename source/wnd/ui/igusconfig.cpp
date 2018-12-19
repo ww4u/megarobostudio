@@ -13,6 +13,14 @@ IgusConfig::~IgusConfig()
     delete ui;
 }
 
+void IgusConfig::changeEvent( QEvent *event )
+{
+    modelView::changeEvent( event );
+
+    if ( event->type() == QEvent::LanguageChange )
+    { ui->retranslateUi( this ); }
+}
+
 void IgusConfig::setModelObj( mcModelObj *pObj )
 {
     modelView::setModelObj( pObj );

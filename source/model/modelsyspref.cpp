@@ -110,13 +110,28 @@ void modelSysPref::rst()
     mSysMode = sys_normal;
 }
 
+#include "../../com/comassist.h"
 //! save to xml
 int modelSysPref::save( const QString &str )
 {
+    //! check path
+    QString path = QDir::homePath() + "/megarobostudio";
+
+    if ( QDir( path ).exists() )
+    { }
+    else
+    {
+        if ( QDir().mkdir( path) )
+        {  }
+        else
+        { logDbg()<<path; return ERR_FILE_OPEN_FAIL; }
+    }
+
+    //! save file
     QFile fileOut( str );
 
     if ( !fileOut.open( QIODevice::WriteOnly) )
-    { return ERR_FILE_OPEN_FAIL; }
+    { logDbg()<<str; return ERR_FILE_OPEN_FAIL; }
 
     QXmlStreamWriter writer( &fileOut );
 
@@ -642,6 +657,27 @@ int modelSysPref::load( const QString &str )
     }
 
     return 0;
+}
+
+int modelSysPref::load( const QString &a, const QString &b )
+{
+    //! find a
+    if ( QFile::exists( a ) )
+    {
+        if ( 0 == load( a ) )
+        { return 0; }
+    }
+
+    if ( QFile::exists( b ) )
+    {
+        if ( 0 == load( b ) )
+        { return 0; }
+    }
+
+    //! load fail
+    rst();
+
+    return -1;
 }
 
 int modelSysPref::loadFromTo( QXmlStreamReader &reader, int &from, int &to )

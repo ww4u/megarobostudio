@@ -56,6 +56,14 @@ roboAxes::~roboAxes()
     delete ui;
 }
 
+void roboAxes::changeEvent(QEvent * event)
+{
+    RoboView::changeEvent( event );
+
+    if (event->type() == QEvent::LanguageChange)
+    { ui->retranslateUi( this ); }
+}
+
 void roboAxes::on_chkAngle_toggled(bool checked)
 {
     if ( checked )

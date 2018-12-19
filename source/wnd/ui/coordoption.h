@@ -15,6 +15,9 @@ public:
     explicit CoordOption(QWidget *parent = 0);
     ~CoordOption();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
 public:
     void setOption( int index );
     int option();

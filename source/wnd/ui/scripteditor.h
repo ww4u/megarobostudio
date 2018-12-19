@@ -18,6 +18,9 @@ public:
     explicit scriptEditor(QWidget *parent = 0);
     ~scriptEditor();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
 public:
     virtual void setModelObj( mcModelObj *pObj );
     virtual bool matchModelObj(mcModelObj *pObj);

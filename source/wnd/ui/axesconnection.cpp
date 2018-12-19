@@ -13,6 +13,14 @@ axesConnection::~axesConnection()
     delete ui;
 }
 
+void axesConnection::changeEvent( QEvent *event )
+{
+    QWidget::changeEvent( event );
+
+    if ( event->type() == QEvent::LanguageChange )
+    { ui->retranslateUi( this ); }
+}
+
 void axesConnection::setDeviceNames( const QStringList &strList )
 {
     ui->cmbDeviceName->clear();

@@ -17,6 +17,9 @@ public:
     explicit IgusConfig(QWidget *parent = 0);
     ~IgusConfig();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
 public:
     virtual void setModelObj( mcModelObj *pObj );
     virtual int setApply();

@@ -15,6 +15,9 @@ public:
     explicit dlgWndList(QWidget *parent = 0);
     ~dlgWndList();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
 public:
     void addWnd( const QString &str );
     void addWnd( const QStringList &strList );

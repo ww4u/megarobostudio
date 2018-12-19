@@ -17,6 +17,14 @@ MrvSwitch::~MrvSwitch()
     delete ui;
 }
 
+void MrvSwitch::changeEvent(QEvent * event)
+{
+    modelView::changeEvent( event );
+
+    if (event->type() == QEvent::LanguageChange)
+    { ui->retranslateUi( this ); }
+}
+
 void MrvSwitch::spyEdited()
 {
     QCheckBox *checkBoxes[]=

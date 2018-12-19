@@ -17,6 +17,14 @@ MrqYO::~MrqYO()
     delete ui;
 }
 
+void MrqYO::changeEvent(QEvent * event)
+{
+    mrqView::changeEvent( event );
+
+    if (event->type() == QEvent::LanguageChange)
+    { ui->retranslateUi( this ); }
+}
+
 void MrqYO::setConfig( YoConfig &cfg )
 {
     ui->chkIsoCH->setChecked( cfg.mbEn );

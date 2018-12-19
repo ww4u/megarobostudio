@@ -3702,6 +3702,49 @@ int MRQ::getMOTIONPLAN_OOSTOTALRESPONSE( byte val0
 	*val2 = (MRQ_MOTIONPLAN_OOSLINERESPONSE_1)lval0;
 	return 0;
 }
+//! U8,ENUM,U32
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8
+int MRQ::setMOTIONPLAN_FIFOBUFFERTIME( byte val0
+,MRQ_MOTION_SWITCH_1 val1
+,uint32 val2 , bool bDiff )
+{
+	//! 53 38
+	int ret; 
+
+	//! check the diff
+	if ( bDiff == false ){}
+	else
+	{
+		do{
+			if( MRQ_model::mMOTIONPLAN_FIFOBUFFERTIME[ (int)val0 ][ (int)val1 ]!=val2){ break; }
+			return 0;
+		}while(false);
+	}
+
+	ret = m_pBus->write( DEVICE_RECEIVE_ID, (byte)53, (byte)38 , val0, (unsigned char)val1, val2 );
+
+	if ( ret == 0) 
+	{
+		MRQ_model::setMOTIONPLAN_FIFOBUFFERTIME( val0, val1, val2 );
+	}
+	if ( ret != 0){ log_device(); } 
+	return ret;
+}
+//! U8,ENUM
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8
+int MRQ::getMOTIONPLAN_FIFOBUFFERTIME( byte val0
+,MRQ_MOTION_SWITCH_1 val1, uint32 * val2, bool bQuery )
+{
+	//! 53 39
+	int ret = 0;
+
+	uint32 lval0 = 0;
+	ret = m_pBus->read( DEVICE_RECEIVE_ID, (byte)53, (byte)39 , val0, (byte)val1, &lval0, bQuery);
+	if ( ret != 0){ log_device(); } 
+	if ( ret != 0) return ret;
+	*val2 = lval0;
+	return 0;
+}
 //! U8,ENUM,U8,F32
 //! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8,[INDEX]
 int MRQ::setPOSITION( byte val0

@@ -24,6 +24,10 @@ public:
     explicit queryMgr(QWidget *parent = 0);
     ~queryMgr();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
+public:
     void setModal( spyCfgModel *pModel );
 
     void attachInstmgr( MegaDevice::InstMgr *pMgr );

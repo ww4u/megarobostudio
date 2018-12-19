@@ -15,6 +15,10 @@ public:
     explicit WarnPrompt(QWidget *parent = 0);
     ~WarnPrompt();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
+public:
     void setInfo( const QString &str );
     void addInfo( const QString &str );
 

@@ -18,6 +18,14 @@ queryView::~queryView()
     delete ui;
 }
 
+void queryView::changeEvent(QEvent * event)
+{
+    QDialog::changeEvent( event );
+
+    if (event->type() == QEvent::LanguageChange)
+    { ui->retranslateUi( this ); }
+}
+
 void queryView::setModel( QAbstractItemModel *pModel,
                           const QString &name,
                           const QString &comment )

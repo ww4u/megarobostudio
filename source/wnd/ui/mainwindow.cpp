@@ -11,6 +11,7 @@
 
 #include "quicktool.h"
 #include "dlghelp.h"
+#include "emergestop.h"
 
 MainWindow::MainWindow(dpcObj *pObj, QWidget *parent) :
     QMainWindow(parent),
@@ -57,6 +58,44 @@ void MainWindow::closeEvent( QCloseEvent *event )
     if ( event->isAccepted() )
     {
         mcModelObj::gc();
+    }
+}
+
+void MainWindow::changeEvent( QEvent * event )
+{
+    QMainWindow::changeEvent( event );
+
+    Q_ASSERT( NULL != event && NULL != ui );
+
+    //! language change
+    if (event->type() == QEvent::LanguageChange)
+    {
+        ui->retranslateUi( this );
+
+        if ( mDockWidgets.size() > 0 )
+        {
+            mDockWidgets[0]->setWindowTitle( tr("Project") );
+            mDockWidgets[1]->setWindowTitle( tr("Robot") );
+            mDockWidgets[2]->setWindowTitle( tr("Device") );
+            mDockWidgets[3]->setWindowTitle( tr("Log") );
+        }
+
+        if ( mDockActions.size() > 0 )
+        {
+            mDockActions[0]->setToolTip( tr("Project") );
+            mDockActions[1]->setToolTip( tr("Robo") );
+            mDockActions[2]->setToolTip( tr("Device") );
+            mDockActions[3]->setToolTip( tr("Log") );
+        }
+
+        for ( int i = 0; i < ui->widget->count(); i++ )
+        {
+            Q_ASSERT( NULL != ui->widget->widget(i) );
+
+            qApp->postEvent( (modelView*)ui->widget->widget( i ),
+                          new QEvent( QEvent::LanguageChange )
+                          );
+        }
     }
 }
 
@@ -215,21 +254,25 @@ void MainWindow::setupUi_docks()
 
     //! left dock
     pScriptDock = new QDockWidget( tr("Project"), this );
+    mDockWidgets.append( pScriptDock );
     pScriptDock->setAllowedAreas(  Qt::RightDockWidgetArea | Qt::LeftDockWidgetArea );
     addDockWidget( Qt::LeftDockWidgetArea, pScriptDock );
 
     //! left dock1
     pRoboDock = new QDockWidget( tr("Robot"), this );
+    mDockWidgets.append( pRoboDock );
     pRoboDock->setAllowedAreas(  Qt::RightDockWidgetArea | Qt::LeftDockWidgetArea );
     addDockWidget( Qt::LeftDockWidgetArea, pRoboDock );
 
     //! right dock
     pDeviceDock = new QDockWidget( tr("Device"), this );
+    mDockWidgets.append( pDeviceDock );
     pDeviceDock->setAllowedAreas(  Qt::RightDockWidgetArea | Qt::LeftDockWidgetArea );
     addDockWidget( Qt::RightDockWidgetArea, pDeviceDock );
 
     //! logout dock
     pLogDock = new QDockWidget( tr("Log"), this );
+    mDockWidgets.append( pLogDock );
     pLogDock->setFeatures( QDockWidget::DockWidgetVerticalTitleBar
                            | pLogDock->features() );
     pLogDock->setAllowedAreas( Qt::BottomDockWidgetArea );
@@ -245,7 +288,7 @@ void MainWindow::setupUi_docks()
     icon = QIcon( QString(":/res/image/icon/manage.png") );
     pScriptDock->setWindowIcon( icon );
     pAction = pScriptDock->toggleViewAction();
-
+    mDockActions.append( pAction );
     pAction->setIcon( icon );
     pAction->setToolTip( tr("Project") );
     ui->menuView_V->addAction( pAction );
@@ -257,6 +300,7 @@ void MainWindow::setupUi_docks()
     pRoboDock->setWindowIcon( icon );
 
     pAction = pRoboDock->toggleViewAction();
+    mDockActions.append( pAction );
     pAction->setIcon( icon );
     pAction->setToolTip( tr("Robot") );
     ui->menuView_V->addAction( pAction );
@@ -268,6 +312,7 @@ void MainWindow::setupUi_docks()
     pDeviceDock->setWindowIcon( icon );
 
     pAction = pDeviceDock->toggleViewAction();
+    mDockActions.append( pAction );
     pAction->setIcon( icon );
     pAction->setToolTip( tr("Device") );
     ui->menuView_V->addAction( pAction );
@@ -281,6 +326,7 @@ void MainWindow::setupUi_docks()
     pLogDock->setWindowIcon( icon );
 
     pAction = pLogDock->toggleViewAction();
+    mDockActions.append( pAction );
     pAction->setIcon( icon );
     pAction->setToolTip( tr("Log") );
     ui->menuView_V->addAction( pAction );
@@ -306,6 +352,8 @@ void MainWindow::setupToolbar()
     ui->mainToolBar->addAction( ui->actionApp );
     ui->mainToolBar->addSeparator();
     ui->mainToolBar->addAction( ui->actionpref );
+    ui->mainToolBar->addSeparator();
+    ui->mainToolBar->addAction( ui->actionEvent_E );
 
     //! device conn
     m_pToolbarAxesConn = new QToolBar( tr("Device") );
@@ -319,14 +367,33 @@ void MainWindow::setupToolbar()
     m_pToolbarRoboConn->addWidget( m_pRoboConnTool );
     addToolBar( m_pToolbarRoboConn );
 
+    //! base op tool
+    m_pBaseToolbarQuickOp = new QToolBar( tr("Normal") );
+    m_pBaseToolbarQuickOp->addWidget( new QuickTool() );        //! for the spacer
+
+    m_pBaseToolbarQuickOp->addAction( ui->actionReset );
+    m_pBaseToolbarQuickOp->addAction( ui->actionStop );
+    addToolBar( m_pBaseToolbarQuickOp );
+
     //! op tool
     m_pToolbarQuickOp = new QToolBar( tr("Quick") );
-    m_pToolbarQuickOp->addAction( ui->actionEvent_E );
-    m_pToolbarQuickOp->addWidget( new QuickTool() );        //! for the spacer
-    m_pToolbarQuickOp->addAction( ui->actionReset );
-    m_pToolbarQuickOp->addAction( ui->actionStop );
-    ui->mainToolBar->addSeparator();
-    m_pToolbarQuickOp->addAction( ui->actionForceStop );
+    m_pToolbarQuickOp->addWidget( new QuickTool() );
+//    m_pToolbarQuickOp->addAction( ui->actionForceStop );
+
+    QPushButton *stopBtn = new QPushButton( );
+    stopBtn->setObjectName( "emergeStop" );
+    stopBtn->setIcon( QIcon(":/res/image/icon/246.png") );
+    stopBtn->setText( tr("STOP") );
+
+//    EmergeStop *stopBtn = new EmergeStop();
+    m_pToolbarQuickOp->addWidget( stopBtn );
+    connect( stopBtn, SIGNAL(clicked()), this, SLOT(on_actionForceStop_triggered()) );
+    stopBtn->setIconSize( QSize( 32,32 ) );
+
+//    m_pToolbarQuickOp->addAction( QIcon(":/res/image/icon/246.png"),
+//                                  tr("STOP"),
+//                                  this, SLOT( on_actionForceStop_triggered() ) );
+//    m_pToolbarQuickOp->setIconSize( QSize( 64,24) );            //! \note enlarge the force stop
 
     addToolBar( m_pToolbarQuickOp );
 
@@ -429,10 +496,10 @@ void MainWindow::buildConnection()
              this,
              SLOT(slot_instmgr_changed(bool, MegaDevice::InstMgr*)) );
 
-    connect( m_pDeviceMgr,
-             SIGNAL(signal_instmgr_changed(bool, MegaDevice::InstMgr*)),
-             this,
-             SLOT(slot_instmgr_changed(bool, MegaDevice::InstMgr*)) );
+//    connect( m_pDeviceMgr,
+//             SIGNAL(signal_instmgr_changed(bool, MegaDevice::InstMgr*)),
+//             this,
+//             SLOT(slot_instmgr_changed(bool, MegaDevice::InstMgr*)) );
 
     connect( m_pDeviceMgr,
              SIGNAL(signal_btnState_clicked()),
@@ -481,6 +548,7 @@ void MainWindow::buildConnection()
     //! robo conn
     connect( m_pRoboConnTool->getCombName(),
              SIGNAL(currentTextChanged(const QString &)),
+//             SIGNAL(currentIndexChanged( const QString &)),
              this,
              SLOT(slot_robo_name_changed(const QString&))
              );
@@ -518,40 +586,11 @@ void MainWindow::buildConnection()
 
 void MainWindow::loadSetup()
 {
-    mMcModel.mSysPref.load( pref_file_name );
+    mMcModel.mSysPref.load( user_pref_file_name, pref_file_name );
+
+    changeLang( mMcModel.mSysPref.mLangIndex );
 
     mRoboModelMgr.load(  robo_mgr_name );
-
-//    //! default action
-//    EventAction *pAction = new EventAction();
-//    if ( NULL != pAction )
-//    {
-//        pAction->setEnable( true );
-//        pAction->setEvent( QStringLiteral("Lose Step") );
-//        pAction->setAction( QStringLiteral("None") );
-//        pAction->setComment( tr("Lose Step") );
-//        mMcModel.mEventActionModel.items()->append( pAction );
-//    }
-
-//    pAction = new EventAction();
-//    if ( NULL != pAction )
-//    {
-//        pAction->setEnable( true );
-//        pAction->setEvent( QStringLiteral("Over Distance") );
-//        pAction->setAction( QStringLiteral("Prompt+Stop") );
-//        pAction->setComment( tr("MRX-T4 Distance warning") );
-//        mMcModel.mEventActionModel.items()->append( pAction );
-//    }
-
-//    pAction = new EventAction();
-//    if ( NULL != pAction )
-//    {
-//        pAction->setEnable( true );
-//        pAction->setEvent( QStringLiteral("Over Angle") );
-//        pAction->setAction( QStringLiteral("Prompt+Stop") );
-//        pAction->setComment( tr("MRX-T4 Angle warning") );
-//        mMcModel.mEventActionModel.items()->append( pAction );
-//    }
 
     m_pEventViewer = new eventViewer(
                                       &mMcModel.mSysPref.mEventActionModel,
@@ -856,13 +895,12 @@ void MainWindow::slot_itemXHelp( eItemHelp hlp )
 void MainWindow::slot_pref_request_save()
 {
     //! save pref
-    mMcModel.mSysPref.save( pref_file_name );
+    mMcModel.mSysPref.save( user_pref_file_name );
 }
 
 void MainWindow::on_signalReport( int err, const QString &str )
 {
     m_pStateBar->showState( QString("%1:%2").arg(err).arg(str) );
-//    ui->statusBar->showMessage( QString("%1:%2").arg(err).arg(str), 1000 );
 }
 
 void MainWindow::slot_action_plugin( QAction *pAction )
@@ -956,7 +994,7 @@ void MainWindow::slot_instmgr_changed( bool bEnd, MegaDevice::InstMgr *pMgr )
 
         //! add robot
         QStringList strList;
-        strList = mMcModel.m_pInstMgr->roboResources();
+        strList = mMcModel.m_pInstMgr->roboResources();logDbg()<<strList;
         m_pRoboConnTool->setRoboNames( strList );
 
         //! reset monitors
@@ -1066,7 +1104,6 @@ void MainWindow::slot_prompt( const QString &str )
 void MainWindow::slot_robo_name_changed( const QString &name )
 {
     mMcModel.mConn.setRoboName( name );
-    logDbg()<<name;
 
     emit sig_robo_name_changed( name );
 }
@@ -1773,4 +1810,29 @@ bool MainWindow::progressProc(  const QString &name,
     return true;
 }
 
+void MainWindow::on_actionEnglish_triggered(bool checked)
+{
+    mMcModel.mSysPref.mLangIndex = 0;
 
+    changeLang( 0 );
+
+    emit sig_pref_request_save();
+}
+
+void MainWindow::on_actionChinese_triggered(bool checked)
+{
+    mMcModel.mSysPref.mLangIndex = 1;
+
+    changeLang( 1 );
+
+    emit sig_pref_request_save();
+}
+
+void MainWindow::on_actionTraditional_Chinese_triggered(bool checked)
+{
+    mMcModel.mSysPref.mLangIndex = 2;
+
+    changeLang( 2 );
+
+    emit sig_pref_request_save();
+}

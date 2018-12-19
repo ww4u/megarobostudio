@@ -61,6 +61,18 @@ pvtEdit::~pvtEdit()
     delete ui;
 }
 
+void pvtEdit::changeEvent(QEvent * event)
+{
+    tableEdit::changeEvent( event );
+
+    if (event->type() == QEvent::LanguageChange)
+    {
+        ui->retranslateUi( this );
+
+        retranslateContextMenu();
+    }
+}
+
 void pvtEdit::setModelObj( mcModelObj *pObj )
 {
     Q_ASSERT( NULL != pObj );
@@ -483,28 +495,34 @@ int pvtEdit::compileLine()
 
     config.mAcc = mPvtPref.mAcc;
     config.mDec = mPvtPref.mDec;
-
+logDbg();
     QList<QVector3D> tpvs;
     ret = pvtInterp( (enumInterpMode)ui->cmbPlanMode->value(),
                      ends,
+
                      config,
 
                      tpvs
+
                       );
+
     if ( ret != 0 )
     {
         sysError( tr("build fail") );
+
         return ret;
     }
     else
     { }
-
+logDbg()<<tpvs.size();
     //! out
     for ( int i = 0; i < tpvs.size(); i++ )
     {
         mTPs.append( QPointF( tpvs.at(i).x(), tpvs.at(i).y() ) );
         mTVs.append( QPointF( tpvs.at(i).x(), tpvs.at(i).z() ) );
+
     }
+logDbg();
 
     return 0;
 }
@@ -577,10 +595,12 @@ void pvtEdit::slot_timeout()
 void pvtEdit::on_btnBuild_clicked()
 {
     int ret = buildLine();
+
+    emit sigLineChanged();
+
     if ( ret == 0 )
     {
         sysLog( tr("Line build completed"), QString::number( mTPs.size()), QString::number( mTVs.size() ) );
-        emit sigLineChanged();
     }
 }
 
@@ -594,10 +614,12 @@ void pvtEdit::on_btnDown_clicked()
 
     //! build
     int ret = buildLine();
+
+    emit sigLineChanged();
+
     if ( ret == 0 )
     {
         sysLog( tr("Line build completed"), QString::number( mTPs.size()), QString::number( mTVs.size() ) );
-        emit sigLineChanged();
     }
     else
     {

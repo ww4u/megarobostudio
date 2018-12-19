@@ -15,6 +15,9 @@ public:
     explicit MegatronPref(QWidget *parent = 0);
     ~MegatronPref();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
 public:
     virtual void setModelObj( mcModelObj *pObj );
     virtual int setApply();

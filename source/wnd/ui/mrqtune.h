@@ -15,6 +15,9 @@ public:
     explicit MrqTune(QWidget *parent = 0);
     ~MrqTune();
 
+protected:
+    virtual void changeEvent( QEvent *event );
+
 public:
     virtual int setApply();
 public:

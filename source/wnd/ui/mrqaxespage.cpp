@@ -20,6 +20,22 @@ MrqAxesPage::~MrqAxesPage()
     delete ui;
 }
 
+void MrqAxesPage::changeEvent(QEvent * event)
+{
+    mrqView::changeEvent( event );
+
+    if (event->type() == QEvent::LanguageChange)
+    {
+        ui->retranslateUi( this );
+
+        for ( int i = 0; i < ui->tabWidget->count(); i++ )
+        {
+            qApp->postEvent( ui->tabWidget->widget( i ),
+                             new QEvent( event->type() ) );
+        }
+    }
+}
+
 #define FOREACH_SUBVIEW( api, para )    foreach( mrqView *pSubView, mSubViews )\
                                         { pSubView->api( para ); }
 #define FOREACH_SUBVIEW_CALL( api )     foreach( mrqView *pSubView, mSubViews )\

@@ -132,6 +132,7 @@
      <addaction name="actionNewPVT"/>
      <addaction name="actionPT"/>
      <addaction name="actionScene"/>
+     <addaction name="actionGraph"/>
      <addaction name="separator"/>
      <addaction name="actionProject"/>
     </widget>
@@ -187,12 +188,18 @@
      <property name="title">
       <string>Language</string>
      </property>
+     <property name="icon">
+      <iconset>
+       <normalon>:/res/image/icon/group.png</normalon>
+      </iconset>
+     </property>
      <addaction name="actionEnglish"/>
      <addaction name="actionChinese"/>
      <addaction name="actionTraditional_Chinese"/>
     </widget>
     <addaction name="separator"/>
     <addaction name="menuLanguage"/>
+    <addaction name="actionOperator_Lib"/>
     <addaction name="actionWindows_W"/>
    </widget>
    <widget class="QMenu" name="menuControl">
@@ -707,6 +714,11 @@
    <property name="checkable">
     <bool>true</bool>
    </property>
+   <property name="icon">
+    <iconset>
+     <normalon>:/res/image/icon/51.png</normalon>
+    </iconset>
+   </property>
    <property name="text">
     <string>English</string>
    </property>
@@ -714,6 +726,11 @@
   <action name="actionChinese">
    <property name="checkable">
     <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normalon>:/res/image/icon/51.png</normalon>
+    </iconset>
    </property>
    <property name="text">
     <string>Chinese</string>
@@ -723,8 +740,37 @@
    <property name="checkable">
     <bool>true</bool>
    </property>
+   <property name="icon">
+    <iconset>
+     <normalon>:/res/image/icon/51.png</normalon>
+    </iconset>
+   </property>
    <property name="text">
     <string>Traditional Chinese</string>
+   </property>
+  </action>
+  <action name="actionGraph">
+   <property name="icon">
+    <iconset>
+     <normaloff>:/res/image/icon/activity.png</normaloff>:/res/image/icon/activity.png</iconset>
+   </property>
+   <property name="text">
+    <string>Graph</string>
+   </property>
+  </action>
+  <action name="actionOperator_Lib">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>:/res/image/icon/manage.png</normaloff>:/res/image/icon/manage.png</iconset>
+   </property>
+   <property name="text">
+    <string>Operator Library</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+K</string>
    </property>
   </action>
  </widget>

@@ -234,6 +234,10 @@ int scriptMgr::openFile( const QString &path,
     {
         return openScene( path, file );
     }
+    else if ( comAssist::fileSuffixMatch( ext, graph_ext ) )
+    {
+        return openGraph( path, file );
+    }
     else if ( comAssist::fileSuffixMatch( ext, script_ext) )
     {
         return openPy( path, file );
@@ -366,6 +370,20 @@ int scriptMgr::openScene( const QString &path, const QString &file )
 
     //! model deleted in the widget
     pModel = createScene( path, file );
+    if ( NULL == pModel )
+    { return ERR_FILE_READ_FAIL; }
+
+    emit itemXActivated( pModel );
+
+    return ERR_NONE;
+}
+
+int scriptMgr::openGraph( const QString &path, const QString &file )
+{
+    MrgGraphModel *pModel;
+
+    //! create model
+    pModel = createGraph( path, file );
     if ( NULL == pModel )
     { return ERR_FILE_READ_FAIL; }
 
@@ -633,7 +651,33 @@ roboSceneModel *scriptMgr::createScene( const QString &path,
     pModel->setFullName( file );
 
     return pModel;
+}
 
+
+MrgGraphModel *scriptMgr::createGraph( const QString &path,
+                            const QString &file
+                           )
+{
+    MrgGraphModel *pModel;
+
+    pModel = new MrgGraphModel();
+    Q_ASSERT( NULL != pModel );
+    if ( pModel->load( file ) != 0 )
+    {
+        delete pModel;
+        return NULL;
+    }
+
+    pModel->setPath( path );
+    pModel->setName( comAssist::pureFileName(file) );
+    pModel->setShadow( true );
+    pModel->setGc( true );
+
+    pModel->set( mcModelObj::model_graph_file, pModel );
+
+    pModel->setFullName( file );
+
+    return pModel;
 }
 
 void scriptMgr::iterAllItems()
@@ -697,7 +741,7 @@ void scriptMgr::on_scriptView_activated(const QModelIndex &index)
 
     int ret = openFile( path, fullName );
     if ( ret != 0 )
-    {}
+    { sysPrompt( fullName + tr(" Open fail!") );}
     else
     { logDbg(); }
 }
@@ -736,7 +780,8 @@ void scriptMgr::slot_context_import()
                <<tr("mrp (*.mrp)")
                <<tr("scene (*.sce)")
                <<tr("setup (*.stp)")
-               <<tr("python (*.py)");
+               <<tr("python (*.py)")
+               <<tr("mrg (*.mrg)");
     fDlg.setNameFilters( nameFilters );
 
     if ( QDialog::Accepted != fDlg.exec() )

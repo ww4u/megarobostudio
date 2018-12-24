@@ -142,6 +142,7 @@ void MainWindow::init()
     m_pMotorMonitor = NULL;
 
     m_pProgress = NULL;
+    m_pOperatorLib = NULL;
 
     m_pInterruptThread = NULL;
     m_pSampleThread = NULL;
@@ -368,12 +369,16 @@ void MainWindow::setupToolbar()
     addToolBar( m_pToolbarRoboConn );
 
     //! base op tool
-    m_pBaseToolbarQuickOp = new QToolBar( tr("Normal") );
-    m_pBaseToolbarQuickOp->addWidget( new QuickTool() );        //! for the spacer
+    ui->mainToolBar->addSeparator();
+    ui->mainToolBar->addAction( ui->actionReset );
+    ui->mainToolBar->addAction( ui->actionStop );
 
-    m_pBaseToolbarQuickOp->addAction( ui->actionReset );
-    m_pBaseToolbarQuickOp->addAction( ui->actionStop );
-    addToolBar( m_pBaseToolbarQuickOp );
+//    m_pBaseToolbarQuickOp = new QToolBar( tr("Normal") );
+//    m_pBaseToolbarQuickOp->addWidget( new QuickTool() );        //! for the spacer
+
+//    m_pBaseToolbarQuickOp->addAction( ui->actionReset );
+//    m_pBaseToolbarQuickOp->addAction( ui->actionStop );
+//    addToolBar( m_pBaseToolbarQuickOp );
 
     //! op tool
     m_pToolbarQuickOp = new QToolBar( tr("Quick") );
@@ -1504,6 +1509,12 @@ void MainWindow::slot_wndHide()
     }
 }
 
+void MainWindow::slot_oplib_hide()
+{
+    if ( NULL != m_pOperatorLib )
+    { ui->actionOperator_Lib->setChecked(false); }
+}
+
 void MainWindow::slot_scriptmgr_changed()
 {
     slot_scene_changed();
@@ -1835,4 +1846,33 @@ void MainWindow::on_actionTraditional_Chinese_triggered(bool checked)
     changeLang( 2 );
 
     emit sig_pref_request_save();
+}
+
+void MainWindow::on_actionOperator_Lib_triggered(bool checked)
+{
+    //! create the operator
+    if ( m_pOperatorLib == NULL )
+    {
+        m_pOperatorLib = new OperatorLib( this );
+        if ( NULL == m_pOperatorLib )
+        { return; }
+
+        if ( 0 == m_pOperatorLib->loadLib( qApp->applicationDirPath() + "/data/oplib.xml") )
+        {}
+        else
+        {
+            sysWarn( tr("Op lib load fail") );
+            delete m_pOperatorLib;
+            m_pOperatorLib = NULL;
+            return;
+        }
+
+        connect( m_pOperatorLib, SIGNAL(accepted()),
+                 this, SLOT(slot_oplib_hide()) );
+        connect( m_pOperatorLib, SIGNAL(rejected()),
+                 this, SLOT(slot_oplib_hide()) );
+    }
+
+    //! view
+    m_pOperatorLib->setVisible( checked );
 }

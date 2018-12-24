@@ -69,7 +69,6 @@ void roboScene::mouseMoveEvent(QMouseEvent *event)
     {
         emit sigSaveRequest( this );
     }
-
 }
 
 void roboScene::mousePressEvent(QMouseEvent *event)
@@ -159,7 +158,6 @@ void roboScene::dropEvent(QDropEvent *event)
 
         addRobot( event->mimeData()->data("robomgr/robot"), pt );
     }
-
 }
 
 void roboScene::context_delete()

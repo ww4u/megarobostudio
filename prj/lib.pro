@@ -10,7 +10,8 @@ SUBDIRS = ../source/device/device.pro \
     ../source/arith/arith.pro \
     ../source/robot/robot.pro \
     ../source/para/para.pro \
-    ../source/mrp/mrp.pro
+    ../source/mrp/mrp.pro \
+    ../source/mrg/mrg.pro
 
 contains( ARCH_HOST, raspberry ) {
     SUBDIRS += ../source/bus/bspcan/bspcan.pro

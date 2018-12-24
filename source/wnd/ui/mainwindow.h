@@ -46,6 +46,7 @@
 #include "motormonitor.h"
 
 #include "warnprompt.h"
+#include "operatorlib.h"
 
 #include "../com/rpcthread.h"
 
@@ -262,6 +263,7 @@ public slots:
     void on_actionNewPVT_triggered();
     void on_actionPT_triggered();
     void on_actionScene_triggered();
+    void on_actionGraph_triggered();
 
     void on_actionAbout_triggered();
     void on_actionDocs_triggered();
@@ -284,6 +286,7 @@ public slots:
     void slot_wndcloseRobo();
     void slot_wndActive( QString str );
     void slot_wndHide();
+    void slot_oplib_hide();
 
     void slot_scriptmgr_changed();
 
@@ -318,6 +321,8 @@ private slots:
 
     void on_actionTraditional_Chinese_triggered(bool checked);
 
+    void on_actionOperator_Lib_triggered(bool checked);
+
 private:
     //! uis
     Ui::MainWindow *ui;
@@ -328,7 +333,7 @@ private:
     //! toolbar
     QToolBar *m_pToolbarRoboConn;
     QToolBar *m_pToolbarAxesConn;
-    QToolBar *m_pBaseToolbarQuickOp, *m_pToolbarQuickOp;
+    QToolBar /**m_pBaseToolbarQuickOp,*/ *m_pToolbarQuickOp;
 
     roboConnection *m_pRoboConnTool;
     axesConnection *m_pAxesConnTool;
@@ -369,6 +374,9 @@ private:
 
     //! progress
     ProgressGroup *m_pProgress;
+
+    //! operator lib
+    OperatorLib *m_pOperatorLib;
 
     //! interrupt
     interruptThread *m_pInterruptThread;

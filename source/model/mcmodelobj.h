@@ -34,6 +34,8 @@ public:
         model_py_file,
         model_scene_file,
 
+        model_graph_file,
+
         model_setup_file,       //! many setup files
     };
 

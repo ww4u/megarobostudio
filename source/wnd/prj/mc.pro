@@ -63,6 +63,7 @@ LIBS += -ldevice -lbus
 LIBS += -lpara
 LIBS += -lscpi
 LIBS += -lmrp
+LIBS += -lmrg
 
 win32 {
 # visa
@@ -311,7 +312,16 @@ SOURCES += \
     ../ui/rsrcsearchthread.cpp \
     ../ui/roboview.cpp \
     ../ui/robosketch.cpp \
-    ../ui/emergestop.cpp
+    ../ui/emergestop.cpp \
+    ../ui/operatorlib.cpp \
+    ../ui/robograph.cpp \
+    ../../model/mrggraphmodel.cpp \
+    ../../widget/entitywidget.cpp \
+    ../../widget/rectentity.cpp \
+    ../../widget/lineentity.cpp \
+    ../../widget/imageentity.cpp \
+    ../../widget/devicetreewidget.cpp \
+    ../../widget/opliblistwidget.cpp
 
 
 HEADERS += \
@@ -502,7 +512,16 @@ HEADERS += \
     ../main_help.h \
     ../ui/roboview.h \
     ../ui/robosketch.h \
-    ../ui/emergestop.h
+    ../ui/emergestop.h \
+    ../ui/operatorlib.h \
+    ../ui/robograph.h \
+    ../../model/mrggraphmodel.h \
+    ../../widget/entitywidget.h \
+    ../../widget/rectentity.h \
+    ../../widget/lineentity.h \
+    ../../widget/imageentity.h \
+    ../../widget/devicetreewidget.h \
+    ../../widget/opliblistwidget.h
 
 FORMS += \
         ../ui/mainwindow.ui \
@@ -613,7 +632,11 @@ FORMS += \
     ../ui/dlgapp.ui \
     ../../widget/mfiledialog.ui \
     ../ui/robosketch.ui \
-    ../ui/emergestop.ui
+    ../ui/emergestop.ui \
+    ../ui/operatorlib.ui \
+    ../ui/robograph.ui \
+    ../../widget/rectentity.ui \
+    ../../widget/imageentity.ui
 
 
 #RESOURCES = ../res/res.qrc

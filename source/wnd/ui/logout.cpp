@@ -6,6 +6,7 @@ logOut::logOut(QWidget *parent) :
     ui(new Ui::logOut)
 {
     ui->setupUi(this);
+    ui->gpPanel->setVisible( false );
 
     connect( this, SIGNAL(sig_log_item( const QString &)),
              this, SLOT(slot_log_item( const QString &)));
@@ -76,4 +77,14 @@ void logOut::logIn( const QString &str )
 
     QString fmtStr = QString("%1:%2").arg( QTime::currentTime().toString("hh:mm:ss.zzz") ).arg(str);
     emit sig_log_item( fmtStr );
+}
+
+void logOut::on_btnHide_toggled(bool checked)
+{
+    ui->gpPanel->setVisible( checked );
+
+    if ( checked )
+    { ui->btnHide->setIcon( QIcon(":/res/image/icon/arrow-right.png") );}
+    else
+    { ui->btnHide->setIcon( QIcon(":/res/image/icon/arrow-left.png") );}
 }

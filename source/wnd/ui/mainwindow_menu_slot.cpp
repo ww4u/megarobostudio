@@ -7,6 +7,10 @@
 #include "dlgapp.h"
 #include "deviceconsole.h"
 
+#include "../model/mrggraphmodel.h"
+
+#include "robograph.h"
+
 void MainWindow::doLoadPrj( const QString &path,
                              const QString &name )
 {
@@ -227,6 +231,28 @@ void MainWindow::on_itemx_active( mcModelObj* pObj )
                  SLOT(slot_scene_changed()) );
     }
 
+    //! graph file
+    else if ( pObj->getType() == mcModelObj::model_graph_file )
+    {
+        RoboGraph *pRoboGraph;
+        pRoboGraph = new RoboGraph();
+        Q_ASSERT( NULL != pRoboGraph );
+
+        //! set the data
+        createModelView( pRoboGraph, pObj );
+
+        //! \todo
+//        connect( pRoboGraph,
+//                 SIGNAL(itemXActivated(mcModelObj*, mcModelObj_Op)),
+//                 this,
+//                 SLOT(on_itemXActivated(mcModelObj*, mcModelObj_Op)));
+
+//        connect( pRoboGraph,
+//                 SIGNAL(signalSceneChanged()),
+//                 this,
+//                 SLOT(slot_scene_changed()) );
+    }
+
     //! py file
     else if ( pObj->getType() == mcModelObj::model_py_file )
     {
@@ -433,9 +459,8 @@ void MainWindow::on_actionSave_triggered()
         Q_ASSERT( NULL != pView );
 
         QString str;
-//        m_pStateBar->showState( tr("Saving...") );
-//        on_signalReport( 0, ("Saving...") );
-        int ret = pView->save(str);
+        logDbg();
+        int ret = pView->save(str);logDbg()<<ret;
         on_signalReport( ret, str );
         if ( ret == 0 )
         { sysLog( str, tr("save complted") ); }
@@ -499,11 +524,16 @@ void MainWindow::on_actionOpen_triggered()
     QFileDialog fDlg;
 
     fDlg.setAcceptMode( QFileDialog::AcceptOpen );
-    fDlg.setNameFilter( tr("mrp file (*.mrp);"
-                           ";pvt file (*.pvt);"
-                           ";pt file (*.pt);"
-                           ";setup file (*.stp);"
-                           ";scene file (*.sce)") );
+    QStringList nameFilters;
+
+    nameFilters<<tr("mrp file (*.mrp)")
+               <<tr("pvt file (*.pvt)")
+               <<tr("pt file (*.pt)")
+               <<tr("scene (*.sce)")
+               <<tr("python (*.py)")
+               <<tr("mrg (*.mrg)")
+               ;
+    fDlg.setNameFilters( nameFilters );
     if ( QDialog::Accepted != fDlg.exec() )
     { return; }
 
@@ -637,8 +667,45 @@ void MainWindow::on_actionScene_triggered()
     Q_ASSERT( NULL != pNewModelObj );
 
     emit itemXActivated( pNewModelObj );
+}
 
+void MainWindow::on_actionGraph_triggered()
+{
+    //! check prj
+    if ( asurePrjValid() )
+    {}
+    else
+    { return; }
 
+    QFileDialog fDlg;
+
+    fDlg.setAcceptMode( QFileDialog::AcceptSave );
+    fDlg.setNameFilter( tr("graph file (*.mrg)") );
+    if ( QDialog::Accepted != fDlg.exec() )
+    { return; }
+
+    MrgGraphModel *pGraph = new MrgGraphModel();
+    mcModelObj *pNewModelObj = pGraph;
+    Q_ASSERT( NULL != pNewModelObj );
+
+    //! auto add
+    if ( mMcModel.mSysPref.mbNewAutoAdd )
+    { m_pScriptMgr->slot_file_import( fDlg.selectedFiles().first() ); }
+
+    //! save
+    pGraph->save( fDlg.selectedFiles().first() );
+
+    pNewModelObj->setPath( fDlg.directory().absolutePath() );
+    pNewModelObj->setName( comAssist::pureFileName( fDlg.selectedFiles().first() ) );
+    pNewModelObj->setFullName( fDlg.selectedFiles().first() );
+
+    pNewModelObj->setGc( true );
+    pNewModelObj->setShadow( true );
+    pNewModelObj->set( mcModelObj::model_graph_file, pNewModelObj );
+
+    Q_ASSERT( NULL != pNewModelObj );
+
+    emit itemXActivated( pNewModelObj );
 }
 
 //! about

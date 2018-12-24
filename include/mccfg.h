@@ -44,6 +44,7 @@
 #define scene_ext                       "sce"
 
 #define script_ext                      "py"
+#define graph_ext                       "mrg"
 
 //! file dext
 #define setup_d_ext                       ".stp"
@@ -52,6 +53,7 @@
 #define scene_d_ext                       ".sce"
 
 #define script_d_ext                      ".py"
+#define graph_d_ext                       ".mrg"
 
 //! file description
 #define setup_desc                       "Setup file"
@@ -61,6 +63,7 @@
 #define scene_desc                       "Scene file"
 
 #define script_desc                      "Python file"
+#define graph_desc                       "Graph file"
 
 #define all_desc                         "All file"
 

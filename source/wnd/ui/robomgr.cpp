@@ -5,11 +5,8 @@
 
 roboMgr::roboMgr(QListWidget *parent) :
     QListWidget(parent)
-//  ,
-//    ui(new Ui::roboMgr)
-{
-//    ui->setupUi(this);
 
+{
     mbOperable = false;
 
     setViewMode( IconMode );

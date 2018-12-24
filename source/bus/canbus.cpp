@@ -879,9 +879,9 @@ int CANBus::collectHash( const modelSysPref &pref,
     ret = doWrite( broadId, buf, sizeof(buf) );
     if ( ret != 0 )
     { return ret; }
-logDbg();
+
     wait_us( mEnumerateTmo );
-logDbg();
+
     //! 3. frame count
     int frame = size();logDbg()<<frame;
     if ( frame < 1 )
@@ -904,6 +904,12 @@ logDbg();
         memcpy( &hashId, (readBuf + i * collectFrameSize) + 2, 4 );
 
         sendHashMap.insert( frameIds[i], hashId );
+    }
+
+    //! 6. check hash count
+    if ( frame > sendHashMap.size() )
+    {
+        sysWarn( QObject::tr("Hash conflict") );
     }
 
     return 0;
@@ -988,6 +994,12 @@ int CANBus::collectRecvId( QMap< int, quint32 > &sendRecvMap )
         memcpy( &recvId, (readBuf + i * collectFrameSize) + 2, 4 );
 
         sendRecvMap.insert( frameIds[i], recvId );
+    }
+
+    //! 5. check hash count
+    if ( frame > sendRecvMap.size() )
+    {
+        sysWarn( QObject::tr("Receive id conflict") );
     }
 
     return 0;

@@ -30,6 +30,9 @@ protected Q_SLOTS:
 public:
     void logIn( const QString &str );
 
+private slots:
+    void on_btnHide_toggled(bool checked);
+
 private:
     Ui::logOut *ui;
     QMutex mMutex;

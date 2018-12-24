@@ -6,6 +6,7 @@
 //#include "../../model/sinanjumotionitem.h"
 #include "../../model/scriptmodel.h"
 #include "../../model/roboscenemodel.h"
+#include "../../model/mrggraphmodel.h"
 
 #include "../../model/megatablemodel.h"
 #include "itemhelp.h"
@@ -55,6 +56,8 @@ public:
     int openTpv( const QString &path, const QString &file );
     int openTp( const QString &path, const QString &file );
     int openScene( const QString &path, const QString &file );
+    int openGraph( const QString &path, const QString &file );
+
     int openSetup( const QString &path, const QString &file );
     int openPy( const QString &path, const QString &file );
 
@@ -79,6 +82,10 @@ public:
     roboSceneModel *createScene( const QString &path,
                                  const QString &file
                                 );
+
+    MrgGraphModel *createGraph( const QString &path,
+                                const QString &file
+                               );
 
     void iterAllItems();
 

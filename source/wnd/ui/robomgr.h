@@ -23,7 +23,6 @@ public:
     ~roboMgr();
 
 protected:
-//    virtual QSize sizeHint() const;
     virtual QMimeData *mimeData(const QList<QListWidgetItem *> items) const;
     virtual QStringList mimeTypes() const;
 

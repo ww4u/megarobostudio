@@ -417,3 +417,18 @@ bool RoboGraph::crossDetect( EntityWidget *pSrc,
 
     return false;
 }
+
+void RoboGraph::on_btnGen_clicked()
+{
+
+}
+
+void RoboGraph::on_btnRun_clicked()
+{
+
+}
+
+void RoboGraph::on_btnStop_clicked()
+{
+
+}

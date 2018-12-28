@@ -7,6 +7,15 @@
 namespace MegaDevice
 {
 
+int deviceMRQ::loadRawSystem()
+{
+    int ret;
+
+    checked_call( getSYSTEM_REVMOTION( &mSYSTEM_REVMOTION ) );
+
+    return ret;
+}
+
 //! load only one time
 int deviceMRQ::loadTpvCap( )
 {

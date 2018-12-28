@@ -123,6 +123,21 @@ int  robotSinanju::setZero( int jointTabId, float zero )
     return pMrq->setEncoderZero( subAx, zero );
 }
 
+int robotSinanju::getMechanicalVersion()
+{
+    //! device
+    MegaDevice::deviceMRQ *pMrq;
+    int subAx;
+
+    pMrq = jointDevice( 0, &subAx );
+    if( NULL == pMrq )
+    { return 0; }
+    else
+    {}
+
+    return pMrq->mSYSTEM_REVMOTION;
+}
+
 int robotSinanju::align( const tpvRegion &region )
 {
     //! angle1 + angle2 + angle3 = 0

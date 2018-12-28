@@ -205,6 +205,7 @@ public:
     float getEncoderZero( int ax );
 
 public:
+    int loadRawSystem();
     //! pvt ops
     int loadTpvCap();
     int getTpvCap( pvt_region );

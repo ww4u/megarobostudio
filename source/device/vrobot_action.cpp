@@ -73,6 +73,9 @@ float VRobot::getZero( int jointTabId )
 int  VRobot::setZero( int jointTabId, float val )
 { return 0; }
 
+int VRobot::getMechanicalVersion()
+{ return 0; }
+
 int VRobot::align( const tpvRegion &region )
 { return 0; }
 

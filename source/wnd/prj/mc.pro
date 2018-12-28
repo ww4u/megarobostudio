@@ -321,7 +321,8 @@ SOURCES += \
     ../../widget/lineentity.cpp \
     ../../widget/imageentity.cpp \
     ../../widget/devicetreewidget.cpp \
-    ../../widget/opliblistwidget.cpp
+    ../../widget/opliblistwidget.cpp \
+    ../ui/robograph_diagram.cpp
 
 
 HEADERS += \

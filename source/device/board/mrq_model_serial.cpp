@@ -25,6 +25,7 @@ int MRQ_model::saveSystem( QXmlStreamWriter &writer )
     writer.writeTextElement( "mSYSTEM_WORKMODE", toString(mSYSTEM_WORKMODE) );
 
     writer.writeTextElement( "mSYSTEM_POWERON", toString(mSYSTEM_POWERON) );
+    writer.writeTextElement( "mSYSTEM_REVMOTION", toString(mSYSTEM_REVMOTION) );
 
     writer.writeTextElement( "desc", mDesc );
     writer.writeTextElement( "sn", mSN );
@@ -45,6 +46,8 @@ int MRQ_model::loadSystem( QXmlStreamReader &reader )
 
         else if ( reader.name() == "mSYSTEM_POWERON" )
         { toValue( reader.readElementText(), &mSYSTEM_POWERON ); }
+
+        //! \note can not recover the revmotion
 
         else if ( reader.name() == "desc" )
         { mDesc =  reader.readElementText(); }

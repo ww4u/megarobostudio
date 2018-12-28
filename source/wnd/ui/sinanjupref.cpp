@@ -296,6 +296,14 @@ void SinanjuPref::on_btnUploadZero_clicked()
         zeros[i] = pBase->getZero(i);
     }
 
+    //! get mechanical version
+    int ver;
+    ver = pBase->getMechanicalVersion();
+    if ( ver == 0x5A )
+    { ui->chkInvBA->setChecked(false); }
+    else
+    { ui->chkInvBA->setChecked(true); }
+
     //! update the ui
     ui->spinAngleBase->setValue( zeros[0] );
     ui->spinAngleBArm->setValue( zeros[1] );
@@ -309,9 +317,11 @@ void SinanjuPref::on_btnUploadZero_clicked()
         pBase->mInitAngles[i] = zeros[i];
     }
 
+    //! save the dir
+    pBase->mAngleDir[0] = ui->chkInvBA->isChecked();
+
     emit sigModified( true );
 }
-
 
 void SinanjuPref::on_btnFactory_clicked()
 {

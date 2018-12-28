@@ -228,6 +228,8 @@ public:
     virtual float getZero( int jointTabId );
     virtual int  setZero( int jointTabId, float val );
 
+    virtual int getMechanicalVersion();
+
     virtual int align( const tpvRegion &region );
 
     virtual int getPOSE( float pos[] ); //! mPOSITION

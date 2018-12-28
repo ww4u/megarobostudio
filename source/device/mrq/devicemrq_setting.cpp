@@ -81,6 +81,9 @@ int deviceMRQ::upload( EnumDeviceContent content )
         ret = uploadIDs();
         if ( ret != 0 ){ return ret; }
 
+        ret = loadRawSystem();
+        if ( ret != 0 ){ return ret; }
+
         ret = loadTpvCap();
         if ( ret != 0 ){ return ret; }
 

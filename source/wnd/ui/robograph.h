@@ -60,6 +60,19 @@ protected:
                       const QRect &rect,
                       EntityWidget **pWig );
 
+    //! diagram arith
+    bool diagramCompile();
+
+    bool diagramCheck();
+    bool diagramGen();
+
+private slots:
+    void on_btnGen_clicked();
+
+    void on_btnRun_clicked();
+
+    void on_btnStop_clicked();
+
 private:
     Ui::RoboGraph *ui;
 

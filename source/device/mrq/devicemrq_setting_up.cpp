@@ -13,6 +13,7 @@ int deviceMRQ::_uploadSetting()
     checked_call( getLINK_INTFC(&mLINK_INTFC) );
     checked_call( getSYSTEM_WORKMODE(&mSYSTEM_WORKMODE) );
     checked_call( getSYSTEM_POWERON(&mSYSTEM_POWERON));
+    checked_call( getSYSTEM_REVMOTION( &mSYSTEM_REVMOTION ) );
 
     checked_call( getRS232_BAUD(&mRS232_BAUD) );
     checked_call( getRS232_WORDLEN(&mRS232_WORDLEN) );

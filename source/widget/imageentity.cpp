@@ -3,11 +3,9 @@
 
 ImageEntity::ImageEntity(QWidget *parent) :
     EntityWidget(parent),
-    ui(new Ui::ImageEntity)
+    ui( new Ui::ImageEntity )
 {
     ui->setupUi(this);
-
-    setGeometry( 0,0,100,100);
 }
 
 ImageEntity::~ImageEntity()

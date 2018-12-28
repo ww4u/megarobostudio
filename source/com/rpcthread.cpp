@@ -13,7 +13,14 @@ RpcThread::RpcThread(const QString &exec,
 
 void RpcThread::run()
 {
-    QProcess::execute( mExec, mArg );
+    //! \note do not know why fail
+//    QProcess::execute( mExec, mArg );
+
+    QProcess proc;
+
+    proc.start( mExec, mArg );
+
+    proc.waitForFinished( -1 );
 
     emit signal_completed( this );
 }

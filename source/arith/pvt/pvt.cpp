@@ -6,7 +6,8 @@
 
 //! for c api
 //extern "C" u8 pvtPointCalc(u8 chanNum, PvtCalcStruct *pPvtCalcData);
-extern "C" u8 pvtSegmentCalc(PvtCalcStruct *pPvtCalcData, u8 chanNum);
+extern "C"
+u8 pvtSegmentCalc(PvtCalcStruct *pPvtCalcData, u8 chanNum);
 
 //! 20M Hz
 #define norm_freq               (20000000)
@@ -16,6 +17,7 @@ static void outputData( uint8_t /*chanNum*/,
                  OutpDataTypeEnum /*datatype*/,
                  uint32_t outpData,
                  BufferOperateEnum /*bufferOperate*/,
+                 void */*pPvtCalcData*/,
                  void *pContext )
 {
 //    return;

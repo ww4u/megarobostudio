@@ -45,14 +45,14 @@ Copyright (C) 2016，北京镁伽机器人科技有限公司
 u8 pvtScurveCalc(u8 chanNum, PvtCalcStruct *pPvtCalcData)
 {
     u8  errorCode = PVT_CALC_NO_ERROR;
-    u16 calcCount = 0;
+    u16 calcCount;
 
     f32 calcOutput;
     u32 i;
 
     //时间使用64位是因为用的是查找法(数值解)，当精度不够时可能导致查找不到在范围内的目标值
     //如果使用解析解的方式则不需要
-    f64 curTime = 0;
+    f64 curTime;
     f64 lastTime;
     f64 maxTime;
     f64 minTime;
@@ -103,7 +103,7 @@ u8 pvtScurveCalc(u8 chanNum, PvtCalcStruct *pPvtCalcData)
                        (pPvtCalcData->motionTime - accTimeHalf - decTimeHalf);
 
         //根据平均速度判断是否需要重新计算加减速时间
-        if (0.0f == uniformSpeed)
+        if (uniformSpeed <= 0.0f)
         {
             uniformSpeed = 0;
 
@@ -256,6 +256,7 @@ u8 pvtScurveCalc(u8 chanNum, PvtCalcStruct *pPvtCalcData)
                     pPvtCalcData->outpBufferFill(chanNum, OUTPDATA_WAIT, 
                                                           (u32)calcOutput, 
                                                           BUFFOPERT_WRITE, 
+                                                          (void *)pPvtCalcData, 
                                                           pPvtCalcData->pContext);
                                                  
                     //统计下时间
@@ -281,6 +282,7 @@ u8 pvtScurveCalc(u8 chanNum, PvtCalcStruct *pPvtCalcData)
                 pPvtCalcData->outpBufferFill(chanNum, pPvtCalcData->lastStepDir, 
                                                       (u32)calcOutput, 
                                                       BUFFOPERT_WRITE, 
+                                                      (void *)pPvtCalcData, 
                                                       pPvtCalcData->pContext);
             }
 
@@ -310,6 +312,7 @@ u8 pvtScurveCalc(u8 chanNum, PvtCalcStruct *pPvtCalcData)
                 pPvtCalcData->outpBufferFill(chanNum, OUTPDATA_WAIT, 
                                                       (u32)calcOutput, 
                                                       BUFFOPERT_WRITE, 
+                                                      (void *)pPvtCalcData, 
                                                       pPvtCalcData->pContext);
                                              
                 //统计下时间
@@ -335,6 +338,7 @@ u8 pvtScurveCalc(u8 chanNum, PvtCalcStruct *pPvtCalcData)
             pPvtCalcData->outpBufferFill(chanNum, pPvtCalcData->lastStepDir, 
                                                   (u32)calcOutput, 
                                                   BUFFOPERT_WRITE, 
+                                                  (void *)pPvtCalcData, 
                                                   pPvtCalcData->pContext);
         }
         /*************************************解算加速(I)段************************************************************/
@@ -360,6 +364,7 @@ u8 pvtScurveCalc(u8 chanNum, PvtCalcStruct *pPvtCalcData)
                 pPvtCalcData->outpBufferFill(chanNum, OUTPDATA_WAIT, 
                                                       (u32)calcOutput, 
                                                       BUFFOPERT_WRITE, 
+                                                      (void *)pPvtCalcData, 
                                                       pPvtCalcData->pContext);
                                              
                 //统计下时间
@@ -423,6 +428,7 @@ u8 pvtScurveCalc(u8 chanNum, PvtCalcStruct *pPvtCalcData)
                     pPvtCalcData->outpBufferFill(chanNum, pPvtCalcData->lastStepDir, 
                                                           (u32)calcOutput, 
                                                           BUFFOPERT_WRITE, 
+                                                          (void *)pPvtCalcData, 
                                                           pPvtCalcData->pContext);
                 }
             }
@@ -545,6 +551,7 @@ u8 pvtScurveCalc(u8 chanNum, PvtCalcStruct *pPvtCalcData)
                     pPvtCalcData->outpBufferFill(chanNum, OUTPDATA_WAIT, 
                                                           (u32)calcOutput, 
                                                           BUFFOPERT_WRITE, 
+                                                          (void *)pPvtCalcData, 
                                                           pPvtCalcData->pContext);
                                                  
                     //统计下时间
@@ -570,6 +577,7 @@ u8 pvtScurveCalc(u8 chanNum, PvtCalcStruct *pPvtCalcData)
                 pPvtCalcData->outpBufferFill(chanNum, pPvtCalcData->lastStepDir, 
                                                       (u32)calcOutput, 
                                                       BUFFOPERT_WRITE, 
+                                                      (void *)pPvtCalcData, 
                                                       pPvtCalcData->pContext);
             }
         }
@@ -581,13 +589,14 @@ u8 pvtScurveCalc(u8 chanNum, PvtCalcStruct *pPvtCalcData)
     }
     else
     {
+        curTime = 0;
         decTime = pPvtCalcData->motionTime;
     }
 
     /****************************************最后一步**************************************************************/
     //最后一步的时间直接用motionTime减去上一步的时间位置
-    //pPvtCalcData->lastStepSpeed = pPvtCalcData->motionTime - curTime);
-    pPvtCalcData->lastStepSpeed = decTime - curTime;    
+    pPvtCalcData->lastStepSpeed = decTime - curTime; 
+    
     if (pPvtCalcData->lastStepSpeed <= 0.0f)
     {
         errorCode = PVT_CALC_SPEED_EQUAL_ZERO | PVT_CALC_SECTION_3;
@@ -595,6 +604,8 @@ u8 pvtScurveCalc(u8 chanNum, PvtCalcStruct *pPvtCalcData)
     }
     else
     {
+        pPvtCalcData->targetStep++;
+        
         //将时间按照线间步平分
         calcOutput = (pPvtCalcData->lastStepSpeed * pPvtCalcData->fpgaPwmClock + 
                       pPvtCalcData->lastStepSpeed * pPvtCalcData->fpgaClockOffset + 
@@ -611,6 +622,7 @@ u8 pvtScurveCalc(u8 chanNum, PvtCalcStruct *pPvtCalcData)
             pPvtCalcData->outpBufferFill(chanNum, OUTPDATA_WAIT, 
                                                   (u32)calcOutput, 
                                                   BUFFOPERT_WRITE, 
+                                                  (void *)pPvtCalcData, 
                                                   pPvtCalcData->pContext);
                                          
             //统计下时间
@@ -636,11 +648,9 @@ u8 pvtScurveCalc(u8 chanNum, PvtCalcStruct *pPvtCalcData)
         pPvtCalcData->outpBufferFill(chanNum, pPvtCalcData->lastStepDir, 
                                               (u32)calcOutput, 
                                               BUFFOPERT_WRITE, 
+                                              (void *)pPvtCalcData, 
                                               pPvtCalcData->pContext);
         /****************************************最后一步**************************************************************/
-
-        //仅做统计用
-        pPvtCalcData->targetStep++;
     }
     
     return errorCode;

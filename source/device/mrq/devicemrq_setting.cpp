@@ -64,30 +64,39 @@ int deviceMRQ::uploadIDs()
 
 int deviceMRQ::upload( EnumDeviceContent content )
 {
+    int ret = 0;
+
     if ( content == e_device_content_id )
     {
         uploadIDs();
     }
     else
     {
-        uploadDesc();
+        ret = uploadDesc();
+        if ( ret != 0 ){ return ret; }
 
-        uploadBaseInfo();
+        ret = uploadBaseInfo();
+        if ( ret != 0 ){ return ret; }
 
-        uploadIDs();
+        ret = uploadIDs();
+        if ( ret != 0 ){ return ret; }
 
-        loadTpvCap();
+        ret = loadTpvCap();
+        if ( ret != 0 ){ return ret; }
 
-        loadMotorBasic();
+        ret = loadMotorBasic();
+        if ( ret != 0 ){ return ret; }
 
         if ( mId == robot_geogoog_5_1 )
         {
-            loadPwms();
+            ret = loadPwms();
+            if ( ret != 0 ){ return ret; }
 
-            loadEncoderZero();
+            ret = loadEncoderZero();
+            if ( ret != 0 ){ return ret; }
         }
     }
-    return 0;
+    return ret;
 }
 
 QList<int> deviceMRQ::deviceIds()
@@ -121,7 +130,7 @@ QString deviceMRQ::loadDesc()
     MRQ_LINK_DEVICEINFO_1 type2;
     ret = getSYSTEM_TYPE( &type, &type2 );
     if ( ret != 0 )
-    { logDbg();return mDesc; }
+    { return mDesc; }
 
     //! format the type
     //! mrq

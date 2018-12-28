@@ -24,15 +24,41 @@ protected:
     virtual void mouseReleaseEvent( QMouseEvent *event );
     virtual void mouseMoveEvent(QMouseEvent *event);
 
+    virtual void mouseDoubleClickEvent( QMouseEvent *event );
+
+    virtual void keyReleaseEvent(QKeyEvent *event);
+
     virtual void dragEnterEvent(QDragEnterEvent *event);
     virtual void dropEvent(QDropEvent *event);
+
+//    virtual QSize sizeHint();
 public:
     virtual int save( QString &outFileName );
     virtual int saveAs( QString &name );
 
+protected slots:
+    void slot_link_changed( EntityWidget *pWig, Anchor::anchorType tpe, QRect rect );
+    void slot_anchor_changed( EntityWidget *pWig,
+                              Anchor::anchorType tpe,
+                              QPoint ptParent );
+    void slot_request_delete( EntityWidget *pWig );
+
 protected:
-    EntityWidget* addRoboEntity( const QString &className, const QString &name );
-    EntityWidget* addOperatorEntity( const QString &className, const QString &name );
+    //! entity op
+    EntityWidget* createEntityWidget( EntityWidget::EntityWidgetType tpe,
+                                      const QPoint &pt );
+    void deleteSelected();
+
+    EntityWidget* addRoboEntity( const QString &className,
+                                 const QString &name,
+                                 const QPoint &pt );
+    EntityWidget* addOperatorEntity( const QString &className,
+                                     const QString &name,
+                                     const QPoint &pt );
+
+    bool crossDetect( EntityWidget *pSrc,
+                      const QRect &rect,
+                      EntityWidget **pWig );
 
 private:
     Ui::RoboGraph *ui;

@@ -186,7 +186,9 @@ void MainWindow::loadPlugin()
     QStringList pluginDirs;
 
     pluginDirs<<pluginPath
-              <<"G:/work/mc/develope/installer/package/mrq";        //! for debug used
+              <<"G:/work/mc/develope/installer_release/package/mrq";        //! for debug used
+
+//    pluginDirs<<"C:/Program Files (x86)/MEGAROBO Studio/package/mrq";
 
     foreach( QString subPath, pluginDirs )
     {
@@ -438,10 +440,10 @@ void MainWindow::buildConnection()
              SIGNAL(itemXActivated( mcModelObj *, mcModelObj_Op)),
              this,
              SLOT(on_itemXActivated( mcModelObj *, mcModelObj_Op)));
-    connect( m_pDeviceMgr,
-             SIGNAL(signal_itemXHelp(eItemHelp)),
-             this,
-             SLOT(slot_itemXHelp(eItemHelp)) );
+//    connect( m_pDeviceMgr,
+//             SIGNAL(signal_itemXHelp(eItemHelp)),
+//             this,
+//             SLOT(slot_itemXHelp(eItemHelp)) );
 
     connect( m_pDeviceMgr,
              SIGNAL(signalModelUpdated(mcModelObj*)),
@@ -453,18 +455,18 @@ void MainWindow::buildConnection()
              this,
              SLOT(on_itemXActivated(mcModelObj*, mcModelObj_Op)));
     connect( m_pRoboMgr,
-             SIGNAL(signal_itemXHelp(eItemHelp)),
+             SIGNAL(signal_itemXHelp(eItemHelp, const QString &)),
              this,
-             SLOT(slot_itemXHelp(eItemHelp)) );
+             SLOT(slot_itemXHelp(eItemHelp, const QString &)) );
 
     connect( m_pScriptMgr,
              SIGNAL(itemXActivated(mcModelObj*, mcModelObj_Op)),
              this,
              SLOT(on_itemXActivated(mcModelObj*, mcModelObj_Op)));
     connect( m_pScriptMgr,
-             SIGNAL(signal_itemXHelp(eItemHelp)),
+             SIGNAL(signal_itemXHelp(eItemHelp, const QString & )),
              this,
-             SLOT(slot_itemXHelp(eItemHelp)) );
+             SLOT(slot_itemXHelp(eItemHelp, const QString &)) );
 
     connect( m_pScriptMgr, SIGNAL(signal_scriptmgr_changed()),
              this, SLOT(slot_scriptmgr_changed()));
@@ -870,7 +872,7 @@ void MainWindow::slot_itemModelUpdated( mcModelObj *pObj )
     }
 }
 
-void MainWindow::slot_itemXHelp( eItemHelp hlp )
+void MainWindow::slot_itemXHelp( eItemHelp hlp, const QString &name )
 {
     if ( mMcModel.mSysPref.mbShowHelp )
     {
@@ -913,9 +915,12 @@ void MainWindow::slot_action_plugin( QAction *pAction )
    QStringList args;
    QString str = pAction->data().toString();
    str.replace("/", QDir::separator() );
-   args<<"/c";
+   args<<"/C";
    args<<str;
 
+   logDbg()<<args;
+
+//   QMessageBox::information( this, "", str );
    //! \todo linux
    RpcThread *pThread = new RpcThread( "cmd", args );
    if ( NULL != pThread )

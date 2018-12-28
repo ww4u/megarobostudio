@@ -4,6 +4,8 @@ installer_debug/
 installer_release/
 unittest/
 
+source/misa/image/
+
 *.o
 *.qm
 debug/

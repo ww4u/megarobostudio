@@ -46,7 +46,7 @@ Copyright (C) 2016，北京镁伽机器人科技有限公司
 返 回 值: 无;
 说    明: 无;
 *********************************************************************************************/
-u8 pvtPointCalc(u8 chanNum, PvtCalcStruct *pPvtCalcData)
+static u8 pvtPointCalc(u8 chanNum, PvtCalcStruct *pPvtCalcData)
 {
     u8  errorCode = PVT_CALC_NO_ERROR;
 
@@ -167,7 +167,7 @@ u8 pvtSegmentCalc(PvtCalcStruct *pPvtCalcData, u8 chanNum)
             motionTime += pPvtCalcData->errorTime;
             pPvtCalcData->errorTime = motionTime - (u32)motionTime;
             
-            pPvtCalcData->outpBufferFill(chanNum, OUTPDATA_WAIT, (u32)motionTime, BUFFOPERT_WRITE, pPvtCalcData->pContext);
+            pPvtCalcData->outpBufferFill(chanNum, OUTPDATA_WAIT, (u32)motionTime, BUFFOPERT_WRITE, (void *)pPvtCalcData, pPvtCalcData->pContext);
 
             //统计时间
             pPvtCalcData->timeCount += (u32)motionTime;
@@ -202,11 +202,11 @@ u8 pvtSegmentCalc(PvtCalcStruct *pPvtCalcData, u8 chanNum)
             errorCode = pvtPointCalc(chanNum, pPvtCalcData);
         }
 
-        //FIFO模式算完每一段都强制发送下数据，保存多个轴波表同步    CJ 2018.04.21
+        //FIFO模式算完每一段都强制发送下数据，保持多个轴波表同步    CJ 2018.04.21
         if (EXECMODE_FIFO == pPvtCalcData->pvtExecMode)
         {
             //强制发送
-            pPvtCalcData->outpBufferFill(chanNum, OUTPDATA_FORWARD, 0, BUFFOPERT_SYNCSEND, pPvtCalcData->pContext);
+            pPvtCalcData->outpBufferFill(chanNum, OUTPDATA_FORWARD, 0, BUFFOPERT_SYNCSEND, (void *)pPvtCalcData, pPvtCalcData->pContext);
         }
     }
     
@@ -214,7 +214,8 @@ u8 pvtSegmentCalc(PvtCalcStruct *pPvtCalcData, u8 chanNum)
     if ((-1.0f == pPvtCalcData->endPoint.time) ||
         ((EXECMODE_FIFO == pPvtCalcData->pvtExecMode) &&        //FIFO模式，算够了点数且还未上报    CJ 2017.03.28 Add
          (false == pPvtCalcData->bReportCalcEnd) &&
-         (pPvtCalcData->lastPoint >= PVT_FIFO_REPORT_CALC_NUM)))
+         (pPvtCalcData->timeCount >= pPvtCalcData->bufferTime)))
+         //(pPvtCalcData->lastPoint >= PVT_FIFO_REPORT_CALC_NUM)))
     {
         //通知FUNC查询FPGA的Ready状态
         if ((EXECMODE_FIFO != pPvtCalcData->pvtExecMode) ||    //FIFO模式下已经上报了则不需要上报    CJ 2017.03.28 Modify
@@ -228,7 +229,7 @@ u8 pvtSegmentCalc(PvtCalcStruct *pPvtCalcData, u8 chanNum)
         if (-1.0f == pPvtCalcData->endPoint.time)    //CJ 2017.03.28 Modify
         {
             //强制发送Buffer中的数据，总的波表数据等于m_stProcessData.targetStep - 1
-            pPvtCalcData->outpBufferFill(chanNum, OUTPDATA_FORWARD, 0, BUFFOPERT_FORCESEND, pPvtCalcData->pContext);
+            pPvtCalcData->outpBufferFill(chanNum, OUTPDATA_FORWARD, 0, BUFFOPERT_FORCESEND, (void *)pPvtCalcData, pPvtCalcData->pContext);
         }
     }
 

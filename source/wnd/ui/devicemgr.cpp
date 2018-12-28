@@ -356,6 +356,13 @@ void deviceMgr::updatePhyBusTree( VRoboList *pRoboList )
                                QIcon( QPixmap::fromImage( pDev->getImage() ) )
                                );
         }
+        else if ( pDev->getType() == mcModelObj::model_robot )
+        {
+            pItemDev->setText( 0, pDev->getName() );
+
+            pItemDev->setData( 0, Qt::UserRole, QVariant::fromValue(pDev) );
+            pItemDev->setIcon( 0, QIcon( QPixmap::fromImage( pDev->getImage() ) ) );
+        }
         else
         {
 
@@ -960,6 +967,7 @@ void deviceMgr::contextMenuEvent(QContextMenuEvent *event)
     //! current device
     if ( pObj->Type() == mcModelObj::model_device
          || pObj->Type() == mcModelObj::model_composite_device
+         || pObj->Type() == mcModelObj::model_robot
          )
     {
 

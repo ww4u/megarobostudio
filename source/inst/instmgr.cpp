@@ -1056,11 +1056,11 @@ int InstMgr::probeCANBus( IBus *pNewBus,
             }
             sysProgress( uiProgBase + (uiStep++)*uiProgStep, tr("device") );
 
-            //! gen robo
+            //! gen controller
+            QString deviceDesc;
             {
                 //! get class
                 QString roboClass;
-                QString deviceDesc;
 
                 //! info
                 deviceDesc = pMRQ->getDesc();
@@ -1117,6 +1117,30 @@ int InstMgr::probeCANBus( IBus *pNewBus,
                 //! open scpi
                 pRobo->open();
             }
+
+            //! gen robo
+//            do{
+//                QString roboCls;
+//                roboCls = m_pMainModel->mDeviceDbs.findRobot( deviceDesc );
+//                if ( roboCls.length() > 0 )
+//                {}
+//                else
+//                { break; }
+
+//                pRobo = robotFact::createRobot( roboCls );
+//                if ( NULL == pRobo )
+//                { return ERR_ALLOC_FAIL; }
+
+//                //! add robot
+//                roboList.append( pRobo );
+
+//                //! open scpi
+//                pRobo->open();
+
+//                pRobo->setType( mcModelObj::model_robot );
+
+//            }while( 0 );
+
             sysProgress( uiProgBase + (uiStep++)*uiProgStep, tr("robo") );
         }
     }

@@ -71,7 +71,7 @@ robotSinanju::robotSinanju()
 
     //! angle dir
     mAngleDir.clear();
-    mAngleDir<<true<<false<<true<<false;        //! big arm invert
+    mAngleDir<<false<<false<<true<<false;       //! for the arm
 
     mArithDirs.clear();
     mArithDirs<<true<<false<<true<<false;       //! arith dirs

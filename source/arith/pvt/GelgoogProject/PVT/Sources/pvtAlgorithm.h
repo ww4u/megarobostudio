@@ -61,7 +61,7 @@ typedef enum
 {
     PLANMODE_CUBIC = 0,    //三次多项式插值
     PLANMODE_TRAPEZOID,    //梯形插值
-    PLANMODE_SCURVE,       //正弦
+    PLANMODE_SCURVE,       //S曲线
     
 }PlanModeEnum;
 
@@ -106,6 +106,7 @@ typedef void (*OutpBufferFillFunc)(u8 chanNum,
                                    OutpDataTypeEnum datatype, 
                                    u32 outpData, 
                                    BufferOperateEnum bufferOperate,
+                                   void *pPvtCalcData,
                                    void *pContext);
 
 
@@ -177,6 +178,8 @@ typedef struct
     OutpBufferFillFunc  outpBufferFill;
     
     void *pContext;    //上下文指针，上位机使用
+
+    u64 bufferTime;    //FIFO模式下的缓冲时间，量纲是20MHz
 
     u64 timeCount;     //统计用
 

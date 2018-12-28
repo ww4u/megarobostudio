@@ -146,7 +146,6 @@ void roboScene::dragEnterEvent(QDragEnterEvent *event)
 }
 void roboScene::dropEvent(QDropEvent *event)
 {
-//    logDbg();
     if (event->mimeData()->hasFormat("robomgr/robot"))
     {
         logDbg()<<event->mimeData()->data("robomgr/robot");
@@ -157,6 +156,8 @@ void roboScene::dropEvent(QDropEvent *event)
         pt = ui->scrollArea->mapFrom( this, event->pos() );
 
         addRobot( event->mimeData()->data("robomgr/robot"), pt );
+
+        emit signal_itemXHelp( e_help_new_robot, event->mimeData()->data("robomgr/robot") );
     }
 }
 

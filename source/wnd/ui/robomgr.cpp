@@ -123,6 +123,6 @@ logDbg();
 
         emit itemXActivated( pNewRobot );
 
-        emit signal_itemXHelp( e_help_new_robot );
+        emit signal_itemXHelp( e_help_new_robot,  pNewRobot->getClass() );
     }
 }

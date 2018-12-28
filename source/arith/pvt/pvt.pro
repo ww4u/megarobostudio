@@ -7,7 +7,7 @@ TARGET = ../../../../lib/pvt
 
 win32 {
 #INCLUDEPATH += "D:/Program Files (x86)/IAR Systems/Embedded Workbench 7.5/arm/CMSIS/Include"
-INCLUDEPATH += ../../../../include/Include
+INCLUDEPATH += ../../../include/Include
 }
 unix{
 INCLUDEPATH += "/home/w/work/arm/include"

@@ -20,7 +20,7 @@ public:
     void setLabel( const QString &lab );
     QString label();
 
-private:
+protected:
     Ui::RectEntity *ui;
 
 

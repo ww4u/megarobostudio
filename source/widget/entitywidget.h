@@ -3,24 +3,95 @@
 
 #include <QFrame>
 #include <QPainter>
+#include <QMap>
+#include "../../include/mydebug.h"
 
 class Entity;
+
+class ShiftContext
+{
+public:
+    QPoint v1, v2;
+};
+
+class Anchor
+{
+public:
+    enum anchorType
+    {
+        anchor_unk,
+        anchor_line_from,
+        anchor_line_to
+    };
+
+public:
+    anchorType mType;
+    QPointF mRefPt;
+};
 
 class EntityWidget : public QFrame
 {
     Q_OBJECT
+
+public:
+    enum EntityWidgetType
+    {
+        entity_widget_unk,
+        entity_widget_line,
+        entity_widget_rect,
+        entity_widget_image,
+    };
+
+public:
+    static int _focus_radius;
+
+public:
+    static QRect genBoundingRect( QPoint a, QPoint b );
+
 public:
     explicit EntityWidget(QWidget *parent = nullptr);    
 
 signals:
+    void signal_link_changed( EntityWidget *pWig,
+                              Anchor::anchorType tpe,
+                              QRect hotRect );
+
+    void signal_anchor_changed( EntityWidget *pWig,
+                                Anchor::anchorType tpe,
+                                QPoint ptParent );
+
+    void signal_request_delete( EntityWidget *pWig );
 
 public slots:
 
 protected:
     virtual void paintEvent( QPaintEvent *event );
 
+    virtual void mousePressEvent( QMouseEvent *event );
+    virtual void mouseReleaseEvent( QMouseEvent *event );
+
+//    virtual void keyReleaseEvent(QKeyEvent *event);
+
 protected:
     void paintFrame( QPainter &painter );
+
+    QRect genFocusRect( const QPoint &pt );
+
+public:
+    virtual bool mouseOver( const QPoint &pt );
+    virtual void shift( QRect &geometry,
+                        const QPoint &pt,
+                        ShiftContext &context );
+    virtual void shiftEnd( ShiftContext &context );
+
+    virtual void setAnchor( Anchor::anchorType typ, QPoint val );
+
+    //! anchor in parent
+    virtual QPoint fromAnchor();
+    virtual QPoint toAnchor();
+
+public:
+    void anchorProc();
 
 public:
     void attachEntity( Entity *p );
@@ -38,6 +109,18 @@ public:
     void setSelected( bool b );
     bool selected();
 
+    //! attach & detach widget
+    void attachWidget( EntityWidget *pWig, Anchor::anchorType arg, const QPoint &pt );
+    void detachWidget( EntityWidget *pWig );
+
+    void cleanAttach();
+
+    void link( Anchor::anchorType arg, EntityWidget *pWig );
+    void unlink( Anchor::anchorType arg );
+    void delink( Anchor::anchorType arg );
+
+    void cleanLink();
+
 protected:
     void setPenAttr( QPen &pen );
 
@@ -51,6 +134,13 @@ protected:
 
     bool mbSelected;
     QPoint mPressPt;
+
+    bool mbPressed;
+
+    //! attached widget
+    QMap<EntityWidget *, Anchor > mAttachedWidgets;
+
+    QMap< Anchor::anchorType, EntityWidget *> mLinkWidget;
 };
 
 #endif // ENTITYWIDGET_H

@@ -8,6 +8,8 @@ QString driverController::getName()
 { return mName; }
 QString driverController::getClass()
 { return mClass; }
+QString driverController::getRobot()
+{ return mRobot; }
 int driverController::getCHs()
 { return mChs; }
 int driverController::getMotor()
@@ -26,6 +28,9 @@ int driverController::read( QXmlStreamReader &reader )
 
         else if ( reader.name() == "class" )
         { mClass = reader.readElementText(); }
+
+        else if ( reader.name() == "robot" )
+        { mRobot = reader.readElementText(); }
 
         else if ( reader.name() == "ch" )
         { mChs = reader.readElementText().toInt(); }
@@ -116,4 +121,16 @@ QString deviceDb::findClass( const QString &desc )
     { return QString("quebeley"); }
     else
     { return pDriver->getClass(); }
+}
+
+QString deviceDb::findRobot( const QString &desc )
+{
+    driverController *pDriver;
+
+    //! default class
+    pDriver = find( desc );
+    if ( NULL == pDriver )
+    { return QString(""); }
+    else
+    { return pDriver->getRobot(); }
 }

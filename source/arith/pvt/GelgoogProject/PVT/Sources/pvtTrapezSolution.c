@@ -98,7 +98,7 @@ u8 pvtTrapezCurveCalc(u8 chanNum, PvtCalcStruct *pPvtCalcData)
                        (pPvtCalcData->motionTime - accTimeHalf - decTimeHalf);
 
         //根据平均速度判断是否需要重新计算加减速时间
-        if (0.0f == uniformSpeed)
+        if (uniformSpeed <= 0.0f)
         {
             uniformSpeed = 0;
 
@@ -176,10 +176,11 @@ u8 pvtTrapezCurveCalc(u8 chanNum, PvtCalcStruct *pPvtCalcData)
                     pPvtCalcData->outpBufferFill(chanNum, OUTPDATA_WAIT, 
                                                           (u32)calcOutput, 
                                                           BUFFOPERT_WRITE, 
+                                                          (void *)pPvtCalcData,
                                                           pPvtCalcData->pContext);
                                                  
                     //统计下时间
-                    pPvtCalcData->timeCount += (u32)calcOutput * pPvtCalcData->lineSteps;
+                    pPvtCalcData->timeCount += (u32)calcOutput;
                     
                     calcOutput = pPvtCalcData->fpgaPwmClock;
                     
@@ -196,11 +197,12 @@ u8 pvtTrapezCurveCalc(u8 chanNum, PvtCalcStruct *pPvtCalcData)
                 
                 //统计下误差和时间
                 pPvtCalcData->errorTime  = (calcOutput - (u32)calcOutput) * pPvtCalcData->lineSteps;
-                pPvtCalcData->timeCount += (u32)calcOutput * pPvtCalcData->lineSteps;
+                pPvtCalcData->timeCount += (u32)calcOutput;
 
                 pPvtCalcData->outpBufferFill(chanNum, pPvtCalcData->lastStepDir, 
                                                       (u32)calcOutput, 
                                                       BUFFOPERT_WRITE, 
+                                                      (void *)pPvtCalcData,
                                                       pPvtCalcData->pContext);
             }
 
@@ -230,10 +232,11 @@ u8 pvtTrapezCurveCalc(u8 chanNum, PvtCalcStruct *pPvtCalcData)
                 pPvtCalcData->outpBufferFill(chanNum, OUTPDATA_WAIT, 
                                                       (u32)calcOutput, 
                                                       BUFFOPERT_WRITE, 
+                                                      (void *)pPvtCalcData,
                                                       pPvtCalcData->pContext);
                                              
                 //统计下时间
-                pPvtCalcData->timeCount += (u32)calcOutput * pPvtCalcData->lineSteps;
+                pPvtCalcData->timeCount += (u32)calcOutput;
                 
                 calcOutput = pPvtCalcData->fpgaPwmClock;
                 
@@ -250,11 +253,12 @@ u8 pvtTrapezCurveCalc(u8 chanNum, PvtCalcStruct *pPvtCalcData)
             
             //统计下误差和时间
             pPvtCalcData->errorTime  = (calcOutput - (u32)calcOutput) * pPvtCalcData->lineSteps;
-            pPvtCalcData->timeCount += (u32)calcOutput * pPvtCalcData->lineSteps;
+            pPvtCalcData->timeCount += (u32)calcOutput;
 
             pPvtCalcData->outpBufferFill(chanNum, pPvtCalcData->lastStepDir, 
                                                   (u32)calcOutput, 
                                                   BUFFOPERT_WRITE, 
+                                                  (void *)pPvtCalcData,
                                                   pPvtCalcData->pContext);
         }
         /*************************************解算加速(I)段************************************************************/
@@ -279,6 +283,7 @@ u8 pvtTrapezCurveCalc(u8 chanNum, PvtCalcStruct *pPvtCalcData)
                 pPvtCalcData->outpBufferFill(chanNum, OUTPDATA_WAIT, 
                                                       (u32)calcOutput, 
                                                       BUFFOPERT_WRITE, 
+                                                      (void *)pPvtCalcData,
                                                       pPvtCalcData->pContext);
                                              
                 //统计下时间
@@ -337,11 +342,12 @@ u8 pvtTrapezCurveCalc(u8 chanNum, PvtCalcStruct *pPvtCalcData)
                     
                     //统计下误差和时间
                     pPvtCalcData->errorTime  = (calcOutput - (u32)calcOutput) * pPvtCalcData->lineSteps;
-                    pPvtCalcData->timeCount += (u32)calcOutput * pPvtCalcData->lineSteps;
+                    pPvtCalcData->timeCount += (u32)calcOutput;
 
                     pPvtCalcData->outpBufferFill(chanNum, pPvtCalcData->lastStepDir, 
                                                           (u32)calcOutput, 
-                                                          BUFFOPERT_WRITE, 
+                                                          BUFFOPERT_WRITE,
+                                                          (void *)pPvtCalcData, 
                                                           pPvtCalcData->pContext);
                 }
             }
@@ -400,11 +406,12 @@ u8 pvtTrapezCurveCalc(u8 chanNum, PvtCalcStruct *pPvtCalcData)
                     //多出来的部分作为等待时间
                     pPvtCalcData->outpBufferFill(chanNum, OUTPDATA_WAIT, 
                                                           (u32)calcOutput, 
-                                                          BUFFOPERT_WRITE, 
+                                                          BUFFOPERT_WRITE,
+                                                          (void *)pPvtCalcData, 
                                                           pPvtCalcData->pContext);
                                                  
                     //统计下时间
-                    pPvtCalcData->timeCount += (u32)calcOutput * pPvtCalcData->lineSteps;
+                    pPvtCalcData->timeCount += (u32)calcOutput;
                     
                     calcOutput = pPvtCalcData->fpgaPwmClock;
                     
@@ -421,11 +428,13 @@ u8 pvtTrapezCurveCalc(u8 chanNum, PvtCalcStruct *pPvtCalcData)
                 
                 //统计下误差和时间
                 pPvtCalcData->errorTime  = (calcOutput - (u32)calcOutput) * pPvtCalcData->lineSteps;
-                pPvtCalcData->timeCount += (u32)calcOutput * pPvtCalcData->lineSteps;
+                //pPvtCalcData->timeCount += (u32)calcOutput * pPvtCalcData->lineSteps;
+                pPvtCalcData->timeCount += (u32)calcOutput;
 
                 pPvtCalcData->outpBufferFill(chanNum, pPvtCalcData->lastStepDir, 
                                                       (u32)calcOutput, 
                                                       BUFFOPERT_WRITE, 
+                                                      (void *)pPvtCalcData, 
                                                       pPvtCalcData->pContext);
             }
         }
@@ -442,8 +451,8 @@ u8 pvtTrapezCurveCalc(u8 chanNum, PvtCalcStruct *pPvtCalcData)
 
     /****************************************最后一步**************************************************************/
     //III段最后一步
-    //pPvtCalcData->lastStepSpeed = pPvtCalcData->motionTime - curTime);
-    pPvtCalcData->lastStepSpeed = decTime - curTime;    
+    pPvtCalcData->lastStepSpeed = decTime - curTime; 
+    
     if (pPvtCalcData->lastStepSpeed <= 0.0f)
     {
         errorCode = PVT_CALC_SPEED_EQUAL_ZERO | PVT_CALC_SECTION_3;
@@ -451,6 +460,9 @@ u8 pvtTrapezCurveCalc(u8 chanNum, PvtCalcStruct *pPvtCalcData)
     }
     else
     {
+        //仅做统计用
+        pPvtCalcData->targetStep++;
+        
         //将时间按照线间步平分
         calcOutput = (pPvtCalcData->lastStepSpeed * pPvtCalcData->fpgaPwmClock + 
                       pPvtCalcData->lastStepSpeed * pPvtCalcData->fpgaClockOffset + 
@@ -466,11 +478,12 @@ u8 pvtTrapezCurveCalc(u8 chanNum, PvtCalcStruct *pPvtCalcData)
             //多出来的部分作为等待时间
             pPvtCalcData->outpBufferFill(chanNum, OUTPDATA_WAIT, 
                                                   (u32)calcOutput, 
-                                                  BUFFOPERT_WRITE, 
+                                                  BUFFOPERT_WRITE,
+                                                  (void *)pPvtCalcData,  
                                                   pPvtCalcData->pContext);
                                          
             //统计下时间
-            pPvtCalcData->timeCount += (u32)calcOutput * pPvtCalcData->lineSteps;
+            pPvtCalcData->timeCount += (u32)calcOutput;
             
             calcOutput = pPvtCalcData->fpgaPwmClock;
             
@@ -487,16 +500,14 @@ u8 pvtTrapezCurveCalc(u8 chanNum, PvtCalcStruct *pPvtCalcData)
         
         //统计下误差和时间
         pPvtCalcData->errorTime  = (calcOutput - (u32)calcOutput) * pPvtCalcData->lineSteps;
-        pPvtCalcData->timeCount += (u32)calcOutput * pPvtCalcData->lineSteps;
+        pPvtCalcData->timeCount += (u32)calcOutput;
 
         pPvtCalcData->outpBufferFill(chanNum, pPvtCalcData->lastStepDir, 
                                               (u32)calcOutput, 
-                                              BUFFOPERT_WRITE, 
+                                              BUFFOPERT_WRITE,
+                                              (void *)pPvtCalcData,  
                                               pPvtCalcData->pContext);
         /****************************************最后一步**************************************************************/
-
-        //仅做统计用
-        pPvtCalcData->targetStep++;
     }
     
     return errorCode;

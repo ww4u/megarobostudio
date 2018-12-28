@@ -45,7 +45,7 @@ Copyright (C) 2016，北京镁伽机器人科技有限公司
 u8 pvtCubicCurveCalc(u8 chanNum, PvtCalcStruct *pPvtCalcData)
 {
     u8  errorCode = PVT_CALC_NO_ERROR;
-    u16 calcCount = 0;
+    u16 calcCount;
 
     f32 calcOutput;
     u32 i;
@@ -192,6 +192,7 @@ u8 pvtCubicCurveCalc(u8 chanNum, PvtCalcStruct *pPvtCalcData)
                 pPvtCalcData->outpBufferFill(chanNum, OUTPDATA_WAIT, 
                                                       (u32)calcOutput, 
                                                       BUFFOPERT_WRITE, 
+                                                      (void *)pPvtCalcData, 
                                                       pPvtCalcData->pContext);
                                              
                 //统计下时间
@@ -217,6 +218,7 @@ u8 pvtCubicCurveCalc(u8 chanNum, PvtCalcStruct *pPvtCalcData)
             pPvtCalcData->outpBufferFill(chanNum, pPvtCalcData->lastStepDir, 
                                                   (u32)calcOutput, 
                                                   BUFFOPERT_WRITE, 
+                                                  (void *)pPvtCalcData, 
                                                   pPvtCalcData->pContext);
             
         }    //for (i = 0;i < (pPvtCalcData->motionStep - 1);i++)
@@ -227,62 +229,66 @@ u8 pvtCubicCurveCalc(u8 chanNum, PvtCalcStruct *pPvtCalcData)
     } 
     
     /*****************************最后一步*******************************/
-    pPvtCalcData->lastStepSpeed = pPvtCalcData->motionTime - curTime;    //最后一步的时间直接用motionTime减去上一步的时间位置
+    //最后一步的时间直接用motionTime减去上一步的时间位置
+    pPvtCalcData->lastStepSpeed = pPvtCalcData->motionTime - curTime;  
+    
     if (pPvtCalcData->lastStepSpeed <= 0.0f)
     {
         errorCode = PVT_CALC_SPEED_EQUAL_ZERO | PVT_CALC_SECTION_1;
         pPvtCalcData->lastStepSpeed = 0;
     }
-    
-    //将时间按照线间步平分
-    calcOutput = (pPvtCalcData->lastStepSpeed * pPvtCalcData->fpgaPwmClock + 
-                  pPvtCalcData->lastStepSpeed * pPvtCalcData->fpgaClockOffset + 
-                  pPvtCalcData->errorTime) * pPvtCalcData->lineStepsInv;
-
-    //做个上限保护
-    if (calcOutput > pPvtCalcData->fpgaPwmClock)
+    else
     {
-        calcOutput -= pPvtCalcData->fpgaPwmClock;
+        pPvtCalcData->targetStep++;    //CJ 2018.12.10 Add
         
-        pPvtCalcData->errorTime = (calcOutput - (u32)calcOutput) * pPvtCalcData->lineSteps;
+        //将时间按照线间步平分
+        calcOutput = (pPvtCalcData->lastStepSpeed * pPvtCalcData->fpgaPwmClock + 
+                      pPvtCalcData->lastStepSpeed * pPvtCalcData->fpgaClockOffset + 
+                      pPvtCalcData->errorTime) * pPvtCalcData->lineStepsInv;
+
+        //做个上限保护
+        if (calcOutput > pPvtCalcData->fpgaPwmClock)
+        {
+            calcOutput -= pPvtCalcData->fpgaPwmClock;
+            
+            pPvtCalcData->errorTime = (calcOutput - (u32)calcOutput) * pPvtCalcData->lineSteps;
+            
+            //多出来的部分作为等待时间
+            pPvtCalcData->outpBufferFill(chanNum, OUTPDATA_WAIT, 
+                                                  (u32)calcOutput, 
+                                                  BUFFOPERT_WRITE, 
+                                                  (void *)pPvtCalcData, 
+                                                  pPvtCalcData->pContext);
+                                         
+            //统计下时间
+            pPvtCalcData->timeCount += (u32)calcOutput * pPvtCalcData->lineSteps;
+            
+            calcOutput = pPvtCalcData->fpgaPwmClock;
+            
+            //系统错误码置位
+            errorCode = PVT_CALC_GREAT_UPER_LIMIT | PVT_CALC_SECTION_1;
+        }
+        else if (calcOutput < OUTPUT_PERIOD_MIN)
+        {
+            calcOutput = OUTPUT_PERIOD_MIN;
+            
+            //系统错误码置位
+            errorCode = PVT_CALC_LESS_LOWER_LIMIT | PVT_CALC_SECTION_1;
+        }
         
-        //多出来的部分作为等待时间
-        pPvtCalcData->outpBufferFill(chanNum, OUTPDATA_WAIT, 
-                                              (u32)calcOutput, 
-                                              BUFFOPERT_WRITE, 
-                                              pPvtCalcData->pContext);
-                                     
-        //统计下时间
+        //统计下误差和时间
+        pPvtCalcData->errorTime  = (calcOutput - (u32)calcOutput) * pPvtCalcData->lineSteps;
         pPvtCalcData->timeCount += (u32)calcOutput * pPvtCalcData->lineSteps;
         
-        calcOutput = pPvtCalcData->fpgaPwmClock;
-        
-        //系统错误码置位
-        errorCode = PVT_CALC_GREAT_UPER_LIMIT | PVT_CALC_SECTION_1;
-    }
-    else if (calcOutput < OUTPUT_PERIOD_MIN)
-    {
-        calcOutput = OUTPUT_PERIOD_MIN;
-        
-        //系统错误码置位
-        errorCode = PVT_CALC_LESS_LOWER_LIMIT | PVT_CALC_SECTION_1;
+        pPvtCalcData->outpBufferFill(chanNum, pPvtCalcData->lastStepDir, 
+                                              (u32)calcOutput, 
+                                              BUFFOPERT_WRITE, 
+                                              (void *)pPvtCalcData, 
+                                              pPvtCalcData->pContext);
+        /*****************************最后一步*******************************/
     }
     
-    //统计下误差和时间
-    pPvtCalcData->errorTime  = (calcOutput - (u32)calcOutput) * pPvtCalcData->lineSteps;
-    pPvtCalcData->timeCount += (u32)calcOutput * pPvtCalcData->lineSteps;
-    
-    pPvtCalcData->outpBufferFill(chanNum, pPvtCalcData->lastStepDir, 
-                                          (u32)calcOutput, 
-                                          BUFFOPERT_WRITE, 
-                                          pPvtCalcData->pContext);
-    /*****************************最后一步*******************************/
-    
-    //开始计算下一个目标
-    pPvtCalcData->targetStep++;
-
-    //因为之前P(t) - p0 = pPvtCalcData->targetStep - p0
-    //恢复目标微步
+    //因为之前P(t) - p0 = pPvtCalcData->targetStep - p0，所以需要恢复目标微步
     pPvtCalcData->targetStep += pPvtCalcData->startPosn;
 
     return errorCode;

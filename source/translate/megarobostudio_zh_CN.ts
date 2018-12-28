@@ -58,7 +58,7 @@
     </message>
     <message>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">关闭</translation>
     </message>
 </context>
 <context>
@@ -69,7 +69,7 @@
     </message>
     <message>
         <source>Connection</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">连接</translation>
     </message>
     <message>
         <source>X</source>
@@ -88,11 +88,11 @@
     <name>ComThread</name>
     <message>
         <source>Open Success</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">打开成功</translation>
     </message>
     <message>
         <source>Open fail</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">打开失败</translation>
     </message>
 </context>
 <context>
@@ -103,15 +103,15 @@
     </message>
     <message>
         <source>Body</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">本体</translation>
     </message>
     <message>
         <source>Tool</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">工具</translation>
     </message>
     <message>
         <source>User</source>
-        <translation type="unfinished">用户设置</translation>
+        <translation type="unfinished">用户</translation>
     </message>
 </context>
 <context>
@@ -177,19 +177,19 @@
     </message>
     <message>
         <source>ON/OFF</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">开/关</translation>
     </message>
     <message>
         <source>Distance1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">距离1</translation>
     </message>
     <message>
         <source>Distance2</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">距离2</translation>
     </message>
     <message>
         <source>Distance3</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">距离3</translation>
     </message>
     <message>
         <source>mm</source>
@@ -204,7 +204,7 @@
     </message>
     <message>
         <source>Kill</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">关闭</translation>
     </message>
     <message>
         <source>Start</source>
@@ -212,11 +212,11 @@
     </message>
     <message>
         <source>s</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">秒</translation>
     </message>
     <message>
         <source>Start Delay</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">启动延时</translation>
     </message>
     <message>
         <source>Fail</source>
@@ -224,18 +224,18 @@
     </message>
     <message>
         <source>Fail to start</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">启动失败</translation>
     </message>
     <message>
         <source>Fail to stop</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">停止失败</translation>
     </message>
 </context>
 <context>
     <name>DlgHelp</name>
     <message>
         <source>Help</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">帮助</translation>
     </message>
     <message>
         <source>TextLabel</source>
@@ -243,7 +243,7 @@
     </message>
     <message>
         <source>Show Again</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">再次显示</translation>
     </message>
 </context>
 <context>
@@ -254,15 +254,15 @@
     </message>
     <message>
         <source>ON/OFF</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">开/关</translation>
     </message>
     <message>
         <source>Upper Limit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">上限</translation>
     </message>
     <message>
         <source>Lower Limit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">下限</translation>
     </message>
     <message>
         <source>Zero</source>
@@ -270,23 +270,23 @@
     </message>
     <message>
         <source>Up Limit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">上限</translation>
     </message>
     <message>
         <source>Down Limit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">下限</translation>
     </message>
     <message>
         <source>Only enabled in admin mode</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">只能在管理员模式下使用</translation>
     </message>
     <message>
         <source>Upper</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">上限</translation>
     </message>
     <message>
         <source>Lower</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">下限</translation>
     </message>
 </context>
 <context>
@@ -321,19 +321,19 @@
     </message>
     <message>
         <source>Inverse</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">反向</translation>
     </message>
     <message>
         <source>Mechanics Configuration</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">机械参数配置</translation>
     </message>
     <message>
         <source>Teeth</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">牙</translation>
     </message>
     <message>
         <source>Pitch</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">齿轮</translation>
     </message>
     <message>
         <source>Lp</source>
@@ -349,27 +349,27 @@
     </message>
     <message>
         <source>Rotate</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">转动</translation>
     </message>
     <message>
         <source>Line</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">线</translation>
     </message>
     <message>
         <source>Motion</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">运动</translation>
     </message>
     <message>
         <source>CW</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">顺时针</translation>
     </message>
     <message>
         <source>CCW</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">逆时针</translation>
     </message>
     <message>
         <source>P Dir.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">方向.</translation>
     </message>
     <message>
         <source>X-Stroke</source>
@@ -388,11 +388,11 @@
     </message>
     <message>
         <source>ON/OFF</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">开/关</translation>
     </message>
     <message>
         <source>Tick</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">时钟</translation>
     </message>
     <message>
         <source>X:</source>
@@ -464,7 +464,7 @@
     </message>
     <message>
         <source>Home</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">回零</translation>
     </message>
     <message>
         <source>To</source>
@@ -472,7 +472,7 @@
     </message>
     <message>
         <source>Current Position</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">当前位置</translation>
     </message>
     <message>
         <source>Continous X</source>
@@ -491,7 +491,7 @@
     </message>
     <message>
         <source>Zero Config</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">零配置</translation>
     </message>
     <message>
         <source>Time</source>
@@ -519,7 +519,7 @@
     </message>
     <message>
         <source>Distance</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">距离</translation>
     </message>
     <message>
         <source>s</source>
@@ -563,7 +563,7 @@
     </message>
     <message>
         <source>Speed</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">速度</translation>
     </message>
     <message>
         <source>/s</source>

@@ -150,7 +150,7 @@ protected Q_SLOTS:
     void on_itemXActivated( mcModelObj *pObj, mcModelObj_Op op=model_obj_op_none );
     void slot_itemModelUpdated( mcModelObj *pObj );
 
-    void slot_itemXHelp( eItemHelp hlp );
+    void slot_itemXHelp( eItemHelp hlp, const QString &name );
 
     void slot_pref_request_save();
 

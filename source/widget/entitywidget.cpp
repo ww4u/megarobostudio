@@ -72,6 +72,109 @@ void EntityWidget::mouseReleaseEvent( QMouseEvent *event )
 //    }
 //}
 
+QString EntityWidget::fmtRect( const QRect &rect )
+{
+    QString str;
+
+    str = QString("%1,%2,%3,%4").arg( rect.left()).arg( rect.top()).arg( rect.width()).arg( rect.height() );
+    return str;
+}
+QRect EntityWidget::toRect( const QString &str )
+{
+    QStringList strList = str.split( ',', QString::SkipEmptyParts );
+
+    if ( strList.size() >= 4 )
+    {
+        int x,y,w,h;
+
+        x = strList.at(0).toInt();
+        y = strList.at(1).toInt();
+        w = strList.at(2).toInt();
+        h = strList.at(3).toInt();
+
+        return QRect( x,y, w, h );
+    }
+    else
+    {
+        return QRect( 0,0,10,10 );
+    }
+}
+
+QString EntityWidget::fmtPointF( const QPointF &pt )
+{
+    return QString("%1,%2").arg( pt.x() ).arg( pt.y() );
+}
+QPointF EntityWidget::toPointF( const QString &str )
+{
+    QStringList strList = str.split(',',QString::SkipEmptyParts );
+    if ( strList.size() >= 2 )
+    {
+        qreal x, y;
+
+        x = strList.at(0).toFloat();
+        y = strList.at(1).toFloat();
+
+        return QPointF( x,y );
+    }
+    else
+    { return QPointF(0,0); }
+}
+
+int EntityWidget::serialOut( QXmlStreamWriter &writer, QList<EntityWidget *> &refWidgets )
+{
+    writer.writeTextElement( "objname", objectName() );
+    writer.writeTextElement( "geo", fmtRect( geometry() ) );
+
+    //! for relation
+    {
+        writer.writeStartElement("attached");
+            QMapIterator< EntityWidget *, Anchor > iter( mAttachedWidgets );
+            while( iter.hasNext() )
+            {
+                iter.next();
+                writer.writeStartElement("item");
+
+                    writer.writeStartElement("anchor");
+
+                    writer.writeTextElement( "type", QString::number( (int)iter.value().mType ) );
+                    writer.writeTextElement( "pt", fmtPointF( iter.value().mRefPt ) );
+
+                    writer.writeEndElement();
+
+                    writer.writeTextElement( "ref", QString::number( refWidgets.indexOf( iter.key() ) ) );
+
+                writer.writeEndElement();
+            }
+        writer.writeEndElement();
+    }
+
+    //! for link
+    {
+        writer.writeStartElement("link");
+
+            QMapIterator< Anchor::anchorType, EntityWidget * > iter( mLinkWidget );
+            while( iter.hasNext() )
+            {
+                iter.next();
+
+                writer.writeStartElement("item");
+
+                    writer.writeTextElement( "type", QString::number( (int)iter.key() ) );
+                    writer.writeTextElement( "ref", QString::number( refWidgets.indexOf( iter.value() ) ) );
+
+                writer.writeEndElement();
+            }
+        writer.writeEndElement();
+    }
+
+    return 0;
+}
+int EntityWidget::serialIn( QXmlStreamReader &reader )
+{
+    return 0;
+}
+
+
 void EntityWidget::paintFrame( QPainter &painter )
 {
     if ( mbSelected )

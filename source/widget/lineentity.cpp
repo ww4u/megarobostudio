@@ -33,6 +33,14 @@ void LineEntity::paintEvent( QPaintEvent *event )
     setPenAttr( pen );
     painter.setPen( pen );
 
+    painter.drawLine( mFrom, mTo );
+
+    //! draw the arrow
+    //! \todo
+    QPainterPath path;
+    path.addEllipse( mTo, _focus_radius/2, _focus_radius/2 );
+    painter.fillPath( path, mColor );
+
     if ( mbSelected )
     {
         QPen tPen;
@@ -51,17 +59,6 @@ void LineEntity::paintEvent( QPaintEvent *event )
         QRect rectCenter = genFocusRect( ptCenter );
         painter.drawRect( rectCenter );
     }
-
-    painter.drawLine( mFrom, mTo );
-
-    //! draw the arrow
-    //! \todo
-
-    //!
-    //!
-//    event->accept();
-
-//    QWidget::paintEvent( event );
 }
 
 void LineEntity::mousePressEvent( QMouseEvent *event )
@@ -108,28 +105,23 @@ void LineEntity::mouseReleaseEvent( QMouseEvent *event )
     EntityWidget::mouseReleaseEvent( event );
 
     //! only valid for link changed
-    QPoint pt;
-    QRect rect;
     if ( mPos == line_from )
     {
-        pt = mapToParent( mFrom );
-logDbg()<<pt<<mFrom;
-        rect.setTopLeft( pt - QPoint( _focus_radius, _focus_radius ) );
-        rect.setSize( QSize( 2*_focus_radius, 2*_focus_radius ) );
-
-        emit signal_link_changed( this, Anchor::anchor_line_from, rect );
+        fromChanged();
     }
     else if( mPos == line_to )
     {
-        pt = mapToParent( mTo );
-
-        rect.setTopLeft( pt - QPoint( _focus_radius, _focus_radius ) );
-        rect.setSize( QSize( 2*_focus_radius, 2*_focus_radius ) );
-
-        emit signal_link_changed( this, Anchor::anchor_line_to, rect );
+        toChanged();
     }
     else
-    {}
+    {
+//        logDbg();
+        if ( mbSelected )
+        {
+            fromChanged();
+            toChanged();
+        }
+    }
 }
 
 void  LineEntity::mouseMoveEvent( QMouseEvent *event )
@@ -177,6 +169,31 @@ void  LineEntity::mouseMoveEvent( QMouseEvent *event )
     }
 
     EntityWidget::mouseMoveEvent( event );
+}
+
+void LineEntity::fromChanged()
+{
+    QPoint pt;
+    QRect rect;
+
+    pt = mapToParent( mFrom );
+
+    rect.setTopLeft( pt - QPoint( _focus_radius, _focus_radius ) );
+    rect.setSize( QSize( 2*_focus_radius, 2*_focus_radius ) );
+
+    emit signal_link_changed( this, Anchor::anchor_line_from, rect );
+}
+void LineEntity::toChanged()
+{
+    QPoint pt;
+    QRect rect;
+
+    pt = mapToParent( mTo );
+
+    rect.setTopLeft( pt - QPoint( _focus_radius, _focus_radius ) );
+    rect.setSize( QSize( 2*_focus_radius, 2*_focus_radius ) );
+
+    emit signal_link_changed( this, Anchor::anchor_line_to, rect );
 }
 
 //! pt in global

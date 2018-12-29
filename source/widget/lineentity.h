@@ -28,6 +28,10 @@ protected:
     virtual void mouseReleaseEvent( QMouseEvent *event );
     virtual void mouseMoveEvent( QMouseEvent *event );
 
+protected:
+    void fromChanged();
+    void toChanged();
+
 public:
     virtual bool mouseOver( const QPoint &pt);
     virtual void shift( QRect &geometry,

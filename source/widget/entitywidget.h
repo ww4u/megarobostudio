@@ -4,6 +4,7 @@
 #include <QFrame>
 #include <QPainter>
 #include <QMap>
+#include <QtCore>
 #include "../../include/mydebug.h"
 
 class Entity;
@@ -73,6 +74,16 @@ protected:
 //    virtual void keyReleaseEvent(QKeyEvent *event);
 
 protected:
+    QString fmtRect( const QRect &rect );
+    QRect toRect( const QString &str );
+
+    QString fmtPointF( const QPointF &pt );
+    QPointF toPointF( const QString &str );
+public:
+    int serialOut( QXmlStreamWriter &writer, QList<EntityWidget *> &refWidgets );
+    int serialIn( QXmlStreamReader &reader );
+
+protected:
     void paintFrame( QPainter &painter );
 
     QRect genFocusRect( const QPoint &pt );
@@ -139,7 +150,6 @@ protected:
 
     //! attached widget
     QMap<EntityWidget *, Anchor > mAttachedWidgets;
-
     QMap< Anchor::anchorType, EntityWidget *> mLinkWidget;
 };
 

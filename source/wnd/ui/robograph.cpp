@@ -13,6 +13,7 @@ RoboGraph::RoboGraph(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    mFilePattern<<"Graph file"<<"mrg";
 //    //! debug
 //    m_pLineWidget = new LineEntity( this );
 //    m_pLineWidget->setVisible( true );
@@ -202,7 +203,30 @@ int RoboGraph::save( QString &outFileName )
     outFileName = m_pModelObj->getPath() + QDir::separator() + m_pModelObj->getName();
     outFileName = QDir::toNativeSeparators( outFileName );
 
-    return pModel->save( outFileName );
+    QFile file(outFileName);
+    if ( file.open( QIODevice::WriteOnly ) )
+    {}
+    else
+    { return -1; }
+
+    QXmlStreamWriter writer( &file );
+
+    writer.writeStartDocument();
+
+    writer.writeStartElement("graph");
+    for ( int i = 0; i < mChildWidgets.size(); i++ )
+    {
+        writer.writeStartElement("entity");
+            mChildWidgets.at(i)->serialOut( writer, mChildWidgets );
+        writer.writeEndElement();
+    }
+    writer.writeEndElement();
+
+    writer.writeEndDocument();
+
+    file.close();
+
+    return 0;
 }
 int RoboGraph::saveAs( QString &name )
 {

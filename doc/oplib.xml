@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<groups>
+<group>
+<name>Sequence</name>
+<item>
+<name>sequence</name>
+<res>:/res/image/icon/order.png</res>
+<tooltip>sequence</tooltip>
+</item>
+<item>
+<name>loop</name>
+<res>:/res/image/icon/order.png</res>
+<tooltip>loop</tooltip>
+</item>
+</group>
+<group>
+<name>System</name>
+<item>
+<name>program</name>
+<res>:/res/image/icon/218.png</res>
+<tooltip>program</tooltip>
+</item>
+<item>
+<name>aprogram</name>
+<res>:/res/image/icon/218.png</res>
+<tooltip>async program</tooltip>
+</item>
+<item>
+<name>call</name>
+<res>:/res/image/icon/skip.png</res>
+<tooltip>call</tooltip>
+</item>
+<item>
+<name>acall</name>
+<res>:/res/image/icon/skip.png</res>
+<tooltip>async call</tooltip>
+</item>
+<item>
+<name>waitIdle</name>
+<res>:/res/image/icon3/time.png</res>
+<tooltip>wait for idle</tooltip>
+</item>
+<item>
+<name>waitEnd</name>
+<res>:/res/image/icon3/time.png</res>
+<tooltip>wait for end</tooltip>
+</item>
+<item>
+<name>delay</name>
+<res>:/res/image/icon3/time.png</res>
+<tooltip>delay</tooltip>
+</item>
+</group>
+</groups>

@@ -6,6 +6,8 @@ ImageEntity::ImageEntity(QWidget *parent) :
     ui( new Ui::ImageEntity )
 {
     ui->setupUi(this);
+
+    mEntityType = EntityWidget::entity_widget_image;
 }
 
 ImageEntity::~ImageEntity()

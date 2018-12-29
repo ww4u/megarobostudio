@@ -7,6 +7,65 @@
 #include "../widget/rectentity.h"
 #include "../widget/imageentity.h"
 
+EntityWidget* RoboGraph::createEntityWidget( EntityWidget::EntityWidgetType tpe,
+                                             RoboGraph *parent,
+                                             const QPoint &pt )
+{
+    Q_ASSERT( NULL != parent );
+
+    EntityWidget *pWig;
+    if ( tpe == EntityWidget::entity_widget_line )
+    {
+        pWig = new LineEntity( parent );
+        if ( NULL == pWig )
+        { return pWig; }
+
+        pWig->setVisible( true );
+        pWig->move( pt );
+
+        connect( pWig, SIGNAL(signal_link_changed(EntityWidget*,Anchor::anchorType,QRect)),
+                 parent, SLOT(slot_link_changed(EntityWidget*,Anchor::anchorType,QRect)));
+
+        connect( pWig, SIGNAL(signal_request_delete(EntityWidget*)),
+                 parent, SLOT(slot_request_delete(EntityWidget*)) );
+
+        return pWig;
+    }
+    else if ( tpe == EntityWidget::entity_widget_rect )
+    {
+        pWig = new RectEntity(parent);
+    }
+    else if ( tpe == EntityWidget::entity_widget_image )
+    {
+        pWig = new ImageEntity(parent);
+    }
+    else
+    { return NULL; }
+
+    //! invalid
+    if ( NULL != pWig )
+    {}
+    else
+    { return NULL; }
+
+    //! post proc
+    pWig->setVisible( true );
+    pWig->move( pt );
+
+    connect( pWig, SIGNAL(signal_anchor_changed(EntityWidget*,Anchor::anchorType,QPoint)),
+             parent, SLOT(slot_anchor_changed(EntityWidget*,Anchor::anchorType,QPoint)));
+
+    connect( pWig, SIGNAL(signal_request_delete(EntityWidget*)),
+             parent, SLOT(slot_request_delete(EntityWidget*)) );
+
+//    mChildWidgets.append( pWig );
+
+    //! \todo to model
+//    parent
+
+    return pWig;
+}
+
 RoboGraph::RoboGraph(QWidget *parent) :
     modelView(parent),
     ui(new Ui::RoboGraph)
@@ -54,14 +113,14 @@ void RoboGraph::mousePressEvent(QMouseEvent *event)
     //! selected
     QRect wigRect;
     QPoint ptChild;
-    for ( int i = 0; i < mChildWidgets.size(); i++ )
+    for ( int i = 0; i < ((MrgGraphModel *)m_pModelObj)->mChildWidgets.size(); i++ )
     {
-        ptChild = mChildWidgets.at(i)->mapFromParent( mPtMouse );
+        ptChild = ((MrgGraphModel *)m_pModelObj)->mChildWidgets.at(i)->mapFromParent( mPtMouse );
 
-        if ( mChildWidgets.at(i)->mouseOver(ptChild) )
-        { mChildWidgets[i]->setSelected( true ); }
+        if ( ((MrgGraphModel *)m_pModelObj)->mChildWidgets.at(i)->mouseOver(ptChild) )
+        { ((MrgGraphModel *)m_pModelObj)->mChildWidgets[i]->setSelected( true ); }
         else
-        { mChildWidgets[i]->setSelected( false ); }
+        { ((MrgGraphModel *)m_pModelObj)->mChildWidgets[i]->setSelected( false ); }
     }
 
     modelView::mousePressEvent( event );
@@ -81,18 +140,18 @@ void RoboGraph::mouseMoveEvent(QMouseEvent *event)
 
     QRect wigRect;
     ShiftContext context;
-    for ( int i = 0; i < mChildWidgets.size(); i++ )
+    for ( int i = 0; i < ((MrgGraphModel *)m_pModelObj)->mChildWidgets.size(); i++ )
     {
-        if ( mChildWidgets.at(i)->selected() )
+        if ( ((MrgGraphModel *)m_pModelObj)->mChildWidgets.at(i)->selected() )
         {
-            wigRect = mChildWidgets.at(i)->geometry();
+            wigRect = ((MrgGraphModel *)m_pModelObj)->mChildWidgets.at(i)->geometry();
 
-            mChildWidgets.at(i)->shift(  wigRect, QPoint( dx, dy ), context );
-            mChildWidgets.at(i)->setGeometry( wigRect );
-            mChildWidgets.at(i)->shiftEnd( context );
+            ((MrgGraphModel *)m_pModelObj)->mChildWidgets.at(i)->shift(  wigRect, QPoint( dx, dy ), context );
+            ((MrgGraphModel *)m_pModelObj)->mChildWidgets.at(i)->setGeometry( wigRect );
+            ((MrgGraphModel *)m_pModelObj)->mChildWidgets.at(i)->shiftEnd( context );
 
             //! link
-            mChildWidgets.at(i)->anchorProc();
+            ((MrgGraphModel *)m_pModelObj)->mChildWidgets.at(i)->anchorProc();
         }
     }
 
@@ -108,7 +167,11 @@ void RoboGraph::mouseDoubleClickEvent( QMouseEvent *event )
 {
     if ( event->buttons() == Qt::LeftButton )
     {
-        createEntityWidget( EntityWidget::entity_widget_line, event->pos() );
+        EntityWidget *pWig = createEntityWidget( EntityWidget::entity_widget_line, this, event->pos() );
+        if ( NULL != pWig )
+        {
+            addEntity( pWig );
+        }
     }
     else
     { return; }
@@ -194,7 +257,6 @@ void RoboGraph::dropEvent(QDropEvent *event)
 int RoboGraph::save( QString &outFileName )
 {
     //! get obj
-
     MrgGraphModel *pModel = dynamic_cast< MrgGraphModel*>( m_pModelObj );
     if ( NULL == pModel )
     { logDbg(); return -1; }
@@ -209,28 +271,30 @@ int RoboGraph::save( QString &outFileName )
     else
     { return -1; }
 
-    QXmlStreamWriter writer( &file );
-
-    writer.writeStartDocument();
-
-    writer.writeStartElement("graph");
-    for ( int i = 0; i < mChildWidgets.size(); i++ )
-    {
-        writer.writeStartElement("entity");
-            mChildWidgets.at(i)->serialOut( writer, mChildWidgets );
-        writer.writeEndElement();
-    }
-    writer.writeEndElement();
-
-    writer.writeEndDocument();
-
-    file.close();
-
-    return 0;
+    return pModel->save( outFileName );
 }
 int RoboGraph::saveAs( QString &name )
 {
-    return save( name );
+    MrgGraphModel *pModel = dynamic_cast< MrgGraphModel*>( m_pModelObj );
+    if ( NULL == pModel )
+    { return -1; }
+
+    return pModel->save( name );
+}
+
+int RoboGraph::load( const QString &name, const QString &path )
+{
+    //! get obj
+    MrgGraphModel *pModel = dynamic_cast< MrgGraphModel*>( m_pModelObj );
+    if ( NULL == pModel )
+    { logDbg(); return -1; }
+
+    //! clean
+    pModel->clean();
+
+    int ret = pModel->load( name, this );
+
+    return ret;
 }
 
 //! rect in parent
@@ -301,66 +365,12 @@ void RoboGraph::slot_request_delete( EntityWidget *pWig )
     deleteSelected();
 }
 
-EntityWidget* RoboGraph::createEntityWidget( EntityWidget::EntityWidgetType tpe,
-                                             const QPoint &pt )
-{
-    EntityWidget *pWig;
-    if ( tpe == EntityWidget::entity_widget_line )
-    {
-        pWig = new LineEntity( this );
-        if ( NULL == pWig )
-        { return pWig; }
-
-        mChildWidgets.append( pWig );
-
-        pWig->setVisible( true );
-        pWig->move( pt );
-
-        connect( pWig, SIGNAL(signal_link_changed(EntityWidget*,Anchor::anchorType,QRect)),
-                 this, SLOT(slot_link_changed(EntityWidget*,Anchor::anchorType,QRect)));
-
-        connect( pWig, SIGNAL(signal_request_delete(EntityWidget*)),
-                 this, SLOT(slot_request_delete(EntityWidget*)) );
-
-        return pWig;
-    }
-    else if ( tpe == EntityWidget::entity_widget_rect )
-    {
-        pWig = new RectEntity(this);
-    }
-    else if ( tpe == EntityWidget::entity_widget_image )
-    {
-        pWig = new ImageEntity(this);
-    }
-    else
-    { return NULL; }
-
-    //! invalid
-    if ( NULL != pWig )
-    {}
-    else
-    { return NULL; }
-
-    //! post proc
-    pWig->setVisible( true );
-    pWig->move( pt );
-
-    connect( pWig, SIGNAL(signal_anchor_changed(EntityWidget*,Anchor::anchorType,QPoint)),
-             this, SLOT(slot_anchor_changed(EntityWidget*,Anchor::anchorType,QPoint)));
-
-    connect( pWig, SIGNAL(signal_request_delete(EntityWidget*)),
-             this, SLOT(slot_request_delete(EntityWidget*)) );
-
-    mChildWidgets.append( pWig );
-    return pWig;
-}
-
 void RoboGraph::deleteSelected()
 {
     QList<EntityWidget*> delList;
 
     //! collect
-    foreach (EntityWidget *pWig, mChildWidgets)
+    foreach (EntityWidget *pWig, ((MrgGraphModel *)m_pModelObj)->mChildWidgets )
     {
         if ( pWig->selected() )
         { delList.append( pWig ); }
@@ -374,10 +384,18 @@ logDbg();
 
         pWig->cleanLink();
 
-        mChildWidgets.removeAll( pWig );
+        ((MrgGraphModel *)m_pModelObj)->mChildWidgets.removeAll( pWig );
 
         delete pWig;
     }
+}
+
+void RoboGraph::addEntity( EntityWidget *pEntity )
+{
+    Q_ASSERT( NULL != pEntity );
+
+    Q_ASSERT( NULL != m_pModelObj );
+    ((MrgGraphModel *)m_pModelObj)->mChildWidgets.append( pEntity );
 }
 
 EntityWidget* RoboGraph::addRoboEntity( const QString &className,
@@ -388,9 +406,11 @@ EntityWidget* RoboGraph::addRoboEntity( const QString &className,
     VRobot *pNewRobot = robotFact::createRobot( className );
     Q_ASSERT( NULL != pNewRobot );
 
-    ImageEntity *pWig = (ImageEntity *)createEntityWidget( EntityWidget::entity_widget_image, pt );
+    ImageEntity *pWig = (ImageEntity *)createEntityWidget( EntityWidget::entity_widget_image, this, pt );
     if ( NULL != pWig )
     {
+        addEntity( pWig );
+
         pWig->setLabel( name );
         pWig->setImage( pNewRobot->getImage() );
     }
@@ -406,9 +426,11 @@ EntityWidget* RoboGraph::addOperatorEntity( const QString &className,
                                             const QString &icon,
                                             const QPoint &pt )
 {
-    ImageEntity *pWig = (ImageEntity *)createEntityWidget( EntityWidget::entity_widget_image, pt );
+    ImageEntity *pWig = (ImageEntity *)createEntityWidget( EntityWidget::entity_widget_image, this, pt );
     if ( NULL != pWig )
     {
+        addEntity( pWig );
+
         pWig->setLabel( className );
         pWig->setImage( QImage( icon ) );
     }
@@ -423,18 +445,18 @@ bool RoboGraph::crossDetect( EntityWidget *pSrc,
                              EntityWidget **pWig )
 {
     QRect geo;
-    for ( int i = 0; i < mChildWidgets.size(); i++ )
+    for ( int i = 0; i < ((MrgGraphModel *)m_pModelObj)->mChildWidgets.size(); i++ )
     {
-        if ( pSrc != mChildWidgets.at(i) )
+        if ( pSrc != ((MrgGraphModel *)m_pModelObj)->mChildWidgets.at(i) )
         {}
         else
         { continue; }
 
-        geo = mChildWidgets.at(i)->geometry();
+        geo = ((MrgGraphModel *)m_pModelObj)->mChildWidgets.at(i)->geometry();
         logDbg()<<geo<<rect;
         if ( geo.intersects( rect ) )
         {
-            *pWig = mChildWidgets.at(i);
+            *pWig = ((MrgGraphModel *)m_pModelObj)->mChildWidgets.at(i);
             return true;
         }
     }

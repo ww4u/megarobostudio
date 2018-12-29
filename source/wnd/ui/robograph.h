@@ -16,6 +16,12 @@ class RoboGraph : public modelView
     Q_OBJECT
 
 public:
+    //! entity op
+    static EntityWidget* createEntityWidget( EntityWidget::EntityWidgetType tpe,
+                                      RoboGraph *parent,
+                                      const QPoint &pt=QPoint(0,0) );
+
+public:
     explicit RoboGraph(QWidget *parent = 0);
     ~RoboGraph();
 
@@ -35,6 +41,7 @@ protected:
 public:
     virtual int save( QString &outFileName );
     virtual int saveAs( QString &name );
+    virtual int load( const QString &name, const QString &path );
 
 protected slots:
     void slot_link_changed( EntityWidget *pWig, Anchor::anchorType tpe, QRect rect );
@@ -44,10 +51,9 @@ protected slots:
     void slot_request_delete( EntityWidget *pWig );
 
 protected:
-    //! entity op
-    EntityWidget* createEntityWidget( EntityWidget::EntityWidgetType tpe,
-                                      const QPoint &pt );
     void deleteSelected();
+
+    void addEntity( EntityWidget *pEntity );
 
     EntityWidget* addRoboEntity( const QString &className,
                                  const QString &name,
@@ -76,10 +82,10 @@ private slots:
 private:
     Ui::RoboGraph *ui;
 
-    EntityWidget *m_pLineWidget;
-    EntityWidget *m_pRectWidget;
+//    EntityWidget *m_pLineWidget;
+//    EntityWidget *m_pRectWidget;
 
-    QList<EntityWidget*> mChildWidgets;
+//    QList<EntityWidget*> mChildWidgets;
 
     QPoint mPtMouse;
 };

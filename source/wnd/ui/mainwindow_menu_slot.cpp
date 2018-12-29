@@ -241,6 +241,9 @@ void MainWindow::on_itemx_active( mcModelObj* pObj )
         //! set the data
         createModelView( pRoboGraph, pObj );
 
+        //! load graph
+        ((MrgGraphModel*)pObj)->load( pObj->fullName(), pRoboGraph );
+
         //! \todo
 //        connect( pRoboGraph,
 //                 SIGNAL(itemXActivated(mcModelObj*, mcModelObj_Op)),

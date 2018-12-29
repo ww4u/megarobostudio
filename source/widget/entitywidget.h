@@ -79,9 +79,12 @@ protected:
 
     QString fmtPointF( const QPointF &pt );
     QPointF toPointF( const QString &str );
+
 public:
     int serialOut( QXmlStreamWriter &writer, QList<EntityWidget *> &refWidgets );
     int serialIn( QXmlStreamReader &reader );
+
+    void crossLink( const QList<EntityWidget *> &refWidgets );
 
 protected:
     void paintFrame( QPainter &painter );
@@ -105,6 +108,9 @@ public:
     void anchorProc();
 
 public:
+    void setEntityType( EntityWidgetType tpe );
+    EntityWidgetType entityType();
+
     void attachEntity( Entity *p );
     Entity *entity();
 
@@ -148,9 +154,16 @@ protected:
 
     bool mbPressed;
 
+    //! attr
+    EntityWidgetType mEntityType;
+
     //! attached widget
     QMap<EntityWidget *, Anchor > mAttachedWidgets;
     QMap< Anchor::anchorType, EntityWidget *> mLinkWidget;
+
+    //! local for serial in used
+    QMap< int, Anchor > mRefAttached;
+    QMap< Anchor::anchorType, int > mRefLink;
 };
 
 #endif // ENTITYWIDGET_H

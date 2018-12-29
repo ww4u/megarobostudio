@@ -3,6 +3,8 @@
 
 LineEntity::LineEntity( QWidget *parent ) : EntityWidget( parent )
 {
+    mEntityType = EntityWidget::entity_widget_line;
+
     mFrom.setX( _focus_radius );
     mFrom.setY( _focus_radius );
 

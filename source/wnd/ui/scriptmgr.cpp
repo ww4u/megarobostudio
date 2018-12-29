@@ -662,11 +662,13 @@ MrgGraphModel *scriptMgr::createGraph( const QString &path,
 
     pModel = new MrgGraphModel();
     Q_ASSERT( NULL != pModel );
-    if ( pModel->load( file ) != 0 )
-    {
-        delete pModel;
-        return NULL;
-    }
+//    if ( pModel->load( file ) != 0 )
+//    {
+//        delete pModel;
+//        return NULL;
+//    }
+    if ( NULL == pModel )
+    { return NULL; }
 
     pModel->setPath( path );
     pModel->setName( comAssist::pureFileName(file) );

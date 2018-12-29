@@ -34,6 +34,8 @@ EntityWidget::EntityWidget(QWidget *parent) : QFrame(parent)
     mbSelected = false;
     mbPressed = false;
 
+    mEntityType = EntityWidget::entity_widget_unk;
+
     setMouseTracking( true );
 }
 
@@ -136,8 +138,8 @@ int EntityWidget::serialOut( QXmlStreamWriter &writer, QList<EntityWidget *> &re
 
                     writer.writeStartElement("anchor");
 
-                    writer.writeTextElement( "type", QString::number( (int)iter.value().mType ) );
-                    writer.writeTextElement( "pt", fmtPointF( iter.value().mRefPt ) );
+                        writer.writeTextElement( "type", QString::number( (int)iter.value().mType ) );
+                        writer.writeTextElement( "pt", fmtPointF( iter.value().mRefPt ) );
 
                     writer.writeEndElement();
 
@@ -171,9 +173,125 @@ int EntityWidget::serialOut( QXmlStreamWriter &writer, QList<EntityWidget *> &re
 }
 int EntityWidget::serialIn( QXmlStreamReader &reader )
 {
+    while( reader.readNextStartElement() )
+    {
+        if ( reader.name() == "objname" )
+        {
+            setObjectName( reader.readElementText() );
+        }
+        else if ( reader.name() == "geo" )
+        {
+            QRect rect = toRect( reader.readElementText() );
+            setGeometry( rect );
+        }
+        else if ( reader.name() == "attached" )
+        {
+            while( reader.readNextStartElement() )
+            {
+                //! new item
+                if ( reader.name() == "item" )
+                {
+                    Anchor tAnchor;
+                    int refId;
+                    while( reader.readNextStartElement() )
+                    {
+                        if ( reader.name() == "anchor" )
+                        {
+                            while( reader.readNextStartElement() )
+                            {
+                                if ( reader.name() == "type" )
+                                {
+                                    tAnchor.mType = (Anchor::anchorType) reader.readElementText().toInt();
+                                }
+                                else if ( reader.name() == "pt" )
+                                {
+                                    tAnchor.mRefPt = toPointF( reader.readElementText() );
+                                }
+                                else
+                                { reader.skipCurrentElement(); }
+                            }
+
+                        }
+                        else if ( reader.name() == "ref" )
+                        {
+                            refId = reader.readElementText().toInt();
+
+                            //! append the ref widgets
+                            mRefAttached.insert( refId, tAnchor );
+                        }
+                        else
+                        { reader.skipCurrentElement(); }
+                    }
+                }
+                else
+                {
+                    reader.skipCurrentElement();
+                }
+            }
+        }
+        else if ( reader.name() == "link" )
+        {
+            while( reader.readNextStartElement() )
+            {
+                if ( reader.name() == "item" )
+                {
+                    Anchor::anchorType tpe;
+                    int refId;
+                    while( reader.readNextStartElement() )
+                    {
+                        if ( reader.name() == "type" )
+                        {
+                            tpe = (Anchor::anchorType)reader.readElementText().toInt();
+                        }
+                        else if ( reader.name() == "ref" )
+                        {
+                            refId = reader.readElementText().toInt();
+
+                            //! insert
+                            mRefLink.insert( tpe, refId );
+                        }
+                        else
+                        { reader.skipCurrentElement(); }
+                    }
+                }
+                else
+                { reader.skipCurrentElement(); }
+            }
+        }
+
+        else
+        { reader.skipCurrentElement(); }
+    }
+
+
     return 0;
 }
 
+void EntityWidget::crossLink( const QList<EntityWidget *> &refWidgets )
+{
+    //! fill the attached and link map by ref map
+//    QMap< int, Anchor > mRefAttached;
+//    QMap< Anchor::anchorType, int > mRefLink;
+    {
+        QMapIterator<int, Anchor > iter( mRefAttached );
+        while( iter.hasNext() )
+        {
+            iter.next();
+
+            mAttachedWidgets.insert( refWidgets.at( iter.key() ), iter.value() );
+        }
+    }
+
+    {
+        QMapIterator< Anchor::anchorType, int > iter( mRefLink );
+        while( iter.hasNext() )
+        {
+            iter.next();
+
+            mLinkWidget.insert( iter.key(), refWidgets.at( iter.value() ) );
+        }
+    }
+}
 
 void EntityWidget::paintFrame( QPainter &painter )
 {
@@ -247,6 +365,11 @@ void EntityWidget::anchorProc()
         emit signal_anchor_changed( iter.key(), iter.value().mType, pt );
     }
 }
+
+void EntityWidget::setEntityType( EntityWidget::EntityWidgetType tpe )
+{ mEntityType = tpe; }
+EntityWidget::EntityWidgetType EntityWidget::entityType()
+{ return mEntityType; }
 
 void EntityWidget::attachEntity( Entity *p )
 {

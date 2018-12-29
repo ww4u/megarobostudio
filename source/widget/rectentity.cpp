@@ -8,6 +8,7 @@ RectEntity::RectEntity(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    mEntityType = EntityWidget::entity_widget_rect;
 }
 
 RectEntity::~RectEntity()

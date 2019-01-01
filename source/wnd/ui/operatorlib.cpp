@@ -50,7 +50,7 @@ int OperatorLib::loadLib( const QString &name )
             pItem->setIcon( QIcon( opLib.mGroups[i]->mItems[j]->mRes) );
 
             pItem->setData( Qt::UserRole, opLib.mGroups[i]->mItems[j]->mRes );
-
+            pItem->setToolTip( opLib.mGroups[i]->mItems[j]->mToolTip );
             pWig->addItem( pItem );
         }
     }

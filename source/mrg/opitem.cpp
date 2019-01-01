@@ -79,6 +79,10 @@ int OpLib::load( const QString &fileName )
                                 {
                                     pItem->mRes = reader.readElementText();
                                 }
+                                else if ( reader.name() == "tooltip" )
+                                {
+                                    pItem->mToolTip = reader.readElementText();
+                                }
                                 else
                                 { reader.skipCurrentElement(); }
                             }

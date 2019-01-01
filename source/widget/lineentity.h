@@ -28,6 +28,10 @@ protected:
     virtual void mouseReleaseEvent( QMouseEvent *event );
     virtual void mouseMoveEvent( QMouseEvent *event );
 
+public:
+    virtual int serialOut( QXmlStreamWriter &writer, QList<EntityWidget *> &refWidgets );
+    virtual int serialIn( QXmlStreamReader &reader );
+
 protected:
     void fromChanged();
     void toChanged();

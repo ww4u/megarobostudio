@@ -16,13 +16,22 @@ public:
     ~ImageEntity();
 
 public:
-    void setImage( const QImage &img );
+    virtual int serialOut( QXmlStreamWriter &writer, QList<EntityWidget *> &refWidgets );
+    virtual int serialIn( QXmlStreamReader &reader );
+
+    virtual QString description();
+public:
+    void setImage( const QString &img );
+    void setDataClass( const QString &dataCls );
 
     void setLabel( const QString &lab );
     QString label();
 
 private:
     Ui::ImageEntity *ui;
+
+    QString mIconName;
+    QString mDataClass;
 };
 
 #endif // IMAGEENTITY_H

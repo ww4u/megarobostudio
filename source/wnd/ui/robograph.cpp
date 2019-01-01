@@ -324,7 +324,35 @@ void RoboGraph::slot_link_changed( EntityWidget *pWig,
     QPoint ptStick;
     ptStick.setX( qMin( geo.right(), qMax( geo.left(), pt.x() ) ) );
     ptStick.setY( qMin( geo.bottom(), qMax( geo.top(), pt.y() ) ) );
-logDbg()<<rect<<ptStick<<geo;
+
+    //! in range now
+    int dists[4];
+
+    dists[0] = qAbs ( ptStick.y() - geo.top() );
+    dists[1] = qAbs ( ptStick.x() - ( geo.left() + geo.width() ) );
+    dists[2] = qAbs ( ptStick.y() - ( geo.top() + geo.height() ) );
+    dists[3] = qAbs ( ptStick.x() - geo.left() );
+
+    //! select the min
+    int distMin;
+    distMin = dists[0];
+    for ( int i = 1; i < 4; i++ )
+    { distMin = qMin( distMin, dists[i]); }
+
+    //! now stick
+    if ( distMin == dists[0] )
+    { ptStick.setY( geo.top() ); }
+    else if ( distMin == dists[1] )
+    { ptStick.setX( geo.left() + geo.width() ); }
+    else if ( distMin == dists[2] )
+    { ptStick.setY( geo.top() + geo.height() ); }
+    else if ( distMin == dists[3] )
+    { ptStick.setX( geo.left() ); }
+    else
+    {}
+
+    //! \todo stick overlap
+
     //! pt stick ref to the widget
     pAttachWig->attachWidget( pWig, tpe, ptStick - geo.topLeft() );
 }
@@ -412,7 +440,7 @@ EntityWidget* RoboGraph::addRoboEntity( const QString &className,
         addEntity( pWig );
 
         pWig->setLabel( name );
-        pWig->setImage( pNewRobot->getImage() );
+        pWig->setDataClass( className );
     }
     else
     { }
@@ -432,7 +460,7 @@ EntityWidget* RoboGraph::addOperatorEntity( const QString &className,
         addEntity( pWig );
 
         pWig->setLabel( className );
-        pWig->setImage( QImage( icon ) );
+        pWig->setImage( ( icon ) );
     }
     else
     { }
@@ -466,7 +494,7 @@ bool RoboGraph::crossDetect( EntityWidget *pSrc,
 
 void RoboGraph::on_btnGen_clicked()
 {
-
+    ((MrgGraphModel *)m_pModelObj)->mChildWidgets.at(0)->iterAttached();
 }
 
 void RoboGraph::on_btnRun_clicked()

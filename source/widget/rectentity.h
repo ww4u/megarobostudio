@@ -17,6 +17,11 @@ public:
     ~RectEntity();
 
 public:
+    virtual int serialOut( QXmlStreamWriter &writer, QList<EntityWidget *> &refWidgets );
+    virtual int serialIn( QXmlStreamReader &reader );
+    virtual QString description();
+
+public:
     void setLabel( const QString &lab );
     QString label();
 

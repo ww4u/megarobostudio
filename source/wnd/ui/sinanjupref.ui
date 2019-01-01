@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>497</width>
-    <height>537</height>
+    <width>605</width>
+    <height>555</height>
    </rect>
   </property>
   <property name="maximumSize">
@@ -422,6 +422,13 @@
              </property>
             </spacer>
            </item>
+           <item>
+            <widget class="QPushButton" name="pushButton">
+             <property name="text">
+              <string>Controller Default</string>
+             </property>
+            </widget>
+           </item>
           </layout>
          </item>
         </layout>
@@ -443,8 +450,8 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>493</width>
-           <height>72</height>
+           <width>601</width>
+           <height>85</height>
           </rect>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_4">

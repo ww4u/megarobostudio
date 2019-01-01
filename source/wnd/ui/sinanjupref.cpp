@@ -342,3 +342,25 @@ void SinanjuPref::on_btnFactory_clicked()
         pBase->goFactory( tpvRegion(0, ui->widget->page()) );
     }
 }
+
+void SinanjuPref::on_pushButton_clicked()
+{
+    Q_ASSERT( m_pModelObj != NULL );
+    VRobot *pBase = ( VRobot *)m_pModelObj;
+    Q_ASSERT( NULL != pBase );
+
+    if ( !pBase->checkLink() )
+    {
+        sysPrompt( tr("Invalid link") );
+        return ;
+    }
+
+    if ( QMessageBox::Yes == MegaMessageBox::question( this, tr("Sure to reset"), tr("Sure to recover the factory setting?") ) )
+    {}
+    else
+    { return; }
+
+    //! write the setting
+    pBase->write( "*lrn \"mrq_sinanju.stp\"\r\n" );
+    return;
+}

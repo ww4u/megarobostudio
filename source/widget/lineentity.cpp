@@ -126,6 +126,50 @@ void LineEntity::mouseReleaseEvent( QMouseEvent *event )
     }
 }
 
+int LineEntity::serialOut( QXmlStreamWriter &writer, QList<EntityWidget *> &refWidgets )
+{
+    int ret = 0;
+    writer.writeStartElement( "base" );
+    ret = EntityWidget::serialOut( writer, refWidgets );
+    writer.writeEndElement();
+
+    writer.writeStartElement( "sub" );
+
+        writer.writeTextElement( "from", fmtPoint( mFrom ));
+        writer.writeTextElement( "to", fmtPoint( mTo ));
+
+    writer.writeEndElement();
+
+    return ret;
+}
+int LineEntity::serialIn( QXmlStreamReader &reader )
+{
+    int ret = 0;
+    while( reader.readNextStartElement() )
+    {
+        if ( reader.name() == "base" )
+        {
+            ret = EntityWidget::serialIn( reader );
+        }
+        else if ( reader.name() == "sub" )
+        {
+            while( reader.readNextStartElement() )
+            {
+                if ( reader.name() == "from" )
+                { mFrom = toPoint( reader.readElementText()); }
+                else if ( reader.name() == "to" )
+                { mTo = toPoint( reader.readElementText()); }
+                else
+                { reader.skipCurrentElement(); }
+            }
+        }
+        else
+        { reader.skipCurrentElement(); }
+    }
+
+    return ret;
+}
+
 void  LineEntity::mouseMoveEvent( QMouseEvent *event )
 {
     //! point

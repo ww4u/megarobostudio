@@ -4,6 +4,34 @@
 #include <QKeyEvent>
 #include "../../include/mydebug.h"
 
+AttachedWidget::AttachedWidget( QWidget *pWig, Anchor an )
+{
+    m_pWig = pWig;
+    mAnchor = an;
+}
+
+qreal distToTopLeft( QPointF pt )
+{
+    if ( pt.y() == 0 )
+    { return pt.x(); }
+    else if ( pt.x() == 1 )
+    { return 1 + pt.y(); }
+    else if( pt.y() == 1 )
+    { return 2 + 1 - pt.x(); }
+    else if ( pt.x() == 0 )
+    { return 3 + 1 - pt.y(); }
+    else
+    {
+        Q_ASSERT( false );
+        return 0;
+    }
+}
+bool operator<( const AttachedWidget &a, const AttachedWidget &b )
+{
+    //! calc the dist to zero
+    return distToTopLeft( a.mAnchor.mRefPt) < distToTopLeft( b.mAnchor.mRefPt );
+}
+
 int EntityWidget::_focus_radius = 8;
 
 QRect EntityWidget::genBoundingRect( QPoint a, QPoint b )
@@ -122,6 +150,26 @@ QPointF EntityWidget::toPointF( const QString &str )
     { return QPointF(0,0); }
 }
 
+QString EntityWidget::fmtPoint( const QPoint &pt )
+{
+    return QString("%1,%2").arg( pt.x() ).arg( pt.y() );
+}
+QPoint EntityWidget::toPoint( const QString &str )
+{
+    QStringList strList = str.split(',',QString::SkipEmptyParts );
+    if ( strList.size() >= 2 )
+    {
+        int x, y;
+
+        x = strList.at(0).toInt();
+        y = strList.at(1).toInt();
+
+        return QPoint( x,y );
+    }
+    else
+    { return QPoint(0,0); }
+}
+
 int EntityWidget::serialOut( QXmlStreamWriter &writer, QList<EntityWidget *> &refWidgets )
 {
     writer.writeTextElement( "objname", objectName() );
@@ -235,7 +283,7 @@ int EntityWidget::serialIn( QXmlStreamReader &reader )
             {
                 if ( reader.name() == "item" )
                 {
-                    Anchor::anchorType tpe;
+                    Anchor::anchorType tpe = Anchor::anchor_unk;
                     int refId;
                     while( reader.readNextStartElement() )
                     {
@@ -248,7 +296,8 @@ int EntityWidget::serialIn( QXmlStreamReader &reader )
                             refId = reader.readElementText().toInt();
 
                             //! insert
-                            mRefLink.insert( tpe, refId );
+                            if ( tpe != Anchor::anchor_unk )
+                            { mRefLink.insert( tpe, refId ); }
                         }
                         else
                         { reader.skipCurrentElement(); }
@@ -360,11 +409,49 @@ void EntityWidget::anchorProc()
         pt.setY( iter.value().mRefPt.y() * rect().height() );
 
         pt = mapToParent( pt );
-        logDbg()<<pt;
 
         emit signal_anchor_changed( iter.key(), iter.value().mType, pt );
     }
 }
+
+void EntityWidget::filterAttached( Anchor::anchorType type, QList<AttachedWidget> &filtered )
+{
+    QMapIterator<EntityWidget *, Anchor> iter(mAttachedWidgets);
+
+    while( iter.hasNext() )
+    {
+        iter.next();
+
+        if ( iter.value().mType == type )
+        {
+            filtered.append( AttachedWidget( iter.key(), iter.value()) );
+        }
+    }
+}
+
+void EntityWidget::iterAttached( )
+{
+    logDbg()<<description()<<geometry();
+
+    if ( mLinkWidget.contains( Anchor::anchor_line_to) )
+    { mLinkWidget[ Anchor::anchor_line_to]->iterAttached(); }
+    else
+    {
+        //! sort the attached by anchor
+        QList<AttachedWidget> filter;
+        filterAttached( Anchor::anchor_line_from, filter );
+
+        qSort( filter );
+
+        foreach( AttachedWidget item, filter )
+        {
+            ((EntityWidget*)item.m_pWig)->iterAttached();
+        }
+    }
+
+}
+QString EntityWidget::description()
+{ return objectName(); }
 
 void EntityWidget::setEntityType( EntityWidget::EntityWidgetType tpe )
 { mEntityType = tpe; }

@@ -12,6 +12,7 @@ public:
 public:
     QString mName;
     QString mRes;
+    QString mToolTip;
 };
 
 class OpGroup

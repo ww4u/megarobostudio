@@ -30,6 +30,23 @@ public:
     QPointF mRefPt;
 };
 
+class AttachedWidget
+{
+public:
+    QWidget *m_pWig;
+    Anchor mAnchor;
+
+public:
+    AttachedWidget( QWidget *pWig=NULL, Anchor an=Anchor() );
+};
+
+qreal distToTopLeft( QPointF pt );
+bool operator<( const AttachedWidget &a, const AttachedWidget &b );
+//{
+//    //! calc the dist to zero
+//    return distToTopLeft( a.mAnchor.mRefPt) < distToTopLeft( a.mAnchor.mRefPt );
+//}
+
 class EntityWidget : public QFrame
 {
     Q_OBJECT
@@ -80,9 +97,12 @@ protected:
     QString fmtPointF( const QPointF &pt );
     QPointF toPointF( const QString &str );
 
+    QString fmtPoint( const QPoint &pt );
+    QPoint toPoint( const QString &str );
+
 public:
-    int serialOut( QXmlStreamWriter &writer, QList<EntityWidget *> &refWidgets );
-    int serialIn( QXmlStreamReader &reader );
+    virtual int serialOut( QXmlStreamWriter &writer, QList<EntityWidget *> &refWidgets );
+    virtual int serialIn( QXmlStreamReader &reader );
 
     void crossLink( const QList<EntityWidget *> &refWidgets );
 
@@ -106,6 +126,10 @@ public:
 
 public:
     void anchorProc();
+
+    void filterAttached( Anchor::anchorType type, QList<AttachedWidget> &filtered );
+    void iterAttached( );
+    virtual QString description();
 
 public:
     void setEntityType( EntityWidgetType tpe );

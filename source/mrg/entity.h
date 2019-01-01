@@ -67,10 +67,11 @@ public:
     void traverse();
 
 public:
-//    int serialOut( QXmlStreamWriter &stream );
-//    int serialIn( QXmlStreamReader &stream );
+    int serialOut( QXmlStreamWriter &stream );
+    int serialIn( QXmlStreamReader &stream );
 
 protected:
+    EntityType mType;
     QString mClass;
 
     QString mObjName;

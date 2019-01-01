@@ -58,7 +58,7 @@ protected:
     EntityWidget* addRoboEntity( const QString &className,
                                  const QString &name,
                                  const QPoint &pt );
-    EntityWidget* addOperatorEntity( const QString &className,
+    EntityWidget* addOperationEntity( const QString &className,
                                      const QString &name,
                                      const QPoint &pt );
 

@@ -11,11 +11,17 @@ public:
     {
         entity_unk,
 
+        entity_main,
+        entity_sequence,
+        entity_loop,
+
+        entity_obj,
+
         entity_operation,
         entity_operator,
         entity_operand,
 
-        entity_com_operator,
+//        entity_com_operator,
 
         entity_mrq,
         entity_mrx_t4,
@@ -41,28 +47,28 @@ public:
     void setLabel( const QString &label );
     QString label();
 
-    void setGeo( const QRect &geo );
-    QRect geo();
+//    void setGeo( const QRect &geo );
+//    QRect geo();
 
-    void setLT( const QPoint &pt );
-    QPoint LT();
+//    void setLT( const QPoint &pt );
+//    QPoint LT();
 
-    void setSize( const QSize &size );
-    QSize size();
+//    void setSize( const QSize &size );
+//    QSize size();
 
 public:
-    void attachPrecessor( Entity *p );
-    void detachPrecessor( Entity *p );
+//    void attachPrecessor( Entity *p );
+//    void detachPrecessor( Entity *p );
 
-    void attachSuccessor( Entity *p );
-    void detachSuccessor( Entity *p );
+//    void attachSuccessor( Entity *p );
+//    void detachSuccessor( Entity *p );
 
 public:
     void traverse();
 
 public:
-    int serialOut( QXmlStreamWriter &stream );
-    int serialIn( QXmlStreamReader &stream );
+//    int serialOut( QXmlStreamWriter &stream );
+//    int serialIn( QXmlStreamReader &stream );
 
 protected:
     QString mClass;
@@ -73,8 +79,8 @@ protected:
     QRect mGeo;
 
 protected:
-    Entity *m_pPrecessor;
-    QList<Entity*> mSuccessors;
+//    Entity *m_pPrecessor;
+//    QList<Entity*> mSuccessors;
 };
 
 #endif // ENTITY_H

@@ -67,6 +67,15 @@ EntityWidget::EntityWidget(QWidget *parent) : QFrame(parent)
     setMouseTracking( true );
 }
 
+EntityWidget::~EntityWidget()
+{
+    if ( NULL != m_pModel )
+    {
+        delete m_pModel;
+        m_pModel = NULL;
+    }
+}
+
 void EntityWidget::paintEvent( QPaintEvent *event )
 {
     QFrame::paintEvent( event );
@@ -396,6 +405,14 @@ QPoint EntityWidget::fromAnchor()
 { return QPoint(); }
 QPoint EntityWidget::toAnchor()
 { return QPoint(); }
+
+void EntityWidget::setModel( Entity *pModel )
+{
+    Q_ASSERT( NULL != pModel );
+    m_pModel = pModel;
+}
+Entity *EntityWidget::model()
+{ return m_pModel; }
 
 void EntityWidget::anchorProc()
 {

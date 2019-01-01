@@ -23,7 +23,9 @@ SOURCES =  \
     operation.cpp \
     robographmodel.cpp \
     entityfactory.cpp \
-    opitem.cpp
+    opitem.cpp \
+    mainentity.cpp \
+    sequenceentity.cpp
 
 HEADERS = \ 
     entity.h \
@@ -37,7 +39,9 @@ HEADERS = \
     operation.h \
     robographmodel.h \
     entityfactory.h \
-    opitem.h
+    opitem.h \
+    mainentity.h \
+    sequenceentity.h
     
 
 

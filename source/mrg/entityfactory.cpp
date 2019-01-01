@@ -11,8 +11,15 @@
 
 #include "comoperator.h"
 
+#include "../../include/mcdef.h"
 Entity *EntityFactory::createEntity( const QString &clsName )
 {
+
+    if ( str_is( clsName, "main") )
+    { return new Entity( "main" ); }
+    if ( str_is( clsName, "sequence") )
+    { return new Entity( "main" ); }
+
     //! \todo
     return NULL;
 }

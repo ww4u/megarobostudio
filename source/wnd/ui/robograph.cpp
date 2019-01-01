@@ -7,6 +7,8 @@
 #include "../widget/rectentity.h"
 #include "../widget/imageentity.h"
 
+#include "../../mrg/entityfactory.h"
+
 EntityWidget* RoboGraph::createEntityWidget( EntityWidget::EntityWidgetType tpe,
                                              RoboGraph *parent,
                                              const QPoint &pt )
@@ -224,7 +226,7 @@ void RoboGraph::dropEvent(QDropEvent *event)
     {
         event->acceptProposedAction();
 
-        EntityWidget *pWig = addOperatorEntity( event->mimeData()->text(),
+        EntityWidget *pWig = addOperationEntity( event->mimeData()->text(),
                                                 event->mimeData()->data( "oplib/operator"),
                                                 pt );
 
@@ -437,6 +439,8 @@ EntityWidget* RoboGraph::addRoboEntity( const QString &className,
     ImageEntity *pWig = (ImageEntity *)createEntityWidget( EntityWidget::entity_widget_image, this, pt );
     if ( NULL != pWig )
     {
+        //! \todo for the model
+
         addEntity( pWig );
 
         pWig->setLabel( name );
@@ -450,13 +454,26 @@ EntityWidget* RoboGraph::addRoboEntity( const QString &className,
     return pWig;
 }
 
-EntityWidget* RoboGraph::addOperatorEntity( const QString &className,
+EntityWidget* RoboGraph::addOperationEntity( const QString &className,
                                             const QString &icon,
                                             const QPoint &pt )
 {
     ImageEntity *pWig = (ImageEntity *)createEntityWidget( EntityWidget::entity_widget_image, this, pt );
     if ( NULL != pWig )
     {
+        //! model attached
+        Entity *pModel = EntityFactory::createEntity( className );
+        if ( NULL == pModel )
+        {
+            delete pWig;
+            return NULL;
+        }
+        else
+        {}
+
+        pWig->setModel( pModel );
+
+        //! entity
         addEntity( pWig );
 
         pWig->setLabel( className );

@@ -4,7 +4,7 @@ QList<Entity*> Entity::_mObjs;
 
 Entity::Entity( const QString &objName ) : mObjName( objName )
 {
-    m_pPrecessor = NULL;
+//    m_pPrecessor = NULL;
 
     //! write to the cache
     Entity::_mObjs.append( this );
@@ -41,66 +41,66 @@ void Entity::setLabel( const QString &label )
 QString Entity::label()
 { return mLabel; }
 
-void Entity::setGeo( const QRect &geo )
-{ mGeo = geo; }
-QRect Entity::geo()
-{ return mGeo; }
+//void Entity::setGeo( const QRect &geo )
+//{ mGeo = geo; }
+//QRect Entity::geo()
+//{ return mGeo; }
 
-void Entity::setLT( const QPoint &pt )
-{ mGeo.setTopLeft( pt ); }
+//void Entity::setLT( const QPoint &pt )
+//{ mGeo.setTopLeft( pt ); }
 
-QPoint Entity::LT()
-{ return mGeo.topLeft(); }
+//QPoint Entity::LT()
+//{ return mGeo.topLeft(); }
 
-void Entity::setSize( const QSize &size )
-{ mGeo.setSize( size ); }
-QSize Entity::size()
-{ return mGeo.size(); }
+//void Entity::setSize( const QSize &size )
+//{ mGeo.setSize( size ); }
+//QSize Entity::size()
+//{ return mGeo.size(); }
 
-void Entity::attachPrecessor( Entity *p )
-{
-    Q_ASSERT( NULL != p );
+//void Entity::attachPrecessor( Entity *p )
+//{
+//    Q_ASSERT( NULL != p );
 
-    m_pPrecessor = p;
-}
-void Entity::detachPrecessor( Entity *p )
-{
-    Q_ASSERT( NULL != p );
+//    m_pPrecessor = p;
+//}
+//void Entity::detachPrecessor( Entity *p )
+//{
+//    Q_ASSERT( NULL != p );
 
-    m_pPrecessor = NULL;
-}
+//    m_pPrecessor = NULL;
+//}
 
-void Entity::attachSuccessor( Entity *p )
-{
-    Q_ASSERT( NULL != p );
+//void Entity::attachSuccessor( Entity *p )
+//{
+//    Q_ASSERT( NULL != p );
 
-    if ( mSuccessors.contains( p ) )
-    {}
-    else
-    {
-        mSuccessors.append( p );
+//    if ( mSuccessors.contains( p ) )
+//    {}
+//    else
+//    {
+//        mSuccessors.append( p );
 
-        p->attachPrecessor( this );
-    }
-}
-void Entity::detachSuccessor( Entity *p )
-{
-    Q_ASSERT( NULL != p );
+//        p->attachPrecessor( this );
+//    }
+//}
+//void Entity::detachSuccessor( Entity *p )
+//{
+//    Q_ASSERT( NULL != p );
 
-    p->detachPrecessor( this );
+//    p->detachPrecessor( this );
 
-    mSuccessors.removeAll( p );
-}
+//    mSuccessors.removeAll( p );
+//}
 
-void Entity::traverse()
-{
-    qDebug()<<mObjName;
+//void Entity::traverse()
+//{
+//    qDebug()<<mObjName;
 
-    foreach (Entity* p, mSuccessors)
-    {
-        p->traverse();
-    }
-}
+//    foreach (Entity* p, mSuccessors)
+//    {
+//        p->traverse();
+//    }
+//}
 
 int Entity::serialOut( QXmlStreamWriter &stream )
 {
@@ -108,12 +108,12 @@ int Entity::serialOut( QXmlStreamWriter &stream )
     stream.writeTextElement( "mObjName", mObjName );
     stream.writeTextElement( "mLabel", mLabel );
 
-    stream.writeStartElement("mGeo");
-        stream.writeTextElement( "x", QString::number( mGeo.x() ) );
-        stream.writeTextElement( "y", QString::number( mGeo.y() ) );
-        stream.writeTextElement( "w", QString::number( mGeo.width() ) );
-        stream.writeTextElement( "h", QString::number( mGeo.height() ) );
-    stream.writeEndElement();
+//    stream.writeStartElement("mGeo");
+//        stream.writeTextElement( "x", QString::number( mGeo.x() ) );
+//        stream.writeTextElement( "y", QString::number( mGeo.y() ) );
+//        stream.writeTextElement( "w", QString::number( mGeo.width() ) );
+//        stream.writeTextElement( "h", QString::number( mGeo.height() ) );
+//    stream.writeEndElement();
 
     return 0;
 }
@@ -127,22 +127,22 @@ int Entity::serialIn( QXmlStreamReader &stream )
         { mObjName = stream.readElementText(); }
         else if ( stream.name() == "mLabel" )
         { mLabel = stream.readElementText(); }
-        else if ( stream.name() == "mGeo" )
-        {
-            while( stream.readNextStartElement() )
-            {
-                if ( stream.name() == "x" )
-                { mGeo.setX(  stream.readElementText().toInt() ); }
-                else if ( stream.name() == "y" )
-                { mGeo.setY(  stream.readElementText().toInt() ); }
-                else if ( stream.name() == "w" )
-                { mGeo.setWidth( stream.readElementText().toInt() ); }
-                else if ( stream.name() == "h" )
-                { mGeo.setHeight(  stream.readElementText().toInt() ); }
-                else
-                { stream.skipCurrentElement(); }
-            }
-        }
+//        else if ( stream.name() == "mGeo" )
+//        {
+//            while( stream.readNextStartElement() )
+//            {
+//                if ( stream.name() == "x" )
+//                { mGeo.setX(  stream.readElementText().toInt() ); }
+//                else if ( stream.name() == "y" )
+//                { mGeo.setY(  stream.readElementText().toInt() ); }
+//                else if ( stream.name() == "w" )
+//                { mGeo.setWidth( stream.readElementText().toInt() ); }
+//                else if ( stream.name() == "h" )
+//                { mGeo.setHeight(  stream.readElementText().toInt() ); }
+//                else
+//                { stream.skipCurrentElement(); }
+//            }
+//        }
         else
         { stream.skipCurrentElement(); }
 

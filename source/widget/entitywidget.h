@@ -68,6 +68,7 @@ public:
 
 public:
     explicit EntityWidget(QWidget *parent = nullptr);    
+    virtual ~EntityWidget();
 
 signals:
     void signal_link_changed( EntityWidget *pWig,
@@ -125,6 +126,10 @@ public:
     virtual QPoint toAnchor();
 
 public:
+    void setModel( Entity *pModel );
+    Entity *model();
+
+public:
     void anchorProc();
 
     void filterAttached( Anchor::anchorType type, QList<AttachedWidget> &filtered );
@@ -166,7 +171,7 @@ protected:
     void setPenAttr( QPen &pen );
 
 protected:
-    Entity *m_pModel;
+    Entity *m_pModel;           //! model for widget
 
     //! pen
     QColor mColor;

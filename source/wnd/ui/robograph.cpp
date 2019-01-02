@@ -187,6 +187,12 @@ void RoboGraph::keyReleaseEvent(QKeyEvent *event)
     {logDbg();
         deleteSelected();
     }
+    else if ( event->matches( QKeySequence::SelectAll ) )
+    { selectAll(); }
+    else if ( event->matches( QKeySequence::Deselect ))
+    { deSelectAll(); }
+    else
+    {}
 }
 
 void RoboGraph::dragEnterEvent(QDragEnterEvent *event)
@@ -395,6 +401,23 @@ void RoboGraph::slot_request_delete( EntityWidget *pWig )
     deleteSelected();
 }
 
+void RoboGraph::selectAll()
+{
+    foreach (EntityWidget *pWig, ((MrgGraphModel *)m_pModelObj)->mChildWidgets )
+    {
+        Q_ASSERT( pWig != NULL );
+        pWig->setSelected( true );
+    }
+}
+void RoboGraph::deSelectAll()
+{
+    foreach (EntityWidget *pWig, ((MrgGraphModel *)m_pModelObj)->mChildWidgets )
+    {
+        Q_ASSERT( pWig != NULL );
+        pWig->setSelected( false );
+    }
+}
+
 void RoboGraph::deleteSelected()
 {
     QList<EntityWidget*> delList;
@@ -439,8 +462,19 @@ EntityWidget* RoboGraph::addRoboEntity( const QString &className,
     ImageEntity *pWig = (ImageEntity *)createEntityWidget( EntityWidget::entity_widget_image, this, pt );
     if ( NULL != pWig )
     {
-        //! \todo for the model
+        //! model attached
+        Entity *pModel = EntityFactory::createEntity( className );
+        if ( NULL == pModel )
+        {
+            delete pWig;
+            return NULL;
+        }
+        else
+        {}
 
+        pWig->setModel( pModel );
+
+        //! entity
         addEntity( pWig );
 
         pWig->setLabel( name );
@@ -511,7 +545,25 @@ bool RoboGraph::crossDetect( EntityWidget *pSrc,
 
 void RoboGraph::on_btnGen_clicked()
 {
-    ((MrgGraphModel *)m_pModelObj)->mChildWidgets.at(0)->iterAttached();
+//    ((MrgGraphModel *)m_pModelObj)->mChildWidgets.at(0)->iterAttached();
+
+    //! find the main
+    EntityWidget *pRootWig = NULL;
+    for ( int i = 0; i < ((MrgGraphModel *)m_pModelObj)->mChildWidgets.size(); i++ )
+    {
+        if( ((MrgGraphModel *)m_pModelObj)->mChildWidgets.at(i)->model()->className() == "main" )
+        {
+            pRootWig = ((MrgGraphModel *)m_pModelObj)->mChildWidgets.at(i);
+            break;
+        }
+    }
+
+    if ( NULL == pRootWig )
+    {
+        sysPrompt( tr("No main found") );
+        return; }
+
+    pRootWig->iterAttached();
 }
 
 void RoboGraph::on_btnRun_clicked()

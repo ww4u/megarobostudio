@@ -9,4 +9,6 @@ public:
     MainEntity( const QString &objName="" );
 };
 
+
+
 #endif // MAINENTITY_H

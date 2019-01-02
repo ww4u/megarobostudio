@@ -11,17 +11,29 @@
 
 #include "comoperator.h"
 
+#include "mainentity.h"
+#include "sequenceentity.h"
+
+#include "programentity.h"
+#include "callentity.h"
+
 #include "../../include/mcdef.h"
 Entity *EntityFactory::createEntity( const QString &clsName )
 {
-
+    //! entities
     if ( str_is( clsName, "main") )
-    { return new Entity( "main" ); }
+    { return new MainEntity( "main" ); }
     if ( str_is( clsName, "sequence") )
-    { return new Entity( "main" ); }
+    { return new SequenceEntity( "sequence" ); }
+    if ( str_is( clsName, "program") )
+    { return new ProgramEntity( "program" ); }
+    if ( str_is( clsName, "call") )
+    { return new CallEntity( "call" ); }
 
     //! \todo
-    return NULL;
+    else
+    { return new Entity(); }
+
 }
 
 EntityFactory::EntityFactory()

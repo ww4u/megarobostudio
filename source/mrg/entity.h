@@ -4,6 +4,8 @@
 #include <QtCore>
 #include <QDebug>
 
+#include "entityarg.h"
+
 class Entity
 {
 public:
@@ -14,6 +16,9 @@ public:
         entity_main,
         entity_sequence,
         entity_loop,
+
+        entity_program,
+        entity_call,
 
         entity_obj,
 
@@ -36,35 +41,16 @@ public:
 
     virtual void postCtor();
 
-    virtual bool isContainer();
+    virtual QString snapInfo();
 
 public:
+    void setClassName( const QString &clsName );
     QString className();
 
     void setObjName( const QString &name );
     QString objName();
 
-    void setLabel( const QString &label );
-    QString label();
-
-//    void setGeo( const QRect &geo );
-//    QRect geo();
-
-//    void setLT( const QPoint &pt );
-//    QPoint LT();
-
-//    void setSize( const QSize &size );
-//    QSize size();
-
 public:
-//    void attachPrecessor( Entity *p );
-//    void detachPrecessor( Entity *p );
-
-//    void attachSuccessor( Entity *p );
-//    void detachSuccessor( Entity *p );
-
-public:
-    void traverse();
 
 public:
     int serialOut( QXmlStreamWriter &stream );
@@ -75,13 +61,9 @@ protected:
     QString mClass;
 
     QString mObjName;
-    QString mLabel;
-
-    QRect mGeo;
 
 protected:
-//    Entity *m_pPrecessor;
-//    QList<Entity*> mSuccessors;
+
 };
 
 #endif // ENTITY_H

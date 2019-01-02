@@ -51,6 +51,8 @@ protected slots:
     void slot_request_delete( EntityWidget *pWig );
 
 protected:
+    void selectAll();
+    void deSelectAll();
     void deleteSelected();
 
     void addEntity( EntityWidget *pEntity );

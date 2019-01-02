@@ -25,7 +25,10 @@ SOURCES =  \
     entityfactory.cpp \
     opitem.cpp \
     mainentity.cpp \
-    sequenceentity.cpp
+    sequenceentity.cpp \
+    programentity.cpp \
+    entityarg.cpp \
+    callentity.cpp
 
 HEADERS = \ 
     entity.h \
@@ -41,7 +44,10 @@ HEADERS = \
     entityfactory.h \
     opitem.h \
     mainentity.h \
-    sequenceentity.h
+    sequenceentity.h \
+    programentity.h \
+    entityarg.h \
+    callentity.h
     
 
 

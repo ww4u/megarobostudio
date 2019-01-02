@@ -4,6 +4,8 @@
 #include <QKeyEvent>
 #include "../../include/mydebug.h"
 
+#include "../../mrg/entity.h"
+#include "../../mrg/entityfactory.h"
 AttachedWidget::AttachedWidget( QWidget *pWig, Anchor an )
 {
     m_pWig = pWig;
@@ -226,6 +228,18 @@ int EntityWidget::serialOut( QXmlStreamWriter &writer, QList<EntityWidget *> &re
         writer.writeEndElement();
     }
 
+    //! for obj
+    if ( m_pModel != NULL )
+    {
+        writer.writeStartElement( "model" );
+
+        writer.writeAttribute( "name", m_pModel->className() );
+
+        m_pModel->serialOut( writer );
+
+        writer.writeEndElement();
+    }
+
     return 0;
 }
 int EntityWidget::serialIn( QXmlStreamReader &reader )
@@ -315,6 +329,26 @@ int EntityWidget::serialIn( QXmlStreamReader &reader )
                 else
                 { reader.skipCurrentElement(); }
             }
+        }
+
+        else if ( reader.name() == "model" )
+        {
+            //! valid name
+            if ( reader.attributes().value("name").toString().length() > 0 )
+            {
+                Entity *pEntity = EntityFactory::createEntity( reader.attributes().value("name").toString() );
+
+                //! attach model
+                if ( pEntity != NULL )
+                {
+                    pEntity->serialIn( reader);
+                    setModel( pEntity );
+                }
+                else
+                { reader.skipCurrentElement(); }
+            }
+            else
+            { reader.skipCurrentElement(); }
         }
 
         else

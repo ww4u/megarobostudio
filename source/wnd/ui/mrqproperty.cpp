@@ -132,7 +132,6 @@ void mrqProperty::setModelObj( mcModelObj *pObj )
         pView->setModelObj(pObj);
     }
 
-
     //! adapt
     foreach( modelView *pView, mViewPages )
     {

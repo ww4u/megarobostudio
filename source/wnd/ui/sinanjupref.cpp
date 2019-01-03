@@ -356,6 +356,9 @@ void SinanjuPref::on_btnUploadZero_clicked()
     //! save the dir
     pBase->mAngleDir[0] = ui->chkInvBA->isChecked();
 
+    //! \note widget is not roboprop
+    emit sigSaveRequest( this );
+
     emit sigModified( true );
 }
 

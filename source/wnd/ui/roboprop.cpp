@@ -145,6 +145,11 @@ void roboProp::updateScreen()
 #define new_widget( widget, icon, name, rawname )  ( names.append(name), rawNames.append(rawname),\
                                             icons.append(icon), \
                                             mPrefPages.append( new widget()),\
+                                            connect( (roboInfo*)mPrefPages.last(), \
+                                                     SIGNAL(sigSaveRequest(QWidget*)),\
+                                                     this, \
+                                                     SIGNAL(sigSaveRequest(QWidget*) )\
+                                                      ),\
                                             (widget*)mPrefPages.last() )
 void roboProp::setupUi( int id )
 {

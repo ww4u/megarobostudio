@@ -38,6 +38,9 @@ void MrvVertical::modelChanged()
 
 void MrvVertical::spyEdited()
 {
+    QGroupBox *gpBox[]=
+    {
+    };
     QCheckBox *checkBoxes[]=
     {
         ui->chkLed,

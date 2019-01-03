@@ -39,6 +39,9 @@ void MrvThreshold::modelChanged()
 
 void MrvThreshold::spyEdited()
 {
+    QGroupBox *gpBox[]=
+    {
+    };
     QCheckBox *checkBoxes[]=
     {
 

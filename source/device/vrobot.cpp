@@ -87,7 +87,10 @@ VRobot::VRobot()
     mPoseCount = 0;
     mAngleType = robo_angle_none;
 
+    mToZeroUnit = QObject::tr("mm");
+
     mbInterpAble = false;
+    mbZeroAttrInComPref = true;
     mbEncoderAble = true;
     mbRunWaveAble = false;
     mbTunningAble = false;
@@ -109,10 +112,6 @@ VRobot::VRobot()
     mSubGroup = 0;
     mSubGroupId = sub_group_id_from;
 
-    mZeroSpeed = 5;
-    mZeroTmo = time_s( 60 );
-    mZeroTick = time_ms( 500 );
-
     mBaseCompensation = 0;
     mLengthUnit = 1;
                                         //! reimplent the worker thread
@@ -125,6 +124,9 @@ VRobot::VRobot()
     m_pRoboTask = NULL;
                                         //! device
     setType( mcModelObj::model_device );
+
+    //! init
+    init();
 }
 
 VRobot::~VRobot()
@@ -147,10 +149,19 @@ VRobot::~VRobot()
     }
 }
 
+void VRobot::init()
+{
+    mZeroSpeed = 5;
+    mZeroTmo = time_s( 120 );
+    mZeroTick = time_ms( 500 );
+}
+
 void VRobot::postCtor()
 {
-
 }
+
+void VRobot::setReset()
+{}
 
 void VRobot::gcWorker()
 {

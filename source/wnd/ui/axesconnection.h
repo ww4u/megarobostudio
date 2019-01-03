@@ -19,7 +19,8 @@ protected:
     virtual void changeEvent( QEvent *event );
 
 public:
-    void setDeviceNames( const QStringList &strList );
+//    void setDeviceNames( const QStringList &strList );
+    void setDeviceNames( const QMap<QString,int> &map );
     void setCurrentName( const QString &str );
     void setCurrentName( const int index );
 
@@ -35,6 +36,8 @@ public:
     QComboBox *getCombPage();
 
 private slots:
+
+    void on_cmbDeviceName_currentIndexChanged(int index);
 
 private:
     Ui::axesConnection *ui;

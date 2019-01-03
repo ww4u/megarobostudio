@@ -70,6 +70,10 @@ protected:
     void beginOk( void *pPara);
     void endOk( int ret, void *pPara );
 
+    int postReset( appMsg msg, void *pPara );
+    void beginReset( void *pPara);
+    void endReset( int ret, void *pPara );
+
     void saveBtnSnap( bool bNow = false );
     void restoreBtnSnap();
 
@@ -81,7 +85,7 @@ private slots:
     void on_btnCancel_clicked();
 
     void on_btnApply_clicked();
-
+    void on_btnReset_clicked();
 private:
     Ui::mrqProperty *ui;
 

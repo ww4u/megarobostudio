@@ -51,6 +51,9 @@ void MrqXI::setupUi()
 {}
 void MrqXI::spyEdited()
 {
+    QGroupBox *gpBox[]=
+    {
+    };
     QCheckBox *checkBoxes[]=
     {
         ui->chkIsiEn,

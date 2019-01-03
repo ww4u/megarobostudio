@@ -18,10 +18,12 @@ modelView::modelView( QWidget *parent ) : appWidget( parent )
 
     mbReqSpy = false;
 
+    //! default
     mAttributes = 0;
     set_bit( mAttributes, OK_ABLE_BIT );
     set_bit( mAttributes, CANCEL_ABLE_BIT );
     set_bit( mAttributes, APPLY_ABLE_BIT );
+    set_bit( mAttributes, RESET_ABLE_BIT );
 
     setAttribute( Qt::WA_DeleteOnClose );
 
@@ -63,6 +65,22 @@ void modelView::buildConnection()
              SLOT(slot_prog_do(appWidget::servContext,int,int,int)));
 }
 
+void modelView::adaptToUserRole()
+{
+    if ( sysMode() == sys_admin )
+    {
+    }
+    else
+    {
+        unset_bit( mAttributes, OK_ABLE_BIT );
+        unset_bit( mAttributes, APPLY_ABLE_BIT );
+        unset_bit( mAttributes, RESET_ABLE_BIT );
+    }
+}
+
+void modelView::adaptToModel()
+{}
+
 void modelView::slot_modified()
 {
     slotModified( true );
@@ -87,12 +105,19 @@ void modelView::slot_request( const RpcRequest &req )
     onRequest( lreq );
 }
 
+void modelView::slot_device_busy( bool b)
+{
+    setEnabled( !b );
+}
+
 bool modelView::isCanceAble()
 { return is_bit1(mAttributes,CANCEL_ABLE_BIT); }
 bool modelView::isOkAble()
 { return is_bit1(mAttributes,OK_ABLE_BIT); }
 bool modelView::isApplyAble()
 { return is_bit1(mAttributes,APPLY_ABLE_BIT); }
+bool modelView::isResetAble()
+{ return is_bit1(mAttributes,RESET_ABLE_BIT); }
 
 QString modelView::name()
 { return mName; }
@@ -169,6 +194,11 @@ int modelView::saveAs( QString &/*outFileName*/ )
 { return 0; }
 
 int modelView::setApply()
+{
+    return 0;
+}
+
+int modelView::setReset()
 {
     return 0;
 }

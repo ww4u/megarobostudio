@@ -45,8 +45,10 @@ void roboGeo51::postCtor()
     MegaDevice::deviceMRQ::postCtor();
 
     mAngleDir.clear();
-
     mAngleDir<<true<<false<<true<<false;    //! true: +
+
+    mPOSAble.clear();
+    mPOSAble<<false<<false<<false<<false<<true;
 }
 
 int roboGeo51::serialIn( QXmlStreamReader &reader )

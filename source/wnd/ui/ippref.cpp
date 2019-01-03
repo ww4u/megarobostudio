@@ -7,6 +7,8 @@ IPPref::IPPref(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    ui->spinVGapDist->setSuffix( char_deg );
+
     spyEdited();
 }
 
@@ -45,6 +47,9 @@ void IPPref::updateScreen()
 
 void IPPref::spyEdited()
 {
+    QGroupBox *gpBox[]=
+    {
+    };
     QCheckBox *checkBoxes[]=
     {
     };

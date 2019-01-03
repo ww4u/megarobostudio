@@ -78,6 +78,9 @@
          </item>
          <item row="0" column="3">
           <widget class="QComboBox" name="cmbZeroMovement">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <item>
             <property name="text">
              <string>-&gt;X-&gt;Y</string>

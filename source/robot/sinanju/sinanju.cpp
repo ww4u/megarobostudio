@@ -16,6 +16,7 @@ static quint8 _detail[]=
 
 robotSinanju::robotSinanju()
 {
+    //! configs
     mClass = QObject::tr("MRX-T4");
     mId = robot_sinanju;
 
@@ -36,6 +37,8 @@ robotSinanju::robotSinanju()
     setTunningAble( false );
 
     mDetail = QString::fromLocal8Bit( (char*)_detail, sizeof_array(_detail) );
+
+    mToZeroUnit = char_deg;
 
     //! joint name
     mJointName.clear();
@@ -147,6 +150,63 @@ robotSinanju::robotSinanju()
     m_pRoboTask = new SinanjuTask();
     Q_ASSERT( NULL != m_pRoboTask );
 
+    setCoordAble( true );
+
+    //! inits
+    init();
+
+//    //! zero
+//    mHandZeroTime = 5;
+//    mHandZeroAngle = 60;
+
+//    mGapTime = 1;
+//    mGapAngle = 3;
+
+//    //! hand
+//    mbHandAble = true;
+//    mJointFactoryList.clear();
+//    mJointFactoryList<<0<<-20<<-65<<100;  //! \ref to the zero
+
+//    mJointFactorySeperateList.clear();
+//    mJointFactorySeperateList<<180<<160<<25<<10;
+
+//    //! transfer
+//    for ( int i = 0; i < sizeof_array(mTransferR); i++ )
+//    { mTransferR[i] = 0; }
+
+//    for ( int i = 0; i < sizeof_array(mTransferS); i++ )
+//    { mTransferS[i] = 0; }
+
+//    mTransferR[0*3+0] = 1;
+//    mTransferR[1*3+1] = 1;
+//    mTransferR[2*3+2] = 1;
+
+//    //! inv = transfer
+//    //! 1 0 0
+//    //! 0 1 0
+//    //! 0 0 1
+//    memcpy( mTransferRInv, mTransferR, sizeof(mTransferR) );
+
+//    //! tcp
+//    mTcpP[0] = 250;
+//    mTcpP[1] = 0;
+//    mTcpP[2] = 512;
+
+//    mTcpR[0] = 0;
+//    mTcpR[1] = 0;
+//    mTcpR[2] = 0;
+
+}
+
+robotSinanju::~robotSinanju()
+{
+
+}
+
+void robotSinanju::init()
+{
+    RawRobo::init();
+
     //! zero
     mHandZeroTime = 5;
     mHandZeroAngle = 60;
@@ -157,10 +217,10 @@ robotSinanju::robotSinanju()
     //! hand
     mbHandAble = true;
     mJointFactoryList.clear();
-    mJointFactoryList<<0<<-20<<-65<<100;  //! \ref to the zero
+    mJointFactoryList<<0<<-20<<-57<<100;  //! \ref to the zero
 
     mJointFactorySeperateList.clear();
-    mJointFactorySeperateList<<180<<160<<25<<10;
+    mJointFactorySeperateList<<180<<160<<33<<10;
 
     //! transfer
     for ( int i = 0; i < sizeof_array(mTransferR); i++ )
@@ -187,13 +247,12 @@ robotSinanju::robotSinanju()
     mTcpR[0] = 0;
     mTcpR[1] = 0;
     mTcpR[2] = 0;
-
-    setCoordAble( true );
 }
 
-robotSinanju::~robotSinanju()
+//! reset the config
+void robotSinanju::setReset()
 {
-
+    init();
 }
 
 static msg_type _msg_patterns[]={

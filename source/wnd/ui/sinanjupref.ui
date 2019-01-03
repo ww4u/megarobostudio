@@ -422,13 +422,6 @@
              </property>
             </spacer>
            </item>
-           <item>
-            <widget class="QPushButton" name="pushButton">
-             <property name="text">
-              <string>Controller Default</string>
-             </property>
-            </widget>
-           </item>
           </layout>
          </item>
         </layout>
@@ -451,7 +444,7 @@
            <x>0</x>
            <y>0</y>
            <width>601</width>
-           <height>85</height>
+           <height>81</height>
           </rect>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_4">

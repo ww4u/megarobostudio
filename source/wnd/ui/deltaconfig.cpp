@@ -65,6 +65,9 @@ void DeltaConfig::updateScreen()
 }
 void DeltaConfig::spyEdited()
 {
+    QGroupBox *gpBox[]=
+    {
+    };
     QCheckBox *checkBoxes[]=
     {
     };

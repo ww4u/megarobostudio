@@ -11,4 +11,6 @@ int mrxView::getAxesId()
 { return mAxesId; }
 
 void mrxView::modelChanged()
-{}
+{
+}
+

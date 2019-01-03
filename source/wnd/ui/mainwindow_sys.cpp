@@ -124,6 +124,12 @@ SysPara *sysPara()
     return _sysRunTime.m_pSysPara;
 }
 
+SysMode sysMode()
+{
+    Q_ASSERT( NULL != _sysRunTime.m_pSysPara );
+    return _sysRunTime.m_pSysPara->mSysMode;
+}
+
 quint64 sysTimeStamp()
 { return receiveCache::timeStamp(); }
 

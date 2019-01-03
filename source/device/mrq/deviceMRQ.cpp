@@ -155,10 +155,12 @@ void deviceMRQ::postCtor()
     mAccList.clear();
     mDecList.clear();
     mAngleDir.clear();
+    mPOSAble.clear();
 
     //! foreach axes
     for ( int i = 0; i < axes(); i++ )
     {
+        mPOSAble<<true;
         mAngleDir<<true;
 
         //! default acc/dec list

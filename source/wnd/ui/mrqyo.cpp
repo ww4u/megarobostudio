@@ -57,6 +57,9 @@ void MrqYO::setupUi()
 
 void MrqYO::spyEdited()
 {
+    QGroupBox *gpBox[]=
+    {
+    };
     QCheckBox *checkBoxes[]=
     {
         ui->chkIsoCH,

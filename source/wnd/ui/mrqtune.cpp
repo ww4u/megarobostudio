@@ -8,6 +8,8 @@ MrqTune::MrqTune(QWidget *parent) :
     ui(new Ui::MrqTune)
 {
     ui->setupUi(this);
+
+    spyEdited();
 }
 
 MrqTune::~MrqTune()
@@ -32,6 +34,10 @@ void MrqTune::modelChanged()
 
 void MrqTune::spyEdited()
 {
+    QGroupBox *gpBox[]=
+    {
+    };
+
     QCheckBox *checkBoxes[]=
     {
         ui->chkOnOff,

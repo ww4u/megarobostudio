@@ -52,6 +52,12 @@ void mrqAxes::modelChanged()
 
 void mrqAxes::spyEdited()
 {
+    QGroupBox *gpBox[]=
+    {
+        ui->gpSt820,
+        ui->gb_driver,
+    };
+
     QCheckBox *checkBoxes[]=
     {
 //        ui->chkDriverState,
@@ -67,6 +73,7 @@ void mrqAxes::spyEdited()
         ui->spinSlowMotor,
         ui->spinSlowGear,
         ui->spinEncLine,
+        ui->spinEncFb,
     };
     QDoubleSpinBox *doubleSpinBoxes[]={
         ui->spinMaxVolt,
@@ -113,6 +120,9 @@ void mrqAxes::setupUi()
 
     mLineDependList.append( ui->label_20 );
     mLineDependList.append( ui->spinDistance );
+
+    ui->spinMaxVelocity->setSuffix( QString("%1/s").arg( char_deg ) );
+    ui->spinMaxAcc->setSuffix( QString("%1/s%2").arg( char_deg ).arg( char_square ) );
 }
 void mrqAxes::desetupUi()
 {}

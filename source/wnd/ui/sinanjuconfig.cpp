@@ -79,6 +79,9 @@ void SinanjuConfig::updateScreen()
 
 void SinanjuConfig::spyEdited()
 {
+    QGroupBox *gpBox[]=
+    {
+    };
     QCheckBox *checkBoxes[]=
     {
     };
@@ -100,6 +103,30 @@ void SinanjuConfig::spyEdited()
         ui->spinX,
         ui->spinY,
         ui->spinZ,
+
+        ui->angleFactBase,
+        ui->angleFactBa,
+        ui->angleFactLa,
+        ui->angleFactWr,
+
+        ui->spinR00,ui->spinR01,ui->spinR02,
+        ui->spinR10,ui->spinR11,ui->spinR12,
+        ui->spinR20,ui->spinR21,ui->spinR22,
+
+        ui->spinS00,
+        ui->spinS10,
+        ui->spinS20,
+
+        ui->spinR00_2,ui->spinR01_2,ui->spinR02_2,
+        ui->spinR10_2,ui->spinR11_2,ui->spinR12_2,
+        ui->spinR20_2,ui->spinR21_2,ui->spinR22_2,
+
+        ui->spinTcpPx,
+        ui->spinTcpPy,
+        ui->spinTcpPz,
+        ui->spinTcpRx,
+        ui->spinTcpRy,
+        ui->spinTcpRz,
     };
 
     QComboBox *comboxes[]={
@@ -223,3 +250,4 @@ void SinanjuConfig::updateUi()
     ui->spinTcpRy->setValue( tcpr[1] );
     ui->spinTcpRz->setValue( tcpr[2] );
 }
+

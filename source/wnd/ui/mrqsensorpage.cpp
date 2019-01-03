@@ -89,12 +89,39 @@ void MrqSensorPage::setSensText( int id,
 
 void MrqSensorPage::spyEdited()
 {
+    //! links
     LINK_MODIFIED( ui->widget );
 
     foreach (MrqSubUart *pSubUart, mSubList )
     {
         LINK_MODIFIED( pSubUart );
     }
+
+    //! elements
+    QGroupBox *gpBox[]=
+    {
+    };
+
+    QCheckBox *checkBoxes[]=
+    {
+        ui->chkAllEn,
+
+    };
+    QRadioButton *radBoxes[] = {
+    };
+    QLineEdit *edits[]={
+
+    };
+
+    QSpinBox *spinBoxes[]={
+    };
+    QDoubleSpinBox *doubleSpinBoxes[]={
+    };
+
+    QComboBox *comboxes[]={
+    };
+
+    install_spy();
 }
 
 void MrqSensorPage::on_chkAllEn_clicked(bool checked)

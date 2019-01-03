@@ -41,6 +41,11 @@ void mrqAxes2::modelChanged()
 
 void mrqAxes2::spyEdited()
 {
+    QGroupBox *gpBox[]=
+    {
+        ui->gb_limit,
+    };
+
     QCheckBox *checkBoxes[]=
     {
 
@@ -92,6 +97,8 @@ void mrqAxes2::setupUi()
     ui->cmbPlanMode->addItem( tr("Cubic"), ( (int)0 ) );
     ui->cmbPlanMode->addItem( tr("Trapezoid"), ( (int)1 ) );
     ui->cmbPlanMode->addItem( tr("S"), ( (int)2 ) );
+
+    ui->spinCompP->setSuffix( char_deg );
 }
 void mrqAxes2::desetupUi()
 {}
@@ -221,14 +228,14 @@ void mrqAxes2::on_cmbStopMode_currentIndexChanged(int index)
 
     ui->label_2->setVisible( bDelayVisible );
     ui->label_3->setVisible( bDelayVisible );
-    ui->spinStopDistance->setVisible( false );
-    ui->spinStopTime->setVisible( false );
+    ui->spinStopDistance->setVisible( bDelayVisible );
+    ui->spinStopTime->setVisible( bDelayVisible );
 }
 
 void mrqAxes2::on_cmbTuneMode_currentIndexChanged(int index)
 {
     bool bDutyVisible;
-    bDutyVisible = (index != 0 );
+    bDutyVisible = (index == 1 );
 
     ui->label_23->setVisible( bDutyVisible );
     ui->cmbTimeWidth->setVisible( bDutyVisible );

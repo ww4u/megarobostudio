@@ -7,6 +7,8 @@ IPConfig::IPConfig(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    ui->spinDoorDist->setSuffix( char_deg );
+
     spyEdited();
 }
 
@@ -45,6 +47,9 @@ void IPConfig::updateScreen()
 
 void IPConfig::spyEdited()
 {
+    QGroupBox *gpBox[]=
+    {
+    };
     QCheckBox *checkBoxes[]=
     {
     };

@@ -145,9 +145,12 @@ public:
 public:
     VRobot();
     virtual ~VRobot();
+protected:
+    void init();
 
+public:
     virtual void postCtor();    //! post ctor after the sub ctor completed
-
+    virtual void setReset();
 protected:
     void gcWorker();
 
@@ -321,6 +324,8 @@ public:
     void setMrpAble( bool b );
     bool mrpAble();
 
+    bool axesPOSAble( int ax );
+
     void setDriverId( int id );
     int driverId();
 
@@ -368,10 +373,14 @@ public:
 
     bool interpAble();
 
+    bool zeroAttrInComPref();
+
     void microStepAttr( QStringList &stepList, int &base );
 
     void setZeroPref( double spd, int tmo, int tick );
     void zeroPref( double &spd, int &tmo, int &tick );
+
+    QString toZeroUnit();
 
     QImage & getImage();
 
@@ -430,6 +439,8 @@ protected:
     int mAxes, mRegions;                //! configs
     int mDCAxes;
 
+    QList<bool> mPOSAble;
+
     int mDOs, mDIs, mISOs, mISIs, mAINs, mMosos;
     int mOutputs, mInputs;
 
@@ -448,7 +459,10 @@ protected:
 
     eRoboAngle mAngleType;
 
+    QString mToZeroUnit;
+
     bool mbInterpAble;
+    bool mbZeroAttrInComPref;
     bool mbEncoderAble;
     bool mbRunWaveAble;
     bool mbTunningAble;

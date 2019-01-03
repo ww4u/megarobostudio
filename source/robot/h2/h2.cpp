@@ -45,8 +45,7 @@ robotH2::robotH2()
     mArmLengths<<802<<494<<38<<52;
 //    mArmLengths<<13.4<<13.4<<802<<494<<52<<38;
 
-    mToothType = 2;
-    mToothGear = 30;
+    mbZeroAttrInComPref = false;
 
     mPDirIndex = 1;
     mMotionIndex = 1;
@@ -76,6 +75,31 @@ robotH2::robotH2()
     mAxesConnectionName[0] = "CH1@device1"; //! Left
     mAxesConnectionName[1] = "CH2@device1"; //! Right
 
+    m_pRoboTask = new H2Task();
+    Q_ASSERT( NULL != m_pRoboTask );
+
+//    mLines = 1000;
+    mEncoderDirs<<1<<1;
+
+//    mbTransferAble = false;
+
+    //! config
+    init();
+}
+
+robotH2::~robotH2()
+{
+
+}
+void robotH2::init()
+{
+    RawRobo::init();
+
+    //! tooth
+    mToothType = 2;
+    mToothGear = 30;
+
+    //! zero
     mZeroTime = 1;
     mZeroDistance = 10;
     mZeroSpeed = 5;
@@ -86,13 +110,7 @@ robotH2::robotH2()
     mGapZTime = 1;
     mGapZDistance = 10;
 
-    m_pRoboTask = new H2Task();
-    Q_ASSERT( NULL != m_pRoboTask );
-
-//    mLines = 1000;
-    mEncoderDirs<<1<<1;
-
-//    mbTransferAble = false;
+    //! transfer
     mTransferR[0*2+0] = 1.0;
     mTransferR[0*2+1] = 0.0;
 
@@ -108,13 +126,14 @@ robotH2::robotH2()
     mTransferRInv[1*2+0] = 0.0;
     mTransferRInv[1*2+1] = 1.0;
 
+    //! corner
     mZeroCorner = corner_lb;
     mZeroMovement = movement_x_y;
 }
 
-robotH2::~robotH2()
+void robotH2::setReset()
 {
-
+    init();
 }
 
 void robotH2::postload()

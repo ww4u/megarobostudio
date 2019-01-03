@@ -113,56 +113,6 @@
      <property name="toolTip">
       <string>CH</string>
      </property>
-     <item>
-      <property name="text">
-       <string>CH1</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>CH2</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>CH3</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>CH4</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>CH5</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>CH6</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>CH7</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>CH8</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>CH9</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>CH10</string>
-      </property>
-     </item>
     </widget>
    </item>
    <item>

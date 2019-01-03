@@ -3,6 +3,7 @@
 
 #include "../../robot/robotfact.h"
 #include "../../device/vrobot.h"
+#include "../../widget/megamessagebox.h"
 
 roboProp::roboProp( int id , QWidget *parent) :
     modelView(parent),
@@ -20,8 +21,9 @@ roboProp::roboProp( int id , QWidget *parent) :
     mbtnEnableSnap.append( false );
     mbtnEnableSnap.append( false );
     mbtnEnableSnap.append( false );
+    mbtnEnableSnap.append( false );
 
-    ui->btnReset->setVisible( false );
+//    ui->btnReset->setVisible( false );
 }
 
 roboProp::~roboProp()
@@ -152,14 +154,17 @@ void roboProp::setupUi( int id )
     m_pInfoPage = new_widget( roboInfo, ":/res/image/icon2/info.png", tr("Info"), "Info" );
     m_pDetailPage = new_widget( RoboDesc, ":/res/image/icon2/info.png", tr("Detail"), "Detail" );
 
+    QWidget *viewpage;
     //! pref
     if ( VRobot::robot_motors == id )
     {
         m_pComPref = new_widget( MotorsPref, ":/res/image/icon2/settings_light.png", tr("Option"), "Option" );
+        viewpage = m_pComPref;
     }
     else
     {
         m_pComPref  = new_widget( RoboComPref, ":/res/image/icon2/settings_light.png", tr("Option"), "Option" );
+        viewpage = m_pComPref;
     }
 
     //! special prop
@@ -167,10 +172,14 @@ void roboProp::setupUi( int id )
     {
         m_pDeltaPref  = new_widget( DeltaPref, ":/res/image/icon2/settings_light.png", tr("Zero"), "Zero" );
         m_pDeltaConfig   = new_widget( DeltaConfig, ":/res/image/icon2/settings_light.png", tr("Pref"), "Pref" );
+
+        viewpage = m_pDeltaPref;
     }
     else if ( VRobot::robot_megatron == id )
     {
         m_pMegatronPref  = new_widget( MegatronPref, ":/res/image/icon2/settings_light.png", tr("Zero"), "Zero" );
+
+        viewpage = m_pMegatronPref;
     }
     //! h2 && h2z
     else if ( VRobot::robot_h2 == id
@@ -182,6 +191,8 @@ void roboProp::setupUi( int id )
         m_pSketch->setSketch( ":/res/image/joint/mrx-h2_geo.png");
         m_pH2Pref = new_widget( H2Pref, ":/res/image/icon2/settings_light.png", tr("Zero"), "Zero" );
         m_pH2Config = new_widget( H2Config, ":/res/image/icon2/settings_light.png", tr("Pref"), "Pref" );
+
+        viewpage = m_pH2Pref;
     }
     else if ( VRobot::robot_sinanju == id )
     {
@@ -190,26 +201,36 @@ void roboProp::setupUi( int id )
 
         m_pSinanjuPref  = new_widget( SinanjuPref, ":/res/image/icon2/settings_light.png", tr("Zero"), "Zero" );
         m_pSinanjuConfig = new_widget( SinanjuConfig, ":/res/image/icon2/settings_light.png", tr("Pref"), "Pref" );
+
+        viewpage = m_pSinanjuPref;
     }
     else if ( VRobot::robot_motor == id )
     {
         m_pMotorPref = new_widget( MotorPref, ":/res/image/icon2/settings_light.png", tr("Zero"), "Zero" );
+
+        viewpage = m_pMotorPref;
     }
     else if (
               VRobot::robot_slide == id
               )
     {
         m_pAxnPref = new_widget( AxnPref, ":/res/image/icon2/settings_light.png", tr("Pref"), "Pref" );
+
+        viewpage = m_pAxnPref;
     }
     else if ( VRobot::robot_ip == id )
     {
         m_pIpPref = new_widget( IPPref, ":/res/image/icon2/settings_light.png", tr("Pref"), "Pref" );
         m_pIpConfig = new_widget( IPConfig, ":/res/image/icon2/settings_light.png", tr("Config"), "Config" );
+
+        viewpage = m_pIpPref;
     }
     else if ( VRobot::robot_igus_delta == id )
     {
         m_pIgusPref = new_widget( IgusDeltaPref, ":/res/image/icon2/settings_light.png", tr("Zero"), "Zero" );
         m_pIgusConfig = new_widget( IgusConfig, ":/res/image/icon2/settings_light.png", tr("Pref"), "Pref" );
+
+        viewpage = m_pIgusPref;
     }
     else
     {}
@@ -241,13 +262,15 @@ void roboProp::setupUi( int id )
     {
         connect( pView, SIGNAL(sigModified(bool)),
                  this,  SLOT(slotModified(bool)) );
+
+        pView->adaptToUserRole();
     }
 
     //! to pref
-    if ( ui->stackedWidget->count() > 3 )
-    { ui->stackedWidget->setCurrentIndex( 3 ); }
-    else
-    { ui->stackedWidget->setCurrentWidget( m_pComPref ); }
+    ui->stackedWidget->setCurrentWidget( viewpage );
+
+    //! post
+    slot_page_changed( ui->stackedWidget->currentIndex() );
 }
 
 void roboProp::desetupUi()
@@ -318,17 +341,63 @@ void roboProp::endOk( int ret, void *pPara )
     emit sigClose( this );
 }
 
+int roboProp::postReset( appMsg msg, void *pPara )
+{
+    int ret,id;
+    ret = 0;
+    id = 0;
+    foreach( modelView *pView, mPrefPages )
+    {
+        Q_ASSERT( NULL != pView );
+
+        sysProgress( id++, pView->name(), mPrefPages.size(), 0 );
+        sysProgress( true );
+        ret = pView->setReset();
+        sysProgress( id, pView->name(), mPrefPages.size(), 0 );
+        if ( ret != 0 )
+        { break; }
+    }
+
+    //! reset the robo para
+    ((VRobot*)getModelObj())->setReset();
+
+    return ret;
+}
+void roboProp::beginReset( void *pPara)
+{
+    sysProgress( 0, tr("Begin reset") );
+    sysProgress(true);
+
+    saveBtnSnap();
+}
+void roboProp::endReset( int ret, void *pPara )
+{
+    sysProgress(false);
+
+    restoreBtnSnap();
+
+    slotModified( false );
+
+    //! update ui
+    if ( ret == 0 )
+    { updateScreen(); }
+
+    emit sigSaveRequest( this );
+}
+
 void roboProp::saveBtnSnap( bool bNow )
 {
     //! save
     mbtnEnableSnap[0] = ui->btnApply->isEnabled();
     mbtnEnableSnap[1] = ui->btnOK->isEnabled();
     mbtnEnableSnap[2] = ui->btnCancel->isEnabled();
+    mbtnEnableSnap[3] = ui->btnReset->isEnabled();
 
     //! config
     ui->btnApply->setEnabled( bNow );
     ui->btnOK->setEnabled( bNow );
     ui->btnCancel->setEnabled( bNow );
+    ui->btnReset->setEnabled( bNow );
 }
 void roboProp::restoreBtnSnap()
 {
@@ -336,6 +405,7 @@ void roboProp::restoreBtnSnap()
     ui->btnApply->setEnabled( mbtnEnableSnap[0] );
     ui->btnOK->setEnabled( mbtnEnableSnap[1] );
     ui->btnCancel->setEnabled( mbtnEnableSnap[2] );
+    ui->btnReset->setEnabled( mbtnEnableSnap[3] );
 }
 
 void roboProp::slot_page_changed( int index )
@@ -349,6 +419,7 @@ void roboProp::slot_page_changed( int index )
     ui->btnCancel->setEnabled( pView->isCanceAble() );
     ui->btnOK->setEnabled( pView->isOkAble() );
     ui->btnApply->setEnabled( pView->isApplyAble() );
+    ui->btnReset->setEnabled( pView->isResetAble() );
 
     ui->btnCancel->setFocus();
 }
@@ -366,4 +437,16 @@ void roboProp::on_btnCancel_clicked()
 void roboProp::on_btnApply_clicked()
 {
     post_request( msg_robo_property_apply, roboProp, Apply );
+}
+
+void roboProp::on_btnReset_clicked()
+{
+    //! prompt to reset
+    if ( QMessageBox::Ok !=
+         MegaMessageBox::question( this, QString(tr("Confirm") ),
+                                   QString( tr("Confirm to reset") ),
+                                   QMessageBox::Ok, QMessageBox::Cancel ) )
+    { return; }
+
+    post_request( msg_robo_property_reset, roboProp, Reset );
 }

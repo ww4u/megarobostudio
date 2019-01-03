@@ -23,6 +23,7 @@ public:
     virtual int setApply();
 
     virtual void updateScreen();
+    virtual int setReset();
 protected:
     void spyEdited();
     void updateData();

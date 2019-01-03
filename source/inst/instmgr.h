@@ -106,6 +106,7 @@ public:
     QString sendIdToName( int devId, int sendId );
 
     QStringList getResources();
+    QMap<QString,int>  getDeviceMap();
     QStringList getChans();     //! chx@devicename
 
     QStringList robots();

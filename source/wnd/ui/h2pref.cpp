@@ -50,8 +50,39 @@ void H2Pref::updateScreen()
 {
     updateUi();
 }
+
+int H2Pref::setReset()
+{
+    Q_ASSERT( m_pModelObj != NULL );
+    VRobot *pBase = ( VRobot *)m_pModelObj;
+    Q_ASSERT( NULL != pBase );
+
+    if ( !pBase->checkLink() )
+    {
+        sysPrompt( tr("Invalid link") );
+        return -1;
+    }
+
+    MegaDevice::deviceMRQ *pMrq;
+    int ax;
+    pMrq = pBase->jointDevice( 0, &ax );
+    if ( NULL == pMrq )
+    {
+        sysPrompt( tr("Invalid link") );
+        return -1;
+    }
+
+    //! write the setting
+    pMrq->write( "*lrn \"mrq_h2m.stp\"\r\n" );
+    return 0;
+}
+
+
 void H2Pref::spyEdited()
 {
+    QGroupBox *gpBox[]=
+    {
+    };
     QCheckBox *checkBoxes[]=
     {
     };
@@ -71,11 +102,15 @@ void H2Pref::spyEdited()
 
         ui->spinGapTime,
         ui->spinGapDist,
+
+        ui->spinZeroSpeed,
+        ui->spinZeroTmo,
+        ui->spinZeroTick,
     };
 
     QComboBox *comboxes[]={
         ui->cmbZeroCorner,
-        ui->cmbZeroMovement
+//        ui->cmbZeroMovement
     };
 
     install_spy();
@@ -163,6 +198,7 @@ void H2Pref::updateUi()
     ui->spinZeroTmo->setValue( zeroTmo * time_unit );
     ui->spinZeroTick->setValue( zeroTick * time_unit );
 
+
 }
 
 void H2Pref::adaptUi()
@@ -199,6 +235,9 @@ void H2Pref::adaptUi()
     ui->btnZeroZ->setVisible( bZ );
 //    ui->chkCcw->setVisible( bZ );
     ui->gpZGap->setVisible( bZ );
+
+    //! suffix
+    ui->spinZeroSpeed->setSuffix( pBase->toZeroUnit() + "/" + QObject::tr("s") );
 
     //! ccw list
 //    if ( bZ )

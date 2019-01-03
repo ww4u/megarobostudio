@@ -58,6 +58,9 @@ bool MrqSubUart::isLive()
 
 void MrqSubUart::spyEdited()
 {
+    QGroupBox *gpBox[]=
+    {
+    };
     QCheckBox *checkBoxes[]=
     {
         ui->chkSensor,

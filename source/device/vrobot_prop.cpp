@@ -171,6 +171,14 @@ void VRobot::setMrpAble( bool b )
 bool VRobot::mrpAble()
 { return mbMrpAble; }
 
+bool VRobot::axesPOSAble( int ax )
+{
+    if ( ax < 0 || ax >= mPOSAble.size() )
+    { return false; }
+
+    return mPOSAble.at( ax );
+}
+
 void VRobot::setDriverId( int id )
 { mDriverId = id; }
 int VRobot::driverId()
@@ -267,6 +275,9 @@ eRoboAngle VRobot::angleType()
 bool VRobot::interpAble()
 { return mbInterpAble; }
 
+bool VRobot::zeroAttrInComPref()
+{ return mbZeroAttrInComPref; }
+
 void VRobot::microStepAttr( QStringList &stepList, int &base )
 {
     stepList = mMicrostepsList;
@@ -285,6 +296,9 @@ void VRobot::zeroPref( double &spd, int &tmo, int &tick )
     tmo = mZeroTmo;
     tick = mZeroTick;
 }
+
+QString VRobot::toZeroUnit()
+{ return mToZeroUnit; }
 
 RoboWorker *VRobot::lpc( int ax )
 {

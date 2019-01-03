@@ -15,7 +15,7 @@ namespace MegaDevice {
 #define check_handle()      if ( mHandle <= 0 )\
                             { return -1; }
 
-#define x_pages             128
+//#define x_pages             128
 
 //#define REPORT_MODE     MRQ_MOTION_STATEREPORT_ACTIVE
 //                        MRQ_MOTION_STATEREPORT_QUERY
@@ -83,7 +83,7 @@ int CANBus::open( const modelSysPref &pref,
     }
     else if ( mPId == 5 )       //! 232
     {
-
+        return -1;
     }
     else if ( mPId == 6 )       //! usb
     {

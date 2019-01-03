@@ -348,8 +348,8 @@ QComboBox::down-arrow:on { /* shift the arrow when popup is open */
   left: 1px;
 }
 
-  
-  QSpinBox,  QDoubleSpinBox, QLineEdit {
+
+  QSpinBox,  QDoubleSpinBox, QLineEdit, QPlainTextEdit {
       padding-right: 15px; /* make room for the arrows */
       border-width: 3;
 	  border-radius: 3px;
@@ -361,7 +361,7 @@ QComboBox::down-arrow:on { /* shift the arrow when popup is open */
 	  selection-background-color:#00a3d9;
   }
 
-QLineEdit:disabled,QSpinBox:disabled,QDoubleSpinBox:disabled, QComboBox:disabled
+QPlainTextEdit:disabled, QLineEdit:disabled,QSpinBox:disabled,QDoubleSpinBox:disabled, QComboBox:disabled
 
 {
 	background-color : gray;

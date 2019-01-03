@@ -80,6 +80,9 @@ void MegatronPref::updateScreen()
 }
 void MegatronPref::spyEdited()
 {
+    QGroupBox *gpBox[]=
+    {
+    };
     QCheckBox *checkBoxes[]=
     {
     };

@@ -34,7 +34,7 @@ int robotSinanju::buildTrace( QList<TraceKeyPoint> &curve,
     ret = splitTrace( tracePlan, jointsPlan );
     if ( ret != 0 )
     {
-        sysError( QObject::tr("desolve fail") );
+        sysPrompt( QObject::tr( "Solve fail" ) );
         return ret;
     }
 

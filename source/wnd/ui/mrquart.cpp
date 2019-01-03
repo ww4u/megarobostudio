@@ -54,6 +54,9 @@ void MrqUart::getConfig( uartConfig &cfg )
 
 void MrqUart::spyEdited()
 {
+    QGroupBox *gpBox[]=
+    {
+    };
     QCheckBox *checkBoxes[]=
     {
     };

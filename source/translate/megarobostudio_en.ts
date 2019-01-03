@@ -58,7 +58,7 @@
     <message>
         <location filename="../wnd/ui/anglewidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
         <location filename="../wnd/ui/anglewidget.ui" line="67"/>
@@ -68,7 +68,7 @@
     <message>
         <location filename="../wnd/ui/anglewidget.ui" line="70"/>
         <source>X</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">X</translation>
     </message>
 </context>
 <context>
@@ -76,7 +76,7 @@
     <message>
         <location filename="../wnd/ui/axnpref.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
         <location filename="../wnd/ui/axnpref.ui" line="20"/>
@@ -86,17 +86,17 @@
     <message>
         <location filename="../wnd/ui/axnpref.ui" line="26"/>
         <source>X</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">X</translation>
     </message>
     <message>
         <location filename="../wnd/ui/axnpref.ui" line="36"/>
         <source>Y</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Y</translation>
     </message>
     <message>
         <location filename="../wnd/ui/axnpref.ui" line="46"/>
         <source>Z</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Z</translation>
     </message>
 </context>
 <context>
@@ -117,7 +117,7 @@
     <message>
         <location filename="../wnd/ui/coordoption.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
         <location filename="../wnd/ui/coordoption.ui" line="81"/>
@@ -140,7 +140,7 @@
     <message>
         <location filename="../wnd/ui/deltaconfig.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
         <location filename="../wnd/ui/deltaconfig.ui" line="20"/>
@@ -214,7 +214,7 @@
     <message>
         <location filename="../wnd/ui/distancealarmpage.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
         <location filename="../wnd/ui/distancealarmpage.ui" line="20"/>
@@ -298,7 +298,7 @@
     <message>
         <location filename="../wnd/ui/dlghelp.ui" line="54"/>
         <source>TextLabel</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">TextLabel</translation>
     </message>
     <message>
         <location filename="../wnd/ui/dlghelp.ui" line="84"/>
@@ -307,11 +307,24 @@
     </message>
 </context>
 <context>
+    <name>EmergeStop</name>
+    <message>
+        <location filename="../wnd/ui/emergestop.ui" line="14"/>
+        <source>Form</source>
+        <translation type="unfinished">Form</translation>
+    </message>
+    <message>
+        <location filename="../wnd/ui/emergestop.ui" line="60"/>
+        <source>STOP</source>
+        <translation type="unfinished">STOP</translation>
+    </message>
+</context>
+<context>
     <name>EncoderAlarmPage</name>
     <message>
         <location filename="../wnd/ui/encoderalarmpage.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
         <location filename="../wnd/ui/encoderalarmpage.ui" line="20"/>
@@ -365,7 +378,7 @@
     <message>
         <location filename="../wnd/ui/h2config.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
         <location filename="../wnd/ui/h2config.ui" line="70"/>
@@ -397,7 +410,7 @@
     <message>
         <location filename="../wnd/ui/h2config.ui" line="400"/>
         <source>+</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">+</translation>
     </message>
     <message>
         <location filename="../wnd/ui/h2config.ui" line="432"/>
@@ -475,7 +488,7 @@
     <message>
         <location filename="../wnd/ui/h2panel.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
         <location filename="../wnd/ui/h2panel.ui" line="46"/>
@@ -601,7 +614,7 @@
         <location filename="../wnd/ui/h2panel.ui" line="525"/>
         <location filename="../wnd/ui/h2panel.ui" line="708"/>
         <source>PushButton</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">PushButton</translation>
     </message>
     <message>
         <location filename="../wnd/ui/h2panel.ui" line="624"/>
@@ -626,7 +639,7 @@
     <message>
         <location filename="../wnd/ui/h2pref.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
         <location filename="../wnd/ui/h2pref.ui" line="20"/>
@@ -645,131 +658,137 @@
     </message>
     <message>
         <location filename="../wnd/ui/h2pref.ui" line="42"/>
-        <location filename="../wnd/ui/h2pref.ui" line="163"/>
-        <location filename="../wnd/ui/h2pref.ui" line="289"/>
+        <location filename="../wnd/ui/h2pref.ui" line="166"/>
+        <location filename="../wnd/ui/h2pref.ui" line="292"/>
         <source>mm</source>
         <translation type="unfinished">mm</translation>
     </message>
     <message>
         <location filename="../wnd/ui/h2pref.ui" line="55"/>
-        <location filename="../wnd/ui/h2pref.ui" line="156"/>
-        <location filename="../wnd/ui/h2pref.ui" line="299"/>
+        <location filename="../wnd/ui/h2pref.ui" line="159"/>
+        <location filename="../wnd/ui/h2pref.ui" line="302"/>
         <source>Distance</source>
         <translation type="unfinished">Distance</translation>
     </message>
     <message>
         <location filename="../wnd/ui/h2pref.ui" line="62"/>
-        <location filename="../wnd/ui/h2pref.ui" line="136"/>
-        <location filename="../wnd/ui/h2pref.ui" line="282"/>
+        <location filename="../wnd/ui/h2pref.ui" line="139"/>
+        <location filename="../wnd/ui/h2pref.ui" line="285"/>
         <source>Time</source>
         <translation type="unfinished">Time</translation>
     </message>
     <message>
         <location filename="../wnd/ui/h2pref.ui" line="69"/>
-        <location filename="../wnd/ui/h2pref.ui" line="143"/>
-        <location filename="../wnd/ui/h2pref.ui" line="234"/>
-        <location filename="../wnd/ui/h2pref.ui" line="247"/>
-        <location filename="../wnd/ui/h2pref.ui" line="269"/>
+        <location filename="../wnd/ui/h2pref.ui" line="146"/>
+        <location filename="../wnd/ui/h2pref.ui" line="237"/>
+        <location filename="../wnd/ui/h2pref.ui" line="250"/>
+        <location filename="../wnd/ui/h2pref.ui" line="272"/>
         <source>s</source>
         <translation type="unfinished">s</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/h2pref.ui" line="83"/>
+        <location filename="../wnd/ui/h2pref.ui" line="86"/>
         <source>-&gt;X-&gt;Y</source>
         <translation type="unfinished">-&gt;X-&gt;Y</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/h2pref.ui" line="88"/>
+        <location filename="../wnd/ui/h2pref.ui" line="91"/>
         <source>-&gt;Y-&gt;X</source>
         <translation type="unfinished">-&gt;Y-&gt;X</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/h2pref.ui" line="96"/>
+        <location filename="../wnd/ui/h2pref.ui" line="99"/>
         <source>Corner</source>
         <translation type="unfinished">Corner</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/h2pref.ui" line="104"/>
+        <location filename="../wnd/ui/h2pref.ui" line="107"/>
         <source>Left Bottom</source>
         <translation type="unfinished">Left Bottom</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/h2pref.ui" line="109"/>
+        <location filename="../wnd/ui/h2pref.ui" line="112"/>
         <source>Left Top</source>
         <translation type="unfinished">Left Top</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/h2pref.ui" line="114"/>
+        <location filename="../wnd/ui/h2pref.ui" line="117"/>
         <source>Right Top</source>
         <translation type="unfinished">Right Top</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/h2pref.ui" line="119"/>
+        <location filename="../wnd/ui/h2pref.ui" line="122"/>
         <source>Right Bottom</source>
         <translation type="unfinished">Right Bottom</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/h2pref.ui" line="130"/>
+        <location filename="../wnd/ui/h2pref.ui" line="133"/>
         <source>X/Y Gap</source>
         <translation type="unfinished">X/Y Gap</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/h2pref.ui" line="176"/>
+        <location filename="../wnd/ui/h2pref.ui" line="179"/>
         <source>Misc</source>
         <translation type="unfinished">Misc</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/h2pref.ui" line="197"/>
+        <location filename="../wnd/ui/h2pref.ui" line="200"/>
         <source>Speed</source>
         <translation type="unfinished">Speed</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/h2pref.ui" line="204"/>
+        <location filename="../wnd/ui/h2pref.ui" line="207"/>
         <source>/s</source>
         <translation type="unfinished">/s</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/h2pref.ui" line="220"/>
+        <location filename="../wnd/ui/h2pref.ui" line="223"/>
         <source>Timeout</source>
         <translation type="unfinished">Timeout</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/h2pref.ui" line="227"/>
+        <location filename="../wnd/ui/h2pref.ui" line="230"/>
         <source>Tick</source>
         <translation type="unfinished">Tick</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/h2pref.ui" line="263"/>
+        <location filename="../wnd/ui/h2pref.ui" line="266"/>
         <source>ZGap</source>
         <translation type="unfinished">ZGap</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/h2pref.ui" line="312"/>
+        <location filename="../wnd/ui/h2pref.ui" line="315"/>
         <source>Zero Control</source>
         <translation type="unfinished">Zero Control</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/h2pref.ui" line="318"/>
+        <location filename="../wnd/ui/h2pref.ui" line="321"/>
         <source>X</source>
         <translation type="unfinished">X</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/h2pref.ui" line="325"/>
+        <location filename="../wnd/ui/h2pref.ui" line="328"/>
         <source>Z</source>
         <translation type="unfinished">Z</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/h2pref.ui" line="332"/>
+        <location filename="../wnd/ui/h2pref.ui" line="335"/>
         <source>Y</source>
         <translation type="unfinished">Y</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/h2pref.ui" line="339"/>
+        <location filename="../wnd/ui/h2pref.ui" line="342"/>
         <source>Home</source>
         <translation type="unfinished">Home</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/h2pref.cpp" line="220"/>
+        <location filename="../wnd/ui/h2pref.cpp" line="62"/>
+        <location filename="../wnd/ui/h2pref.cpp" line="71"/>
+        <source>Invalid link</source>
+        <translation type="unfinished">Invalid link</translation>
+    </message>
+    <message>
+        <location filename="../wnd/ui/h2pref.cpp" line="255"/>
         <source>Invalid connection</source>
         <translation type="unfinished">Invalid connection</translation>
     </message>
@@ -779,43 +798,43 @@
     <message>
         <location filename="../wnd/ui/h2zpanel.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
         <location filename="../wnd/ui/h2zpanel.ui" line="47"/>
         <source>Tick</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tick</translation>
     </message>
     <message>
         <location filename="../wnd/ui/h2zpanel.ui" line="57"/>
         <source>ms</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ms</translation>
     </message>
     <message>
         <location filename="../wnd/ui/h2zpanel.ui" line="82"/>
         <location filename="../wnd/ui/h2zpanel.ui" line="323"/>
         <source>Smart Add</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Smart Add</translation>
     </message>
     <message>
         <location filename="../wnd/ui/h2zpanel.ui" line="85"/>
         <source>PushButton</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">PushButton</translation>
     </message>
     <message>
         <location filename="../wnd/ui/h2zpanel.ui" line="102"/>
         <source>ON/OFF</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ON/OFF</translation>
     </message>
     <message>
         <location filename="../wnd/ui/h2zpanel.ui" line="111"/>
         <source>X:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">X:</translation>
     </message>
     <message>
         <location filename="../wnd/ui/h2zpanel.ui" line="125"/>
         <source>Y:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Y:</translation>
     </message>
     <message>
         <location filename="../wnd/ui/h2zpanel.ui" line="154"/>
@@ -826,13 +845,13 @@
         <location filename="../wnd/ui/h2zpanel.ui" line="160"/>
         <location filename="../wnd/ui/h2zpanel.ui" line="268"/>
         <source>X</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">X</translation>
     </message>
     <message>
         <location filename="../wnd/ui/h2zpanel.ui" line="167"/>
         <location filename="../wnd/ui/h2zpanel.ui" line="291"/>
         <source>Y</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Y</translation>
     </message>
     <message>
         <location filename="../wnd/ui/h2zpanel.ui" line="174"/>
@@ -842,50 +861,50 @@
         <location filename="../wnd/ui/h2zpanel.ui" line="376"/>
         <location filename="../wnd/ui/h2zpanel.ui" line="737"/>
         <source>mm</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">mm</translation>
     </message>
     <message>
         <location filename="../wnd/ui/h2zpanel.ui" line="245"/>
         <location filename="../wnd/ui/h2zpanel.ui" line="707"/>
         <source>t</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">t</translation>
     </message>
     <message>
         <location filename="../wnd/ui/h2zpanel.ui" line="252"/>
         <location filename="../wnd/ui/h2zpanel.ui" line="714"/>
         <source>s</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">s</translation>
     </message>
     <message>
         <location filename="../wnd/ui/h2zpanel.ui" line="326"/>
         <source>Mark</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Mark</translation>
     </message>
     <message>
         <location filename="../wnd/ui/h2zpanel.ui" line="349"/>
         <source>Go</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Go</translation>
     </message>
     <message>
         <location filename="../wnd/ui/h2zpanel.ui" line="352"/>
         <source>GO</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">GO</translation>
     </message>
     <message>
         <location filename="../wnd/ui/h2zpanel.ui" line="369"/>
         <source>Z</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Z</translation>
     </message>
     <message>
         <location filename="../wnd/ui/h2zpanel.ui" line="398"/>
         <source>Single</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Single</translation>
     </message>
     <message>
         <location filename="../wnd/ui/h2zpanel.ui" line="462"/>
         <location filename="../wnd/ui/h2zpanel.ui" line="517"/>
         <source>Z Step</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Z Step</translation>
     </message>
     <message>
         <location filename="../wnd/ui/h2zpanel.ui" line="468"/>
@@ -896,25 +915,25 @@
         <location filename="../wnd/ui/h2zpanel.ui" line="608"/>
         <location filename="../wnd/ui/h2zpanel.ui" line="653"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">...</translation>
     </message>
     <message>
         <location filename="../wnd/ui/h2zpanel.ui" line="491"/>
         <location filename="../wnd/ui/h2zpanel.ui" line="650"/>
         <source>X Step</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">X Step</translation>
     </message>
     <message>
         <location filename="../wnd/ui/h2zpanel.ui" line="543"/>
         <location filename="../wnd/ui/h2zpanel.ui" line="605"/>
         <source>Y Step</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Y Step</translation>
     </message>
     <message>
         <location filename="../wnd/ui/h2zpanel.ui" line="686"/>
         <location filename="../wnd/ui/h2zpanel.ui" line="730"/>
         <source>Step</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Step</translation>
     </message>
 </context>
 <context>
@@ -922,7 +941,7 @@
     <message>
         <location filename="../wnd/ui/ipconfig.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
         <location filename="../wnd/ui/ipconfig.ui" line="20"/>
@@ -949,9 +968,8 @@
         <translation type="unfinished">Time</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/ipconfig.ui" line="79"/>
         <source>Distance(deg)</source>
-        <translation type="unfinished">Distance(deg)</translation>
+        <translation type="obsolete">Distance(deg)</translation>
     </message>
     <message>
         <location filename="../wnd/ui/ipconfig.ui" line="109"/>
@@ -965,6 +983,7 @@
         <translation type="unfinished">mm</translation>
     </message>
     <message>
+        <location filename="../wnd/ui/ipconfig.ui" line="79"/>
         <location filename="../wnd/ui/ipconfig.ui" line="148"/>
         <location filename="../wnd/ui/ipconfig.ui" line="210"/>
         <source>Distance</source>
@@ -981,7 +1000,7 @@
     <message>
         <location filename="../wnd/ui/ippref.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
         <location filename="../wnd/ui/ippref.ui" line="20"/>
@@ -1023,8 +1042,12 @@
     </message>
     <message>
         <location filename="../wnd/ui/ippref.ui" line="121"/>
+        <source>Angle</source>
+        <translation type="unfinished">Angle</translation>
+    </message>
+    <message>
         <source>Angle(deg)</source>
-        <translation type="unfinished">Angle(deg)</translation>
+        <translation type="obsolete">Angle(deg)</translation>
     </message>
     <message>
         <location filename="../wnd/ui/ippref.ui" line="151"/>
@@ -1068,7 +1091,7 @@
     <message>
         <location filename="../wnd/ui/igusconfig.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
         <location filename="../wnd/ui/igusconfig.ui" line="33"/>
@@ -1151,7 +1174,7 @@
     <message>
         <location filename="../wnd/ui/igusdrylinpanel.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
         <location filename="../wnd/ui/igusdrylinpanel.ui" line="47"/>
@@ -1281,11 +1304,24 @@
     </message>
 </context>
 <context>
+    <name>ImageEntity</name>
+    <message>
+        <location filename="../widget/imageentity.ui" line="14"/>
+        <source>Form</source>
+        <translation type="unfinished">Form</translation>
+    </message>
+    <message>
+        <location filename="../widget/imageentity.ui" line="41"/>
+        <source>TextLabel</source>
+        <translation type="unfinished">TextLabel</translation>
+    </message>
+</context>
+<context>
     <name>LRButton</name>
     <message>
         <location filename="../wnd/ui/lrbutton.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
         <location filename="../wnd/ui/lrbutton.ui" line="62"/>
@@ -1296,7 +1332,7 @@
         <location filename="../wnd/ui/lrbutton.ui" line="65"/>
         <location filename="../wnd/ui/lrbutton.ui" line="122"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">...</translation>
     </message>
     <message>
         <location filename="../wnd/ui/lrbutton.ui" line="119"/>
@@ -1305,11 +1341,29 @@
     </message>
 </context>
 <context>
+    <name>LogIn</name>
+    <message>
+        <location filename="../wnd/ui/login.ui" line="14"/>
+        <source>LogIn</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../wnd/ui/login.ui" line="42"/>
+        <source>Operator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../wnd/ui/login.ui" line="51"/>
+        <source>Administrator</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>MFileDialog</name>
     <message>
         <location filename="../widget/mfiledialog.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
         <location filename="../widget/mfiledialog.ui" line="23"/>
@@ -1350,561 +1404,608 @@
         <translation type="unfinished">New(&amp;N)</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="156"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="157"/>
         <source>Device(&amp;D)</source>
         <translation type="unfinished">Device(&amp;D)</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="169"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="170"/>
         <source>Help(&amp;H)</source>
         <translation type="unfinished">Help(&amp;H)</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="181"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="182"/>
         <source>View(&amp;V)</source>
         <translation type="unfinished">View(&amp;V)</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="188"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="189"/>
         <source>Language</source>
         <translation type="unfinished">Language</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="200"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="207"/>
         <source>Control(&amp;C)</source>
         <translation type="unfinished">Control(&amp;C)</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="211"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="218"/>
         <source>Tool(&amp;T)</source>
         <translation type="unfinished">Tool(&amp;T)</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="215"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="222"/>
         <source>Plugin</source>
         <translation type="unfinished">Plugin</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="243"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="250"/>
         <source>About(A)...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="246"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="253"/>
         <source>About</source>
         <translation type="unfinished">About</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="255"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="262"/>
         <source>Reset(&amp;R)</source>
         <translation type="unfinished">Reset(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="258"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="265"/>
         <source>Reset</source>
         <translation type="unfinished">Reset</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="261"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="268"/>
         <source>Ctrl+D</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="270"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="277"/>
         <source>Force Stop(&amp;F)</source>
         <translation type="unfinished">Force Stop(&amp;F)</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="273"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="280"/>
         <source>Force Stop</source>
         <translation type="unfinished">Force Stop</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="276"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="283"/>
         <source>Shift+F5</source>
         <translation type="unfinished">Shift+F5</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="285"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="292"/>
         <source>Open(O)...</source>
         <translation type="unfinished">Open(O)...</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="288"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="295"/>
         <source>Open</source>
         <translation type="unfinished">Open</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="291"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="298"/>
         <source>Ctrl+O</source>
         <translation type="unfinished">Ctrl+O</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="300"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="307"/>
         <source>Save(&amp;S)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="303"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="310"/>
         <source>Save</source>
         <translation type="unfinished">Save</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="306"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="313"/>
         <source>Ctrl+S</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="315"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="322"/>
         <source>Save As...</source>
         <translation type="unfinished">Save As...</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="318"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="325"/>
         <source>Ctrl+Shift+S</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="327"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="334"/>
         <source>Exit</source>
         <translation type="unfinished">Exit</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="330"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="337"/>
         <source>Alt+X</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="339"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="346"/>
         <source>Attribute(&amp;A)...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="342"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="349"/>
         <source>Attribute</source>
         <translation type="unfinished">Attribute</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="345"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="352"/>
         <source>Alt+F7</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="354"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="361"/>
         <source>Save Prj</source>
         <translation type="unfinished">Save Prj</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="363"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="370"/>
         <source>Save Prj As...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="372"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="379"/>
         <source>Open Prj...</source>
         <translation type="unfinished">Open Prj...</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="381"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="388"/>
         <source>Import(&amp;I)...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="384"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="391"/>
         <source>Import</source>
         <translation type="unfinished">Import</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="393"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="400"/>
         <source>Save All(&amp;A)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="396"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="403"/>
         <source>Save All</source>
         <translation type="unfinished">Save All</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="408"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="415"/>
         <source>Spy(&amp;S)...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="411"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="418"/>
         <source>Spy</source>
         <translation type="unfinished">Spy</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="423"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="430"/>
         <source>Event(&amp;E)...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="426"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="433"/>
         <source>Event</source>
         <translation type="unfinished">Event</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="438"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="445"/>
         <source>Windows(W)...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="441"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="448"/>
         <source>Windows</source>
         <translation type="unfinished">Windows</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="450"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="457"/>
         <source>Motion...</source>
         <translation type="unfinished">Motion...</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="453"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="460"/>
         <source>Ctrl+N</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="462"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="469"/>
         <source>PVT</source>
         <translation type="unfinished">PVT</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="471"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="478"/>
         <source>Scene</source>
         <translation type="unfinished">Scene</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="480"/>
-        <location filename="../wnd/ui/mainwindow.cpp" line="76"/>
-        <location filename="../wnd/ui/mainwindow.cpp" line="84"/>
-        <location filename="../wnd/ui/mainwindow.cpp" line="246"/>
-        <location filename="../wnd/ui/mainwindow.cpp" line="283"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="487"/>
+        <location filename="../wnd/ui/mainwindow.cpp" line="77"/>
+        <location filename="../wnd/ui/mainwindow.cpp" line="85"/>
+        <location filename="../wnd/ui/mainwindow.cpp" line="259"/>
+        <location filename="../wnd/ui/mainwindow.cpp" line="296"/>
         <source>Project</source>
         <translation type="unfinished">Project</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="489"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="496"/>
         <source>Document(&amp;D)...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="492"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="499"/>
         <source>Document</source>
         <translation type="unfinished">Document</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="501"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="508"/>
         <source>Angle(&amp;A)...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="510"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="517"/>
         <source>Distance(D)...</source>
         <translation type="unfinished">Distance(D)...</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="519"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="526"/>
         <source>Motor Panel(&amp;M)...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="527"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="534"/>
         <source>test</source>
         <translation type="unfinished">test</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="536"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="543"/>
         <source>Package...</source>
         <translation type="unfinished">Package...</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="545"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="552"/>
         <source>Camera...</source>
         <translation type="unfinished">Camera...</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="555"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="562"/>
         <source>Close All</source>
         <translation type="unfinished">Close All</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="558"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="565"/>
         <source>Ctrl+Shift+W</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="567"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="574"/>
         <source>Example...</source>
         <translation type="unfinished">Example...</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="576"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="583"/>
         <source>PT</source>
         <translation type="unfinished">PT</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="585"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="592"/>
         <source>Inverse Gap Scan</source>
         <translation type="unfinished">Inverse Gap Scan</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="594"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="601"/>
         <source>Torque View</source>
         <translation type="unfinished">Torque View</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="603"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="610"/>
         <source>DataSet...</source>
         <translation type="unfinished">DataSet...</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="612"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="619"/>
         <source>ReadMe...</source>
         <translation type="unfinished">ReadMe...</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="624"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="631"/>
         <source>Run</source>
         <translation type="unfinished">Run</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="627"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="634"/>
         <source>Run Script</source>
         <translation type="unfinished">Run Script</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="633"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="640"/>
         <source>Ctrl+R</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="645"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="652"/>
         <source>Terminate</source>
         <translation type="unfinished">Terminate</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="648"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="655"/>
         <source>Terminate the script</source>
         <translation type="unfinished">Terminate the script</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="654"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="661"/>
         <source>Ctrl+T</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="664"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="671"/>
         <source>Console...</source>
         <translation type="unfinished">Console...</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="673"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="680"/>
         <source>App...</source>
         <translation type="unfinished">App...</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="682"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="689"/>
         <source>Stop(&amp;S)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="685"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="692"/>
         <source>Stop without port closing</source>
         <translation type="unfinished">Stop without port closing</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="694"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="701"/>
         <source>Errant...</source>
         <translation type="unfinished">Errant...</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="703"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="710"/>
         <source>Close Prj</source>
         <translation type="unfinished">Close Prj</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="711"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="723"/>
         <source>English</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="719"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="736"/>
         <source>Chinese</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="727"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="749"/>
         <source>Traditional Chinese</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.cpp" line="77"/>
-        <location filename="../wnd/ui/mainwindow.cpp" line="252"/>
-        <location filename="../wnd/ui/mainwindow.cpp" line="295"/>
-        <location filename="../wnd/ui/mainwindow.cpp" line="353"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="758"/>
+        <source>Graph</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../wnd/ui/mainwindow.ui" line="770"/>
+        <source>Operator Library</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../wnd/ui/mainwindow.ui" line="773"/>
+        <source>Ctrl+K</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../wnd/ui/mainwindow.cpp" line="78"/>
+        <location filename="../wnd/ui/mainwindow.cpp" line="265"/>
+        <location filename="../wnd/ui/mainwindow.cpp" line="308"/>
+        <location filename="../wnd/ui/mainwindow.cpp" line="368"/>
         <source>Robot</source>
         <translation type="unfinished">Robot</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.cpp" line="78"/>
-        <location filename="../wnd/ui/mainwindow.cpp" line="86"/>
-        <location filename="../wnd/ui/mainwindow.cpp" line="258"/>
-        <location filename="../wnd/ui/mainwindow.cpp" line="307"/>
-        <location filename="../wnd/ui/mainwindow.cpp" line="347"/>
+        <location filename="../wnd/ui/mainwindow.cpp" line="79"/>
+        <location filename="../wnd/ui/mainwindow.cpp" line="87"/>
+        <location filename="../wnd/ui/mainwindow.cpp" line="271"/>
+        <location filename="../wnd/ui/mainwindow.cpp" line="320"/>
+        <location filename="../wnd/ui/mainwindow.cpp" line="362"/>
         <source>Device</source>
         <translation type="unfinished">Device</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.cpp" line="79"/>
-        <location filename="../wnd/ui/mainwindow.cpp" line="87"/>
-        <location filename="../wnd/ui/mainwindow.cpp" line="264"/>
-        <location filename="../wnd/ui/mainwindow.cpp" line="321"/>
+        <location filename="../wnd/ui/mainwindow.cpp" line="80"/>
+        <location filename="../wnd/ui/mainwindow.cpp" line="88"/>
+        <location filename="../wnd/ui/mainwindow.cpp" line="277"/>
+        <location filename="../wnd/ui/mainwindow.cpp" line="334"/>
         <source>Log</source>
         <translation type="unfinished">Log</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.cpp" line="85"/>
+        <location filename="../wnd/ui/mainwindow.cpp" line="86"/>
         <source>Robo</source>
         <translation type="unfinished">Robo</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.cpp" line="359"/>
+        <location filename="../wnd/ui/mainwindow.cpp" line="386"/>
         <source>Quick</source>
         <translation type="unfinished">Quick</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.cpp" line="758"/>
+        <location filename="../wnd/ui/mainwindow.cpp" line="393"/>
+        <source>STOP</source>
+        <translation type="unfinished">STOP</translation>
+    </message>
+    <message>
+        <location filename="../wnd/ui/mainwindow.cpp" line="804"/>
         <source>not exist</source>
         <translation type="unfinished">not exist</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.cpp" line="790"/>
+        <location filename="../wnd/ui/mainwindow.cpp" line="836"/>
         <source>Setting may has been changed without apply, confirm to close?</source>
         <translation type="unfinished">Setting may has been changed without apply, confirm to close?</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.cpp" line="947"/>
+        <location filename="../wnd/ui/mainwindow.cpp" line="995"/>
         <source>samples cleared!</source>
         <translation type="unfinished">samples cleared!</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.cpp" line="1153"/>
+        <location filename="../wnd/ui/mainwindow.cpp" line="1201"/>
         <source>Info</source>
         <translation type="unfinished">Info</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.cpp" line="1154"/>
+        <location filename="../wnd/ui/mainwindow.cpp" line="1202"/>
         <source>Device setting has not been updated, upload now?</source>
         <translation type="unfinished">Device setting has not been updated, upload now?</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.cpp" line="1530"/>
+        <location filename="../wnd/ui/mainwindow.cpp" line="1591"/>
         <source>Angle</source>
         <translation type="unfinished">Angle</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.cpp" line="1533"/>
+        <location filename="../wnd/ui/mainwindow.cpp" line="1594"/>
         <source>Increase Angle</source>
         <translation type="unfinished">Increase Angle</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.cpp" line="1534"/>
+        <location filename="../wnd/ui/mainwindow.cpp" line="1595"/>
         <source>Absolute Angle</source>
         <translation type="unfinished">Absolute Angle</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.cpp" line="1557"/>
+        <location filename="../wnd/ui/mainwindow.cpp" line="1618"/>
         <source>Distance</source>
         <translation type="unfinished">Distance</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.cpp" line="1649"/>
+        <location filename="../wnd/ui/mainwindow.cpp" line="1710"/>
         <source>Invalid cmd</source>
         <translation type="unfinished">Invalid cmd</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.cpp" line="1657"/>
+        <location filename="../wnd/ui/mainwindow.cpp" line="1718"/>
         <source>Invalid cmd: format</source>
         <translation type="unfinished">Invalid cmd: format</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.cpp" line="1664"/>
+        <location filename="../wnd/ui/mainwindow.cpp" line="1725"/>
         <source>Invalid cmd: device name</source>
         <translation type="unfinished">Invalid cmd: device name</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.cpp" line="1726"/>
+        <location filename="../wnd/ui/mainwindow.cpp" line="1787"/>
         <source>script complted</source>
         <translation type="unfinished">script complted</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.cpp" line="1737"/>
-        <location filename="../wnd/ui/mainwindow_menu_slot.cpp" line="799"/>
+        <location filename="../wnd/ui/mainwindow.cpp" line="1798"/>
+        <location filename="../wnd/ui/mainwindow_menu_slot.cpp" line="857"/>
         <source>started</source>
         <translation type="unfinished">started</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.cpp" line="1748"/>
+        <location filename="../wnd/ui/mainwindow.cpp" line="1809"/>
         <source>downloading</source>
         <translation type="unfinished">downloading</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.cpp" line="1760"/>
+        <location filename="../wnd/ui/mainwindow.cpp" line="1821"/>
         <source>Terminated</source>
         <translation type="unfinished">Terminated</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.cpp" line="1766"/>
+        <location filename="../wnd/ui/mainwindow.cpp" line="1827"/>
         <source>Download canceled</source>
         <translation type="unfinished">Download canceled</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow_menu_slot.cpp" line="58"/>
-        <location filename="../wnd/ui/mainwindow_menu_slot.cpp" line="354"/>
-        <location filename="../wnd/ui/mainwindow_menu_slot.cpp" line="377"/>
+        <location filename="../wnd/ui/mainwindow.cpp" line="1884"/>
+        <source>Op lib load fail</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../wnd/ui/mainwindow_menu_slot.cpp" line="62"/>
+        <location filename="../wnd/ui/mainwindow_menu_slot.cpp" line="371"/>
+        <location filename="../wnd/ui/mainwindow_menu_slot.cpp" line="394"/>
         <source>prj file (*.prj)</source>
         <translation type="unfinished">prj file (*.prj)</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow_menu_slot.cpp" line="79"/>
+        <location filename="../wnd/ui/mainwindow_menu_slot.cpp" line="83"/>
+        <location filename="../wnd/ui/mainwindow_menu_slot.cpp" line="532"/>
         <source>mrp file (*.mrp)</source>
         <translation type="unfinished">mrp file (*.mrp)</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow_menu_slot.cpp" line="88"/>
+        <location filename="../wnd/ui/mainwindow_menu_slot.cpp" line="92"/>
         <source>fail</source>
         <translation type="unfinished">fail</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow_menu_slot.cpp" line="453"/>
+        <location filename="../wnd/ui/mainwindow_menu_slot.cpp" line="469"/>
         <source>save complted</source>
         <translation type="unfinished">save complted</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow_menu_slot.cpp" line="455"/>
+        <location filename="../wnd/ui/mainwindow_menu_slot.cpp" line="471"/>
         <source>save failed</source>
         <translation type="unfinished">save failed</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow_menu_slot.cpp" line="514"/>
         <source>mrp file (*.mrp);;pvt file (*.pvt);;pt file (*.pt);;setup file (*.stp);;scene file (*.sce)</source>
-        <translation type="unfinished">mrp file (*.mrp);;pvt file (*.pvt);;pt file (*.pt);;setup file (*.stp);;scene file (*.sce)</translation>
+        <translation type="obsolete">mrp file (*.mrp);;pvt file (*.pvt);;pt file (*.pt);;setup file (*.stp);;scene file (*.sce)</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow_menu_slot.cpp" line="555"/>
+        <location filename="../wnd/ui/mainwindow_menu_slot.cpp" line="533"/>
+        <location filename="../wnd/ui/mainwindow_menu_slot.cpp" line="576"/>
         <source>pvt file (*.pvt)</source>
         <translation type="unfinished">pvt file (*.pvt)</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow_menu_slot.cpp" line="590"/>
+        <location filename="../wnd/ui/mainwindow_menu_slot.cpp" line="534"/>
+        <location filename="../wnd/ui/mainwindow_menu_slot.cpp" line="611"/>
         <source>pt file (*.pt)</source>
         <translation type="unfinished">pt file (*.pt)</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow_menu_slot.cpp" line="626"/>
+        <location filename="../wnd/ui/mainwindow_menu_slot.cpp" line="535"/>
+        <source>scene (*.sce)</source>
+        <translation type="unfinished">scene (*.sce)</translation>
+    </message>
+    <message>
+        <location filename="../wnd/ui/mainwindow_menu_slot.cpp" line="536"/>
+        <source>python (*.py)</source>
+        <translation type="unfinished">python (*.py)</translation>
+    </message>
+    <message>
+        <location filename="../wnd/ui/mainwindow_menu_slot.cpp" line="537"/>
+        <source>mrg (*.mrg)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../wnd/ui/mainwindow_menu_slot.cpp" line="647"/>
         <source>scene file (*.sce)</source>
         <translation type="unfinished">scene file (*.sce)</translation>
+    </message>
+    <message>
+        <location filename="../wnd/ui/mainwindow_menu_slot.cpp" line="686"/>
+        <source>graph file (*.mrg)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1943,7 +2044,7 @@
     <message>
         <location filename="../wnd/ui/motionpref.ui" line="20"/>
         <source>Pref</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Pref</translation>
     </message>
     <message>
         <location filename="../wnd/ui/motionpref.ui" line="30"/>
@@ -2042,7 +2143,7 @@
     <message>
         <location filename="../wnd/ui/motorpref.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
         <location filename="../wnd/ui/motorpref.ui" line="20"/>
@@ -2127,7 +2228,7 @@
         <translation type="unfinished">Zero Body</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/motorpref.cpp" line="141"/>
+        <location filename="../wnd/ui/motorpref.cpp" line="144"/>
         <source>Invalid conection</source>
         <translation type="unfinished">Invalid conection</translation>
     </message>
@@ -2137,7 +2238,7 @@
     <message>
         <location filename="../wnd/ui/motorstate.ui" line="26"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
         <location filename="../wnd/ui/motorstate.ui" line="71"/>
@@ -2147,7 +2248,7 @@
     <message>
         <location filename="../wnd/ui/motorstate.ui" line="123"/>
         <source>TextLabel</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">TextLabel</translation>
     </message>
     <message>
         <location filename="../wnd/ui/motorstate.ui" line="130"/>
@@ -2180,7 +2281,7 @@
     <message>
         <location filename="../wnd/ui/motorspref.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
         <location filename="../wnd/ui/motorspref.ui" line="20"/>
@@ -2203,7 +2304,7 @@
     <message>
         <location filename="../wnd/ui/mrqai.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
         <location filename="../wnd/ui/mrqai.ui" line="20"/>
@@ -2260,7 +2361,7 @@
     <message>
         <location filename="../wnd/ui/mrqalarm.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
         <location filename="../wnd/ui/mrqalarm.ui" line="32"/>
@@ -2309,7 +2410,7 @@
     <message>
         <location filename="../wnd/ui/mrqaxespage.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
         <location filename="../wnd/ui/mrqaxespage.ui" line="36"/>
@@ -2337,7 +2438,7 @@
     <message>
         <location filename="../wnd/ui/mrqaxesplan.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
         <location filename="../wnd/ui/mrqaxesplan.ui" line="20"/>
@@ -2365,7 +2466,7 @@
     <message>
         <location filename="../wnd/ui/mrqdo.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
         <location filename="../wnd/ui/mrqdo.ui" line="23"/>
@@ -2454,7 +2555,7 @@
     <message>
         <location filename="../wnd/ui/mrqdcaxes.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
         <location filename="../wnd/ui/mrqdcaxes.ui" line="20"/>
@@ -2467,7 +2568,7 @@
     <message>
         <location filename="../wnd/ui/mrqin.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
         <location filename="../wnd/ui/mrqin.ui" line="20"/>
@@ -2515,7 +2616,7 @@
     <message>
         <location filename="../wnd/ui/mrqsensorpage.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
         <location filename="../wnd/ui/mrqsensorpage.ui" line="41"/>
@@ -2548,7 +2649,7 @@
     <message>
         <location filename="../wnd/ui/mrqsubuart.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
         <location filename="../wnd/ui/mrqsubuart.ui" line="35"/>
@@ -2591,7 +2692,7 @@
     <message>
         <location filename="../wnd/ui/mrqtrigchan.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
         <location filename="../wnd/ui/mrqtrigchan.ui" line="24"/>
@@ -2679,7 +2780,7 @@
     <message>
         <location filename="../wnd/ui/mrqtrigpage.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
         <location filename="../wnd/ui/mrqtrigpage.ui" line="20"/>
@@ -2702,7 +2803,7 @@
     <message>
         <location filename="../wnd/ui/mrqtune.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
         <location filename="../wnd/ui/mrqtune.ui" line="20"/>
@@ -2799,7 +2900,7 @@
     <message>
         <location filename="../wnd/ui/mrquart.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
         <location filename="../wnd/ui/mrquart.ui" line="35"/>
@@ -2953,7 +3054,7 @@
     <message>
         <location filename="../wnd/ui/mrqxi.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
         <location filename="../wnd/ui/mrqxi.ui" line="23"/>
@@ -3056,7 +3157,7 @@
     <message>
         <location filename="../wnd/ui/mrqyo.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
         <location filename="../wnd/ui/mrqyo.ui" line="23"/>
@@ -3124,7 +3225,7 @@
     <message>
         <location filename="../wnd/ui/mrvch.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
         <location filename="../wnd/ui/mrvch.ui" line="30"/>
@@ -3147,7 +3248,7 @@
     <message>
         <location filename="../wnd/ui/mrvio.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
         <location filename="../wnd/ui/mrvio.ui" line="26"/>
@@ -3174,17 +3275,17 @@
 <context>
     <name>MrvProp</name>
     <message>
-        <location filename="../wnd/ui/mrvprop.cpp" line="67"/>
+        <location filename="../wnd/ui/mrvprop.cpp" line="86"/>
         <source>Confirm</source>
         <translation type="unfinished">Confirm</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrvprop.cpp" line="68"/>
+        <location filename="../wnd/ui/mrvprop.cpp" line="87"/>
         <source>Confirm to reset</source>
         <translation type="unfinished">Confirm to reset</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrvprop.cpp" line="225"/>
+        <location filename="../wnd/ui/mrvprop.cpp" line="246"/>
         <source>Begin apply</source>
         <translation type="unfinished">Begin apply</translation>
     </message>
@@ -3194,7 +3295,7 @@
     <message>
         <location filename="../wnd/ui/mrvrecord.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
         <location filename="../wnd/ui/mrvrecord.ui" line="26"/>
@@ -3236,7 +3337,7 @@
     <message>
         <location filename="../wnd/ui/mrvswitch.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
         <location filename="../wnd/ui/mrvswitch.ui" line="26"/>
@@ -3284,7 +3385,7 @@
     <message>
         <location filename="../wnd/ui/mrvsystem.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
         <location filename="../wnd/ui/mrvsystem.ui" line="26"/>
@@ -3322,7 +3423,7 @@
     <message>
         <location filename="../wnd/ui/mrvthreshold.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
         <location filename="../wnd/ui/mrvthreshold.ui" line="41"/>
@@ -3416,7 +3517,7 @@
     <message>
         <location filename="../wnd/ui/mrvvertical.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
         <location filename="../wnd/ui/mrvvertical.ui" line="27"/>
@@ -3538,17 +3639,25 @@
     </message>
 </context>
 <context>
+    <name>OperatorLib</name>
+    <message>
+        <location filename="../wnd/ui/operatorlib.ui" line="14"/>
+        <source>Operator</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>PageControl</name>
     <message>
         <location filename="../wnd/ui/pagecontrol.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
         <location filename="../wnd/ui/pagecontrol.ui" line="38"/>
         <location filename="../wnd/ui/pagecontrol.ui" line="56"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">...</translation>
     </message>
 </context>
 <context>
@@ -3556,7 +3665,7 @@
     <message>
         <location filename="../wnd/ui/pageoption.ui" line="20"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
         <location filename="../wnd/ui/pageoption.ui" line="45"/>
@@ -3614,7 +3723,7 @@
     <message>
         <location filename="../wnd/ui/portoption.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
         <location filename="../wnd/ui/portoption.ui" line="39"/>
@@ -3693,7 +3802,7 @@
     <message>
         <location filename="../wnd/ui/progresselement.ui" line="20"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
         <location filename="../wnd/ui/progresselement.ui" line="50"/>
@@ -3703,7 +3812,7 @@
     <message>
         <location filename="../wnd/ui/progresselement.ui" line="63"/>
         <source>TextLabel</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">TextLabel</translation>
     </message>
 </context>
 <context>
@@ -3719,7 +3828,7 @@
     <message>
         <location filename="../wnd/ui/pvtpref.ui" line="20"/>
         <source>Pref</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Pref</translation>
     </message>
     <message>
         <location filename="../wnd/ui/pvtpref.ui" line="46"/>
@@ -3931,9 +4040,8 @@
         <translation type="unfinished">Value</translation>
     </message>
     <message>
-        <location filename="../model/sinanjumotionitem.cpp" line="37"/>
         <source>h(mm)</source>
-        <translation type="unfinished">h(mm)</translation>
+        <translation type="obsolete">h(mm)</translation>
     </message>
     <message>
         <location filename="../model/sinanjumotionitem.cpp" line="39"/>
@@ -3956,14 +4064,12 @@
         <translation type="unfinished">p(%1)</translation>
     </message>
     <message>
-        <location filename="../model/tpvitem.cpp" line="27"/>
         <source>v</source>
-        <translation type="unfinished">v</translation>
+        <translation type="obsolete">v</translation>
     </message>
     <message>
         <location filename="../wnd/main.cpp" line="37"/>
-        <location filename="../wnd/main.cpp" line="106"/>
-        <location filename="../wnd/ui/mainwindow_menu_slot.cpp" line="341"/>
+        <location filename="../wnd/ui/mainwindow_menu_slot.cpp" line="358"/>
         <source>Info</source>
         <translation type="unfinished">Info</translation>
     </message>
@@ -3973,8 +4079,7 @@
         <translation type="unfinished">MEGAROBO Studio is in running!</translation>
     </message>
     <message>
-        <location filename="../wnd/main.cpp" line="107"/>
-        <location filename="../wnd/ui/mainwindow_menu_slot.cpp" line="342"/>
+        <location filename="../wnd/ui/mainwindow_menu_slot.cpp" line="359"/>
         <source>language loss</source>
         <translation type="unfinished">language loss</translation>
     </message>
@@ -3984,7 +4089,20 @@
     <message>
         <location filename="../wnd/ui/quicktool.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
+    </message>
+</context>
+<context>
+    <name>RectEntity</name>
+    <message>
+        <location filename="../widget/rectentity.ui" line="14"/>
+        <source>Form</source>
+        <translation type="unfinished">Form</translation>
+    </message>
+    <message>
+        <location filename="../widget/rectentity.ui" line="41"/>
+        <source>TextLabel</source>
+        <translation type="unfinished">TextLabel</translation>
     </message>
 </context>
 <context>
@@ -3992,7 +4110,7 @@
     <message>
         <location filename="../wnd/ui/robocompref.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
         <location filename="../wnd/ui/robocompref.ui" line="58"/>
@@ -4055,7 +4173,7 @@
         <location filename="../wnd/ui/robocompref.ui" line="256"/>
         <location filename="../wnd/ui/robocompref.ui" line="266"/>
         <source>TextLabel</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">TextLabel</translation>
     </message>
     <message>
         <location filename="../wnd/ui/robocompref.ui" line="279"/>
@@ -4094,7 +4212,7 @@
     <message>
         <location filename="../wnd/ui/roboconfig.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
         <location filename="../wnd/ui/roboconfig.ui" line="20"/>
@@ -4112,7 +4230,7 @@
     <message>
         <location filename="../wnd/ui/robodesc.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
         <location filename="../wnd/ui/robodesc.ui" line="20"/>
@@ -4121,11 +4239,39 @@
     </message>
 </context>
 <context>
+    <name>RoboGraph</name>
+    <message>
+        <location filename="../wnd/ui/robograph.ui" line="17"/>
+        <source>Form</source>
+        <translation type="unfinished">Form</translation>
+    </message>
+    <message>
+        <location filename="../wnd/ui/robograph.ui" line="65"/>
+        <source>Gen</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../wnd/ui/robograph.ui" line="72"/>
+        <source>Run</source>
+        <translation type="unfinished">Run</translation>
+    </message>
+    <message>
+        <location filename="../wnd/ui/robograph.ui" line="79"/>
+        <source>Stop</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../wnd/ui/robograph.cpp" line="563"/>
+        <source>No main found</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>RoboHand</name>
     <message>
         <location filename="../wnd/ui/robohand.ui" line="19"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
         <location filename="../wnd/ui/robohand.ui" line="63"/>
@@ -4159,7 +4305,7 @@
     <message>
         <location filename="../wnd/ui/robojoint.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
         <location filename="../wnd/ui/robojoint.ui" line="84"/>
@@ -4182,12 +4328,12 @@
     <message>
         <location filename="../wnd/ui/robosketch.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
         <location filename="../wnd/ui/robosketch.ui" line="35"/>
         <source>TextLabel</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">TextLabel</translation>
     </message>
 </context>
 <context>
@@ -4195,7 +4341,7 @@
     <message>
         <location filename="../wnd/ui/robotaddr.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
         <location filename="../wnd/ui/robotaddr.ui" line="23"/>
@@ -4249,7 +4395,7 @@
     <message>
         <location filename="../wnd/ui/rotmat3_3.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
         <location filename="../wnd/ui/rotmat3_3.ui" line="206"/>
@@ -4274,7 +4420,7 @@
     <message>
         <location filename="../wnd/ui/rotmat3_3.ui" line="294"/>
         <source>+</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">+</translation>
     </message>
     <message>
         <location filename="../wnd/ui/rotmat3_3.ui" line="391"/>
@@ -4302,7 +4448,7 @@
     <message>
         <location filename="../wnd/ui/sinanjuconfig.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
         <location filename="../wnd/ui/sinanjuconfig.ui" line="39"/>
@@ -4317,7 +4463,7 @@
     <message>
         <location filename="../wnd/ui/sinanjuconfig.ui" line="105"/>
         <source>+</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">+</translation>
     </message>
     <message>
         <location filename="../wnd/ui/sinanjuconfig.ui" line="289"/>
@@ -4440,17 +4586,17 @@
     <message>
         <location filename="../wnd/ui/sinanjuconfig.ui" line="1100"/>
         <source>X</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">X</translation>
     </message>
     <message>
         <location filename="../wnd/ui/sinanjuconfig.ui" line="1117"/>
         <source>Y</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Y</translation>
     </message>
     <message>
         <location filename="../wnd/ui/sinanjuconfig.ui" line="1134"/>
         <source>Z</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Z</translation>
     </message>
 </context>
 <context>
@@ -4458,7 +4604,7 @@
     <message>
         <location filename="../wnd/ui/sinanjupref.ui" line="25"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
         <location filename="../wnd/ui/sinanjupref.ui" line="67"/>
@@ -4566,27 +4712,29 @@
         <translation type="unfinished">Little Arm</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/sinanjupref.cpp" line="97"/>
-        <location filename="../wnd/ui/sinanjupref.cpp" line="139"/>
+        <location filename="../wnd/ui/sinanjupref.cpp" line="123"/>
+        <location filename="../wnd/ui/sinanjupref.cpp" line="165"/>
         <source>Invalid robot</source>
         <translation type="unfinished">Invalid robot</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/sinanjupref.cpp" line="211"/>
-        <location filename="../wnd/ui/sinanjupref.cpp" line="239"/>
-        <location filename="../wnd/ui/sinanjupref.cpp" line="260"/>
-        <location filename="../wnd/ui/sinanjupref.cpp" line="280"/>
-        <location filename="../wnd/ui/sinanjupref.cpp" line="324"/>
+        <location filename="../wnd/ui/sinanjupref.cpp" line="82"/>
+        <location filename="../wnd/ui/sinanjupref.cpp" line="91"/>
+        <location filename="../wnd/ui/sinanjupref.cpp" line="247"/>
+        <location filename="../wnd/ui/sinanjupref.cpp" line="275"/>
+        <location filename="../wnd/ui/sinanjupref.cpp" line="296"/>
+        <location filename="../wnd/ui/sinanjupref.cpp" line="316"/>
+        <location filename="../wnd/ui/sinanjupref.cpp" line="370"/>
         <source>Invalid link</source>
         <translation type="unfinished">Invalid link</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/sinanjupref.cpp" line="288"/>
+        <location filename="../wnd/ui/sinanjupref.cpp" line="324"/>
         <source>Error</source>
         <translation type="unfinished">Error</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/sinanjupref.cpp" line="288"/>
+        <location filename="../wnd/ui/sinanjupref.cpp" line="324"/>
         <source>Zero in device is invalid</source>
         <translation type="unfinished">Zero in device is invalid</translation>
     </message>
@@ -4612,130 +4760,130 @@
         <translation type="unfinished">Tick</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/t4panel.ui" line="94"/>
-        <location filename="../wnd/ui/t4panel.ui" line="340"/>
+        <location filename="../wnd/ui/t4panel.ui" line="448"/>
+        <location filename="../wnd/ui/t4panel.ui" line="612"/>
         <source>Smart Add</source>
         <translation type="unfinished">Smart Add</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/t4panel.ui" line="97"/>
+        <location filename="../wnd/ui/t4panel.ui" line="451"/>
         <source>PushButton</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">PushButton</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/t4panel.ui" line="114"/>
+        <location filename="../wnd/ui/t4panel.ui" line="85"/>
         <source>ms</source>
         <translation type="unfinished">ms</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/t4panel.ui" line="130"/>
+        <location filename="../wnd/ui/t4panel.ui" line="101"/>
         <source>ON/OFF</source>
         <translation type="unfinished">ON/OFF</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/t4panel.ui" line="139"/>
+        <location filename="../wnd/ui/t4panel.ui" line="110"/>
         <source>X:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">X:</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/t4panel.ui" line="153"/>
+        <location filename="../wnd/ui/t4panel.ui" line="124"/>
         <source>Y:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Y:</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/t4panel.ui" line="167"/>
+        <location filename="../wnd/ui/t4panel.ui" line="138"/>
         <source>Z:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Z:</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/t4panel.ui" line="239"/>
-        <location filename="../wnd/ui/t4panel.ui" line="680"/>
+        <location filename="../wnd/ui/t4panel.ui" line="228"/>
+        <location filename="../wnd/ui/t4panel.ui" line="671"/>
         <source>t</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">t</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/t4panel.ui" line="246"/>
-        <location filename="../wnd/ui/t4panel.ui" line="687"/>
+        <location filename="../wnd/ui/t4panel.ui" line="235"/>
+        <location filename="../wnd/ui/t4panel.ui" line="678"/>
         <source>s</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">s</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/t4panel.ui" line="265"/>
+        <location filename="../wnd/ui/t4panel.ui" line="713"/>
         <source>X</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">X</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/t4panel.ui" line="288"/>
+        <location filename="../wnd/ui/t4panel.ui" line="720"/>
         <source>Y</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Y</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/t4panel.ui" line="308"/>
+        <location filename="../wnd/ui/t4panel.ui" line="740"/>
         <source>Z</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Z</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/t4panel.ui" line="343"/>
+        <location filename="../wnd/ui/t4panel.ui" line="615"/>
         <source>Mark</source>
         <translation type="unfinished">Mark</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/t4panel.ui" line="366"/>
+        <location filename="../wnd/ui/t4panel.ui" line="651"/>
         <source>Go</source>
         <translation type="unfinished">Go</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/t4panel.ui" line="369"/>
+        <location filename="../wnd/ui/t4panel.ui" line="654"/>
         <source>GO</source>
         <translation type="unfinished">GO</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/t4panel.ui" line="449"/>
-        <location filename="../wnd/ui/t4panel.ui" line="478"/>
+        <location filename="../wnd/ui/t4panel.ui" line="416"/>
+        <location filename="../wnd/ui/t4panel.ui" line="474"/>
         <source>Step Z</source>
         <translation type="unfinished">Step Z</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/t4panel.ui" line="455"/>
-        <location filename="../wnd/ui/t4panel.ui" line="481"/>
-        <location filename="../wnd/ui/t4panel.ui" line="507"/>
-        <location filename="../wnd/ui/t4panel.ui" line="536"/>
-        <location filename="../wnd/ui/t4panel.ui" line="562"/>
-        <location filename="../wnd/ui/t4panel.ui" line="588"/>
-        <location filename="../wnd/ui/t4panel.ui" line="614"/>
+        <location filename="../wnd/ui/t4panel.ui" line="322"/>
+        <location filename="../wnd/ui/t4panel.ui" line="348"/>
+        <location filename="../wnd/ui/t4panel.ui" line="393"/>
+        <location filename="../wnd/ui/t4panel.ui" line="422"/>
+        <location filename="../wnd/ui/t4panel.ui" line="477"/>
+        <location filename="../wnd/ui/t4panel.ui" line="503"/>
+        <location filename="../wnd/ui/t4panel.ui" line="550"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">...</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/t4panel.ui" line="504"/>
+        <location filename="../wnd/ui/t4panel.ui" line="547"/>
         <source>Center</source>
         <translation type="unfinished">Center</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/t4panel.ui" line="520"/>
+        <location filename="../wnd/ui/t4panel.ui" line="563"/>
         <source>Home</source>
         <translation type="unfinished">Home</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/t4panel.ui" line="533"/>
-        <location filename="../wnd/ui/t4panel.ui" line="585"/>
+        <location filename="../wnd/ui/t4panel.ui" line="319"/>
+        <location filename="../wnd/ui/t4panel.ui" line="345"/>
         <source>Step Y</source>
         <translation type="unfinished">Step Y</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/t4panel.ui" line="559"/>
-        <location filename="../wnd/ui/t4panel.ui" line="611"/>
+        <location filename="../wnd/ui/t4panel.ui" line="390"/>
+        <location filename="../wnd/ui/t4panel.ui" line="500"/>
         <source>Step X</source>
         <translation type="unfinished">Step X</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/t4panel.ui" line="659"/>
-        <location filename="../wnd/ui/t4panel.ui" line="703"/>
+        <location filename="../wnd/ui/t4panel.ui" line="207"/>
+        <location filename="../wnd/ui/t4panel.ui" line="251"/>
         <source>Step</source>
         <translation type="unfinished">Step</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/t4panel.ui" line="710"/>
+        <location filename="../wnd/ui/t4panel.ui" line="258"/>
         <source>mm</source>
         <translation type="unfinished">mm</translation>
     </message>
@@ -4745,14 +4893,14 @@
     <message>
         <location filename="../wnd/ui/tabletoolbar.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
         <location filename="../wnd/ui/tabletoolbar.ui" line="35"/>
         <location filename="../wnd/ui/tabletoolbar.ui" line="52"/>
         <location filename="../wnd/ui/tabletoolbar.ui" line="69"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">...</translation>
     </message>
 </context>
 <context>
@@ -4760,12 +4908,12 @@
     <message>
         <location filename="../wnd/ui/testprop.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
         <location filename="../wnd/ui/testprop.ui" line="26"/>
         <source>TextLabel</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">TextLabel</translation>
     </message>
 </context>
 <context>
@@ -4773,7 +4921,7 @@
     <message>
         <location filename="../wnd/ui/tpedit.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
         <location filename="../wnd/ui/tpedit.ui" line="25"/>
@@ -4787,7 +4935,7 @@
         <location filename="../wnd/ui/tpedit.ui" line="171"/>
         <location filename="../wnd/ui/tpedit.ui" line="336"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">...</translation>
     </message>
     <message>
         <location filename="../wnd/ui/tpedit.ui" line="76"/>
@@ -4842,7 +4990,7 @@
     <message>
         <location filename="../wnd/ui/tpedit.ui" line="270"/>
         <source>-</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">-</translation>
     </message>
     <message>
         <location filename="../wnd/ui/tpedit.ui" line="314"/>
@@ -4860,28 +5008,28 @@
         <translation type="unfinished">Config</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/tpedit.cpp" line="167"/>
+        <location filename="../wnd/ui/tpedit.cpp" line="171"/>
         <source>Invalid Device:%1 %2</source>
         <translation type="unfinished">Invalid Device:%1 %2</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/tpedit.cpp" line="205"/>
-        <location filename="../wnd/ui/tpedit.cpp" line="211"/>
+        <location filename="../wnd/ui/tpedit.cpp" line="209"/>
+        <location filename="../wnd/ui/tpedit.cpp" line="215"/>
         <source>Invalid dot</source>
         <translation type="unfinished">Invalid dot</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/tpedit.cpp" line="225"/>
+        <location filename="../wnd/ui/tpedit.cpp" line="229"/>
         <source>Invalid time at line </source>
         <translation type="unfinished">Invalid time at line </translation>
     </message>
     <message>
-        <location filename="../wnd/ui/tpedit.cpp" line="267"/>
+        <location filename="../wnd/ui/tpedit.cpp" line="271"/>
         <source>t-p</source>
         <translation type="unfinished">t-p</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/tpedit.cpp" line="363"/>
+        <location filename="../wnd/ui/tpedit.cpp" line="367"/>
         <source>Line build completed</source>
         <translation type="unfinished">Line build completed</translation>
     </message>
@@ -4899,7 +5047,7 @@
     <message>
         <location filename="../wnd/ui/aboutdlg.ui" line="20"/>
         <source>About</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">About</translation>
     </message>
     <message>
         <location filename="../wnd/ui/aboutdlg.ui" line="77"/>
@@ -4927,7 +5075,7 @@
     <message>
         <location filename="../wnd/ui/axesconnection.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
         <location filename="../wnd/ui/axesconnection.ui" line="66"/>
@@ -4937,7 +5085,7 @@
     <message>
         <location filename="../wnd/ui/axesconnection.ui" line="70"/>
         <source>A</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">A</translation>
     </message>
     <message>
         <location filename="../wnd/ui/axesconnection.ui" line="75"/>
@@ -4949,63 +5097,13 @@
         <source>CH</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <location filename="../wnd/ui/axesconnection.ui" line="118"/>
-        <source>CH1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../wnd/ui/axesconnection.ui" line="123"/>
-        <source>CH2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../wnd/ui/axesconnection.ui" line="128"/>
-        <source>CH3</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../wnd/ui/axesconnection.ui" line="133"/>
-        <source>CH4</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../wnd/ui/axesconnection.ui" line="138"/>
-        <source>CH5</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../wnd/ui/axesconnection.ui" line="143"/>
-        <source>CH6</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../wnd/ui/axesconnection.ui" line="148"/>
-        <source>CH7</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../wnd/ui/axesconnection.ui" line="153"/>
-        <source>CH8</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../wnd/ui/axesconnection.ui" line="158"/>
-        <source>CH9</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../wnd/ui/axesconnection.ui" line="163"/>
-        <source>CH10</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>axesKnob</name>
     <message>
         <location filename="../wnd/ui/axesknob.ui" line="14"/>
         <source>Axes</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Axes</translation>
     </message>
     <message>
         <location filename="../wnd/ui/axesknob.ui" line="59"/>
@@ -5015,7 +5113,7 @@
     <message>
         <location filename="../wnd/ui/axesknob.ui" line="171"/>
         <source>s</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">s</translation>
     </message>
     <message>
         <location filename="../wnd/ui/axesknob.ui" line="187"/>
@@ -5049,7 +5147,7 @@
     <message>
         <location filename="../wnd/ui/cfgtab.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
 </context>
 <context>
@@ -5070,7 +5168,7 @@
     <message>
         <location filename="../wnd/ui/deltapref.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
         <location filename="../wnd/ui/deltapref.ui" line="20"/>
@@ -5254,183 +5352,183 @@
     <message>
         <location filename="../wnd/ui/devicemgr.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/devicemgr.ui" line="55"/>
+        <location filename="../wnd/ui/devicemgr.ui" line="61"/>
         <source>test</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">test</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/devicemgr.ui" line="89"/>
+        <location filename="../wnd/ui/devicemgr.ui" line="95"/>
         <source>State Chart</source>
         <translation type="unfinished">State Chart</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/devicemgr.ui" line="103"/>
+        <location filename="../wnd/ui/devicemgr.ui" line="109"/>
         <source>Motor Status</source>
         <translation type="unfinished">Motor Status</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/devicemgr.ui" line="106"/>
+        <location filename="../wnd/ui/devicemgr.ui" line="112"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">...</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/devicemgr.ui" line="129"/>
-        <location filename="../wnd/ui/devicemgr.ui" line="132"/>
+        <location filename="../wnd/ui/devicemgr.ui" line="135"/>
+        <location filename="../wnd/ui/devicemgr.ui" line="138"/>
         <source>Refresh</source>
         <translation type="unfinished">Refresh</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/devicemgr.cpp" line="89"/>
-        <location filename="../wnd/ui/devicemgr.cpp" line="122"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="104"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="138"/>
         <source>Export setup...</source>
         <translation type="unfinished">Export setup...</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/devicemgr.cpp" line="93"/>
-        <location filename="../wnd/ui/devicemgr.cpp" line="126"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="108"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="142"/>
         <source>Import setup...</source>
         <translation type="unfinished">Import setup...</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/devicemgr.cpp" line="98"/>
-        <location filename="../wnd/ui/devicemgr.cpp" line="131"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="113"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="147"/>
         <source>Upload from device</source>
         <translation type="unfinished">Upload from device</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/devicemgr.cpp" line="103"/>
-        <location filename="../wnd/ui/devicemgr.cpp" line="136"/>
-        <location filename="../wnd/ui/devicemgr.cpp" line="186"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="118"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="152"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="200"/>
         <source>Alias...</source>
         <translation type="unfinished">Alias...</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/devicemgr.cpp" line="108"/>
-        <location filename="../wnd/ui/devicemgr.cpp" line="141"/>
-        <location filename="../wnd/ui/devicemgr.cpp" line="166"/>
-        <location filename="../wnd/ui/devicemgr.cpp" line="191"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="123"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="157"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="179"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="205"/>
         <source>Console...</source>
         <translation type="unfinished">Console...</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/devicemgr.cpp" line="113"/>
-        <location filename="../wnd/ui/devicemgr.cpp" line="146"/>
-        <location filename="../wnd/ui/devicemgr.cpp" line="179"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="128"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="162"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="192"/>
         <source>Prop...</source>
         <translation type="unfinished">Prop...</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/devicemgr.cpp" line="153"/>
-        <location filename="../wnd/ui/devicemgr.cpp" line="175"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="170"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="188"/>
         <source>Panel...</source>
         <translation type="unfinished">Panel...</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/devicemgr.cpp" line="171"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="184"/>
         <source>Joint...</source>
         <translation type="unfinished">Joint...</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/devicemgr.cpp" line="409"/>
-        <location filename="../wnd/ui/devicemgr.cpp" line="410"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="431"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="432"/>
         <source>begin search</source>
         <translation type="unfinished">begin search</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/devicemgr.cpp" line="418"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="440"/>
         <source>end search</source>
         <translation type="unfinished">end search</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/devicemgr.cpp" line="443"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="465"/>
         <source>Begin load</source>
         <translation type="unfinished">Begin load</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/devicemgr.cpp" line="446"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="468"/>
         <source>start upload</source>
         <translation type="unfinished">start upload</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/devicemgr.cpp" line="456"/>
-        <location filename="../wnd/ui/devicemgr.cpp" line="457"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="478"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="479"/>
         <source>upload fail</source>
         <translation type="unfinished">upload fail</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/devicemgr.cpp" line="461"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="483"/>
         <source>success</source>
         <translation type="unfinished">success</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/devicemgr.cpp" line="462"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="484"/>
         <source>upload success</source>
         <translation type="unfinished">upload success</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/devicemgr.cpp" line="477"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="499"/>
         <source>load fail</source>
         <translation type="unfinished">load fail</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/devicemgr.cpp" line="481"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="503"/>
         <source>load success</source>
         <translation type="unfinished">load success</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/devicemgr.cpp" line="486"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="508"/>
         <source>apply fail</source>
         <translation type="unfinished">apply fail</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/devicemgr.cpp" line="489"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="511"/>
         <source>apply success</source>
         <translation type="unfinished">apply success</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/devicemgr.cpp" line="507"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="529"/>
         <source>Import fail</source>
         <translation type="unfinished">Import fail</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/devicemgr.cpp" line="557"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="579"/>
         <source>Info</source>
         <translation type="unfinished">Info</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/devicemgr.cpp" line="557"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="579"/>
         <source>Busy now, please wait!</source>
         <translation type="unfinished">Busy now, please wait!</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/devicemgr.cpp" line="603"/>
-        <location filename="../wnd/ui/devicemgr.cpp" line="624"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="625"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="646"/>
         <source>Device setup (*.stp)</source>
         <translation type="unfinished">Device setup (*.stp)</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/devicemgr.cpp" line="616"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="638"/>
         <source>question</source>
         <translation type="unfinished">question</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/devicemgr.cpp" line="617"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="639"/>
         <source>Device setting has not been updated, sure to export?</source>
         <translation type="unfinished">Device setting has not been updated, sure to export?</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/devicemgr.cpp" line="631"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="653"/>
         <source>save success</source>
         <translation type="unfinished">save success</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/devicemgr.cpp" line="646"/>
-        <location filename="../wnd/ui/devicemgr.cpp" line="647"/>
-        <location filename="../wnd/ui/devicemgr.cpp" line="740"/>
-        <location filename="../wnd/ui/devicemgr.cpp" line="741"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="668"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="669"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="762"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="763"/>
         <source>Alias</source>
         <translation type="unfinished">Alias</translation>
     </message>
@@ -5492,7 +5590,7 @@
     <message>
         <location filename="../wnd/ui/eventviewer.ui" line="109"/>
         <source>+</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">+</translation>
     </message>
     <message>
         <location filename="../wnd/ui/eventviewer.ui" line="126"/>
@@ -5502,7 +5600,7 @@
     <message>
         <location filename="../wnd/ui/eventviewer.ui" line="129"/>
         <source>-</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">-</translation>
     </message>
     <message>
         <location filename="../wnd/ui/eventviewer.ui" line="175"/>
@@ -5563,17 +5661,17 @@
     <message>
         <location filename="../wnd/ui/igusdrylinpref.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
         <location filename="../wnd/ui/igusdrylinpref.ui" line="20"/>
         <source>Init Config</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Init Config</translation>
     </message>
     <message>
         <location filename="../wnd/ui/igusdrylinpref.ui" line="26"/>
         <source>Limit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Limit</translation>
     </message>
     <message>
         <location filename="../wnd/ui/igusdrylinpref.ui" line="42"/>
@@ -5582,29 +5680,29 @@
         <location filename="../wnd/ui/igusdrylinpref.ui" line="233"/>
         <location filename="../wnd/ui/igusdrylinpref.ui" line="314"/>
         <source>Zero</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Zero</translation>
     </message>
     <message>
         <location filename="../wnd/ui/igusdrylinpref.ui" line="51"/>
         <source>Time</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Time</translation>
     </message>
     <message>
         <location filename="../wnd/ui/igusdrylinpref.ui" line="58"/>
         <location filename="../wnd/ui/igusdrylinpref.ui" line="147"/>
         <source>s</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">s</translation>
     </message>
     <message>
         <location filename="../wnd/ui/igusdrylinpref.ui" line="71"/>
         <source>Distance</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Distance</translation>
     </message>
     <message>
         <location filename="../wnd/ui/igusdrylinpref.ui" line="78"/>
         <location filename="../wnd/ui/igusdrylinpref.ui" line="127"/>
         <source>mm</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">mm</translation>
     </message>
     <message>
         <location filename="../wnd/ui/igusdrylinpref.ui" line="95"/>
@@ -5619,7 +5717,7 @@
     <message>
         <location filename="../wnd/ui/igusdrylinpref.ui" line="114"/>
         <source>Init</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Init</translation>
     </message>
     <message>
         <location filename="../wnd/ui/igusdrylinpref.ui" line="120"/>
@@ -5629,12 +5727,12 @@
     <message>
         <location filename="../wnd/ui/igusdrylinpref.ui" line="140"/>
         <source>t</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">t</translation>
     </message>
     <message>
         <location filename="../wnd/ui/igusdrylinpref.ui" line="179"/>
         <source>Zero Axes</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Zero Axes</translation>
     </message>
     <message>
         <location filename="../wnd/ui/igusdrylinpref.ui" line="185"/>
@@ -5642,7 +5740,7 @@
         <location filename="../wnd/ui/igusdrylinpref.ui" line="240"/>
         <location filename="../wnd/ui/igusdrylinpref.ui" line="247"/>
         <source>CCW</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">CCW</translation>
     </message>
     <message>
         <location filename="../wnd/ui/igusdrylinpref.ui" line="205"/>
@@ -5654,24 +5752,24 @@
         <location filename="../wnd/ui/igusdrylinpref.ui" line="212"/>
         <location filename="../wnd/ui/igusdrylinpref.ui" line="321"/>
         <source>A</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">A</translation>
     </message>
     <message>
         <location filename="../wnd/ui/igusdrylinpref.ui" line="257"/>
         <location filename="../wnd/ui/igusdrylinpref.ui" line="301"/>
         <source>All</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">All</translation>
     </message>
     <message>
         <location filename="../wnd/ui/igusdrylinpref.ui" line="264"/>
         <location filename="../wnd/ui/igusdrylinpref.ui" line="294"/>
         <source>C</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">C</translation>
     </message>
     <message>
         <location filename="../wnd/ui/igusdrylinpref.ui" line="281"/>
         <source>Zero Body</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Zero Body</translation>
     </message>
 </context>
 <context>
@@ -5679,40 +5777,45 @@
     <message>
         <location filename="../wnd/ui/logout.ui" line="32"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/logout.ui" line="104"/>
+        <location filename="../wnd/ui/logout.ui" line="128"/>
         <source>Turn on/off the logout</source>
         <translation type="unfinished">Turn on/off the logout</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/logout.ui" line="133"/>
+        <location filename="../wnd/ui/logout.ui" line="210"/>
         <source>Count</source>
         <translation type="unfinished">Count</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/logout.ui" line="149"/>
+        <location filename="../wnd/ui/logout.ui" line="251"/>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
+    <message>
+        <location filename="../wnd/ui/logout.ui" line="177"/>
         <source>Clear the logout</source>
         <translation type="unfinished">Clear the logout</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/logout.ui" line="152"/>
+        <location filename="../wnd/ui/logout.ui" line="180"/>
         <source>Clear</source>
         <translation type="unfinished">Clear</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/logout.ui" line="169"/>
+        <location filename="../wnd/ui/logout.ui" line="157"/>
         <source>Export the logout</source>
         <translation type="unfinished">Export the logout</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/logout.ui" line="172"/>
+        <location filename="../wnd/ui/logout.ui" line="160"/>
         <source>Export</source>
         <translation type="unfinished">Export</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/logout.cpp" line="37"/>
+        <location filename="../wnd/ui/logout.cpp" line="38"/>
         <source>log file (*.txt )</source>
         <translation type="unfinished">log file (*.txt )</translation>
     </message>
@@ -5722,7 +5825,7 @@
     <message>
         <location filename="../wnd/ui/megatronpref.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
         <location filename="../wnd/ui/megatronpref.ui" line="20"/>
@@ -5841,7 +5944,7 @@
     <message>
         <location filename="../wnd/ui/motionedit.ui" line="20"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
         <location filename="../wnd/ui/motionedit.ui" line="43"/>
@@ -5857,7 +5960,7 @@
         <location filename="../wnd/ui/motionedit.ui" line="357"/>
         <location filename="../wnd/ui/motionedit.ui" line="527"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">...</translation>
     </message>
     <message>
         <location filename="../wnd/ui/motionedit.ui" line="88"/>
@@ -5912,7 +6015,7 @@
     <message>
         <location filename="../wnd/ui/motionedit.ui" line="290"/>
         <source>+</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">+</translation>
     </message>
     <message>
         <location filename="../wnd/ui/motionedit.ui" line="307"/>
@@ -5922,7 +6025,7 @@
     <message>
         <location filename="../wnd/ui/motionedit.ui" line="310"/>
         <source>-</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">-</translation>
     </message>
     <message>
         <location filename="../wnd/ui/motionedit.ui" line="327"/>
@@ -5957,7 +6060,7 @@
     <message>
         <location filename="../wnd/ui/motionedit.ui" line="414"/>
         <source>%</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">%</translation>
     </message>
     <message>
         <location filename="../wnd/ui/motionedit.ui" line="428"/>
@@ -6046,12 +6149,12 @@
         <translation type="unfinished">start fail</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/motionedit_slot.cpp" line="137"/>
+        <location filename="../wnd/ui/motionedit_slot.cpp" line="138"/>
         <source>Invalid robot</source>
         <translation type="unfinished">Invalid robot</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/motionedit_slot.cpp" line="145"/>
+        <location filename="../wnd/ui/motionedit_slot.cpp" line="146"/>
         <source>Compile fail</source>
         <translation type="unfinished">Compile fail</translation>
     </message>
@@ -6061,7 +6164,7 @@
     <message>
         <location filename="../wnd/ui/mrqaxes.ui" line="20"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
         <location filename="../wnd/ui/mrqaxes.ui" line="41"/>
@@ -6170,7 +6273,7 @@
     <message>
         <location filename="../wnd/ui/mrqaxes.ui" line="222"/>
         <source>8</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">8</translation>
     </message>
     <message>
         <location filename="../wnd/ui/mrqaxes.ui" line="227"/>
@@ -6251,17 +6354,17 @@
         <location filename="../wnd/ui/mrqaxes.ui" line="423"/>
         <location filename="../wnd/ui/mrqaxes.ui" line="471"/>
         <source>1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">1</translation>
     </message>
     <message>
         <location filename="../wnd/ui/mrqaxes.ui" line="428"/>
         <source>2</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">2</translation>
     </message>
     <message>
         <location filename="../wnd/ui/mrqaxes.ui" line="433"/>
         <source>4</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">4</translation>
     </message>
     <message>
         <location filename="../wnd/ui/mrqaxes.ui" line="463"/>
@@ -6309,7 +6412,7 @@
     <message>
         <location filename="../wnd/ui/mrqaxes.ui" line="741"/>
         <source>s</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">s</translation>
     </message>
     <message>
         <location filename="../wnd/ui/mrqaxes.ui" line="781"/>
@@ -6330,19 +6433,19 @@
 <context>
     <name>mrqAxes2</name>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.cpp" line="90"/>
+        <location filename="../wnd/ui/mrqaxes2.cpp" line="97"/>
         <source>Cubic</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Cubic</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.cpp" line="91"/>
+        <location filename="../wnd/ui/mrqaxes2.cpp" line="98"/>
         <source>Trapezoid</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Trapezoid</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.cpp" line="92"/>
+        <location filename="../wnd/ui/mrqaxes2.cpp" line="99"/>
         <source>S</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">S</translation>
     </message>
 </context>
 <context>
@@ -6350,65 +6453,65 @@
     <message>
         <location filename="../wnd/ui/mrqinfo.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqinfo.cpp" line="63"/>
+        <location filename="../wnd/ui/mrqinfo.cpp" line="77"/>
         <source>Model</source>
         <translation type="unfinished">Model</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqinfo.cpp" line="64"/>
+        <location filename="../wnd/ui/mrqinfo.cpp" line="78"/>
         <source>Serial</source>
         <translation type="unfinished">Serial</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqinfo.cpp" line="65"/>
+        <location filename="../wnd/ui/mrqinfo.cpp" line="79"/>
         <source>Hardware version</source>
         <translation type="unfinished">Hardware version</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqinfo.cpp" line="66"/>
+        <location filename="../wnd/ui/mrqinfo.cpp" line="80"/>
         <source>Software version</source>
         <translation type="unfinished">Software version</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqinfo.cpp" line="68"/>
+        <location filename="../wnd/ui/mrqinfo.cpp" line="82"/>
         <source>Firmware version</source>
         <translation type="unfinished">Firmware version</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqinfo.cpp" line="69"/>
+        <location filename="../wnd/ui/mrqinfo.cpp" line="83"/>
         <source>Boot version</source>
         <translation type="unfinished">Boot version</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqinfo.cpp" line="71"/>
+        <location filename="../wnd/ui/mrqinfo.cpp" line="85"/>
         <source>Send ID</source>
         <translation type="unfinished">Send ID</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqinfo.cpp" line="72"/>
+        <location filename="../wnd/ui/mrqinfo.cpp" line="86"/>
         <source>Receive ID</source>
         <translation type="unfinished">Receive ID</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqinfo.cpp" line="73"/>
+        <location filename="../wnd/ui/mrqinfo.cpp" line="87"/>
         <source>Boradcast ID</source>
         <translation type="unfinished">Boradcast ID</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqinfo.cpp" line="74"/>
+        <location filename="../wnd/ui/mrqinfo.cpp" line="88"/>
         <source>Signature</source>
         <translation type="unfinished">Signature</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqinfo.cpp" line="75"/>
+        <location filename="../wnd/ui/mrqinfo.cpp" line="89"/>
         <source>Capacity</source>
         <translation type="unfinished">Capacity</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqinfo.cpp" line="76"/>
+        <location filename="../wnd/ui/mrqinfo.cpp" line="90"/>
         <source>Buffer</source>
         <translation type="unfinished">Buffer</translation>
     </message>
@@ -6418,7 +6521,7 @@
     <message>
         <location filename="../wnd/ui/mrqio.ui" line="19"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
         <location filename="../wnd/ui/mrqio.ui" line="61"/>
@@ -6471,7 +6574,7 @@
     <message>
         <location filename="../wnd/ui/mrqproperty.ui" line="32"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
         <location filename="../wnd/ui/mrqproperty.ui" line="167"/>
@@ -6499,53 +6602,52 @@
         <translation type="unfinished">Apply</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqproperty.cpp" line="74"/>
+        <location filename="../wnd/ui/mrqproperty.cpp" line="93"/>
         <source>Confirm</source>
         <translation type="unfinished">Confirm</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqproperty.cpp" line="75"/>
+        <location filename="../wnd/ui/mrqproperty.cpp" line="94"/>
         <source>Confirm to reset</source>
         <translation type="unfinished">Confirm to reset</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqproperty.cpp" line="84"/>
-        <location filename="../wnd/ui/mrqproperty.cpp" line="363"/>
+        <location filename="../wnd/ui/mrqproperty.cpp" line="103"/>
+        <location filename="../wnd/ui/mrqproperty.cpp" line="396"/>
         <source>Invalid device</source>
         <translation type="unfinished">Invalid device</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqproperty.cpp" line="259"/>
+        <location filename="../wnd/ui/mrqproperty.cpp" line="286"/>
         <source>Info</source>
         <translation type="unfinished">Info</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqproperty.cpp" line="264"/>
         <source>Axes</source>
-        <translation type="unfinished">Axes</translation>
+        <translation type="obsolete">Axes</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqproperty.cpp" line="291"/>
+        <location filename="../wnd/ui/mrqproperty.cpp" line="318"/>
         <source>Output</source>
         <translation type="unfinished">Output</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqproperty.cpp" line="300"/>
+        <location filename="../wnd/ui/mrqproperty.cpp" line="328"/>
         <source>Input</source>
         <translation type="unfinished">Input</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqproperty.cpp" line="318"/>
+        <location filename="../wnd/ui/mrqproperty.cpp" line="347"/>
         <source>Alarm</source>
         <translation type="unfinished">Alarm</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqproperty.cpp" line="325"/>
+        <location filename="../wnd/ui/mrqproperty.cpp" line="355"/>
         <source>System</source>
         <translation type="unfinished">System</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqproperty.cpp" line="392"/>
+        <location filename="../wnd/ui/mrqproperty.cpp" line="425"/>
         <source>Begin apply</source>
         <translation type="unfinished">Begin apply</translation>
     </message>
@@ -6555,7 +6657,7 @@
     <message>
         <location filename="../wnd/ui/mrqsensor.ui" line="19"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
         <location filename="../wnd/ui/mrqsensor.ui" line="44"/>
@@ -6583,7 +6685,7 @@
     <message>
         <location filename="../wnd/ui/mrqsys.ui" line="19"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
         <location filename="../wnd/ui/mrqsys.ui" line="61"/>
@@ -6623,22 +6725,22 @@
     <message>
         <location filename="../wnd/ui/mrqsys.ui" line="135"/>
         <source>NONE</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">NONE</translation>
     </message>
     <message>
         <location filename="../wnd/ui/mrqsys.ui" line="140"/>
         <source>ALARM</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ALARM</translation>
     </message>
     <message>
         <location filename="../wnd/ui/mrqsys.ui" line="145"/>
         <source>STOP</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">STOP</translation>
     </message>
     <message>
         <location filename="../wnd/ui/mrqsys.ui" line="150"/>
         <source>ALARM + STOP</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ALARM + STOP</translation>
     </message>
     <message>
         <location filename="../wnd/ui/mrqsys.ui" line="161"/>
@@ -6656,7 +6758,7 @@
         <translation type="unfinished">Current</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqsys.cpp" line="129"/>
+        <location filename="../wnd/ui/mrqsys.cpp" line="132"/>
         <source>Invalid name</source>
         <translation type="unfinished">Invalid name</translation>
     </message>
@@ -6674,7 +6776,7 @@
     <message>
         <location filename="../wnd/ui/mrqaxes2.ui" line="19"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
         <location filename="../wnd/ui/mrqaxes2.ui" line="61"/>
@@ -6682,195 +6784,223 @@
         <translation type="unfinished">Motion</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="87"/>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="121"/>
         <source>PVT</source>
         <translation type="unfinished">PVT</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="92"/>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="126"/>
         <source>With Time LVT</source>
         <translation type="unfinished">With Time LVT</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="97"/>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="131"/>
         <source>Without Time LVT</source>
         <translation type="unfinished">Without Time LVT</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="111"/>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="373"/>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="86"/>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="399"/>
         <source>Mode</source>
         <translation type="unfinished">Mode</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="119"/>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="101"/>
         <source>CYCLE</source>
         <translation type="unfinished">CYCLE</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="124"/>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="106"/>
         <source>FIFO</source>
         <translation type="unfinished">FIFO</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="135"/>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="93"/>
         <source>Warn Point</source>
         <translation type="unfinished">Warn Point</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="142"/>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="156"/>
         <source>End State</source>
         <translation type="unfinished">End State</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="156"/>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="142"/>
         <source>Execute Mode</source>
         <translation type="unfinished">Execute Mode</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="163"/>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="149"/>
         <source>Plan Mode</source>
         <translation type="unfinished">Plan Mode</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="174"/>
-        <source>1/4</source>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="163"/>
+        <source>warn point in fifo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="179"/>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="190"/>
+        <source>1/4</source>
+        <translation type="unfinished">1/4</translation>
+    </message>
+    <message>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="195"/>
         <source>1/8</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="184"/>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="200"/>
         <source>1/16</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="189"/>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="205"/>
         <source>1/32</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="198"/>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="214"/>
         <source>STOP</source>
         <translation type="unfinished">STOP</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="203"/>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="219"/>
         <source>HOLD</source>
         <translation type="unfinished">HOLD</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="217"/>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="179"/>
         <source>Time Duty</source>
         <translation type="unfinished">Time Duty</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="224"/>
         <source>Comp. P(deg)</source>
-        <translation type="unfinished">Comp. P(deg)</translation>
+        <translation type="obsolete">Comp. P(deg)</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="231"/>
         <source>Comp. T(s)</source>
-        <translation type="unfinished">Comp. T(s)</translation>
+        <translation type="obsolete">Comp. T(s)</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="238"/>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="387"/>
-        <source>s</source>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="227"/>
+        <source>FIFO Buffer Time</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="267"/>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="234"/>
+        <source>Comp. T</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="241"/>
+        <source>Comp. P</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="248"/>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="413"/>
+        <source>s</source>
+        <translation type="unfinished">s</translation>
+    </message>
+    <message>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="274"/>
+        <source>fifo buffer time</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="277"/>
+        <source>ms</source>
+        <translation type="unfinished">ms</translation>
+    </message>
+    <message>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="293"/>
         <source>Slew Rate</source>
         <translation type="unfinished">Slew Rate</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="286"/>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="312"/>
         <source>Dec Scale</source>
         <translation type="unfinished">Dec Scale</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="293"/>
         <location filename="../wnd/ui/mrqaxes2.ui" line="319"/>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="345"/>
         <source>%</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">%</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="312"/>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="338"/>
         <source>Acc Scale</source>
         <translation type="unfinished">Acc Scale</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="360"/>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="386"/>
         <source>Emergency Stop</source>
         <translation type="unfinished">Emergency Stop</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="366"/>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="392"/>
         <source>Distance</source>
         <translation type="unfinished">Distance</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="380"/>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="406"/>
         <source>Time</source>
         <translation type="unfinished">Time</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="401"/>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="427"/>
         <source>Immediately</source>
         <translation type="unfinished">Immediately</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="406"/>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="432"/>
         <source>Delay</source>
         <translation type="unfinished">Delay</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="411"/>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="437"/>
         <source>Until End</source>
         <translation type="unfinished">Until End</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="419"/>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="445"/>
         <source>mm</source>
         <translation type="unfinished">mm</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="448"/>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="474"/>
         <source>Out of step</source>
         <translation type="unfinished">Out of step</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="457"/>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="483"/>
         <source>Out of line</source>
         <translation type="unfinished">Out of line</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="465"/>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="491"/>
         <source>None</source>
         <translation type="unfinished">None</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="470"/>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="496"/>
         <source>Alarm</source>
         <translation type="unfinished">Alarm</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="475"/>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="501"/>
         <source>Stop</source>
         <translation type="unfinished">b</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="480"/>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="506"/>
         <source>Alarm | Stop</source>
         <translation type="unfinished">Alarm | Stop</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="511"/>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="537"/>
         <source>Line response</source>
         <translation type="unfinished">Line response</translation>
     </message>
@@ -6880,50 +7010,50 @@
     <message>
         <location filename="../wnd/ui/mrvinfo.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrvinfo.cpp" line="63"/>
+        <location filename="../wnd/ui/mrvinfo.cpp" line="77"/>
         <source>Model</source>
         <translation type="unfinished">Model</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrvinfo.cpp" line="64"/>
+        <location filename="../wnd/ui/mrvinfo.cpp" line="78"/>
         <source>Serial</source>
         <translation type="unfinished">Serial</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrvinfo.cpp" line="65"/>
+        <location filename="../wnd/ui/mrvinfo.cpp" line="79"/>
         <source>Hardware version</source>
         <translation type="unfinished">Hardware version</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrvinfo.cpp" line="66"/>
+        <location filename="../wnd/ui/mrvinfo.cpp" line="80"/>
         <source>Software version</source>
         <translation type="unfinished">Software version</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrvinfo.cpp" line="68"/>
+        <location filename="../wnd/ui/mrvinfo.cpp" line="82"/>
         <source>Boot version</source>
         <translation type="unfinished">Boot version</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrvinfo.cpp" line="70"/>
+        <location filename="../wnd/ui/mrvinfo.cpp" line="84"/>
         <source>Send ID</source>
         <translation type="unfinished">Send ID</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrvinfo.cpp" line="71"/>
+        <location filename="../wnd/ui/mrvinfo.cpp" line="85"/>
         <source>Receive ID</source>
         <translation type="unfinished">Receive ID</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrvinfo.cpp" line="72"/>
+        <location filename="../wnd/ui/mrvinfo.cpp" line="86"/>
         <source>Boradcast ID</source>
         <translation type="unfinished">Boradcast ID</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrvinfo.cpp" line="73"/>
+        <location filename="../wnd/ui/mrvinfo.cpp" line="87"/>
         <source>Signature</source>
         <translation type="unfinished">Signature</translation>
     </message>
@@ -6946,7 +7076,7 @@
     <message>
         <location filename="../wnd/ui/pvtedit.ui" line="20"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
         <location filename="../wnd/ui/pvtedit.ui" line="46"/>
@@ -6960,7 +7090,7 @@
         <location filename="../wnd/ui/pvtedit.ui" line="192"/>
         <location filename="../wnd/ui/pvtedit.ui" line="383"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">...</translation>
     </message>
     <message>
         <location filename="../wnd/ui/pvtedit.ui" line="97"/>
@@ -7015,7 +7145,7 @@
     <message>
         <location filename="../wnd/ui/pvtedit.ui" line="291"/>
         <source>-</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">-</translation>
     </message>
     <message>
         <location filename="../wnd/ui/pvtedit.ui" line="335"/>
@@ -7053,74 +7183,74 @@
         <translation type="unfinished">Config</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/pvtedit.cpp" line="166"/>
+        <location filename="../wnd/ui/pvtedit.cpp" line="170"/>
         <source>Cubic</source>
         <translation type="unfinished">Cubic</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/pvtedit.cpp" line="167"/>
+        <location filename="../wnd/ui/pvtedit.cpp" line="171"/>
         <source>Trapezoid</source>
         <translation type="unfinished">Trapezoid</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/pvtedit.cpp" line="168"/>
+        <location filename="../wnd/ui/pvtedit.cpp" line="172"/>
         <source>S curve</source>
         <translation type="unfinished">S curve</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/pvtedit.cpp" line="211"/>
+        <location filename="../wnd/ui/pvtedit.cpp" line="215"/>
         <source>Invalid Device:%1 %2</source>
         <translation type="unfinished">Invalid Device:%1 %2</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/pvtedit.cpp" line="337"/>
+        <location filename="../wnd/ui/pvtedit.cpp" line="341"/>
         <source>start fail</source>
         <translation type="unfinished">start fail</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/pvtedit.cpp" line="416"/>
-        <location filename="../wnd/ui/pvtedit.cpp" line="422"/>
+        <location filename="../wnd/ui/pvtedit.cpp" line="420"/>
+        <location filename="../wnd/ui/pvtedit.cpp" line="426"/>
         <source>Invalid dot</source>
         <translation type="unfinished">Invalid dot</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/pvtedit.cpp" line="437"/>
+        <location filename="../wnd/ui/pvtedit.cpp" line="441"/>
         <source>Invalid time at line </source>
         <translation type="unfinished">Invalid time at line </translation>
     </message>
     <message>
-        <location filename="../wnd/ui/pvtedit.cpp" line="504"/>
+        <location filename="../wnd/ui/pvtedit.cpp" line="511"/>
         <source>build fail</source>
         <translation type="unfinished">build fail</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/pvtedit.cpp" line="525"/>
+        <location filename="../wnd/ui/pvtedit.cpp" line="535"/>
         <source>t-p</source>
         <translation type="unfinished">t-p</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/pvtedit.cpp" line="526"/>
+        <location filename="../wnd/ui/pvtedit.cpp" line="536"/>
         <source>t-v</source>
         <translation type="unfinished">t-v</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/pvtedit.cpp" line="590"/>
-        <location filename="../wnd/ui/pvtedit.cpp" line="607"/>
+        <location filename="../wnd/ui/pvtedit.cpp" line="603"/>
+        <location filename="../wnd/ui/pvtedit.cpp" line="622"/>
         <source>Line build completed</source>
         <translation type="unfinished">Line build completed</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/pvtedit.cpp" line="599"/>
+        <location filename="../wnd/ui/pvtedit.cpp" line="611"/>
         <source>Invalid CH</source>
         <translation type="unfinished">Invalid CH</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/pvtedit.cpp" line="612"/>
+        <location filename="../wnd/ui/pvtedit.cpp" line="626"/>
         <source>Fail</source>
         <translation type="unfinished">Fail</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/pvtedit.cpp" line="612"/>
+        <location filename="../wnd/ui/pvtedit.cpp" line="626"/>
         <source>Build Fail</source>
         <translation type="unfinished">Build Fail</translation>
     </message>
@@ -7131,7 +7261,7 @@
         <location filename="../wnd/ui/querymgr.ui" line="14"/>
         <location filename="../wnd/ui/querymgr.ui" line="138"/>
         <source>Spy</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Spy</translation>
     </message>
     <message>
         <location filename="../wnd/ui/querymgr.ui" line="38"/>
@@ -7161,7 +7291,7 @@
     <message>
         <location filename="../wnd/ui/querymgr.ui" line="88"/>
         <source>+</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">+</translation>
     </message>
     <message>
         <location filename="../wnd/ui/querymgr.ui" line="105"/>
@@ -7171,7 +7301,7 @@
     <message>
         <location filename="../wnd/ui/querymgr.ui" line="108"/>
         <source>-</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">-</translation>
     </message>
     <message>
         <location filename="../wnd/ui/querymgr.ui" line="132"/>
@@ -7189,43 +7319,44 @@
         <translation type="unfinished">Clear Cache</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/querymgr.cpp" line="113"/>
+        <location filename="../wnd/ui/querymgr.cpp" line="43"/>
+        <location filename="../wnd/ui/querymgr.cpp" line="117"/>
         <source>Data...</source>
         <translation type="unfinished">Data...</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/querymgr.cpp" line="126"/>
+        <location filename="../wnd/ui/querymgr.cpp" line="130"/>
         <source>TORQUE</source>
         <translation type="unfinished">TORQUE</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/querymgr.cpp" line="126"/>
+        <location filename="../wnd/ui/querymgr.cpp" line="130"/>
         <source>CYCLE</source>
         <translation type="unfinished">CYCLE</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/querymgr.cpp" line="127"/>
+        <location filename="../wnd/ui/querymgr.cpp" line="131"/>
         <source>SGALL</source>
         <translation type="unfinished">SGALL</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/querymgr.cpp" line="127"/>
+        <location filename="../wnd/ui/querymgr.cpp" line="131"/>
         <source>SGSE</source>
         <translation type="unfinished">SGSE</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/querymgr.cpp" line="128"/>
+        <location filename="../wnd/ui/querymgr.cpp" line="132"/>
         <source>DIST</source>
         <translation type="unfinished">DIST</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/querymgr.cpp" line="128"/>
+        <location filename="../wnd/ui/querymgr.cpp" line="132"/>
         <source>ABSENC</source>
         <translation type="unfinished">ABSENC</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/querymgr.cpp" line="280"/>
-        <location filename="../wnd/ui/querymgr.cpp" line="299"/>
+        <location filename="../wnd/ui/querymgr.cpp" line="284"/>
+        <location filename="../wnd/ui/querymgr.cpp" line="303"/>
         <source>spy config (*.spy)</source>
         <translation type="unfinished">spy config (*.spy)</translation>
     </message>
@@ -7341,7 +7472,7 @@
     <message>
         <location filename="../wnd/ui/roboaxes.ui" line="327"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">...</translation>
     </message>
     <message>
         <location filename="../wnd/ui/roboaxes.ui" line="357"/>
@@ -7402,7 +7533,7 @@
     <message>
         <location filename="../wnd/ui/roboconnection.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
         <location filename="../wnd/ui/roboconnection.ui" line="66"/>
@@ -7410,9 +7541,8 @@
         <translation type="unfinished">Robot</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/roboconnection.ui" line="70"/>
         <source>c</source>
-        <translation type="unfinished">c</translation>
+        <translation type="obsolete">c</translation>
     </message>
 </context>
 <context>
@@ -7423,17 +7553,17 @@
         <translation type="unfinished">Form</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/roboinfo.cpp" line="61"/>
+        <location filename="../wnd/ui/roboinfo.cpp" line="75"/>
         <source>Model</source>
         <translation type="unfinished">Model</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/roboinfo.cpp" line="62"/>
+        <location filename="../wnd/ui/roboinfo.cpp" line="76"/>
         <source>Axes</source>
         <translation type="unfinished">Axes</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/roboinfo.cpp" line="63"/>
+        <location filename="../wnd/ui/roboinfo.cpp" line="77"/>
         <source>Id</source>
         <translation type="unfinished">Id</translation>
     </message>
@@ -7443,62 +7573,77 @@
     <message>
         <location filename="../wnd/ui/robomgr.ui" line="23"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
 </context>
 <context>
     <name>roboProp</name>
     <message>
-        <location filename="../wnd/ui/roboprop.cpp" line="135"/>
+        <location filename="../wnd/ui/roboprop.cpp" line="154"/>
         <source>Info</source>
         <translation type="unfinished">Info</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/roboprop.cpp" line="136"/>
+        <location filename="../wnd/ui/roboprop.cpp" line="155"/>
         <source>Detail</source>
         <translation type="unfinished">Detail</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/roboprop.cpp" line="140"/>
-        <location filename="../wnd/ui/roboprop.cpp" line="142"/>
+        <location filename="../wnd/ui/roboprop.cpp" line="160"/>
+        <location filename="../wnd/ui/roboprop.cpp" line="164"/>
         <source>Option</source>
         <translation type="unfinished">Option</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/roboprop.cpp" line="147"/>
-        <location filename="../wnd/ui/roboprop.cpp" line="152"/>
-        <location filename="../wnd/ui/roboprop.cpp" line="162"/>
         <location filename="../wnd/ui/roboprop.cpp" line="170"/>
         <location filename="../wnd/ui/roboprop.cpp" line="175"/>
-        <location filename="../wnd/ui/roboprop.cpp" line="190"/>
+        <location filename="../wnd/ui/roboprop.cpp" line="185"/>
+        <location filename="../wnd/ui/roboprop.cpp" line="193"/>
+        <location filename="../wnd/ui/roboprop.cpp" line="198"/>
+        <location filename="../wnd/ui/roboprop.cpp" line="213"/>
         <source>Zero</source>
         <translation type="unfinished">Zero</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/roboprop.cpp" line="148"/>
-        <location filename="../wnd/ui/roboprop.cpp" line="163"/>
         <location filename="../wnd/ui/roboprop.cpp" line="171"/>
-        <location filename="../wnd/ui/roboprop.cpp" line="181"/>
-        <location filename="../wnd/ui/roboprop.cpp" line="185"/>
-        <location filename="../wnd/ui/roboprop.cpp" line="191"/>
+        <location filename="../wnd/ui/roboprop.cpp" line="186"/>
+        <location filename="../wnd/ui/roboprop.cpp" line="194"/>
+        <location filename="../wnd/ui/roboprop.cpp" line="204"/>
+        <location filename="../wnd/ui/roboprop.cpp" line="208"/>
+        <location filename="../wnd/ui/roboprop.cpp" line="214"/>
         <source>Pref</source>
         <translation type="unfinished">Pref</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/roboprop.cpp" line="160"/>
-        <location filename="../wnd/ui/roboprop.cpp" line="167"/>
+        <location filename="../wnd/ui/roboprop.cpp" line="183"/>
+        <location filename="../wnd/ui/roboprop.cpp" line="190"/>
         <source>Icon</source>
         <translation type="unfinished">Icon</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/roboprop.cpp" line="186"/>
+        <location filename="../wnd/ui/roboprop.cpp" line="209"/>
         <source>Config</source>
         <translation type="unfinished">Config</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/roboprop.cpp" line="264"/>
+        <location filename="../wnd/ui/roboprop.cpp" line="295"/>
         <source>Begin apply</source>
         <translation type="unfinished">Begin apply</translation>
+    </message>
+    <message>
+        <location filename="../wnd/ui/roboprop.cpp" line="352"/>
+        <source>Begin reset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../wnd/ui/roboprop.cpp" line="430"/>
+        <source>Confirm</source>
+        <translation type="unfinished">Confirm</translation>
+    </message>
+    <message>
+        <location filename="../wnd/ui/roboprop.cpp" line="431"/>
+        <source>Confirm to reset</source>
+        <translation type="unfinished">Confirm to reset</translation>
     </message>
 </context>
 <context>
@@ -7506,35 +7651,38 @@
     <message>
         <location filename="../wnd/ui/roboscene.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/roboscene.cpp" line="223"/>
+        <location filename="../wnd/ui/roboscene.cpp" line="228"/>
         <source>Warning</source>
         <translation type="unfinished">Warning</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/roboscene.cpp" line="223"/>
+        <location filename="../wnd/ui/roboscene.cpp" line="228"/>
         <source>Name Inavlid</source>
         <translation type="unfinished">Name Inavlid</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/roboscene.cpp" line="435"/>
+        <location filename="../wnd/ui/roboscene.cpp" line="440"/>
         <source>loaded!</source>
         <translation type="unfinished">loaded!</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/roboscene.cpp" line="516"/>
+        <location filename="../wnd/ui/roboscene.cpp" line="41"/>
+        <location filename="../wnd/ui/roboscene.cpp" line="521"/>
         <source>Delete</source>
         <translation type="unfinished">Delete</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/roboscene.cpp" line="519"/>
+        <location filename="../wnd/ui/roboscene.cpp" line="42"/>
+        <location filename="../wnd/ui/roboscene.cpp" line="524"/>
         <source>Option...</source>
         <translation type="unfinished">Option...</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/roboscene.cpp" line="523"/>
+        <location filename="../wnd/ui/roboscene.cpp" line="43"/>
+        <location filename="../wnd/ui/roboscene.cpp" line="528"/>
         <source>New mrp...</source>
         <translation type="unfinished">New mrp...</translation>
     </message>
@@ -7544,7 +7692,7 @@
     <message>
         <location filename="../widget/scenewidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
 </context>
 <context>
@@ -7552,7 +7700,7 @@
     <message>
         <location filename="../wnd/ui/scripteditor.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
 </context>
 <context>
@@ -7560,7 +7708,7 @@
     <message>
         <location filename="../wnd/ui/scriptmgr.ui" line="20"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
     <message>
         <location filename="../wnd/ui/scriptmgr.ui" line="78"/>
@@ -7568,63 +7716,81 @@
         <translation type="unfinished">Project</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/scriptmgr.cpp" line="642"/>
+        <location filename="../wnd/ui/scriptmgr.cpp" line="139"/>
+        <location filename="../wnd/ui/scriptmgr.cpp" line="707"/>
         <source>New Group</source>
         <translation type="unfinished">New Group</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/scriptmgr.cpp" line="643"/>
+        <location filename="../wnd/ui/scriptmgr.cpp" line="140"/>
+        <location filename="../wnd/ui/scriptmgr.cpp" line="708"/>
         <source>Import...</source>
         <translation type="unfinished">Import...</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/scriptmgr.cpp" line="645"/>
+        <location filename="../wnd/ui/scriptmgr.cpp" line="141"/>
+        <location filename="../wnd/ui/scriptmgr.cpp" line="710"/>
         <source>Remove</source>
         <translation type="unfinished">Remove</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/scriptmgr.cpp" line="703"/>
+        <location filename="../wnd/ui/scriptmgr.cpp" line="712"/>
+        <source>Explorer...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../wnd/ui/scriptmgr.cpp" line="761"/>
+        <source> Open fail!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../wnd/ui/scriptmgr.cpp" line="770"/>
         <source>Group name</source>
         <translation type="unfinished">Group name</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/scriptmgr.cpp" line="704"/>
+        <location filename="../wnd/ui/scriptmgr.cpp" line="771"/>
         <source>Group name:</source>
         <translation type="unfinished">Group name:</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/scriptmgr.cpp" line="728"/>
+        <location filename="../wnd/ui/scriptmgr.cpp" line="795"/>
         <source>pvt (*.pvt)</source>
         <translation type="unfinished">pvt (*.pvt)</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/scriptmgr.cpp" line="729"/>
+        <location filename="../wnd/ui/scriptmgr.cpp" line="796"/>
         <source>pt (*.pt)</source>
         <translation type="unfinished">pt (*.pt)</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/scriptmgr.cpp" line="730"/>
+        <location filename="../wnd/ui/scriptmgr.cpp" line="797"/>
         <source>mrp (*.mrp)</source>
         <translation type="unfinished">mrp (*.mrp)</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/scriptmgr.cpp" line="731"/>
+        <location filename="../wnd/ui/scriptmgr.cpp" line="798"/>
         <source>scene (*.sce)</source>
         <translation type="unfinished">scene (*.sce)</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/scriptmgr.cpp" line="732"/>
+        <location filename="../wnd/ui/scriptmgr.cpp" line="799"/>
         <source>setup (*.stp)</source>
         <translation type="unfinished">setup (*.stp)</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/scriptmgr.cpp" line="733"/>
+        <location filename="../wnd/ui/scriptmgr.cpp" line="800"/>
         <source>python (*.py)</source>
         <translation type="unfinished">python (*.py)</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/scriptmgr.cpp" line="747"/>
-        <location filename="../wnd/ui/scriptmgr.cpp" line="764"/>
+        <location filename="../wnd/ui/scriptmgr.cpp" line="801"/>
+        <source>mrg (*.mrg)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../wnd/ui/scriptmgr.cpp" line="815"/>
+        <location filename="../wnd/ui/scriptmgr.cpp" line="832"/>
         <source>File is alreay in project, </source>
         <translation type="unfinished">File is alreay in project, </translation>
     </message>
@@ -7634,7 +7800,7 @@
     <message>
         <location filename="../wnd/ui/statebar.ui" line="20"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Form</translation>
     </message>
 </context>
 <context>
@@ -7767,9 +7933,9 @@
     </message>
     <message>
         <location filename="../wnd/ui/syspref.ui" line="332"/>
-        <location filename="../wnd/ui/syspref.ui" line="1826"/>
+        <location filename="../wnd/ui/syspref.ui" line="1898"/>
         <source>TextLabel</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">TextLabel</translation>
     </message>
     <message>
         <location filename="../wnd/ui/syspref.ui" line="339"/>
@@ -8241,37 +8407,42 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished">Vernier Omit(deg)</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/syspref.ui" line="1813"/>
+        <location filename="../wnd/ui/syspref.ui" line="1879"/>
+        <source>Misc</source>
+        <translation type="unfinished">Misc</translation>
+    </message>
+    <message>
+        <location filename="../wnd/ui/syspref.ui" line="1885"/>
         <source>Editor</source>
         <translation type="unfinished">Editor</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/syspref.ui" line="1819"/>
+        <location filename="../wnd/ui/syspref.ui" line="1891"/>
         <source>Font</source>
         <translation type="unfinished">Font</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/syspref.ui" line="1833"/>
+        <location filename="../wnd/ui/syspref.ui" line="1905"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">...</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/syspref.ui" line="1843"/>
+        <location filename="../wnd/ui/syspref.ui" line="1813"/>
         <source>Speed</source>
         <translation type="unfinished">Speed</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/syspref.ui" line="1849"/>
+        <location filename="../wnd/ui/syspref.ui" line="1819"/>
         <source>Pos.</source>
         <translation type="unfinished">Pos.</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/syspref.ui" line="1882"/>
+        <location filename="../wnd/ui/syspref.ui" line="1852"/>
         <source>Terminal</source>
         <translation type="unfinished">Terminal</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/syspref.ui" line="1909"/>
+        <location filename="../wnd/ui/syspref.ui" line="1929"/>
         <source>Alias</source>
         <translation type="unfinished">Alias</translation>
     </message>
@@ -8315,21 +8486,29 @@ p, li { white-space: pre-wrap; }
     <name>tableEdit</name>
     <message>
         <location filename="../wnd/ui/tableedit.cpp" line="50"/>
+        <location filename="../wnd/ui/tableedit.cpp" line="59"/>
         <source>Insert before</source>
         <translation type="unfinished">Insert before</translation>
     </message>
     <message>
         <location filename="../wnd/ui/tableedit.cpp" line="51"/>
+        <location filename="../wnd/ui/tableedit.cpp" line="60"/>
         <source>Insert below</source>
         <translation type="unfinished">Insert below</translation>
     </message>
     <message>
         <location filename="../wnd/ui/tableedit.cpp" line="53"/>
+        <location filename="../wnd/ui/tableedit.cpp" line="61"/>
+        <source>Delete line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Delete Line</source>
-        <translation type="unfinished">Delete Line</translation>
+        <translation type="obsolete">Delete Line</translation>
     </message>
     <message>
         <location filename="../wnd/ui/tableedit.cpp" line="55"/>
+        <location filename="../wnd/ui/tableedit.cpp" line="62"/>
         <source>Clear</source>
         <translation type="unfinished">Clear</translation>
     </message>

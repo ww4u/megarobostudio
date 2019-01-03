@@ -44,6 +44,9 @@ QString mrqSys::deviceName()
 
 void mrqSys::spyEdited()
 {
+    QGroupBox *gpBox[]=
+    {
+    };
     QCheckBox *checkBoxes[]=
     {
         ui->chkOtp,

@@ -104,6 +104,19 @@ void scriptMgr::contextMenuEvent(QContextMenuEvent *event)
         m_pImportAction->setEnabled( getPath().length() > 0 );
         m_pNewGroupAction->setEnabled( getPath().length() > 0 );
 
+        //! top
+        if ( pNode->getNodeType() == scriptNode::node_group  )
+        {
+            if ( pNode->getParent() == 0 )
+            { m_pExplorerAction->setVisible( true); }
+            else
+            { m_pExplorerAction->setVisible( false); }
+        }
+        else
+        {
+            m_pExplorerAction->setVisible( true);
+        }
+
         //! popup
         m_pContextMenu->popup( mapToGlobal( event->pos() ) );
     }
@@ -695,6 +708,8 @@ void scriptMgr::setupUi()
     m_pImportAction = m_pContextMenu->addAction( tr("Import..."), this,  SLOT(slot_context_import()) );
     m_pContextMenu->addSeparator();
     m_pRemoveAction = m_pContextMenu->addAction( tr("Remove"), this, SLOT(slot_context_remove()) );
+    m_pContextMenu->addSeparator();
+    m_pExplorerAction = m_pContextMenu->addAction( tr("Explorer..."), this, SLOT(slot_context_explorer()) );
 
     //! model
     ui->scriptView->setModel( m_pRootModel );
@@ -765,7 +780,7 @@ void scriptMgr::slot_context_newgroup()
 }
 void scriptMgr::slot_context_remove()
 {
-    removeCurrent( );logDbg();
+    removeCurrent( );
 
     emit signal_prj_edited();
 }
@@ -824,6 +839,44 @@ void scriptMgr::slot_file_import( const QString &fileName )
 
     emit signal_prj_edited();
 
+}
+
+void scriptMgr::slot_context_explorer()
+{
+    //! open dir
+    QModelIndex index = ui->scriptView->currentIndex();
+
+    if ( !index.isValid() )
+    { return; }
+
+    scriptNode *pNode = static_cast<scriptNode*>( index.internalPointer() );
+    if ( NULL == pNode || ( pNode->getNodeType() == scriptNode::node_group && pNode->getParent() != NULL ) )
+    { return; }
+
+    scriptFile *pFile = dynamic_cast<scriptFile*>( pNode );
+    if ( NULL == pFile )
+    { return; }
+    else
+    {
+    }
+
+    QString path;
+    if ( QDir::isAbsolutePath( pFile->getPath() ) )
+    { path = pFile->getPath(); }
+    else
+    { path = m_pRootModel->getPath() + QDir::separator() + pFile->getPath(); }
+
+    path = QDir::fromNativeSeparators( path );
+
+
+    QStringList args;
+    QString str;
+    str = path;
+    str.replace("/", QDir::separator() );
+    args<<str;
+    //! \todo linux
+
+    QProcess::execute( "explorer.exe", args );
 }
 
 void scriptMgr::post_file_import( const QString &fileName )

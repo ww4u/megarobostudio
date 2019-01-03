@@ -49,6 +49,9 @@ void MotorPref::updateScreen()
 }
 void MotorPref::spyEdited()
 {
+    QGroupBox *gpBox[]=
+    {
+    };
     QCheckBox *checkBoxes[]=
     {
         ui->chkGapPos,

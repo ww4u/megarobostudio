@@ -41,6 +41,9 @@ void IgusConfig::updateScreen()
 
 void IgusConfig::spyEdited()
 {
+    QGroupBox *gpBox[]=
+    {
+    };
     QCheckBox *checkBoxes[]=
     {
         ui->chkInvert,

@@ -25,6 +25,8 @@ public:
     virtual int setApply();
 
     virtual void updateScreen();
+
+    virtual int setReset();
 protected:
     void initModel();
     void spyEdited();
@@ -43,8 +45,6 @@ private slots:
     void on_btnZero_clicked();
 
     void on_btnFactory_clicked();
-
-    void on_pushButton_clicked();
 
 private:
     Ui::SinanjuPref *ui;

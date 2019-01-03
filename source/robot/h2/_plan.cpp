@@ -73,8 +73,7 @@ int robotH2::buildTrace( QList<H2KeyPoint> &curve,
 
     if ( ret != 0 )
     {
-//        logDbg()<<mZeroX<<mZeroY;
-        sysLog( "desolve fail" );
+        sysPrompt( QObject::tr( "Slove fail" ) );
         h2_split::h2Gc( splitDataSet );
         return ret;
     }

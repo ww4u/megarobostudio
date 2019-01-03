@@ -21,10 +21,17 @@ void axesConnection::changeEvent( QEvent *event )
     { ui->retranslateUi( this ); }
 }
 
-void axesConnection::setDeviceNames( const QStringList &strList )
+void axesConnection::setDeviceNames( const QMap<QString,int> &map )
 {
     ui->cmbDeviceName->clear();
-    ui->cmbDeviceName->addItems( strList );
+
+    QMapIterator< QString, int> iter(map);
+    while( iter.hasNext() )
+    {
+        iter.next();
+
+        ui->cmbDeviceName->addItem( iter.key(), iter.value() );
+    }
 }
 void axesConnection::setCurrentName( const QString &str )
 {
@@ -67,3 +74,17 @@ QComboBox *axesConnection::getCombPage()
     return ui->widget->getComb();
 }
 
+void axesConnection::on_cmbDeviceName_currentIndexChanged(int index)
+{
+    ui->cmbDeviceAxes->clear();
+
+    //! current user data
+    if ( ui->cmbDeviceName->currentData().isValid() )
+    {
+        int axCnt = ui->cmbDeviceName->currentData().toInt();
+        for ( int i = 0; i < axCnt; i++ )
+        {
+            ui->cmbDeviceAxes->addItem( QString("CH%1").arg(i+1) );
+        }
+    }
+}

@@ -102,14 +102,17 @@ Q_SIGNALS:
     void signal_scriptmgr_changed();
     void signal_prj_edited();
 
-private Q_SLOTS:
+public Q_SLOTS:
     void on_scriptView_activated(const QModelIndex &index);
 
 //    void slot_context_newfile();
     void slot_context_newgroup();
     void slot_context_remove();
-public Q_SLOTS:
+
     void slot_context_import();
+
+    void slot_context_explorer();
+
     void slot_file_import( const QString &file );
 
 protected:
@@ -119,11 +122,12 @@ private:
     Ui::scriptMgr *ui;
 
     QMenu *m_pContextMenu;
-    QMenu *m_pFileContextMenu;
+//    QMenu *m_pFileContextMenu;
 
     QAction *m_pNewGroupAction;
     QAction *m_pRemoveAction;
     QAction *m_pImportAction;
+    QAction *m_pExplorerAction;
 
     scriptModel *m_pRootModel;   //! root group
     int mUntitleId;

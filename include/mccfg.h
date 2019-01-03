@@ -71,7 +71,7 @@
 #define CSV_COL_SEP                     ","
 
 #define char_deg                        QChar(0x00B0)
-
+#define char_square                     QChar(0x00B2)
 //! robo name
 #define robo_t4     "MRX-T4"
 #define robo_dt     "MRX-DT"

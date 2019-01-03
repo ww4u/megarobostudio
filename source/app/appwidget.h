@@ -33,6 +33,8 @@ enum appMsg
     msg_mrv_property_ok,
     msg_robo_property_ok,
 
+    msg_robo_property_reset,
+
     msg_mgr_motor_test,
     msg_mgr_robo_test,
 };

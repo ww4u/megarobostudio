@@ -40,6 +40,9 @@ void H2Config::updateScreen()
 }
 void H2Config::spyEdited()
 {
+    QGroupBox *gpBox[]=
+    {
+    };
     QCheckBox *checkBoxes[]=
     {
     };
@@ -50,7 +53,8 @@ void H2Config::spyEdited()
     };
 
     QSpinBox *spinBoxes[]={
-
+        ui->spinToothType,
+        ui->spinToothGear,
     };
 
     QDoubleSpinBox *doubleSpinBoxes[]={
@@ -62,7 +66,8 @@ void H2Config::spyEdited()
     };
 
     QComboBox *comboxes[]={
-
+        ui->cmbMotion,
+        ui->cmbPDir,
     };
 
     install_spy();

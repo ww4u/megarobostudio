@@ -30,7 +30,7 @@ public:
     virtual int setApply();
 public:
     virtual void modelChanged();
-
+    virtual void adaptToModel();
 protected:
     void spyEdited();
 //    void setupUi();

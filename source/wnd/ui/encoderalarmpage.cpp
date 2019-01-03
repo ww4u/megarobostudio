@@ -78,6 +78,9 @@ bool EncoderAlarmPage::isZeroEnable()
 
 void EncoderAlarmPage::spyEdited()
 {
+    QGroupBox *gpBox[]=
+    {
+    };
     QCheckBox *checkBoxes[]=
     {
         ui->checkBox,

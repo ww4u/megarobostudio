@@ -42,7 +42,10 @@ int robotDelta::build(   MegaTableModel *pModel,
     QList<deltaPoint> jointTrace;
     ret = buildTrace( curve, jointTrace );
     if ( ret != 0 )
-    { return ret; }
+    {
+        sysPrompt( QObject::tr( "Solve fail" ) );
+        return ret;
+    }
 
     //! convert
     ret = convertTrace( curve, jointTrace, tpvGroups, sectionList );

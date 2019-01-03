@@ -27,6 +27,9 @@ void MrvSwitch::changeEvent(QEvent * event)
 
 void MrvSwitch::spyEdited()
 {
+    QGroupBox *gpBox[]=
+    {
+    };
     QCheckBox *checkBoxes[]=
     {
     };

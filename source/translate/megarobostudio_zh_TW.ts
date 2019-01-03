@@ -319,6 +319,19 @@
     </message>
 </context>
 <context>
+    <name>EmergeStop</name>
+    <message>
+        <location filename="../wnd/ui/emergestop.ui" line="14"/>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../wnd/ui/emergestop.ui" line="60"/>
+        <source>STOP</source>
+        <translation type="unfinished">停止</translation>
+    </message>
+</context>
+<context>
     <name>EncoderAlarmPage</name>
     <message>
         <location filename="../wnd/ui/encoderalarmpage.ui" line="14"/>
@@ -713,126 +726,126 @@
     </message>
     <message>
         <location filename="../wnd/ui/h2pref.ui" line="42"/>
-        <location filename="../wnd/ui/h2pref.ui" line="163"/>
-        <location filename="../wnd/ui/h2pref.ui" line="289"/>
+        <location filename="../wnd/ui/h2pref.ui" line="166"/>
+        <location filename="../wnd/ui/h2pref.ui" line="292"/>
         <source>mm</source>
         <translation type="unfinished">毫米</translation>
     </message>
     <message>
         <location filename="../wnd/ui/h2pref.ui" line="55"/>
-        <location filename="../wnd/ui/h2pref.ui" line="156"/>
-        <location filename="../wnd/ui/h2pref.ui" line="299"/>
+        <location filename="../wnd/ui/h2pref.ui" line="159"/>
+        <location filename="../wnd/ui/h2pref.ui" line="302"/>
         <source>Distance</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../wnd/ui/h2pref.ui" line="62"/>
-        <location filename="../wnd/ui/h2pref.ui" line="136"/>
-        <location filename="../wnd/ui/h2pref.ui" line="282"/>
+        <location filename="../wnd/ui/h2pref.ui" line="139"/>
+        <location filename="../wnd/ui/h2pref.ui" line="285"/>
         <source>Time</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../wnd/ui/h2pref.ui" line="69"/>
-        <location filename="../wnd/ui/h2pref.ui" line="143"/>
-        <location filename="../wnd/ui/h2pref.ui" line="234"/>
-        <location filename="../wnd/ui/h2pref.ui" line="247"/>
-        <location filename="../wnd/ui/h2pref.ui" line="269"/>
+        <location filename="../wnd/ui/h2pref.ui" line="146"/>
+        <location filename="../wnd/ui/h2pref.ui" line="237"/>
+        <location filename="../wnd/ui/h2pref.ui" line="250"/>
+        <location filename="../wnd/ui/h2pref.ui" line="272"/>
         <source>s</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/h2pref.ui" line="83"/>
+        <location filename="../wnd/ui/h2pref.ui" line="86"/>
         <source>-&gt;X-&gt;Y</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/h2pref.ui" line="88"/>
+        <location filename="../wnd/ui/h2pref.ui" line="91"/>
         <source>-&gt;Y-&gt;X</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/h2pref.ui" line="96"/>
+        <location filename="../wnd/ui/h2pref.ui" line="99"/>
         <source>Corner</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/h2pref.ui" line="104"/>
+        <location filename="../wnd/ui/h2pref.ui" line="107"/>
         <source>Left Bottom</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/h2pref.ui" line="109"/>
+        <location filename="../wnd/ui/h2pref.ui" line="112"/>
         <source>Left Top</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/h2pref.ui" line="114"/>
+        <location filename="../wnd/ui/h2pref.ui" line="117"/>
         <source>Right Top</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/h2pref.ui" line="119"/>
+        <location filename="../wnd/ui/h2pref.ui" line="122"/>
         <source>Right Bottom</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/h2pref.ui" line="130"/>
+        <location filename="../wnd/ui/h2pref.ui" line="133"/>
         <source>X/Y Gap</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/h2pref.ui" line="176"/>
+        <location filename="../wnd/ui/h2pref.ui" line="179"/>
         <source>Misc</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/h2pref.ui" line="197"/>
+        <location filename="../wnd/ui/h2pref.ui" line="200"/>
         <source>Speed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/h2pref.ui" line="204"/>
+        <location filename="../wnd/ui/h2pref.ui" line="207"/>
         <source>/s</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/h2pref.ui" line="220"/>
+        <location filename="../wnd/ui/h2pref.ui" line="223"/>
         <source>Timeout</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/h2pref.ui" line="227"/>
+        <location filename="../wnd/ui/h2pref.ui" line="230"/>
         <source>Tick</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/h2pref.ui" line="263"/>
+        <location filename="../wnd/ui/h2pref.ui" line="266"/>
         <source>ZGap</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/h2pref.ui" line="312"/>
+        <location filename="../wnd/ui/h2pref.ui" line="315"/>
         <source>Zero Control</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/h2pref.ui" line="325"/>
+        <location filename="../wnd/ui/h2pref.ui" line="328"/>
         <source>Z</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/h2pref.ui" line="332"/>
+        <location filename="../wnd/ui/h2pref.ui" line="335"/>
         <source>Y</source>
         <translation type="unfinished">是</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/h2pref.ui" line="339"/>
+        <location filename="../wnd/ui/h2pref.ui" line="342"/>
         <source>Home</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/h2pref.ui" line="318"/>
+        <location filename="../wnd/ui/h2pref.ui" line="321"/>
         <source>X</source>
         <translation type="unfinished"></translation>
     </message>
@@ -845,7 +858,13 @@
         <translation type="obsolete">無效軸連接</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/h2pref.cpp" line="220"/>
+        <location filename="../wnd/ui/h2pref.cpp" line="62"/>
+        <location filename="../wnd/ui/h2pref.cpp" line="71"/>
+        <source>Invalid link</source>
+        <translation type="unfinished">無效鏈接</translation>
+    </message>
+    <message>
+        <location filename="../wnd/ui/h2pref.cpp" line="255"/>
         <source>Invalid connection</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1025,11 +1044,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/ipconfig.ui" line="79"/>
-        <source>Distance(deg)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../wnd/ui/ipconfig.ui" line="109"/>
         <source>Suction</source>
         <translation type="unfinished"></translation>
@@ -1041,6 +1055,7 @@
         <translation type="unfinished">毫米</translation>
     </message>
     <message>
+        <location filename="../wnd/ui/ipconfig.ui" line="79"/>
         <location filename="../wnd/ui/ipconfig.ui" line="148"/>
         <location filename="../wnd/ui/ipconfig.ui" line="210"/>
         <source>Distance</source>
@@ -1099,8 +1114,12 @@
     </message>
     <message>
         <location filename="../wnd/ui/ippref.ui" line="121"/>
+        <source>Angle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Angle(deg)</source>
-        <translation type="unfinished">角度(deg)</translation>
+        <translation type="obsolete">角度(deg)</translation>
     </message>
     <message>
         <location filename="../wnd/ui/ippref.ui" line="151"/>
@@ -1357,6 +1376,19 @@
     </message>
 </context>
 <context>
+    <name>ImageEntity</name>
+    <message>
+        <location filename="../widget/imageentity.ui" line="14"/>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../widget/imageentity.ui" line="41"/>
+        <source>TextLabel</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>LRButton</name>
     <message>
         <location filename="../wnd/ui/lrbutton.ui" line="14"/>
@@ -1377,6 +1409,24 @@
     <message>
         <location filename="../wnd/ui/lrbutton.ui" line="119"/>
         <source>P Step</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>LogIn</name>
+    <message>
+        <location filename="../wnd/ui/login.ui" line="14"/>
+        <source>LogIn</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../wnd/ui/login.ui" line="42"/>
+        <source>Operator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../wnd/ui/login.ui" line="51"/>
+        <source>Administrator</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1426,426 +1476,441 @@
         <translation type="unfinished">新建(&amp;N)</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="156"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="157"/>
         <source>Device(&amp;D)</source>
         <translation type="unfinished">設備(&amp;D)</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="169"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="170"/>
         <source>Help(&amp;H)</source>
         <translation type="unfinished">幫助(&amp;H)</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="181"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="182"/>
         <source>View(&amp;V)</source>
         <translation type="unfinished">視圖(&amp;V)</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="188"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="189"/>
         <source>Language</source>
         <translation type="unfinished">語言</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="200"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="207"/>
         <source>Control(&amp;C)</source>
         <translation type="unfinished">控制(&amp;C)</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="211"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="218"/>
         <source>Tool(&amp;T)</source>
         <translation type="unfinished">工具(&amp;T)</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="215"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="222"/>
         <source>Plugin</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="243"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="250"/>
         <source>About(A)...</source>
         <translation type="unfinished">關於(A)...</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="246"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="253"/>
         <source>About</source>
         <translation type="unfinished">關於</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="255"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="262"/>
         <source>Reset(&amp;R)</source>
         <translation type="unfinished">復位(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="258"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="265"/>
         <source>Reset</source>
         <translation type="unfinished">復位</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="261"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="268"/>
         <source>Ctrl+D</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="270"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="277"/>
         <source>Force Stop(&amp;F)</source>
         <translation type="unfinished">立即停止(&amp;F)</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="273"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="280"/>
         <source>Force Stop</source>
         <translation type="unfinished">立即停止</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="276"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="283"/>
         <source>Shift+F5</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="285"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="292"/>
         <source>Open(O)...</source>
         <translation type="unfinished">打開(O)...</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="288"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="295"/>
         <source>Open</source>
         <translation type="unfinished">打開</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="291"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="298"/>
         <source>Ctrl+O</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="300"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="307"/>
         <source>Save(&amp;S)</source>
         <translation type="unfinished">存儲(&amp;S)</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="303"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="310"/>
         <source>Save</source>
         <translation type="unfinished">存儲</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="306"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="313"/>
         <source>Ctrl+S</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="315"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="322"/>
         <source>Save As...</source>
         <translation type="unfinished">存儲為...</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="318"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="325"/>
         <source>Ctrl+Shift+S</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="327"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="334"/>
         <source>Exit</source>
         <translation type="unfinished">退出</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="330"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="337"/>
         <source>Alt+X</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="339"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="346"/>
         <source>Attribute(&amp;A)...</source>
         <translation type="unfinished">屬性(&amp;A)...</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="342"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="349"/>
         <source>Attribute</source>
         <translation type="unfinished">屬性</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="345"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="352"/>
         <source>Alt+F7</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="354"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="361"/>
         <source>Save Prj</source>
         <translation type="unfinished">存儲工程</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="363"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="370"/>
         <source>Save Prj As...</source>
         <translation type="unfinished">存儲工程為...</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="372"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="379"/>
         <source>Open Prj...</source>
         <translation type="unfinished">打開工程...</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="381"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="388"/>
         <source>Import(&amp;I)...</source>
         <translation type="unfinished">導入(&amp;I)...</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="384"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="391"/>
         <source>Import</source>
         <translation type="unfinished">導入</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="393"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="400"/>
         <source>Save All(&amp;A)</source>
         <translation type="unfinished">全部存儲(&amp;A)</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="396"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="403"/>
         <source>Save All</source>
         <translation type="unfinished">全部存儲</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="408"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="415"/>
         <source>Spy(&amp;S)...</source>
         <translation type="unfinished">監視(&amp;S)...</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="411"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="418"/>
         <source>Spy</source>
         <translation type="unfinished">監視</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="423"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="430"/>
         <source>Event(&amp;E)...</source>
         <translation type="unfinished">事件(&amp;E)...</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="426"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="433"/>
         <source>Event</source>
         <translation type="unfinished">實踐</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="438"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="445"/>
         <source>Windows(W)...</source>
         <translation type="unfinished">窗口(W)...</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="441"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="448"/>
         <source>Windows</source>
         <translation type="unfinished">窗口</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="450"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="457"/>
         <source>Motion...</source>
         <translation type="unfinished">運動...</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="453"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="460"/>
         <source>Ctrl+N</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="462"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="469"/>
         <source>PVT</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="471"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="478"/>
         <source>Scene</source>
         <translation type="unfinished">場景</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="480"/>
-        <location filename="../wnd/ui/mainwindow.cpp" line="76"/>
-        <location filename="../wnd/ui/mainwindow.cpp" line="84"/>
-        <location filename="../wnd/ui/mainwindow.cpp" line="246"/>
-        <location filename="../wnd/ui/mainwindow.cpp" line="283"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="487"/>
+        <location filename="../wnd/ui/mainwindow.cpp" line="77"/>
+        <location filename="../wnd/ui/mainwindow.cpp" line="85"/>
+        <location filename="../wnd/ui/mainwindow.cpp" line="259"/>
+        <location filename="../wnd/ui/mainwindow.cpp" line="296"/>
         <source>Project</source>
         <translation type="unfinished">工程</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="489"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="496"/>
         <source>Document(&amp;D)...</source>
         <translation type="unfinished">檔案(&amp;D)...</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="492"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="499"/>
         <source>Document</source>
         <translation type="unfinished">檔案</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="501"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="508"/>
         <source>Angle(&amp;A)...</source>
         <translation type="unfinished">角度(&amp;A)...</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="510"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="517"/>
         <source>Distance(D)...</source>
         <translation type="unfinished">距離(D)...</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="519"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="526"/>
         <source>Motor Panel(&amp;M)...</source>
         <translation type="unfinished">電機面板(&amp;M)...</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="527"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="534"/>
         <source>test</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="536"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="543"/>
         <source>Package...</source>
         <translation type="unfinished">包...</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="545"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="552"/>
         <source>Camera...</source>
         <translation type="unfinished">攝像機...</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="555"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="562"/>
         <source>Close All</source>
         <translation type="unfinished">全部關閉</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="558"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="565"/>
         <source>Ctrl+Shift+W</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="567"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="574"/>
         <source>Example...</source>
         <translation type="unfinished">例程式...</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="576"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="583"/>
         <source>PT</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="585"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="592"/>
         <source>Inverse Gap Scan</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="594"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="601"/>
         <source>Torque View</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="603"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="610"/>
         <source>DataSet...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="612"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="619"/>
         <source>ReadMe...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="624"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="631"/>
         <source>Run</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="627"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="634"/>
         <source>Run Script</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="633"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="640"/>
         <source>Ctrl+R</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="645"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="652"/>
         <source>Terminate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="648"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="655"/>
         <source>Terminate the script</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="654"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="661"/>
         <source>Ctrl+T</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="664"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="671"/>
         <source>Console...</source>
         <translation type="unfinished">終端...</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="673"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="680"/>
         <source>App...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="682"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="689"/>
         <source>Stop(&amp;S)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="685"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="692"/>
         <source>Stop without port closing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="694"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="701"/>
         <source>Errant...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="703"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="710"/>
         <source>Close Prj</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="711"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="723"/>
         <source>English</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="719"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="736"/>
         <source>Chinese</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.ui" line="727"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="749"/>
         <source>Traditional Chinese</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.cpp" line="77"/>
-        <location filename="../wnd/ui/mainwindow.cpp" line="252"/>
-        <location filename="../wnd/ui/mainwindow.cpp" line="295"/>
-        <location filename="../wnd/ui/mainwindow.cpp" line="353"/>
+        <location filename="../wnd/ui/mainwindow.ui" line="758"/>
+        <source>Graph</source>
+        <translation type="unfinished">圖示</translation>
+    </message>
+    <message>
+        <location filename="../wnd/ui/mainwindow.ui" line="770"/>
+        <source>Operator Library</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../wnd/ui/mainwindow.ui" line="773"/>
+        <source>Ctrl+K</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../wnd/ui/mainwindow.cpp" line="78"/>
+        <location filename="../wnd/ui/mainwindow.cpp" line="265"/>
+        <location filename="../wnd/ui/mainwindow.cpp" line="308"/>
+        <location filename="../wnd/ui/mainwindow.cpp" line="368"/>
         <source>Robot</source>
         <translation type="unfinished">機器人</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.cpp" line="78"/>
-        <location filename="../wnd/ui/mainwindow.cpp" line="86"/>
-        <location filename="../wnd/ui/mainwindow.cpp" line="258"/>
-        <location filename="../wnd/ui/mainwindow.cpp" line="307"/>
-        <location filename="../wnd/ui/mainwindow.cpp" line="347"/>
+        <location filename="../wnd/ui/mainwindow.cpp" line="79"/>
+        <location filename="../wnd/ui/mainwindow.cpp" line="87"/>
+        <location filename="../wnd/ui/mainwindow.cpp" line="271"/>
+        <location filename="../wnd/ui/mainwindow.cpp" line="320"/>
+        <location filename="../wnd/ui/mainwindow.cpp" line="362"/>
         <source>Device</source>
         <translation type="unfinished">設備</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.cpp" line="79"/>
-        <location filename="../wnd/ui/mainwindow.cpp" line="87"/>
-        <location filename="../wnd/ui/mainwindow.cpp" line="264"/>
-        <location filename="../wnd/ui/mainwindow.cpp" line="321"/>
+        <location filename="../wnd/ui/mainwindow.cpp" line="80"/>
+        <location filename="../wnd/ui/mainwindow.cpp" line="88"/>
+        <location filename="../wnd/ui/mainwindow.cpp" line="277"/>
+        <location filename="../wnd/ui/mainwindow.cpp" line="334"/>
         <source>Log</source>
         <translation type="unfinished">記錄</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.cpp" line="85"/>
+        <location filename="../wnd/ui/mainwindow.cpp" line="86"/>
         <source>Robo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.cpp" line="359"/>
+        <location filename="../wnd/ui/mainwindow.cpp" line="386"/>
         <source>Quick</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1854,33 +1919,43 @@
         <translation type="obsolete">狀態</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.cpp" line="758"/>
+        <location filename="../wnd/ui/mainwindow.cpp" line="393"/>
+        <source>STOP</source>
+        <translation type="unfinished">停止</translation>
+    </message>
+    <message>
+        <location filename="../wnd/ui/mainwindow.cpp" line="804"/>
         <source>not exist</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.cpp" line="1154"/>
+        <location filename="../wnd/ui/mainwindow.cpp" line="1202"/>
         <source>Device setting has not been updated, upload now?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.cpp" line="1649"/>
+        <location filename="../wnd/ui/mainwindow.cpp" line="1710"/>
         <source>Invalid cmd</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.cpp" line="1657"/>
+        <location filename="../wnd/ui/mainwindow.cpp" line="1718"/>
         <source>Invalid cmd: format</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.cpp" line="1664"/>
+        <location filename="../wnd/ui/mainwindow.cpp" line="1725"/>
         <source>Invalid cmd: device name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.cpp" line="1726"/>
+        <location filename="../wnd/ui/mainwindow.cpp" line="1787"/>
         <source>script complted</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../wnd/ui/mainwindow.cpp" line="1884"/>
+        <source>Op lib load fail</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1892,17 +1967,17 @@
         <translation type="obsolete">MRX-T4 角度報警</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.cpp" line="790"/>
+        <location filename="../wnd/ui/mainwindow.cpp" line="836"/>
         <source>Setting may has been changed without apply, confirm to close?</source>
         <translation type="unfinished">更改的設置還沒有應用，確認關閉?</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.cpp" line="947"/>
+        <location filename="../wnd/ui/mainwindow.cpp" line="995"/>
         <source>samples cleared!</source>
         <translation type="unfinished">清除採樣數據!</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.cpp" line="1153"/>
+        <location filename="../wnd/ui/mainwindow.cpp" line="1201"/>
         <source>Info</source>
         <translation type="unfinished">信息</translation>
     </message>
@@ -1911,39 +1986,40 @@
         <translation type="obsolete">設備設置還沒有上傳</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.cpp" line="1530"/>
+        <location filename="../wnd/ui/mainwindow.cpp" line="1591"/>
         <source>Angle</source>
         <translation type="unfinished">角度</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.cpp" line="1533"/>
+        <location filename="../wnd/ui/mainwindow.cpp" line="1594"/>
         <source>Increase Angle</source>
         <translation type="unfinished">增量型</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.cpp" line="1534"/>
+        <location filename="../wnd/ui/mainwindow.cpp" line="1595"/>
         <source>Absolute Angle</source>
         <translation type="unfinished">絕對值型</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.cpp" line="1557"/>
+        <location filename="../wnd/ui/mainwindow.cpp" line="1618"/>
         <source>Distance</source>
         <translation type="unfinished">距離</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow_menu_slot.cpp" line="58"/>
-        <location filename="../wnd/ui/mainwindow_menu_slot.cpp" line="354"/>
-        <location filename="../wnd/ui/mainwindow_menu_slot.cpp" line="377"/>
+        <location filename="../wnd/ui/mainwindow_menu_slot.cpp" line="62"/>
+        <location filename="../wnd/ui/mainwindow_menu_slot.cpp" line="371"/>
+        <location filename="../wnd/ui/mainwindow_menu_slot.cpp" line="394"/>
         <source>prj file (*.prj)</source>
         <translation type="unfinished">工程 (*.prj)</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow_menu_slot.cpp" line="79"/>
+        <location filename="../wnd/ui/mainwindow_menu_slot.cpp" line="83"/>
+        <location filename="../wnd/ui/mainwindow_menu_slot.cpp" line="532"/>
         <source>mrp file (*.mrp)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow_menu_slot.cpp" line="88"/>
+        <location filename="../wnd/ui/mainwindow_menu_slot.cpp" line="92"/>
         <source>fail</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1952,18 +2028,13 @@
         <translation type="obsolete">保存中...</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow_menu_slot.cpp" line="453"/>
+        <location filename="../wnd/ui/mainwindow_menu_slot.cpp" line="469"/>
         <source>save complted</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow_menu_slot.cpp" line="455"/>
+        <location filename="../wnd/ui/mainwindow_menu_slot.cpp" line="471"/>
         <source>save failed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../wnd/ui/mainwindow_menu_slot.cpp" line="514"/>
-        <source>mrp file (*.mrp);;pvt file (*.pvt);;pt file (*.pt);;setup file (*.stp);;scene file (*.sce)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1971,38 +2042,60 @@
         <translation type="obsolete">運動文件 (*.mc)</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow_menu_slot.cpp" line="555"/>
+        <location filename="../wnd/ui/mainwindow_menu_slot.cpp" line="533"/>
+        <location filename="../wnd/ui/mainwindow_menu_slot.cpp" line="576"/>
         <source>pvt file (*.pvt)</source>
         <translation type="unfinished">電機 (*.pvt)</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow_menu_slot.cpp" line="590"/>
+        <location filename="../wnd/ui/mainwindow_menu_slot.cpp" line="534"/>
+        <location filename="../wnd/ui/mainwindow_menu_slot.cpp" line="611"/>
         <source>pt file (*.pt)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow_menu_slot.cpp" line="626"/>
+        <location filename="../wnd/ui/mainwindow_menu_slot.cpp" line="535"/>
+        <source>scene (*.sce)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../wnd/ui/mainwindow_menu_slot.cpp" line="536"/>
+        <source>python (*.py)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../wnd/ui/mainwindow_menu_slot.cpp" line="537"/>
+        <source>mrg (*.mrg)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../wnd/ui/mainwindow_menu_slot.cpp" line="647"/>
         <source>scene file (*.sce)</source>
         <translation type="unfinished">場景 (*.sce)</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.cpp" line="1737"/>
-        <location filename="../wnd/ui/mainwindow_menu_slot.cpp" line="799"/>
+        <location filename="../wnd/ui/mainwindow_menu_slot.cpp" line="686"/>
+        <source>graph file (*.mrg)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../wnd/ui/mainwindow.cpp" line="1798"/>
+        <location filename="../wnd/ui/mainwindow_menu_slot.cpp" line="857"/>
         <source>started</source>
         <translation type="unfinished">開始</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.cpp" line="1748"/>
+        <location filename="../wnd/ui/mainwindow.cpp" line="1809"/>
         <source>downloading</source>
         <translation type="unfinished">下載中</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.cpp" line="1760"/>
+        <location filename="../wnd/ui/mainwindow.cpp" line="1821"/>
         <source>Terminated</source>
         <translation type="unfinished">中止</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mainwindow.cpp" line="1766"/>
+        <location filename="../wnd/ui/mainwindow.cpp" line="1827"/>
         <source>Download canceled</source>
         <translation type="unfinished">下載被中止</translation>
     </message>
@@ -2227,7 +2320,7 @@
         <translation type="unfinished">本體回零</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/motorpref.cpp" line="141"/>
+        <location filename="../wnd/ui/motorpref.cpp" line="144"/>
         <source>Invalid conection</source>
         <translation type="unfinished">無效軸連接</translation>
     </message>
@@ -3310,17 +3403,17 @@
 <context>
     <name>MrvProp</name>
     <message>
-        <location filename="../wnd/ui/mrvprop.cpp" line="67"/>
+        <location filename="../wnd/ui/mrvprop.cpp" line="86"/>
         <source>Confirm</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrvprop.cpp" line="68"/>
+        <location filename="../wnd/ui/mrvprop.cpp" line="87"/>
         <source>Confirm to reset</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrvprop.cpp" line="225"/>
+        <location filename="../wnd/ui/mrvprop.cpp" line="246"/>
         <source>Begin apply</source>
         <translation type="unfinished">開始應用</translation>
     </message>
@@ -3670,6 +3763,14 @@
     <message>
         <location filename="../wnd/ui/notice.ui" line="42"/>
         <source>Show again</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>OperatorLib</name>
+    <message>
+        <location filename="../wnd/ui/operatorlib.ui" line="14"/>
+        <source>Operator</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4040,11 +4141,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../model/sinanjumotionitem.cpp" line="37"/>
-        <source>h(mm)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../model/sinanjumotionitem.cpp" line="39"/>
         <source>Interp</source>
         <translation type="unfinished">插補</translation>
@@ -4052,11 +4148,6 @@
     <message>
         <location filename="../model/tpvitem.cpp" line="25"/>
         <source>p(%1)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../model/tpvitem.cpp" line="27"/>
-        <source>v</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -4106,8 +4197,7 @@
     </message>
     <message>
         <location filename="../wnd/main.cpp" line="37"/>
-        <location filename="../wnd/main.cpp" line="106"/>
-        <location filename="../wnd/ui/mainwindow_menu_slot.cpp" line="341"/>
+        <location filename="../wnd/ui/mainwindow_menu_slot.cpp" line="358"/>
         <source>Info</source>
         <translation type="unfinished">信息</translation>
     </message>
@@ -4117,8 +4207,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/main.cpp" line="107"/>
-        <location filename="../wnd/ui/mainwindow_menu_slot.cpp" line="342"/>
+        <location filename="../wnd/ui/mainwindow_menu_slot.cpp" line="359"/>
         <source>language loss</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4128,6 +4217,19 @@
     <message>
         <location filename="../wnd/ui/quicktool.ui" line="14"/>
         <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>RectEntity</name>
+    <message>
+        <location filename="../widget/rectentity.ui" line="14"/>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../widget/rectentity.ui" line="41"/>
+        <source>TextLabel</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4291,6 +4393,34 @@
         <location filename="../wnd/ui/robodesc.ui" line="20"/>
         <source>Description</source>
         <translation type="unfinished">技術參數</translation>
+    </message>
+</context>
+<context>
+    <name>RoboGraph</name>
+    <message>
+        <location filename="../wnd/ui/robograph.ui" line="17"/>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../wnd/ui/robograph.ui" line="65"/>
+        <source>Gen</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../wnd/ui/robograph.ui" line="72"/>
+        <source>Run</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../wnd/ui/robograph.ui" line="79"/>
+        <source>Stop</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../wnd/ui/robograph.cpp" line="563"/>
+        <source>No main found</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4747,27 +4877,29 @@
         <translation type="unfinished">小臂</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/sinanjupref.cpp" line="97"/>
-        <location filename="../wnd/ui/sinanjupref.cpp" line="139"/>
+        <location filename="../wnd/ui/sinanjupref.cpp" line="123"/>
+        <location filename="../wnd/ui/sinanjupref.cpp" line="165"/>
         <source>Invalid robot</source>
         <translation type="unfinished">無效機器人</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/sinanjupref.cpp" line="211"/>
-        <location filename="../wnd/ui/sinanjupref.cpp" line="239"/>
-        <location filename="../wnd/ui/sinanjupref.cpp" line="260"/>
-        <location filename="../wnd/ui/sinanjupref.cpp" line="280"/>
-        <location filename="../wnd/ui/sinanjupref.cpp" line="324"/>
+        <location filename="../wnd/ui/sinanjupref.cpp" line="82"/>
+        <location filename="../wnd/ui/sinanjupref.cpp" line="91"/>
+        <location filename="../wnd/ui/sinanjupref.cpp" line="247"/>
+        <location filename="../wnd/ui/sinanjupref.cpp" line="275"/>
+        <location filename="../wnd/ui/sinanjupref.cpp" line="296"/>
+        <location filename="../wnd/ui/sinanjupref.cpp" line="316"/>
+        <location filename="../wnd/ui/sinanjupref.cpp" line="370"/>
         <source>Invalid link</source>
         <translation type="unfinished">無效鏈接</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/sinanjupref.cpp" line="288"/>
+        <location filename="../wnd/ui/sinanjupref.cpp" line="324"/>
         <source>Error</source>
         <translation type="unfinished">錯誤</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/sinanjupref.cpp" line="288"/>
+        <location filename="../wnd/ui/sinanjupref.cpp" line="324"/>
         <source>Zero in device is invalid</source>
         <translation type="unfinished">設備中的零位值無效</translation>
     </message>
@@ -4797,130 +4929,130 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/t4panel.ui" line="94"/>
-        <location filename="../wnd/ui/t4panel.ui" line="340"/>
+        <location filename="../wnd/ui/t4panel.ui" line="448"/>
+        <location filename="../wnd/ui/t4panel.ui" line="612"/>
         <source>Smart Add</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/t4panel.ui" line="97"/>
+        <location filename="../wnd/ui/t4panel.ui" line="451"/>
         <source>PushButton</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/t4panel.ui" line="114"/>
+        <location filename="../wnd/ui/t4panel.ui" line="85"/>
         <source>ms</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/t4panel.ui" line="130"/>
+        <location filename="../wnd/ui/t4panel.ui" line="101"/>
         <source>ON/OFF</source>
         <translation type="unfinished">開關</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/t4panel.ui" line="139"/>
+        <location filename="../wnd/ui/t4panel.ui" line="110"/>
         <source>X:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/t4panel.ui" line="153"/>
+        <location filename="../wnd/ui/t4panel.ui" line="124"/>
         <source>Y:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/t4panel.ui" line="167"/>
+        <location filename="../wnd/ui/t4panel.ui" line="138"/>
         <source>Z:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/t4panel.ui" line="239"/>
-        <location filename="../wnd/ui/t4panel.ui" line="680"/>
+        <location filename="../wnd/ui/t4panel.ui" line="228"/>
+        <location filename="../wnd/ui/t4panel.ui" line="671"/>
         <source>t</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/t4panel.ui" line="246"/>
-        <location filename="../wnd/ui/t4panel.ui" line="687"/>
+        <location filename="../wnd/ui/t4panel.ui" line="235"/>
+        <location filename="../wnd/ui/t4panel.ui" line="678"/>
         <source>s</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/t4panel.ui" line="265"/>
+        <location filename="../wnd/ui/t4panel.ui" line="713"/>
         <source>X</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/t4panel.ui" line="288"/>
+        <location filename="../wnd/ui/t4panel.ui" line="720"/>
         <source>Y</source>
         <translation type="unfinished">是</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/t4panel.ui" line="308"/>
+        <location filename="../wnd/ui/t4panel.ui" line="740"/>
         <source>Z</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/t4panel.ui" line="343"/>
+        <location filename="../wnd/ui/t4panel.ui" line="615"/>
         <source>Mark</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/t4panel.ui" line="366"/>
+        <location filename="../wnd/ui/t4panel.ui" line="651"/>
         <source>Go</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/t4panel.ui" line="369"/>
+        <location filename="../wnd/ui/t4panel.ui" line="654"/>
         <source>GO</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/t4panel.ui" line="449"/>
-        <location filename="../wnd/ui/t4panel.ui" line="478"/>
+        <location filename="../wnd/ui/t4panel.ui" line="416"/>
+        <location filename="../wnd/ui/t4panel.ui" line="474"/>
         <source>Step Z</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/t4panel.ui" line="455"/>
-        <location filename="../wnd/ui/t4panel.ui" line="481"/>
-        <location filename="../wnd/ui/t4panel.ui" line="507"/>
-        <location filename="../wnd/ui/t4panel.ui" line="536"/>
-        <location filename="../wnd/ui/t4panel.ui" line="562"/>
-        <location filename="../wnd/ui/t4panel.ui" line="588"/>
-        <location filename="../wnd/ui/t4panel.ui" line="614"/>
+        <location filename="../wnd/ui/t4panel.ui" line="322"/>
+        <location filename="../wnd/ui/t4panel.ui" line="348"/>
+        <location filename="../wnd/ui/t4panel.ui" line="393"/>
+        <location filename="../wnd/ui/t4panel.ui" line="422"/>
+        <location filename="../wnd/ui/t4panel.ui" line="477"/>
+        <location filename="../wnd/ui/t4panel.ui" line="503"/>
+        <location filename="../wnd/ui/t4panel.ui" line="550"/>
         <source>...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/t4panel.ui" line="504"/>
+        <location filename="../wnd/ui/t4panel.ui" line="547"/>
         <source>Center</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/t4panel.ui" line="520"/>
+        <location filename="../wnd/ui/t4panel.ui" line="563"/>
         <source>Home</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/t4panel.ui" line="533"/>
-        <location filename="../wnd/ui/t4panel.ui" line="585"/>
+        <location filename="../wnd/ui/t4panel.ui" line="319"/>
+        <location filename="../wnd/ui/t4panel.ui" line="345"/>
         <source>Step Y</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/t4panel.ui" line="559"/>
-        <location filename="../wnd/ui/t4panel.ui" line="611"/>
+        <location filename="../wnd/ui/t4panel.ui" line="390"/>
+        <location filename="../wnd/ui/t4panel.ui" line="500"/>
         <source>Step X</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/t4panel.ui" line="659"/>
-        <location filename="../wnd/ui/t4panel.ui" line="703"/>
+        <location filename="../wnd/ui/t4panel.ui" line="207"/>
+        <location filename="../wnd/ui/t4panel.ui" line="251"/>
         <source>Step</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/t4panel.ui" line="710"/>
+        <location filename="../wnd/ui/t4panel.ui" line="258"/>
         <source>mm</source>
         <translation type="unfinished">毫米</translation>
     </message>
@@ -5045,28 +5177,28 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/tpedit.cpp" line="167"/>
+        <location filename="../wnd/ui/tpedit.cpp" line="171"/>
         <source>Invalid Device:%1 %2</source>
         <translation type="unfinished">無效設備:%1 %2</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/tpedit.cpp" line="205"/>
-        <location filename="../wnd/ui/tpedit.cpp" line="211"/>
+        <location filename="../wnd/ui/tpedit.cpp" line="209"/>
+        <location filename="../wnd/ui/tpedit.cpp" line="215"/>
         <source>Invalid dot</source>
         <translation type="unfinished">無效條目</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/tpedit.cpp" line="225"/>
+        <location filename="../wnd/ui/tpedit.cpp" line="229"/>
         <source>Invalid time at line </source>
         <translation type="unfinished">無效時間行 </translation>
     </message>
     <message>
-        <location filename="../wnd/ui/tpedit.cpp" line="267"/>
+        <location filename="../wnd/ui/tpedit.cpp" line="271"/>
         <source>t-p</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/tpedit.cpp" line="363"/>
+        <location filename="../wnd/ui/tpedit.cpp" line="367"/>
         <source>Line build completed</source>
         <translation type="unfinished">構建完成</translation>
     </message>
@@ -5133,56 +5265,6 @@
         <location filename="../wnd/ui/axesconnection.ui" line="114"/>
         <source>CH</source>
         <translation type="unfinished">通道</translation>
-    </message>
-    <message>
-        <location filename="../wnd/ui/axesconnection.ui" line="118"/>
-        <source>CH1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../wnd/ui/axesconnection.ui" line="123"/>
-        <source>CH2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../wnd/ui/axesconnection.ui" line="128"/>
-        <source>CH3</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../wnd/ui/axesconnection.ui" line="133"/>
-        <source>CH4</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../wnd/ui/axesconnection.ui" line="138"/>
-        <source>CH5</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../wnd/ui/axesconnection.ui" line="143"/>
-        <source>CH6</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../wnd/ui/axesconnection.ui" line="148"/>
-        <source>CH7</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../wnd/ui/axesconnection.ui" line="153"/>
-        <source>CH8</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../wnd/ui/axesconnection.ui" line="158"/>
-        <source>CH9</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../wnd/ui/axesconnection.ui" line="163"/>
-        <source>CH10</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -5482,180 +5564,180 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/devicemgr.ui" line="55"/>
+        <location filename="../wnd/ui/devicemgr.ui" line="61"/>
         <source>test</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/devicemgr.ui" line="89"/>
+        <location filename="../wnd/ui/devicemgr.ui" line="95"/>
         <source>State Chart</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/devicemgr.ui" line="103"/>
+        <location filename="../wnd/ui/devicemgr.ui" line="109"/>
         <source>Motor Status</source>
         <translation type="unfinished">電機狀態</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/devicemgr.ui" line="106"/>
+        <location filename="../wnd/ui/devicemgr.ui" line="112"/>
         <source>...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/devicemgr.ui" line="129"/>
-        <location filename="../wnd/ui/devicemgr.ui" line="132"/>
+        <location filename="../wnd/ui/devicemgr.ui" line="135"/>
+        <location filename="../wnd/ui/devicemgr.ui" line="138"/>
         <source>Refresh</source>
         <translation type="unfinished">刷新</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/devicemgr.cpp" line="89"/>
-        <location filename="../wnd/ui/devicemgr.cpp" line="122"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="104"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="138"/>
         <source>Export setup...</source>
         <translation type="unfinished">導出設置...</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/devicemgr.cpp" line="93"/>
-        <location filename="../wnd/ui/devicemgr.cpp" line="126"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="108"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="142"/>
         <source>Import setup...</source>
         <translation type="unfinished">導入設置...</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/devicemgr.cpp" line="98"/>
-        <location filename="../wnd/ui/devicemgr.cpp" line="131"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="113"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="147"/>
         <source>Upload from device</source>
         <translation type="unfinished">從設備讀取</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/devicemgr.cpp" line="103"/>
-        <location filename="../wnd/ui/devicemgr.cpp" line="136"/>
-        <location filename="../wnd/ui/devicemgr.cpp" line="186"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="118"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="152"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="200"/>
         <source>Alias...</source>
         <translation type="unfinished">別名...</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/devicemgr.cpp" line="108"/>
-        <location filename="../wnd/ui/devicemgr.cpp" line="141"/>
-        <location filename="../wnd/ui/devicemgr.cpp" line="166"/>
-        <location filename="../wnd/ui/devicemgr.cpp" line="191"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="123"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="157"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="179"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="205"/>
         <source>Console...</source>
         <translation type="unfinished">終端...</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/devicemgr.cpp" line="113"/>
-        <location filename="../wnd/ui/devicemgr.cpp" line="146"/>
-        <location filename="../wnd/ui/devicemgr.cpp" line="179"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="128"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="162"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="192"/>
         <source>Prop...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/devicemgr.cpp" line="153"/>
-        <location filename="../wnd/ui/devicemgr.cpp" line="175"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="170"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="188"/>
         <source>Panel...</source>
         <translation type="unfinished">面板...</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/devicemgr.cpp" line="171"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="184"/>
         <source>Joint...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/devicemgr.cpp" line="409"/>
-        <location filename="../wnd/ui/devicemgr.cpp" line="410"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="431"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="432"/>
         <source>begin search</source>
         <translation type="unfinished">搜索設備開始</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/devicemgr.cpp" line="418"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="440"/>
         <source>end search</source>
         <translation type="unfinished">搜索設備結束</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/devicemgr.cpp" line="443"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="465"/>
         <source>Begin load</source>
         <translation type="unfinished">開始上傳設置</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/devicemgr.cpp" line="446"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="468"/>
         <source>start upload</source>
         <translation type="unfinished">開始上傳</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/devicemgr.cpp" line="456"/>
-        <location filename="../wnd/ui/devicemgr.cpp" line="457"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="478"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="479"/>
         <source>upload fail</source>
         <translation type="unfinished">上傳失敗</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/devicemgr.cpp" line="461"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="483"/>
         <source>success</source>
         <translation type="unfinished">成功</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/devicemgr.cpp" line="462"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="484"/>
         <source>upload success</source>
         <translation type="unfinished">上傳成功</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/devicemgr.cpp" line="477"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="499"/>
         <source>load fail</source>
         <translation type="unfinished">加載失敗</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/devicemgr.cpp" line="481"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="503"/>
         <source>load success</source>
         <translation type="unfinished">加載成功</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/devicemgr.cpp" line="486"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="508"/>
         <source>apply fail</source>
         <translation type="unfinished">應用失敗</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/devicemgr.cpp" line="489"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="511"/>
         <source>apply success</source>
         <translation type="unfinished">應用成功</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/devicemgr.cpp" line="507"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="529"/>
         <source>Import fail</source>
         <translation type="unfinished">導入失敗</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/devicemgr.cpp" line="557"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="579"/>
         <source>Info</source>
         <translation type="unfinished">信息</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/devicemgr.cpp" line="557"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="579"/>
         <source>Busy now, please wait!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/devicemgr.cpp" line="603"/>
-        <location filename="../wnd/ui/devicemgr.cpp" line="624"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="625"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="646"/>
         <source>Device setup (*.stp)</source>
         <translation type="unfinished">設備設置 (*.stp)</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/devicemgr.cpp" line="616"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="638"/>
         <source>question</source>
         <translation type="unfinished">詢問</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/devicemgr.cpp" line="617"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="639"/>
         <source>Device setting has not been updated, sure to export?</source>
         <translation type="unfinished">設備設置沒有上傳，確定需要導出?</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/devicemgr.cpp" line="631"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="653"/>
         <source>save success</source>
         <translation type="unfinished">存儲成功</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/devicemgr.cpp" line="646"/>
-        <location filename="../wnd/ui/devicemgr.cpp" line="647"/>
-        <location filename="../wnd/ui/devicemgr.cpp" line="740"/>
-        <location filename="../wnd/ui/devicemgr.cpp" line="741"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="668"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="669"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="762"/>
+        <location filename="../wnd/ui/devicemgr.cpp" line="763"/>
         <source>Alias</source>
         <translation type="unfinished">別名</translation>
     </message>
@@ -5907,32 +5989,37 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/logout.ui" line="149"/>
+        <location filename="../wnd/ui/logout.ui" line="177"/>
         <source>Clear the logout</source>
         <translation type="unfinished">清除</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/logout.ui" line="152"/>
+        <location filename="../wnd/ui/logout.ui" line="180"/>
         <source>Clear</source>
         <translation type="unfinished">清除</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/logout.ui" line="169"/>
+        <location filename="../wnd/ui/logout.ui" line="251"/>
+        <source>...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../wnd/ui/logout.ui" line="157"/>
         <source>Export the logout</source>
         <translation type="unfinished">導出</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/logout.ui" line="172"/>
+        <location filename="../wnd/ui/logout.ui" line="160"/>
         <source>Export</source>
         <translation type="unfinished">導出</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/logout.ui" line="133"/>
+        <location filename="../wnd/ui/logout.ui" line="210"/>
         <source>Count</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/logout.ui" line="104"/>
+        <location filename="../wnd/ui/logout.ui" line="128"/>
         <source>Turn on/off the logout</source>
         <translation type="unfinished">開關記錄輸出</translation>
     </message>
@@ -5941,7 +6028,7 @@
         <translation type="obsolete">記錄輸出</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/logout.cpp" line="37"/>
+        <location filename="../wnd/ui/logout.cpp" line="38"/>
         <source>log file (*.txt )</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6290,12 +6377,12 @@
         <translation type="unfinished">機器人連接無效</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/motionedit_slot.cpp" line="137"/>
+        <location filename="../wnd/ui/motionedit_slot.cpp" line="138"/>
         <source>Invalid robot</source>
         <translation type="unfinished">機器人無效</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/motionedit_slot.cpp" line="145"/>
+        <location filename="../wnd/ui/motionedit_slot.cpp" line="146"/>
         <source>Compile fail</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6607,12 +6694,12 @@
 <context>
     <name>mrqAxes2</name>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.cpp" line="90"/>
+        <location filename="../wnd/ui/mrqaxes2.cpp" line="97"/>
         <source>Cubic</source>
         <translation type="unfinished">三階曲線</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.cpp" line="92"/>
+        <location filename="../wnd/ui/mrqaxes2.cpp" line="99"/>
         <source>S</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6625,7 +6712,7 @@
         <translation type="obsolete">S曲線</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.cpp" line="91"/>
+        <location filename="../wnd/ui/mrqaxes2.cpp" line="98"/>
         <source>Trapezoid</source>
         <translation type="unfinished">梯形曲線</translation>
     </message>
@@ -6638,62 +6725,62 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqinfo.cpp" line="63"/>
+        <location filename="../wnd/ui/mrqinfo.cpp" line="77"/>
         <source>Model</source>
         <translation type="unfinished">型號</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqinfo.cpp" line="64"/>
+        <location filename="../wnd/ui/mrqinfo.cpp" line="78"/>
         <source>Serial</source>
         <translation type="unfinished">序列號</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqinfo.cpp" line="65"/>
+        <location filename="../wnd/ui/mrqinfo.cpp" line="79"/>
         <source>Hardware version</source>
         <translation type="unfinished">硬件版本號</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqinfo.cpp" line="66"/>
+        <location filename="../wnd/ui/mrqinfo.cpp" line="80"/>
         <source>Software version</source>
         <translation type="unfinished">軟件版本號</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqinfo.cpp" line="68"/>
+        <location filename="../wnd/ui/mrqinfo.cpp" line="82"/>
         <source>Firmware version</source>
         <translation type="unfinished">固件版本號</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqinfo.cpp" line="69"/>
+        <location filename="../wnd/ui/mrqinfo.cpp" line="83"/>
         <source>Boot version</source>
         <translation type="unfinished">加載版本號</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqinfo.cpp" line="71"/>
+        <location filename="../wnd/ui/mrqinfo.cpp" line="85"/>
         <source>Send ID</source>
         <translation type="unfinished">發送ID</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqinfo.cpp" line="72"/>
+        <location filename="../wnd/ui/mrqinfo.cpp" line="86"/>
         <source>Receive ID</source>
         <translation type="unfinished">接收ID</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqinfo.cpp" line="73"/>
+        <location filename="../wnd/ui/mrqinfo.cpp" line="87"/>
         <source>Boradcast ID</source>
         <translation type="unfinished">廣播ID</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqinfo.cpp" line="74"/>
+        <location filename="../wnd/ui/mrqinfo.cpp" line="88"/>
         <source>Signature</source>
         <translation type="unfinished">數字簽名</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqinfo.cpp" line="75"/>
+        <location filename="../wnd/ui/mrqinfo.cpp" line="89"/>
         <source>Capacity</source>
         <translation type="unfinished">接收緩存</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqinfo.cpp" line="76"/>
+        <location filename="../wnd/ui/mrqinfo.cpp" line="90"/>
         <source>Buffer</source>
         <translation type="unfinished">數據緩存</translation>
     </message>
@@ -6936,14 +7023,13 @@
         <translation type="unfinished">應用</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqproperty.cpp" line="259"/>
+        <location filename="../wnd/ui/mrqproperty.cpp" line="286"/>
         <source>Info</source>
         <translation type="unfinished">信息</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqproperty.cpp" line="264"/>
         <source>Axes</source>
-        <translation type="unfinished">軸</translation>
+        <translation type="obsolete">軸</translation>
     </message>
     <message>
         <source>IO</source>
@@ -6954,43 +7040,43 @@
         <translation type="obsolete">傳感器</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqproperty.cpp" line="318"/>
+        <location filename="../wnd/ui/mrqproperty.cpp" line="347"/>
         <source>Alarm</source>
         <translation type="unfinished">報警</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqproperty.cpp" line="325"/>
+        <location filename="../wnd/ui/mrqproperty.cpp" line="355"/>
         <source>System</source>
         <translation type="unfinished">系統</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqproperty.cpp" line="84"/>
-        <location filename="../wnd/ui/mrqproperty.cpp" line="363"/>
+        <location filename="../wnd/ui/mrqproperty.cpp" line="103"/>
+        <location filename="../wnd/ui/mrqproperty.cpp" line="396"/>
         <source>Invalid device</source>
         <translation type="unfinished">無效設備</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqproperty.cpp" line="74"/>
+        <location filename="../wnd/ui/mrqproperty.cpp" line="93"/>
         <source>Confirm</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqproperty.cpp" line="75"/>
+        <location filename="../wnd/ui/mrqproperty.cpp" line="94"/>
         <source>Confirm to reset</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqproperty.cpp" line="291"/>
+        <location filename="../wnd/ui/mrqproperty.cpp" line="318"/>
         <source>Output</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqproperty.cpp" line="300"/>
+        <location filename="../wnd/ui/mrqproperty.cpp" line="328"/>
         <source>Input</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqproperty.cpp" line="392"/>
+        <location filename="../wnd/ui/mrqproperty.cpp" line="425"/>
         <source>Begin apply</source>
         <translation type="unfinished">開始應用</translation>
     </message>
@@ -7105,7 +7191,7 @@
         <translation type="obsolete">LED識別</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqsys.cpp" line="129"/>
+        <location filename="../wnd/ui/mrqsys.cpp" line="132"/>
         <source>Invalid name</source>
         <translation type="unfinished"></translation>
     </message>
@@ -7130,38 +7216,43 @@
         <translation type="obsolete">整定</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="217"/>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="179"/>
         <source>Time Duty</source>
         <translation type="unfinished">占空比</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="111"/>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="373"/>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="86"/>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="399"/>
         <source>Mode</source>
         <translation type="unfinished">模式</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="87"/>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="121"/>
         <source>PVT</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="174"/>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="163"/>
+        <source>warn point in fifo</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="190"/>
         <source>1/4</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="179"/>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="195"/>
         <source>1/8</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="184"/>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="200"/>
         <source>1/16</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="189"/>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="205"/>
         <source>1/32</source>
         <translation type="unfinished"></translation>
     </message>
@@ -7170,7 +7261,7 @@
         <translation type="obsolete">反饋比</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="163"/>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="149"/>
         <source>Plan Mode</source>
         <translation type="unfinished">規劃方式</translation>
     </message>
@@ -7191,7 +7282,7 @@
         <translation type="obsolete">弧度</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="419"/>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="445"/>
         <source>mm</source>
         <translation type="unfinished">毫米</translation>
     </message>
@@ -7200,17 +7291,17 @@
         <translation type="obsolete">位置</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="448"/>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="474"/>
         <source>Out of step</source>
         <translation type="unfinished">失步</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="511"/>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="537"/>
         <source>Line response</source>
         <translation type="unfinished">響應</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="465"/>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="491"/>
         <source>None</source>
         <translation type="unfinished">無</translation>
     </message>
@@ -7220,109 +7311,124 @@
         <translation type="unfinished">運動</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="92"/>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="126"/>
         <source>With Time LVT</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="97"/>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="131"/>
         <source>Without Time LVT</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="119"/>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="101"/>
         <source>CYCLE</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="124"/>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="106"/>
         <source>FIFO</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="135"/>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="93"/>
         <source>Warn Point</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="142"/>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="156"/>
         <source>End State</source>
         <translation type="unfinished">結束狀態</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="156"/>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="142"/>
         <source>Execute Mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="198"/>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="214"/>
         <source>STOP</source>
         <translation type="unfinished">停止</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="203"/>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="219"/>
         <source>HOLD</source>
         <translation type="unfinished">保持</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="224"/>
-        <source>Comp. P(deg)</source>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="227"/>
+        <source>FIFO Buffer Time</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="231"/>
-        <source>Comp. T(s)</source>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="234"/>
+        <source>Comp. T</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="238"/>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="387"/>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="241"/>
+        <source>Comp. P</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="248"/>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="413"/>
         <source>s</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="267"/>
-        <source>Slew Rate</source>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="274"/>
+        <source>fifo buffer time</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="286"/>
-        <source>Dec Scale</source>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="277"/>
+        <source>ms</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../wnd/ui/mrqaxes2.ui" line="293"/>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="319"/>
-        <source>%</source>
+        <source>Slew Rate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../wnd/ui/mrqaxes2.ui" line="312"/>
+        <source>Dec Scale</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="319"/>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="345"/>
+        <source>%</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="338"/>
         <source>Acc Scale</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="411"/>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="437"/>
         <source>Until End</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="470"/>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="496"/>
         <source>Alarm</source>
         <translation type="unfinished">報警</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="475"/>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="501"/>
         <source>Stop</source>
         <translation type="unfinished">停止</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="480"/>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="506"/>
         <source>Alarm | Stop</source>
         <translation type="unfinished">報警+停止</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="457"/>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="483"/>
         <source>Out of line</source>
         <translation type="unfinished">失步門限</translation>
     </message>
@@ -7331,27 +7437,27 @@
         <translation type="obsolete">開關</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="360"/>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="386"/>
         <source>Emergency Stop</source>
         <translation type="unfinished">急停</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="366"/>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="392"/>
         <source>Distance</source>
         <translation type="unfinished">距離</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="401"/>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="427"/>
         <source>Immediately</source>
         <translation type="unfinished">立即</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="406"/>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="432"/>
         <source>Delay</source>
         <translation type="unfinished">延遲</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrqaxes2.ui" line="380"/>
+        <location filename="../wnd/ui/mrqaxes2.ui" line="406"/>
         <source>Time</source>
         <translation type="unfinished">時間</translation>
     </message>
@@ -7364,47 +7470,47 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrvinfo.cpp" line="63"/>
+        <location filename="../wnd/ui/mrvinfo.cpp" line="77"/>
         <source>Model</source>
         <translation type="unfinished">型號</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrvinfo.cpp" line="64"/>
+        <location filename="../wnd/ui/mrvinfo.cpp" line="78"/>
         <source>Serial</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrvinfo.cpp" line="65"/>
+        <location filename="../wnd/ui/mrvinfo.cpp" line="79"/>
         <source>Hardware version</source>
         <translation type="unfinished">硬件版本號</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrvinfo.cpp" line="66"/>
+        <location filename="../wnd/ui/mrvinfo.cpp" line="80"/>
         <source>Software version</source>
         <translation type="unfinished">軟件版本號</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrvinfo.cpp" line="68"/>
+        <location filename="../wnd/ui/mrvinfo.cpp" line="82"/>
         <source>Boot version</source>
         <translation type="unfinished">加載版本號</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrvinfo.cpp" line="70"/>
+        <location filename="../wnd/ui/mrvinfo.cpp" line="84"/>
         <source>Send ID</source>
         <translation type="unfinished">發送ID</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrvinfo.cpp" line="71"/>
+        <location filename="../wnd/ui/mrvinfo.cpp" line="85"/>
         <source>Receive ID</source>
         <translation type="unfinished">接收ID</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrvinfo.cpp" line="72"/>
+        <location filename="../wnd/ui/mrvinfo.cpp" line="86"/>
         <source>Boradcast ID</source>
         <translation type="unfinished">廣播ID</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/mrvinfo.cpp" line="73"/>
+        <location filename="../wnd/ui/mrvinfo.cpp" line="87"/>
         <source>Signature</source>
         <translation type="unfinished">數字簽名</translation>
     </message>
@@ -7546,7 +7652,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/pvtedit.cpp" line="167"/>
+        <location filename="../wnd/ui/pvtedit.cpp" line="171"/>
         <source>Trapezoid</source>
         <translation type="unfinished">梯形</translation>
     </message>
@@ -7555,69 +7661,69 @@
         <translation type="obsolete">線性</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/pvtedit.cpp" line="166"/>
+        <location filename="../wnd/ui/pvtedit.cpp" line="170"/>
         <source>Cubic</source>
         <translation type="unfinished">三階</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/pvtedit.cpp" line="168"/>
+        <location filename="../wnd/ui/pvtedit.cpp" line="172"/>
         <source>S curve</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/pvtedit.cpp" line="211"/>
+        <location filename="../wnd/ui/pvtedit.cpp" line="215"/>
         <source>Invalid Device:%1 %2</source>
         <translation type="unfinished">無效設備:%1 %2</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/pvtedit.cpp" line="337"/>
+        <location filename="../wnd/ui/pvtedit.cpp" line="341"/>
         <source>start fail</source>
         <translation type="unfinished">啟動失敗</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/pvtedit.cpp" line="416"/>
-        <location filename="../wnd/ui/pvtedit.cpp" line="422"/>
+        <location filename="../wnd/ui/pvtedit.cpp" line="420"/>
+        <location filename="../wnd/ui/pvtedit.cpp" line="426"/>
         <source>Invalid dot</source>
         <translation type="unfinished">無效條目</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/pvtedit.cpp" line="437"/>
+        <location filename="../wnd/ui/pvtedit.cpp" line="441"/>
         <source>Invalid time at line </source>
         <translation type="unfinished">無效時間行 </translation>
     </message>
     <message>
-        <location filename="../wnd/ui/pvtedit.cpp" line="504"/>
+        <location filename="../wnd/ui/pvtedit.cpp" line="511"/>
         <source>build fail</source>
         <translation type="unfinished">構建失敗</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/pvtedit.cpp" line="525"/>
+        <location filename="../wnd/ui/pvtedit.cpp" line="535"/>
         <source>t-p</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/pvtedit.cpp" line="526"/>
+        <location filename="../wnd/ui/pvtedit.cpp" line="536"/>
         <source>t-v</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/pvtedit.cpp" line="590"/>
-        <location filename="../wnd/ui/pvtedit.cpp" line="607"/>
+        <location filename="../wnd/ui/pvtedit.cpp" line="603"/>
+        <location filename="../wnd/ui/pvtedit.cpp" line="622"/>
         <source>Line build completed</source>
         <translation type="unfinished">構建完成</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/pvtedit.cpp" line="599"/>
+        <location filename="../wnd/ui/pvtedit.cpp" line="611"/>
         <source>Invalid CH</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/pvtedit.cpp" line="612"/>
+        <location filename="../wnd/ui/pvtedit.cpp" line="626"/>
         <source>Fail</source>
         <translation type="unfinished">失敗</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/pvtedit.cpp" line="612"/>
+        <location filename="../wnd/ui/pvtedit.cpp" line="626"/>
         <source>Build Fail</source>
         <translation type="unfinished">構建失敗</translation>
     </message>
@@ -7686,43 +7792,44 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/querymgr.cpp" line="113"/>
+        <location filename="../wnd/ui/querymgr.cpp" line="43"/>
+        <location filename="../wnd/ui/querymgr.cpp" line="117"/>
         <source>Data...</source>
         <translation type="unfinished">數據...</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/querymgr.cpp" line="126"/>
+        <location filename="../wnd/ui/querymgr.cpp" line="130"/>
         <source>TORQUE</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/querymgr.cpp" line="126"/>
+        <location filename="../wnd/ui/querymgr.cpp" line="130"/>
         <source>CYCLE</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/querymgr.cpp" line="127"/>
+        <location filename="../wnd/ui/querymgr.cpp" line="131"/>
         <source>SGALL</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/querymgr.cpp" line="127"/>
+        <location filename="../wnd/ui/querymgr.cpp" line="131"/>
         <source>SGSE</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/querymgr.cpp" line="128"/>
+        <location filename="../wnd/ui/querymgr.cpp" line="132"/>
         <source>DIST</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/querymgr.cpp" line="128"/>
+        <location filename="../wnd/ui/querymgr.cpp" line="132"/>
         <source>ABSENC</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/querymgr.cpp" line="280"/>
-        <location filename="../wnd/ui/querymgr.cpp" line="299"/>
+        <location filename="../wnd/ui/querymgr.cpp" line="284"/>
+        <location filename="../wnd/ui/querymgr.cpp" line="303"/>
         <source>spy config (*.spy)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -7910,11 +8017,6 @@
         <source>Robot</source>
         <translation type="unfinished">機器人</translation>
     </message>
-    <message>
-        <location filename="../wnd/ui/roboconnection.ui" line="70"/>
-        <source>c</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>roboInfo</name>
@@ -7924,17 +8026,17 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/roboinfo.cpp" line="61"/>
+        <location filename="../wnd/ui/roboinfo.cpp" line="75"/>
         <source>Model</source>
         <translation type="unfinished">型號</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/roboinfo.cpp" line="62"/>
+        <location filename="../wnd/ui/roboinfo.cpp" line="76"/>
         <source>Axes</source>
         <translation type="unfinished">關節</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/roboinfo.cpp" line="63"/>
+        <location filename="../wnd/ui/roboinfo.cpp" line="77"/>
         <source>Id</source>
         <translation type="unfinished">標記</translation>
     </message>
@@ -7950,56 +8052,71 @@
 <context>
     <name>roboProp</name>
     <message>
-        <location filename="../wnd/ui/roboprop.cpp" line="135"/>
+        <location filename="../wnd/ui/roboprop.cpp" line="154"/>
         <source>Info</source>
         <translation type="unfinished">信息</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/roboprop.cpp" line="136"/>
+        <location filename="../wnd/ui/roboprop.cpp" line="155"/>
         <source>Detail</source>
         <translation type="unfinished">詳細信息</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/roboprop.cpp" line="140"/>
-        <location filename="../wnd/ui/roboprop.cpp" line="142"/>
+        <location filename="../wnd/ui/roboprop.cpp" line="160"/>
+        <location filename="../wnd/ui/roboprop.cpp" line="164"/>
         <source>Option</source>
         <translation type="unfinished">選項</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/roboprop.cpp" line="147"/>
-        <location filename="../wnd/ui/roboprop.cpp" line="152"/>
-        <location filename="../wnd/ui/roboprop.cpp" line="162"/>
         <location filename="../wnd/ui/roboprop.cpp" line="170"/>
         <location filename="../wnd/ui/roboprop.cpp" line="175"/>
-        <location filename="../wnd/ui/roboprop.cpp" line="190"/>
+        <location filename="../wnd/ui/roboprop.cpp" line="185"/>
+        <location filename="../wnd/ui/roboprop.cpp" line="193"/>
+        <location filename="../wnd/ui/roboprop.cpp" line="198"/>
+        <location filename="../wnd/ui/roboprop.cpp" line="213"/>
         <source>Zero</source>
         <translation type="unfinished">零位</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/roboprop.cpp" line="148"/>
-        <location filename="../wnd/ui/roboprop.cpp" line="163"/>
         <location filename="../wnd/ui/roboprop.cpp" line="171"/>
-        <location filename="../wnd/ui/roboprop.cpp" line="181"/>
-        <location filename="../wnd/ui/roboprop.cpp" line="185"/>
-        <location filename="../wnd/ui/roboprop.cpp" line="191"/>
+        <location filename="../wnd/ui/roboprop.cpp" line="186"/>
+        <location filename="../wnd/ui/roboprop.cpp" line="194"/>
+        <location filename="../wnd/ui/roboprop.cpp" line="204"/>
+        <location filename="../wnd/ui/roboprop.cpp" line="208"/>
+        <location filename="../wnd/ui/roboprop.cpp" line="214"/>
         <source>Pref</source>
         <translation type="unfinished">屬性</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/roboprop.cpp" line="160"/>
-        <location filename="../wnd/ui/roboprop.cpp" line="167"/>
+        <location filename="../wnd/ui/roboprop.cpp" line="183"/>
+        <location filename="../wnd/ui/roboprop.cpp" line="190"/>
         <source>Icon</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/roboprop.cpp" line="186"/>
+        <location filename="../wnd/ui/roboprop.cpp" line="209"/>
         <source>Config</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/roboprop.cpp" line="264"/>
+        <location filename="../wnd/ui/roboprop.cpp" line="295"/>
         <source>Begin apply</source>
         <translation type="unfinished">開始應用</translation>
+    </message>
+    <message>
+        <location filename="../wnd/ui/roboprop.cpp" line="352"/>
+        <source>Begin reset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../wnd/ui/roboprop.cpp" line="430"/>
+        <source>Confirm</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../wnd/ui/roboprop.cpp" line="431"/>
+        <source>Confirm to reset</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -8010,32 +8127,35 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/roboscene.cpp" line="223"/>
+        <location filename="../wnd/ui/roboscene.cpp" line="228"/>
         <source>Warning</source>
         <translation type="unfinished">警告</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/roboscene.cpp" line="223"/>
+        <location filename="../wnd/ui/roboscene.cpp" line="228"/>
         <source>Name Inavlid</source>
         <translation type="unfinished">名稱無效</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/roboscene.cpp" line="435"/>
+        <location filename="../wnd/ui/roboscene.cpp" line="440"/>
         <source>loaded!</source>
         <translation type="unfinished">已加載!</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/roboscene.cpp" line="516"/>
+        <location filename="../wnd/ui/roboscene.cpp" line="41"/>
+        <location filename="../wnd/ui/roboscene.cpp" line="521"/>
         <source>Delete</source>
         <translation type="unfinished">刪除</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/roboscene.cpp" line="519"/>
+        <location filename="../wnd/ui/roboscene.cpp" line="42"/>
+        <location filename="../wnd/ui/roboscene.cpp" line="524"/>
         <source>Option...</source>
         <translation type="unfinished">選項...</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/roboscene.cpp" line="523"/>
+        <location filename="../wnd/ui/roboscene.cpp" line="43"/>
+        <location filename="../wnd/ui/roboscene.cpp" line="528"/>
         <source>New mrp...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -8069,63 +8189,81 @@
         <translation type="unfinished">工程</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/scriptmgr.cpp" line="642"/>
+        <location filename="../wnd/ui/scriptmgr.cpp" line="139"/>
+        <location filename="../wnd/ui/scriptmgr.cpp" line="707"/>
         <source>New Group</source>
         <translation type="unfinished">新建組</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/scriptmgr.cpp" line="643"/>
+        <location filename="../wnd/ui/scriptmgr.cpp" line="140"/>
+        <location filename="../wnd/ui/scriptmgr.cpp" line="708"/>
         <source>Import...</source>
         <translation type="unfinished">導入...</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/scriptmgr.cpp" line="645"/>
+        <location filename="../wnd/ui/scriptmgr.cpp" line="141"/>
+        <location filename="../wnd/ui/scriptmgr.cpp" line="710"/>
         <source>Remove</source>
         <translation type="unfinished">移除</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/scriptmgr.cpp" line="703"/>
+        <location filename="../wnd/ui/scriptmgr.cpp" line="712"/>
+        <source>Explorer...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../wnd/ui/scriptmgr.cpp" line="761"/>
+        <source> Open fail!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../wnd/ui/scriptmgr.cpp" line="770"/>
         <source>Group name</source>
         <translation type="unfinished">組名稱</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/scriptmgr.cpp" line="704"/>
+        <location filename="../wnd/ui/scriptmgr.cpp" line="771"/>
         <source>Group name:</source>
         <translation type="unfinished">組名稱:</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/scriptmgr.cpp" line="728"/>
+        <location filename="../wnd/ui/scriptmgr.cpp" line="795"/>
         <source>pvt (*.pvt)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/scriptmgr.cpp" line="747"/>
-        <location filename="../wnd/ui/scriptmgr.cpp" line="764"/>
+        <location filename="../wnd/ui/scriptmgr.cpp" line="801"/>
+        <source>mrg (*.mrg)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../wnd/ui/scriptmgr.cpp" line="815"/>
+        <location filename="../wnd/ui/scriptmgr.cpp" line="832"/>
         <source>File is alreay in project, </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/scriptmgr.cpp" line="732"/>
+        <location filename="../wnd/ui/scriptmgr.cpp" line="799"/>
         <source>setup (*.stp)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/scriptmgr.cpp" line="731"/>
+        <location filename="../wnd/ui/scriptmgr.cpp" line="798"/>
         <source>scene (*.sce)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/scriptmgr.cpp" line="729"/>
+        <location filename="../wnd/ui/scriptmgr.cpp" line="796"/>
         <source>pt (*.pt)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/scriptmgr.cpp" line="730"/>
+        <location filename="../wnd/ui/scriptmgr.cpp" line="797"/>
         <source>mrp (*.mrp)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/scriptmgr.cpp" line="733"/>
+        <location filename="../wnd/ui/scriptmgr.cpp" line="800"/>
         <source>python (*.py)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -8284,7 +8422,12 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/syspref.ui" line="1813"/>
+        <location filename="../wnd/ui/syspref.ui" line="1879"/>
+        <source>Misc</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../wnd/ui/syspref.ui" line="1885"/>
         <source>Editor</source>
         <translation type="unfinished"></translation>
     </message>
@@ -8616,7 +8759,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../wnd/ui/syspref.ui" line="332"/>
-        <location filename="../wnd/ui/syspref.ui" line="1826"/>
+        <location filename="../wnd/ui/syspref.ui" line="1898"/>
         <source>TextLabel</source>
         <translation type="unfinished"></translation>
     </message>
@@ -8758,32 +8901,32 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished">說明</translation>
     </message>
     <message>
-        <location filename="../wnd/ui/syspref.ui" line="1819"/>
+        <location filename="../wnd/ui/syspref.ui" line="1891"/>
         <source>Font</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/syspref.ui" line="1833"/>
+        <location filename="../wnd/ui/syspref.ui" line="1905"/>
         <source>...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/syspref.ui" line="1843"/>
+        <location filename="../wnd/ui/syspref.ui" line="1813"/>
         <source>Speed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/syspref.ui" line="1849"/>
+        <location filename="../wnd/ui/syspref.ui" line="1819"/>
         <source>Pos.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/syspref.ui" line="1882"/>
+        <location filename="../wnd/ui/syspref.ui" line="1852"/>
         <source>Terminal</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../wnd/ui/syspref.ui" line="1909"/>
+        <location filename="../wnd/ui/syspref.ui" line="1929"/>
         <source>Alias</source>
         <translation type="unfinished">別名</translation>
     </message>
@@ -8884,21 +9027,29 @@ p, li { white-space: pre-wrap; }
     <name>tableEdit</name>
     <message>
         <location filename="../wnd/ui/tableedit.cpp" line="50"/>
+        <location filename="../wnd/ui/tableedit.cpp" line="59"/>
         <source>Insert before</source>
         <translation type="unfinished">行前插入</translation>
     </message>
     <message>
         <location filename="../wnd/ui/tableedit.cpp" line="51"/>
+        <location filename="../wnd/ui/tableedit.cpp" line="60"/>
         <source>Insert below</source>
         <translation type="unfinished">行后插入</translation>
     </message>
     <message>
         <location filename="../wnd/ui/tableedit.cpp" line="53"/>
+        <location filename="../wnd/ui/tableedit.cpp" line="61"/>
+        <source>Delete line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Delete Line</source>
-        <translation type="unfinished">刪除行</translation>
+        <translation type="obsolete">刪除行</translation>
     </message>
     <message>
         <location filename="../wnd/ui/tableedit.cpp" line="55"/>
+        <location filename="../wnd/ui/tableedit.cpp" line="62"/>
         <source>Clear</source>
         <translation type="unfinished">清除</translation>
     </message>

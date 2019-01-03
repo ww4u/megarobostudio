@@ -71,6 +71,32 @@ void SinanjuPref::updateScreen()
     updateUi();
 }
 
+int SinanjuPref::setReset()
+{
+    Q_ASSERT( m_pModelObj != NULL );
+    VRobot *pBase = ( VRobot *)m_pModelObj;
+    Q_ASSERT( NULL != pBase );
+
+    if ( !pBase->checkLink() )
+    {
+        sysPrompt( tr("Invalid link") );
+        return -1;
+    }
+
+    MegaDevice::deviceMRQ *pMrq;
+    int ax;
+    pMrq = pBase->jointDevice( 0, &ax );
+    if ( NULL == pMrq )
+    {
+        sysPrompt( tr("Invalid link") );
+        return -1;
+    }
+
+    //! write the setting
+    pMrq->write( "*lrn \"mrq_sinanju.stp\"\r\n" );
+    return 0;
+}
+
 void SinanjuPref::updateData()
 {
     Q_ASSERT( m_pModelObj != NULL );
@@ -167,8 +193,18 @@ void SinanjuPref::initModel()
 
 void SinanjuPref::spyEdited()
 {
+    QGroupBox *gpBox[]=
+    {
+        ui->gpHand,
+    };
     QCheckBox *checkBoxes[]=
     {
+        ui->chkInvBase,
+        ui->chkInvBA,
+        ui->chkInvSA,
+        ui->chkInvWrist,
+
+        ui->chkHandZeroCcw,
     };
     QRadioButton *radBoxes[] = {
     };
@@ -300,9 +336,9 @@ void SinanjuPref::on_btnUploadZero_clicked()
     int ver;
     ver = pBase->getMechanicalVersion();
     if ( ver == 0x5A )
-    { ui->chkInvBA->setChecked(false); }
+    { ui->chkInvBase->setChecked(false); }
     else
-    { ui->chkInvBA->setChecked(true); }
+    { ui->chkInvBase->setChecked(true); }
 
     //! update the ui
     ui->spinAngleBase->setValue( zeros[0] );
@@ -343,24 +379,3 @@ void SinanjuPref::on_btnFactory_clicked()
     }
 }
 
-void SinanjuPref::on_pushButton_clicked()
-{
-    Q_ASSERT( m_pModelObj != NULL );
-    VRobot *pBase = ( VRobot *)m_pModelObj;
-    Q_ASSERT( NULL != pBase );
-
-    if ( !pBase->checkLink() )
-    {
-        sysPrompt( tr("Invalid link") );
-        return ;
-    }
-
-    if ( QMessageBox::Yes == MegaMessageBox::question( this, tr("Sure to reset"), tr("Sure to recover the factory setting?") ) )
-    {}
-    else
-    { return; }
-
-    //! write the setting
-    pBase->write( "*lrn \"mrq_sinanju.stp\"\r\n" );
-    return;
-}

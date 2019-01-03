@@ -54,6 +54,9 @@ void MrqTrigChan::getConfig(
 
 void MrqTrigChan::spyEdited()
 {
+    QGroupBox *gpBox[]=
+    {
+    };
     QCheckBox *checkBoxes[]=
     {
         ui->chkLevel,

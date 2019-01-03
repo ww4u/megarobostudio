@@ -13,6 +13,7 @@
 #define OK_ABLE_BIT     0
 #define CANCEL_ABLE_BIT 1
 #define APPLY_ABLE_BIT  2
+#define RESET_ABLE_BIT  3
 
 #define SET_INFO_ATTR()     \
                         unset_bit( mAttributes, OK_ABLE_BIT );\
@@ -36,7 +37,9 @@ public:
 
 protected:
     void buildConnection();
-
+public:
+    void adaptToUserRole();
+    virtual void adaptToModel();
 Q_SIGNALS:
     void sigClose( QWidget * );
     void sigSaveRequest( QWidget * );
@@ -51,12 +54,14 @@ protected Q_SLOTS:
     void slotModified( bool b );
 
     void slot_request( const RpcRequest &req );
+    void slot_device_busy( bool b);
 
     //! ui attr
 public:
     bool isCanceAble();
     bool isOkAble();
     bool isApplyAble();
+    bool isResetAble();
 
     QString name();
 
@@ -72,6 +77,7 @@ public:
     virtual int  saveAs( QString &outFileName );
 
     virtual int setApply();
+    virtual int setReset();
 
     QStringList & filePattern();
 
@@ -139,14 +145,19 @@ protected:
                                         { val = control->value(); }
 
 
+#define enable_edit( control )               if ( sysMode() == sys_admin )\
+                                             { control->setEnabled(true);}\
+                                             else \
+                                             { control->setEnabled(false);}
+
 //! spy
-#define spy_control_edit( control )   connect( control, SIGNAL(editingFinished()), this, SLOT(slot_modified()));
-#define spy_control_combox( control ) connect( control, SIGNAL(currentIndexChanged(int)), this, SLOT(slot_modified()));
-#define spy_control_checkbox( control ) connect( control, SIGNAL(clicked()), this, SLOT(slot_modified()));
-
-
+#define spy_control_edit( control )   connect( control, SIGNAL(editingFinished()), this, SLOT(slot_modified())); enable_edit( control );
+#define spy_control_combox( control ) connect( control, SIGNAL(currentIndexChanged(int)), this, SLOT(slot_modified())); enable_edit( control );
+#define spy_control_checkbox( control ) connect( control, SIGNAL(clicked()), this, SLOT(slot_modified())); enable_edit( control );
 
 #define install_spy()       \
+for ( int i = 0; i < sizeof_array(gpBox); i++ )\
+{ spy_control_checkbox( gpBox[i] ); }\
 for ( int i = 0; i < sizeof_array(checkBoxes); i++ )\
 { spy_control_checkbox( checkBoxes[i] ); }\
 for ( int i = 0; i < sizeof_array(radBoxes); i++ )\

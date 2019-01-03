@@ -65,6 +65,9 @@ RoboMsgThread* sysQueue();
 void attachSysPara( SysPara *pPara );
 SysPara *sysPara();
 
+SysMode sysMode();
+
+
 quint64 sysTimeStamp();
 
 void sysPauseTimer();

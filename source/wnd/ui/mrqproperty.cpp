@@ -25,6 +25,7 @@ mrqProperty::mrqProperty( VRobot *pMrqRobo,
     mbtnEnableSnap.append( false );
     mbtnEnableSnap.append( false );
     mbtnEnableSnap.append( false );
+    mbtnEnableSnap.append( false );
 }
 
 mrqProperty::~mrqProperty()
@@ -68,6 +69,7 @@ void mrqProperty::slot_page_changed( int index )
     ui->btnCancel->setEnabled( pView->isCanceAble() );
     ui->btnOK->setEnabled( pView->isOkAble() );
     ui->btnApply->setEnabled( pView->isApplyAble() );
+    ui->btnReset->setEnabled( pView->isResetAble() );
 
     ui->btnCancel->setFocus();      //! focus on cancel
 }
@@ -128,6 +130,14 @@ void mrqProperty::setModelObj( mcModelObj *pObj )
     {
         Q_ASSERT( NULL != pView );
         pView->setModelObj(pObj);
+    }
+
+
+    //! adapt
+    foreach( modelView *pView, mViewPages )
+    {
+        Q_ASSERT( NULL != pView );
+        pView->adaptToModel();
     }
 }
 
@@ -347,9 +357,6 @@ void mrqProperty::setupUi()
     pItem->setIcon( QIcon(":/res/image/icon2/settings_light.png") );
     ui->listWidget->addItem( pItem );
 
-    //! post
-    slot_page_changed( ui->stackedWidget->currentIndex() );
-
     //! modified
     modelView *pView;
     for ( int i = 0; i < ui->stackedWidget->count(); i++ )
@@ -357,7 +364,12 @@ void mrqProperty::setupUi()
         pView = (modelView*)ui->stackedWidget->widget(i);
         connect( pView, SIGNAL(sigModified(bool)),
                  this,  SLOT(slotModified(bool)) );
+
+        pView->adaptToUserRole();
     }
+
+    //! post
+    slot_page_changed( ui->stackedWidget->currentIndex() );
 }
 
 void mrqProperty::desetupUi()
@@ -449,11 +461,13 @@ void mrqProperty::saveBtnSnap( bool bNow )
     mbtnEnableSnap[0] = ui->btnApply->isEnabled();
     mbtnEnableSnap[1] = ui->btnOK->isEnabled();
     mbtnEnableSnap[2] = ui->btnCancel->isEnabled();
+    mbtnEnableSnap[3] = ui->btnReset->isEnabled();
 
     //! config
     ui->btnApply->setEnabled( bNow );
     ui->btnOK->setEnabled( bNow );
     ui->btnCancel->setEnabled( bNow );
+    ui->btnReset->setEnabled( bNow );
 }
 void mrqProperty::restoreBtnSnap()
 {
@@ -461,5 +475,6 @@ void mrqProperty::restoreBtnSnap()
     ui->btnApply->setEnabled( mbtnEnableSnap[0] );
     ui->btnOK->setEnabled( mbtnEnableSnap[1] );
     ui->btnCancel->setEnabled( mbtnEnableSnap[2] );
+    ui->btnReset->setEnabled( mbtnEnableSnap[3] );
 }
 

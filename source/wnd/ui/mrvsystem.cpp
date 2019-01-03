@@ -36,6 +36,9 @@ QString MrvSystem::deviceName()
 
 void MrvSystem::spyEdited()
 {
+    QGroupBox *gpBox[]=
+    {
+    };
     QCheckBox *checkBoxes[]=
     {
 

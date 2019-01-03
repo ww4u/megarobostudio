@@ -29,10 +29,14 @@ class robotSinanju : public RawRobo
 public:
     robotSinanju();
     ~robotSinanju();
+protected:
+    void init();
+
 public:
     DECLARE_SCPI()
 
 public:
+    virtual void setReset();
     virtual void onMsg( int subAxes, RoboMsg &msg );
 
 public:

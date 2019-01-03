@@ -86,6 +86,9 @@ void RoboComPref::updateScreen()
 
 void RoboComPref::spyEdited()
 {
+    QGroupBox *gpBox[]=
+    {
+    };
     QCheckBox *checkBoxes[]=
     {
 //        ui->chkEn
@@ -186,10 +189,13 @@ void RoboComPref::updateData()
                                   ui->spinInterpStep->value()) );
 
     //! zero speed
-    pRobo->setZeroPref( ui->spinZeroSpeed->value(),
+    if ( pRobo->zeroAttrInComPref() )
+    {
+        pRobo->setZeroPref( ui->spinZeroSpeed->value(),
                         comAssist::align( ui->spinZeroTmo->value(), time_unit ),
                         comAssist::align( ui->spinZeroTick->value(), time_unit )
                         );
+    }
 
     //! set connection
     pRobo->mAxesConnectionName.clear();
@@ -207,6 +213,9 @@ void RoboComPref::adaptUi()
     { return; }
 
     ui->gpTrace->setVisible( pRobo->interpAble() );
+    ui->groupBox->setVisible( pRobo->zeroAttrInComPref() );
+
+    ui->spinZeroSpeed->setSuffix( pRobo->toZeroUnit() + "/" + QObject::tr("s") );
 }
 
 int RoboComPref::applyGroupId()

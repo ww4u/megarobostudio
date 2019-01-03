@@ -322,7 +322,8 @@ SOURCES += \
     ../../widget/imageentity.cpp \
     ../../widget/devicetreewidget.cpp \
     ../../widget/opliblistwidget.cpp \
-    ../ui/robograph_diagram.cpp
+    ../ui/robograph_diagram.cpp \
+    ../ui/login.cpp
 
 
 HEADERS += \
@@ -522,7 +523,8 @@ HEADERS += \
     ../../widget/lineentity.h \
     ../../widget/imageentity.h \
     ../../widget/devicetreewidget.h \
-    ../../widget/opliblistwidget.h
+    ../../widget/opliblistwidget.h \
+    ../ui/login.h
 
 FORMS += \
         ../ui/mainwindow.ui \
@@ -637,7 +639,8 @@ FORMS += \
     ../ui/operatorlib.ui \
     ../ui/robograph.ui \
     ../../widget/rectentity.ui \
-    ../../widget/imageentity.ui
+    ../../widget/imageentity.ui \
+    ../ui/login.ui
 
 
 #RESOURCES = ../res/res.qrc

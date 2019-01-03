@@ -62,10 +62,14 @@ public:
 public:
     robotH2();
     ~robotH2();
+protected:
+    void init();
+
 public:
     DECLARE_SCPI()
 
 public:
+    virtual void setReset();
     virtual int serialIn( QXmlStreamReader &reader );
     virtual int serialOut( QXmlStreamWriter &writer );
 

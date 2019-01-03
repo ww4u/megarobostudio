@@ -73,6 +73,9 @@ void MrqDO::setupUi()
 
 void MrqDO::spyEdited()
 {
+    QGroupBox *gpBox[]=
+    {
+    };
     QCheckBox *checkBoxes[]=
     {
         ui->chkDo,

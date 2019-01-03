@@ -77,6 +77,9 @@ void IgusDeltaPref::updateScreen()
 
 void IgusDeltaPref::spyEdited()
 {
+    QGroupBox *gpBox[]=
+    {
+    };
     QCheckBox *checkBoxes[]=
     {
     };

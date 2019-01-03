@@ -591,11 +591,18 @@ void MainWindow::buildConnection()
              m_pMotorMonitor, SLOT(slot_net_event( const QString &,int,RoboMsg)));
 }
 
+#include "login.h"
 void MainWindow::loadSetup()
 {
     mMcModel.mSysPref.load( user_pref_file_name, pref_file_name );
 
     changeLang( mMcModel.mSysPref.mLangIndex );
+
+    //! user mode prompt
+    LogIn logIn;
+    logIn.exec();
+
+    mMcModel.mSysPref.mSysMode = (SysMode)logIn.getUserRole();
 
     mRoboModelMgr.load(  robo_mgr_name );
 
@@ -1000,7 +1007,8 @@ void MainWindow::slot_instmgr_changed( bool bEnd, MegaDevice::InstMgr *pMgr )
     {
         //! add resrc
         Q_ASSERT( NULL != pMgr );
-        m_pAxesConnTool->setDeviceNames( pMgr->getResources() );
+        QMap<QString, int> deviceMap = pMgr->getDeviceMap();
+        m_pAxesConnTool->setDeviceNames( deviceMap );
 
         //! add robot
         QStringList strList;
@@ -1159,7 +1167,7 @@ void MainWindow::slot_tabwidget_currentChanged(int index)
     mcModelObj::obj_type objType = pViewModel->getModelObj()->getType();
     if (  objType == mcModelObj::model_tpv
           || objType == mcModelObj::model_tp
-          || objType == mcModelObj::model_device )
+          /*|| objType == mcModelObj::model_device*/ )
     {
         m_pToolbarAxesConn->setVisible( true );
     }
@@ -1167,10 +1175,10 @@ void MainWindow::slot_tabwidget_currentChanged(int index)
     {
         m_pToolbarRoboConn->setVisible( true );
     }
-    else if ( objType == mcModelObj::model_scene_variable )
-    {
-        m_pToolbarAxesConn->setVisible( true );
-    }
+//    else if ( objType == mcModelObj::model_scene_variable )
+//    {
+//        m_pToolbarAxesConn->setVisible( true );
+//    }
     else if ( objType == mcModelObj::model_scene_file )
     {
         m_pRoboMgr->setOperable( true );
@@ -1254,6 +1262,7 @@ modelView *MainWindow::createModelView( modelView *pView,
     ui->widget->setCurrentWidget( pView );
     emit sig_view_added( ui->widget->tabText( ui->widget->currentIndex() ) );
 
+
     //! wnd manage
     connect( pView,
              SIGNAL(destroyed(QObject*)),
@@ -1275,6 +1284,12 @@ modelView *MainWindow::createModelView( modelView *pView,
              SIGNAL(sigModified(modelView*,bool)),
              this,
              SLOT(slot_modelView_modified(modelView*,bool)));
+
+    //! device mgr
+    connect( m_pDeviceMgr,
+             SIGNAL( signal_device_busy(bool) ),
+             pView,
+             SLOT( slot_device_busy(bool)) );
 
     //! state manage
     Q_ASSERT( NULL != m_pRoboNetThread );

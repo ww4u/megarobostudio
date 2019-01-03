@@ -40,6 +40,9 @@ void DistanceAlarmPage::data( DistAlarmConfig &config )
 
 void DistanceAlarmPage::spyEdited()
 {
+    QGroupBox *gpBox[]=
+    {
+    };
     QCheckBox *checkBoxes[]=
     {
         ui->checkBox,

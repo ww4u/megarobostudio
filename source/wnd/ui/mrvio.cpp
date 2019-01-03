@@ -35,6 +35,9 @@ void MrvIo::modelChanged()
 
 void MrvIo::spyEdited()
 {
+    QGroupBox *gpBox[]=
+    {
+    };
     QCheckBox *checkBoxes[]=
     {
     };

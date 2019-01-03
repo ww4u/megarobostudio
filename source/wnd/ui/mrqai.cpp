@@ -50,6 +50,9 @@ void MrqAi::setupUi()
 {}
 void MrqAi::spyEdited()
 {
+    QGroupBox *gpBox[]=
+    {
+    };
     QCheckBox *checkBoxes[]=
     {
         ui->checkBox,

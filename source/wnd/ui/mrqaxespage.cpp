@@ -82,11 +82,30 @@ int MrqAxesPage::setApply()
 
 void MrqAxesPage::modelChanged()
 {
-    FOREACH_SUBVIEW_CALL( modelChanged );logDbg();
+    FOREACH_SUBVIEW_CALL( modelChanged );
 
     mrqView::modelChanged();
+}
 
-    ui->tabWidget->setTabEnabled( 3, m_pMrqModel->tunningAble() );
+void MrqAxesPage::adaptToModel()
+{
+    //! adapt to model
+    if ( m_pMrqModel->tunningAble() )
+    {
+        if ( m_pMrqModel->axesPOSAble(mAxesId) )
+        {}
+        else
+        { ui->tabWidget->removeTab( 2 ); }
+    }
+    else
+    {
+        ui->tabWidget->removeTab( 3 );
+
+        if ( m_pMrqModel->axesPOSAble(mAxesId) )
+        {}
+        else
+        { ui->tabWidget->removeTab( 2 ); }
+    }
 }
 
 void MrqAxesPage::spyEdited()

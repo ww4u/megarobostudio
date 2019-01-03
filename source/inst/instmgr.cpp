@@ -837,6 +837,25 @@ QStringList InstMgr::getResources()
     return resrc;
 }
 
+QMap<QString,int> InstMgr::getDeviceMap()
+{
+    QMap<QString, int> maps;
+
+    //! device
+    foreach( VRoboList *pRoboList, mDeviceTree )
+    {
+        Q_ASSERT( NULL != pRoboList );
+        foreach( VRobot * pDev, *pRoboList )
+        {
+            Q_ASSERT( NULL != pDev );
+
+            maps.insert( pDev->getName(), pDev->axes() );
+        }
+    }
+
+    return maps;
+}
+
 QStringList InstMgr::getChans()     //! chx@devicename
 {
     QStringList resrc;

@@ -123,17 +123,21 @@ public:
                 tpvType mT;
                 tpvType mP;
                 tpvType mV;
+                tpvType mRise, mFall;
             };
-            tpvType datas[3];
+            tpvType datas[3+2];
         };
         bool mbGc;              //! gc on used
 public:
-        tpvRow( tpvType t = 0, tpvType p = 0, tpvType v = 0 )
+        tpvRow( tpvType t = 0, tpvType p = 0, tpvType v = 0, tpvType rise=0, tpvType fall=0 )
         {
             mbGc = false;
             mT = t;
             mP = p;
             mV = v;
+
+            mRise = rise;
+            mFall = fall;
         }
 
         void setGc( bool b )

@@ -16,17 +16,19 @@ QWidget *comboxDelegate::createEditor(QWidget *parent, const QStyleOptionViewIte
     pCombox->setInsertPolicy( QComboBox::NoInsert );
     pCombox->setEditable( false );
 
-    QMapIterator<QString, int > iter(mTables);
-    while( iter.hasNext() )
-    {
-        iter.next();
+//    QMapIterator<QString, int > iter(mItemIndexs);
+//    while( iter.hasNext() )
+//    {
+//        iter.next();
 
-        pCombox->addItem( iter.key() );
-    }
+//        pCombox->addItem( iter.key() );
+//    }
+
+    pCombox->addItems( mItems );
 
     return pCombox;
 }
-
+//#include "../../include/mcstd.h"
 void comboxDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
 {
     if ( index.isValid() )
@@ -47,9 +49,10 @@ void comboxDelegate::setEditorData(QWidget *editor, const QModelIndex &index) co
         return;
     }
 
-    if ( mTables.find(value) != mTables.end() )
+    //! value to index
+    if ( mItemIndexs.find(value) != mItemIndexs.end() )
     {
-        pCombox->setCurrentIndex( mTables.find(value).value() );
+        pCombox->setCurrentIndex( mItemIndexs.find(value).value() );
     }
     else
     {
@@ -62,7 +65,7 @@ void comboxDelegate::setModelData(QWidget *editor, QAbstractItemModel *model,
 {
     QComboBox *pCombox = static_cast<QComboBox*>(editor);
     QString value = pCombox->currentText();
-
+//logDbg()<<value;
     model->setData(index, value, Qt::EditRole);
 }
 
@@ -77,17 +80,29 @@ void comboxDelegate::setItems( const QStringList &strList,
 {
     Q_ASSERT( vals.size() == strList.size() );
 
+    mItems = strList;
+
+    mTables.clear();
+    mItemIndexs.clear();
+
     for( int i = 0; i < strList.size(); i++ )
     {
         mTables.insert( strList[i], vals[i] );
+        mItemIndexs.insert( strList[i], i );
     }
 }
 void comboxDelegate::setItems( const QStringList &strList,
                const int base )
 {
+    mItems = strList;
+
+    mTables.clear();
+    mItemIndexs.clear();
+
     for( int i = 0; i < strList.size(); i++ )
     {
         mTables.insert( strList[i], base + i );
+        mItemIndexs.insert( strList[i], i );
     }
 }
 

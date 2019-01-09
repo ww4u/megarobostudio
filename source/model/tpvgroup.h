@@ -23,7 +23,14 @@ public:
     static tpvGroup* createDemoGroup4();
     static tpvGroup* createDemoGroup5();
 
-    static tpvGroup* createDemoGroup( float dT=0.5f, float dP=360.0f );
+    static tpvGroup* createDemoGroup( float dT=0.5f, float dP=360.0f ); 
+
+public:
+    static int slopelize( QList<tpvGroup*> gps,
+                          QList<int> planModes,
+                          QList<float> rises,
+                          QList<float> falls,
+                          int *pErrGp, int *pErrRow );
 
 public:
     tpvGroup();
@@ -52,13 +59,21 @@ public:
     void trimRows( tpvGroup &gp );
     void abstimeRows( tpvGroup &gp );
 
+    //! 0 - cubic
+    //! 1 - trapzoid
+    //! 2 - s curve
+    int slopelize( int motionMode,
+                   float rise, float fall,
+                   int *errRow );
+
 public:
-    int addItem( tpvType t, tpvType p, tpvType v=0 );
+    int addItem( tpvType t, tpvType p, tpvType v=0, tpvType rise=0, tpvType fall=0 );
     int removeItem( tpvType t );
 
     int remove( int id );
     int clear();
 
+    virtual void rstAbsT();
     virtual tpvType getAbsT( int index );
 public:
     int save( const QString &fileName );

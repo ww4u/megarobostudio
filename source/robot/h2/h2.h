@@ -119,6 +119,8 @@ public:
     int gapX( H2ZeroArg *pZArg );
     int gapY( H2ZeroArg *pZArg );
 
+    int gapXY( H2ZeroArg *pZArg );
+
     int clrAngle();
 
     int angle( int jId, float &fAng );

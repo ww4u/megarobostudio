@@ -463,9 +463,9 @@ int modelSysPref::load( const QString &str )
                         if ( reader.name() == "time" )
                         { mTimeUnit = reader.readElementText().toDouble(); }
                         else if ( reader.name() == "position" )
-                        { mPosUnit = reader.readElementText().toDouble(); }
+                        { reader.skipCurrentElement(); mPosUnit = 1.0; /*mPosUnit = reader.readElementText().toDouble();*/ }
                         else if ( reader.name() == "velocity" )
-                        { mVelUnit = reader.readElementText().toDouble(); }
+                        { reader.skipCurrentElement(); mVelUnit = 1.0; /*mVelUnit = reader.readElementText().toDouble();*/ }
                         else
                         { reader.skipCurrentElement(); }
                     }

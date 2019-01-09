@@ -504,6 +504,31 @@ QStatusBar::item {
 	  /*border:none;*/
   }
 
+ QTreeView::branch:has-siblings:!adjoins-item {
+      border-image: url(:/res/image/slice/stylesheet-vline.png);
+  }
+
+  QTreeView::branch:has-siblings:adjoins-item {
+      border-image: url(:/res/image/slice/stylesheet-branch-more.png);
+  }
+
+  QTreeView::branch:!has-children:!has-siblings:adjoins-item {
+      border-image: url(:/res/image/slice/stylesheet-branch-end.png);
+  }
+
+  QTreeView::branch:has-children:!has-siblings:closed,
+  QTreeView::branch:closed:has-children:has-siblings {
+          border-image: none;
+          image: url(:/res/image/slice/stylesheet-branch-closed.png);
+  }
+
+  QTreeView::branch:open:has-children:!has-siblings,
+  QTreeView::branch:open:has-children:has-siblings  {
+          border-image: none;
+          image: url(:/res/image/slice/stylesheet-branch-open.png);
+  }
+  
+  
 
 QListView::item:alternate {
   background: #1f2a3b;

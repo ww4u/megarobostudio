@@ -14,7 +14,7 @@ int robotMotor::program( QList<D1Point> &curve,
     { return ret; }
 
     //! 2.config
-    setLoop( 1 );
+    setLoop( 1, region );
 
     //! 3.download
     ret = downloadTrace( region );

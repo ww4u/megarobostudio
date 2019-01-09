@@ -5570,7 +5570,7 @@
     </message>
     <message>
         <source>Confirm to reset</source>
-        <translation type="unfinished">确认服务</translation>
+        <translation type="unfinished">确认复位</translation>
     </message>
     <message>
         <source>Output</source>

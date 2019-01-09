@@ -3,7 +3,7 @@
 
 #include <QtCore>
 #include <QImage>
-
+#include <QSemaphore>
 #include "../../include/mccfg.h"
 #include "../sys/sysapi.h"
 #include "../../source/para/syspara.h"
@@ -32,6 +32,7 @@ class deviceMRQ;
 }
 
 class RoboTask;
+class RoboService;      //! msg service
 
 #define robot_is_mrq( id )          ( ( (id) >= VRobot::robot_mrq ) && ( (id) < VRobot::robot_mrq_max ) )
 #define robot_is_mrv( id )          ( ( (id) >= VRobot::robot_mrv ) && ( (id) < VRobot::robot_mrv_max ) )
@@ -419,6 +420,9 @@ public:
     MegaDevice::deviceMRQ *jointDevice( int jointId,
                                         int *pAxes );
 
+    QList<int> jointPlanMode();
+    QList<float> jointAcc();
+    QList<float> jointDec();
 public:
     void setAxesConnectionName( const QStringList &names );
     QStringList axesConnectionName();
@@ -529,8 +533,13 @@ public:
 
     RoboWorker* m_pAxesWorkers;         //! worker
     RoboWorker* m_pRoboWoker;
-                                        //! task
+                                        //! temp task
     RoboTask *m_pRoboTask;
+
+    QSemaphore *m_pXEventSema;
+
+    RoboService *m_pRoboMsgService;
+    RoboService *m_pRoboProcService;
 };
 
 Q_DECLARE_METATYPE( VRobot )
@@ -554,7 +563,6 @@ class RoboTaskRequest
 public:
     VRobot *m_pRobo;
     VRobot::apiTaskRequest m_pApi;
-//    void *m_pApi;
     RoboTaskArgument *m_pArg;       //! need to be deleted
 
 public:
@@ -564,7 +572,6 @@ public:
 public:
     void request( VRobot *pRobo,
                   VRobot::apiTaskRequest api,
-//                  void *pApi,
                   RoboTaskArgument *pArg );
 };
 
@@ -594,6 +601,17 @@ protected:
 
 protected:
     RoboTaskRequest *m_pReq;
+};
+
+class RoboService : public QThread
+{
+    Q_OBJECT
+
+public:
+    RoboService( QObject *pObj = nullptr );
+
+protected:
+    virtual void run();
 };
 
 #endif // VROBOT_H

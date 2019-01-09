@@ -115,6 +115,8 @@ void RoboFsm::toState( RoboStateUnit *pState, RoboMsg &detail )
         m_pNowState = pState;
         m_pNowState->setTimeStamp( sysTimeStamp() );        //! save the time stamp
         m_pNowState->onEnter( detail );//logDbg()<<m_pNowState->name()<<Id1()<<Id2()<<"enter";
+
+
     }
     else
     {

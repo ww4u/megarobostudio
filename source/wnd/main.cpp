@@ -109,9 +109,19 @@ int main(int argc, char *argv[])
     MainWindow w(&dpc);
     w.show();
 
-    splash.finish(&w);
+    int ret;
+    //!login
+    //! \note QTimer::singleShot( 0, qApp, quit() )
+    //! can not work as the timer post slot is processed in the splash.finish( &w )
+    //! process events
+    if ( w.logInCode() == QDialog::Accepted )
+    {
+        splash.finish(&w);
 
-    int ret = a.exec();
+        ret = a.exec();
+    }
+    else
+    { ret = 0; }
 
     //! kill the service thread
     thread.terminate();

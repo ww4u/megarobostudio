@@ -65,7 +65,7 @@ int deviceMRQ::getTpvBuf( pvt_region )
     return mTpvBufferSizes[ region ];
 }
 
-//! vernier/ratio/step angle
+//! vernier/ratio/step angle/plan mode
 int deviceMRQ::loadMotorBasic()
 {
     int ret;
@@ -88,6 +88,8 @@ int deviceMRQ::loadMotorBasic()
         { return ret; }
 
         ret = getMOTOR_TYPE( i, &mMOTOR_TYPE[i] );
+        if ( ret != 0 )
+        { return ret; }
 
         //! driver
         if ( mDriverId == VRobot::motor_driver_262 )
@@ -104,6 +106,11 @@ int deviceMRQ::loadMotorBasic()
         }
         else
         {}
+
+        //! planmode
+        ret = getMOTIONPLAN_MOTIONMODE( i, MRQ_MOTION_SWITCH_1_MAIN, &mMOTIONPLAN_MOTIONMODE[i][0] );
+        if ( ret != 0 )
+        { return ret; }
     }
 
     return 0;
@@ -144,7 +151,9 @@ int deviceMRQ::tpvDownload(
                  int index,
                  f32 t,
                  f32 p,
-                 f32 v )
+                 f32 v,
+                 f32 rise,
+                 f32 fall )
 {
     int ret;
 
@@ -153,11 +162,35 @@ int deviceMRQ::tpvDownload(
     QList<frameData> tpvPacks;
     frameData framePackage;
     float val;
-    int16 i16Val;
+    int16 i16ValR, i16ValF;
+    int packRF;
 
     //! scale
     if ( index == 1 && mSlewCache[region] < 1 )
+    //! check the slope
+//    if ( rise > 0 && fall > 0 )
     {
+        do
+        {
+        //! detect rise fall
+//        i16ValR = rise * 1000;
+//        i16ValF = fall * 1000;
+
+        //! use const
+        i16ValR = mAccList.at(ax);
+        i16ValF = mDecList.at(ax);
+
+        //! rf
+        packRF = ((i16ValR)<<16) | (i16ValF);
+
+        //! have set, no need to set again
+        if ( packRF == mSlewCache[region] )
+        { break; }
+        else
+        {
+            mSlewCache[ region] = packRF;
+        }
+
         framePackage.clear();
         framePackage.setFrameId( mDeviceId.mRecvId );
         framePackage.append( (byte)MRQ_mc_TIMESCALE );
@@ -165,16 +198,17 @@ int deviceMRQ::tpvDownload(
         framePackage.append( (byte)page );
         framePackage.append( (byte)index );
 
-        i16Val = mAccList.at(ax);
-        framePackage.append( (const char*)&i16Val, sizeof(i16Val) );
+//        i16Val = mAccList.at(ax);
+        framePackage.append( (const char*)&i16ValR, sizeof(i16ValR) );
 
-        i16Val = mDecList.at(ax);
-        framePackage.append( (const char*)&i16Val, sizeof(i16Val) );
+//        i16Val = mDecList.at(ax);
+        framePackage.append( (const char*)&i16ValF, sizeof(i16ValF) );
 
         tpvPacks.append( framePackage );
 
-        //! set cache
-        mSlewCache[ region] = 1;
+        logDbg()<<rise<<fall<<index;
+
+        }while( false );
     }
 
     //! p
@@ -231,7 +265,9 @@ int deviceMRQ::tpvDownload( const tpvRegion &region,
                                    i,
                                    list[id]->mT,
                                    list[id]->mP,
-                                   list[id]->mV
+                                   list[id]->mV,
+                                   list[id]->mRise,
+                                   list[id]->mFall
                                    )
                       );
 
@@ -254,7 +290,9 @@ int deviceMRQ::tpvDownload( pvt_region,
                                getTpvIndex( pvt_region_p ),
                                pItem->mT,
                                pItem->mP,
-                               pItem->mV
+                               pItem->mV,
+                               pItem->mRise,
+                               pItem->mFall
                                )
                   );
 
@@ -390,34 +428,27 @@ int deviceMRQ::pvtWrite( pvt_region,
 {
     DELOAD_REGION();
 
-    //! point 1
-    tpvRow *pRow1 = new tpvRow();
-    if ( NULL == pRow1 )
-    { return ERR_ALLOC_FAIL; }
+    QList<tpvRow > curve;
 
-    pRow1->setGc( true );
-    pRow1->mT = t1;
-    pRow1->mP = p1;
-    pRow1->mV = 0;
+    //! point 1
+    tpvRow row1;
+
+    row1.mT = t1;
+    row1.mP = p1;
+    row1.mV = 0;
 
     //! point 2
-    tpvRow *pRow2 = new tpvRow();
-    if ( NULL == pRow2 )
-    {
-        delete pRow1;
-        return ERR_ALLOC_FAIL;
-    }
+    tpvRow row2;
 
-    pRow2->setGc( true );
-    pRow2->mT = t2;
-    pRow2->mP = p2;
-    pRow2->mV = endV;
+    row2.mT = t2;
+    row2.mP = p2;
+    row2.mV = endV;
 
-    QList< tpvRow *> rotList;
-    rotList.append( pRow1 );
-    rotList.append( pRow2 );
+    //! curve
+    curve.append( row1 );
+    curve.append( row2 );
 
-    return pvtWrite( pvt_region_p, rotList );
+    return pvtWrite( pvt_region_p, curve );
 }
 
 int deviceMRQ::pvtWrite( pvt_region,
@@ -425,7 +456,6 @@ int deviceMRQ::pvtWrite( pvt_region,
                          float dAngle,
                          float endV )
 {
-//    Q_ASSERT( dT > 0 );
     if ( dT > 0 )
     {}
     else
@@ -462,9 +492,28 @@ int deviceMRQ::pvtWrite( pvt_region,
     return pvtWrite( pvt_region_p, transRows );
 }
 
+//! rows
 int deviceMRQ::pvtWrite( pvt_region,
               QList<tpvRow> &rows )
 {
+    //! slope lize
+    int errRow, ret;
+    ret = slopelize( rows,
+               mMOTIONPLAN_MOTIONMODE[region.axes()][0],
+               getAcc( region.axes() ),
+               getDec( region.axes() ),
+               errRow );
+    if ( ret != 0 )
+    {
+        sysError( QObject::tr("Slope fail on line ") + QString::number(errRow) );
+        return ret;
+    }
+
+    //! scale t
+    for( int i = 0; i < rows.size(); i++ )
+    { rows[i].mT = scale_t( rows[i].mT ); }
+
+    //! transfer
     QList< tpvRow *> transRows;
     tpvRow *pRow;
     for ( int i = 0; i < rows.size(); i++ )

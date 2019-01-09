@@ -94,6 +94,8 @@ public:
 
     QString exportDiagnosis( int &n );
 
+    int logInCode();
+
 protected:
     void init();
     void deinit();
@@ -403,6 +405,7 @@ private:
     //! ui elements
     QList<QDockWidget *> mDockWidgets;
     QList<QAction *> mDockActions;
+    int mLoginCode;
 };
 
 #endif // MAINWINDOW_H

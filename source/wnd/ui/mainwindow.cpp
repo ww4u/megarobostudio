@@ -120,6 +120,9 @@ QString MainWindow::exportDiagnosis( int &n )
     return diagStr;
 }
 
+int MainWindow::logInCode()
+{ return mLoginCode; }
+
 void MainWindow::init()
 {
     m_pLogout = NULL;
@@ -150,6 +153,8 @@ void MainWindow::init()
     m_pProcess = NULL;
 
     mLastExceptionStopTs = 0;
+
+    mLoginCode = QDialog::Accepted;
 }
 void MainWindow::deinit()
 {
@@ -600,7 +605,7 @@ void MainWindow::loadSetup()
 
     //! user mode prompt
     LogIn logIn;
-    logIn.exec();
+    mLoginCode = logIn.exec();
 
     mMcModel.mSysPref.mSysMode = (SysMode)logIn.getUserRole();
 

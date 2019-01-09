@@ -52,7 +52,7 @@ int robotDelta::goZero( const tpvRegion &region,
     }
     Q_ASSERT( NULL != pMrq );
 
-    setLoop( 1 );
+    setLoop( 1, region );
 
     int ret;
     if ( jTabId == 0 || jTabId == 1 ) //! l,r

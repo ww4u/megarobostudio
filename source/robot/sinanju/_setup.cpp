@@ -3,7 +3,7 @@
 
 int robotSinanju::serialIn( QXmlStreamReader &reader )
 {
-    int ret;
+    int ret=0;
 
     while(reader.readNextStartElement())
     {

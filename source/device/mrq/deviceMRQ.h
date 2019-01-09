@@ -219,7 +219,9 @@ public:
                      int index,
                      f32 t,
                      f32 p,
-                     f32 v );
+                     f32 v,
+                     f32 rise,
+                     f32 fall );
     int tpvDownload( pvt_region,
                      QList<tpvRow *> &list,
                      int from,
@@ -307,6 +309,10 @@ public:
     qint64 busFrames();
 
     int ioOut( int id, int val );
+
+    int slopelize( QList<tpvRow> &curve,
+                   int mode,
+                   float rise, float fall, int &errRow );
 
 public:
     virtual int run( const tpvRegion &reg=tpvRegion() );

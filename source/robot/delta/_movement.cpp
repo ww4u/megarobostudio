@@ -11,7 +11,7 @@ int robotDelta::program( const QString &fileName,
     { return ret; }
 
     //! 2.config
-    setLoop( 1 );
+    setLoop( 1, region );
 
     //! 3.download
     ret = downloadTrace( region );
@@ -123,7 +123,7 @@ int robotDelta::program( QList<TraceKeyPoint> &curve,
     { return ret; }
 
     //! 3.config
-    setLoop( 1 );
+    setLoop( 1, region );
 
     //! 4.download
     ret = downloadTrace( region );

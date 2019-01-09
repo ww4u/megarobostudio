@@ -39,7 +39,8 @@ SOURCES = \
         ./GelgoogProject/PVT/Sources/pvtScurveSolution.c \
         ./GelgoogProject/PVT/Sources/pvtTrapezSolution.c \
 #        ./GelgoogProject/PVT/Sources/pvtUniformSolution.c \
-        pvt.cpp
+        pvt.cpp \
+        function\functions.cpp
 		
 HEADERS = \
         pvt.h

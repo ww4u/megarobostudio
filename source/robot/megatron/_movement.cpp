@@ -26,7 +26,7 @@ int robotMegatron::program( QList<MegatronKeyPoint> &curve,
     { return ret; }
 
     //! 2.config
-    setLoop( 1 );
+    setLoop( 1, region );
 
     //! 3.download
     ret = downloadTrace( region );

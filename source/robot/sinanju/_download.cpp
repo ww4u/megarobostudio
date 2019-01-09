@@ -43,6 +43,22 @@ int robotSinanju::convertTrace( QList<TraceKeyPoint> &curve,
         }
     }
     groups.append( pGroup );
+
+    //! sloplize
+    int errGp, errRow;
+    ret = tpvGroup::slopelize( groups,
+                               jointPlanMode(),
+                               jointAcc(),
+                               jointDec(),
+                               &errGp, &errRow );
+    if ( ret != 0 )
+    {
+        sysError( QObject::tr("Slope fail on line ") + QString::number(errRow) );
+        sysError( QObject::tr("Slope fail on group ") + QString::number(errGp) );
+        delete_all( groups );
+        return ret;
+    }
+
     sectionList<<4<<1;
 
     return 0;

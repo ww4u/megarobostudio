@@ -7,6 +7,10 @@
 
 #include "_MRQ_model.h"
 
+#define DEF_ACC_SCALE           250                         //! 1/1000
+#define DEF_DEC_SCALE           250
+#define ACC_DEC_BASE            (0.001f)
+
 namespace MegaDevice
 {
 
@@ -171,9 +175,11 @@ public:
 
     int setAccScale( int id, int scale );
     int getAccScale( int id );
+    float getAcc( int id );
 
     int setDecScale( int id, int scale );
     int getDecScale( int id );
+    float getDec( int id );
 
 protected:
     QString mDesc;

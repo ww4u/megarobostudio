@@ -35,7 +35,7 @@ int robotSinanju::goZero( const tpvRegion &region,
     if ( NULL == pMrq )
     { return -1; }
 
-    setLoop( 1 );
+    setLoop( 1, region );
 
     //! jointid
     if ( jointId >= 0 && jointId <= 3 )
@@ -352,7 +352,7 @@ int robotSinanju::goX( const tpvRegion &region,
     //! for download
     run( region );
 
-    setLoop( 1 );
+    setLoop( 1, region );
 
     //! download
     int ret = downloadTrace( region, mJointsGroup );

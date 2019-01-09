@@ -117,6 +117,22 @@ int robotH2::buildTrace( QList<H2KeyPoint> &curve,
         return ret;
     }
 
+    //! slopelize
+    int errGp, errRow;
+
+    ret = tpvGroup::slopelize( jointsGroup,
+                               jointPlanMode(),
+                               jointAcc(),
+                               jointDec(),
+                               &errGp, &errRow );
+    if ( ret != 0 )
+    {
+        sysError( QObject::tr("Slope fail on line ") + QString::number(errRow) );
+        sysError( QObject::tr("Slope fail on group ") + QString::number(errGp) );
+        delete_all( jointsGroup );
+        return ret;
+    }
+
     //! add section
     sectionList<<0<<splitDataSet.size();
 

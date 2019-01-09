@@ -10,7 +10,7 @@ int robotMotor::goZero( const tpvRegion &region,
         return -1;
     }
 
-    setLoop( 1 );
+    setLoop( 1, region );
 
     int ax;
     MegaDevice::deviceMRQ *pMrq;

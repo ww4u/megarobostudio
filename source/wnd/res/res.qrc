@@ -136,6 +136,13 @@
 <file>image/slice/down_arrow.png</file>
 <file>image/slice/down_arrow_disabled.png</file>
 
+<file>image/slice/stylesheet-branch-open.png</file>
+<file>image/slice/stylesheet-branch-closed.png</file>
+<file>image/slice/stylesheet-branch-end.png</file>
+<file>image/slice/stylesheet-branch-more.png</file>
+<file>image/slice/stylesheet-vline.png</file>
+
+
 <!--        <file>qss/mega.qss</file>-->
 
     </qresource>

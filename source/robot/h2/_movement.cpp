@@ -22,7 +22,7 @@ int robotH2::program( QList<H2KeyPoint> &curve,
     { return ret; }
 
     //! 3.config
-    setLoop( 1 );
+    setLoop( 1, region );
 
     //! 4.download
     ret = downloadTrace( region, mJointsGroup );
@@ -125,7 +125,7 @@ int robotH2::goZero( const tpvRegion &region,
         return -1;
     }
 
-    setLoop( 1 );
+    setLoop( 1, region );
 
     int ax;
     MegaDevice::deviceMRQ *pMrq;
@@ -211,7 +211,7 @@ int robotH2::goZero( const tpvRegion &region,
         return -1;
     }
 
-    setLoop( 1 );
+    setLoop( 1, region );
 
     H2ZeroArg *pArg;
     pArg = new H2ZeroArg();
@@ -315,12 +315,7 @@ int robotH2::zeroAxesTask( void *pArg )
             if ( ret != 0 ){ return ret; }
 
             //! gap
-            pZArg->mAx = 0;
-            ret = gapX( pZArg );
-            if ( ret != 0 ){ return ret; }
-
-            pZArg->mAx = 1;
-            ret = gapY( pZArg );
+            ret = gapXY( pZArg );
             if ( ret != 0 ){ return ret; }
         }
         else
@@ -335,13 +330,8 @@ int robotH2::zeroAxesTask( void *pArg )
             ret = zeroX( pZArg );
             if ( ret != 0 ){ return ret; }
 
-            pZArg->mAx = 1;
-            ret = gapY( pZArg );
-            if ( ret != 0 ){ return ret; }
-
             //! gap
-            pZArg->mAx = 0;
-            ret = gapX( pZArg );
+            ret = gapXY( pZArg );
             if ( ret != 0 ){ return ret; }
         }
 
@@ -419,6 +409,23 @@ int robotH2::gapY( H2ZeroArg *pZArg )
 
     move( 0,0,
           0, pZArg->mZeroGapDist, pZArg->mZeroGapTime, 0, 0, region );
+
+    ret = waitFsm( region, MegaDevice::mrq_state_idle, pZArg->mTmo, pZArg->mTick );
+    if ( ret != 0 )
+    { return ret; }
+
+    return ret;
+}
+
+int robotH2::gapXY( H2ZeroArg *pZArg )
+{
+    tpvRegion region;
+    int ret;
+
+    region = pZArg->mRegion;
+
+    move( 0,0,
+          pZArg->mZeroGapDist, pZArg->mZeroGapDist, pZArg->mZeroGapTime, 0, 0, region );
 
     ret = waitFsm( region, MegaDevice::mrq_state_idle, pZArg->mTmo, pZArg->mTick );
     if ( ret != 0 )

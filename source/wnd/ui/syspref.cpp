@@ -202,9 +202,9 @@ void sysPref::updateUi()
     ui->spinGpFrom->setValue((m_pPref->mGroupIdFrom));
     ui->spinGpTo->setValue((m_pPref->mGroupIdTo));
 
-    ui->dblTimeUnit->setValue( m_pPref->mTimeUnit );
-    ui->dblPosUnit->setValue( m_pPref->mPosUnit );
-    ui->dblVelUnit->setValue( m_pPref->mVelUnit );
+    ui->dblTimeUnit->setValue( m_pPref->mTimeUnit*100 );
+//    ui->dblPosUnit->setValue( m_pPref->mPosUnit );
+//    ui->dblVelUnit->setValue( m_pPref->mVelUnit );
 
     ui->spinSampleTick->setValue( m_pPref->mSampleTick );
 
@@ -311,9 +311,9 @@ void sysPref::updateData()
     m_pPref->mGroupIdFrom = ui->spinGpFrom->value();
     m_pPref->mGroupIdTo = ui->spinGpTo->value();
 
-    m_pPref->mTimeUnit = ui->dblTimeUnit->value();
-    m_pPref->mPosUnit = ui->dblPosUnit->value();
-    m_pPref->mVelUnit = ui->dblVelUnit->value();
+    m_pPref->mTimeUnit = ui->dblTimeUnit->value()/100.0f;
+//    m_pPref->mPosUnit = ui->dblPosUnit->value();
+//    m_pPref->mVelUnit = ui->dblVelUnit->value();
 
     m_pPref->mSampleTick = ui->spinSampleTick->value();
 

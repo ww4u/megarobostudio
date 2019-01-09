@@ -29,13 +29,16 @@ QString tpvItem::header( int col )
     { return QObject::tr("Comment"); }
 }
 
-tpvItem::tpvItem( tpvType t, tpvType p, tpvType v )
+tpvItem::tpvItem( tpvType t, tpvType p, tpvType v, tpvType rise, tpvType fall )
 {
     mValid = 1;
 
     mT = t;
     mP = p;
     mV = v;
+
+    mRise = rise;
+    mFall = fall;
 }
 
 tpvItem::tpvItem( const tpvItem &item )
@@ -44,6 +47,9 @@ tpvItem::tpvItem( const tpvItem &item )
     mT = item.mT;
     mP = item.mP;
     mV = item.mV;
+
+    mRise = item.mRise;
+    mFall = item.mFall;
 
     mComment = item.mComment;
 }
@@ -120,9 +126,22 @@ void tpvItem::setP( tpvType p )
 { mP = p; }
 void tpvItem::setV( tpvType v )
 { mV = v; }
+
+void tpvItem::setSlope( tpvType rise, tpvType fall )
+{
+    mRise = rise;
+    mFall = fall;
+}
+
 tpvType tpvItem::getT()
 { return mT; }
 tpvType tpvItem::getP()
 { return mP; }
 tpvType tpvItem::getV()
 { return mV; }
+
+tpvType tpvItem::getRise()
+{ return mRise; }
+
+tpvType tpvItem::getFall()
+{ return mFall; }

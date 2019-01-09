@@ -221,12 +221,12 @@ namespace mega_device
             return -1; 
         }
 
-        public int waitEnd(int ax, int page, int tmoms=2000)
+        public int waitEnd(int ax, int page, int tmoms=20000)
         {
             return waitx(ax, page, mega_robo_calcend, tmoms);
         }
 
-        public int waitIdle(int ax, int page, int tmoms=2000)
+        public int waitIdle(int ax, int page, int tmoms=20000)
         {
             return waitx(ax, page, mega_robo_idle, tmoms);
         }

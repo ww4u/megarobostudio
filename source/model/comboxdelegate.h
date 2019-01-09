@@ -31,6 +31,8 @@ public:
 
 protected:
     QMap<QString, int> mTables;
+    QMap<QString, int> mItemIndexs;
+    QStringList mItems;
 //    QComboBox *m_pCombobox;
 };
 

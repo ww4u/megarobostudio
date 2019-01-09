@@ -34,3 +34,6 @@ for %%d in ( res.rcc black.rcc ) do ( copy %%d %dst%\%%d )
 
 set dst=G:\work\mc\develope\source\wnd\build-mc-mingw-Debug\debug\style
 for %%d in ( res.rcc black.rcc ) do ( copy %%d %dst%\%%d ) 
+
+set dst=G:\work\mc\develope\source\wnd\build-mc-mingw-Debug\release\style
+for %%d in ( res.rcc black.rcc ) do ( copy %%d %dst%\%%d ) 

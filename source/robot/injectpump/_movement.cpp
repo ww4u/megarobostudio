@@ -19,7 +19,7 @@ int robotInject::program( IPKeyPointList &curve,
     { return ret; }
 
     //! 2.config
-    setLoop( 1 );
+    setLoop( 1, region );
 
     //! 3.download
     ret = downloadTrace( region, mJointsGroup );
@@ -130,7 +130,7 @@ int robotInject::goZero( const tpvRegion &region,
         return -1;
     }
 
-    setLoop( 1 );
+    setLoop( 1, region );
 
     int ax;
     MegaDevice::deviceMRQ *pMrq;
@@ -215,7 +215,7 @@ int robotInject::goZero( const tpvRegion &region )
         return -1;
     }
 
-    setLoop( 1 );
+    setLoop( 1, region );
 
     IJZeroArg *pArg;
     pArg = new IJZeroArg();

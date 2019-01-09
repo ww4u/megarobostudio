@@ -213,6 +213,8 @@ int MRQ_model::getAccScale( int id )
     Q_ASSERT( id >=0 && id < axes() );
     return mAccList[id];
 }
+float MRQ_model::getAcc( int id )
+{ return getAccScale(id)*ACC_DEC_BASE; }
 
 int MRQ_model::setDecScale( int id, int scale )
 {
@@ -225,5 +227,8 @@ int MRQ_model::getDecScale( int id )
     Q_ASSERT( id >=0 && id < axes() );
     return mDecList[id];
 }
+float MRQ_model::getDec( int id )
+{ return getDecScale(id)*ACC_DEC_BASE; }
+
 
 }

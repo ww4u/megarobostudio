@@ -4,14 +4,19 @@
 
 #include "../../bus/canbus.h"
 
+#include "../../arith/pvt/pvt.h"
+
 #define DEF_TPV_CAP             256
 #define DEF_WAV_BUF_SIZE        (125*1024)                  //! bytes
+
 
 #define ABS_ANGLE_TO_DEG( angle )   (360.0f*(angle))/((1<<18)-1)
 #define INC_ANGLE_TO_DEG( angle )   (360.0f*(angle))/(1<<18)
 
 #define VALUE_TO_ABS_ANGLE( val )   (quint32)( (val) * ((1<<18)-1) / 360.0f )
 #define VALUE_TO_INC_ANGLE( val )   (quint32)( (val) * ((1<<18)) / 360.0f )
+
+
 
 namespace MegaDevice
 {
@@ -164,8 +169,8 @@ void deviceMRQ::postCtor()
         mAngleDir<<true;
 
         //! default acc/dec list
-        mAccList<<300;
-        mDecList<<300;
+        mAccList<<DEF_ACC_SCALE;
+        mDecList<<DEF_DEC_SCALE;
 
         for ( int j = 0; j < regions(); j++ )
         {
@@ -662,6 +667,9 @@ int deviceMRQ::preMovej( pvt_region, float ang, float t, float angJ, float tj, f
     row.mV = endV;
     rows.append( row );
 
+    //! slope lize
+
+
     return pvtWrite( pvt_region_p, rows );
 }
 
@@ -848,6 +856,41 @@ int deviceMRQ::ioOut( int id, int val  )
 
     return 0;
 }
+
+int deviceMRQ::slopelize( QList<tpvRow> &curve,
+                          int mode,
+                          float rise,
+                          float fall,
+                          int &errRow )
+{
+    int errIndex;
+    int ret;
+    double slopes[2]={ rise,fall };
+
+    errRow = -1;
+    for ( int i = 0; i < curve.size() - 1 ; i++ )
+    {
+        ret = pvtSlope( curve.at(i).mP, curve.at(i).mV, curve.at(i).mT,
+                        curve.at(i+1).mP, curve.at(i+1).mV, curve.at(i+1).mT,
+                        mode,
+                        slopes,
+                        &errIndex
+                  );
+        if ( ret != 0 )
+        {
+            errRow = i;
+            return ret;
+        }
+
+        //! save to the next
+        curve[i+1].mRise = slopes[0];
+        curve[i+1].mFall = slopes[1];
+    }
+
+    return 0;
+
+}
+
 }
 
 

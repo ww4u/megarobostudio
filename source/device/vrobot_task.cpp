@@ -104,3 +104,9 @@ void RoboTask::gc()
         m_pReq =NULL;
     }
 }
+
+RoboService::RoboService(QObject *pObj) : QThread( pObj )
+{}
+
+void RoboService::run()
+{}

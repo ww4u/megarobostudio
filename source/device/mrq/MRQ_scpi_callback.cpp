@@ -486,7 +486,7 @@ static scpi_result_t _scpi_program( scpi_t * context )
     deparse_column_index( v, "v" );
 
     //! deload
-    QList< tpvRow> curve;
+    QList<tpvRow> curve;
     tpvRow tp;
     bool bEn;
     for ( int i = 0; i < pSec->rows(); i++ )
@@ -516,131 +516,11 @@ static scpi_result_t _scpi_program( scpi_t * context )
 
     CHECK_LINK( ax, page );
 
+    //! real curve
     if ( 0 != LOCALMRQ()->pvtWrite( tpvRegion(ax, page), curve ) )
     { scpi_ret( SCPI_RES_ERR ); }
 
     return SCPI_RES_OK;
-
-//    DEF_LOCAL_VAR();
-
-//    int ax, page;
-
-//    if ( SCPI_RES_OK != SCPI_ParamInt32( context, &ax, true ) )
-//    { scpi_ret( SCPI_RES_ERR ); }logDbg()<<ax;
-
-//    if ( SCPI_RES_OK != SCPI_ParamInt32( context, &page, true ) )
-//    { scpi_ret( SCPI_RES_ERR ); }logDbg()<<page;
-
-//    if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
-//    { scpi_ret( SCPI_RES_ERR ); }logDbg()<<strLen<<pLocalStr;
-//    if (strLen < 1)
-//    { scpi_ret( SCPI_RES_ERR ); }
-
-//    //! load
-//    QList<float> dataSets;
-//    int col;
-//    QList<int> dataCols;
-
-//    //! en,t,p,v
-//    do
-//    {
-//        int ret;
-
-//        col = 4;
-//        dataCols.clear();
-//        dataCols<<0<<1<<2<<3;
-//        dataSets.clear();
-//        //! load success
-//        ret = comAssist::loadDataset( pLocalStr, strLen, col, dataCols, dataSets );
-//        if ( 0 == ret && ( dataSets.size() / col ) > 1  )
-//        { break; }
-//        else
-//        {}
-
-//        //! try t,p,v
-//        col = 3;
-//        dataCols.clear();
-//        dataCols<<0<<1<<2;
-//        dataSets.clear();
-//        if ( 0 != comAssist::loadDataset( pLocalStr, strLen, col, dataCols, dataSets ) )
-//        { scpi_ret( SCPI_RES_ERR ); }
-//    }while( 0 );
-
-//    int dotSize = dataSets.size()/col;
-//    if ( (dotSize < 2) )
-//    { scpi_ret( SCPI_RES_ERR ); }logDbg()<<dotSize;
-
-//    //! t,p,v
-//    tpvRow *pDots = new tpvRow[ dotSize ];
-
-//    if ( NULL == pDots )
-//    { logDbg(); scpi_ret( SCPI_RES_ERR ); }
-
-//    int payloadLen;
-
-//    //! move data
-//    if ( col == 3 )
-//    {
-//        for( int i = 0; i < dotSize; i++ )
-//        {
-//            for ( int j = 0; j < col; j++ )
-//            {
-//                pDots[i].datas[j] = dataSets.at(i*col+j);
-//                pDots[i].setGc( true );
-//            }
-//        }
-
-//        payloadLen = dotSize;
-//    }
-//    else if ( col == 4 )
-//    {
-//        payloadLen = 0;
-//        for( int i = 0; i < dotSize; i++ )
-//        {
-//            //! enable
-//            if ( dataSets.at( i * col ) > 0 )
-//            {}
-//            else
-//            { continue; }
-
-
-//            for ( int j = 1; j < 4; j++ )
-//            {
-//                pDots[ payloadLen ].datas[j-1] = dataSets.at( i*col+j );
-//                pDots[ payloadLen ].setGc( true );
-//            }
-//            payloadLen++;
-//        }
-
-//        //! check len
-//        if ( payloadLen > 1 )
-//        {}
-//        else
-//        {
-//            gc_array( pDots );
-//            scpi_ret( SCPI_RES_ERR );
-//        }
-//    }
-//    else
-//    {
-//        gc_array( pDots );
-//        scpi_ret( SCPI_RES_ERR );
-//    }
-
-//    DEF_MRQ();
-
-//    CHECK_LINK( ax, page );
-
-//    //! send
-//    int ret = -1;
-//    ret = LOCALMRQ()->pvtWrite( tpvRegion(ax, page), pDots, payloadLen );
-
-//    gc_array( pDots );
-
-//    if ( ret != 0 )
-//    { scpi_ret( SCPI_RES_ERR ); }
-//    else
-//    { return SCPI_RES_OK; }
 }
 
 //! xxx ax,page

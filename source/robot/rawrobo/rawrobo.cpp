@@ -139,7 +139,10 @@ void RawRobo::queryState( const tpvRegion &region )
 }
 
 void RawRobo::toState( const tpvRegion &region, int stat )
-{}
+{
+    //! state changed
+//    m_pXEventSema->release();
+}
 int RawRobo::state( const tpvRegion &region, int inTask )
 {
     //! not in task
@@ -235,6 +238,7 @@ int RawRobo::waitFsm( pvt_region,
 
         Q_ASSERT( tick > 0 );
         QThread::usleep( tick );
+//        m_pXEventSema->tryAcquire( 1, tick > 1000 ? (tick/1000) : 1 );
 
         if ( state( region, 1 ) == dstState )
         { return 0; }

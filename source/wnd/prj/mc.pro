@@ -166,7 +166,6 @@ SOURCES += \
     ../../model/comboxdelegate.cpp \
     ../../com/drivercontroller.cpp \
     ../../model/checkdelegate.cpp \
-#    ../../app/tpvdownloader.cpp \
     ../../app/sampleproxy.cpp \
     ../../app/samplemgr.cpp \
     ../../app/samplethread.cpp \
@@ -375,7 +374,6 @@ HEADERS += \
     ../../model/comboxdelegate.h \
     ../../com/drivercontroller.h \
     ../../model/checkdelegate.h \
-#    ../../app/tpvdownloader.h \
     ../../app/sampleproxy.h \
     ../../app/samplemgr.h \
     ../../app/samplethread.h \

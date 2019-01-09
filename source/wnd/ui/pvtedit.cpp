@@ -50,7 +50,7 @@ pvtEdit::pvtEdit(QWidget *parent) :
     m_ptDelegate->setMin( 0 );
 
     //! check box
-    m_pboolDelegate =new checkDelegate(this);
+    m_pboolDelegate =new checkDelegate(shape_check,this);
     Q_ASSERT( NULL != m_pboolDelegate );
 }
 
@@ -263,7 +263,12 @@ int pvtEdit::postDownload( appMsg msg, void *pPara )
 
     MegaDevice::deviceMRQ *pMrq = m_pmcModel->m_pInstMgr->findDevice( str,
                                                                       axesId );
-    Q_ASSERT( NULL != pMrq );
+//    Q_ASSERT( NULL != pMrq );
+    if ( NULL == pMrq )
+    {
+        sysError( QObject::tr("Invalid device ") + str );
+        return -1;
+    }
 
     //! set loop count
     int ret;
@@ -299,6 +304,10 @@ int pvtEdit::postDownload( appMsg msg, void *pPara )
     QList<tpvRow> tpvRows;
     abstGroup.getRows( tpvRows );
 
+    //! scale t
+    for( int i = 0; i < tpvRows.size(); i++ )
+    { tpvRows[i].mT = ( tpvRows[i].mT ); }
+
     //! download
     ret = pMrq->pvtWrite( tpvRegion(axesId, page ), tpvRows );
     if ( ret != 0 )
@@ -311,6 +320,14 @@ void pvtEdit::beginDownload( void *pPara )
 }
 void pvtEdit::endDownload( int ret, void *pPara )
 {
+    if ( ret != 0 )
+    {
+        ui->btnDown->setEnabled( true );
+        ui->btnStart->setEnabled( false );
+        ui->btnStop->setEnabled( false );
+    }
+    else
+    {}
 }
 
 void pvtEdit::progDownload( int now, int from, int to, void *pPara )
@@ -411,8 +428,20 @@ void pvtEdit::gcLine()
 
 int pvtEdit::checkLine()
 {
-    //! get data
     Q_ASSERT( NULL != mTpvGroup );
+
+    //! trim invalid
+    tpvGroup trimGp;
+    mTpvGroup->trimRows( trimGp );
+    if ( trimGp.getRows()->size() > 1 )
+    {}
+    else
+    {
+        sysError( tr("Invalid dot") );
+        return ERR_INVALID_DATA;
+    }
+
+    //! get data
     QList< tpvItem *> *pRows;
     pRows = mTpvGroup->getRows();
     if ( NULL == pRows )
@@ -421,22 +450,26 @@ int pvtEdit::checkLine()
         return ERR_INVALID_DATA;
     }
 
-    if ( pRows->size() < 2 )
-    {
-        sysError( tr("Invalid dot") );
-        return ERR_INVALID_DATA;
-    }
-
     tpvItem *pItem;
     float fT = 0;
+    float fAbsT;
+
+    mTpvGroup->rstAbsT();
+
     for ( int i = 0; i < pRows->size(); i++ )
     {
         pItem = pRows->at( i );
         Q_ASSERT( NULL != pItem );
 
+        //! valid
+        if ( pItem->mValid )
+        {}
+        else
+        { continue; }
+
         //! check input
-//        if ( pItem->getT() < fT )
-        if ( mTpvGroup->getAbsT( i) < fT )
+        fAbsT = mTpvGroup->getAbsT( i );
+        if ( fAbsT < fT )
         {
             sysError( tr("Invalid time at line "), QString::number(i) );
             //! to the error time
@@ -445,10 +478,7 @@ int pvtEdit::checkLine()
             return ERR_INVALID_DATA;
         }
         else
-        {
-//            fT = pItem->getT();
-            fT = mTpvGroup->getAbsT( i );
-        }
+        { fT = fAbsT; }
     }
 
     return 0;
@@ -476,7 +506,7 @@ int pvtEdit::compileLine()
         Q_ASSERT( NULL != pItem );
 
         ends.append( QVector3D(
-                                trimGroup.getAbsT( i ),
+                                ( trimGroup.getAbsT( i ) ) * m_pmcModel->mSysPref.mTimeUnit,
                                 pItem->getP(),
                                 pItem->getV()
                               ) );

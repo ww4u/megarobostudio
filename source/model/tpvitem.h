@@ -14,7 +14,7 @@ public:
     static QString header( int col );
 
 public:
-    tpvItem( tpvType t=0, tpvType p=0, tpvType v = 0 );
+    tpvItem( tpvType t=0, tpvType p=0, tpvType v = 0, tpvType rise=0, tpvType fall=0 );
     tpvItem( const tpvItem &item );
 
     virtual ~tpvItem()
@@ -37,9 +37,14 @@ public:
     void setP( tpvType p );
     void setV( tpvType v );
 
+    void setSlope( tpvType rise, tpvType fall );
+
     tpvType getT();
     tpvType getP();
     tpvType getV();
+
+    tpvType getRise();
+    tpvType getFall();
 
 public:
     int mValid;         //! valid

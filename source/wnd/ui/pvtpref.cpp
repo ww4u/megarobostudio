@@ -10,8 +10,8 @@ modelPvtPref::modelPvtPref()
     mEncoderLines = 2000;
     mSlowRatio = 10;
 
-    mAcc = 300;
-    mDec = 300;
+    mAcc = 250;
+    mDec = 250;
 }
 
 PvtPref::PvtPref(QWidget *parent) :

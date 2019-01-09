@@ -53,7 +53,7 @@ int robotIgusDelta::goZero( const tpvRegion &region,
     }
     Q_ASSERT( NULL != pMrq );
 
-    setLoop( 1 );
+    setLoop( 1, region );
 
     int ret;
     if ( jTabId == 0 || jTabId == 1 || jTabId == 2 ) //! legs
@@ -88,7 +88,10 @@ int robotIgusDelta::goZero( const tpvRegion &region,
                                  );
     }
     else
-    { Q_ASSERT(false); }
+    {
+        ret = -1;
+        Q_ASSERT(false);
+    }
 
     return ret;
 }

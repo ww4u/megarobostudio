@@ -212,15 +212,15 @@ void robotSinanju::init()
     mHandZeroAngle = 60;
 
     mGapTime = 1;
-    mGapAngle = 3;
+    mGapAngle = 5;
 
     //! hand
     mbHandAble = true;
     mJointFactoryList.clear();
-    mJointFactoryList<<0<<-20<<-57<<100;  //! \ref to the zero
+    mJointFactoryList<<0<<-18.8<<-57.4<<103;  //! \ref to the zero
 
     mJointFactorySeperateList.clear();
-    mJointFactorySeperateList<<180<<160<<33<<10;
+    mJointFactorySeperateList<<180<<161.2<<33.6<<13;
 
     //! transfer
     for ( int i = 0; i < sizeof_array(mTransferR); i++ )

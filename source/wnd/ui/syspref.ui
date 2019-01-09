@@ -1060,28 +1060,18 @@
              <number>3</number>
             </property>
             <item row="0" column="1">
-             <widget class="QDoubleSpinBox" name="dblTimeUnit">
-              <property name="decimals">
-               <number>2</number>
+             <widget class="QSpinBox" name="dblTimeUnit">
+              <property name="suffix">
+               <string>%</string>
               </property>
               <property name="minimum">
-               <double>0.010000000000000</double>
+               <number>1</number>
               </property>
               <property name="maximum">
-               <double>10000.000000000000000</double>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="1">
-             <widget class="QDoubleSpinBox" name="dblPosUnit">
-              <property name="minimum">
-               <double>0.010000000000000</double>
-              </property>
-              <property name="maximum">
-               <double>10000.000000000000000</double>
+               <number>1000</number>
               </property>
               <property name="value">
-               <double>1.000000000000000</double>
+               <number>100</number>
               </property>
              </widget>
             </item>
@@ -1098,23 +1088,6 @@
               </property>
              </spacer>
             </item>
-            <item row="2" column="0">
-             <widget class="QLabel" name="label_10">
-              <property name="text">
-               <string>Velicity</string>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="1">
-             <widget class="QDoubleSpinBox" name="dblVelUnit">
-              <property name="minimum">
-               <double>0.010000000000000</double>
-              </property>
-              <property name="maximum">
-               <double>10000.000000000000000</double>
-              </property>
-             </widget>
-            </item>
             <item row="0" column="0">
              <widget class="QLabel" name="label_2">
               <property name="text">
@@ -1122,10 +1095,19 @@
               </property>
              </widget>
             </item>
-            <item row="1" column="0">
-             <widget class="QLabel" name="label_9">
-              <property name="text">
-               <string>Position Unit</string>
+            <item row="1" column="0" colspan="2">
+             <widget class="QSlider" name="timeSlider">
+              <property name="minimum">
+               <number>1</number>
+              </property>
+              <property name="maximum">
+               <number>1000</number>
+              </property>
+              <property name="value">
+               <number>100</number>
+              </property>
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
               </property>
              </widget>
             </item>
@@ -2021,8 +2003,8 @@ p, li { white-space: pre-wrap; }
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>486</x>
-     <y>609</y>
+     <x>495</x>
+     <y>438</y>
     </hint>
     <hint type="destinationlabel">
      <x>608</x>
@@ -2037,8 +2019,8 @@ p, li { white-space: pre-wrap; }
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>581</x>
-     <y>609</y>
+     <x>590</x>
+     <y>438</y>
     </hint>
     <hint type="destinationlabel">
      <x>611</x>
@@ -2235,6 +2217,38 @@ p, li { white-space: pre-wrap; }
     <hint type="destinationlabel">
      <x>269</x>
      <y>218</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>timeSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>dblTimeUnit</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>579</x>
+     <y>104</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>614</x>
+     <y>84</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>dblTimeUnit</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>timeSlider</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>680</x>
+     <y>85</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>669</x>
+     <y>109</y>
     </hint>
    </hints>
   </connection>

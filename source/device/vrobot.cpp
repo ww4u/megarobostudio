@@ -122,6 +122,9 @@ VRobot::VRobot()
 //    m_pRoboTask = new RoboTask();
 //    Q_ASSERT( NULL != m_pRoboTask );
     m_pRoboTask = NULL;
+
+//    m_pXEventSema = new QSemaphore();
+    m_pXEventSema = NULL;
                                         //! device
     setType( mcModelObj::model_device );
 
@@ -147,6 +150,8 @@ VRobot::~VRobot()
 
         delete m_pRoboTask;
     }
+    if ( NULL != m_pXEventSema )
+    { delete m_pXEventSema; }
 }
 
 void VRobot::init()
@@ -258,6 +263,68 @@ MegaDevice::deviceMRQ *VRobot::jointDevice( int jointId,
     pMrq = findDevice( mAxesConnectionName[ jointId ], pAxes );
 
     return pMrq;
+}
+
+QList<int> VRobot::jointPlanMode()
+{
+    MegaDevice::deviceMRQ *pMrq;
+    int ax;
+
+    QList<int> planModes;
+    for ( int i = 0; i < axes(); i++ )
+    {
+        pMrq = jointDevice( i, &ax );
+        if ( NULL == pMrq )
+        {
+            sysWarn( QObject::tr("Invalid joint, use trapzoid instead") + QString::number( i ) );
+            planModes<<1;
+        }
+        else
+        { planModes << pMrq->getModel()->mMOTIONPLAN_PLANMODE[ax][0]; }
+    }
+
+    return planModes;
+}
+
+QList<float> VRobot::jointAcc()
+{
+    MegaDevice::deviceMRQ *pMrq;
+    int ax;
+
+    QList<float> accs;
+    for ( int i = 0; i < axes(); i++ )
+    {
+        pMrq = jointDevice( i, &ax );
+        if ( NULL == pMrq )
+        {
+            sysWarn( QObject::tr("Invalid joint, use default instead") + QString::number( i ) );
+            accs<<0.25f;
+        }
+        else
+        { accs << pMrq->getAcc(ax); }
+    }
+
+    return accs;
+}
+QList<float> VRobot::jointDec()
+{
+    MegaDevice::deviceMRQ *pMrq;
+    int ax;
+
+    QList<float> accs;
+    for ( int i = 0; i < axes(); i++ )
+    {
+        pMrq = jointDevice( i, &ax );
+        if ( NULL == pMrq )
+        {
+            sysWarn( QObject::tr("Invalid joint, use default instead") + QString::number( i ) );
+            accs<<0.25f;
+        }
+        else
+        { accs << pMrq->getDec(ax); }
+    }
+
+    return accs;
 }
 
 void VRobot::setAxesConnectionName( const QStringList &names )

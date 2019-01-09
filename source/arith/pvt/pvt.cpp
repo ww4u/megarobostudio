@@ -258,3 +258,22 @@ int pvtInterp( enumInterpMode eInterp,
 
     return pvtInterp( eInterp, ends, config, tpv );
 }
+
+
+//! for slope
+int  GetCalcResult(double* pvt, int len, int mode, double* percent,int* index);
+
+int pvtSlope( double p1, double v1, double t1,
+              double p2, double v2, double t2,
+              int planMode,
+              double slopes[2],
+              int *pIndex )
+{
+    double pvt[6] = {
+                        p1, v1, t1,
+                        p2, v2, t2 };
+
+
+    return 0;
+//    return GetCalcResult( pvt, 2, planMode, slopes, pIndex );
+}

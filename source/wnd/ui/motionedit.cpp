@@ -29,7 +29,7 @@ motionEdit::motionEdit(QWidget *parent) : tableEdit(parent),
     ui->tableView->setItemDelegateForColumn( 2, m_ptDelegate );
 
     //! check box
-    m_pboolDelegate =new checkDelegate(this);
+    m_pboolDelegate =new checkDelegate(shape_check,this);
     Q_ASSERT( NULL != m_pboolDelegate );
     ui->tableView->setItemDelegateForColumn( 0, m_pboolDelegate );
 
@@ -206,7 +206,7 @@ void motionEdit::onMotionStatus( int axes,
     }
     else if ( MegaDevice::mrq_state_standby == cvtStat )
     {
-        down_start_stop( true, false, false );
+        down_start_stop( true, false, true );
     }
     else if ( MegaDevice::mrq_state_prerun == cvtStat )
     {

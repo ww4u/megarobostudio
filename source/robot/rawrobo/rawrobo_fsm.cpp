@@ -103,6 +103,8 @@ void RawRoboFsm::toState( int stat, RoboMsg &detail )
 
         Q_ASSERT( NULL != m_pRobot );
         m_pRobot->toState( *this, stat );
+
+
     }
     else
     { Q_ASSERT(false); }

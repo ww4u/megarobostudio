@@ -118,12 +118,13 @@ void queryMgr::setupUi()
     m_pDelegate2 = new comboxDelegate(this);
 
     //! check box
-    m_pDelegate1 =new checkDelegate(this);
+    m_pDelegate1 =new checkDelegate(shape_check,this);
 
     //! chans by inst mgr
 
     //! items
     m_pDelegate3 = new comboxDelegate(this);
+
     QStringList strList;
     strList.clear();
     //! \todo read from cfg file

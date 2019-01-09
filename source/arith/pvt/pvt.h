@@ -54,4 +54,10 @@ int pvtInterp(  enumInterpMode eInterp,
                                 //! out
                 QList< QVector3D > &tpv );
 
+int pvtSlope( double p1, double v1, double t1,
+              double p2, double v2, double t2,
+              int planMode,
+              double slopes[2],
+              int *pIndex );
+
 #endif

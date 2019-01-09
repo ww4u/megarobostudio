@@ -1,6 +1,6 @@
 #include "tpvgroup.h"
 #include <QColor>
-
+#include "../arith/pvt/pvt.h"
 tpvGroup* tpvGroup::createDemoGroup1()
 {
     return createDemoGroup( 0.5f, 180.0f*0.5 );
@@ -39,10 +39,40 @@ tpvGroup* tpvGroup::createDemoGroup( float dT, float dP )
     return pGroup;
 }
 
+int tpvGroup::slopelize( QList<tpvGroup*> gps,
+                      QList<int> planModes,
+                      QList<float> rises,
+                      QList<float> falls,
+                      int *pErrGp, int *pErrRow )
+{
+    int ret = 0;
+    *pErrGp = -1;
+
+    //! check size
+    Q_ASSERT( planModes.size() == gps.size() );
+    Q_ASSERT( planModes.size() == rises.size() );
+    Q_ASSERT( planModes.size() == rises.size() );
+
+    for ( int i = 0; i < gps.size(); i++ )
+    {
+        ret = gps.at( i )->slopelize( planModes.at(i),
+                                      rises.at(i),
+                                      falls.at(i),
+                                      pErrRow );
+        if ( ret != 0 )
+        {
+            *pErrGp = i;
+            return ret;
+        }
+    }
+
+    return 0;
+}
+
 tpvGroup::tpvGroup() : MegaTableModel("joint","")
 {
     mtType = time_abs;
-    mSumT = 0;
+    mSumT = -1;
 }
 
 tpvGroup::~tpvGroup()
@@ -223,7 +253,11 @@ QList< tpvItem *> * tpvGroup::getRows( QList<tpvRow> &rows )
 
         if ( pItem->mValid )
         {
-            rows.append( tpvRow( pItem->getT(), pItem->getP(), pItem->getV() ) );
+            rows.append( tpvRow( pItem->getT(),
+                                 pItem->getP(),
+                                 pItem->getV(),
+                                 pItem->getRise(),
+                                 pItem->getFall() ) );
         }
     }
 
@@ -243,7 +277,8 @@ void tpvGroup::trimRows( tpvGroup &gp )
 
         if ( pItem->mValid )
         {
-            gp.addItem( pItem->getT(), pItem->getP(), pItem->getV() );
+            gp.addItem( pItem->getT(), pItem->getP(), pItem->getV(),
+                        pItem->getRise(), pItem->getFall() );
         }
     }
 }
@@ -275,7 +310,40 @@ void tpvGroup::abstimeRows( tpvGroup &gp )
     gp.setTimeType( time_abs );
 }
 
-int tpvGroup::addItem( tpvType t, tpvType p, tpvType v )
+//! 0 -- cubic
+//! 1 -- trapzoid
+//! 2 -- s
+int tpvGroup::slopelize( int planMode,
+                         float rise, float fall,
+                         int *errRow )
+{
+    int errIndex;
+    int ret;
+    double slopes[2]={ rise,fall };
+
+    *errRow = -1;
+    for ( int i = 0; i < mItems.size() - 1 ; i++ )
+    {
+        ret = pvtSlope( mItems.at(i)->mP, mItems.at(i)->mV, mItems.at(i)->mT,
+                        mItems.at(i+1)->mP, mItems.at(i+1)->mV, mItems.at(i+1)->mT,
+                        planMode,
+                        slopes,
+                        &errIndex
+                  );
+        if ( ret != 0 )
+        {
+            *errRow = i;
+            return ret;
+        }
+
+        //! save to the next
+        mItems.at(i+1)->setSlope( slopes[0], slopes[1] );
+    }
+
+    return 0;
+}
+
+int tpvGroup::addItem( tpvType t, tpvType p, tpvType v, tpvType rise, tpvType fall  )
 {
     tpvItem *pItem;
 
@@ -284,7 +352,7 @@ int tpvGroup::addItem( tpvType t, tpvType p, tpvType v )
 //    if ( NULL != pItem )
 //    { logDbg()<<t; return -1; }
 
-    pItem = new tpvItem( t, p, v );
+    pItem = new tpvItem( t, p, v, rise, fall  );
     if ( NULL == pItem )
     { logDbg(); return -2; }
 
@@ -327,18 +395,19 @@ int tpvGroup::clear()
     return 0;
 }
 
+void tpvGroup::rstAbsT()
+{ mSumT = -1; }
+
 tpvType tpvGroup::getAbsT( int index )
 {
     Q_ASSERT( index >= 0 && index < mItems.size() );
 
     if ( mtType == time_rel )
     {
-        if ( index == 0 )
+        if ( mSumT < 0 )
         { mSumT = mItems.at(index)->getT(); }
         else
-        {
-            mSumT += mItems.at(index)->getT();
-        }
+        { mSumT += mItems.at(index)->getT(); }
 
         return mSumT;
     }

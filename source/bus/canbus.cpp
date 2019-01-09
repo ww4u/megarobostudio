@@ -999,7 +999,7 @@ int CANBus::collectRecvId( QMap< int, quint32 > &sendRecvMap )
     //! 5. check hash count
     if ( frame > sendRecvMap.size() )
     {
-        sysWarn( QObject::tr("Receive id conflict") );
+        sysPrompt( QObject::tr("Receive id conflict") );
     }
 
     return 0;

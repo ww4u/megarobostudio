@@ -489,7 +489,8 @@ void receiveCache::append( frameData &ary )
     {
 //        logDbg()<<ary.frameId()<<ary.size();
     }
-    else
+    //! \note input the receive cache
+//    else
     {
         lockWarehouse();
         mFrameWarehouse.inFrame( ary );

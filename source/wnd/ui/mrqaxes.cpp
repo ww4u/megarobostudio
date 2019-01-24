@@ -337,4 +337,6 @@ void mrqAxes::on_cmbMotionType_currentIndexChanged(int index)
         ui->cmbPosUnit->setVisible( false );
         ui->cmbPosUnitmm->setVisible( true );
     }
+                                                //! 0-degree,1-mm
+    emit sigSettingChanged( setting_mrq_motion_unit, index );
 }

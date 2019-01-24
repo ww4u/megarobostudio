@@ -29,6 +29,8 @@ protected slots:
     void slot_toolbar_del();
     void slot_toolbar_clr();
 
+    void slot_data_changed();
+
 private slots:
     void on_btnStart_clicked();
 

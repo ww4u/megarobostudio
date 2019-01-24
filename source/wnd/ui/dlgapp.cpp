@@ -28,6 +28,12 @@ DlgApp::DlgApp(SysPara *pPara,
              this, SLOT(slot_toolbar_del()));
     connect( ui->appToolBar, SIGNAL(signal_clr_clicked()),
              this, SLOT(slot_toolbar_clr()));
+
+    //! model changed
+    connect( m_pModel, SIGNAL( signal_data_changed()),
+             this, SLOT( slot_data_changed() ) );
+
+    slot_data_changed();
 }
 
 DlgApp::~DlgApp()
@@ -65,31 +71,65 @@ void DlgApp::slot_toolbar_clr()
     }
 }
 
+void DlgApp::slot_data_changed()
+{
+    bool bEn = ui->tableView->currentIndex().isValid();
+
+    ui->btnStart->setEnabled( bEn );
+    ui->btnKill->setEnabled( bEn );
+}
+
 void DlgApp::on_btnStart_clicked()
-{logDbg();
+{
+    if ( ui->tableView->currentIndex().isValid() )
+    {}
+    else
+    {
+        MegaMessageBox::warning( this, tr("Fail"), tr("Invalid item") );
+        return;
+    }
+
     //! current
     int ind;
     ind = ui->tableView->currentIndex().row();
-    AppItem *pItem = m_pModel->mItems[ ind ];
+    AppItem *pItem = m_pModel->mItems.at( ind );
     if ( NULL != pItem )
     {
         int ret = m_pMgr->startApp( pItem );
         if ( ret != 0 )
         { MegaMessageBox::warning( this, tr("Fail"), tr("Fail to start") ); }
     }
+    else
+    {
+        MegaMessageBox::warning( this, tr("Fail"), tr("Invalid item") );
+        return;
+    }
 }
 
 void DlgApp::on_btnKill_clicked()
 {
+    if ( ui->tableView->currentIndex().isValid() )
+    {}
+    else
+    {
+        MegaMessageBox::warning( this, tr("Fail"), tr("Invalid item") );
+        return;
+    }
+
     //! current
     int ind;
     ind = ui->tableView->currentIndex().row();
-    AppItem *pItem = m_pModel->mItems[ ind ];
+    AppItem *pItem = m_pModel->mItems.at( ind );
     if ( NULL != pItem )
     {
         int ret = m_pMgr->stopApp( pItem );
         if ( ret != 0 )
         { MegaMessageBox::warning( this, tr("Fail"), tr("Fail to stop") ); }
+    }
+    else
+    {
+        MegaMessageBox::warning( this, tr("Fail"), tr("Invalid item") );
+        return;
     }
 }
 

@@ -39,6 +39,19 @@ int mrqAxes2::setApply()
 void mrqAxes2::modelChanged()
 { updateUi(); }
 
+void mrqAxes2::settingChanged(enumSetting setting, const QVariant &v)
+{
+    if ( setting == setting_mrq_motion_unit && v.isValid() )
+    {
+        if ( v.toInt() == 0 )    //! degree
+        { ui->spinStopDistance->setSuffix( char_deg ); }
+        else if ( v.toInt() == 1 )
+        { ui->spinStopDistance->setSuffix( "mm" ); }
+        else
+        {}
+    }
+}
+
 void mrqAxes2::spyEdited()
 {
     QGroupBox *gpBox[]=
@@ -215,13 +228,19 @@ int mrqAxes2::updateUi()
     ui->spinOutOfLine->setValue( m_pMrqModel->mMOTIONPLAN_OOSLINEOUTNUM[mAxesId][0] );
     ui->cmbLineResponse->setCurrentIndex( m_pMrqModel->mMOTIONPLAN_OOSLINERESPONSE[mAxesId][0] );
 
+    //! adapt ui
+    if ( m_pMrqModel->mMOTOR_POSITIONUNIT[mAxesId] == MRQ_MOTOR_POSITIONUNIT_MILLIMETER )
+    { ui->spinStopDistance->setSuffix( "mm" ); }
+    else
+    { ui->spinStopDistance->setSuffix( char_deg ); }
+
     return 0;
 }
 
 void mrqAxes2::on_cmbStopMode_currentIndexChanged(int index)
 {
     bool bDelayVisible;
-    if ( index == 0 )
+    if ( index == 0 || index == 2 )
     { bDelayVisible = false; }
     else
     { bDelayVisible = true; }

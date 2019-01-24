@@ -123,11 +123,11 @@ protected:
 };
 
 #define MRV_PROGRESS( prog, info )      sysProgress( prog, info ); \
-                                    sysProgress( true );
+//                                    sysProgress( true );
 
 
 #define MRV_PROGRESS_HIDE()             \
-                                    sysProgress( false );
+//                                    sysProgress( false );
 
 }
 

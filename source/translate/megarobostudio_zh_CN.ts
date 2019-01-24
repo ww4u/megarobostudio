@@ -4373,7 +4373,7 @@
     </message>
     <message>
         <source>save success</source>
-        <translation type="unfinished">保持成功</translation>
+        <translation type="unfinished">保存成功</translation>
     </message>
     <message>
         <source>error</source>

@@ -268,6 +268,9 @@ void roboProp::setupUi( int id )
         connect( pView, SIGNAL(sigModified(bool)),
                  this,  SLOT(slotModified(bool)) );
 
+        connect( pView, SIGNAL(sigUpdated()),
+                 this, SLOT(slotUpdated()) );
+
         pView->adaptToUserRole();
     }
 
@@ -302,7 +305,7 @@ int roboProp::postApply( appMsg msg, void *pPara )
         Q_ASSERT( NULL != pView );
 
         sysProgress( id++, pView->name(), mPrefPages.size(), 0 );
-        sysProgress( true );
+//        sysProgress( true );
         ret = pView->setApply();
         sysProgress( id, pView->name(), mPrefPages.size(), 0 );
         if ( ret != 0 )
@@ -356,7 +359,7 @@ int roboProp::postReset( appMsg msg, void *pPara )
         Q_ASSERT( NULL != pView );
 
         sysProgress( id++, pView->name(), mPrefPages.size(), 0 );
-        sysProgress( true );
+//        sysProgress( true );
         ret = pView->setReset();
         sysProgress( id, pView->name(), mPrefPages.size(), 0 );
         if ( ret != 0 )
@@ -411,6 +414,11 @@ void roboProp::restoreBtnSnap()
     ui->btnOK->setEnabled( mbtnEnableSnap[1] );
     ui->btnCancel->setEnabled( mbtnEnableSnap[2] );
     ui->btnReset->setEnabled( mbtnEnableSnap[3] );
+}
+
+void roboProp::slotUpdated()
+{
+    updateScreen();
 }
 
 void roboProp::slot_page_changed( int index )

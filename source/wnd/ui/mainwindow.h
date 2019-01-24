@@ -265,7 +265,7 @@ public slots:
     void on_actionNewPVT_triggered();
     void on_actionPT_triggered();
     void on_actionScene_triggered();
-    void on_actionGraph_triggered();
+//    void on_actionGraph_triggered();
 
     void on_actionAbout_triggered();
     void on_actionDocs_triggered();

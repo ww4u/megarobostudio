@@ -191,6 +191,17 @@ void mrqProperty::updateScreen()
 void mrqProperty::setActive()
 { emit sigActiveDeviceChanged( m_pSysPage->deviceName() ); }
 
+void mrqProperty::settingChanged( enumSetting setting, const QVariant &v )
+{
+    //! for each page
+    for( int i = 0; i < ui->stackedWidget->count(); i++ )
+    {
+        Q_ASSERT( NULL != ui->stackedWidget->widget(i) );
+
+        ((mrqView*)ui->stackedWidget->widget(i))->settingChanged( setting, v );
+    }
+}
+
 void mrqProperty::setupUi()
 {
     //! new
@@ -364,6 +375,9 @@ void mrqProperty::setupUi()
         connect( pView, SIGNAL(sigModified(bool)),
                  this,  SLOT(slotModified(bool)) );
 
+        connect( pView, SIGNAL(sigSettingChanged(enumSetting,QVariant)),
+                 this, SLOT(slot_setting_changed(enumSetting,QVariant)));
+
         pView->adaptToUserRole();
     }
 
@@ -411,7 +425,7 @@ int mrqProperty::postApply( appMsg msg, void *pPara )
     {
         Q_ASSERT( NULL != pView );
         sysProgress( id++, pView->name(), cfgViews.size(), 0 );
-        sysProgress( true );
+//        sysProgress( true );
         pView->setApply();
 
         sysProgress( id, pView->name(), cfgViews.size(), 0 );

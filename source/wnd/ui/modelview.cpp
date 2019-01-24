@@ -110,6 +110,11 @@ void modelView::slot_device_busy( bool b)
     setEnabled( !b );
 }
 
+void modelView::slot_setting_changed( enumSetting setting, QVariant v )
+{
+    settingChanged( setting, v );
+}
+
 bool modelView::isCanceAble()
 { return is_bit1(mAttributes,CANCEL_ABLE_BIT); }
 bool modelView::isOkAble()
@@ -227,6 +232,9 @@ void modelView::updateModel()
 {}
 
 void modelView::setActive()
+{}
+
+void modelView::settingChanged( enumSetting setting, const QVariant &v )
 {}
 
 void modelView::onRequest( RpcRequest &req )

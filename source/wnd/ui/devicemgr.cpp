@@ -459,6 +459,7 @@ int deviceMgr::postLoadOn( appMsg msg, void *pPara )
 void deviceMgr::beginLoadOn( void *pPara )
 {
     setBusy( true );
+    setEnabled( false );
 
     ui->pushButton->setEnabled( false );
 
@@ -469,6 +470,7 @@ void deviceMgr::beginLoadOn( void *pPara )
 }
 void deviceMgr::endLoadOn( int ret, void *pPara )
 {
+    setEnabled( true );
     ui->pushButton->setEnabled( true );
 
     sysProgress( false );
@@ -708,7 +710,7 @@ void deviceMgr::context_mrq_panel()
 
     //! check exist
     RoboView* pView;
-    pView = RoboView::findView( (VRobot*)m_pmcModel, RoboView::view_axes, mCurrentAxes );
+    pView = RoboView::findView( (VRobot*)m_pMRQ, RoboView::view_axes, mCurrentAxes );
     if ( NULL != pView )
     {
         pView->activateWindow();

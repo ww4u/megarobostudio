@@ -22,6 +22,14 @@ class modelView : public appWidget
 {
     Q_OBJECT
 
+public:
+    enum enumSetting
+    {
+        setting_unk,
+        setting_mrq_motion_unit,
+    };
+
+
 protected:
     static dpcObj *m_pDpcObj;
 
@@ -40,14 +48,18 @@ protected:
 public:
     void adaptToUserRole();
     virtual void adaptToModel();
+
 Q_SIGNALS:
     void sigClose( QWidget * );
     void sigSaveRequest( QWidget * );
+    void sigUpdated();
 
     void sigModified( bool b );
     void sigModified( modelView *pView, bool b );
 
     void sigActiveDeviceChanged( const QString &devName );
+
+    void sigSettingChanged( enumSetting setting, QVariant v );
 
 protected Q_SLOTS:
     void slot_modified();
@@ -56,6 +68,7 @@ protected Q_SLOTS:
     void slot_request( const RpcRequest &req );
     void slot_device_busy( bool b);
 
+    void slot_setting_changed( enumSetting setting, QVariant v );
     //! ui attr
 public:
     bool isCanceAble();
@@ -91,6 +104,8 @@ public:
     virtual void updateModel();
 
     virtual void setActive();
+
+    virtual void settingChanged( enumSetting setting, const QVariant &v );
 
 protected:
     virtual void onRequest( RpcRequest &req );
@@ -152,7 +167,8 @@ protected:
 
 //! spy
 #define spy_control_edit( control )   connect( control, SIGNAL(editingFinished()), this, SLOT(slot_modified())); enable_edit( control );
-#define spy_control_combox( control ) connect( control, SIGNAL(currentIndexChanged(int)), this, SLOT(slot_modified())); enable_edit( control );
+//#define spy_control_combox( control ) connect( control, SIGNAL(currentIndexChanged(int)), this, SLOT(slot_modified())); enable_edit( control );
+#define spy_control_combox( control ) connect( control, SIGNAL(activated(int)), this, SLOT(slot_modified())); enable_edit( control );
 #define spy_control_checkbox( control ) connect( control, SIGNAL(clicked()), this, SLOT(slot_modified())); enable_edit( control );
 
 #define install_spy()       \

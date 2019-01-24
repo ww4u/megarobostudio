@@ -523,6 +523,100 @@ static scpi_result_t _scpi_program( scpi_t * context )
     return SCPI_RES_OK;
 }
 
+//! ax,page,fmt,datas
+//! tpv: t,p,v,t,p,v,t,p,v,t,p,v
+//! tp: tp
+static scpi_result_t _scpi_download( scpi_t * context )
+{
+    DEF_LOCAL_VAR();
+
+    int ax, page;
+
+    //! deload success
+    if ( deload_ax_page( context, ax, page ) == SCPI_RES_OK )
+    {}
+    else
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    //! deload the format
+    if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
+    { return( SCPI_RES_ERR ); }
+    if (strLen < 1)
+    { return( SCPI_RES_ERR ); }
+
+    //! get the type as the character is all leaving
+    char localStr[ strLen + 1 ] = {0};
+    memcpy( localStr, pLocalStr, strLen );
+    //! fill the \' \"
+    for ( int i = 0; i < strLen; i++ )
+    {
+        if ( localStr[ i ] == '\'' )
+        { localStr[i] = 0; break; }
+        else if ( localStr[ i ] == '\"' )
+        { localStr[i] = 0; break; }
+        else
+        {}
+    }
+
+    //! deparse the tpvs
+    float datasets[256];
+    size_t oCount;
+    if ( SCPI_ParamArrayFloat( context, datasets, sizeof_array(datasets), &oCount, SCPI_FORMAT_ASCII, true ) )
+    {}
+    else
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    //! change the data
+    logDbg()<<oCount;
+    for ( int i = 0; i < oCount; i++ )
+    { logDbg()<<datasets[i]; }
+    logDbg()<<pLocalStr;
+
+    QList<tpvRow> curve;
+
+    //! proc the data
+    //! check 3
+    if ( str_is( localStr, "tpv") )
+    {
+        if ( ( oCount / 3 ) > 1 && ((oCount%3) == 0) )
+        {
+            for ( int i = 0; i < (int)oCount / 3; i++ )
+            {
+                curve.append( tpvRow( datasets[3*i+0], datasets[3*i+1], datasets[3*i+2] ) );
+            }
+        }
+        else
+        { scpi_ret( SCPI_RES_ERR ); }
+    }
+    //! check 2
+    else if ( str_is( localStr, "tp") )
+    {
+        if ( ( oCount / 2 ) > 1 && ( (oCount%2) == 0) )
+        {
+            for ( int i = 0; i < (int)oCount / 2; i++ )
+            {
+                curve.append( tpvRow( datasets[2*i+0], datasets[2*i+1] ) );
+            }
+        }
+        else
+        { scpi_ret( SCPI_RES_ERR ); }
+    }
+    else
+    {
+        { scpi_ret( SCPI_RES_ERR ); }
+    }
+
+    DEF_MRQ();
+
+    CHECK_LINK( ax, page );
+
+    //! real curve
+    if ( 0 != LOCALMRQ()->pvtWrite( tpvRegion(ax, page), curve ) )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    return SCPI_RES_OK;
+}
+
 //! xxx ax,page
 static scpi_result_t _scpi_fsmState( scpi_t * context )
 {
@@ -995,7 +1089,7 @@ static scpi_command_t _mrq_scpi_cmds[]=
     CMD_ITEM( "DISTANCE?", _scpi_distance ),
 
     CMD_ITEM( "PROGRAM", _scpi_program ),
-    CMD_ITEM( "DOWNLOAD", _scpi_program ),
+    CMD_ITEM( "DOWNLOAD", _scpi_download ),
 
     CMD_ITEM( "CALL", _scpi_call ),
 

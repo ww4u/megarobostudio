@@ -1224,10 +1224,21 @@ static scpi_result_t _scpi_jointMove( scpi_t * context )
     return SCPI_RES_OK;
 }
 
+static scpi_result_t _scpi_tst( scpi_t * context )
+{
+    float ary[10]={1,2,3,4,5,6,7,8,9,10 };
+
+    SCPI_ResultArrayFloat( context, ary, 10, SCPI_FORMAT_ASCII );
+
+    return SCPI_RES_OK;
+}
+
 static scpi_command_t _scpi_cmds[]=
 {
 
     COM_ITEMs(),
+
+    CMD_ITEM("TST?", _scpi_tst ),
 
     CMD_ITEM( "*IDN?", _scpi_idn ),
     CMD_ITEM( "RUN",  _scpi_run ),

@@ -231,7 +231,7 @@ int MrvProp::postApply( appMsg msg, void *pPara )
     {
         Q_ASSERT( NULL != pView );
         sysProgress( id++, pView->name(), mViewPages.size(), 0 );
-        sysProgress( true );
+//        sysProgress( true );
         pView->setApply();
 
         sysProgress( id, pView->name(), mViewPages.size(), 0 );

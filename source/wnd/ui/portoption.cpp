@@ -281,7 +281,7 @@ void PortOption::on_btnScan_clicked()
 
     mSearchThread.start();
 
-    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
 }
 
 void PortOption::on_tolIndicator_clicked(bool checked)

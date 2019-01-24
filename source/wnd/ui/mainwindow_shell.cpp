@@ -266,7 +266,6 @@ static scpi_result_t _scpi_rpgc( scpi_t *context )
     return SCPI_RES_OK;
 }
 
-
 //!
 static scpi_result_t _scpi_rpls( scpi_t *context )
 {
@@ -283,6 +282,36 @@ static scpi_result_t _scpi_rpls( scpi_t *context )
 
     //! content
     SCPI_ResultText( context, content.toLatin1().data() );
+
+    return SCPI_RES_OK;
+}
+
+static scpi_result_t _scpi_tst( scpi_t *context )
+{
+    DEF_LOCAL_VAR();
+
+    DEF_MGR();
+
+    if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
+    { scpi_ret( SCPI_RES_ERR ); }logDbg()<<strLen<<pLocalStr;
+
+    //! file
+    if (strLen < 1)
+    { return( SCPI_RES_ERR ); }
+
+    //! find the input file
+//    QByteArray byteName( pLocalStr, strLen );
+
+//    QString fileInName ( byteName.data() );
+//    QString fileInName = QString::fromLatin1( pLocalStr, strLen );
+    QString fileInName = QString::fromUtf8( pLocalStr, strLen );
+
+    if ( comAssist::ammendFileName( fileInName ) )
+    {
+        logDbg()<<fileInName;
+    }
+    else
+    { return( SCPI_RES_ERR ); }
 
     return SCPI_RES_OK;
 }
@@ -315,6 +344,7 @@ static scpi_command_t _mrq_scpi_cmds[]=
     CMD_ITEM( "rpls", _scpi_rpls ),
     CMD_ITEM( "rpgc", _scpi_rpgc ),
 
+    CMD_ITEM( "TST", _scpi_tst ),
 //    CMD_ITEM( "*LRN", _scpi_lrn ),      //! setupfile
 //    CMD_ITEM( "HRST", _scpi_hrst ),
 

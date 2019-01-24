@@ -217,6 +217,7 @@ void sysPref::updateUi()
     ui->chkShowNotice->setChecked( m_pPref->mbShowNotice );
     ui->chkHelp->setChecked( m_pPref->mbShowHelp );
     ui->chkStateInterrupt->setChecked( m_pPref->mbStateInterrupt );
+    ui->chkNewAutoAdd->setChecked( m_pPref->mbNewAutoAdd );
 
     ui->chkLoadLast->setChecked( m_pPref->mbAutoLoadPrj );
     ui->chkAutoZeroAffirm->setChecked( m_pPref->mbAffirmZero );
@@ -326,6 +327,7 @@ void sysPref::updateData()
     m_pPref->mbShowNotice = ui->chkShowNotice->isChecked();
     m_pPref->mbShowHelp = ui->chkHelp->isChecked();
     m_pPref->mbStateInterrupt = ui->chkStateInterrupt->isChecked();
+    m_pPref->mbNewAutoAdd = ui->chkNewAutoAdd->isChecked();
 
     m_pPref->mbAutoLoadPrj = ui->chkLoadLast->isChecked();
     m_pPref->mbAffirmZero = ui->chkAutoZeroAffirm->isChecked();
@@ -436,7 +438,7 @@ void sysPref::on_buttonBox_clicked(QAbstractButton *button)
     {
         if ( QMessageBox::Ok !=
              MegaMessageBox::question( this, QString(tr("Confirm") ),
-                                       QString( tr("Confirm to reset") ),
+                                       QString( tr("Confirm to reset all settings") ),
                                        QMessageBox::Ok, QMessageBox::Cancel ) )
         { return; }
 

@@ -361,7 +361,8 @@ QComboBox::down-arrow:on { /* shift the arrow when popup is open */
 	  selection-background-color:#00a3d9;
   }
 
-QPlainTextEdit:disabled, QLineEdit:disabled,QSpinBox:disabled,QDoubleSpinBox:disabled, QComboBox:disabled
+QPlainTextEdit:disabled, QLineEdit:disabled,QSpinBox:disabled,QDoubleSpinBox:disabled, QComboBox:disabled,
+QLineEdit:read-only
 
 {
 	background-color : gray;

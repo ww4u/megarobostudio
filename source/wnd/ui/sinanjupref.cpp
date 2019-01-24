@@ -336,15 +336,24 @@ void SinanjuPref::on_btnUploadZero_clicked()
     int ver;
     ver = pBase->getMechanicalVersion();
     if ( ver == 0x5A )
-    { ui->chkInvBase->setChecked(false); }
+    {
+//        ui->chkInvBase->setChecked(false);
+        pBase->mAngleDir[0] = false;
+        //! modify the base length
+        pBase->mArmLengths[0] = 263.8;
+    }
     else
-    { ui->chkInvBase->setChecked(true); }
+    {
+//        ui->chkInvBase->setChecked(true);
+        pBase->mAngleDir[0] = true;
+        pBase->mArmLengths[0] = 257;
+    }
 
     //! update the ui
-    ui->spinAngleBase->setValue( zeros[0] );
-    ui->spinAngleBArm->setValue( zeros[1] );
-    ui->spinAngleSArm->setValue( zeros[2] );
-    ui->spinAngleWrist->setValue( zeros[3] );
+//    ui->spinAngleBase->setValue( zeros[0] );
+//    ui->spinAngleBArm->setValue( zeros[1] );
+//    ui->spinAngleSArm->setValue( zeros[2] );
+//    ui->spinAngleWrist->setValue( zeros[3] );
 
     //! save the angle
     Q_ASSERT( pBase->mInitAngles.size() >= 4 );
@@ -358,6 +367,9 @@ void SinanjuPref::on_btnUploadZero_clicked()
 
     //! \note widget is not roboprop
     emit sigSaveRequest( this );
+
+    //! update the other page
+    emit sigUpdated();
 
     emit sigModified( true );
 }

@@ -229,6 +229,11 @@ void MainWindow::on_itemx_active( mcModelObj* pObj )
                  SIGNAL(signalSceneChanged()),
                  this,
                  SLOT(slot_scene_changed()) );
+
+        connect( pWorkScene,
+                 SIGNAL(signal_itemXHelp(eItemHelp, const QString & )),
+                 this,
+                 SLOT(slot_itemXHelp(eItemHelp, const QString &)) );
     }
 
     //! graph file
@@ -672,44 +677,44 @@ void MainWindow::on_actionScene_triggered()
     emit itemXActivated( pNewModelObj );
 }
 
-void MainWindow::on_actionGraph_triggered()
-{
-    //! check prj
-    if ( asurePrjValid() )
-    {}
-    else
-    { return; }
+//void MainWindow::on_actionGraph_triggered()
+//{
+//    //! check prj
+//    if ( asurePrjValid() )
+//    {}
+//    else
+//    { return; }
 
-    QFileDialog fDlg;
+//    QFileDialog fDlg;
 
-    fDlg.setAcceptMode( QFileDialog::AcceptSave );
-    fDlg.setNameFilter( tr("graph file (*.mrg)") );
-    if ( QDialog::Accepted != fDlg.exec() )
-    { return; }
+//    fDlg.setAcceptMode( QFileDialog::AcceptSave );
+//    fDlg.setNameFilter( tr("graph file (*.mrg)") );
+//    if ( QDialog::Accepted != fDlg.exec() )
+//    { return; }
 
-    MrgGraphModel *pGraph = new MrgGraphModel();
-    mcModelObj *pNewModelObj = pGraph;
-    Q_ASSERT( NULL != pNewModelObj );
+//    MrgGraphModel *pGraph = new MrgGraphModel();
+//    mcModelObj *pNewModelObj = pGraph;
+//    Q_ASSERT( NULL != pNewModelObj );
 
-    //! auto add
-    if ( mMcModel.mSysPref.mbNewAutoAdd )
-    { m_pScriptMgr->slot_file_import( fDlg.selectedFiles().first() ); }
+//    //! auto add
+//    if ( mMcModel.mSysPref.mbNewAutoAdd )
+//    { m_pScriptMgr->slot_file_import( fDlg.selectedFiles().first() ); }
 
-    //! save
-    pGraph->save( fDlg.selectedFiles().first() );
+//    //! save
+//    pGraph->save( fDlg.selectedFiles().first() );
 
-    pNewModelObj->setPath( fDlg.directory().absolutePath() );
-    pNewModelObj->setName( comAssist::pureFileName( fDlg.selectedFiles().first() ) );
-    pNewModelObj->setFullName( fDlg.selectedFiles().first() );
+//    pNewModelObj->setPath( fDlg.directory().absolutePath() );
+//    pNewModelObj->setName( comAssist::pureFileName( fDlg.selectedFiles().first() ) );
+//    pNewModelObj->setFullName( fDlg.selectedFiles().first() );
 
-    pNewModelObj->setGc( true );
-    pNewModelObj->setShadow( true );
-    pNewModelObj->set( mcModelObj::model_graph_file, pNewModelObj );
+//    pNewModelObj->setGc( true );
+//    pNewModelObj->setShadow( true );
+//    pNewModelObj->set( mcModelObj::model_graph_file, pNewModelObj );
 
-    Q_ASSERT( NULL != pNewModelObj );
+//    Q_ASSERT( NULL != pNewModelObj );
 
-    emit itemXActivated( pNewModelObj );
-}
+//    emit itemXActivated( pNewModelObj );
+//}
 
 //! about
 void MainWindow::on_actionAbout_triggered()

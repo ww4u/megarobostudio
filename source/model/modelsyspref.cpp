@@ -66,7 +66,8 @@ void modelSysPref::rst()
     mbStateInterrupt = false;
     mbNewAutoAdd = true;
 
-    mDumpPath = QCoreApplication::applicationDirPath() + "/temp";
+//    mDumpPath = QCoreApplication::applicationDirPath() + "/temp";
+    mDumpPath = QDir::tempPath();
     mEventLogFile = "eventlog.dat";
 
     //! database
@@ -236,7 +237,7 @@ int modelSysPref::save( const QString &str )
     writer.writeTextElement( "latest_prj_path", mLatestPrjPath );
     writer.writeTextElement( "latest_prj_name", mLatestPrjName );
 
-    writer.writeTextElement( "dump", mDumpPath );
+//    writer.writeTextElement( "dump", mDumpPath );
     writer.writeTextElement( "event_log", mEventLogFile );
 
     writer.writeEndElement();
@@ -515,7 +516,7 @@ int modelSysPref::load( const QString &str )
                         else if ( reader.name() == "latest_prj_name" )
                         { mLatestPrjName = reader.readElementText(); }
                         else if ( reader.name() == "dump" )
-                        { mDumpPath = reader.readElementText(); }
+                        { reader.skipCurrentElement(); /*mDumpPath = reader.readElementText();*/  }
                         else if ( reader.name() == "event_log" )
                         { mEventLogFile = reader.readElementText(); }
                         else

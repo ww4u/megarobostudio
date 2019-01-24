@@ -53,6 +53,9 @@ public:
     virtual void updateScreen();
 
     virtual void setActive();
+
+    void settingChanged( enumSetting setting, const QVariant &v );
+
 protected:
     void setupUi( );
     void desetupUi();

@@ -78,6 +78,8 @@ protected:
     void restoreBtnSnap();
 
 private slots:
+    void slotUpdated();
+
     void slot_page_changed( int index );
 
     void on_btnOK_clicked();

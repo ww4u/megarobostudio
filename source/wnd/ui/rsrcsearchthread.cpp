@@ -2,11 +2,11 @@
 
 #include "../../include/mcstd.h"
 #include "../../bus/canapi.h"
+#include <QApplication>
 
 #ifdef NI_VISA
 #include "visa.h"
 #endif
-
 
 RsrcSearchThread::RsrcSearchThread( QObject *parent ) : QThread( parent )
 {
@@ -17,7 +17,11 @@ void RsrcSearchThread::run()
 {
     mSearchList.clear();
 
-    search();
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
+        search();
+
+    QApplication::restoreOverrideCursor();
 }
 
 void RsrcSearchThread::setOption( int type, const QString & patt )

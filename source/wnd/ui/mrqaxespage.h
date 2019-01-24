@@ -31,6 +31,7 @@ public:
 public:
     virtual void modelChanged();
     virtual void adaptToModel();
+    virtual void settingChanged(enumSetting setting, const QVariant &v);
 protected:
     void spyEdited();
 //    void setupUi();

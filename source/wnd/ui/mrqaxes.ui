@@ -821,6 +821,9 @@
              <property name="minimum">
               <number>1</number>
              </property>
+             <property name="maximum">
+              <number>1000</number>
+             </property>
             </widget>
            </item>
            <item row="1" column="0">
@@ -834,6 +837,9 @@
             <widget class="QSpinBox" name="spinSlowGear">
              <property name="minimum">
               <number>1</number>
+             </property>
+             <property name="maximum">
+              <number>1000</number>
              </property>
             </widget>
            </item>

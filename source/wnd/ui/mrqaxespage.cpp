@@ -12,6 +12,13 @@ MrqAxesPage::MrqAxesPage(QWidget *parent) :
     mSubViews.append( ui->pageTrigger );
     mSubViews.append( ui->pageTune );
 
+    //! connect child signal to me
+    foreach ( mrqView *pView, mSubViews )
+    {
+        connect( pView, SIGNAL(sigSettingChanged(enumSetting,QVariant)),
+                 this, SIGNAL(sigSettingChanged(enumSetting,QVariant)) );
+    }
+
     spyEdited();
 }
 
@@ -105,6 +112,14 @@ void MrqAxesPage::adaptToModel()
         {}
         else
         { ui->tabWidget->removeTab( 2 ); }
+    }
+}
+
+void MrqAxesPage::settingChanged(enumSetting setting, const QVariant &v)
+{
+    for ( int i = 0; i < ui->tabWidget->count(); i++ )
+    {
+        ((modelView*)ui->tabWidget->widget(i))->settingChanged( setting, v );
     }
 }
 

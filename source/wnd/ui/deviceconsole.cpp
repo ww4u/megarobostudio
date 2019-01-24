@@ -150,9 +150,15 @@ void deviceConsole::doWrite( const QString &str )
     sendStr = str + "\r\n";
 
     //! send
-    m_pScpiShell->write( //sendStr.toLatin1().data(),
+    m_pScpiShell->write(
+//                         sendStr.toLatin1().data(),
+//                         sendStr.toLatin1().length()
                          sendStr.toUtf8().data(),
-                         sendStr.length() );
+                         sendStr.toUtf8().length()
+//                           sendStr.toLocal8Bit().data(),
+//                           sendStr.toLocal8Bit().length()
+
+                         );
 }
 
 void deviceConsole::on_comboBox_currentTextChanged(const QString &arg1)

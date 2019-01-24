@@ -386,12 +386,12 @@ protected:
 
 };
 
-#define MRQ_PROGRESS( prog, info )      sysProgress( prog, info ); \
-                                    sysProgress( true );
+#define MRQ_PROGRESS( prog, info )      sysProgress( prog, info );
+//                                    sysProgress( true );
 
 
-#define MRQ_PROGRESS_HIDE()             \
-                                    sysProgress( false );
+#define MRQ_PROGRESS_HIDE()
+//                                    sysProgress( false );
 }
 
 #endif

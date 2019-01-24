@@ -181,6 +181,8 @@ void MainWindow::setupUi()
 
     setupUi_docks();
 
+    setupMenu();
+
     loadPlugin();
 }
 
@@ -422,6 +424,7 @@ void MainWindow::setupStatusbar()
 
 void MainWindow::setupMenu()
 {
+    ui->menuTool_T->removeAction( ui->actiontest );
 }
 
 void MainWindow::buildConnection()
@@ -468,10 +471,10 @@ void MainWindow::buildConnection()
              SIGNAL(itemXActivated(mcModelObj*, mcModelObj_Op)),
              this,
              SLOT(on_itemXActivated(mcModelObj*, mcModelObj_Op)));
-    connect( m_pScriptMgr,
-             SIGNAL(signal_itemXHelp(eItemHelp, const QString & )),
-             this,
-             SLOT(slot_itemXHelp(eItemHelp, const QString &)) );
+//    connect( m_pScriptMgr,
+//             SIGNAL(signal_itemXHelp(eItemHelp, const QString & )),
+//             this,
+//             SLOT(slot_itemXHelp(eItemHelp, const QString &)) );
 
     connect( m_pScriptMgr, SIGNAL(signal_scriptmgr_changed()),
              this, SLOT(slot_scriptmgr_changed()));
@@ -1082,16 +1085,17 @@ void MainWindow::slot_progress_visible( bool b )
 
     if ( b  )
     {
-        if ( m_pStateBar->progressInfo()->isHidden() )
+//        if ( m_pStateBar->progressInfo()->isHidden() )
         {
-            QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+            QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));logDbg();
         }
     }
     else
     {
-        if ( m_pStateBar->progressInfo()->isVisible() )
+//        if ( m_pStateBar->progressInfo()->isVisible() )
         {
-            QApplication::restoreOverrideCursor();
+            QApplication::restoreOverrideCursor();logDbg();
+//            QApplication::setOverrideCursor(QCursor(Qt::ArrowCursor));
         }
     }
 
@@ -1679,8 +1683,8 @@ void MainWindow::on_actiontest_triggered()
 //    sysPrompt("hello1");
 //    sysPrompt("hello2");
 
-    MFileDialog dlg;
-    dlg.exec();
+//    MFileDialog dlg;
+//    dlg.exec();
 
 //logDbg();
 ////    QProcess *pProcess = new QProcess();

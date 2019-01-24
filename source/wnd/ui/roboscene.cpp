@@ -157,7 +157,9 @@ void roboScene::dropEvent(QDropEvent *event)
 
         addRobot( event->mimeData()->data("robomgr/robot"), pt );
 
-        emit signal_itemXHelp( e_help_new_robot, event->mimeData()->data("robomgr/robot") );
+        emit signal_itemXHelp( e_help_new_robot,
+
+                               QString( event->mimeData()->data("robomgr/robot") ) );
     }
 }
 

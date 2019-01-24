@@ -11,6 +11,21 @@ namespace test
 {
     class Program
     {
+        static void testMrq()
+        {
+            MRQ mrq;
+
+            mrq = new MRQ();
+
+            mrq.miOpen("device1");
+
+            string intf;
+            if (mrq.getLINK_INTFC(out intf) == 0)
+            {
+                Console.WriteLine( intf );
+            }
+        }
+
         static void testIdn()
         {
             //! 创建
@@ -62,10 +77,53 @@ namespace test
             robo.miClose();
         }
 
+        static void logDbg(string[] arys)
+        {
+            if (arys != null)
+            {
+                foreach (string str in arys)
+                { Console.WriteLine(str); }
+            }
+        }
+
+        static void testDevMgr()
+        {
+            DevMgr robo;
+            robo = new DevMgr();
+
+            robo.miOpen("localhost" );
+
+            logDbg(robo.getDevices());
+            logDbg(robo.getRobots());
+            logDbg(robo.getResources());
+
+            Console.WriteLine(robo.getOpc());
+
+            robo.find();
+            //robo.closeBus();
+            //robo.openBus();
+            while (robo.getOpc() == 0)
+            {
+                Console.WriteLine("wait");
+            }
+            Console.WriteLine(robo.getOpc());
+
+            //robo.stop();
+            //robo.reset();
+            //robo.terminate();
+
+
+            robo.miClose();
+        }
+
         static void Main(string[] args)
         {
             //testIdn();
-            testH2();
+            //testH2();
+
+            //testDevMgr();
+
+            testMrq();
         }
     }
 }

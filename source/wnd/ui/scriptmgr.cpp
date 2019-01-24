@@ -797,8 +797,8 @@ void scriptMgr::slot_context_import()
                <<tr("mrp (*.mrp)")
                <<tr("scene (*.sce)")
                <<tr("setup (*.stp)")
-               <<tr("python (*.py)")
-               <<tr("mrg (*.mrg)");
+               <<tr("python (*.py)");
+//               <<tr("mrg (*.mrg)");
     fDlg.setNameFilters( nameFilters );
 
     if ( QDialog::Accepted != fDlg.exec() )

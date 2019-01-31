@@ -38,7 +38,11 @@ float deviceMRQ::slowRatio( int ax )
             return 1.0;
         }
 
-        return (float)mMOTOR_GEARRATIONUM[ax] / mMOTOR_GEARRATIODEN[ax];
+        //! degree or rad
+        if ( mMOTOR_POSITIONUNIT[ax] == MRQ_MOTOR_POSITIONUNIT_ANGLE )
+        { return (float)mMOTOR_GEARRATIONUM[ax] / mMOTOR_GEARRATIODEN[ax]; }
+        else
+        { return 180.0f / MATH_PI * (float)mMOTOR_GEARRATIONUM[ax] / mMOTOR_GEARRATIODEN[ax]; }
     }
     //! lead
     else

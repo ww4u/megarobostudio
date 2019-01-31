@@ -5,7 +5,7 @@ VRobot *robotFact::createRobot( const QString &str )
 {
     VRobot *pRobo;
     do
-    {
+    {logDbg()<<str;
         if ( str_is_2( str, "megatron", "mrx-as") )
         {
             pRobo = new robotMegatron();
@@ -96,6 +96,12 @@ VRobot *robotFact::createRobot( const QString &str )
         if ( str_is_2(str, "geogoog5_1", "MRQ-MV") )
         {
             pRobo = new roboGeo51();
+            break;
+        }
+
+        if ( str_is(str, "MRQ-M2302") )
+        {logDbg();
+            pRobo = new roboGeo2();
             break;
         }
 

@@ -606,11 +606,21 @@ void MainWindow::loadSetup()
 
     changeLang( mMcModel.mSysPref.mLangIndex );
 
-    //! user mode prompt
-    LogIn logIn;
-    mLoginCode = logIn.exec();
+    //! login prompt
+    if ( !mMcModel.mSysPref.mbAutoLogin )
+    {
+        //! user mode prompt
+        LogIn logIn;
+        mLoginCode = logIn.exec();
 
-    mMcModel.mSysPref.mSysMode = (SysMode)logIn.getUserRole();
+        mMcModel.mSysPref.mSysMode = (SysMode)logIn.getUserRole();
+        mMcModel.mSysPref.mbAutoLogin = logIn.getAutoLogin();
+
+        //! save setting
+        slot_pref_request_save();
+    }
+    else
+    {  }
 
     mRoboModelMgr.load(  robo_mgr_name );
 

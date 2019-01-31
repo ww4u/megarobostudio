@@ -110,19 +110,6 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="0">
-           <widget class="QCheckBox" name="chkAutoExpand">
-            <property name="layoutDirection">
-             <enum>Qt::RightToLeft</enum>
-            </property>
-            <property name="text">
-             <string>Auto Expand</string>
-            </property>
-            <property name="checked">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
           <item row="0" column="1">
            <widget class="QCheckBox" name="chkLoadLast">
             <property name="layoutDirection">
@@ -133,13 +120,13 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="0">
-           <widget class="QCheckBox" name="chkSearch">
+          <item row="0" column="0">
+           <widget class="QCheckBox" name="chkAutoExpand">
             <property name="layoutDirection">
              <enum>Qt::RightToLeft</enum>
             </property>
             <property name="text">
-             <string>Search On Startup</string>
+             <string>Auto Expand</string>
             </property>
             <property name="checked">
              <bool>true</bool>
@@ -156,27 +143,16 @@
             </property>
            </widget>
           </item>
-          <item row="5" column="1" colspan="3">
-           <widget class="QLineEdit" name="tempPath">
-            <property name="readOnly">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="0">
-           <widget class="QLabel" name="label_23">
-            <property name="text">
-             <string>Sample Tick(us)</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QCheckBox" name="chkAutoZeroAffirm">
+          <item row="2" column="0">
+           <widget class="QCheckBox" name="chkSearch">
             <property name="layoutDirection">
              <enum>Qt::RightToLeft</enum>
             </property>
             <property name="text">
-             <string>Zero Affirm</string>
+             <string>Search On Startup</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -193,10 +169,34 @@
             </property>
            </spacer>
           </item>
+          <item row="6" column="1" colspan="3">
+           <widget class="QLineEdit" name="tempPath">
+            <property name="readOnly">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
           <item row="5" column="0">
+           <widget class="QLabel" name="label_23">
+            <property name="text">
+             <string>Sample Tick(us)</string>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="0">
            <widget class="QLabel" name="label_17">
             <property name="text">
              <string>Tempory Directory</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QCheckBox" name="chkAutoZeroAffirm">
+            <property name="layoutDirection">
+             <enum>Qt::RightToLeft</enum>
+            </property>
+            <property name="text">
+             <string>Zero Affirm</string>
             </property>
            </widget>
           </item>
@@ -210,6 +210,29 @@
             </property>
            </widget>
           </item>
+          <item row="7" column="1" colspan="3">
+           <widget class="QLineEdit" name="edtEventLog"/>
+          </item>
+          <item row="5" column="1" colspan="3">
+           <widget class="QSpinBox" name="spinSampleTick">
+            <property name="minimum">
+             <number>100</number>
+            </property>
+            <property name="maximum">
+             <number>100000</number>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <widget class="QCheckBox" name="chkHelp">
+            <property name="layoutDirection">
+             <enum>Qt::RightToLeft</enum>
+            </property>
+            <property name="text">
+             <string>Show Help</string>
+            </property>
+           </widget>
+          </item>
           <item row="2" column="1">
            <widget class="QCheckBox" name="chkAutoStatus">
             <property name="layoutDirection">
@@ -220,33 +243,20 @@
             </property>
            </widget>
           </item>
-          <item row="4" column="1" colspan="3">
-           <widget class="QSpinBox" name="spinSampleTick">
-            <property name="minimum">
-             <number>100</number>
-            </property>
-            <property name="maximum">
-             <number>100000</number>
-            </property>
-           </widget>
-          </item>
-          <item row="6" column="0">
+          <item row="7" column="0">
            <widget class="QLabel" name="label_49">
             <property name="text">
              <string>Log</string>
             </property>
            </widget>
           </item>
-          <item row="6" column="1" colspan="3">
-           <widget class="QLineEdit" name="edtEventLog"/>
-          </item>
-          <item row="0" column="2">
-           <widget class="QCheckBox" name="chkHelp">
+          <item row="3" column="2">
+           <widget class="QCheckBox" name="chkStopAllOnSearch">
             <property name="layoutDirection">
              <enum>Qt::RightToLeft</enum>
             </property>
             <property name="text">
-             <string>Show Help</string>
+             <string>Stop All on Search</string>
             </property>
            </widget>
           </item>
@@ -273,13 +283,13 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="2">
-           <widget class="QCheckBox" name="chkStopAllOnSearch">
+          <item row="4" column="0">
+           <widget class="QCheckBox" name="chkAutoLogin">
             <property name="layoutDirection">
              <enum>Qt::RightToLeft</enum>
             </property>
             <property name="text">
-             <string>Stop All on Search</string>
+             <string>Auto login</string>
             </property>
            </widget>
           </item>

@@ -91,6 +91,9 @@ int deviceMRQ::loadMotorBasic()
         if ( ret != 0 )
         { return ret; }
 
+        //! base unit
+        ret = getMOTOR_POSITIONUNIT( i, &mMOTOR_POSITIONUNIT[i] );
+
         //! driver
         if ( mDriverId == VRobot::motor_driver_262 )
         {

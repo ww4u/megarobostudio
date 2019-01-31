@@ -91,6 +91,7 @@ public:
         robot_geogoog_8,
         robot_geogoog_10,
         robot_geogoog_5_1,
+        robot_geogoog_2,
 
         robot_mrq_max,
 

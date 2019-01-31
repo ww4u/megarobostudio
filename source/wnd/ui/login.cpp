@@ -17,3 +17,6 @@ int LogIn::getUserRole()
 {
     return ui->comboBox->currentIndex();
 }
+
+bool LogIn::getAutoLogin()
+{ return ui->chkAutoLogin->isChecked(); }

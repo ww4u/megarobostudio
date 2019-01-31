@@ -103,6 +103,7 @@ void robotH2::init()
     mZeroTime = 1;
     mZeroDistance = 10;
     mZeroSpeed = 20;
+    mZeroStopDistance = 1;
 
     mGapTime = 1;
     mGapDistance = 10;        //! dist

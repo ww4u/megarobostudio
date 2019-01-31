@@ -137,8 +137,11 @@ public:
 
 public:
     void setZeroAttr( double zeroTime,
-                      double zeroDist );
-    void zeroAttr( double &zeroTime, double &zeroDist );
+                      double zeroDist,
+                      double zeroStopDist );
+    void zeroAttr( double &zeroTime,
+                   double &zeroDist,
+                   double &zeroStopDist );
 
     void setGap( double time, double dist,
                  double zTime, double zDist );
@@ -192,7 +195,7 @@ protected:
                        QList< tpvGroup *> &jointsGroup );
 
 protected:
-    double mZeroTime, mZeroDistance;
+    double mZeroTime, mZeroDistance, mZeroStopDistance;
     double mGapTime, mGapDistance;
     double mGapZTime, mGapZDistance;
     double mZeroX, mZeroY;

@@ -268,6 +268,26 @@ int robotH2::zeroAxesTask( void *pArg )
     H2ZeroArg *pZArg = (H2ZeroArg*)pArg;
     region = pZArg->mRegion;
 
+    //! pre zero
+    MegaDevice::deviceMRQ *pMRQ;
+    int ax;
+
+    //! distance
+    for ( int i = 0; i < axes(); i++ )
+    {
+        pMRQ = jointDevice( 0, &ax );
+        if ( NULL == pMRQ )
+        {
+            return -1;
+        }
+        pMRQ->setMOTIONPLAN_STOPMODE( ax,
+                                      (MRQ_MOTION_SWITCH_1)region.page(),
+                                      MRQ_MOTIONPLAN_STOPMODE_1_DISTANCE );
+        pMRQ->setMOTIONPLAN_STOPDISTANCE( ax,
+                                          (MRQ_MOTION_SWITCH_1)region.page(),
+                                          mZeroStopDistance );
+    }
+
     //! x
     if ( pZArg->mAx == 0 )
     {
@@ -336,6 +356,18 @@ int robotH2::zeroAxesTask( void *pArg )
         }
 
         ret = clrAngle();
+    }
+
+    //! post
+    //! distance
+    for ( int i = 0; i < axes(); i++ )
+    {
+        pMRQ = jointDevice( 0, &ax );
+        if ( NULL == pMRQ )
+        { return -1; }
+        pMRQ->setMOTIONPLAN_STOPMODE( ax,
+                                      (MRQ_MOTION_SWITCH_1)region.page(),
+                                      MRQ_MOTIONPLAN_STOPMODE_1_IMMEDIATE );
     }
 
     return ret;

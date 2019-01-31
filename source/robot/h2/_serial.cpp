@@ -43,6 +43,7 @@ int robotH2::serialOutZero( QXmlStreamWriter &writer)
 {
     writer.writeTextElement( "time", QString::number(mZeroTime) );
     writer.writeTextElement( "distance", QString::number(mZeroDistance) );
+    writer.writeTextElement( "stop_distance", QString::number(mZeroStopDistance) );
 
     writer.writeTextElement( "gap_time", QString::number(mGapTime) );
     writer.writeTextElement( "gap_distance", QString::number(mGapDistance) );
@@ -66,6 +67,8 @@ int robotH2::serialInZero( QXmlStreamReader &reader )
         { mZeroTime = reader.readElementText().toDouble(); }
         else if ( reader.name() == "distance" )
         { mZeroDistance = reader.readElementText().toDouble(); }
+        else if ( reader.name() == "stop_distance" )
+        { mZeroStopDistance = reader.readElementText().toDouble(); }
         else if ( reader.name() == "gap_time" )
         { mGapTime = reader.readElementText().toDouble(); }
         else if ( reader.name() == "gap_distance" )

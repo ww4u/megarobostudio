@@ -79,6 +79,8 @@ public:
     bool mbStateInterrupt;
     bool mbNewAutoAdd;
 
+    bool mbAutoLogin;
+
                             //! misa
     bool mMisaEn;
     quint32 mMisaSocket;

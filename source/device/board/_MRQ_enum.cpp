@@ -13,6 +13,7 @@ static value_desc _value_desc_MRQ_LINK_DEVICEINFO_1[] = {
 	{2,"M2304",},
 	{3,"MV",},
 	{4,"M1710",},
+        {5,"M2302",},
 };
 static value_desc _value_desc_MRQ_SYSTEM_WORKMODE[] = {
 	{0,"NORMAL",},

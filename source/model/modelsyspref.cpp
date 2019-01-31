@@ -109,6 +109,7 @@ void modelSysPref::rst()
     mAppStartDelay = 30;
 
     mSysMode = sys_normal;
+    mbAutoLogin = false;
 }
 
 #include "../../com/comassist.h"
@@ -142,6 +143,9 @@ int modelSysPref::save( const QString &str )
     writer.writeStartElement("pref");
 
     writer.writeTextElement( "version", QString::number(mVersion) );
+
+    writer.writeTextElement( "sysmode", QString::number(mSysMode) );
+    writer.writeTextElement( "autologin", QString::number(mbAutoLogin) );
 
     //! port
     writer.writeTextElement( "port", QString::number(mPort) );
@@ -351,6 +355,12 @@ int modelSysPref::load( const QString &str )
             {
                 if ( reader.name() == "version" )
                 { mVersion = reader.readElementText().toInt(); }
+
+                else if ( reader.name() == "sysmode" )
+                { mSysMode = (SysMode)reader.readElementText().toInt(); }
+
+                else if ( reader.name() == "autologin" )
+                { mbAutoLogin = toBool(reader); }
 
                 else if ( reader.name() == "port" )
                 { mPort = reader.readElementText().toInt(); }

@@ -99,6 +99,7 @@ void H2Pref::spyEdited()
     QDoubleSpinBox *doubleSpinBoxes[]={
         ui->spinZeroTime,
         ui->spinZeroAngle,
+        ui->spinStopDist,
 
         ui->spinGapTime,
         ui->spinGapDist,
@@ -125,7 +126,8 @@ void H2Pref::updateData()
     robotH2 *pRobo = (robotH2*)pBase;
     Q_ASSERT( NULL != pRobo );
     pRobo->setZeroAttr( ui->spinZeroTime->value(),
-                        ui->spinZeroAngle->value() );
+                        ui->spinZeroAngle->value(),
+                        ui->spinStopDist->value() );
 
     pRobo->setGap( ui->spinGapTime->value(),
                    ui->spinGapDist->value(),
@@ -160,11 +162,12 @@ void H2Pref::updateUi()
     robotH2 *pRobo = (robotH2*)pBase;
     Q_ASSERT( NULL != pRobo );
 
-    double time, dist;
-    pRobo->zeroAttr( time, dist );
+    double time, dist, stopDist;
+    pRobo->zeroAttr( time, dist, stopDist );
 
     ui->spinZeroTime->setValue( time );
     ui->spinZeroAngle->setValue( dist );
+    ui->spinStopDist->setValue( stopDist );
 
     double gapTime, gapDistance, gapZTime, gapZDistance;
     pRobo->gap( gapTime, gapDistance, gapZTime, gapZDistance );

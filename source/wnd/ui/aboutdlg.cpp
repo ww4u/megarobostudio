@@ -32,9 +32,15 @@ void aboutDlg::changeEvent( QEvent *event )
     { ui->retranslateUi( this ); }
 }
 
-//! ctrl + f1
+////! ctrl + f1
 void aboutDlg::keyReleaseEvent(QKeyEvent *event )
 {
+    //! admin mode now
+    if ( m_pPara->mSysMode == sys_admin )
+    { return; }
+    else
+    {}
+
     if ( event->key() == Qt::Key_F1 && event->modifiers() == Qt::ControlModifier )
     { ui->label_5->setVisible( !ui->label_5->isVisible() ); }
 

@@ -134,6 +134,8 @@ void sysPref::updateUi()
     m_pPref->mPort = e_can_mcp;
 #endif
 
+    ui->chkAutoLogin->setChecked( m_pPref->mbAutoLogin );
+
     //! index
     int index = ui->cmbPort->findData( m_pPref->mPort );
     if ( index < 0 )
@@ -265,6 +267,8 @@ void sysPref::updateUi()
 
 void sysPref::updateData()
 {
+    m_pPref->mbAutoLogin = ui->chkAutoLogin->isChecked();
+
     m_pPref->mPort = ui->cmbPort->currentData().toInt();
 
     m_pPref->mSpeed = ui->cmbSpeed->currentText().toInt();

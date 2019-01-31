@@ -1,14 +1,16 @@
 #include "../h2.h"
 
-void robotH2::setZeroAttr( double zeroTime, double zeroDist )
+void robotH2::setZeroAttr( double zeroTime, double zeroDist, double zeroStopDist )
 {
     mZeroTime = zeroTime;
     mZeroDistance = zeroDist;
+    mZeroStopDistance = zeroStopDist;
 }
-void robotH2::zeroAttr( double &zeroTime, double &zeroDist )
+void robotH2::zeroAttr( double &zeroTime, double &zeroDist, double &zeroStopDist )
 {
     zeroTime = mZeroTime;
     zeroDist = mZeroDistance;
+    zeroStopDist = mZeroStopDistance;
 }
 
 void robotH2::setGap( double time,

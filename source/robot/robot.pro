@@ -12,6 +12,7 @@ SUBDIRS = \
 #    geo8/geo8.pro \
     geo10/geo10.pro \
     geo51/geo51.pro \
+	geo2/geo2.pro \
     rawrobo/rawrobo.pro \
     sinanju/sinanju.pro \
     h2/h2.pro \

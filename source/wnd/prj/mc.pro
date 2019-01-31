@@ -55,7 +55,7 @@ LIBS += -ligus_delta
 LIBS += -lmotor -lmotors
 #-lslide
 #-lgeo8
-LIBS += -lquebeley -lgeogoog -lgeo10 -lgeo51
+LIBS += -lquebeley -lgeogoog -lgeo10 -lgeo51 -lgeo2
 LIBS += -lgouf
 LIBS += -lrawrobo
 

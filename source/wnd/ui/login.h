@@ -17,6 +17,7 @@ public:
 
 public:
     int getUserRole();
+    bool getAutoLogin();
 
 private:
     Ui::LogIn *ui;

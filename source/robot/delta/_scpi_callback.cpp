@@ -6,17 +6,16 @@
 #include "../../com/comassist.h"
 #include "../../com/scpiassist.h"
 
-#define DEF_ROBO()      robotDelta *pRobo;\
-                        pRobo = ((robotDelta*)context->user_context);\
-                        Q_ASSERT( NULL != pRobo );
-#define ROBO()          pRobo
+#define DEF_ROBO()      DECLARE_ROBO(robotDelta)
 
-#define LOCAL_ROBO()    pRobo
+//#define ROBO()          pRobo
 
-#define CHECK_LINK()    if ( pRobo->checkLink() ) \
-                        {}\
-                        else\
-                        { scpi_ret( SCPI_RES_ERR ); }
+//#define LOCAL_ROBO()    pRobo
+
+//#define CHECK_LINK()    if ( pRobo->checkLink() ) \
+//                        {}\
+//                        else\
+//                        { scpi_ret( SCPI_RES_ERR ); }
 
 static scpi_result_t _scpi_idn( scpi_t * context )
 {
@@ -242,72 +241,72 @@ static scpi_result_t _scpi_program( scpi_t * context )
 }
 
 //! ax, page, file
-static scpi_result_t __scpi_program( scpi_t * context )
-{
-    // read
-    DEF_LOCAL_VAR();
+//static scpi_result_t __scpi_program( scpi_t * context )
+//{
+//    // read
+//    DEF_LOCAL_VAR();
 
-    int ax, page;
+//    int ax, page;
 
-    if ( SCPI_ParamInt32(context, &ax, true) != true )
-    { scpi_ret( SCPI_RES_ERR ); }
+//    if ( SCPI_ParamInt32(context, &ax, true) != true )
+//    { scpi_ret( SCPI_RES_ERR ); }
 
-    if ( SCPI_ParamInt32(context, &page, true) != true )
-    { scpi_ret( SCPI_RES_ERR ); }
+//    if ( SCPI_ParamInt32(context, &page, true) != true )
+//    { scpi_ret( SCPI_RES_ERR ); }
 
-    if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
-    { scpi_ret( SCPI_RES_ERR ); }logDbg()<<strLen<<pLocalStr;
-    if (strLen < 1)
-    { scpi_ret( SCPI_RES_ERR ); }
+//    if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
+//    { scpi_ret( SCPI_RES_ERR ); }logDbg()<<strLen<<pLocalStr;
+//    if (strLen < 1)
+//    { scpi_ret( SCPI_RES_ERR ); }
 
-    //! find the input file
-    QByteArray byteName( pLocalStr, strLen );
-    QString fileInName( byteName );
-    if ( comAssist::ammendFileName( fileInName ) )
-    {}
-    else
-    { scpi_ret( SCPI_RES_ERR ); }
+//    //! find the input file
+//    QByteArray byteName( pLocalStr, strLen );
+//    QString fileInName( byteName );
+//    if ( comAssist::ammendFileName( fileInName ) )
+//    {}
+//    else
+//    { scpi_ret( SCPI_RES_ERR ); }
 
-    //! get the file
-    QList<float> dataset;
-    int col = 6;
-    QList<int> dataCols;
-    dataCols<<0<<1<<2<<3<<4<<5;
-    if ( 0 != comAssist::loadDataset( pLocalStr, strLen, col, dataCols, dataset ) )
-    { scpi_ret( SCPI_RES_ERR ); }
+//    //! get the file
+//    QList<float> dataset;
+//    int col = 6;
+//    QList<int> dataCols;
+//    dataCols<<0<<1<<2<<3<<4<<5;
+//    if ( 0 != comAssist::loadDataset( pLocalStr, strLen, col, dataCols, dataset ) )
+//    { scpi_ret( SCPI_RES_ERR ); }
 
-    //! point
-    if ( dataset.size() / col < 2 )
-    { scpi_ret( SCPI_RES_ERR ); }
+//    //! point
+//    if ( dataset.size() / col < 2 )
+//    { scpi_ret( SCPI_RES_ERR ); }
 
-    TraceKeyPointList curve;
-    TraceKeyPoint tp;
-    for ( int i = 0; i < dataset.size()/col; i++ )
-    {
-        //! 0 1 2 3 4 5
-        //! x,y,z,h,t,interp
-        tp.t = dataset.at( i * col + 4 );
+//    TraceKeyPointList curve;
+//    TraceKeyPoint tp;
+//    for ( int i = 0; i < dataset.size()/col; i++ )
+//    {
+//        //! 0 1 2 3 4 5
+//        //! x,y,z,h,t,interp
+//        tp.t = dataset.at( i * col + 4 );
 
-        tp.x = dataset.at( i * col + 0 );
-        tp.y = dataset.at( i * col + 1 );
-        tp.z = dataset.at( i * col + 2 );
-        tp.hand = dataset.at( i * col + 3 );
+//        tp.x = dataset.at( i * col + 0 );
+//        tp.y = dataset.at( i * col + 1 );
+//        tp.z = dataset.at( i * col + 2 );
+//        tp.hand = dataset.at( i * col + 3 );
 
-        tp.iMask = dataset.at( i * col + 5 );
+//        tp.iMask = dataset.at( i * col + 5 );
 
-        curve.append( tp );
+//        curve.append( tp );
 
-//        logDbg()<<tp.t<<tp.x<<tp.y<<tp.z<<tp.hand<<tp.iMask;
-    }
+////        logDbg()<<tp.t<<tp.x<<tp.y<<tp.z<<tp.hand<<tp.iMask;
+//    }
 
-    DEF_ROBO();
+//    DEF_ROBO();
 
-    CHECK_LINK();
+//    CHECK_LINK();
 
-    pRobo->program( curve, tpvRegion( ax, page) );
+//    pRobo->program( curve, tpvRegion( ax, page) );
 
-    return SCPI_RES_OK;
-}
+//    return SCPI_RES_OK;
+//}
 
 //! ax,page, cycle, motionMode
 static scpi_result_t _scpi_call( scpi_t * context )

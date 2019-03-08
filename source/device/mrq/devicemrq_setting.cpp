@@ -70,6 +70,10 @@ int deviceMRQ::upload( EnumDeviceContent content )
     {
         uploadIDs();
     }
+    else if ( content == e_device_content_ver )
+    {
+        loadSeqVer();
+    }
     else
     {
         ret = uploadDesc();
@@ -102,6 +106,24 @@ int deviceMRQ::upload( EnumDeviceContent content )
     return ret;
 }
 
+void deviceMRQ::adaptToFirmware( QList<FirmwarePackage*> * pPackages )
+{
+    if ( NULL == pPackages )
+    { return; }
+
+    //! match the package
+    foreach( FirmwarePackage* package, *pPackages )
+    {
+        Q_ASSERT( NULL != package );
+logDbg()<<mSeqVer<<package->mVer;
+        if ( str_is( mSeqVer, package->mVer) )
+        {
+            setRegions( package->mPage );
+            return;
+        }
+    }
+}
+
 QList<int> deviceMRQ::deviceIds()
 {
     QList<int> ids;
@@ -130,7 +152,7 @@ QString deviceMRQ::loadDesc()
 {
     int ret;
     MRQ_LINK_DEVICEINFO type;
-    MRQ_LINK_DEVICEINFO_1 type2;
+    MRQ_SYSTEM_TYPE_1 type2;
     ret = getSYSTEM_TYPE( &type, &type2 );
     if ( ret != 0 )
     { return mDesc; }
@@ -181,13 +203,14 @@ QString deviceMRQ::loadSN()
 
 QString deviceMRQ::loadSwVer()
 {
-    char v0, v1, v2;
+    char v0, v1, v2, v3;
     int ret;
 
-    ret = getSYSTEM_SOFTVER( &v0, &v1, &v2 );
+    ret = getSYSTEM_SOFTVER( &v0, &v1, &v2, &v3 );
     if ( ret == 0 )
     {
-        mSwVer = QString("%1.%2.%3").arg((int)v0).arg((int)v1).arg((int)v2);
+        mSwVer = QString::asprintf("%02d.%02d.%02d.%02d",
+                                    v0, v1, v2, v3 );
         logDbg()<<mSwVer;
     }
 
@@ -201,7 +224,9 @@ QString deviceMRQ::loadHwVer()
     ret = getSYSTEM_HARDVER( &v0, &v1 );
     if ( ret == 0 )
     {
-        mHwVer = QString("%1.%2").arg((int)v0).arg((int)v1);
+//        mHwVer = QString("%1.%2").arg((int)v0,2).arg((int)v1,2);
+       mHwVer = QString::asprintf("%02d.%02d",
+                                            v0, v1 );
     }
 
     return mHwVer;
@@ -214,12 +239,15 @@ QString deviceMRQ::loadFwVer()
     ret = getSYSTEM_FPGAVER( &v0, &v1, &v2, &v3, &v4, &v5 );
     if ( ret == 0 )
     {
-        mFwVer = QString("%1.%2.%3.%4.%5.%6").arg((int)v0)
-                                             .arg((int)v1)
-                                             .arg((int)v2)
-                                             .arg((int)v3)
-                                             .arg((int)v4)
-                                             .arg((int)v5);
+//        c = QString("%1.%2.%3.%4.%5.%6").arg((int)v0,2)
+//                                             .arg((int)v1,2)
+//                                             .arg((int)v2,2)
+//                                             .arg((int)v3,2)
+//                                             .arg((int)v4,2)
+//                                             .arg((int)v5,2);
+
+        mFwVer = QString::asprintf("%02d.%02d.%02d.%02d.%02d.%02d",
+                                             v0, v1, v2, v3, v4, v5);
     }
 
     return mFwVer;
@@ -232,7 +260,9 @@ QString deviceMRQ::loadBtVer()
     ret = getSYSTEM_BOOTVER( &v0, &v1 );
     if ( ret == 0 )
     {
-        mBtVer = QString("%1.%2").arg((int)v0).arg((int)v1);
+//        mBtVer = QString("%1.%2").arg((int)v0,2).arg((int)v1,2);
+        mBtVer = QString::asprintf("%02d.%02d",
+                                             v0, v1 );
     }
 
     return mBtVer;
@@ -240,15 +270,30 @@ QString deviceMRQ::loadBtVer()
 
 QString deviceMRQ::loadSeqVer()
 {
-    byte v0, v1, v2, v3;
+    byte v0, v1, v2, v3, v4;
 
     int ret;
 
-    ret = getSeqVer( &v0, &v1, &v2, &v3 );
-    if ( ret == 0 )
+    do
     {
-        mSeqVer = QString( "%1.%2.%3.%4").arg(v0).arg(v1).arg(v2).arg(v3);
-    }
+        ret = getSeqVer( &v0, &v1, &v2, &v3, &v4 );
+        if ( ret == 0 )
+        {
+//            mSeqVer = QString( "%1.%2.%3.%4.%5").arg(v0,2).arg(v1,2).arg(v2,2).arg(v3,2).arg(v4,2);
+            mSeqVer = QString::asprintf("%02d.%02d.%02d.%02d.%02d",
+                                                 v0, v1, v2, v3, v4 );
+            break;
+        }
+
+        ret = getSeqVer( &v0, &v1, &v2, &v3 );
+        if ( ret == 0 )
+        {
+//            mSeqVer = QString( "%1.%2.%3.%4").arg(v0,2).arg(v1,2).arg(v2,2).arg(v3,2);
+            mSeqVer = QString::asprintf("%02d.%02d.%02d.%02d",
+                                                 v0, v1, v2, v3 );
+            break;
+        }
+    }while ( 0 );
 
     return mSeqVer;
 }

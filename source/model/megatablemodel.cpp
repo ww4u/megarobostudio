@@ -41,6 +41,7 @@ MegaTableModel::MegaTableModel( const QString &className,
     mbStepAble = false;
     mbPrefAble = false;
     mbAutoTimeAble = false;
+    mbToHereAble = false;
 
     mSectionAble<<true;     //! joint,hand,geometry
 
@@ -66,7 +67,8 @@ MegaTableModel::MegaTableModel( const QString &className,
 void MegaTableModel::reverse()
 {}
 
-void MegaTableModel::autoTime( double speed, double speedT )
+void MegaTableModel::autoTime( double speed, double speedT,
+                               int align, int div )
 {}
 
 QString MegaTableModel::className()
@@ -88,8 +90,14 @@ void MegaTableModel::setAutoTimeAble( bool b )
 bool MegaTableModel::autoTimeAble()
 { return mbAutoTimeAble; }
 
+bool MegaTableModel::toHereAble()
+{ return mbToHereAble; }
+
 bool MegaTableModel::smartEditable()
 { return mbSmartEditable; }
+
+QList<int> MegaTableModel::checkColumnList()
+{ return mCheckColumnList; }
 
 RpcRequest::EnumRequest MegaTableModel::rpcRequest()
 { return mRpcReq; }
@@ -149,16 +157,22 @@ MegaTableModel::timeType MegaTableModel::getTimeType()
 tpvType MegaTableModel::getAbsT( int index )
 { return 0; }
 
-//! align to .5
-double MegaTableModel::aligndT( double t )
+//! align to .1
+double MegaTableModel::aligndT( double t, int align, int div )
 {
-    int normt;
+    int64 normt;
     //! align time
-    normt = (int)(t * 10);
+    normt = (int64)(t * div);
     if ( normt == 0 )
     { normt = 1; }
 
-    return (((normt + 4)/5)*5) / 10.0;
+    if ( div == 1 )
+    { return ceil( t ); }
+
+    //! align to 0.1
+//    return normt / 10.0;
+//    return (((normt + 4)/5)*5) / 10.0;
+    return  ( (( normt + align - 1)/align) * align ) / (double)div;
 }
 
 void MegaTableModel::switchTimeType( timeType pre, timeType nxt )

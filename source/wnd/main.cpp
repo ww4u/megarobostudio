@@ -2,10 +2,12 @@
 #include <QApplication>
 #include "./ui/notice.h"
 #include "../com/comassist.h"
+#include "login.h"
 
 #include "main_help.h"
 
 #include "main_dbg.cpp"
+
 
 
 QDataStream &operator<<(QDataStream &out, const VRobot* &myObj)
@@ -25,6 +27,8 @@ QDataStream &operator>>(QDataStream &in, VRobot* &myObj)
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+
+//    QTextCodec::setCodecForLocale(QTextCodec::codecForName("utf-8"));
 
 #ifdef ARCH_32
     //! single exist
@@ -52,9 +56,12 @@ int main(int argc, char *argv[])
     qRegisterMetaType<frameData>();
     qRegisterMetaType<RpcRequest>();
 
+    qRegisterMetaType<model_msg>();
+
     //! vrobot
     qRegisterMetaType<VRobot*>();
     qRegisterMetaTypeStreamOperators<VRobot*>();
+
 
     //! --splash
     QPixmap pixmap( QApplication::applicationDirPath() + "/image/full.png" );
@@ -100,6 +107,28 @@ int main(int argc, char *argv[])
 
     }while( 0 );
 
+    //! login
+    do
+    {
+        LogIn logIn;
+        if ( pref.mbAutoLogin )
+        {
+            break;
+        }
+        else if ( logIn.exec() != QDialog::Accepted )
+        {
+            return 0;
+        }
+        else
+        {
+            pref.mbAutoLogin = logIn.getAutoLogin();
+            pref.mSysMode = (SysMode)logIn.getUserRole();
+            pref.save( user_pref_file_name );
+        }
+    }while(0 );
+
+    QDir::setCurrent( user_pref_path );
+
     //! dpc set thread
     QThread thread;
     dpcObj dpc;
@@ -114,14 +143,8 @@ int main(int argc, char *argv[])
     //! \note QTimer::singleShot( 0, qApp, quit() )
     //! can not work as the timer post slot is processed in the splash.finish( &w )
     //! process events
-    if ( w.logInCode() == QDialog::Accepted )
-    {
-        splash.finish(&w);
-
-        ret = a.exec();
-    }
-    else
-    { ret = 0; }
+    splash.finish(&w);
+    ret = a.exec();
 
     //! kill the service thread
     thread.terminate();

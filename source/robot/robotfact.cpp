@@ -1,7 +1,7 @@
 
 #include "robotfact.h"
 
-VRobot *robotFact::createRobot( const QString &str )
+VRobot *robotFact::createRobot( const QString &str, bool bPost )
 {
     VRobot *pRobo;
     do
@@ -36,11 +36,11 @@ VRobot *robotFact::createRobot( const QString &str )
             break;
         }
 
-        if ( str_is_2( str, "mrx-h2-z", "mrx-h2z") )
-        {
-            pRobo = new robotH2Z();
-            break;
-        }
+//        if ( str_is_2( str, "mrx-h2-z", "mrx-h2z") )
+//        {
+//            pRobo = new robotH2Z();
+//            break;
+//        }
 
         if ( str_is( str, "mrx-inj2") )
         {
@@ -121,8 +121,11 @@ VRobot *robotFact::createRobot( const QString &str )
 
     }while(0);
 
-    Q_ASSERT( NULL != pRobo );
-    pRobo->postCtor();
+    if ( bPost )
+    {
+        Q_ASSERT( NULL != pRobo );
+        pRobo->postCtor();
+    }
     return pRobo;
 }
 

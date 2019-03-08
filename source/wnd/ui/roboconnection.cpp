@@ -42,4 +42,4 @@ QComboBox *roboConnection::getCombName()
 { return ui->cmbRobotName; }
 
 QComboBox *roboConnection::getCombPage()
-{ return ui->widget->getComb(); }
+{ return ui->widget; }

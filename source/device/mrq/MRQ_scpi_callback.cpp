@@ -440,7 +440,7 @@ static scpi_result_t _scpi_task( _scpi_t * context )
     CHECK_LINK( ax, page );
 
     LOCALMRQ()->lightCouplingZero( tpvRegion(ax,page),
-                                   vals[0], vals[1], vals[2],
+                                   vals[0], vals[1], vals[2],0,
                                    vals[3], vals[4],
                                    axes_zero_op_none,
                                    vals[5]*time_s(1),vals[6]*time_s(1)
@@ -504,6 +504,8 @@ static scpi_result_t _scpi_program( scpi_t * context )
         pSec->cellValue( i, c_v, tp.mV, 0, true );
 
         tp.mT = helpT.accT( curve.size(), tp.mT );
+        //! scale t
+        tp.mT = scale_t(tp.mT);
 
         curve.append( tp );
     }
@@ -548,7 +550,7 @@ static scpi_result_t _scpi_download( scpi_t * context )
     char localStr[ strLen + 1 ] = {0};
     memcpy( localStr, pLocalStr, strLen );
     //! fill the \' \"
-    for ( int i = 0; i < strLen; i++ )
+    for ( int i = 0; i < (int)strLen; i++ )
     {
         if ( localStr[ i ] == '\'' )
         { localStr[i] = 0; break; }
@@ -567,10 +569,10 @@ static scpi_result_t _scpi_download( scpi_t * context )
     { scpi_ret( SCPI_RES_ERR ); }
 
     //! change the data
-    logDbg()<<oCount;
-    for ( int i = 0; i < oCount; i++ )
-    { logDbg()<<datasets[i]; }
-    logDbg()<<pLocalStr;
+//    logDbg()<<oCount;
+//    for ( int i = 0; i < oCount; i++ )
+//    { logDbg()<<datasets[i]; }
+//    logDbg()<<pLocalStr;
 
     QList<tpvRow> curve;
 
@@ -578,28 +580,23 @@ static scpi_result_t _scpi_download( scpi_t * context )
     //! check 3
     if ( str_is( localStr, "tpv") )
     {
-        if ( ( oCount / 3 ) > 1 && ((oCount%3) == 0) )
+        check_boundle_pair( oCount, 3 );
+
+        for ( int i = 0; i < (int)oCount / 3; i++ )
         {
-            for ( int i = 0; i < (int)oCount / 3; i++ )
-            {
-                curve.append( tpvRow( datasets[3*i+0], datasets[3*i+1], datasets[3*i+2] ) );
-            }
+            curve.append( tpvRow( datasets[3*i+0], datasets[3*i+1], datasets[3*i+2] ) );
         }
-        else
-        { scpi_ret( SCPI_RES_ERR ); }
+
     }
     //! check 2
     else if ( str_is( localStr, "tp") )
     {
-        if ( ( oCount / 2 ) > 1 && ( (oCount%2) == 0) )
+        check_boundle_pair( oCount, 2 );
+
+        for ( int i = 0; i < (int)oCount / 2; i++ )
         {
-            for ( int i = 0; i < (int)oCount / 2; i++ )
-            {
-                curve.append( tpvRow( datasets[2*i+0], datasets[2*i+1] ) );
-            }
+            curve.append( tpvRow( datasets[2*i+0], datasets[2*i+1] ) );
         }
-        else
-        { scpi_ret( SCPI_RES_ERR ); }
     }
     else
     {
@@ -684,6 +681,48 @@ static scpi_result_t _scpi_absangle( scpi_t * context )
     val = LOCALMRQ()->getAbsAngle( ax );
 
     SCPI_ResultFloat( context, val );
+
+    return SCPI_RES_OK;
+}
+
+//! ax
+static scpi_result_t _scpi_absdelta( scpi_t * context )
+{
+    DEF_LOCAL_VAR();
+
+    int ax;
+
+    if ( SCPI_RES_OK != SCPI_ParamInt32( context, &ax, true ) )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    float val = 0;
+
+    DEF_MRQ();
+
+    CHECK_LINK( ax, 0 );
+
+    //! current angle
+    val = LOCALMRQ()->getAbsAngle( ax );
+
+    bool bRet = LOCALMRQ()->getEncoderZeroValid();
+    if ( bRet && ax >= 0 && ax < 4 )
+    {}
+    else
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    //! zero angle
+    float zAngle;
+    zAngle =  LOCALMRQ()->getEncoderZero( ax );
+
+    //! delta angle
+    float deltaAngle = (val - zAngle);
+
+    deltaAngle = comAssist::normalizeDegreeN180_180( deltaAngle );
+
+    //! dir
+    int dirs[]={ -1,-1,1,-1 };
+
+    SCPI_ResultFloat( context, deltaAngle * dirs[ ax ] );
 
     return SCPI_RES_OK;
 }
@@ -1086,6 +1125,7 @@ static scpi_command_t _mrq_scpi_cmds[]=
 
     CMD_ITEM( "ANGLE:INCREASE?", _scpi_incangle ),
     CMD_ITEM( "ANGLE:ABSOLUTE?", _scpi_absangle ),
+    CMD_ITEM( "ANGLE:ABSDELTA?", _scpi_absdelta ),
     CMD_ITEM( "DISTANCE?", _scpi_distance ),
 
     CMD_ITEM( "PROGRAM", _scpi_program ),

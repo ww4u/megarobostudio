@@ -154,25 +154,17 @@ int robotSinanju::serialInHandZero( QXmlStreamReader &reader )
     while(reader.readNextStartElement())
     {
         if ( reader.name() == "hand" )
-        {
-            mbHandAble = reader.readElementText().toInt() > 0;
-        }
+        { mbHandAble = reader.readElementText().toInt() > 0; }
         else if ( reader.name() == "time" )
-        {
-            mHandZeroTime = reader.readElementText().toDouble();
-        }
+        { mHandZeroTime = reader.readElementText().toDouble(); }
         else if ( reader.name() == "angle" )
-        {
-            mHandZeroAngle = reader.readElementText().toDouble();
-        }
+        { mHandZeroAngle = reader.readElementText().toDouble(); }
+        else if ( reader.name() == "stop_angle" )
+        { mHandStopAngle = reader.readElementText().toDouble(); }
         else if ( reader.name() == "gap_time" )
-        {
-            mGapTime = reader.readElementText().toDouble();
-        }
+        { mGapTime = reader.readElementText().toDouble(); }
         else if ( reader.name() == "gap_angle" )
-        {
-            mGapAngle = reader.readElementText().toDouble();
-        }
+        { mGapAngle = reader.readElementText().toDouble(); }
         else
         { reader.skipCurrentElement(); }
     }
@@ -185,6 +177,7 @@ int robotSinanju::serialOutHandZero( QXmlStreamWriter &writer )
     writer.writeTextElement( "hand", QString::number( mbHandAble) );
     writer.writeTextElement( "time", QString::number( mHandZeroTime));
     writer.writeTextElement( "angle", QString::number( mHandZeroAngle));
+    writer.writeTextElement( "stop_angle", QString::number( mHandStopAngle));
 
     writer.writeTextElement( "gap_time", QString::number( mGapTime));
     writer.writeTextElement( "gap_angle", QString::number( mGapAngle));

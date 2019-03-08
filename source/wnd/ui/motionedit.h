@@ -52,6 +52,9 @@ protected:
 
     virtual void onRequest( RpcRequest &req );
 
+    virtual bool context_toHere_able();
+    virtual void context_toHere();
+
 protected:
     //! dpc proc
     int postDownload( appMsg msg, void *pPara );
@@ -131,8 +134,6 @@ protected:
     virtual void context_add_below();
     virtual void context_clear();    
 
-
-
 private slots:
     void on_cmbTimebase_currentIndexChanged(int index);
 
@@ -155,6 +156,8 @@ private:
     MotionModel mMotionPref;
 
     QTimer mDlySaveTime;
+
+    QList<int> mAligns, mDivs;
 };
 
 #endif // MOTIONEDIT_H

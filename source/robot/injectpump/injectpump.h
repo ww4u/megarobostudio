@@ -24,7 +24,7 @@ public:
     IJTask( QObject *pParent = NULL );
 
 protected:
-    virtual void run();
+    virtual void procRequest( RoboTaskRequest *pReq );
 };
 
 struct InjAction

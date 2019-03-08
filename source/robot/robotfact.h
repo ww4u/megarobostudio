@@ -37,7 +37,7 @@ class robotFact
 {
 public:
     //! by class name
-    static VRobot *createRobot( const QString &str );
+    static VRobot *createRobot( const QString &str, bool bPost = true );
 
 };
 

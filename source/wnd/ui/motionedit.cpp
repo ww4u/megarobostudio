@@ -19,6 +19,13 @@ motionEdit::motionEdit(QWidget *parent) : tableEdit(parent),
 
     mFilePattern<<motion_desc<<motion_ext;
 
+    //! 0.01 0.02 0.05 0.1 0.2 0.5 1
+//    QList<int> mAligns, mDivs;
+    mAligns<<1<<2<<5<<1<<2<<5<<1;
+    mDivs<<100<<100<<100<<10<<10<<10<<1;
+
+    ui->comboBox->setCurrentIndex( 3 );
+
     m_pPlot = NULL;
 
     m_pActionDelegate = NULL;
@@ -109,6 +116,11 @@ void motionEdit::setModelObj( mcModelObj *pObj )
 
     //! smart edit
     ui->btnSmartEdit->setVisible( m_pMotionGroup->smartEditable() );
+
+    //! delegate
+    QList<int> checkColumnList = m_pMotionGroup->checkColumnList();
+    foreach( int col, checkColumnList )
+    { ui->tableView->setItemDelegateForColumn( col, m_pboolDelegate ); }
 
     //! robo change
     slot_robo_changed( m_pmcModel->mConn.getRoboName() );
@@ -245,6 +257,76 @@ void motionEdit::onRequest( RpcRequest &req )
     m_pMotionGroup->setRpc( curRow + 1, req );
 
     ui->tableView->setCurrentIndex( m_pMotionGroup->index( curRow + 1, 0) );
+}
+
+bool motionEdit::context_toHere_able()
+{
+    do
+    {   //! disable
+        if( !m_pMotionGroup->toHereAble() )
+        { break; }
+
+        //! robo valid
+        VRobot *pRobot = currentRobot();
+        if ( NULL == pRobot )
+        { break; }
+
+        //! cur item valid?
+        QModelIndex index = ui->tableView->currentIndex();
+        if ( !index.isValid() )
+        { break; }
+
+        //! cur item enabled?
+        index = ui->tableView->model()->index( index.row(), 0 );
+        QVariant var;
+        var = ui->tableView->model()->data( index );
+        if ( !var.isValid() )
+        { break; }
+
+        if ( !var.toBool() )
+        { break; }
+
+        //! get each item to varlist
+
+        return true;
+
+    }while( 0 );
+
+    return false;
+
+
+}
+void motionEdit::context_toHere()
+{
+    //! connect to robot
+    VRobot *pRobot = currentRobot();
+    if ( NULL == pRobot )
+    { return; }
+
+    //! select current
+    ui->tableView->selectRow( ui->tableView->currentIndex().row() );
+
+    //! get data
+    QModelIndex index = ui->tableView->currentIndex();
+    int colCnt = ui->tableView->model()->columnCount();
+
+    QVariantList varList;
+    QVariant var;
+
+    for ( int col = 0; col < colCnt; col++ )
+    {
+        index = ui->tableView->model()->index( index.row(), col );
+        var = ui->tableView->model()->data( index );
+        varList<<var;
+    }
+
+    double speed;
+    speed = m_pmcModel->mSysPref.mMaxSpeed * ui->spinSpeed->value()/100;
+    varList<<speed;
+
+    //! go( varlist )
+    pRobot->routeTo( tpvRegion( 0, m_pmcModel->mConn.roboPage()),
+                     varList );
 }
 
 VRobot *motionEdit::currentRobot()

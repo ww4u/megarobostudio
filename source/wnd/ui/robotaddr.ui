@@ -37,12 +37,15 @@
    <item row="3" column="0">
     <widget class="QLabel" name="label_10">
      <property name="text">
-      <string>Sub ID</string>
+      <string>Axis ID</string>
      </property>
     </widget>
    </item>
    <item row="4" column="1">
     <widget class="QSpinBox" name="spinSubGpDec">
+     <property name="toolTip">
+      <string>Axis ID</string>
+     </property>
      <property name="minimum">
       <number>130</number>
      </property>
@@ -67,7 +70,7 @@
    <item row="1" column="0">
     <widget class="QLabel" name="label_9">
      <property name="text">
-      <string>Group ID</string>
+      <string>MRQ ID</string>
      </property>
     </widget>
    </item>
@@ -90,6 +93,9 @@
    </item>
    <item row="4" column="2">
     <widget class="QSpinBox" name="spinSubGpHex">
+     <property name="toolTip">
+      <string>Axis ID</string>
+     </property>
      <property name="prefix">
       <string>0x</string>
      </property>
@@ -106,6 +112,9 @@
    </item>
    <item row="2" column="1">
     <widget class="QSpinBox" name="spinBox">
+     <property name="toolTip">
+      <string>MRQ ID</string>
+     </property>
      <property name="minimum">
       <number>128</number>
      </property>
@@ -116,6 +125,9 @@
    </item>
    <item row="2" column="2">
     <widget class="QSpinBox" name="spinBox_2">
+     <property name="toolTip">
+      <string>MRQ ID</string>
+     </property>
      <property name="suffix">
       <string/>
      </property>

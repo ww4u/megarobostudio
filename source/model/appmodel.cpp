@@ -52,6 +52,24 @@ AppModel::~AppModel()
     delete_all( mItems );
 }
 
+void AppModel::assign( const AppModel &model )
+{
+    beginResetModel();
+    delete_all( mItems );
+    AppItem *pItem;
+
+        for ( int i = 0; i < model.mItems.size(); i++ )
+        {
+            pItem = model.mItems.at( i );
+            addItem( pItem->autoStart(),
+                            pItem->program(),
+                            pItem->argument(),
+                            pItem->comment() );
+        }
+
+    endResetModel();
+}
+
 int AppModel::rowCount(const QModelIndex &parent) const
 { return mItems.count(); }
 int AppModel::columnCount(const QModelIndex &parent) const

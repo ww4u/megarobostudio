@@ -39,7 +39,7 @@ namespace mega_device
             //! set name
             viSta = visa32.viPrintf( mVi, "%s\n", name);
             if (viSta != visa32.VI_SUCCESS)
-            { return -1; }
+            { return -2; }
 
             //! set attribute
             viSta = visa32.viSetAttribute(mVi, visa32.VI_ATTR_TERMCHAR, 0x0a);

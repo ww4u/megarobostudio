@@ -295,7 +295,20 @@ QMetaType::Type deviceMRQ::getREPORT_TYPE( MRQ_REPORT_STATE stat )
 //!
 #define mc_SEQ      0xca
 #define mc_qVER     0x02
-int deviceMRQ::getSeqVer( quint8 *p1, quint8 *p2, quint8 *p3, quint8 *p4, bool bQuery )
+int deviceMRQ::getSeqVer( quint8 *p1, quint8 *p2, quint8 *p3, quint8 *p4, quint8 *p5,
+                          bool bQuery )
+{
+    int ret = 0;
+
+    ret = m_pBus->read( DEVICE_RECEIVE_ID, mc_SEQ, mc_qVER , p1, p2, p3, p4, p5, bQuery);
+    if ( ret != 0){ log_device(); }
+    if ( ret != 0) return ret;
+
+    return 0;
+}
+
+int deviceMRQ::getSeqVer( quint8 *p1, quint8 *p2, quint8 *p3, quint8 *p4,
+                          bool bQuery )
 {
     int ret = 0;
 
@@ -600,12 +613,12 @@ int deviceMRQ::rotate( pvt_region, float t, float ang, float endV )
 
     run( pvt_region_p );
 
-    return pvtWrite( pvt_region_p, t, ang, endV );
+    return pvtWrite( pvt_region_p, scale_t(t), ang, endV );
 }
 
 int deviceMRQ::preRotate( pvt_region, float t, float ang, float endV )
 {
-    return pvtWrite( pvt_region_p, t, ang, endV );
+    return pvtWrite( pvt_region_p, scale_t(t), ang, endV );
 }
 
 int deviceMRQ::syncRotate( pvt_region, float t, float ang, float endV, int tmo, int tick )
@@ -637,7 +650,7 @@ int deviceMRQ::movej( pvt_region, float ang, float t, float angJ, float tj, floa
 {
     run( pvt_region_p );
 
-    return preMovej( pvt_region_p, ang, t, angJ, tj, endV );
+    return preMovej( pvt_region_p, ang, scale_t(t), angJ, scale_t(tj), endV );
 }
 
 //! 0, 0
@@ -679,7 +692,7 @@ int deviceMRQ::lightCouplingZero( pvt_region, float t, float angle, float endV )
 }
 
 int deviceMRQ::lightCouplingZero( pvt_region,
-                                  float t, float angle, float endV,
+                                  float t, float angle, float endV, float stopDist,
                                   float invT, float invAngle,
                                   AxesZeroOp zOp,
                                   int tmous, int tickus )
@@ -706,6 +719,7 @@ int deviceMRQ::lightCouplingZero( pvt_region,
     pArg->mT = t;
     pArg->mAngle = angle;
     pArg->mEndV = endV;
+    pArg->mStopDist = stopDist;
 
     pArg->mInvT = invT;
     pArg->mInvAngle = invAngle;
@@ -723,9 +737,9 @@ int deviceMRQ::lightCouplingZero( pvt_region,
                    pArg );
 
     //! start the thread
-    mTaskThread.at( region.axes() )->setRequest( pReq );
+    mTaskThread.at( region.axes() )->attachRequest( pReq );
 
-    mTaskThread.at( region.axes() )->start();
+//    mTaskThread.at( region.axes() )->start();
 
     return 0;
 }
@@ -754,9 +768,11 @@ int deviceMRQ::taskLightCouplingZero( void *pArg )
         }
 
         //! 1. rotate
-        retRot = syncRotate( region,
-                          pLightZero->mT, pLightZero->mAngle, pLightZero->mEndV,
-                          pLightZero->mTmo, pLightZero->mTick );
+        beginZero( region, pLightZero->mStopDist );
+            retRot = syncRotate( region,
+                              pLightZero->mT, pLightZero->mAngle, pLightZero->mEndV,
+                              pLightZero->mTmo, pLightZero->mTick );
+        endZero( region, pLightZero->mStopDist );
 
         //! 2. lose step
         if ( is_mask( pLightZero->mZOp, axes_zero_lose_step) )

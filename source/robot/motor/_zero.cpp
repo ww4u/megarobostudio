@@ -43,8 +43,8 @@ int robotMotor::goZero( const tpvRegion &region,
                    (VRobot::apiTaskRequest)(&robotMotor::zeroAxesTask),
                    pArg );
 
-    m_pRoboTask->setRequest( pReq );
-    m_pRoboTask->start();
+    m_pRoboTask->attachRequest( pReq );
+//    m_pRoboTask->start();
 
     return 0;
 }

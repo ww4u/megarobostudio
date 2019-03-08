@@ -29,6 +29,12 @@
 //! bit ops
 #define set_bit( val, bitN )     val |= (1<<(bitN));
 #define unset_bit( val, bitN )     val &= (~(1<<(bitN)));
+
+#define fill_bit( val,bitN, b )    if ( b ){ set_bit(val, bitN); }\
+                                    else{ unset_bit(val,bitN); }
+
+#define get_bit( val, bitN )     ( (val & (1<<(bitN)))>>(bitN) )
+
 #define is_bit1( val, bitN )     ( (val & (1<<(bitN)) ) == (1<<(bitN)) )
 #define is_bit0( val, bitN )     ( (val & (1<<(bitN)) ) != (1<<(bitN)) )
 

@@ -28,7 +28,7 @@ class IgusDeltaTask : public RoboTask
 public:
     IgusDeltaTask( QObject *pParent = NULL );
 protected:
-    virtual void run();
+    virtual void procRequest( RoboTaskRequest *pReq );
 };
 
 class robotIgusDelta : public RawRobo

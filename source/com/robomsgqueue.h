@@ -109,7 +109,7 @@ public:
                   const RpcRequest &rpc,
                   quint64 t = 0 );
 
-    void process( int intervalus = 100,
+    void process( int intervalus = 1000,
                          RoboMsgThread *pThread = NULL );
 
 public:

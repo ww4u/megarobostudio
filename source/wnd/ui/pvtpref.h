@@ -26,7 +26,7 @@ class PvtPref : public QDialog
     Q_OBJECT
 
 public:
-    explicit PvtPref(QWidget *parent = 0);
+    explicit PvtPref( QStringList &stepList, QWidget *parent = 0);
     ~PvtPref();
 
 protected:

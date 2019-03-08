@@ -3,6 +3,7 @@
 RoboMsgThread::RoboMsgThread( QObject *pObj ) : QThread( pObj )
 {
     mIntervalus = 100000;   //! 100ms
+    logDbg()<<mIntervalus;
 }
 
 void RoboMsgThread::onMsg( RoboMsg &msg )
@@ -20,6 +21,6 @@ void RoboMsgThread::run()
 }
 
 void RoboMsgThread::_setInterval( int us )
-{ mIntervalus = us;  }
+{ mIntervalus = us; }
 int RoboMsgThread::interval()
 { return mIntervalus; }

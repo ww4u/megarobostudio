@@ -170,8 +170,8 @@ int robotInject::goZero( const tpvRegion &region,
                        (VRobot::apiTaskRequest)(&robotInject::zeroAxesTask),
                        pArg );
 
-        m_pRoboTask->setRequest( pReq );
-        m_pRoboTask->start();
+        m_pRoboTask->attachRequest( pReq );
+//        m_pRoboTask->start();
 
     }
     else if ( jointId == 1 )
@@ -196,8 +196,8 @@ int robotInject::goZero( const tpvRegion &region,
                        (VRobot::apiTaskRequest)(&robotInject::zeroAxesTask),
                        pArg );
 
-        m_pRoboTask->setRequest( pReq );
-        m_pRoboTask->start();
+        m_pRoboTask->attachRequest( pReq );
+//        m_pRoboTask->start();
     }
     else
     {
@@ -245,8 +245,8 @@ int robotInject::goZero( const tpvRegion &region )
                    (VRobot::apiTaskRequest)(&robotInject::zeroAxesTask),
                    pArg );
 
-    m_pRoboTask->setRequest( pReq );
-    m_pRoboTask->start();
+    m_pRoboTask->attachRequest( pReq );
+//    m_pRoboTask->start();
 
     return 0;
 }

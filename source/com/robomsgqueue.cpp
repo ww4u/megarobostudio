@@ -405,7 +405,7 @@ void RoboMsgQueue::process( int intervalus,
 
     {   
         if( mSemaphore.tryAcquire(1, intervalus/1000 ) )
-        {}
+        { }
         else
         { return; }
 

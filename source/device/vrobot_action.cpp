@@ -66,6 +66,10 @@ int VRobot::goZero( const tpvRegion &region,
                     const QList<bool> &ccwList )
 { return 0; }
 
+int VRobot::routeTo( const tpvRegion &region,
+                     QVariantList &vars )
+{ return 0; }
+
 bool VRobot::checkZeroValid()
 { return false; }
 float VRobot::getZero( int jointTabId )

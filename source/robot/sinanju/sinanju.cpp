@@ -210,6 +210,7 @@ void robotSinanju::init()
     //! zero
     mHandZeroTime = 5;
     mHandZeroAngle = 60;
+    mHandStopAngle = 1;
 
     mGapTime = 1;
     mGapAngle = 5;
@@ -242,7 +243,7 @@ void robotSinanju::init()
     //! tcp
     mTcpP[0] = 250;
     mTcpP[1] = 0;
-    mTcpP[2] = 512;
+    mTcpP[2] = 518.8;
 
     mTcpR[0] = 0;
     mTcpR[1] = 0;
@@ -368,15 +369,17 @@ int robotSinanju::download( VRobot *pSetup )
 int robotSinanju::loopNow()
 { return 0; }
 
-void robotSinanju::setHandZeroAttr( double zeroTime, double zeroAngle )
+void robotSinanju::setHandZeroAttr( double zeroTime, double zeroAngle, double stopAngle )
 {
     mHandZeroTime = zeroTime;
     mHandZeroAngle = zeroAngle;
+    mHandStopAngle = stopAngle;
 }
-void robotSinanju::handZeroAttr( double &zeroTime, double &zeroAngle )
+void robotSinanju::handZeroAttr( double &zeroTime, double &zeroAngle, double &stopAngle )
 {
     zeroTime = mHandZeroTime;
     zeroAngle = mHandZeroAngle;
+    stopAngle = mHandStopAngle;
 }
 
 void robotSinanju::setGapAttr( double gapTime, double gapAngle )

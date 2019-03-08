@@ -117,7 +117,7 @@ void modelSysPref::rst()
 int modelSysPref::save( const QString &str )
 {
     //! check path
-    QString path = QDir::homePath() + "/megarobostudio";
+    QString path = user_pref_path;
 
     if ( QDir( path ).exists() )
     { }

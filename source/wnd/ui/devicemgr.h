@@ -15,9 +15,18 @@ namespace Ui {
 class deviceMgr;
 }
 
+enum model_msg
+{
+    model_msg_setting = 0,
+    model_msg_name,
+};
+Q_DECLARE_METATYPE( model_msg )
+
 class deviceMgr : public modelView
 {
     Q_OBJECT
+
+public:
 
 public:
     explicit deviceMgr(QWidget *parent = 0);
@@ -47,7 +56,7 @@ Q_SIGNALS:
     void itemXActivated( mcModelObj*, mcModelObj_Op op=model_obj_op_none );
 //    void signal_itemXHelp( eItemHelp helpId );
 
-    void signalModelUpdated( mcModelObj* );
+    void signalModelUpdated( mcModelObj* , model_msg msg = model_msg_setting );
 
     void signalReport( int errCode, const QString &expr="" );
 

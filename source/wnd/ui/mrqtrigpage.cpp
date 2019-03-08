@@ -3,7 +3,7 @@
 
 #include "../../com/comassist.h"
 
-//#define peri_unit   0.001f
+#define peri_unit   0.001f
 
 MrqTrigPage::MrqTrigPage(QWidget *parent) :
     mrqView(parent),
@@ -90,7 +90,9 @@ int MrqTrigPage::apply()
 
         pDevice->setTRIGGER_LEVELSPERIOD( mAxesId,
                                         trigId,
-                                         levelConifg.mPeriod, DIFF_APPLY );
+//                                         levelConifg.mPeriod / peri_unit,
+                                          comAssist::dalign( levelConifg.mPeriod, peri_unit ),
+                                          DIFF_APPLY );
 
         //! run able
         if ( pDevice->runWaveAble() )
@@ -140,7 +142,7 @@ int MrqTrigPage::updateUi()
         levelConifg.mbOnOff = pModel->mTRIGGER_LEVELSTATE[ mAxesId ][ trigId ];
         levelConifg.mTypeIndex = pModel->mTRIGGER_LEVELTYPE[ mAxesId ][ trigId ];
         levelConifg.mRespIndex = pModel->mTRIGGER_LEVELRESP[ mAxesId ][ trigId ];
-        levelConifg.mPeriod = pModel->mTRIGGER_LEVELSPERIOD[ mAxesId ][ trigId ] /** peri_unit*/;
+        levelConifg.mPeriod = pModel->mTRIGGER_LEVELSPERIOD[ mAxesId ][ trigId ] * peri_unit;
 
         levelConifg.mRunIndex = pModel->mTRIGGER_LEVELRUNWAVE[ mAxesId ][ trigId ];
 

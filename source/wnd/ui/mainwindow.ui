@@ -400,6 +400,9 @@
    <property name="toolTip">
     <string>Save All</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
   </action>
   <action name="actionSpy">
    <property name="checkable">

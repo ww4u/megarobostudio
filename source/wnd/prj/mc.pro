@@ -23,7 +23,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-VERSION = 0.1.1.0
+VERSION = 0.1.1.1
 
 OBJECTS_DIR = ./obj
 MOC_DIR = ./obj
@@ -289,7 +289,6 @@ SOURCES += \
     ../ui/tabletoolbar.cpp \
     ../ui/notice.cpp \
     ../ui/portoption.cpp \
-    ../ui/pageoption.cpp \
     ../ui/igusconfig.cpp \
     ../ui/igusdeltapref.cpp \
     ../ui/mrqtune.cpp \
@@ -322,7 +321,8 @@ SOURCES += \
     ../../widget/devicetreewidget.cpp \
     ../../widget/opliblistwidget.cpp \
     ../ui/robograph_diagram.cpp \
-    ../ui/login.cpp
+    ../ui/login.cpp \
+    ../ui/axispage.cpp
 
 
 HEADERS += \
@@ -487,7 +487,6 @@ HEADERS += \
     ../ui/tabletoolbar.h \
     ../ui/notice.h \
     ../ui/portoption.h \
-    ../ui/pageoption.h \
     ../ui/igusconfig.h \
     ../ui/igusdeltapref.h \
     ../ui/mrqtune.h \
@@ -522,7 +521,8 @@ HEADERS += \
     ../../widget/imageentity.h \
     ../../widget/devicetreewidget.h \
     ../../widget/opliblistwidget.h \
-    ../ui/login.h
+    ../ui/login.h \
+    ../ui/axispage.h
 
 FORMS += \
         ../ui/mainwindow.ui \
@@ -621,7 +621,6 @@ FORMS += \
     ../ui/tabletoolbar.ui \
     ../ui/notice.ui \
     ../ui/portoption.ui \
-    ../ui/pageoption.ui \
     ../ui/igusconfig.ui \
     ../ui/igusdrylinpref.ui \
     ../ui/mrqtune.ui \
@@ -639,6 +638,7 @@ FORMS += \
     ../../widget/rectentity.ui \
     ../../widget/imageentity.ui \
     ../ui/login.ui
+
 
 
 #RESOURCES = ../res/res.qrc

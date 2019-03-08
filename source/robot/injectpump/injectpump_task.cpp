@@ -16,19 +16,7 @@ IJZeroArg::IJZeroArg()
 IJTask::IJTask(QObject *pParent) : RoboTask( pParent )
 {}
 
-void IJTask::run()
+void IJTask::procRequest( RoboTaskRequest *pReq )
 {
-    if ( 0 != checkRequest( m_pReq ) )
-    { return; }
-
-    robotInject *pRobo;
-    pRobo = (robotInject*)m_pReq->m_pRobo;
-
-    int ret;
-    ret = (pRobo->*( m_pReq->m_pApi ))( m_pReq->m_pArg );
-    if ( ret != 0 )
-    {
-        sysWarn( __FUNCTION__, QString::number(__LINE__), QString::number( ret ) );
-    }
-    gc();
+    implement_proc_request( robotInject );
 }

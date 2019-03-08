@@ -6,16 +6,14 @@
 #include "../../com/comassist.h"
 #include "../../com/scpiassist.h"
 
-#define DEF_ROBO()      robotH2Z *pRobo;\
-                        pRobo = ((robotH2Z*)context->user_context);\
-                        Q_ASSERT( NULL != pRobo );
+#define DEF_ROBO()      DECLARE_ROBO(robotH2Z)
 
-#define LOCAL_ROBO()    pRobo
+//#define LOCAL_ROBO()    pRobo
 
-#define CHECK_LINK()    if ( pRobo->checkLink() ) \
-                        {}\
-                        else\
-                        { scpi_ret( SCPI_RES_ERR ); }
+//#define CHECK_LINK()    if ( pRobo->checkLink() ) \
+//                        {}\
+//                        else\
+//                        { scpi_ret( SCPI_RES_ERR ); }
 
 static scpi_result_t _scpi_idn( scpi_t * context )
 {

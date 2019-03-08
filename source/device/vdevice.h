@@ -6,6 +6,8 @@
 #include "../bus/ibus.h"
 #include "../bus/deviceid.h"
 #include "../scpishell/scpishell.h"
+#include "../com/drivercontroller.h"
+
 #define  log_device()   logDbg()
 
 namespace MegaDevice 
@@ -18,6 +20,7 @@ public:
     {
         e_device_content_full = 0,
         e_device_content_id,
+        e_device_content_ver,
     };
 
 
@@ -85,6 +88,8 @@ public:
     virtual int upload( EnumDeviceContent content = e_device_content_full );       //! upload a few data
 
     virtual int uploadSetting();
+
+    virtual void adaptToFirmware( QList<FirmwarePackage*> * );
 
 protected:
                         //! can ids

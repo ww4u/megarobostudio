@@ -120,9 +120,6 @@ QString MainWindow::exportDiagnosis( int &n )
     return diagStr;
 }
 
-int MainWindow::logInCode()
-{ return mLoginCode; }
-
 void MainWindow::init()
 {
     m_pLogout = NULL;
@@ -182,6 +179,8 @@ void MainWindow::setupUi()
     setupUi_docks();
 
     setupMenu();
+
+    setupTray();
 
     loadPlugin();
 }
@@ -349,14 +348,16 @@ void MainWindow::setupUi_docks()
 void MainWindow::setupToolbar()
 {
     //! file tool
+    ui->mainToolBar->addAction( ui->actionSave_All_A );
+    ui->mainToolBar->addSeparator();
     ui->mainToolBar->addAction( ui->actionOpen_Prj );
-    ui->mainToolBar->addAction( ui->actionSave_Prj );
+//    ui->mainToolBar->addAction( ui->actionSave_Prj );
     ui->mainToolBar->addSeparator();
     ui->mainToolBar->addAction( ui->actionNewMotion );
     ui->mainToolBar->addAction( ui->actionNewPVT );
     ui->mainToolBar->addSeparator();
     ui->mainToolBar->addAction( ui->actionOpen );
-    ui->mainToolBar->addAction( ui->actionSave );
+//    ui->mainToolBar->addAction( ui->actionSave );
     ui->mainToolBar->addSeparator();
     ui->mainToolBar->addAction( ui->actionConsole );
     ui->mainToolBar->addAction( ui->actionApp );
@@ -425,6 +426,43 @@ void MainWindow::setupStatusbar()
 void MainWindow::setupMenu()
 {
     ui->menuTool_T->removeAction( ui->actiontest );
+
+    ui->menu_F->removeAction( ui->actionSave );
+    ui->menu_F->removeAction( ui->actionSave_Prj );
+}
+
+void MainWindow::setupTray()
+{
+    //! action
+    QAction * minimizeAction = new QAction(tr("Mi&nimize"), this);
+    connect(minimizeAction, &QAction::triggered, this, &QWidget::hide);
+
+    QAction * maximizeAction = new QAction(tr("Ma&ximize"), this);
+    connect(maximizeAction, &QAction::triggered, this, &QWidget::showMaximized);
+
+    QAction * restoreAction = new QAction(tr("&Restore"), this);
+    connect(restoreAction, &QAction::triggered, this, &QWidget::showNormal);
+
+    QAction * quitAction = new QAction(tr("&Quit"), this);
+    connect(quitAction, &QAction::triggered, qApp, &QCoreApplication::quit);
+
+    //! menu
+    m_pTrayMenu = new QMenu(this);
+    m_pTrayMenu->addAction( ui->actionForceStop );
+    m_pTrayMenu->addSeparator();
+    m_pTrayMenu->addAction(minimizeAction);
+    m_pTrayMenu->addAction(maximizeAction);
+    m_pTrayMenu->addAction(restoreAction);
+    m_pTrayMenu->addSeparator();
+    m_pTrayMenu->addAction(quitAction);
+
+    m_pTrayIcon = new QSystemTrayIcon(this);
+    m_pTrayIcon->setContextMenu(m_pTrayMenu);
+    m_pTrayIcon->setIcon( QIcon(":/res/image/logo/m.png") );
+    m_pTrayIcon->show();
+
+    m_pTrayIcon->setToolTip( tr("MEGAROBO Studio") );
+    m_pTrayIcon->showMessage( tr("Info"), tr("Double click to force stop") );
 }
 
 void MainWindow::buildConnection()
@@ -454,9 +492,9 @@ void MainWindow::buildConnection()
 //             SLOT(slot_itemXHelp(eItemHelp)) );
 
     connect( m_pDeviceMgr,
-             SIGNAL(signalModelUpdated(mcModelObj*)),
+             SIGNAL(signalModelUpdated(mcModelObj*, model_msg )),
              this,
-             SLOT(slot_itemModelUpdated(mcModelObj*)));
+             SLOT(slot_itemModelUpdated(mcModelObj*, model_msg )));
 
     connect( m_pRoboMgr,
              SIGNAL(itemXActivated(mcModelObj*, mcModelObj_Op)),
@@ -597,30 +635,18 @@ void MainWindow::buildConnection()
     Q_ASSERT( NULL != m_pMotorMonitor );
     connect( m_pRoboNetThread, SIGNAL(signal_net( const QString&,int,RoboMsg)),
              m_pMotorMonitor, SLOT(slot_net_event( const QString &,int,RoboMsg)));
+
+    //! tray icon
+    connect( m_pTrayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
+             this, SLOT(slot_trayicon_activated(QSystemTrayIcon::ActivationReason)) );
 }
 
-#include "login.h"
+
 void MainWindow::loadSetup()
 {
     mMcModel.mSysPref.load( user_pref_file_name, pref_file_name );
 
     changeLang( mMcModel.mSysPref.mLangIndex );
-
-    //! login prompt
-    if ( !mMcModel.mSysPref.mbAutoLogin )
-    {
-        //! user mode prompt
-        LogIn logIn;
-        mLoginCode = logIn.exec();
-
-        mMcModel.mSysPref.mSysMode = (SysMode)logIn.getUserRole();
-        mMcModel.mSysPref.mbAutoLogin = logIn.getAutoLogin();
-
-        //! save setting
-        slot_pref_request_save();
-    }
-    else
-    {  }
 
     mRoboModelMgr.load(  robo_mgr_name );
 
@@ -797,6 +823,29 @@ void MainWindow::statusShow( const QString &str )
 //    ui->statusBar->showMessage( str, 1000 );
 }
 
+void MainWindow::slot_trayicon_activated( QSystemTrayIcon::ActivationReason reason )
+{
+    switch (reason)
+    {
+    case QSystemTrayIcon::Trigger:
+        logDbg()<<isMaximized()<<isMinimized()<<isVisible();
+//        if ( isMaximized() )
+//        { showMinimized(); }
+//        else
+//        { showMaximized(); }
+
+        break;
+    case QSystemTrayIcon::DoubleClick:
+        on_actionForceStop_triggered();
+        m_pTrayIcon->showMessage( tr("Info"), tr("Force stoped") );
+        break;
+    case QSystemTrayIcon::MiddleClick:
+        break;
+    default:
+        ;
+    }
+}
+
 void MainWindow::slot_downloadbar_clicked()
 {
     Q_ASSERT( NULL != m_pProgress );
@@ -882,10 +931,10 @@ void MainWindow::on_itemXActivated( mcModelObj *pObj, mcModelObj_Op op )
 }
 
 //! model updated
-void MainWindow::slot_itemModelUpdated( mcModelObj *pObj )
+void MainWindow::slot_itemModelUpdated( mcModelObj *pObj, model_msg msg )
 {
     Q_ASSERT( NULL != pObj );
-
+logDbg();
     for ( int i = 0; i < ui->widget->count(); i++ )
     {
         Q_ASSERT( NULL != ui->widget->widget(i) );
@@ -894,6 +943,13 @@ void MainWindow::slot_itemModelUpdated( mcModelObj *pObj )
         {
             ((modelView*)ui->widget->widget(i))->updateScreen();
         }
+    }
+
+    //! monitor reset
+    if ( msg == model_msg_name )
+    {logDbg();
+        Q_ASSERT( NULL != m_pMotorMonitor );
+        m_pMotorMonitor->setMonitors( mMcModel.m_pInstMgr->getChans() );
     }
 }
 
@@ -1030,7 +1086,7 @@ void MainWindow::slot_instmgr_changed( bool bEnd, MegaDevice::InstMgr *pMgr )
 
         //! add robot
         QStringList strList;
-        strList = mMcModel.m_pInstMgr->roboResources();logDbg()<<strList;
+        strList = mMcModel.m_pInstMgr->roboResources();
         m_pRoboConnTool->setRoboNames( strList );
 
         //! reset monitors
@@ -1915,3 +1971,4 @@ void MainWindow::on_actionOperator_Lib_triggered(bool checked)
     //! view
     m_pOperatorLib->setVisible( checked );
 }
+

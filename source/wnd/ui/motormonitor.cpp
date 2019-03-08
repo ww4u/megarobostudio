@@ -154,7 +154,13 @@ void MotorMonitor::slot_net_event(
     if ( isVisible() )
     {}
     else
-    { return; }
+    {
+        //! auto view
+        if ( m_pModel->mSysPref.mbAutoStatusView )
+        { show(); }
+        else
+        { return; }
+    }
 
     //! status
     int eId;
@@ -164,9 +170,7 @@ void MotorMonitor::slot_net_event(
     else
     { return; }
 
-    //! auto view
-    if ( m_pModel->mSysPref.mbAutoStatusView && isHidden() )
-    { show(); }
+
 
     motorStateChanged( name, axes, msg );
 }

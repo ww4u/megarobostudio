@@ -201,7 +201,7 @@ bool instServer::start( quint32 port, int portCnt )
 void instServer::stop()
 {
     //! server
-//    clear();
+    clear();
 
     //! for the sockets
     mServiceMutex.lock();

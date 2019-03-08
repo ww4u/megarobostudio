@@ -30,7 +30,7 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="PageOption" name="pageOption" native="true"/>
+    <widget class="AxisPage" name="comboBox"/>
    </item>
    <item>
     <widget class="QToolButton" name="toolRun">
@@ -85,10 +85,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>PageOption</class>
-   <extends>QWidget</extends>
-   <header>pageoption.h</header>
-   <container>1</container>
+   <class>AxisPage</class>
+   <extends>QComboBox</extends>
+   <header>axispage.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

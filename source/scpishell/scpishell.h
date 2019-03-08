@@ -110,5 +110,9 @@ protected:
 #define scpi_ret( ret )         sysError( __FUNCTION__, QString::number(__LINE__)); \
                                 return ret;
 
+#define check_boundle( n, boundle, gp )     if ( ( (n) % (boundle) != 0) || ( (n)/(boundle) < (gp) ) )\
+                                            { scpi_ret( SCPI_RES_ERR ); }
+
+#define check_boundle_pair( n, boundle ) check_boundle( n, boundle, 2 );
 
 #endif // SCPISHELL_H

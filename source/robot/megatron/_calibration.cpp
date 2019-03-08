@@ -109,6 +109,7 @@ int robotMegatron::goZero( const tpvRegion &region,
                              mZeroTime,
                              bCcw ? (-mZeroAngle) : ( mZeroAngle ),
                              bCcw ? (-mZeroSpeed) : ( mZeroSpeed ),
+                             0,
                              mGapTime,
                              bCcw ? (mGapDistance) : (-mGapDistance),
                              axes_zero_op_none,
@@ -144,8 +145,7 @@ int robotMegatron::goZero( const tpvRegion &region,
 
     //! start
     Q_ASSERT( NULL != m_pRoboTask );
-    m_pRoboTask->setRequest( pReq );
-    m_pRoboTask->start();
+    m_pRoboTask->attachRequest( pReq );
 
     return 0;
 }

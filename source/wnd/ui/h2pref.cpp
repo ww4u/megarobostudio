@@ -235,6 +235,10 @@ void H2Pref::adaptUi()
 
     //! z enable
 //    ui->labelZ->setVisible( bZ );
+
+    ui->btnZeroX->setVisible( false );
+    ui->btnZeroY->setVisible( false );
+
     ui->btnZeroZ->setVisible( bZ );
 //    ui->chkCcw->setVisible( bZ );
     ui->gpZGap->setVisible( bZ );

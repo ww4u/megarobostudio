@@ -11,15 +11,18 @@ DlgApp::DlgApp(SysPara *pPara,
     ui(new Ui::DlgApp)
 {
     Q_ASSERT(NULL != pPara );
-    m_pModel = &pPara->mAppModel;
+//    m_pModel = &pPara->mAppModel;
 
     Q_ASSERT(NULL != pMgr );
     m_pMgr = pMgr;
 
     ui->setupUi(this);
 
-    ui->tableView->setModel( m_pModel );
+    ui->tableView->setModel( &mAppModel );
     ui->spinStartDelay->setValue( pPara->mAppStartDelay );
+
+    //! copy model
+    mAppModel.assign( pPara->mAppModel );
 
     //! tool bar
     connect( ui->appToolBar, SIGNAL(signal_add_clicked()),
@@ -30,7 +33,7 @@ DlgApp::DlgApp(SysPara *pPara,
              this, SLOT(slot_toolbar_clr()));
 
     //! model changed
-    connect( m_pModel, SIGNAL( signal_data_changed()),
+    connect( &mAppModel, SIGNAL( signal_data_changed()),
              this, SLOT( slot_data_changed() ) );
 
     slot_data_changed();
@@ -49,7 +52,7 @@ void DlgApp::changeEvent( QEvent *event )
     { ui->retranslateUi( this ); }
 }
 
-#define model_      (*m_pModel)
+#define model_      (mAppModel)
 void DlgApp::slot_toolbar_add()
 {
     if ( ui->tableView->currentIndex().isValid() )
@@ -76,7 +79,15 @@ void DlgApp::slot_data_changed()
     bool bEn = ui->tableView->currentIndex().isValid();
 
     ui->btnStart->setEnabled( bEn );
-    ui->btnKill->setEnabled( bEn );
+
+    //! current
+    int ind;
+    ind = ui->tableView->currentIndex().row();
+    AppItem *pItem = mAppModel.mItems.at( ind );
+    if ( NULL != pItem && m_pMgr->findApp( pItem ) != NULL )
+    { ui->btnKill->setEnabled( true ); }
+    else
+    { ui->btnKill->setEnabled( false ); }
 }
 
 void DlgApp::on_btnStart_clicked()
@@ -92,7 +103,7 @@ void DlgApp::on_btnStart_clicked()
     //! current
     int ind;
     ind = ui->tableView->currentIndex().row();
-    AppItem *pItem = m_pModel->mItems.at( ind );
+    AppItem *pItem = mAppModel.mItems.at( ind );
     if ( NULL != pItem )
     {
         int ret = m_pMgr->startApp( pItem );
@@ -119,12 +130,14 @@ void DlgApp::on_btnKill_clicked()
     //! current
     int ind;
     ind = ui->tableView->currentIndex().row();
-    AppItem *pItem = m_pModel->mItems.at( ind );
+    AppItem *pItem = mAppModel.mItems.at( ind );
     if ( NULL != pItem )
     {
         int ret = m_pMgr->stopApp( pItem );
         if ( ret != 0 )
         { MegaMessageBox::warning( this, tr("Fail"), tr("Fail to stop") ); }
+        else
+        { MegaMessageBox::information( this, tr("Success"), tr("Success to stoped") ); }
     }
     else
     {
@@ -137,3 +150,16 @@ void DlgApp::setDelay( int dly )
 { ui->spinStartDelay->setValue( dly ); }
 int DlgApp::getDelay()
 { return ui->spinStartDelay->value(); }
+
+AppModel *DlgApp::getModel()
+{ return &mAppModel; }
+
+void DlgApp::on_tableView_activated(const QModelIndex &index)
+{
+    slot_data_changed();
+}
+
+void DlgApp::on_tableView_clicked(const QModelIndex &index)
+{
+    slot_data_changed();
+}

@@ -18,7 +18,7 @@ SOURCES = \
     _calibration.cpp \
     _setup.cpp \
     _build.cpp \
-    sinanjutask.cpp
+    _task.cpp
 
 HEADERS = \
     sinanju.h \

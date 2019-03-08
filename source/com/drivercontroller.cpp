@@ -4,20 +4,28 @@ driverController::driverController()
 {
 }
 
+driverController::~driverController()
+{
+    delete_all( mPackages );
+}
+
 QString driverController::getName()
 { return mName; }
 QString driverController::getClass()
 { return mClass; }
 QString driverController::getRobot()
 { return mRobot; }
-int driverController::getCHs()
-{ return mChs; }
-int driverController::getMotor()
-{ return mMotor; }
-QString driverController::getVersion()
-{ return mVersion; }
-int driverController::getCurrent()
-{ return mCurrent; }
+//int driverController::getCHs()
+//{ return mChs; }
+//int driverController::getMotor()
+//{ return mMotor; }
+//QString driverController::getVersion()
+//{ return mVersion; }
+//int driverController::getCurrent()
+//{ return mCurrent; }
+
+QList<FirmwarePackage*> * driverController::packages()
+{ return &mPackages; }
 
 int driverController::read( QXmlStreamReader &reader )
 {
@@ -26,23 +34,40 @@ int driverController::read( QXmlStreamReader &reader )
         if ( reader.name() == "name" )
         { mName = reader.readElementText(); }
 
+        else if ( reader.name() == "package" )
+        {
+            FirmwarePackage *pPackage;
+
+            pPackage = new FirmwarePackage();
+            mPackages.append( pPackage );
+
+            while( reader.readNextStartElement() )
+            {
+                if ( reader.name() == "version" )
+                { pPackage->mVer = reader.readElementText(); }
+                else if (reader.name() == "page" )
+                { pPackage->mPage = reader.readElementText().toInt(); }
+                else
+                { reader.skipCurrentElement(); }
+            }
+        }
         else if ( reader.name() == "class" )
         { mClass = reader.readElementText(); }
 
         else if ( reader.name() == "robot" )
         { mRobot = reader.readElementText(); }
 
-        else if ( reader.name() == "ch" )
-        { mChs = reader.readElementText().toInt(); }
+//        else if ( reader.name() == "ch" )
+//        { mChs = reader.readElementText().toInt(); }
 
-        else if ( reader.name() == "version" )
-        { mVersion = reader.readElementText(); }
+//        else if ( reader.name() == "version" )
+//        { mVersion = reader.readElementText(); }
 
-        else if ( reader.name() == "current" )
-        { mCurrent = reader.readElementText().toFloat(); }
+//        else if ( reader.name() == "current" )
+//        { mCurrent = reader.readElementText().toFloat(); }
 
-        else if ( reader.name() == "motor" )
-        { mMotor = reader.readElementText().toInt(); }
+//        else if ( reader.name() == "motor" )
+//        { mMotor = reader.readElementText().toInt(); }
 
         else
         { reader.skipCurrentElement(); }

@@ -112,6 +112,22 @@ int comAssist::align( double val, double unit )
     return aligned;
 }
 
+double comAssist::dalign( double val, double unit )
+{
+    double aligned;
+
+    if ( val > 0 )
+    {
+        aligned = ( (val + unit/10) / unit );
+    }
+    else
+    {
+        aligned = ( ( val - unit/10) / unit );
+    }
+
+    return aligned;
+}
+
 float comAssist::normalizeDegree360( float degree )
 {
     while( degree >= 360 )

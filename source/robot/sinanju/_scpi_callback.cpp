@@ -6,15 +6,9 @@
 #include "../../com/comassist.h"
 #include "../../com/scpiassist.h"
 
-#define DEF_ROBO()      robotSinanju *pRobo;\
-                        pRobo = ((robotSinanju*)context->user_context);\
-                        Q_ASSERT( NULL != pRobo );
-#define LOCAL_ROBO()    pRobo
+#define DEF_ROBO()      DECLARE_ROBO(robotSinanju)
 
-#define CHECK_LINK()    if ( pRobo->checkLink() ) \
-                        {}\
-                        else\
-                        { scpi_ret( SCPI_RES_ERR ); }
+//#define LOCAL_ROBO()    pRobo
 
 static scpi_result_t _scpi_idn( scpi_t * context )
 {
@@ -25,6 +19,91 @@ static scpi_result_t _scpi_idn( scpi_t * context )
     str = ((robotSinanju*)context->user_context)->getName();
 
     SCPI_ResultText( context, str.toLatin1().data() );
+
+    return SCPI_RES_OK;
+}
+
+//! link the device
+static scpi_result_t _scpi_link( scpi_t * context )
+{
+    DEF_LOCAL_VAR();
+    DEF_ROBO();
+    {
+        //! upload the zero
+        if ( !LOCAL_ROBO()->checkLink() )
+        {
+            sysError( QObject::tr("Invalid link") );
+            { scpi_ret( SCPI_RES_ERR ); }
+        }
+
+        if ( LOCAL_ROBO()->checkZeroValid() )
+        {}
+        else
+        {
+            sysError( QObject::tr("Zero in device is invalid") );
+            { scpi_ret( SCPI_RES_ERR ); }
+        }
+
+        //! get from device
+        float zeros[4];
+        for ( int i = 0; i < 4; i++ )
+        {
+            zeros[i] = LOCAL_ROBO()->getZero(i);
+        }
+
+        //! get mechanical version
+        int ver;
+        ver = LOCAL_ROBO()->getMechanicalVersion();
+        if ( ver == 0x5A )
+        {
+            LOCAL_ROBO()->mAngleDir[0] = false;
+            //! modify the base length
+            LOCAL_ROBO()->mArmLengths[0] = 263.8;
+        }
+        else
+        {
+            LOCAL_ROBO()->mAngleDir[0] = true;
+            LOCAL_ROBO()->mArmLengths[0] = 257;
+        }
+
+        //! save the angle
+        Q_ASSERT( LOCAL_ROBO()->mInitAngles.size() >= 4 );
+        for ( int i = 0; i < 4; i++ )
+        {
+            LOCAL_ROBO()->mInitAngles[i] = zeros[i];
+        }
+    }
+
+    //! config the id
+    {
+        MegaDevice::deviceMRQ *pMRQ;
+        int ret;
+        int gpId, axesId;
+        foreach( QString str, LOCAL_ROBO()->mAxesConnectionName )
+        {
+            axesId = 0;
+
+            //! find device by connection name
+            pMRQ = LOCAL_ROBO()->findDevice( str, &axesId );
+            if ( NULL == pMRQ )
+            { scpi_ret( SCPI_RES_ERR ); }
+
+            //! set group id
+            if ( LOCAL_ROBO()->groupSel() == 0 )
+            { ret = pMRQ->setCAN_GROUPID1( LOCAL_ROBO()->canGroupId() ); }
+            else
+            { ret = pMRQ->setCAN_GROUPID2( LOCAL_ROBO()->canGroupId() ); }
+            if ( ret != 0 )
+            { scpi_ret( SCPI_RES_ERR ); }
+
+            //! set sub group
+            pMRQ->setIDENTITY_GROUP( axesId,
+                                     (MRQ_IDENTITY_GROUP)LOCAL_ROBO()->subGroup(),
+                                     LOCAL_ROBO()->subGroupId() );
+
+            pMRQ->setCAN_APPLYPARA();
+        }
+    }
 
     return SCPI_RES_OK;
 }
@@ -41,9 +120,9 @@ static scpi_result_t _scpi_run( scpi_t * context )
     if ( SCPI_ParamInt32(context, &page, true) != true )
     { scpi_ret( SCPI_RES_ERR ); }
 
-    CHECK_LINK();
+    CHECK_LINK_AX_PAGE();
 
-    pRobo->run( tpvRegion(ax,page) );logDbg();
+    pRobo->run( tpvRegion(ax,page) );
 
     return SCPI_RES_OK;
 }
@@ -60,7 +139,9 @@ static scpi_result_t _scpi_stop( scpi_t * context )
     if ( SCPI_ParamInt32(context, &page, true) != true )
     { scpi_ret( SCPI_RES_ERR ); }
 
-    CHECK_LINK();
+    CHECK_LINK_AX_PAGE();
+
+    check_ax_page();
 
     pRobo->stop( tpvRegion(ax,page) );
 
@@ -79,7 +160,7 @@ static scpi_result_t _scpi_sync( scpi_t * context )
     if ( SCPI_ParamInt32(context, &page, true) != true )
     { scpi_ret( SCPI_RES_ERR ); }
 
-    CHECK_LINK();
+    CHECK_LINK_AX_PAGE();
 
     pRobo->sync( tpvRegion(ax,page) );
 
@@ -98,7 +179,7 @@ static scpi_result_t _scpi_align( scpi_t * context )
     if ( SCPI_ParamInt32(context, &page, true) != true )
     { scpi_ret( SCPI_RES_ERR ); }
 
-    CHECK_LINK();
+    CHECK_LINK_AX_PAGE();
 
     pRobo->align( tpvRegion(3,page) );
 
@@ -139,7 +220,7 @@ static scpi_result_t _scpi_move( scpi_t * context )
     curve.append( pt1 );
     curve.append( pt2 );
 
-    CHECK_LINK();
+    CHECK_LINK_AX_PAGE();
 
     pRobo->move( curve, tpvRegion(ax,page,motionMode) );
 
@@ -180,7 +261,7 @@ static scpi_result_t _scpi_premove( scpi_t * context )
     curve.append( pt1 );
     curve.append( pt2 );
 
-    CHECK_LINK();
+    CHECK_LINK_AX_PAGE();
 
     pRobo->program( curve, tpvRegion(ax,page,motionMode) );
 
@@ -231,7 +312,7 @@ static scpi_result_t _scpi_mover( scpi_t * context )
     curve.append( pt2z );
     curve.append( pt2 );
 
-    CHECK_LINK();
+    CHECK_LINK_AX_PAGE();
 
     pRobo->move( curve, tpvRegion(ax,page,motionMode) );
 
@@ -276,7 +357,7 @@ static scpi_result_t _scpi_premover( scpi_t * context )
     curve.append( pt2z );
     curve.append( pt2 );
 
-    CHECK_LINK();
+    CHECK_LINK_AX_PAGE();
 
     pRobo->program( curve, tpvRegion(ax,page,motionMode) );
 
@@ -320,7 +401,7 @@ static scpi_result_t _scpi_movet( scpi_t * context )
     curve.append( ptl );
     curve.append( pt2 );
 
-    CHECK_LINK();
+    CHECK_LINK_AX_PAGE();
 
     pRobo->move( curve, tpvRegion(ax,page,motionMode) );
 
@@ -363,7 +444,7 @@ static scpi_result_t _scpi_premovet( scpi_t * context )
     curve.append( ptl );
     curve.append( pt2 );
 
-    CHECK_LINK();
+    CHECK_LINK_AX_PAGE();
 
     pRobo->program( curve, tpvRegion(ax,page,motionMode) );
 
@@ -399,7 +480,7 @@ static scpi_result_t _scpi_routeTo( scpi_t * context )
     //! robo op
     DEF_ROBO();
 
-    CHECK_LINK();
+    CHECK_LINK_AX_PAGE();
 
     //! current
     TraceKeyPoint pose;
@@ -455,7 +536,7 @@ static scpi_result_t _scpi_goto( scpi_t * context )
     //! robo op
     DEF_ROBO();
 
-    CHECK_LINK();
+    CHECK_LINK_AX_PAGE();
 
     //! current
     TraceKeyPoint pose;
@@ -502,7 +583,7 @@ static scpi_result_t _scpi_gotor( scpi_t * context )
     //! robo op
     DEF_ROBO();
 
-    CHECK_LINK();
+    CHECK_LINK_AX_PAGE();
 
     //! current
     TraceKeyPoint pose;
@@ -553,7 +634,7 @@ static scpi_result_t _scpi_gotot( scpi_t * context )
     //! robo op
     DEF_ROBO();
 
-    CHECK_LINK();
+    CHECK_LINK_AX_PAGE();
 
     //! current
     TraceKeyPoint pose;
@@ -601,7 +682,7 @@ static scpi_result_t _scpi_stepx( scpi_t * context )
     //! robo op
     DEF_ROBO();
 
-    CHECK_LINK();
+    CHECK_LINK_AX_PAGE();
 
     //! current
     TraceKeyPoint pose;
@@ -650,7 +731,7 @@ static scpi_result_t _scpi_stepy( scpi_t * context )
     //! robo op
     DEF_ROBO();
 
-    CHECK_LINK();
+    CHECK_LINK_AX_PAGE();
 
     //! current
     TraceKeyPoint pose;
@@ -696,7 +777,7 @@ static scpi_result_t _scpi_stepz( scpi_t * context )
     //! robo op
     DEF_ROBO();
 
-    CHECK_LINK();
+    CHECK_LINK_AX_PAGE();
 
     //! current
     TraceKeyPoint pose;
@@ -742,7 +823,7 @@ static scpi_result_t _scpi_steph( scpi_t * context )
     //! robo op
     DEF_ROBO();
 
-    CHECK_LINK();
+    CHECK_LINK_AX_PAGE();
 
     //! current
     TraceKeyPoint pose;
@@ -835,7 +916,7 @@ static scpi_result_t _scpi_load_mrp( scpi_t * context,
     if ( curve.size() < 2 )
     { scpi_ret( SCPI_RES_ERR ); }
 
-    CHECK_LINK();
+    CHECK_LINK_AX_PAGE();
 
     if ( 0 != LOCAL_ROBO()->program( curve, tpvRegion( ax, page) ) )
     { scpi_ret( SCPI_RES_ERR ); }
@@ -916,7 +997,7 @@ static scpi_result_t _scpi_load_pre_ver( scpi_t * context,
 
     DEF_ROBO();
 
-    CHECK_LINK();
+    CHECK_LINK_AX_PAGE();
 
     pRobo->program( curve, tpvRegion( ax, page, motionMode) );
 
@@ -947,37 +1028,153 @@ static scpi_result_t _scpi_program( scpi_t * context )
     return lRet;
 }
 
-//! ax, page, file
 static scpi_result_t _scpi_download( scpi_t * context )
 {
-    // read
     DEF_LOCAL_VAR();
 
     int ax, page;
-
-    if ( SCPI_ParamInt32(context, &ax, true) != true )
+logDbg();
+    //! deload success
+    if ( deload_ax_page( context, ax, page ) == SCPI_RES_OK )
+    {}
+    else
     { scpi_ret( SCPI_RES_ERR ); }
-
-    if ( SCPI_ParamInt32(context, &page, true) != true )
-    { scpi_ret( SCPI_RES_ERR ); }
-
+logDbg();
+    //! deload the format
     if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
-    { scpi_ret( SCPI_RES_ERR ); }logDbg()<<strLen<<pLocalStr;
+    { return( SCPI_RES_ERR ); }logDbg()<<pLocalStr;
     if (strLen < 1)
+    { return( SCPI_RES_ERR ); }
+
+    //! get the type as the character is all leaving
+    char localStr[ strLen + 1 ] = {0};
+    memcpy( localStr, pLocalStr, strLen );
+    //! fill the \' \"
+    for ( int i = 0; i < strLen; i++ )
+    {
+        if ( localStr[ i ] == '\'' )
+        { localStr[i] = 0; break; }
+        else if ( localStr[ i ] == '\"' )
+        { localStr[i] = 0; break; }
+        else
+        {}
+    }
+
+    //! deparse the txys
+    float datasets[256];
+    size_t oCount;
+    if ( SCPI_ParamArrayFloat( context, datasets, sizeof_array(datasets), &oCount, SCPI_FORMAT_ASCII, true ) )
+    {}
+    else
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    TraceKeyPointList curve;
+    TraceKeyPoint tp;
+logDbg()<<oCount;
+    if ( str_is( localStr, "txyz") )
+    {
+        check_boundle_pair( oCount, 4 );
+        for ( int i = 0; i < oCount; i+= 4 )
+        {
+            tp.clear();
+            tp.t = datasets[i];
+            tp.x = datasets[i+1];
+            tp.y = datasets[i+2];
+            tp.z = datasets[i+3];
+
+            curve.append( tp );
+        }
+    }
+    else if (  str_is( localStr, "txyzh") )
+    {
+        check_boundle_pair( oCount, 5 );
+        for ( int i = 0; i < oCount; i+= 5 )
+        {
+            tp.clear();
+            tp.t = datasets[i];
+            tp.x = datasets[i+1];
+            tp.y = datasets[i+2];
+            tp.z = datasets[i+3];
+            tp.hand = datasets[i+4];
+
+            curve.append( tp );
+        }
+    }
+    else if (  str_is( localStr, "txyzm") )
+    {
+        check_boundle_pair( oCount, 5 );
+        for ( int i = 0; i < oCount; i += 5 )
+        {
+            tp.clear();
+            tp.t = datasets[i];
+            tp.x = datasets[i+1];
+            tp.y = datasets[i+2];
+            tp.z = datasets[i+3];
+            tp.iMask = datasets[i+4] > 0;
+
+            curve.append( tp );
+        }
+    }
+    else if (  str_is( localStr, "txyzhm") )
+    {
+        check_boundle_pair( oCount, 6 );
+        for ( int i = 0; i < oCount; i += 6 )
+        {
+            tp.clear();
+            tp.t = datasets[i];
+            tp.x = datasets[i+1];
+            tp.y = datasets[i+2];
+            tp.z = datasets[i+3];
+            tp.hand = datasets[i+4];
+            tp.iMask = datasets[i+5] > 0;
+
+            curve.append( tp );
+        }
+    }
+    else
     { scpi_ret( SCPI_RES_ERR ); }
 
     DEF_ROBO();
 
-    CHECK_LINK();
+    CHECK_LINK_AX_PAGE();
 
-    QByteArray fileName( pLocalStr, strLen );
-    int ret;
-    ret = pRobo->program( fileName, tpvRegion( ax, page) );
-    if ( ret != 0 )
+    if ( 0 != LOCAL_ROBO()->program( curve, tpvRegion( ax, page) ) )
     { scpi_ret( SCPI_RES_ERR ); }
 
     return SCPI_RES_OK;
 }
+
+//! ax, page, format, datasets
+//static scpi_result_t _scpi_download( scpi_t * context )
+//{
+//    // read
+//    DEF_LOCAL_VAR();
+
+//    int ax, page;
+
+//    if ( SCPI_ParamInt32(context, &ax, true) != true )
+//    { scpi_ret( SCPI_RES_ERR ); }
+
+//    if ( SCPI_ParamInt32(context, &page, true) != true )
+//    { scpi_ret( SCPI_RES_ERR ); }
+
+//    if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
+//    { scpi_ret( SCPI_RES_ERR ); }logDbg()<<strLen<<pLocalStr;
+//    if (strLen < 1)
+//    { scpi_ret( SCPI_RES_ERR ); }
+
+//    DEF_ROBO();
+
+//    CHECK_LINK();
+
+//    QByteArray fileName( pLocalStr, strLen );
+//    int ret;
+//    ret = pRobo->program( fileName, tpvRegion( ax, page) );
+//    if ( ret != 0 )
+//    { scpi_ret( SCPI_RES_ERR ); }
+
+//    return SCPI_RES_OK;
+//}
 
 
 //! ax, page, cycle, motinMode
@@ -1008,7 +1205,7 @@ static scpi_result_t _scpi_call( scpi_t * context )
     //! robo op
     DEF_ROBO();
 
-    CHECK_LINK();
+    CHECK_LINK_AX_PAGE();
 
     pRobo->call( cycle, tpvRegion( ax, page, motionMode ) );
 
@@ -1029,7 +1226,7 @@ static scpi_result_t _scpi_fsmState( scpi_t * context )
     if ( SCPI_ParamInt32(context, &page, true) != true )
     { scpi_ret( SCPI_RES_ERR ); }
 
-    CHECK_LINK();
+    CHECK_LINK_AX_PAGE();
 
     int ret = pRobo->state( tpvRegion(ax,page) );
 
@@ -1090,12 +1287,17 @@ static scpi_result_t _scpi_test1( scpi_t * context )
     DEF_LOCAL_VAR();
     DEF_ROBO();
 
-    int page;
-
-    if ( SCPI_ParamInt32(context, &page, true) != true )
+    if ( SCPI_ParamCharacters(context, &pLocalStr, &strLen, true) != true )
+    { scpi_ret( SCPI_RES_ERR ); }logDbg()<<strLen<<pLocalStr;
+    if (strLen < 1)
     { scpi_ret( SCPI_RES_ERR ); }
 
-    pRobo->moveTest1( tpvRegion(0,page) );
+//    int page;
+
+//    if ( SCPI_ParamInt32(context, &page, true) != true )
+//    { scpi_ret( SCPI_RES_ERR ); }
+
+//    pRobo->moveTest1( tpvRegion(0,page) );
 
     return SCPI_RES_OK;
 }
@@ -1241,6 +1443,8 @@ static scpi_command_t _scpi_cmds[]=
     CMD_ITEM("TST?", _scpi_tst ),
 
     CMD_ITEM( "*IDN?", _scpi_idn ),
+    CMD_ITEM( "LINK", _scpi_link ),
+
     CMD_ITEM( "RUN",  _scpi_run ),
     CMD_ITEM( "STOP", _scpi_stop ),
     CMD_ITEM( "SYNC", _scpi_sync ),

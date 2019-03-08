@@ -64,6 +64,7 @@ int robotSinanju::goZero( const tpvRegion &region,
                                  mHandZeroTime,
                                  bCcw ? (-mHandZeroAngle) : ( mHandZeroAngle ),
                                  bCcw ? (-mZeroSpeed) : ( mZeroSpeed ),
+                                 mHandStopAngle,
                                  mGapTime,
                                  bCcw ? (mGapAngle) : (-mGapAngle),
                                  axes_zero_op_none,
@@ -84,6 +85,113 @@ int robotSinanju::goZero( const tpvRegion &region,
     {
         goZero( region, jointList.at(i), ccwList.at(i) );
     }
+
+    return 0;
+}
+
+//! en, comment, t, x, y, z, h, attr, comment,speed
+int robotSinanju::routeTo(const tpvRegion &region,
+
+                          QVariantList &vars)
+{
+
+    if ( vars.size() != 10 )
+    { return -1; }
+
+    QVariantList *pVars = new QVariantList();
+    *pVars = vars;
+
+    post_set( (VRobot::apiTaskRequest)(&robotSinanju::on_route_to),
+              pVars,
+              region,
+              0,0
+              );
+    return 0;
+}
+
+//! route to
+void robotSinanju::on_route_to( void *pArg )
+{
+    //! check arg
+    RoboTaskArgument *pRoboTask = (RoboTaskArgument*)pArg;
+
+    if ( pRoboTask == NULL )
+    { return; }
+
+    QVariantList *pVars;
+    pVars = pRoboTask->m_pVarList;
+    if ( NULL == pVars )
+    { return; }
+
+    if ( pVars->size() != (9 + 1) )
+    { return; }
+
+    bool bOk;
+    double x,y,z;
+    x = pVars->at(3).toDouble( &bOk );
+    if ( !bOk ){ return; }
+    y = pVars->at(4).toDouble( &bOk );
+    if ( !bOk ){ return; }
+    z = pVars->at(5).toDouble( &bOk );
+    if ( !bOk ){ return; }
+
+    double speed;
+    speed = pVars->at(9).toDouble( &bOk );
+    if ( !bOk ){ return; }
+
+    //! check
+    //! guess the time by speed
+    TraceKeyPoint pose;
+    int ret = nowPose( pose );
+    float guessT = comAssist::eulcidenTime( pose.x, pose.y, pose.z,
+                                            x,y,z,
+                                            speed );
+
+    //! default interp
+    TraceKeyPoint pt1( 0, pose.x, pose.y, pose.z, 0 );
+    TraceKeyPoint pt2( guessT, x, y, z, 0 );
+
+    TraceKeyPointList curve;
+    curve.append( pt1 );
+    curve.append( pt2 );
+
+    move( curve, pRoboTask->mRegion );
+}
+
+int robotSinanju::post_set( VRobot::apiTaskRequest api,
+                            QVariantList *pVars,
+                            const tpvRegion &region,
+                            int tmo, int tick )
+{
+    //! post do
+    RoboTaskRequest *pReq;
+    pReq = new RoboTaskRequest();
+    if ( NULL == pReq )
+    { return -1; }
+
+    RoboTaskArgument *pArg;
+    pArg = new RoboTaskArgument();
+    if ( NULL == pArg )
+    { return -1; }
+
+    //! attach
+
+    //! fill
+    pArg->mTmo = tmo;
+    pArg->mTick = tick;
+    pArg->mRegion = region;
+
+    if ( NULL != pVars )
+    { pArg->attachVars( pVars ); }
+
+    //! request
+    pReq->request( this,
+                   api,
+                   pArg );
+
+    //! start
+    Q_ASSERT( NULL != m_pRoboTask );
+    m_pRoboTask->attachRequest( pReq );
 
     return 0;
 }
@@ -232,12 +340,19 @@ int robotSinanju::zeroAxesTask( void *pArg )
     //! to zero
     onLine();
 
-    ret = toAim( pZArg->mRegion, pZArg->mAimAngles, pZArg->mSepAngles );
-    if ( ret != 0 )
-    { return ret; }
+    beginZero( pZArg->mRegion );
+    do
+    {
+        ret = toAim( pZArg->mRegion, pZArg->mAimAngles, pZArg->mSepAngles );
+        if ( ret != 0 )
+        { break; }
 
-    ret = waitFsm( pZArg->mRegion, MegaDevice::mrq_state_idle, pZArg->mTmo, pZArg->mTick );
-    if ( 0 != ret )
+        ret = waitFsm( pZArg->mRegion, MegaDevice::mrq_state_idle, pZArg->mTmo, pZArg->mTick );
+        if ( 0 != ret )
+        { break; }
+    }while( 0 );
+    endZero( pZArg->mRegion );
+    if ( ret != 0 )
     { return ret; }
 
     //! to init
@@ -286,8 +401,8 @@ int robotSinanju::toAimSession( const tpvRegion &region,
 
     //! start
     Q_ASSERT( NULL != m_pRoboTask );
-    m_pRoboTask->setRequest( pReq );
-    m_pRoboTask->start();
+    m_pRoboTask->attachRequest( pReq );
+//    m_pRoboTask->start();
 
     return 0;
 }
@@ -437,5 +552,46 @@ int robotSinanju::toAimd( const tpvRegion &region,
                handT, handP, handV );
 
     return ret;
+}
+
+//! region stop distance
+void robotSinanju::beginZero( tpvRegion &region )
+{
+    if ( mHandStopAngle != 0 )
+    {}
+    else
+    { return; }
+
+    MegaDevice::deviceMRQ *pMrq;
+    int subAx;
+
+    pMrq = jointDevice( 4, &subAx );
+    if ( NULL == pMrq )
+    { return; }
+
+    pMrq->setMOTIONPLAN_STOPMODE( 4,
+                                  (MRQ_MOTION_SWITCH_1)region.page(),
+                                  MRQ_MOTIONPLAN_STOPMODE_1_DISTANCE );
+    pMrq->setMOTIONPLAN_STOPDISTANCE( 4,
+                                      (MRQ_MOTION_SWITCH_1)region.page(),
+                                      mHandStopAngle );
+}
+void robotSinanju::endZero( tpvRegion &region )
+{
+    if ( mHandStopAngle != 0 )
+    {}
+    else
+    { return; }
+
+    MegaDevice::deviceMRQ *pMrq;
+    int subAx;
+
+    pMrq = jointDevice( 4, &subAx );
+    if ( NULL == pMrq )
+    { return; }
+
+    pMrq->setMOTIONPLAN_STOPMODE( 4,
+                                  (MRQ_MOTION_SWITCH_1)region.page(),
+                                  MRQ_MOTIONPLAN_STOPMODE_1_IMMEDIATE );
 }
 

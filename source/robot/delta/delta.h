@@ -28,7 +28,7 @@ class DeltaTask : public RoboTask
 public:
     DeltaTask( QObject *pParent = NULL );
 protected:
-    virtual void run();
+    virtual void procRequest(RoboTaskRequest*pReq);
 };
 
 class robotDelta : public RawRobo

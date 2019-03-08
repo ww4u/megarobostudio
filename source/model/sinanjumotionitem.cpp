@@ -9,7 +9,7 @@ static QString _headers[]=
     QStringLiteral("y(mm)"),
     QStringLiteral("z(mm)"),
     QString("h(" + QString( char_deg ) + ")" ),
-    QStringLiteral("Interp"),
+    QStringLiteral("Line"),
     QStringLiteral("Comment"),
 };
 
@@ -36,7 +36,7 @@ QString SinanjuMotionItem::header( int col )
     else if ( col == 6 )
     { return QString("h(" + QString( char_deg ) + ")" ); }
     else if ( col == 7 )
-    { return QObject::tr("Interp"); }
+    { return QObject::tr("Line"); }
     else
     { return QObject::tr("Comment"); }
 }

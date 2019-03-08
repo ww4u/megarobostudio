@@ -24,7 +24,7 @@ class MegatronTask : public RoboTask
 public:
     MegatronTask( QObject *pParent = NULL );
 protected:
-    virtual void run();
+    virtual void procRequest(RoboTaskRequest *pReq);
 };
 
 class robotMegatron : public RawRobo

@@ -36,14 +36,21 @@ private slots:
 
     void on_btnKill_clicked();
 
+    void on_tableView_activated(const QModelIndex &index);
+
+    void on_tableView_clicked(const QModelIndex &index);
+
 public:
     void setDelay( int dly );
     int getDelay();
 
+    AppModel *getModel();
+
 private:
     Ui::DlgApp *ui;
 
-    AppModel *m_pModel;
+//    AppModel *m_pModel;
+    AppModel mAppModel;
     AppMgr *m_pMgr;
 };
 

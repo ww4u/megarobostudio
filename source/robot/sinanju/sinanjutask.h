@@ -12,7 +12,8 @@ class SinanjuTask : public RoboTask
 public:
     SinanjuTask( QObject *pParent = NULL );
 protected:
-    virtual void run();
+//    virtual void run();
+    virtual void procRequest( RoboTaskRequest *pRequest );
 };
 
 #endif // SINANJUTASK_H

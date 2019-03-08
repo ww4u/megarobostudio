@@ -51,7 +51,7 @@ public:
     H2Task( QObject *pParent = NULL );
 
 protected:
-    virtual void run();
+    virtual void procRequest(RoboTaskRequest*pReq);
 };
 
 class robotH2 : public RawRobo
@@ -77,6 +77,13 @@ public:
 protected:
     void postConfigTransfer();
 
+    void beginZero( const tpvRegion &region );
+    void endZero( const tpvRegion &region );
+
+    int getjPOS( int joint, quint32 &pos );
+    int getXPOS( quint32 &bm );      //! bit0: ch1, bit1:ch2
+    int getYPOS( quint32 &bm );
+
 public:
     virtual int download( VRobot *pSetup );
 
@@ -100,6 +107,7 @@ public:
               const tpvRegion &region );
 
     bool checkZeroValid();
+
 
     //! jId -- 0: x
     virtual int goZero( const tpvRegion &region,

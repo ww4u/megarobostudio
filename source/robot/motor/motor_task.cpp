@@ -1,6 +1,5 @@
 #include "motor.h"
 
-
 MotorArg::MotorArg()
 {
     mAx = 0;
@@ -16,22 +15,9 @@ MotorArg::MotorArg()
 MotorTask::MotorTask( QObject *pParent ) : RoboTask( pParent )
 {}
 
-void MotorTask::run()
+void MotorTask::procRequest( RoboTaskRequest *pReq )
 {
-    if ( 0 != checkRequest( m_pReq ) )
-    { return; }
-
-    robotMotor *pRobo;
-    pRobo = (robotMotor*)m_pReq->m_pRobo;
-
-    int ret;
-    ret = (pRobo->*( m_pReq->m_pApi ))( m_pReq->m_pArg );
-    if ( ret != 0 )
-    {
-        sysWarn( __FUNCTION__, QString::number(__LINE__), QString::number( ret ) );
-    }
-
-    gc();
+    implement_proc_request( robotMotor );
 }
 
 

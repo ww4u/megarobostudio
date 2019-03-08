@@ -6,15 +6,35 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>206</width>
-    <height>93</height>
+    <width>229</width>
+    <height>71</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>LogIn</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
-   <item>
+  <layout class="QFormLayout" name="formLayout">
+   <item row="1" column="0">
+    <widget class="QCheckBox" name="chkAutoLogin">
+     <property name="layoutDirection">
+      <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="text">
+      <string>Auto login</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0" colspan="2">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QLabel" name="label">
@@ -71,26 +91,6 @@
       </spacer>
      </item>
     </layout>
-   </item>
-   <item>
-    <widget class="QCheckBox" name="chkAutoLogin">
-     <property name="layoutDirection">
-      <enum>Qt::RightToLeft</enum>
-     </property>
-     <property name="text">
-      <string>Auto login</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
    </item>
   </layout>
  </widget>

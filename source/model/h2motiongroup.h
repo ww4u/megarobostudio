@@ -35,7 +35,8 @@ public:
 
 public:
     virtual void reverse();
-    virtual void autoTime( double speed, double speedTerminal );
+    virtual void autoTime( double speed, double speedTerminal,
+                           int align, int div );
 
     virtual tpvType getAbsT( int index );
 protected:

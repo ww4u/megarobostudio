@@ -210,7 +210,7 @@
        </widget>
       </item>
       <item row="0" column="0">
-       <widget class="PageOption" name="widget" native="true"/>
+       <widget class="AxisPage" name="widget"/>
       </item>
      </layout>
     </widget>
@@ -299,7 +299,7 @@
         <x>0</x>
         <y>0</y>
         <width>522</width>
-        <height>73</height>
+        <height>69</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -349,10 +349,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>PageOption</class>
-   <extends>QWidget</extends>
-   <header>pageoption.h</header>
-   <container>1</container>
+   <class>AxisPage</class>
+   <extends>QComboBox</extends>
+   <header>axispage.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

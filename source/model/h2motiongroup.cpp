@@ -405,7 +405,8 @@ void H2MotionGroup::reverse()
                       mHeaderList.size() - 1 ) );
 }
 
-void H2MotionGroup::autoTime( double speed, double speedTerminal )
+void H2MotionGroup::autoTime( double speed, double speedTerminal,
+                              int align, int div )
 {
     //! extract the enabled item
     QList< H2MotionItem *> validItems;
@@ -434,9 +435,9 @@ void H2MotionGroup::autoTime( double speed, double speedTerminal )
                                         speed );
         //! timeline
         if ( mtType == time_abs )
-        { t += aligndT( dt ); }
+        { t += aligndT( dt, align, div ); }
         else
-        { t = aligndT( dt ); }
+        { t = aligndT( dt, align, div ); }
 
         validItems[ i ]->mT = t;
     }

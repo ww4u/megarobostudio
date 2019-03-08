@@ -29,10 +29,10 @@ void PageControl::changeEvent(QEvent * event)
 }
 
 QComboBox *PageControl::getComb()
-{ return ui->pageOption->getComb(); }
+{ return ui->comboBox; }
 
 void PageControl::setPage( int pageIndex )
-{ ui->pageOption->setPage( pageIndex); }
+{ ui->comboBox->setCurrentIndex( pageIndex ); }
 
 int PageControl::page()
-{ return ui->pageOption->page(); }
+{ return ui->comboBox->currentIndex(); }

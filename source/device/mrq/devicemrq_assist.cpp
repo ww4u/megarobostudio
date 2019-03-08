@@ -75,5 +75,27 @@ float deviceMRQ::microStep( int ax )
     return _microSteps[ mDRIVER_MICROSTEPS[ ax ] ];
 }
 
+void deviceMRQ::beginZero( const tpvRegion &region, float dist )
+{
+    if ( dist != 0 )
+    {
+        setMOTIONPLAN_STOPMODE( region.axes(),
+                            (MRQ_MOTION_SWITCH_1)region.page(),
+                            MRQ_MOTIONPLAN_STOPMODE_1_DISTANCE );
+        setMOTIONPLAN_STOPDISTANCE( region.axes(),
+                                    (MRQ_MOTION_SWITCH_1)region.page(),
+                                    dist );
+    }
+}
+void deviceMRQ::endZero( const tpvRegion &region, float dist )
+{
+    if ( dist != 0 )
+    {
+        setMOTIONPLAN_STOPMODE( region.axes(),
+                            (MRQ_MOTION_SWITCH_1)region.page(),
+                            MRQ_MOTIONPLAN_STOPMODE_1_IMMEDIATE );
+    }
+}
+
 }
 

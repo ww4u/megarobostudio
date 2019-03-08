@@ -382,7 +382,8 @@ void H2ZMotionGroup::reverse()
                       index(mItems.count(), H2ZMotionItem::columns() - 1) );
 }
 
-void H2ZMotionGroup::autoTime( double speed, double speedTerminal )
+void H2ZMotionGroup::autoTime( double speed, double speedTerminal,
+                               int align, int div )
 {
     //! extract the enabled item
     QList< H2ZMotionItem *> validItems;
@@ -412,9 +413,9 @@ void H2ZMotionGroup::autoTime( double speed, double speedTerminal )
 
         //! timeline
         if ( mtType == time_abs )
-        { t += aligndT( dt ); }
+        { t += aligndT( dt, align, div ); }
         else
-        { t = aligndT( dt ); }
+        { t = aligndT( dt, align, div ); }
 
         validItems[ i ]->mT = t;
     }

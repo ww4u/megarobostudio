@@ -294,7 +294,7 @@ void roboAxes::buildConnection()
                  this, SLOT(slot_joint_align(int)) );
     }
 
-    connect( ui->widget->getComb(), SIGNAL(currentIndexChanged(int)),
+    connect( ui->widget, SIGNAL(currentIndexChanged(int)),
              this, SLOT(slot_comboBox_currentIndexChanged(int)) );
 
     connect( ui->coordOption, SIGNAL(signal_option_changed(int)),

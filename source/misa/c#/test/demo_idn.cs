@@ -11,19 +11,28 @@ namespace test
 {
     class Program
     {
-        static void testMrq()
+        static int testMrq( int port = 1234 )
         {
             MRQ mrq;
 
             mrq = new MRQ();
 
-            mrq.miOpen("device1");
+            int ret = mrq.miOpen("device1", "127.0.0.1", port );
+            if (ret != 0)
+            {
+                Console.WriteLine("fail:{0}", ret);
+                return ret;
+            }
 
             string intf;
             if (mrq.getLINK_INTFC(out intf) == 0)
             {
                 Console.WriteLine( intf );
             }
+
+            mrq.miClose();
+
+            return 0;
         }
 
         static void testIdn()
@@ -122,8 +131,25 @@ namespace test
             //testH2();
 
             //testDevMgr();
+            int failCnt = 0;
+            int ret; 
+            for (int i = 0; i < 10; i++)
+            {
+                ret = testMrq();
+                if (ret != 0)
+                { failCnt++;  }
 
-            testMrq();
+                Console.WriteLine("1234: {0}, fail:{1}", i, failCnt );
+            }
+
+            //for (int i = 0; i < 1; i++)
+            //{
+            //    ret = testMrq( 1235 );
+            //    if (ret != 0)
+            //    { failCnt++; }
+
+            //    Console.WriteLine("1235: {0}, fail:{1}", i, failCnt);
+            //}
         }
     }
 }

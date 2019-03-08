@@ -137,8 +137,8 @@ int robotH2Z::goZero( const tpvRegion &region,
                        (VRobot::apiTaskRequest)(&robotH2Z::zeroAxesTask),
                        pArg );
 
-        m_pRoboTask->setRequest( pReq );
-        m_pRoboTask->start();
+        m_pRoboTask->attachRequest( pReq );
+//        m_pRoboTask->start();
 
     }
     else if ( jointId == 1 )
@@ -162,8 +162,8 @@ int robotH2Z::goZero( const tpvRegion &region,
                        (VRobot::apiTaskRequest)(&robotH2Z::zeroAxesTask),
                        pArg );
 
-        m_pRoboTask->setRequest( pReq );
-        m_pRoboTask->start();
+        m_pRoboTask->attachRequest( pReq );
+//        m_pRoboTask->start();
     }
     else if ( jointId == 2 )
     {
@@ -187,8 +187,8 @@ int robotH2Z::goZero( const tpvRegion &region,
                        (VRobot::apiTaskRequest)(&robotH2Z::zeroAxesTask),
                        pArg );
 
-        m_pRoboTask->setRequest( pReq );
-        m_pRoboTask->start();
+        m_pRoboTask->attachRequest( pReq );
+//        m_pRoboTask->start();
     }
     else
     {
@@ -266,8 +266,8 @@ int robotH2Z::goZero( const tpvRegion &region,
                    (VRobot::apiTaskRequest)(&robotH2Z::zeroAxesTask),
                    pArg );
 
-    m_pRoboTask->setRequest( pReq );
-    m_pRoboTask->start();
+    m_pRoboTask->attachRequest( pReq );
+//    m_pRoboTask->start();
 
     return 0;
 }

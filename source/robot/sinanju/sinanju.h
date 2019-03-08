@@ -60,7 +60,18 @@ public:
     virtual int goZero( const tpvRegion &region,
                         const QList<int> &jointList,
                         const QList<bool> &ccwList );
+    virtual int routeTo(const tpvRegion &region,
+                        QVariantList &vars);
 
+protected:
+    void on_route_to( void *pArg );
+
+    int post_set( VRobot::apiTaskRequest api,
+                  QVariantList *pArg,
+                  const tpvRegion &region,
+                  int tmo, int tick );
+
+public:
     virtual bool checkZeroValid();
     virtual float getZero( int jointTabId );
     virtual int  setZero( int jointTabId, float zero );
@@ -93,6 +104,9 @@ protected:
     int toAimd( const tpvRegion &region,
                 const QList<double> &aimAngles,
                 const QList<double> &sepAngles );
+
+    void beginZero( tpvRegion &region );
+    void endZero( tpvRegion &region );
 
 public:
     virtual int loopNow();
@@ -220,8 +234,8 @@ protected:
     void exportJoints( const QString &fileName, xxxGroup<jointsTrace> &jointsPlan );
 
 public:
-    void setHandZeroAttr( double zeroTime, double zeroAngle );
-    void handZeroAttr( double &zeroTime, double &zeroAngle );
+    void setHandZeroAttr( double zeroTime, double zeroAngle, double stopAngle );
+    void handZeroAttr( double &zeroTime, double &zeroAngle, double &stopAngle );
 
     void setGapAttr( double gapTime, double gapAngle );
     void gapAttr( double &gapTime, double &gapAngle );
@@ -245,7 +259,7 @@ public:
     void getTcp( double p[3], double r[3] );
 
 protected:
-    double mHandZeroTime, mHandZeroAngle;
+    double mHandZeroTime, mHandZeroAngle, mHandStopAngle;
     double mGapTime, mGapAngle;
 
     bool mbHandAble;

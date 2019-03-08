@@ -86,4 +86,7 @@ int VDevice::upload( EnumDeviceContent content )
 int VDevice::uploadSetting()
 { return 0; }
 
+void VDevice::adaptToFirmware( QList<FirmwarePackage*> * )
+{}
+
 }

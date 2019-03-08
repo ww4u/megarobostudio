@@ -38,6 +38,8 @@ public:
     AppModel();
     ~AppModel();
 
+    void assign( const AppModel &model );
+
 public:
     virtual int rowCount(const QModelIndex &parent) const;
     virtual int columnCount(const QModelIndex &parent) const;

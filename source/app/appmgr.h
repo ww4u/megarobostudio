@@ -27,8 +27,8 @@ public:
 
     void startup();
 
-protected:
     AppProcess* findApp( AppItem *pItem );
+protected:
     void connectApp( AppProcess *pProc );
 
 protected:

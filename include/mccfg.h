@@ -9,7 +9,8 @@
 
 //! config
 #define pref_file_name                  QCoreApplication::applicationDirPath() + "/data/pref.xml"
-#define user_pref_file_name             QDir::homePath() + "/megarobostudio/pref.xml"
+#define user_pref_path                  QDir::homePath() + "/AppData/Roaming/megarobostudio"
+#define user_pref_file_name             user_pref_path + "/pref.xml"
 #define robo_mgr_name                   QCoreApplication::applicationDirPath() + "/data/robot.xml"
 
 //! loops

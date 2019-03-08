@@ -3,7 +3,7 @@
 
 #include <QWidget>
 #include "modelview.h"
-#include "pageoption.h"
+//#include "pageoption.h"
 namespace Ui {
 class MrqTrigChan;
 }

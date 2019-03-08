@@ -16,11 +16,15 @@ SinanjuMotionGroup::SinanjuMotionGroup( const QString &className,
     mbPrefAble = true;
     setAutoTimeAble( true );
 
+    mbToHereAble = true;
+
     mbSmartEditable = true;
     mSmartEditColumns.clear();
     mSmartEditColumns<<3<<4<<5;
     mRpcReq = RpcRequest::e_req_add_t4_key_point;
     mRpcType = RpcRequest::e_type_f_f_f;
+
+    mCheckColumnList<<0<<7;
 }
 
 SinanjuMotionGroup::~SinanjuMotionGroup()
@@ -443,7 +447,8 @@ void SinanjuMotionGroup::reverse()
 }
 
 void SinanjuMotionGroup::autoTime( double speed,
-                                           double speedT )
+                                   double speedT,
+                                   int align, int div )
 {
     //! extract the enabled item
     QList< SinanjuMotionItem *> validItems;
@@ -478,9 +483,9 @@ void SinanjuMotionGroup::autoTime( double speed,
 
         //! timeline
         if ( mtType == time_abs )
-        { t += aligndT( dt ); }
+        { t += aligndT( dt, align, div ); }
         else
-        { t = aligndT( dt ); }
+        { t = aligndT( dt, align, div ); }
 
         validItems[ i ]->mT = t;
     }

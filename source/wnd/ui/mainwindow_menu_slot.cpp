@@ -903,6 +903,10 @@ void MainWindow::on_actionApp_triggered()
     if ( QDialog::Accepted == appWnd.exec() )
     {
         mMcModel.mSysPref.mAppStartDelay = appWnd.getDelay();
+        mMcModel.mSysPref.mAppModel.assign( *appWnd.getModel() );
         emit sig_pref_request_save();
+    }
+    else
+    {
     }
 }

@@ -126,7 +126,8 @@ void SinanjuPref::updateData()
 
     //! hand zero
     pRobo->setHandZeroAttr( ui->spinZeroTime->value(),
-                            ui->spinZeroAngle->value() );
+                            ui->spinZeroAngle->value(),
+                            ui->spinStopDist->value() );
 
     pRobo->setGapAttr( ui->spinGapTime->value(),
                        ui->spinGapAngle->value() );
@@ -147,6 +148,8 @@ void SinanjuPref::updateUi()
 
     Q_ASSERT( pBase->axes() >= pBase->mInitAngles.size() );
 
+//    ui->comboBox->setMaxPage( pBase->regions() );
+
     //! init angle
     for ( int i = 0; i < 4; i++ )
     {
@@ -166,11 +169,12 @@ void SinanjuPref::updateUi()
         return;
     }
 
-    double zeroTime, zeroAngle;
+    double zeroTime, zeroAngle, stopAngle;
 
-    pRobo->handZeroAttr( zeroTime, zeroAngle );
+    pRobo->handZeroAttr( zeroTime, zeroAngle, stopAngle );
     ui->spinZeroTime->setValue( zeroTime );
     ui->spinZeroAngle->setValue( zeroAngle );
+    ui->spinStopDist->setValue( stopAngle );
 
     double gapTime, gapAngle;
     pRobo->gapAttr( gapTime, gapAngle );
@@ -258,7 +262,7 @@ void SinanjuPref::on_btnZeroArm_clicked()
         jList<<0<<1<<2<<3;
         ccwList<<false<<false<<false<<false;
 
-        pBase->goZero( tpvRegion(0, ui->widget->page() ),
+        pBase->goZero( tpvRegion(0, ui->comboBox->page() ),
                        jList,
                        ccwList );
     }
@@ -280,7 +284,7 @@ void SinanjuPref::on_btnZeroHand_clicked()
     int ret = msgBox.exec();
     if ( ret == QMessageBox::Ok )
     {
-        pBase->goZero( tpvRegion(0, ui->widget->page() ),
+        pBase->goZero( tpvRegion(0, ui->comboBox->currentIndex() ),
                        4, ui->chkHandZeroCcw->isChecked() );
     }
 }
@@ -301,7 +305,7 @@ void SinanjuPref::on_btnZero_clicked()
     int ret = msgBox.exec();
     if ( ret == QMessageBox::Ok )
     {
-        pBase->goZero( tpvRegion(0, ui->widget->page() ) );
+        pBase->goZero( tpvRegion(0, ui->comboBox->currentIndex() ) );
     }
 }
 
@@ -390,7 +394,7 @@ void SinanjuPref::on_btnFactory_clicked()
     int ret = msgBox.exec();
     if ( ret == QMessageBox::Ok )
     {
-        pBase->goFactory( tpvRegion(0, ui->widget->page()) );
+        pBase->goFactory( tpvRegion(0, ui->comboBox->currentIndex()) );
     }
 }
 

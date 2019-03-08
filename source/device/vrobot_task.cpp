@@ -5,10 +5,22 @@ RoboTaskArgument::RoboTaskArgument()
 {
     mTmo = time_s(20);
     mTick = time_ms(500);
+
+    m_pVarList = NULL;
 }
 
 RoboTaskArgument::~RoboTaskArgument()
-{}
+{
+    if ( NULL != m_pVarList )
+    { delete m_pVarList; }
+}
+
+void RoboTaskArgument::attachVars( QVariantList *pVars )
+{
+    Q_ASSERT( NULL != pVars );
+
+    m_pVarList = pVars;
+}
 
 RoboTaskRequest::RoboTaskRequest()
 {
@@ -67,8 +79,6 @@ void RoboTask::killAll()
 
 RoboTask::RoboTask( QObject *pParent ) : QThread( pParent )
 {
-    m_pReq = NULL;
-
     RoboTask::_roboTasks.append( this );
 }
 
@@ -78,30 +88,61 @@ RoboTask::~RoboTask()
 }
 
 void RoboTask::run()
+{
+    RoboTaskRequest* pRequest;
+    while( !mRequests.isEmpty() )
+    {logDbg();
+        mMutex.lock();
+            pRequest = mRequests.dequeue();
+        mMutex.unlock();
+
+        //! check req
+        if( checkRequest( pRequest ) )
+        {
+            //! do it
+            procRequest( pRequest );
+        }
+
+        //! gc it
+        gcRequest( pRequest );logDbg();
+    }
+}
+
+void RoboTask::procRequest( RoboTaskRequest *pRequest )
 {}
 
-void RoboTask::setRequest( RoboTaskRequest * pReq)
+void RoboTask::attachRequest( RoboTaskRequest *pRequest )
 {
-    Q_ASSERT( NULL != pReq );
-    m_pReq = pReq;
+    Q_ASSERT( NULL != pRequest );
+
+    mMutex.lock();
+        mRequests.enqueue( pRequest );
+    mMutex.unlock();
+
+    //! start again
+    start();
 }
 
-int RoboTask::checkRequest( const RoboTaskRequest *pReq )
+bool RoboTask::checkRequest( const RoboTaskRequest *pReq )
 {
-    Q_ASSERT( NULL != pReq );
-    Q_ASSERT( NULL != pReq->m_pRobo );
-    Q_ASSERT( NULL != pReq->m_pApi );
-    Q_ASSERT( NULL != pReq->m_pArg );
+    if( NULL == pReq ){ return false; }
+    if( NULL == pReq->m_pRobo ){ return false; }
+    if( NULL == pReq->m_pApi ){ return false; }
+    if( NULL == pReq->m_pArg ){ return false; }
 
-    return 0;
+    return true;
 }
 
-void RoboTask::gc()
+void RoboTask::gcRequest( RoboTaskRequest *pReq )
 {
-    if ( NULL != m_pReq )
+    if ( NULL != pReq )
     {
-        delete m_pReq;
-        m_pReq =NULL;
+        //! arg
+        if ( NULL != pReq->m_pArg )
+        { delete pReq->m_pArg; }
+
+        //! request
+        delete pReq;
     }
 }
 

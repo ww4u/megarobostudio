@@ -83,11 +83,12 @@ int AppMgr::stopApp( AppItem *pItem )
     QProcess *pProc = findApp( pItem );
     if ( NULL != pProc )
     {
+        logDbg();
         pProc->kill();
         return 0;
     }
     else
-    { return -1; }
+    { logDbg(); return -1; }
 }
 
 AppProcess* AppMgr::findApp( AppItem *pItem )

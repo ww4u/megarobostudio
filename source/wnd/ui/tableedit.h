@@ -19,12 +19,14 @@ protected:
     virtual void context_add_below();
     virtual void context_clear();
 
+    virtual void context_toHere();
+    virtual bool context_toHere_able();
 protected Q_SLOTS:
     void slot_context_remove();
     void slot_context_add_before();
     void slot_context_add_below();
     void slot_context_clear();
-
+    void slot_context_tohere();
 protected:
     void setupUi();
     void retranslateContextMenu();
@@ -37,6 +39,8 @@ protected:
 
     QAction *m_pContextActionClear;
     QAction *m_pContextActionDelete;
+
+    QAction *m_pContextActionToHere;
 };
 
 #endif // TABLEEDIT_H

@@ -391,6 +391,15 @@ public :
                     byte * v2,
                     byte * v3,
                     byte * v4,
+                    bool bQuery = true );
+
+        int read( DeviceId &id, byte mainCode,
+                    byte subCode,
+                    byte * v0,
+                    byte * v1,
+                    byte * v2,
+                    byte * v3,
+                    byte * v4,
                     byte * v5,
                     bool bQuery = true );
 
@@ -505,6 +514,16 @@ public :
                     byte v1,
                     byte * v2,
                     bool bQuery = true );
+
+        int read( DeviceId &id, byte mainCode,
+                    byte subCode,
+                    byte v0,
+                    byte v1,
+                    byte * v2,
+                    byte * v3,
+                    byte * v4,
+                    bool bQuery = true
+                    );
 
         int read( DeviceId &id, byte mainCode,
                     byte subCode,
@@ -643,6 +662,15 @@ public :
                     byte * v2,
                     byte * v3,
                     byte * v4,
+                    bool bQuery = true );
+
+        int _read( DeviceId &id, byte mainCode,
+                    byte subCode,
+                    byte * v0,
+                    byte * v1,
+                    byte * v2,
+                    byte * v3,
+                    byte * v4,
                     byte * v5,
                     bool bQuery = true );
 
@@ -757,6 +785,16 @@ public :
                     byte v1,
                     byte * v2,
                     bool bQuery = true );
+
+        int _read( DeviceId &id, byte mainCode,
+                    byte subCode,
+                    byte v0,
+                    byte v1,
+                    byte * v2,
+                    byte * v3,
+                    byte * v4,
+                    bool bQuery = true
+                    );
 
         int _read( DeviceId &id, byte mainCode,
                     byte subCode,

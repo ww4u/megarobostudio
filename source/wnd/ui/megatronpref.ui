@@ -27,10 +27,17 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="3">
-       <widget class="QLabel" name="label_11">
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_7">
         <property name="text">
-         <string>Gap Time</string>
+         <string>Time</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_9">
+        <property name="text">
+         <string>Distance</string>
         </property>
        </widget>
       </item>
@@ -47,35 +54,22 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="label_9">
+      <item row="1" column="3">
+       <widget class="QLabel" name="label_11">
         <property name="text">
-         <string>Distance</string>
+         <string>Gap Time</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="label_7">
+      <item row="2" column="3">
+       <widget class="QLabel" name="label_12">
         <property name="text">
-         <string>Time</string>
+         <string>Gap Distance</string>
         </property>
        </widget>
       </item>
       <item row="2" column="1">
        <widget class="QDoubleSpinBox" name="spinZeroAngle">
-        <property name="suffix">
-         <string>mm</string>
-        </property>
-        <property name="minimum">
-         <double>-10000.000000000000000</double>
-        </property>
-        <property name="maximum">
-         <double>10000.000000000000000</double>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="4">
-       <widget class="QDoubleSpinBox" name="spinGapDistance">
         <property name="suffix">
          <string>mm</string>
         </property>
@@ -100,15 +94,21 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="3">
-       <widget class="QLabel" name="label_12">
-        <property name="text">
-         <string>Gap Distance</string>
+      <item row="2" column="4">
+       <widget class="QDoubleSpinBox" name="spinGapDistance">
+        <property name="suffix">
+         <string>mm</string>
+        </property>
+        <property name="minimum">
+         <double>-10000.000000000000000</double>
+        </property>
+        <property name="maximum">
+         <double>10000.000000000000000</double>
         </property>
        </widget>
       </item>
       <item row="0" column="0">
-       <widget class="PageOption" name="widget" native="true"/>
+       <widget class="AxisPage" name="widget"/>
       </item>
      </layout>
     </widget>
@@ -362,10 +362,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>PageOption</class>
-   <extends>QWidget</extends>
-   <header>pageoption.h</header>
-   <container>1</container>
+   <class>AxisPage</class>
+   <extends>QComboBox</extends>
+   <header>axispage.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

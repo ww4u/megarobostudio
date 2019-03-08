@@ -127,6 +127,8 @@ public:
     virtual int uploadIDs();
     virtual int upload( EnumDeviceContent content );
 
+    virtual void adaptToFirmware( QList<FirmwarePackage*> * );
+
     virtual QList<int> deviceIds(); //! receive/send/group
     virtual QList<int> subIDs( int ch );
     virtual QString deviceFullDesc();
@@ -171,7 +173,11 @@ public:
     QMetaType::Type getREPORT_TYPE( MRQ_REPORT_STATE stat );
 
     //! ca 02
-    int getSeqVer( quint8 *p1, quint8 *p2, quint8 *p3, quint8 *p4, bool bQuery = true );
+    int getSeqVer( quint8 *p1, quint8 *p2, quint8 *p3, quint8 *p4, quint8 *p5,
+                   bool bQuery = true );
+    int getSeqVer( quint8 *p1, quint8 *p2, quint8 *p3, quint8 *p4,
+                   bool bQuery = true );
+
 
     //! 1~100
     int setFanDuty( int duty );
@@ -291,7 +297,7 @@ public:
                            float t, float angle, float endV = 0 );
 
     int lightCouplingZero( pvt_region,
-                           float t, float angle, float endV,
+                           float t, float angle, float endV,float stopDist,
                            float invT, float invAngle,
 //                           bool bClrCnt,
                            AxesZeroOp zOp,
@@ -343,6 +349,9 @@ protected:
     float stepAngle( int ax );
     float microStep( int ax );
 
+    void beginZero( const tpvRegion &region, float dist );
+    void endZero( const tpvRegion &region, float dist );
+
 public:
     QList< bool > mAngleDir;
 
@@ -370,7 +379,7 @@ struct ArgLightCoupZero : public RoboTaskArgument
     int mAx, mPage;
 //    bool mbClrCnt;
     AxesZeroOp mZOp;
-    float mT, mAngle, mEndV;
+    float mT, mAngle, mEndV, mStopDist;
     float mInvT, mInvAngle;
 
     ArgLightCoupZero();
@@ -382,7 +391,8 @@ public:
     MrqTaskThread(  QObject *parent = NULL );
 
 protected:
-    virtual void run();
+//    virtual void run();
+    virtual void procRequest(RoboTaskRequest *pReq );
 
 };
 

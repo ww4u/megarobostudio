@@ -23,19 +23,7 @@ H2ZeroArg::H2ZeroArg()
 H2Task::H2Task(QObject *pParent) : RoboTask( pParent )
 {}
 
-void H2Task::run()
+void H2Task::procRequest(RoboTaskRequest*pReq)
 {
-    if ( 0 != checkRequest( m_pReq ) )
-    { return; }
-
-    robotH2 *pH2;
-    pH2 = (robotH2*)m_pReq->m_pRobo;
-
-    int ret;
-    ret = (pH2->*( m_pReq->m_pApi ))( m_pReq->m_pArg );
-    if ( ret != 0 )
-    {
-        sysWarn( __FUNCTION__, QString::number(__LINE__), QString::number( ret ) );
-    }
-    gc();
+    implement_proc_request( robotH2 );
 }

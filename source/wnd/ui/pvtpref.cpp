@@ -14,21 +14,20 @@ modelPvtPref::modelPvtPref()
     mDec = 250;
 }
 
-PvtPref::PvtPref(QWidget *parent) :
+PvtPref::PvtPref(QStringList &stepList, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::PvtPref)
 {
     ui->setupUi(this);
 
-    ui->cmbVernier->addItemInt( "256" );
-    ui->cmbVernier->addItemInt( "128" );
-    ui->cmbVernier->addItemInt( "64" );
-    ui->cmbVernier->addItemInt( "32" );
-    ui->cmbVernier->addItemInt( "16" );
-    ui->cmbVernier->addItemInt( "8" );
-    ui->cmbVernier->addItemInt( "4" );
-    ui->cmbVernier->addItemInt( "2" );
-    ui->cmbVernier->addItemInt( "1" );
+    foreach( const QString &str, stepList )
+    {
+        ui->cmbVernier->addItemInt( str );
+    }
+
+    //! disable encoder
+    ui->label_4->setVisible( false );
+    ui->spinEncoder->setVisible( false );
 
     m_pPref = NULL;
 }

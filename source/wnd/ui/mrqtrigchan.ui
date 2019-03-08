@@ -126,9 +126,6 @@
          </property>
         </widget>
        </item>
-       <item row="2" column="2">
-        <widget class="PageOption" name="widget" native="true"/>
-       </item>
        <item row="1" column="2">
         <spacer name="horizontalSpacer">
          <property name="orientation">
@@ -141,6 +138,9 @@
           </size>
          </property>
         </spacer>
+       </item>
+       <item row="2" column="2">
+        <widget class="AxisPage" name="widget"/>
        </item>
       </layout>
      </widget>
@@ -163,10 +163,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>PageOption</class>
-   <extends>QWidget</extends>
-   <header>pageoption.h</header>
-   <container>1</container>
+   <class>AxisPage</class>
+   <extends>QComboBox</extends>
+   <header>axispage.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

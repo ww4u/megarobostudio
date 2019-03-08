@@ -782,7 +782,28 @@ void pvtEdit::on_cmbMotionMode_currentIndexChanged(int index)
 
 void pvtEdit::on_btnPref_clicked()
 {
-    PvtPref dlgPref(this);
+    //! link to device
+    if ( !checkChan() )
+    { return; }
+
+    QString str;
+    int axesId;
+    str = m_pmcModel->getConnection().getDeviceName();
+    axesId = m_pmcModel->getConnection().getDeviceCH();
+
+    MegaDevice::deviceMRQ *pMrq = m_pmcModel->m_pInstMgr->findDevice( str,
+                                                                      axesId );
+    if ( NULL == pMrq )
+    { return; }
+
+    QStringList stepList;
+    int stepBase;
+    pMrq->microStepAttr( stepList, stepBase );
+    for ( int i = 0; i < stepBase; i++ )
+    { stepList.removeAt( 0 ); }
+
+    //! step list
+    PvtPref dlgPref( stepList, this);
 
     dlgPref.setModel( &mPvtPref );
     dlgPref.setModal( true );

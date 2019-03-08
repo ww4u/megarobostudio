@@ -28,7 +28,9 @@ public:
 public:
     virtual void reverse();
     virtual void autoTime( double speed,
-                           double speedT );
+                           double speedT,
+                           int align,       //! 1,2,5
+                           int div );       //! 100,10,1
 
 public:
     QString className();
@@ -42,7 +44,11 @@ public:
     void setAutoTimeAble( bool b );
     bool autoTimeAble();
 
+    bool toHereAble();
+
     bool smartEditable();
+
+    QList<int> checkColumnList();
 
     RpcRequest::EnumRequest rpcRequest();
     RpcRequest::EnumParaType rpcParaType();
@@ -65,7 +71,7 @@ public:
     tpvType getAbsT( int index );
 
 protected:
-    double aligndT( double t );
+    double aligndT( double t, int align = 1, int div = 10 );
     virtual void switchTimeType( timeType pre, timeType nxt );
 
 Q_SIGNALS:
@@ -76,6 +82,7 @@ protected:
 
     bool mbStepAble;
     bool mbPrefAble;
+    bool mbToHereAble;
 
     bool mbAutoTimeAble;
 
@@ -88,7 +95,7 @@ protected:
     RpcRequest::EnumParaType mRpcType;
 
     QStringList mHeaderList, mTitleList;
-
+    QList<int> mCheckColumnList;
 protected:                                  //! ref type
     timeType mtType;
     tpvType mSumT;

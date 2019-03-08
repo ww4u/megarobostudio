@@ -2,7 +2,7 @@
 
 RoboNetThread::RoboNetThread( QObject *pObj ) : RoboMsgThread( pObj )
 {
-    mIntervalus = 100;  //! us
+    mIntervalus = 1000;  //! us
 
     m_pModel = NULL;
 

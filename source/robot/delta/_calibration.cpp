@@ -66,6 +66,7 @@ int robotDelta::goZero( const tpvRegion &region,
                                  mZeroTime,
                                  bCcw ? (-mZeroAngle) : ( mZeroAngle ),
                                  bCcw ? (-mZeroSpeed) : ( mZeroSpeed ),
+                                 0,
                                  mInitT,
                                  bCcw ? ( initV ) : (-initV),
                                  axes_zero_op_none,
@@ -80,6 +81,7 @@ int robotDelta::goZero( const tpvRegion &region,
                                  mZeroTime,
                                  bCcw ? (-mZeroAngle) : ( mZeroAngle ),
                                  bCcw ? (-mZeroSpeed) : ( mZeroSpeed ),
+                                 0,
                                  mInitT,
                                  bCcw ? (mInitY) : (-mInitY),
                                  axes_zero_op_none,
@@ -158,8 +160,7 @@ int robotDelta::goZero( const tpvRegion &region,
 
     //! start
     Q_ASSERT( NULL != m_pRoboTask );
-    m_pRoboTask->setRequest( pReq );
-    m_pRoboTask->start();
+    m_pRoboTask->attachRequest( pReq );
 
     return 0;
 }

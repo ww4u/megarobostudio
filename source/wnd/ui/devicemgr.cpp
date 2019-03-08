@@ -678,7 +678,7 @@ void deviceMgr::context_mrq_alias()
         m_pCurrTreeItem->setText( 0, m_pRobo->getFullDesc( ) );
 
         Q_ASSERT( NULL != m_pRobo );
-        emit signalModelUpdated( m_pRobo );
+        emit signalModelUpdated( m_pRobo, model_msg_name );
     }
 }
 
@@ -772,7 +772,7 @@ void deviceMgr::context_robo_alias()
         m_pCurrTreeItem->setText( 0, text );
 
         Q_ASSERT( NULL != m_pRobo );
-        emit signalModelUpdated( m_pRobo );
+        emit signalModelUpdated( m_pRobo, model_msg_name );
     }
 }
 void deviceMgr::context_robo_console()

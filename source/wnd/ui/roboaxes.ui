@@ -339,7 +339,7 @@
              </widget>
             </item>
             <item>
-             <widget class="PageOption" name="widget" native="true"/>
+             <widget class="AxisPage" name="widget"/>
             </item>
             <item>
              <widget class="QLabel" name="labelStat">
@@ -498,15 +498,14 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>AxisPage</class>
+   <extends>QComboBox</extends>
+   <header>axispage.h</header>
+  </customwidget>
+  <customwidget>
    <class>MegaLcdnumber</class>
    <extends>QLCDNumber</extends>
    <header>megalcdnumber.h</header>
-  </customwidget>
-  <customwidget>
-   <class>PageOption</class>
-   <extends>QWidget</extends>
-   <header>pageoption.h</header>
-   <container>1</container>
   </customwidget>
   <customwidget>
    <class>CoordOption</class>

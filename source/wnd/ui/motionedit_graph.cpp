@@ -40,7 +40,10 @@ void motionEdit::on_btnAutoTime_clicked()
 
     //! auto time
     m_pMotionGroup->autoTime( m_pmcModel->mSysPref.mMaxSpeed * ui->spinSpeed->value()/100,
-                              m_pmcModel->mSysPref.mMaxTerminalSpeed * ui->spinSpeed->value()/100
+                              m_pmcModel->mSysPref.mMaxTerminalSpeed * ui->spinSpeed->value()/100,
+
+                              mAligns.at( ui->comboBox->currentIndex() ),
+                              mDivs.at( ui->comboBox->currentIndex() )
                               );
 }
 

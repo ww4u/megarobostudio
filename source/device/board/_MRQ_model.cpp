@@ -25,6 +25,14 @@ static value_desc _value_desc_MRQ_SYSTEM_POWERON[] = {
 	{0,"DEFAULT",},
 	{1,"LAST",},
 };
+static value_desc _value_desc_MRQ_SYSTEM_TYPE_1[] = {
+	{0,"C23D",},
+	{1,"C23S",},
+	{2,"M2304",},
+	{3,"MV",},
+	{4,"M1710",},
+	{5,"M2302",},
+};
 static value_desc _value_desc_MRQ_SYSTEM_REVMOTION[] = {
 	{0,"OFF",},
 	{1,"ON",},
@@ -119,6 +127,20 @@ static value_desc _value_desc_MRQ_MOTION_SWITCH_1[] = {
 	{7,"P6",},
 	{8,"P7",},
 	{9,"P8",},
+	{10,"P9",},
+	{11,"P10",},
+	{12,"P11",},
+	{13,"P12",},
+	{14,"P13",},
+	{15,"P14",},
+	{16,"P15",},
+	{17,"P16",},
+	{18,"P17",},
+	{19,"P18",},
+	{20,"P19",},
+	{21,"P20",},
+	{22,"P21",},
+	{23,"P22",},
 };
 static value_desc _value_desc_MRQ_MOTION_STATE_2[] = {
 	{0,"POWERON",},
@@ -426,80 +448,81 @@ void _MRQ_model::loadOtp()
 	mSYSTEM_SN5 = (char)0;
 
 	mSYSTEM_TYPE = (MRQ_LINK_DEVICEINFO)0;
-	mSYSTEM_TYPE1 = (MRQ_LINK_DEVICEINFO_1)0;
+	mSYSTEM_TYPE1 = (MRQ_SYSTEM_TYPE_1)0;
 	mSYSTEM_SOFTVER = (char)0;
 	mSYSTEM_SOFTVER1 = (char)0;
 
 	mSYSTEM_SOFTVER2 = (char)0;
+	mSYSTEM_SOFTVER3 = (char)0;
 	mSYSTEM_FPGAVER = (char)0;
 	mSYSTEM_FPGAVER1 = (char)0;
-	mSYSTEM_FPGAVER2 = (char)0;
 
+	mSYSTEM_FPGAVER2 = (char)0;
 	mSYSTEM_FPGAVER3 = (char)0;
 	mSYSTEM_FPGAVER4 = (char)0;
 	mSYSTEM_FPGAVER5 = (char)0;
-	mSYSTEM_HARDVER = (char)0;
 
+	mSYSTEM_HARDVER = (char)0;
 	mSYSTEM_HARDVER1 = (char)0;
 	mSYSTEM_BOOTVER = (char)0;
 	mSYSTEM_BOOTVER1 = (char)0;
-	mSYSTEM_EVENTCODE = (char)0;
 
+	mSYSTEM_EVENTCODE = (char)0;
 	mSYSTEM_EVENTCODE1 = (char)0;
 	mSYSTEM_EVENTCODE2 = (char)0;
 	mSYSTEM_EVENTCODE3 = (char)0;
-	mSYSTEM_EVENTCODE4 = (char)0;
 
+	mSYSTEM_EVENTCODE4 = (char)0;
 	mSYSTEM_EVENTCODE5 = (char)0;
 	mSYSTEM_DIOSTATE = (uint16)0;
 	mSYSTEM_REVMOTION = (MRQ_SYSTEM_REVMOTION)0;
-	mSYSTEM_FANPARA = (byte)0;
 
+	mSYSTEM_FANPARA = (byte)0;
 for ( int i0=0; i0 < 4; i0++ )
 {
 mSYSTEM_ARMLEDPARA[i0] = (byte)0;
 }
 	mRS232_BAUD = (MRQ_RS232_BAUD)0;
 	mRS232_WORDLEN = (MRQ_RS232_WORDLEN)0;
-	mRS232_FLOWCTL = (MRQ_RS232_FLOWCTL)0;
 
+	mRS232_FLOWCTL = (MRQ_RS232_FLOWCTL)0;
 	mRS232_PARITY = (MRQ_RS232_PARITY)0;
 	mRS232_STOPBIT = (MRQ_RS232_STOPBIT)0;
 	mCAN_TYPE = (MRQ_CAN_TYPE)0;
-	mCAN_BAUD = (MRQ_CAN_BAUD)0;
 
+	mCAN_BAUD = (MRQ_CAN_BAUD)0;
 	mCAN_GROUP = (byte)0;
 	mCAN_SENDID = (uint32)0;
 	mCAN_RECEIVEID = (uint32)0;
-	mCAN_GROUPID1 = (uint32)0;
 
+	mCAN_GROUPID1 = (uint32)0;
 	mCAN_GROUPID2 = (uint32)0;
 	mCAN_BROADCASTID = (uint32)0;
 	mCAN_NETMANAGESTATE = (MRQ_CAN_NETMANAGESTATE)0;
+
 for ( int i0=0; i0 < 3; i0++ )
 {
 mCAN_NETMANAGEID[i0] = (uint32)0;
 }
-
 	mCAN_NETMANAGEHASH = (uint32)0;
 	mCLOCK_FREQUENCY = (uint32)0;
 	mCLOCK_SYNCREGISTER = (MRQ_SYSTEM_REVMOTION)0;
-	mCLOCK_STARTTYPE = (MRQ_CLOCK_STARTTYPE)0;
 
+	mCLOCK_STARTTYPE = (MRQ_CLOCK_STARTTYPE)0;
 	mCLOCK_SYNCSTATE = (MRQ_CLOCK_SYNCSTATE)0;
 	mCLOCK_COUNT = (uint32)0;
 for ( int i0=0; i0 < 10; i0++ )
 {
-for ( int i1=0; i1 < 10; i1++ )
+for ( int i1=0; i1 < 24; i1++ )
 {
 mMOTION_STATE[i0][i1] = (MRQ_MOTION_STATE_2)0;
 }
 }
+
 for ( int i0=0; i0 < 10; i0++ )
 {
 mMOTION_STATEREPORT[i0] = (MRQ_MOTION_STATEREPORT)0;
 }
-
 for ( int i0=0; i0 < 10; i0++ )
 {
 mMOTION_STARTSOURCE[i0] = (MRQ_MOTION_STARTSOURCE)0;
@@ -512,11 +535,11 @@ for ( int i0=0; i0 < 10; i0++ )
 {
 mMOTION_MAXSPEED[i0] = (f32)0;
 }
+
 for ( int i0=0; i0 < 10; i0++ )
 {
 mMOTION_MINSPEED[i0] = (f32)0;
 }
-
 for ( int i0=0; i0 < 10; i0++ )
 {
 mMOTION_MAXPOSITION[i0] = (f32)0;
@@ -529,11 +552,11 @@ for ( int i0=0; i0 < 10; i0++ )
 {
 mMOTION_MAXTORQUE[i0] = (f32)0;
 }
+
 for ( int i0=0; i0 < 10; i0++ )
 {
 mMOTION_MINTORQUE[i0] = (f32)0;
 }
-
 for ( int i0=0; i0 < 10; i0++ )
 {
 mMOTION_MAXACCELERATION[i0] = (f32)0;
@@ -546,11 +569,11 @@ for ( int i0=0; i0 < 10; i0++ )
 {
 mMOTION_ORIGIN[i0] = (uint32)0;
 }
+
 for ( int i0=0; i0 < 10; i0++ )
 {
 mMOTION_OFFSETSTATE[i0] = (MRQ_SYSTEM_REVMOTION)0;
 }
-
 for ( int i0=0; i0 < 10; i0++ )
 {
 mMOTION_COUNTCIRCLE[i0] = (int16)0;
@@ -563,11 +586,11 @@ for ( int i0=0; i0 < 10; i0++ )
 {
 mMOTION_RUNTIMEL[i0] = (uint32)0;
 }
+
 for ( int i0=0; i0 < 10; i0++ )
 {
 mMOTION_RUNTIMEH[i0] = (uint32)0;
 }
-
 for ( int i0=0; i0 < 10; i0++ )
 {
 for ( int i1=0; i1 < 2; i1++ )
@@ -580,11 +603,11 @@ for ( int i0=0; i0 < 10; i0++ )
 {
 mIDENTITY_LABEL[i0] = (MRQ_IDENTITY_LABEL)0;
 }
+
 for ( int i0=0; i0 < 10; i0++ )
 {
 mIDENTITY_LABEL1[i0] = (MRQ_IDENTITY_LABEL_1)0;
 }
-
 for ( int i0=0; i0 < 10; i0++ )
 {
 mMOTOR_STEPANGLE[i0] = (MRQ_MOTOR_STEPANGLE)0;
@@ -597,11 +620,11 @@ for ( int i0=0; i0 < 10; i0++ )
 {
 mMOTOR_POSITIONUNIT[i0] = (MRQ_MOTOR_POSITIONUNIT)0;
 }
+
 for ( int i0=0; i0 < 10; i0++ )
 {
 mMOTOR_GEARRATIONUM[i0] = (uint16)0;
 }
-
 for ( int i0=0; i0 < 10; i0++ )
 {
 mMOTOR_GEARRATIODEN[i0] = (uint16)0;
@@ -614,11 +637,11 @@ for ( int i0=0; i0 < 10; i0++ )
 {
 mMOTOR_PEAKSPEED[i0] = (f32)0;
 }
+
 for ( int i0=0; i0 < 10; i0++ )
 {
 mMOTOR_PEAKACCELERATION[i0] = (f32)0;
 }
-
 for ( int i0=0; i0 < 10; i0++ )
 {
 mMOTOR_SIZE[i0] = (MRQ_MOTOR_SIZE)0;
@@ -631,11 +654,11 @@ for ( int i0=0; i0 < 10; i0++ )
 {
 mMOTOR_CURRENT[i0] = (byte)0;
 }
+
 for ( int i0=0; i0 < 10; i0++ )
 {
 mMOTOR_BACKLASH[i0] = (f32)0;
 }
-
 for ( int i0=0; i0 < 10; i0++ )
 {
 mMOTOR_BACKLASHTEST[i0] = (uint16)0;
@@ -648,11 +671,11 @@ for ( int i0=0; i0 < 10; i0++ )
 {
 mENCODER_CHANNELNUM[i0] = (MRQ_ENCODER_CHANNELNUM)0;
 }
+
 for ( int i0=0; i0 < 10; i0++ )
 {
 mENCODER_TYPE[i0] = (MRQ_ENCODER_TYPE)0;
 }
-
 for ( int i0=0; i0 < 10; i0++ )
 {
 mENCODER_MULTIPLE[i0] = (MRQ_ENCODER_MULTIPLE)0;
@@ -665,162 +688,162 @@ for ( int i0=0; i0 < 10; i0++ )
 {
 mENCODER_FEEDBACKRATIO[i0] = (byte)0;
 }
+
 for ( int i0=0; i0 < 10; i0++ )
 {
-for ( int i1=0; i1 < 10; i1++ )
+for ( int i1=0; i1 < 24; i1++ )
 {
 mMOTIONPLAN_PVTCONFIG[i0][i1] = (MRQ_MOTIONPLAN_PVTCONFIG_1)0;
 }
 }
-
 for ( int i0=0; i0 < 10; i0++ )
 {
-for ( int i1=0; i1 < 10; i1++ )
+for ( int i1=0; i1 < 24; i1++ )
 {
 mMOTIONPLAN_PRESETSTATE[i0][i1] = (MRQ_MOTIONPLAN_PRESETSTATE_1)0;
 }
 }
 for ( int i0=0; i0 < 10; i0++ )
 {
-for ( int i1=0; i1 < 10; i1++ )
+for ( int i1=0; i1 < 24; i1++ )
 {
 mMOTIONPLAN_EXECUTEMODE[i0][i1] = (MRQ_MOTIONPLAN_EXECUTEMODE_1)0;
 }
 }
 for ( int i0=0; i0 < 10; i0++ )
 {
-for ( int i1=0; i1 < 10; i1++ )
+for ( int i1=0; i1 < 24; i1++ )
 {
 mMOTIONPLAN_PLANMODE[i0][i1] = (MRQ_MOTIONPLAN_PLANMODE_1)0;
-}
-}
-for ( int i0=0; i0 < 10; i0++ )
-{
-for ( int i1=0; i1 < 10; i1++ )
-{
-mMOTIONPLAN_MOTIONMODE[i0][i1] = (MRQ_MOTIONPLAN_MOTIONMODE_1)0;
 }
 }
 
 for ( int i0=0; i0 < 10; i0++ )
 {
-for ( int i1=0; i1 < 10; i1++ )
+for ( int i1=0; i1 < 24; i1++ )
+{
+mMOTIONPLAN_MOTIONMODE[i0][i1] = (MRQ_MOTIONPLAN_MOTIONMODE_1)0;
+}
+}
+for ( int i0=0; i0 < 10; i0++ )
+{
+for ( int i1=0; i1 < 24; i1++ )
 {
 mMOTIONPLAN_MODIFYDUTY[i0][i1] = (MRQ_MOTIONPLAN_MODIFYDUTY_1)0;
 }
 }
 for ( int i0=0; i0 < 10; i0++ )
 {
-for ( int i1=0; i1 < 10; i1++ )
+for ( int i1=0; i1 < 24; i1++ )
 {
 mMOTIONPLAN_REMAINPOINT[i0][i1] = (uint16)0;
 }
 }
 for ( int i0=0; i0 < 10; i0++ )
 {
-for ( int i1=0; i1 < 10; i1++ )
+for ( int i1=0; i1 < 24; i1++ )
 {
 mMOTIONPLAN_CYCLENUM[i0][i1] = (uint32)0;
-}
-}
-for ( int i0=0; i0 < 10; i0++ )
-{
-for ( int i1=0; i1 < 10; i1++ )
-{
-mMOTIONPLAN_WARNPOINT[i0][i1] = (byte)0;
 }
 }
 
 for ( int i0=0; i0 < 10; i0++ )
 {
-for ( int i1=0; i1 < 10; i1++ )
+for ( int i1=0; i1 < 24; i1++ )
+{
+mMOTIONPLAN_WARNPOINT[i0][i1] = (byte)0;
+}
+}
+for ( int i0=0; i0 < 10; i0++ )
+{
+for ( int i1=0; i1 < 24; i1++ )
 {
 mMOTIONPLAN_ENDSTATE[i0][i1] = (MRQ_MOTIONPLAN_ENDSTATE_1)0;
 }
 }
 for ( int i0=0; i0 < 10; i0++ )
 {
-for ( int i1=0; i1 < 10; i1++ )
+for ( int i1=0; i1 < 24; i1++ )
 {
 mMOTIONPLAN_BUFFERSIZE[i0][i1] = (uint32)0;
 }
 }
 for ( int i0=0; i0 < 10; i0++ )
 {
-for ( int i1=0; i1 < 10; i1++ )
+for ( int i1=0; i1 < 24; i1++ )
 {
 mMOTIONPLAN_STOPMODE[i0][i1] = (MRQ_MOTIONPLAN_STOPMODE_1)0;
-}
-}
-for ( int i0=0; i0 < 10; i0++ )
-{
-for ( int i1=0; i1 < 10; i1++ )
-{
-mMOTIONPLAN_STOPDISTANCE[i0][i1] = (f32)0;
 }
 }
 
 for ( int i0=0; i0 < 10; i0++ )
 {
-for ( int i1=0; i1 < 10; i1++ )
+for ( int i1=0; i1 < 24; i1++ )
+{
+mMOTIONPLAN_STOPDISTANCE[i0][i1] = (f32)0;
+}
+}
+for ( int i0=0; i0 < 10; i0++ )
+{
+for ( int i1=0; i1 < 24; i1++ )
 {
 mMOTIONPLAN_STOPTIME[i0][i1] = (f32)0;
 }
 }
 for ( int i0=0; i0 < 10; i0++ )
 {
-for ( int i1=0; i1 < 10; i1++ )
+for ( int i1=0; i1 < 24; i1++ )
 {
 mMOTIONPLAN_OOSLINESTATE[i0][i1] = (MRQ_SYSTEM_REVMOTION)0;
 }
 }
 for ( int i0=0; i0 < 10; i0++ )
 {
-for ( int i1=0; i1 < 10; i1++ )
+for ( int i1=0; i1 < 24; i1++ )
 {
 mMOTIONPLAN_OOSLINEOUTNUM[i0][i1] = (uint16)0;
-}
-}
-for ( int i0=0; i0 < 10; i0++ )
-{
-for ( int i1=0; i1 < 10; i1++ )
-{
-mMOTIONPLAN_OOSLINERESPONSE[i0][i1] = (MRQ_MOTIONPLAN_OOSLINERESPONSE_1)0;
 }
 }
 
 for ( int i0=0; i0 < 10; i0++ )
 {
-for ( int i1=0; i1 < 10; i1++ )
+for ( int i1=0; i1 < 24; i1++ )
+{
+mMOTIONPLAN_OOSLINERESPONSE[i0][i1] = (MRQ_MOTIONPLAN_OOSLINERESPONSE_1)0;
+}
+}
+for ( int i0=0; i0 < 10; i0++ )
+{
+for ( int i1=0; i1 < 24; i1++ )
 {
 mMOTIONPLAN_OOSTOTALSTATE[i0][i1] = (MRQ_SYSTEM_REVMOTION)0;
 }
 }
 for ( int i0=0; i0 < 10; i0++ )
 {
-for ( int i1=0; i1 < 10; i1++ )
+for ( int i1=0; i1 < 24; i1++ )
 {
 mMOTIONPLAN_OOSTOTALOUTNUM[i0][i1] = (uint32)0;
 }
 }
 for ( int i0=0; i0 < 10; i0++ )
 {
-for ( int i1=0; i1 < 10; i1++ )
+for ( int i1=0; i1 < 24; i1++ )
 {
 mMOTIONPLAN_OOSTOTALRESPONSE[i0][i1] = (MRQ_MOTIONPLAN_OOSLINERESPONSE_1)0;
-}
-}
-for ( int i0=0; i0 < 10; i0++ )
-{
-for ( int i1=0; i1 < 10; i1++ )
-{
-mMOTIONPLAN_FIFOBUFFERTIME[i0][i1] = (uint32)0;
 }
 }
 
 for ( int i0=0; i0 < 10; i0++ )
 {
-for ( int i1=0; i1 < 10; i1++ )
+for ( int i1=0; i1 < 24; i1++ )
+{
+mMOTIONPLAN_FIFOBUFFERTIME[i0][i1] = (uint32)0;
+}
+}
+for ( int i0=0; i0 < 10; i0++ )
+{
+for ( int i1=0; i1 < 24; i1++ )
 {
 for ( int i2=0; i2 < 10; i2++ )
 {
@@ -830,7 +853,7 @@ mPOSITION[i0][i1][i2] = (f32)0;
 }
 for ( int i0=0; i0 < 10; i0++ )
 {
-for ( int i1=0; i1 < 10; i1++ )
+for ( int i1=0; i1 < 24; i1++ )
 {
 for ( int i2=0; i2 < 10; i2++ )
 {
@@ -840,7 +863,7 @@ mVELOCITY[i0][i1][i2] = (f32)0;
 }
 for ( int i0=0; i0 < 10; i0++ )
 {
-for ( int i1=0; i1 < 10; i1++ )
+for ( int i1=0; i1 < 24; i1++ )
 {
 for ( int i2=0; i2 < 10; i2++ )
 {
@@ -848,9 +871,10 @@ mTIME[i0][i1][i2] = (f32)0;
 }
 }
 }
+
 for ( int i0=0; i0 < 10; i0++ )
 {
-for ( int i1=0; i1 < 10; i1++ )
+for ( int i1=0; i1 < 24; i1++ )
 {
 for ( int i2=0; i2 < 10; i2++ )
 {
@@ -858,10 +882,9 @@ mTIMESCALE[i0][i1][i2] = (uint16)0;
 }
 }
 }
-
 for ( int i0=0; i0 < 10; i0++ )
 {
-for ( int i1=0; i1 < 10; i1++ )
+for ( int i1=0; i1 < 24; i1++ )
 {
 for ( int i2=0; i2 < 10; i2++ )
 {
@@ -883,6 +906,7 @@ for ( int i1=0; i1 < 6; i1++ )
 mREPORT_PERIOD[i0][i1] = (uint32)0;
 }
 }
+
 for ( int i0=0; i0 < 10; i0++ )
 {
 for ( int i1=0; i1 < 6; i1++ )
@@ -890,7 +914,6 @@ for ( int i1=0; i1 < 6; i1++ )
 mREPORT_DATA[i0][i1] = (uint32)0;
 }
 }
-
 for ( int i0=0; i0 < 10; i0++ )
 {
 mTRIGGER_MODE[i0] = (MRQ_TRIGGER_MODE)0;
@@ -903,11 +926,11 @@ for ( int i0=0; i0 < 10; i0++ )
 {
 mTRIGGER_PATTERN[i0] = (MRQ_TRIGGER_PATTERN)0;
 }
+
 for ( int i0=0; i0 < 10; i0++ )
 {
 mTRIGGER_PATTERN1[i0] = (MRQ_TRIGGER_PATTERN)0;
 }
-
 for ( int i0=0; i0 < 10; i0++ )
 {
 mTRIGGER_PATTRESP[i0] = (MRQ_MOTIONPLAN_OOSLINERESPONSE_1)0;
@@ -920,6 +943,7 @@ for ( int i0=0; i0 < 10; i0++ )
 {
 mTRIGGER_PATTSPERIOD[i0] = (uint32)0;
 }
+
 for ( int i0=0; i0 < 10; i0++ )
 {
 for ( int i1=0; i1 < 5; i1++ )
@@ -927,7 +951,6 @@ for ( int i1=0; i1 < 5; i1++ )
 mTRIGGER_LEVELSTATE[i0][i1] = (MRQ_SYSTEM_REVMOTION)0;
 }
 }
-
 for ( int i0=0; i0 < 10; i0++ )
 {
 for ( int i1=0; i1 < 5; i1++ )
@@ -949,6 +972,7 @@ for ( int i1=0; i1 < 5; i1++ )
 mTRIGGER_LEVELSMODE[i0][i1] = (MRQ_TRIGGER_PATTSMODE)0;
 }
 }
+
 for ( int i0=0; i0 < 10; i0++ )
 {
 for ( int i1=0; i1 < 5; i1++ )
@@ -956,7 +980,6 @@ for ( int i1=0; i1 < 5; i1++ )
 mTRIGGER_LEVELSPERIOD[i0][i1] = (f32)0;
 }
 }
-
 for ( int i0=0; i0 < 10; i0++ )
 {
 for ( int i1=0; i1 < 5; i1++ )
@@ -975,11 +998,11 @@ for ( int i1=0; i1 < 3; i1++ )
 mDRIVER_STATEREG[i0][i1] = (uint32)0;
 }
 }
+
 for ( int i0=0; i0 < 10; i0++ )
 {
 mDRIVER_CURRENT[i0] = (byte)0;
 }
-
 for ( int i0=0; i0 < 10; i0++ )
 {
 mDRIVER_MICROSTEPS[i0] = (MRQ_DRIVER_MICROSTEPS)0;
@@ -992,11 +1015,11 @@ for ( int i0=0; i0 < 10; i0++ )
 {
 mDRIVER_SGLIMIT[i0] = (MRQ_DRIVER_SGLIMIT)0;
 }
+
 for ( int i0=0; i0 < 10; i0++ )
 {
 mDRIVER_SGLIMIT1[i0] = (int8)0;
 }
-
 for ( int i0=0; i0 < 10; i0++ )
 {
 for ( int i1=0; i1 < 4; i1++ )
@@ -1012,11 +1035,11 @@ for ( int i0=0; i0 < 10; i0++ )
 {
 mDRIVER_SWITCHTIME[i0] = (uint32)0;
 }
+
 for ( int i0=0; i0 < 10; i0++ )
 {
 mDRIVER_MINICURRRATIO[i0] = (MRQ_DRIVER_MINICURRRATIO)0;
 }
-
 for ( int i0=0; i0 < 10; i0++ )
 {
 for ( int i1=0; i1 < 5; i1++ )
@@ -1032,11 +1055,11 @@ for ( int i0=0; i0 < 4; i0++ )
 {
 mDIGITALOUTPUT_SIGNAL[i0] = (MRQ_DIGITALOUTPUT_SIGNAL_1)0;
 }
+
 for ( int i0=0; i0 < 4; i0++ )
 {
 mDIGITALOUTPUT_POLARITY[i0] = (MRQ_DIGITALOUTPUT_POLARITY_1)0;
 }
-
 for ( int i0=0; i0 < 4; i0++ )
 {
 mDIGITALOUTPUT_SOURCE[i0] = (byte)0;
@@ -1049,11 +1072,11 @@ for ( int i0=0; i0 < 4; i0++ )
 {
 mDIGITALOUTPUT_PERIOD[i0] = (uint32)0;
 }
+
 for ( int i0=0; i0 < 4; i0++ )
 {
 mDIGITALOUTPUT_DUTY[i0] = (uint16)0;
 }
-
 for ( int i0=0; i0 < 2; i0++ )
 {
 mISOLATOROUTPUT_STATE[i0] = (MRQ_DIGITALOUTPUT_STATE_1)0;
@@ -1066,11 +1089,11 @@ for ( int i0=0; i0 < 2; i0++ )
 {
 mISOLATOROUTPUT_CONDITION[i0] = (MRQ_DIGITALOUTPUT_CONDITION_1)0;
 }
+
 for ( int i0=0; i0 < 2; i0++ )
 {
 mISOLATOROUTPUT_RESPONSE[i0] = (MRQ_ISOLATOROUTPUT_RESPONSE_1)0;
 }
-
 for ( int i0=0; i0 < 2; i0++ )
 {
 mSENSORUART_BAUD[i0] = (MRQ_SENSORUART_BAUD_1)0;
@@ -1083,11 +1106,11 @@ for ( int i0=0; i0 < 2; i0++ )
 {
 mSENSORUART_FLOWCTL[i0] = (MRQ_RS232_FLOWCTL)0;
 }
+
 for ( int i0=0; i0 < 2; i0++ )
 {
 mSENSORUART_PARITY[i0] = (MRQ_RS232_PARITY)0;
 }
-
 for ( int i0=0; i0 < 2; i0++ )
 {
 mSENSORUART_STOPBIT[i0] = (MRQ_RS232_STOPBIT)0;
@@ -1106,6 +1129,7 @@ for ( int i1=0; i1 < 4; i1++ )
 mSENSORUART_SOF[i0][i1] = (byte)0;
 }
 }
+
 for ( int i0=0; i0 < 2; i0++ )
 {
 for ( int i1=0; i1 < 4; i1++ )
@@ -1113,7 +1137,6 @@ for ( int i1=0; i1 < 4; i1++ )
 mSENSORUART_FRAMELEN[i0][i1] = (byte)0;
 }
 }
-
 for ( int i0=0; i0 < 2; i0++ )
 {
 for ( int i1=0; i1 < 4; i1++ )
@@ -1135,6 +1158,7 @@ for ( int i1=0; i1 < 4; i1++ )
 mSENSORUART_DATA[i0][i1] = (byte)0;
 }
 }
+
 for ( int i0=0; i0 < 2; i0++ )
 {
 for ( int i1=0; i1 < 4; i1++ )
@@ -1142,7 +1166,6 @@ for ( int i1=0; i1 < 4; i1++ )
 mSENSORUART_DATA1[i0][i1] = (char)0;
 }
 }
-
 for ( int i0=0; i0 < 2; i0++ )
 {
 for ( int i1=0; i1 < 4; i1++ )
@@ -1161,11 +1184,11 @@ for ( int i0=0; i0 < 10; i0++ )
 {
 mTUNING_STATE[i0] = (MRQ_SYSTEM_REVMOTION)0;
 }
+
 for ( int i0=0; i0 < 10; i0++ )
 {
 mTUNING_MINICURRRATIO[i0] = (MRQ_DRIVER_MINICURRRATIO)0;
 }
-
 for ( int i0=0; i0 < 10; i0++ )
 {
 mTUNING_ENERGYEFFIC[i0] = (uint16)0;
@@ -1178,27 +1201,27 @@ for ( int i0=0; i0 < 10; i0++ )
 {
 mTUNING_CURRREGULATE[i0] = (MRQ_TUNING_CURRREGULATE)0;
 }
+
 for ( int i0=0; i0 < 10; i0++ )
 {
 mTUNING_CURRREGULATE1[i0] = (MRQ_TUNING_CURRREGULATE_1)0;
 }
-
 	mISOLATORIN_STATE = (MRQ_SYSTEM_REVMOTION)0;
 	mISOLATORIN_TYPE = (MRQ_TRIGGER_LEVELTYPE_1)0;
 	mISOLATORIN_RESPONSE = (MRQ_MOTIONPLAN_OOSLINERESPONSE_1)0;
-	mISOLATORIN_RESPCHAN = (byte)0;
 
+	mISOLATORIN_RESPCHAN = (byte)0;
 	mISOLATORIN_SMODE = (MRQ_TRIGGER_PATTSMODE)0;
 	mISOLATORIN_SPERIOD = (uint32)0;
 for ( int i0=0; i0 < 4; i0++ )
 {
 mABSENCALARM_STATE[i0] = (MRQ_SYSTEM_REVMOTION)0;
 }
+
 for ( int i0=0; i0 < 4; i0++ )
 {
 mABSENCALARM_UPLIMIT[i0] = (int32)0;
 }
-
 for ( int i0=0; i0 < 4; i0++ )
 {
 mABSENCALARM_DOWNLIMIT[i0] = (int32)0;
@@ -1211,8 +1234,8 @@ for ( int i0=0; i0 < 4; i0++ )
 {
 mABSENCALARM_ZEROPOSITION[i0] = (MRQ_ABSENCALARM_ZEROPOSITION_1)0;
 }
-	mABSENCALARM_RESPONSE = (MRQ_MOTIONPLAN_OOSLINERESPONSE_1)0;
 
+	mABSENCALARM_RESPONSE = (MRQ_MOTIONPLAN_OOSLINERESPONSE_1)0;
 for ( int i0=0; i0 < 4; i0++ )
 {
 mDISTANCEALARM_STATE[i0] = (MRQ_SYSTEM_REVMOTION)0;
@@ -1225,22 +1248,22 @@ for ( int i0=0; i0 < 4; i0++ )
 {
 mDISTANCEALARM_ALARM2DIST[i0] = (uint16)0;
 }
+
 for ( int i0=0; i0 < 4; i0++ )
 {
 mDISTANCEALARM_ALARM3DIST[i0] = (uint16)0;
 }
-
 for ( int i0=0; i0 < 10; i0++ )
 {
 mNEWDRIVER_TYPE[i0] = (MRQ_NEWDRIVER_TYPE)0;
 }
 	mNEWDRIVER_CURRENT = (byte)0;
 	mNEWDRIVER_MICROSTEPS = (MRQ_NEWDRIVER_MICROSTEPS)0;
+
 for ( int i0=0; i0 < 10; i0++ )
 {
 mNEWDRIVER_STATE[i0] = (MRQ_SYSTEM_REVMOTION)0;
 }
-
 for ( int i0=0; i0 < 10; i0++ )
 {
 mPDM_SAMPLESTATE[i0] = (MRQ_CLOCK_SYNCSTATE)0;
@@ -1253,6 +1276,7 @@ for ( int i0=0; i0 < 10; i0++ )
 {
 mPDM_MICSTEPCOUNT[i0] = (uint16)0;
 }
+
 for ( int i0=0; i0 < 10; i0++ )
 {
 for ( int i1=0; i1 < 10; i1++ )
@@ -1263,17 +1287,16 @@ mPDM_MICSTEPDATA[i0][i1][i2] = (byte)0;
 }
 }
 }
-
 	mOTP_STATE = (MRQ_SYSTEM_REVMOTION)0;
 	mOTP_THRESHOLD = (uint16)0;
 	mOTP_RESPONSE = (MRQ_MOTIONPLAN_OOSLINERESPONSE_1)0;
-	mOTP_PERIOD = (uint32)0;
 
+	mOTP_PERIOD = (uint32)0;
 	mOTP_DATA = (uint32)0;
 	mANALOGIN_STATE = (MRQ_SYSTEM_REVMOTION)0;
 	mANALOGIN_THRESHOLDH = (f32)0;
-	mANALOGIN_THRESHOLDL = (f32)0;
 
+	mANALOGIN_THRESHOLDL = (f32)0;
 	mANALOGIN_RESPONSEH = (MRQ_MOTIONPLAN_OOSLINERESPONSE_1)0;
 	mANALOGIN_RESPONSEL = (MRQ_MOTIONPLAN_OOSLINERESPONSE_1)0;
 }
@@ -1296,6 +1319,10 @@ QString _MRQ_model::toString( MRQ_SYSTEM_WORKMODE eType )
 QString _MRQ_model::toString( MRQ_SYSTEM_POWERON eType )
 {
 	return QString( MRQ_SYSTEM_POWERON_toString( eType ) );
+}
+QString _MRQ_model::toString( MRQ_SYSTEM_TYPE_1 eType )
+{
+	return QString( MRQ_SYSTEM_TYPE_1_toString( eType ) );
 }
 QString _MRQ_model::toString( MRQ_SYSTEM_REVMOTION eType )
 {
@@ -1580,6 +1607,10 @@ int _MRQ_model::toValue( const QString &str, MRQ_SYSTEM_WORKMODE *pEVal )
 int _MRQ_model::toValue( const QString &str, MRQ_SYSTEM_POWERON *pEVal )
 {
 	return ( MRQ_SYSTEM_POWERON_toValue( str.toLatin1().data(), pEVal) );
+}
+int _MRQ_model::toValue( const QString &str, MRQ_SYSTEM_TYPE_1 *pEVal )
+{
+	return ( MRQ_SYSTEM_TYPE_1_toValue( str.toLatin1().data(), pEVal) );
 }
 int _MRQ_model::toValue( const QString &str, MRQ_SYSTEM_REVMOTION *pEVal )
 {
@@ -1946,7 +1977,7 @@ int _MRQ_model::getSYSTEM_SN(  byte * val0, char * val1, char * val2, char * val
 }
 //! 
 //! 
-int _MRQ_model::getSYSTEM_TYPE(  MRQ_LINK_DEVICEINFO * val0, MRQ_LINK_DEVICEINFO_1 * val1, bool bQuery )
+int _MRQ_model::getSYSTEM_TYPE(  MRQ_LINK_DEVICEINFO * val0, MRQ_SYSTEM_TYPE_1 * val1, bool bQuery )
 {
 	//! 2 5
 	int ret = 0;
@@ -1959,7 +1990,7 @@ int _MRQ_model::getSYSTEM_TYPE(  MRQ_LINK_DEVICEINFO * val0, MRQ_LINK_DEVICEINFO
 }
 //! 
 //! 
-int _MRQ_model::getSYSTEM_SOFTVER(  char * val0, char * val1, char * val2, bool bQuery )
+int _MRQ_model::getSYSTEM_SOFTVER(  char * val0, char * val1, char * val2, char * val3, bool bQuery )
 {
 	//! 2 6
 	int ret = 0;
@@ -1967,9 +1998,11 @@ int _MRQ_model::getSYSTEM_SOFTVER(  char * val0, char * val1, char * val2, bool 
 	byte lval0 = 0;
 	byte lval1 = 0;
 	byte lval2 = 0;
+	byte lval3 = 0;
 	*val0 = mSYSTEM_SOFTVER;
 	*val1 = mSYSTEM_SOFTVER1;
 	*val2 = mSYSTEM_SOFTVER2;
+	*val3 = mSYSTEM_SOFTVER3;
 	return 0;
 }
 //! 
@@ -2575,7 +2608,7 @@ int _MRQ_model::getCLOCK_COUNT(  uint32 * val0, bool bQuery )
 	return 0;
 }
 //! U8,ENUM,ENUM
-//! [CHANNUM],RESET|STOP|RUN|PREPARE|EMERGSTOP,MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8
+//! [CHANNUM],RESET|STOP|RUN|PREPARE|EMERGSTOP,MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8|P9|P10|P11|P12|P13|P14|P15|P16|P17|P18|P19|P20|P21|P22
 int _MRQ_model::setMOTION_SWITCH( byte val0
 ,MRQ_MOTION_SWITCH val1
 ,MRQ_MOTION_SWITCH_1 val2 )
@@ -2586,7 +2619,7 @@ int _MRQ_model::setMOTION_SWITCH( byte val0
 	return ret;
 }
 //! U8,ENUM
-//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8|P9|P10|P11|P12|P13|P14|P15|P16|P17|P18|P19|P20|P21|P22
 int _MRQ_model::getMOTION_STATE( byte val0
 ,MRQ_MOTION_SWITCH_1 val1, MRQ_MOTION_STATE_2 * val2, bool bQuery )
 {
@@ -3445,7 +3478,7 @@ int _MRQ_model::getENCODER_FEEDBACKRATIO( byte val0, byte * val1, bool bQuery )
 	return 0;
 }
 //! U8,ENUM,ENUM
-//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8,END|CLEAR
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8|P9|P10|P11|P12|P13|P14|P15|P16|P17|P18|P19|P20|P21|P22,END|CLEAR
 int _MRQ_model::setMOTIONPLAN_PVTCONFIG( byte val0
 ,MRQ_MOTION_SWITCH_1 val1
 ,MRQ_MOTIONPLAN_PVTCONFIG_1 val2 )
@@ -3457,7 +3490,7 @@ int _MRQ_model::setMOTIONPLAN_PVTCONFIG( byte val0
 	return ret;
 }
 //! U8,ENUM
-//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8|P9|P10|P11|P12|P13|P14|P15|P16|P17|P18|P19|P20|P21|P22
 int _MRQ_model::getMOTIONPLAN_PVTCONFIG( byte val0
 ,MRQ_MOTION_SWITCH_1 val1, MRQ_MOTIONPLAN_PVTCONFIG_1 * val2, bool bQuery )
 {
@@ -3469,7 +3502,7 @@ int _MRQ_model::getMOTIONPLAN_PVTCONFIG( byte val0
 	return 0;
 }
 //! U8,ENUM,ENUM
-//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8,OFF|ON|CALC
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8|P9|P10|P11|P12|P13|P14|P15|P16|P17|P18|P19|P20|P21|P22,OFF|ON|CALC
 int _MRQ_model::setMOTIONPLAN_PRESETSTATE( byte val0
 ,MRQ_MOTION_SWITCH_1 val1
 ,MRQ_MOTIONPLAN_PRESETSTATE_1 val2 )
@@ -3481,7 +3514,7 @@ int _MRQ_model::setMOTIONPLAN_PRESETSTATE( byte val0
 	return ret;
 }
 //! U8,ENUM
-//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8|P9|P10|P11|P12|P13|P14|P15|P16|P17|P18|P19|P20|P21|P22
 int _MRQ_model::getMOTIONPLAN_PRESETSTATE( byte val0
 ,MRQ_MOTION_SWITCH_1 val1, MRQ_MOTIONPLAN_PRESETSTATE_1 * val2, bool bQuery )
 {
@@ -3493,7 +3526,7 @@ int _MRQ_model::getMOTIONPLAN_PRESETSTATE( byte val0
 	return 0;
 }
 //! U8,ENUM,ENUM
-//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8,CYCLE|FIFO
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8|P9|P10|P11|P12|P13|P14|P15|P16|P17|P18|P19|P20|P21|P22,CYCLE|FIFO
 int _MRQ_model::setMOTIONPLAN_EXECUTEMODE( byte val0
 ,MRQ_MOTION_SWITCH_1 val1
 ,MRQ_MOTIONPLAN_EXECUTEMODE_1 val2 )
@@ -3505,7 +3538,7 @@ int _MRQ_model::setMOTIONPLAN_EXECUTEMODE( byte val0
 	return ret;
 }
 //! U8,ENUM
-//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8|P9|P10|P11|P12|P13|P14|P15|P16|P17|P18|P19|P20|P21|P22
 int _MRQ_model::getMOTIONPLAN_EXECUTEMODE( byte val0
 ,MRQ_MOTION_SWITCH_1 val1, MRQ_MOTIONPLAN_EXECUTEMODE_1 * val2, bool bQuery )
 {
@@ -3517,7 +3550,7 @@ int _MRQ_model::getMOTIONPLAN_EXECUTEMODE( byte val0
 	return 0;
 }
 //! U8,ENUM,ENUM
-//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8,CUBICPOLY|TRAPEZOID|SCURVE
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8|P9|P10|P11|P12|P13|P14|P15|P16|P17|P18|P19|P20|P21|P22,CUBICPOLY|TRAPEZOID|SCURVE
 int _MRQ_model::setMOTIONPLAN_PLANMODE( byte val0
 ,MRQ_MOTION_SWITCH_1 val1
 ,MRQ_MOTIONPLAN_PLANMODE_1 val2 )
@@ -3529,7 +3562,7 @@ int _MRQ_model::setMOTIONPLAN_PLANMODE( byte val0
 	return ret;
 }
 //! U8,ENUM
-//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8|P9|P10|P11|P12|P13|P14|P15|P16|P17|P18|P19|P20|P21|P22
 int _MRQ_model::getMOTIONPLAN_PLANMODE( byte val0
 ,MRQ_MOTION_SWITCH_1 val1, MRQ_MOTIONPLAN_PLANMODE_1 * val2, bool bQuery )
 {
@@ -3541,7 +3574,7 @@ int _MRQ_model::getMOTIONPLAN_PLANMODE( byte val0
 	return 0;
 }
 //! U8,ENUM,ENUM
-//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8,PVT|LVT_CORRECT|LVT_NOCORRECT
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8|P9|P10|P11|P12|P13|P14|P15|P16|P17|P18|P19|P20|P21|P22,PVT|LVT_CORRECT|LVT_NOCORRECT
 int _MRQ_model::setMOTIONPLAN_MOTIONMODE( byte val0
 ,MRQ_MOTION_SWITCH_1 val1
 ,MRQ_MOTIONPLAN_MOTIONMODE_1 val2 )
@@ -3553,7 +3586,7 @@ int _MRQ_model::setMOTIONPLAN_MOTIONMODE( byte val0
 	return ret;
 }
 //! U8,ENUM
-//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8|P9|P10|P11|P12|P13|P14|P15|P16|P17|P18|P19|P20|P21|P22
 int _MRQ_model::getMOTIONPLAN_MOTIONMODE( byte val0
 ,MRQ_MOTION_SWITCH_1 val1, MRQ_MOTIONPLAN_MOTIONMODE_1 * val2, bool bQuery )
 {
@@ -3565,7 +3598,7 @@ int _MRQ_model::getMOTIONPLAN_MOTIONMODE( byte val0
 	return 0;
 }
 //! U8,ENUM,ENUM
-//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8,4|8|16|32
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8|P9|P10|P11|P12|P13|P14|P15|P16|P17|P18|P19|P20|P21|P22,4|8|16|32
 int _MRQ_model::setMOTIONPLAN_MODIFYDUTY( byte val0
 ,MRQ_MOTION_SWITCH_1 val1
 ,MRQ_MOTIONPLAN_MODIFYDUTY_1 val2 )
@@ -3577,7 +3610,7 @@ int _MRQ_model::setMOTIONPLAN_MODIFYDUTY( byte val0
 	return ret;
 }
 //! U8,ENUM
-//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8|P9|P10|P11|P12|P13|P14|P15|P16|P17|P18|P19|P20|P21|P22
 int _MRQ_model::getMOTIONPLAN_MODIFYDUTY( byte val0
 ,MRQ_MOTION_SWITCH_1 val1, MRQ_MOTIONPLAN_MODIFYDUTY_1 * val2, bool bQuery )
 {
@@ -3589,7 +3622,7 @@ int _MRQ_model::getMOTIONPLAN_MODIFYDUTY( byte val0
 	return 0;
 }
 //! U8,ENUM
-//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8|P9|P10|P11|P12|P13|P14|P15|P16|P17|P18|P19|P20|P21|P22
 int _MRQ_model::getMOTIONPLAN_REMAINPOINT( byte val0
 ,MRQ_MOTION_SWITCH_1 val1, uint16 * val2, bool bQuery )
 {
@@ -3601,7 +3634,7 @@ int _MRQ_model::getMOTIONPLAN_REMAINPOINT( byte val0
 	return 0;
 }
 //! U8,ENUM,U32
-//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8|P9|P10|P11|P12|P13|P14|P15|P16|P17|P18|P19|P20|P21|P22
 int _MRQ_model::setMOTIONPLAN_CYCLENUM( byte val0
 ,MRQ_MOTION_SWITCH_1 val1
 ,uint32 val2 )
@@ -3613,7 +3646,7 @@ int _MRQ_model::setMOTIONPLAN_CYCLENUM( byte val0
 	return ret;
 }
 //! U8,ENUM
-//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8|P9|P10|P11|P12|P13|P14|P15|P16|P17|P18|P19|P20|P21|P22
 int _MRQ_model::getMOTIONPLAN_CYCLENUM( byte val0
 ,MRQ_MOTION_SWITCH_1 val1, uint32 * val2, bool bQuery )
 {
@@ -3625,7 +3658,7 @@ int _MRQ_model::getMOTIONPLAN_CYCLENUM( byte val0
 	return 0;
 }
 //! U8,ENUM,U8
-//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8|P9|P10|P11|P12|P13|P14|P15|P16|P17|P18|P19|P20|P21|P22
 int _MRQ_model::setMOTIONPLAN_WARNPOINT( byte val0
 ,MRQ_MOTION_SWITCH_1 val1
 ,byte val2 )
@@ -3637,7 +3670,7 @@ int _MRQ_model::setMOTIONPLAN_WARNPOINT( byte val0
 	return ret;
 }
 //! U8,ENUM
-//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8|P9|P10|P11|P12|P13|P14|P15|P16|P17|P18|P19|P20|P21|P22
 int _MRQ_model::getMOTIONPLAN_WARNPOINT( byte val0
 ,MRQ_MOTION_SWITCH_1 val1, byte * val2, bool bQuery )
 {
@@ -3649,7 +3682,7 @@ int _MRQ_model::getMOTIONPLAN_WARNPOINT( byte val0
 	return 0;
 }
 //! U8,ENUM,ENUM
-//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8,STOP|HOLD
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8|P9|P10|P11|P12|P13|P14|P15|P16|P17|P18|P19|P20|P21|P22,STOP|HOLD
 int _MRQ_model::setMOTIONPLAN_ENDSTATE( byte val0
 ,MRQ_MOTION_SWITCH_1 val1
 ,MRQ_MOTIONPLAN_ENDSTATE_1 val2 )
@@ -3661,7 +3694,7 @@ int _MRQ_model::setMOTIONPLAN_ENDSTATE( byte val0
 	return ret;
 }
 //! U8,ENUM
-//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8|P9|P10|P11|P12|P13|P14|P15|P16|P17|P18|P19|P20|P21|P22
 int _MRQ_model::getMOTIONPLAN_ENDSTATE( byte val0
 ,MRQ_MOTION_SWITCH_1 val1, MRQ_MOTIONPLAN_ENDSTATE_1 * val2, bool bQuery )
 {
@@ -3673,7 +3706,7 @@ int _MRQ_model::getMOTIONPLAN_ENDSTATE( byte val0
 	return 0;
 }
 //! U8,ENUM
-//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8|P9|P10|P11|P12|P13|P14|P15|P16|P17|P18|P19|P20|P21|P22
 int _MRQ_model::getMOTIONPLAN_BUFFERSIZE( byte val0
 ,MRQ_MOTION_SWITCH_1 val1, uint32 * val2, bool bQuery )
 {
@@ -3685,7 +3718,7 @@ int _MRQ_model::getMOTIONPLAN_BUFFERSIZE( byte val0
 	return 0;
 }
 //! U8,ENUM,ENUM
-//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8,IMMEDIATE|DISTANCE|UNTILEND
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8|P9|P10|P11|P12|P13|P14|P15|P16|P17|P18|P19|P20|P21|P22,IMMEDIATE|DISTANCE|UNTILEND
 int _MRQ_model::setMOTIONPLAN_STOPMODE( byte val0
 ,MRQ_MOTION_SWITCH_1 val1
 ,MRQ_MOTIONPLAN_STOPMODE_1 val2 )
@@ -3697,7 +3730,7 @@ int _MRQ_model::setMOTIONPLAN_STOPMODE( byte val0
 	return ret;
 }
 //! U8,ENUM
-//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8|P9|P10|P11|P12|P13|P14|P15|P16|P17|P18|P19|P20|P21|P22
 int _MRQ_model::getMOTIONPLAN_STOPMODE( byte val0
 ,MRQ_MOTION_SWITCH_1 val1, MRQ_MOTIONPLAN_STOPMODE_1 * val2, bool bQuery )
 {
@@ -3709,7 +3742,7 @@ int _MRQ_model::getMOTIONPLAN_STOPMODE( byte val0
 	return 0;
 }
 //! U8,ENUM,F32
-//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8|P9|P10|P11|P12|P13|P14|P15|P16|P17|P18|P19|P20|P21|P22
 int _MRQ_model::setMOTIONPLAN_STOPDISTANCE( byte val0
 ,MRQ_MOTION_SWITCH_1 val1
 ,f32 val2 )
@@ -3721,7 +3754,7 @@ int _MRQ_model::setMOTIONPLAN_STOPDISTANCE( byte val0
 	return ret;
 }
 //! U8,ENUM
-//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8|P9|P10|P11|P12|P13|P14|P15|P16|P17|P18|P19|P20|P21|P22
 int _MRQ_model::getMOTIONPLAN_STOPDISTANCE( byte val0
 ,MRQ_MOTION_SWITCH_1 val1, f32 * val2, bool bQuery )
 {
@@ -3733,7 +3766,7 @@ int _MRQ_model::getMOTIONPLAN_STOPDISTANCE( byte val0
 	return 0;
 }
 //! U8,ENUM,F32
-//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8|P9|P10|P11|P12|P13|P14|P15|P16|P17|P18|P19|P20|P21|P22
 int _MRQ_model::setMOTIONPLAN_STOPTIME( byte val0
 ,MRQ_MOTION_SWITCH_1 val1
 ,f32 val2 )
@@ -3745,7 +3778,7 @@ int _MRQ_model::setMOTIONPLAN_STOPTIME( byte val0
 	return ret;
 }
 //! U8,ENUM
-//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8|P9|P10|P11|P12|P13|P14|P15|P16|P17|P18|P19|P20|P21|P22
 int _MRQ_model::getMOTIONPLAN_STOPTIME( byte val0
 ,MRQ_MOTION_SWITCH_1 val1, f32 * val2, bool bQuery )
 {
@@ -3757,7 +3790,7 @@ int _MRQ_model::getMOTIONPLAN_STOPTIME( byte val0
 	return 0;
 }
 //! U8,ENUM,ENUM
-//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8,OFF|ON
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8|P9|P10|P11|P12|P13|P14|P15|P16|P17|P18|P19|P20|P21|P22,OFF|ON
 int _MRQ_model::setMOTIONPLAN_OOSLINESTATE( byte val0
 ,MRQ_MOTION_SWITCH_1 val1
 ,MRQ_SYSTEM_REVMOTION val2 )
@@ -3769,7 +3802,7 @@ int _MRQ_model::setMOTIONPLAN_OOSLINESTATE( byte val0
 	return ret;
 }
 //! U8,ENUM
-//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8|P9|P10|P11|P12|P13|P14|P15|P16|P17|P18|P19|P20|P21|P22
 int _MRQ_model::getMOTIONPLAN_OOSLINESTATE( byte val0
 ,MRQ_MOTION_SWITCH_1 val1, MRQ_SYSTEM_REVMOTION * val2, bool bQuery )
 {
@@ -3781,7 +3814,7 @@ int _MRQ_model::getMOTIONPLAN_OOSLINESTATE( byte val0
 	return 0;
 }
 //! U8,ENUM,U16
-//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8|P9|P10|P11|P12|P13|P14|P15|P16|P17|P18|P19|P20|P21|P22
 int _MRQ_model::setMOTIONPLAN_OOSLINEOUTNUM( byte val0
 ,MRQ_MOTION_SWITCH_1 val1
 ,uint16 val2 )
@@ -3793,7 +3826,7 @@ int _MRQ_model::setMOTIONPLAN_OOSLINEOUTNUM( byte val0
 	return ret;
 }
 //! U8,ENUM
-//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8|P9|P10|P11|P12|P13|P14|P15|P16|P17|P18|P19|P20|P21|P22
 int _MRQ_model::getMOTIONPLAN_OOSLINEOUTNUM( byte val0
 ,MRQ_MOTION_SWITCH_1 val1, uint16 * val2, bool bQuery )
 {
@@ -3805,7 +3838,7 @@ int _MRQ_model::getMOTIONPLAN_OOSLINEOUTNUM( byte val0
 	return 0;
 }
 //! U8,ENUM,ENUM
-//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8,NONE|ALARM|STOP|ALARM&STOP
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8|P9|P10|P11|P12|P13|P14|P15|P16|P17|P18|P19|P20|P21|P22,NONE|ALARM|STOP|ALARM&STOP
 int _MRQ_model::setMOTIONPLAN_OOSLINERESPONSE( byte val0
 ,MRQ_MOTION_SWITCH_1 val1
 ,MRQ_MOTIONPLAN_OOSLINERESPONSE_1 val2 )
@@ -3817,7 +3850,7 @@ int _MRQ_model::setMOTIONPLAN_OOSLINERESPONSE( byte val0
 	return ret;
 }
 //! U8,ENUM
-//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8|P9|P10|P11|P12|P13|P14|P15|P16|P17|P18|P19|P20|P21|P22
 int _MRQ_model::getMOTIONPLAN_OOSLINERESPONSE( byte val0
 ,MRQ_MOTION_SWITCH_1 val1, MRQ_MOTIONPLAN_OOSLINERESPONSE_1 * val2, bool bQuery )
 {
@@ -3829,7 +3862,7 @@ int _MRQ_model::getMOTIONPLAN_OOSLINERESPONSE( byte val0
 	return 0;
 }
 //! U8,ENUM,ENUM
-//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8,OFF|ON
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8|P9|P10|P11|P12|P13|P14|P15|P16|P17|P18|P19|P20|P21|P22,OFF|ON
 int _MRQ_model::setMOTIONPLAN_OOSTOTALSTATE( byte val0
 ,MRQ_MOTION_SWITCH_1 val1
 ,MRQ_SYSTEM_REVMOTION val2 )
@@ -3841,7 +3874,7 @@ int _MRQ_model::setMOTIONPLAN_OOSTOTALSTATE( byte val0
 	return ret;
 }
 //! U8,ENUM
-//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8|P9|P10|P11|P12|P13|P14|P15|P16|P17|P18|P19|P20|P21|P22
 int _MRQ_model::getMOTIONPLAN_OOSTOTALSTATE( byte val0
 ,MRQ_MOTION_SWITCH_1 val1, MRQ_SYSTEM_REVMOTION * val2, bool bQuery )
 {
@@ -3853,7 +3886,7 @@ int _MRQ_model::getMOTIONPLAN_OOSTOTALSTATE( byte val0
 	return 0;
 }
 //! U8,ENUM,U32
-//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8|P9|P10|P11|P12|P13|P14|P15|P16|P17|P18|P19|P20|P21|P22
 int _MRQ_model::setMOTIONPLAN_OOSTOTALOUTNUM( byte val0
 ,MRQ_MOTION_SWITCH_1 val1
 ,uint32 val2 )
@@ -3865,7 +3898,7 @@ int _MRQ_model::setMOTIONPLAN_OOSTOTALOUTNUM( byte val0
 	return ret;
 }
 //! U8,ENUM
-//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8|P9|P10|P11|P12|P13|P14|P15|P16|P17|P18|P19|P20|P21|P22
 int _MRQ_model::getMOTIONPLAN_OOSTOTALOUTNUM( byte val0
 ,MRQ_MOTION_SWITCH_1 val1, uint32 * val2, bool bQuery )
 {
@@ -3877,7 +3910,7 @@ int _MRQ_model::getMOTIONPLAN_OOSTOTALOUTNUM( byte val0
 	return 0;
 }
 //! U8,ENUM,ENUM
-//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8,NONE|ALARM|STOP|ALARM&STOP
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8|P9|P10|P11|P12|P13|P14|P15|P16|P17|P18|P19|P20|P21|P22,NONE|ALARM|STOP|ALARM&STOP
 int _MRQ_model::setMOTIONPLAN_OOSTOTALRESPONSE( byte val0
 ,MRQ_MOTION_SWITCH_1 val1
 ,MRQ_MOTIONPLAN_OOSLINERESPONSE_1 val2 )
@@ -3889,7 +3922,7 @@ int _MRQ_model::setMOTIONPLAN_OOSTOTALRESPONSE( byte val0
 	return ret;
 }
 //! U8,ENUM
-//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8|P9|P10|P11|P12|P13|P14|P15|P16|P17|P18|P19|P20|P21|P22
 int _MRQ_model::getMOTIONPLAN_OOSTOTALRESPONSE( byte val0
 ,MRQ_MOTION_SWITCH_1 val1, MRQ_MOTIONPLAN_OOSLINERESPONSE_1 * val2, bool bQuery )
 {
@@ -3901,7 +3934,7 @@ int _MRQ_model::getMOTIONPLAN_OOSTOTALRESPONSE( byte val0
 	return 0;
 }
 //! U8,ENUM,U32
-//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8|P9|P10|P11|P12|P13|P14|P15|P16|P17|P18|P19|P20|P21|P22
 int _MRQ_model::setMOTIONPLAN_FIFOBUFFERTIME( byte val0
 ,MRQ_MOTION_SWITCH_1 val1
 ,uint32 val2 )
@@ -3913,7 +3946,7 @@ int _MRQ_model::setMOTIONPLAN_FIFOBUFFERTIME( byte val0
 	return ret;
 }
 //! U8,ENUM
-//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8|P9|P10|P11|P12|P13|P14|P15|P16|P17|P18|P19|P20|P21|P22
 int _MRQ_model::getMOTIONPLAN_FIFOBUFFERTIME( byte val0
 ,MRQ_MOTION_SWITCH_1 val1, uint32 * val2, bool bQuery )
 {
@@ -3925,7 +3958,7 @@ int _MRQ_model::getMOTIONPLAN_FIFOBUFFERTIME( byte val0
 	return 0;
 }
 //! U8,ENUM,U8,F32
-//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8,[INDEX]
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8|P9|P10|P11|P12|P13|P14|P15|P16|P17|P18|P19|P20|P21|P22,[INDEX]
 int _MRQ_model::setPOSITION( byte val0
 ,MRQ_MOTION_SWITCH_1 val1
 ,byte val2
@@ -3937,7 +3970,7 @@ int _MRQ_model::setPOSITION( byte val0
 	return ret;
 }
 //! U8,ENUM,U8
-//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8,[INDEX]
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8|P9|P10|P11|P12|P13|P14|P15|P16|P17|P18|P19|P20|P21|P22,[INDEX]
 int _MRQ_model::getPOSITION( byte val0
 ,MRQ_MOTION_SWITCH_1 val1
 ,byte val2, f32 * val3, bool bQuery )
@@ -3950,7 +3983,7 @@ int _MRQ_model::getPOSITION( byte val0
 	return 0;
 }
 //! U8,ENUM,U8,F32
-//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8,[INDEX]
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8|P9|P10|P11|P12|P13|P14|P15|P16|P17|P18|P19|P20|P21|P22,[INDEX]
 int _MRQ_model::setVELOCITY( byte val0
 ,MRQ_MOTION_SWITCH_1 val1
 ,byte val2
@@ -3962,7 +3995,7 @@ int _MRQ_model::setVELOCITY( byte val0
 	return ret;
 }
 //! U8,ENUM,U8
-//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8,[INDEX]
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8|P9|P10|P11|P12|P13|P14|P15|P16|P17|P18|P19|P20|P21|P22,[INDEX]
 int _MRQ_model::getVELOCITY( byte val0
 ,MRQ_MOTION_SWITCH_1 val1
 ,byte val2, f32 * val3, bool bQuery )
@@ -3975,7 +4008,7 @@ int _MRQ_model::getVELOCITY( byte val0
 	return 0;
 }
 //! U8,ENUM,U8,F32
-//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8,[INDEX]
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8|P9|P10|P11|P12|P13|P14|P15|P16|P17|P18|P19|P20|P21|P22,[INDEX]
 int _MRQ_model::setTIME( byte val0
 ,MRQ_MOTION_SWITCH_1 val1
 ,byte val2
@@ -3987,7 +4020,7 @@ int _MRQ_model::setTIME( byte val0
 	return ret;
 }
 //! U8,ENUM,U8
-//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8,[INDEX]
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8|P9|P10|P11|P12|P13|P14|P15|P16|P17|P18|P19|P20|P21|P22,[INDEX]
 int _MRQ_model::getTIME( byte val0
 ,MRQ_MOTION_SWITCH_1 val1
 ,byte val2, f32 * val3, bool bQuery )
@@ -4000,7 +4033,7 @@ int _MRQ_model::getTIME( byte val0
 	return 0;
 }
 //! U8,ENUM,U8,U16,U16
-//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8,[INDEX]
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8|P9|P10|P11|P12|P13|P14|P15|P16|P17|P18|P19|P20|P21|P22,[INDEX]
 int _MRQ_model::setTIMESCALE( byte val0
 ,MRQ_MOTION_SWITCH_1 val1
 ,byte val2
@@ -4013,7 +4046,7 @@ int _MRQ_model::setTIMESCALE( byte val0
 	return ret;
 }
 //! U8,ENUM,U8
-//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8,[INDEX]
+//! [CHANNUM],MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8|P9|P10|P11|P12|P13|P14|P15|P16|P17|P18|P19|P20|P21|P22,[INDEX]
 int _MRQ_model::getTIMESCALE( byte val0
 ,MRQ_MOTION_SWITCH_1 val1
 ,byte val2, uint16 * val3, uint16 * val4, bool bQuery )
@@ -4344,7 +4377,7 @@ int _MRQ_model::getTRIGGER_LEVELSPERIOD( byte val0
 	return 0;
 }
 //! U8,ENUM,ENUM
-//! [CHANNUM],TRIG1|TRIG2|TRIG3|TRIG4|TRIG5,MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8
+//! [CHANNUM],TRIG1|TRIG2|TRIG3|TRIG4|TRIG5,MAIN|SMALL|P1|P2|P3|P4|P5|P6|P7|P8|P9|P10|P11|P12|P13|P14|P15|P16|P17|P18|P19|P20|P21|P22
 int _MRQ_model::setTRIGGER_LEVELRUNWAVE( byte val0
 ,MRQ_TRIGGER_LEVELSTATE val1
 ,MRQ_MOTION_SWITCH_1 val2 )

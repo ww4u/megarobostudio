@@ -16,6 +16,7 @@ namespace MegaDevice
 int deviceMRQ::_applySetting()
 {
     int ret=-1;
+#if 1
 
 MRQ_PROGRESS_DOWN( 0, ("LINK") );
 
@@ -132,7 +133,8 @@ MRQ_PROGRESS( 10, ("MOTION") );
         MRQ_PROGRESS_DOWN( 30 + (_i*regions() + _j)*20/(axes()*regions()), ("MOTORPLAN") );
     }
     end_foreach_page()
-
+#endif
+#if 1
     for ( int i = 0; i < axes(); i++ )
     {
         for ( int j = 0; j < regions(); j++ )
@@ -188,7 +190,8 @@ MRQ_PROGRESS( 10, ("MOTION") );
 
         MRQ_PROGRESS_DOWN( 55, ("DRIVER") );
     }
-
+#endif
+#if 1
     for ( int i = 0; i < mDOs; i++ )
     {
         Q_ASSERT( i < sizeof_array(mDIGITALOUTPUT_STATE) );
@@ -317,7 +320,7 @@ MRQ_PROGRESS( 10, ("MOTION") );
 
         checked_call( setOTP_PERIOD( mOTP_PERIOD ) );
     }
-
+#endif
 MRQ_PROGRESS_HIDE();
 
     return ret;

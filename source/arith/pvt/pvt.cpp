@@ -36,6 +36,8 @@ static void outputData( uint8_t /*chanNum*/,
     //! pInterpContext->mMicroSteps =  THAT.posnToStep
     vNow = width_to_speed( outpData ) / pInterpContext->mMicroSteps ;
 
+    vNow = vNow * ( pInterpContext->mPStep >=0 ? 1 : -1 );
+
     //! acc t
     tDur = (qreal)outpData/norm_freq * ((PvtCalcStruct*)(pInterpContext->m_pCalcContext))->lineSteps;
     Q_ASSERT( NULL != pInterpContext->m_pCalcContext );

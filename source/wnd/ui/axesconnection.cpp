@@ -57,7 +57,7 @@ void axesConnection::setCurrentCH( const int index )
 }
 
 int axesConnection::page()
-{ return ui->widget->page(); }
+{ return ui->comboBox->currentIndex(); }
 
 QComboBox *axesConnection::getCombName()
 {
@@ -71,7 +71,7 @@ QComboBox *axesConnection::getCombCH()
 
 QComboBox *axesConnection::getCombPage()
 {
-    return ui->widget->getComb();
+    return ui->comboBox;
 }
 
 void axesConnection::on_cmbDeviceName_currentIndexChanged(int index)
@@ -87,4 +87,7 @@ void axesConnection::on_cmbDeviceName_currentIndexChanged(int index)
             ui->cmbDeviceAxes->addItem( QString("CH%1").arg(i+1) );
         }
     }
+
+    //! find the regions
+
 }

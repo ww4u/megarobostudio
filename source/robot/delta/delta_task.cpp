@@ -6,24 +6,8 @@ DeltaZeroArg::DeltaZeroArg()
 DeltaTask::DeltaTask(QObject *pParent) : RoboTask( pParent )
 {}
 
-void DeltaTask::run()
+void DeltaTask::procRequest(RoboTaskRequest*pReq)
 {
-    if ( 0 != checkRequest( m_pReq ) )
-    { return; }
-
-    robotDelta *pRobo;
-    pRobo = (robotDelta*)m_pReq->m_pRobo;
-
-    int ret;
-    ret = (pRobo->*( m_pReq->m_pApi ))( m_pReq->m_pArg );
-    if ( ret != 0 )
-    {
-        sysWarn( __FUNCTION__,
-                QString::number(__LINE__),
-                QString::number( ret ),
-                "exit" );
-    }
-
-    gc();
+    implement_proc_request( robotDelta );
 }
 

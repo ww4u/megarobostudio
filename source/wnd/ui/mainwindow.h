@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QMutex>
+#include <QSystemTrayIcon>
 
 //! widgets
 #include "../widget/megamessagebox.h"
@@ -94,8 +95,6 @@ public:
 
     QString exportDiagnosis( int &n );
 
-    int logInCode();
-
 protected:
     void init();
     void deinit();
@@ -112,6 +111,8 @@ protected:
     void setupStatusbar();
 
     void setupMenu();
+
+    void setupTray();
 
     void buildConnection();
 
@@ -141,6 +142,7 @@ Q_SIGNALS:
     void sig_view_removed( const QString &str );
 
 protected Q_SLOTS:
+    void slot_trayicon_activated( QSystemTrayIcon::ActivationReason reason );
     void slot_downloadbar_clicked();
 
     void slot_post_load_prj();
@@ -150,11 +152,13 @@ protected Q_SLOTS:
     void cfgTab_tabCloseRequested( int index );
 
     void on_itemXActivated( mcModelObj *pObj, mcModelObj_Op op=model_obj_op_none );
-    void slot_itemModelUpdated( mcModelObj *pObj );
+    void slot_itemModelUpdated( mcModelObj *pObj,
+                                model_msg msg );
 
     void slot_itemXHelp( eItemHelp hlp, const QString &name );
 
     void slot_pref_request_save();
+
 
     void on_signalReport( int err, const QString &str );
     void slot_action_plugin( QAction *pAction );
@@ -329,6 +333,10 @@ private:
     //! uis
     Ui::MainWindow *ui;
     dpcObj *m_pDpcObj;
+
+    //! tray icon
+    QSystemTrayIcon *m_pTrayIcon;
+    QMenu *m_pTrayMenu;
 
     QStringList mPluginList;
 

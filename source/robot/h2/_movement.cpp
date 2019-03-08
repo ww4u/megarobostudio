@@ -159,8 +159,8 @@ int robotH2::goZero( const tpvRegion &region,
                        (VRobot::apiTaskRequest)(&robotH2::zeroAxesTask),
                        pArg );
 
-        m_pRoboTask->setRequest( pReq );
-        m_pRoboTask->start();
+        m_pRoboTask->attachRequest( pReq );
+//        m_pRoboTask->start();
 
     }
     else if ( jointId == 1 )
@@ -182,8 +182,8 @@ int robotH2::goZero( const tpvRegion &region,
                        (VRobot::apiTaskRequest)(&robotH2::zeroAxesTask),
                        pArg );
 
-        m_pRoboTask->setRequest( pReq );
-        m_pRoboTask->start();
+        m_pRoboTask->attachRequest( pReq );
+//        m_pRoboTask->start();
     }
     else
     {
@@ -237,8 +237,8 @@ int robotH2::goZero( const tpvRegion &region,
                    (VRobot::apiTaskRequest)(&robotH2::zeroAxesTask),
                    pArg );
 
-    m_pRoboTask->setRequest( pReq );
-    m_pRoboTask->start();
+    m_pRoboTask->attachRequest( pReq );
+//    m_pRoboTask->start();
 
     return 0;
 }
@@ -258,7 +258,7 @@ int robotH2::zeroAxesTask( void *pArg )
     {}
     else
     {
-        sysError( QObject::tr("Invlaid init pos") );
+        sysPrompt( QObject::tr("Invlaid init pos") );
         return -1;
     }
 
@@ -272,29 +272,15 @@ int robotH2::zeroAxesTask( void *pArg )
     MegaDevice::deviceMRQ *pMRQ;
     int ax;
 
-    //! distance
-    for ( int i = 0; i < axes(); i++ )
-    {
-        pMRQ = jointDevice( 0, &ax );
-        if ( NULL == pMRQ )
-        {
-            return -1;
-        }
-        pMRQ->setMOTIONPLAN_STOPMODE( ax,
-                                      (MRQ_MOTION_SWITCH_1)region.page(),
-                                      MRQ_MOTIONPLAN_STOPMODE_1_DISTANCE );
-        pMRQ->setMOTIONPLAN_STOPDISTANCE( ax,
-                                          (MRQ_MOTION_SWITCH_1)region.page(),
-                                          mZeroStopDistance );
-    }
-
     //! x
     if ( pZArg->mAx == 0 )
     {
-        //! zero
-        ret = zeroX( pZArg );
-        if ( ret != 0 )
-        { return ret; }
+        beginZero( region );
+            //! zero
+            ret = zeroX( pZArg );
+            if ( ret != 0 )
+            { return ret; }
+        endZero( region );
 
         //! gap
         ret = gapX( pZArg );
@@ -306,10 +292,12 @@ int robotH2::zeroAxesTask( void *pArg )
     //! y
     else if ( pZArg->mAx == 1 )
     {
-        //! zero
-        ret = zeroY( pZArg );
-        if ( ret != 0 )
-        { return ret; }
+        beginZero( region );
+            //! zero
+            ret = zeroY( pZArg );
+            if ( ret != 0 )
+            { return ret; }
+        endZero( region );
 
         //! gap
         ret = gapY( pZArg );
@@ -324,15 +312,17 @@ int robotH2::zeroAxesTask( void *pArg )
         //! zero
         if ( mZeroMovement == movement_x_y )
         {
-            //! x
-            pZArg->mAx = 0;
-            ret = zeroX( pZArg );
-            if ( ret != 0 ){ return ret; }
+            beginZero(region);
+                //! x
+                pZArg->mAx = 0;
+                ret = zeroX( pZArg );
+                if ( ret != 0 ){ return ret; }
 
-            //! y
-            pZArg->mAx = 1;
-            ret = zeroY( pZArg );
-            if ( ret != 0 ){ return ret; }
+                //! y
+                pZArg->mAx = 1;
+                ret = zeroY( pZArg );
+                if ( ret != 0 ){ return ret; }
+            endZero( region );
 
             //! gap
             ret = gapXY( pZArg );
@@ -340,15 +330,17 @@ int robotH2::zeroAxesTask( void *pArg )
         }
         else
         {
-            //! y
-            pZArg->mAx = 1;
-            ret = zeroY( pZArg );
-            if ( ret != 0 ){ return ret; }
+            beginZero( region );
+                //! y
+                pZArg->mAx = 1;
+                ret = zeroY( pZArg );
+                if ( ret != 0 ){ return ret; }
 
-            //! x
-            pZArg->mAx = 0;
-            ret = zeroX( pZArg );
-            if ( ret != 0 ){ return ret; }
+                //! x
+                pZArg->mAx = 0;
+                ret = zeroX( pZArg );
+                if ( ret != 0 ){ return ret; }
+            endZero( region );
 
             //! gap
             ret = gapXY( pZArg );
@@ -356,18 +348,6 @@ int robotH2::zeroAxesTask( void *pArg )
         }
 
         ret = clrAngle();
-    }
-
-    //! post
-    //! distance
-    for ( int i = 0; i < axes(); i++ )
-    {
-        pMRQ = jointDevice( 0, &ax );
-        if ( NULL == pMRQ )
-        { return -1; }
-        pMRQ->setMOTIONPLAN_STOPMODE( ax,
-                                      (MRQ_MOTION_SWITCH_1)region.page(),
-                                      MRQ_MOTIONPLAN_STOPMODE_1_IMMEDIATE );
     }
 
     return ret;
@@ -383,16 +363,38 @@ int robotH2::zeroX( H2ZeroArg *pZArg )
 //    bool bTransfer;
 //    bTransfer = transferAble();
 //    setTransferAble( false );
-
-    //! m
+logDbg()<<region.mAx<<region.mPage;
+    //!
     move(   pZArg->mZeroDist,0,
             0, 0, pZArg->mZeroTime, pZArg->mZeroEndV, 0, region
          );
 
-//    setTransferAble( bTransfer );
+logDbg();
 
     //! wait
     ret = waitFsm( region, MegaDevice::mrq_state_idle, pZArg->mTmo, pZArg->mTick );
+    if ( ret != 0 ){ return ret; }
+logDbg();
+    //! check the x pos
+    quint32 bm;
+    ret = getXPOS( bm );
+    if ( ret != 0 ){ return ret; }
+
+    if ( bm != 0x03 )
+    {
+        sysError( QObject::tr("Invalid X POS"), QString::number( bm ) );
+        sysPrompt( QObject::tr("Invalid X POS") );
+        return -1;
+    }
+
+    ret = getYPOS( bm );
+    if ( ret != 0 ){ return ret; }
+    if ( bm != 0 )
+    {
+        sysError( QObject::tr("Invalid Y POS"), QString::number( bm ) );
+        sysPrompt( QObject::tr("Invalid Y POS") );
+        return -1;
+    }
 
     return ret;
 }
@@ -413,6 +415,28 @@ int robotH2::zeroY( H2ZeroArg *pZArg )
 //    setTransferAble( bTransfer );
 
     ret = waitFsm( region, MegaDevice::mrq_state_idle, pZArg->mTmo, pZArg->mTick );
+    if ( ret != 0 ){ return ret; }
+
+    //! check the x pos
+    quint32 bm;
+    ret = getXPOS( bm );
+    if ( ret != 0 ){ return ret; }
+
+    if ( bm != 0x03 )
+    {
+        sysError( QObject::tr("Invalid X POS"), QString::number( bm ) );
+        sysPrompt( QObject::tr("Invalid X POS") );
+        return -1;
+    }
+
+    ret = getYPOS( bm );
+    if ( ret != 0 ){ return ret; }
+    if ( bm != 0x03 )
+    {
+        sysError( QObject::tr("Invalid Y POS"), QString::number( bm ) );
+        sysPrompt( QObject::tr("Invalid Y POS") );
+        return -1;
+    }
 
     return ret;
 }

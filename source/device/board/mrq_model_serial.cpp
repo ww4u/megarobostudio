@@ -765,7 +765,16 @@ int MRQ_model::loadSubTrigger( int ax, QXmlStreamReader &reader )
         else if ( reader.name() == "mTRIGGER_PATTSPERIOD" )
         { DeviceModel::toValue( reader.readElementText(), &mTRIGGER_PATTSPERIOD[ax]); }
         else if ( reader.name() == "channel" )
-        { loadSubTriggerChannel( ax, mTrigIdsList.at( ch ), reader ); ch++; }
+        {
+            //! \note
+            //! skip the invalid element
+            if ( ch >= mTrigIdsList.size() )
+            { reader.skipCurrentElement(); }
+            else
+            {
+                loadSubTriggerChannel( ax, mTrigIdsList.at( ch ), reader ); ch++;
+            }
+        }
         else
         { reader.skipCurrentElement(); }
     }

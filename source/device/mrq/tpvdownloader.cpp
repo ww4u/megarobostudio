@@ -72,7 +72,7 @@ int tpvDownloader::downloadProc()
         else if ( ret == ERR_INTERRUPT_REQUESTED )
         { break; }
         else
-        { sysError( QObject::tr("download fail"), QString::number(__LINE__) ); }
+        { sysError( QObject::tr("download fail"), QString::number(__LINE__), QString::number(i) ); }
     }
 
     //! gc
@@ -131,8 +131,8 @@ int tpvDownloader::batchDownload( QQueue< tpvRow *> &transQueue,
         ret = m_pMRQ->tpvDownload( mRegion, pItem );
 
         //! the download speed
-        if ( tpvDownloader::_downloaderInterval > 0 )
-        { QThread::usleep( tpvDownloader::_downloaderInterval ); }
+//        if ( tpvDownloader::_downloaderInterval > 0 )
+//        { QThread::usleep( tpvDownloader::_downloaderInterval ); }
 
         //! fail
         if ( ret != 0 )
@@ -187,7 +187,10 @@ int tpvDownloader::transmissionProc( QQueue< tpvRow *> &transQueue )
                                                   (MRQ_MOTION_SWITCH_1)mRegion.page(),
                                                   &batchSize );
         if ( ret != 0 )
-        { sysError( __FUNCTION__, QString::number(__LINE__) ); /*Q_ASSERT(false);*/ return ret; }
+        { sysError( __FUNCTION__, QString::number(__LINE__),
+                    QString::number( mRegion.axes() ),
+                    QString::number( mRegion.page() )
+                    ); /*Q_ASSERT(false);*/ return ret; }
         else
         {}
 

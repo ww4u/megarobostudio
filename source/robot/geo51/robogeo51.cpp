@@ -24,7 +24,6 @@ roboGeo51::roboGeo51()
 
     mMicrostepBase = 2;
 
-//    setUarts( 2 );
     setUarts( 1 );
     setUartSensors( 4 );
 

@@ -206,6 +206,8 @@ void frameHouse::clear()
 {
     frameHouse::lock();
 
+//    if ( size() > 0 )
+//    { logDbg()<<size(); }
     QQueue<frameData>::clear();
     mBytes = 0;
 
@@ -490,7 +492,7 @@ void receiveCache::append( frameData &ary )
 //        logDbg()<<ary.frameId()<<ary.size();
     }
     //! \note input the receive cache
-//    else
+    else
     {
         lockWarehouse();
         mFrameWarehouse.inFrame( ary );
@@ -692,6 +694,10 @@ void receiveCache::run()
             {
                 QThread::msleep( 1000 );
                 break;
+            }
+            else
+            {
+
             }
 
             receiveCache::lock();

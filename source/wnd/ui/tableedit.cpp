@@ -13,6 +13,9 @@ tableEdit::~tableEdit()
 void tableEdit::contextMenuEvent(QContextMenuEvent *event)
 {
     Q_ASSERT( NULL != m_pEditMenu );
+
+    m_pContextActionToHere->setVisible( context_toHere_able() );
+
     m_pEditMenu->popup( mapToGlobal( event->pos() ) );
     event->accept();
 }
@@ -25,6 +28,11 @@ void tableEdit::context_add_below()
 {}
 void tableEdit::context_clear()
 {}
+void tableEdit::context_toHere()
+{}
+
+bool tableEdit::context_toHere_able()
+{ return false; }
 
 void tableEdit::slot_context_remove()
 {
@@ -43,6 +51,11 @@ void tableEdit::slot_context_clear()
     context_clear();
 }
 
+void tableEdit::slot_context_tohere()
+{
+    context_toHere();
+}
+
 void tableEdit::setupUi()
 {
     m_pEditMenu = new QMenu( this );
@@ -53,6 +66,8 @@ void tableEdit::setupUi()
     m_pContextActionDelete = m_pEditMenu->addAction( QIcon(":/res/image/icon/delete.png"), tr("Delete line"), this, SLOT(slot_context_remove()) );
     m_pEditMenu->addSeparator();
     m_pContextActionClear = m_pEditMenu->addAction( QIcon(":/res/image/icon/trash.png"), tr("Clear"), this, SLOT(slot_context_clear()) );
+//    m_pEditMenu->addSeparator();
+    m_pContextActionToHere = m_pEditMenu->addAction( QIcon(":/res/image/icon/skip.png"), tr("To here"), this, SLOT(slot_context_tohere()) );
 }
 void tableEdit::retranslateContextMenu()
 {

@@ -11,7 +11,7 @@ MotorState::MotorState(QWidget *parent) :
     //! \note combo
     ui->cmbRegion->addItem( tr("MAIN"),0 );
     ui->cmbRegion->addItem( tr("SMALL"),1 );
-    for ( int i = 1; i <= 8; i++ )
+    for ( int i = 1; i <= 22; i++ )
     {
         ui->cmbRegion->addItem( QString( tr("P%1") ).arg(i), i+1 );
     }

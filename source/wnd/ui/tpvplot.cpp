@@ -68,6 +68,8 @@ tpvPlot::tpvPlot(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    ui->btnZoomOut->setVisible( false );
+
     mLineCap = 2048;
 }
 

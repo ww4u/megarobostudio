@@ -43,7 +43,6 @@ robotH2::robotH2()
 
     mArmLengths.clear();
     mArmLengths<<802<<494<<38<<52;
-//    mArmLengths<<13.4<<13.4<<802<<494<<52<<38;
 
     mbZeroAttrInComPref = false;
 
@@ -100,8 +99,8 @@ void robotH2::init()
     mToothGear = 30;
 
     //! zero
-    mZeroTime = 1;
-    mZeroDistance = 10;
+    mZeroTime = 0.1;
+    mZeroDistance = 1;
     mZeroSpeed = 20;
     mZeroStopDistance = 1;
 
@@ -215,6 +214,105 @@ void robotH2::postConfigTransfer()
     }
     else
     { Q_ASSERT(false); }
+}
+
+void robotH2::beginZero( const tpvRegion &region )
+{
+    //! pre zero
+    MegaDevice::deviceMRQ *pMRQ;
+    int ax;
+
+    //! distance
+    for ( int i = 0; i < axes(); i++ )
+    {
+        pMRQ = jointDevice( i, &ax );
+        if ( NULL == pMRQ )
+        { return; }
+        pMRQ->setMOTIONPLAN_STOPMODE( ax,
+                                      (MRQ_MOTION_SWITCH_1)region.page(),
+                                      MRQ_MOTIONPLAN_STOPMODE_1_DISTANCE );
+        pMRQ->setMOTIONPLAN_STOPDISTANCE( ax,
+                                          (MRQ_MOTION_SWITCH_1)region.page(),
+                                          mZeroStopDistance );
+    }
+}
+
+void robotH2::endZero( const tpvRegion &region )
+{
+    //! pre zero
+    MegaDevice::deviceMRQ *pMRQ;
+    int ax;
+
+    //! distance
+    for ( int i = 0; i < axes(); i++ )
+    {
+        pMRQ = jointDevice( i, &ax );
+        if ( NULL == pMRQ )
+        { return; }
+
+        pMRQ->setMOTIONPLAN_STOPMODE( ax,
+                                      (MRQ_MOTION_SWITCH_1)region.page(),
+                                      MRQ_MOTIONPLAN_STOPMODE_1_IMMEDIATE );
+    }
+}
+
+int robotH2::getjPOS( int jId, quint32 &pos )
+{
+    MegaDevice::deviceMRQ *pMrq;
+
+    //! get ax pos
+    quint16 dio;
+    int ax;
+    {
+        pMrq = jointDevice( jId, &ax );
+        Q_ASSERT( NULL != pMrq );
+
+        //! get the dio
+        if ( 0 == pMrq->getSYSTEM_DIOSTATE( &dio ) )
+        {}
+        else
+        { return -1; }
+
+        //! get the pos
+        pos = ( dio >> (4 * ax) ) & 0x03;
+    }
+
+    return 0;
+}
+
+int robotH2::getXPOS( quint32 &bm )
+{
+    quint32 bm1, bm2;
+    int ret;
+
+    ret = getjPOS( 0, bm1 );
+    if ( ret != 0 ){ return ret; }
+
+    ret = getjPOS( 1, bm2 );
+    if ( ret != 0 ){ return ret; }
+
+    bm = 0;
+    fill_bit( bm, 0, get_bit(bm1,0) );
+    fill_bit( bm, 1, get_bit(bm2,0) );
+
+    return 0;
+}
+int robotH2::getYPOS( quint32 &bm )
+{
+    quint32 bm1, bm2;
+    int ret;
+
+    ret = getjPOS( 0, bm1 );
+    if ( ret != 0 ){ return ret; }
+
+    ret = getjPOS( 1, bm2 );
+    if ( ret != 0 ){ return ret; }
+
+    bm = 0;
+    fill_bit( bm, 0, get_bit(bm1,1) );
+    fill_bit( bm, 1, get_bit(bm2,1) );
+
+    return 0;
 }
 
 int robotH2::download( VRobot *pSetup )

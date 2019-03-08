@@ -128,8 +128,9 @@ public:
 public:
     typedef int (VRobot::*apiTaskRequest)( void *pArg );
 
-protected:
+public:
     static double _mTBase, _mPBase, _mVBase;      //! tune info
+protected:
     static QString _tempPath;
 
     static SysPara *_mSysPara;
@@ -228,6 +229,8 @@ public:
                         const QList<int> &jointList,
                         const QList<bool> &ccwList );
 
+    virtual int routeTo( const tpvRegion &region,
+                         QVariantList &vars );
 
     virtual bool checkZeroValid();
     virtual float getZero( int jointTabId );
@@ -553,9 +556,15 @@ public:
     int mTick;      //! us
 
     tpvRegion mRegion;
+
+    QVariantList *m_pVarList;
 public:
     RoboTaskArgument();
     virtual ~RoboTaskArgument();
+
+public:
+    void attachVars( QVariantList *pVars );
+
 };
 
 //! request
@@ -576,6 +585,27 @@ public:
                   RoboTaskArgument *pArg );
 };
 
+//robotMegatron *pRobo;
+//pRobo = (robotMegatron*)pReq->m_pRobo;
+
+//int ret;
+//ret = (pRobo->*( pReq->m_pApi ))( pReq->m_pArg );
+//if( ret != 0 )
+//{
+//    sysWarn( __FUNCTION__, QString::number(__LINE__), QString::number( ret ) );
+//}
+
+#define implement_proc_request( RoboType )  { RoboType *pRobo; \
+pRobo = (RoboType*)pReq->m_pRobo;\
+\
+int ret;\
+ret = (pRobo->*( pReq->m_pApi ))( pReq->m_pArg );\
+if( ret != 0 )\
+{\
+    sysWarn( __FUNCTION__, QString::number(__LINE__), QString::number( ret ) );\
+}\
+}
+
 class RoboTask : public QThread
 {
     Q_OBJECT
@@ -592,16 +622,22 @@ public:
 protected:
     virtual void run();
 
+    virtual void procRequest( RoboTaskRequest *pRequest );
+
 public:
-    void setRequest( RoboTaskRequest * pReq );
+//    void setRequest( RoboTaskRequest * pReq );
+
+    void attachRequest( RoboTaskRequest *pRequest );
 
 protected:
-    int checkRequest( const RoboTaskRequest *pReq );
-    void gc();
+    bool checkRequest( const RoboTaskRequest *pReq );
+    void gcRequest( RoboTaskRequest *pReq );
 
 
 protected:
-    RoboTaskRequest *m_pReq;
+//    RoboTaskRequest *m_pReq;
+    QQueue<RoboTaskRequest*> mRequests;
+    QMutex mMutex;
 };
 
 class RoboService : public QThread

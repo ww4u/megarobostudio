@@ -68,16 +68,15 @@
     </widget>
    </item>
    <item>
-    <widget class="PageOption" name="widget" native="true"/>
+    <widget class="AxisPage" name="widget"/>
    </item>
   </layout>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>PageOption</class>
-   <extends>QWidget</extends>
-   <header>pageoption.h</header>
-   <container>1</container>
+   <class>AxisPage</class>
+   <extends>QComboBox</extends>
+   <header>axispage.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

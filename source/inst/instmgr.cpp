@@ -172,8 +172,14 @@ int InstMgr::probeCanBus()
         rsrcList = m_pMainModel->mSysPref.mVisaEList;
     }
     else
-    { devCount = m_pMainModel->mSysPref.mDeviceCount; }
-
+    {
+        devCount = m_pMainModel->mSysPref.mDeviceCount;
+        for ( int i = 0 ; i < devCount; i++ )
+        {
+            rsrcList<<QString::number(i);
+        }
+    }
+logDbg()<<devCount;
     QStringList openList;
     QString subRsrc;
     for ( int i = 0; i < devCount; i++ )
@@ -1088,7 +1094,7 @@ int InstMgr::probeCANBus( IBus *pNewBus,
                 roboClass = m_pMainModel->mDeviceDbs.findClass( deviceDesc );
                 delete pMRQ;
 
-                pRobo = robotFact::createRobot( roboClass );
+                pRobo = robotFact::createRobot( roboClass, false );
                 if ( NULL == pRobo )
                 { return ERR_ALLOC_FAIL; }
 
@@ -1108,6 +1114,20 @@ int InstMgr::probeCANBus( IBus *pNewBus,
                     delete pMRQ;
                     return ret;
                 }
+
+                logDbg()<<deviceDesc;
+                //! adapte
+                driverController *pController = m_pMainModel->mDeviceDbs.find( deviceDesc );logDbg()<<deviceDesc;
+                if ( NULL != pController )
+                {
+                    //! get version to adapt firmware
+                    pRobo->upload( VDevice::e_device_content_ver );
+
+                    //! adapteTo Version
+                    pRobo->adaptToFirmware( pController->packages() );logDbg();
+                }
+                //! \note post ctor
+                pRobo->postCtor();
 
                 //! get info
                 if ( deviceDesc.length() > 0 )

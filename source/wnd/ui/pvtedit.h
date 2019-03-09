@@ -36,12 +36,19 @@ public:
     virtual int save( QString &outFileName );
     virtual int saveAs( QString &outFileName );
 
+    virtual void settingChanged( enumSetting setting, const QVariant &v );
 protected:
+    virtual void onMcModelUpdated();
+
+protected:
+    virtual QString activeName();
+    virtual int activeAxes();
+
     virtual void onNetEvent(const QString &name,
                             int axes,
                             RoboMsg &msg);
 
-    void onMotionStatus( int axes, MRQ_MOTION_STATE_2 stat );
+    void onMotionStatus( const QString &name, int axes, MRQ_MOTION_STATE_2 stat );
 
 protected:
     void setupUi();
@@ -83,6 +90,8 @@ protected:
 
     void stateIdle();
 
+    void adapteAxes();
+
 Q_SIGNALS:
     void sigLineChanged();
 
@@ -109,6 +118,8 @@ protected Q_SLOTS:
 
     void slot_data_changed();
     void slot_line_changed();
+
+    void slot_destination_changed();
 
 private slots:
     void on_comboBox_currentIndexChanged(int index);

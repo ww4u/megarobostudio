@@ -84,6 +84,9 @@ protected Q_SLOTS:
                          int axes,
                          RoboMsg msg );
 protected:
+    virtual QString activeName();
+    virtual int activeAxes();
+
     virtual void onNetEvent( const QString &name,
                              int axes,
                              RoboMsg &msg );

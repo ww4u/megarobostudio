@@ -190,6 +190,9 @@
       </widget>
      </item>
      <item>
+      <widget class="axesConnection" name="widget" native="true"/>
+     </item>
+     <item>
       <spacer name="horizontalSpacer">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
@@ -395,6 +398,14 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>axesConnection</class>
+   <extends>QWidget</extends>
+   <header>axesconnection.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

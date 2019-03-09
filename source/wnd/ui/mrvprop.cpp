@@ -126,7 +126,7 @@ void MrvProp::updateScreen()
 }
 
 void MrvProp::setActive()
-{ emit sigActiveDeviceChanged( m_pSystem->deviceName() ); }
+{ /*emit sigActiveDeviceChanged( m_pSystem->deviceName() );*/ }
 
 int MrvProp::save( QString &outFileName )
 {

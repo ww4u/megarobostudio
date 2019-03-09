@@ -81,6 +81,24 @@ void TpEdit::context_clear()
     on_btnClr_clicked();
 }
 
+//! setting
+void TpEdit::settingChanged( enumSetting setting, const QVariant &v )
+{
+    if ( setting == modelView::setting_inst_mgr )
+    { onMcModelUpdated(); }
+}
+
+void TpEdit::onMcModelUpdated()
+{
+    Q_ASSERT( NULL != m_pmcModel );
+    ui->widget->setDeviceNames( m_pmcModel->mConn.mDeviceMap );
+}
+
+QString TpEdit::activeName()
+{ return ui->widget->getDeviceName(); }
+int TpEdit::activeAxes()
+{ return ui->widget->getDeviceCH(); }
+
 void TpEdit::onNetEvent(const QString &name,
                          int axes,
                          RoboMsg &msg)
@@ -153,8 +171,8 @@ bool TpEdit::checkChan()
 {
     QString str;
     int id;
-    str = m_pmcModel->getConnection().getDeviceName();
-    id = m_pmcModel->getConnection().getDeviceCH();
+    str = ui->widget->getDeviceName();
+    id = ui->widget->getDeviceCH();
 
     bool b;
     b = checkChan( str, id );
@@ -183,8 +201,8 @@ MegaDevice::deviceMRV *TpEdit::currentDevice( int &ax )
     QString str;
     int axesId;
 
-    str = m_pmcModel->getConnection().getDeviceName();
-    axesId = m_pmcModel->getConnection().getDeviceCH();
+    str = ui->widget->getDeviceName();
+    axesId = ui->widget->getDeviceCH();
 
     VRobot *pRobo = m_pmcModel->m_pInstMgr->findRobot( str, axesId );
     MegaDevice::deviceMRV *pDev = (MegaDevice::deviceMRV*)pRobo;

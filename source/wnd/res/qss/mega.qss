@@ -315,11 +315,6 @@ QComboBox {
       background: white;
   }
 
-  QComboBox:!editable {
-       background: #1a5975;
-	   color:white;
-  }
-
   QComboBox:on { /* shift the text when the popup opens */
       padding-top: 3px;
       padding-left: 4px;
@@ -338,6 +333,20 @@ QComboBox {
 	  background:#1a5975;
 
   }
+ /*
+    QComboBox::drop-down:!editable {
+      subcontrol-origin: padding;
+      subcontrol-position: top right;
+      width: 15px;
+
+      border-left-width: 1px;
+      border-left-color: #1a5975;
+      border-left-style: solid; 
+
+	  border-radius: 3px;
+	  background:#1a5975;
+  }
+  */
 
 QComboBox::down-arrow {
   image: url(:/res/image/slice/down_arrow.png);
@@ -348,6 +357,16 @@ QComboBox::down-arrow:on { /* shift the arrow when popup is open */
   left: 1px;
 }
 
+
+QComboBox:!editable {
+   background: #1a5975;
+   color:white;
+}
+
+QComboBox::drop-down:disabled {
+   background: #808080;
+   color:white;
+}
 
   QSpinBox,  QDoubleSpinBox, QLineEdit, QPlainTextEdit {
       padding-right: 15px; /* make room for the arrows */

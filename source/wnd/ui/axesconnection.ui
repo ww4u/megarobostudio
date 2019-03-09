@@ -116,7 +116,11 @@
     </widget>
    </item>
    <item>
-    <widget class="AxisPage" name="comboBox"/>
+    <widget class="AxisPage" name="comboBox">
+     <property name="toolTip">
+      <string>page</string>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

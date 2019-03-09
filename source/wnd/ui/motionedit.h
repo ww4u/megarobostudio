@@ -34,6 +34,11 @@ public:
 protected:
     virtual void changeEvent( QEvent *event );
 
+public:
+    virtual void settingChanged( enumSetting setting, const QVariant &v );
+protected:
+    virtual void onMcModelUpdated();
+
 protected:
     void buildConnection();
 
@@ -44,6 +49,9 @@ public:
     virtual int saveAs( QString &outFileName );
 
 protected:
+    virtual QString activeName();
+//    virtual int activeAxes();
+
     virtual void onNetEvent(const QString &name,
                             int axes,
                             RoboMsg &msg);
@@ -86,6 +94,7 @@ Q_SIGNALS:
     void sig_robo_changed( const QString &roboName );
 
 protected Q_SLOTS:
+    void slot_destination_changed();
     void slot_timeout();
     void slot_data_changed();
     void slot_robo_changed( const QString &roboName );

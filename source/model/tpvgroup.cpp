@@ -73,6 +73,10 @@ tpvGroup::tpvGroup() : MegaTableModel("joint","")
 {
     mtType = time_abs;
     mSumT = -1;
+
+    //! set header
+    for ( int i = 0; i < tpvItem::columns(); i++ )
+    { mHHeader<<tpvItem::header(i); }
 }
 
 tpvGroup::~tpvGroup()
@@ -213,10 +217,30 @@ QVariant tpvGroup::headerData(int section, Qt::Orientation orientation, int role
     if ( role != Qt::DisplayRole )
     { return QVariant(); }
 
+//    QVariant var = MegaTableModel::headerData( section, orientation, role );
+//    if ( var.isValid() )
+//    { return var; }
+
     if ( orientation == Qt::Horizontal )
-    { return QVariant( tpvItem::header(section)); }
+//    { return QVariant( tpvItem::header(section)); }
+    { return mHHeader.at( section ); }
     else
     { return QVariant(section);}
+}
+
+bool tpvGroup::setHeaderData(int section,
+                             Qt::Orientation orientation,
+                             const QVariant &value,
+                             int role )
+{
+    if ( orientation == Qt::Horizontal )
+    {
+        mHHeader[ section ] = value;
+        emit headerDataChanged( orientation, section, section );
+        return true;
+    }
+//    else
+    { return MegaTableModel::setHeaderData( section, orientation, value, role ); }
 }
 
 tpvItem * tpvGroup::operator[]( int id )

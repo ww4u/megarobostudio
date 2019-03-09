@@ -58,33 +58,49 @@ void appWidget::slot_net_event( const QString &name,
                      int axes,
                      RoboMsg msg )
 {
-    if ( !mbLink )
+    //logDbg()<<name<<activeName()<<axes<<activeAxes();
+    if ( str_is(name, activeName()) )
+    {}
+    else
     { return; }
 
-    do
-    {
-        //! child
-        if ( mChildAgentNames.contains( name ) )
-        { break; }
+    if ( axes == activeAxes() || -1 == activeAxes() )
+    {}
+    else
+    { return; }
 
-        //! self
-        if ( name != mAgentName )
-        { return; }
+//    if ( !mbLink )
+//    { return; }
 
-        //! valid axes
-        if ( mAgentAxes != -1 )
-        {
-            if (axes == mAgentAxes )
-            {}
-            else
-            { return; }
-        }
+//    do
+//    {
+//        //! child
+//        if ( mChildAgentNames.contains( name ) )
+//        { break; }
 
-    }while( 0 );
+//        //! self
+//        if ( name != mAgentName )
+//        { return; }
+
+//        //! valid axes
+//        if ( mAgentAxes != -1 )
+//        {
+//            if (axes == mAgentAxes )
+//            {}
+//            else
+//            { return; }
+//        }
+
+//    }while( 0 );
 
     //! on event
     onNetEvent( name, axes, msg );
 }
+
+QString appWidget::activeName()
+{ return ""; }
+int appWidget::activeAxes()
+{ return -1; }
 
 void appWidget::onNetEvent( const QString &name,
                          int axes,

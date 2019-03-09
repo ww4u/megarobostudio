@@ -32,6 +32,20 @@ void motionEdit::context_clear()
     on_btnClr_clicked();
 }
 
+void motionEdit::slot_destination_changed()
+{
+    //! update the status
+    //! get status
+    //! \todo
+    if ( NULL == currentRobot() )
+    { return; }
+
+    int stat = currentRobot()->state( tpvRegion(0, ui->widget->roboPage() ) );
+    onMotionStatus( 0, (MRQ_MOTION_STATE_2)stat );
+
+//    logDbg()<<stat;
+}
+
 void motionEdit::slot_timeout()
 {
     emit sigSaveRequest( this );
@@ -162,7 +176,7 @@ void motionEdit::on_btnStart_clicked()
 
     //! download motion
     pRobot->onLine();
-    pRobot->call( tpvRegion(0, m_pmcModel->mConn.roboPage() ) );
+    pRobot->call( tpvRegion(0, ui->widget->roboPage() ) );
 }
 
 void motionEdit::on_btnStop_clicked()
@@ -173,7 +187,7 @@ void motionEdit::on_btnStop_clicked()
     { return; }
 
     //! download motion
-    pRobot->stop( tpvRegion(0, m_pmcModel->mConn.roboPage() ) );
+    pRobot->stop( tpvRegion(0, ui->widget->roboPage() ) );
 }
 
 //! compile
@@ -300,7 +314,7 @@ void motionEdit::on_spinLoop_valueChanged(int arg1)
     }
 
     pRobot->setLoop( arg1,
-                     tpvRegion( 0,m_pmcModel->mConn.roboPage()) );
+                     tpvRegion( 0,ui->widget->roboPage() ) );
 }
 
 void motionEdit::on_btnSmartEdit_toggled(bool checked)

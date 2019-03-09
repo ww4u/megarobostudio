@@ -15,6 +15,9 @@ public:
     explicit roboConnection(QWidget *parent = 0);
     ~roboConnection();
 
+Q_SIGNALS:
+    void signal_data_changed();
+
 protected:
     virtual void changeEvent( QEvent *event );
 
@@ -23,7 +26,10 @@ public:
     void setCurrentName( const QString &str );
     void setCurrentName( const int index );
 
-    int page();
+//    int page();
+
+    int roboPage();
+    QString roboName();
 
 public:
     QComboBox *getCombName();

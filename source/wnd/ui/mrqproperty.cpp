@@ -104,7 +104,7 @@ void mrqProperty::on_btnReset_clicked()
         return;
     }
 
-    pDevice->hRst();
+    m_pMrqModel->hRst();
 }
 
 void mrqProperty::showEvent(QShowEvent *event)
@@ -189,7 +189,7 @@ void mrqProperty::updateScreen()
 }
 
 void mrqProperty::setActive()
-{ emit sigActiveDeviceChanged( m_pSysPage->deviceName() ); }
+{ /*emit sigActiveDeviceChanged( m_pSysPage->deviceName() );*/ }
 
 void mrqProperty::settingChanged( enumSetting setting, const QVariant &v )
 {
@@ -375,8 +375,12 @@ void mrqProperty::setupUi()
         connect( pView, SIGNAL(sigModified(bool)),
                  this,  SLOT(slotModified(bool)) );
 
-        connect( pView, SIGNAL(sigSettingChanged(enumSetting,QVariant)),
-                 this, SLOT(slot_setting_changed(enumSetting,QVariant)));
+        connect( pView, SIGNAL(sigSettingChanged(modelView::enumSetting,QVariant)),
+                 this, SLOT(slot_setting_changed(modelView::enumSetting,QVariant)));
+
+        //! broadout
+        connect( pView, SIGNAL(sigSettingChanged(modelView::enumSetting,QVariant)),
+                 this, SIGNAL(sigSettingChanged(modelView::enumSetting,QVariant)));
 
         pView->adaptToUserRole();
     }

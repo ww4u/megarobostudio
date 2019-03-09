@@ -12,30 +12,39 @@ public:
     ~mcConnection();
 
 public:
-    void setRoboName( const QString &str );
-    QString getRoboName();
+//    void setRoboName( const QString &str );
+//    QString getRoboName();
 
-    void setRoboPage( int page );
-    int roboPage();
+//    void setRoboPage( int page );
+//    int roboPage();
 
-    void setDevice( const QString &str, int ch );
+//    void setDevice( const QString &str, int ch );
 
-    void setDeviceName( const QString &str );
-    void setDeviceCH( int ch );
+//    void setDeviceName( const QString &str );
+//    void setDeviceCH( int ch );
 
-    QString getDeviceName();
-    int getDeviceCH();
+//    QString getDeviceName();
+//    int getDeviceCH();
 
-    void setDevicePage( int page );
-    int devicePage();
+//    void setDevicePage( int page );
+//    int devicePage();
+
+    void setDeviceMap( const QMap<QString, int> &map );
+    QMap<QString, int> &deviceMap();
+
+    void setRobots( const QStringList &robos );
+    QStringList &robots();
 
 public:
-    QString mRoboName;
-    int     mRoboPage;
+//    QString mRoboName;
+//    int     mRoboPage;
 
-    QString mDeviceName;
-    int     mAxesId;
-    int     mDevicePage;
+//    QString mDeviceName;
+//    int     mAxesId;
+//    int     mDevicePage;
+
+    QMap<QString, int> mDeviceMap;
+    QStringList mRobos;
 
 };
 

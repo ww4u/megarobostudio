@@ -96,6 +96,7 @@ void mrqAxes::spyEdited()
         ui->cmbStepAngle,
         ui->cmbMotionType,
         ui->cmbPosUnit,
+        ui->cmbPosUnitmm,
 
         ui->cmbEncState,
         ui->cmbEncType,

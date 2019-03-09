@@ -12,6 +12,9 @@
 #define DEF_MRQ()   MegaDevice::deviceMRQ* _localMrq = (GET_OBJ(context));
 #define LOCALMRQ()  _localMrq
 
+#ifdef CHECK_LINK
+    #undef CHECK_LINK
+#endif
 #define CHECK_LINK( ax, page )    if ( LOCALMRQ()->checkLink(ax,page) )\
                         {}\
                         else\

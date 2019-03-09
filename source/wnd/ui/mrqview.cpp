@@ -45,18 +45,19 @@ MegaDevice::deviceMRQ *mrqView::getDevice()
 {
     Q_ASSERT( NULL != m_pmcModel );
 
-    //! current device
-    MegaDevice::deviceMRQ *pDevice = m_pmcModel->m_pInstMgr->findDevice(
-                                                                        m_pmcModel->mConn.mDeviceName
-                                                                        );
-    if ( NULL == pDevice )
-    {
-        sysLog( tr("Invalid Device"), m_pmcModel->mConn.mDeviceName );
-        logDbg()<<m_pmcModel->m_pInstMgr->roboResources();
-        logDbg()<<m_pmcModel->m_pInstMgr->getResources();
-    }
+    return m_pMrqModel;
+//    //! current device
+//    MegaDevice::deviceMRQ *pDevice = m_pmcModel->m_pInstMgr->findDevice(
+//                                                                        m_pmcModel->mConn.mDeviceName
+//                                                                        );
+//    if ( NULL == pDevice )
+//    {
+//        sysLog( tr("Invalid Device"), m_pmcModel->mConn.mDeviceName );
+//        logDbg()<<m_pmcModel->m_pInstMgr->roboResources();
+//        logDbg()<<m_pmcModel->m_pInstMgr->getResources();
+//    }
 
-    return pDevice;
+//    return pDevice;
 }
 
 

@@ -181,9 +181,9 @@ void MainWindow::on_itemx_active( mcModelObj* pObj )
 
         createModelView( pMotionEdit, pObj );logDbg();
 
-        connect( this, SIGNAL(sig_robo_name_changed(const QString&)),
-                 pMotionEdit, SLOT(slot_robo_changed( const QString&)));
-        emit sig_robo_name_changed( mMcModel.mConn.getRoboName() );
+//        connect( this, SIGNAL(sig_robo_name_changed(const QString&)),
+//                 pMotionEdit, SLOT(slot_robo_changed( const QString&)));
+//        emit sig_robo_name_changed( mMcModel.mConn.getRoboName() );
     }
 
     //! from robo mgr

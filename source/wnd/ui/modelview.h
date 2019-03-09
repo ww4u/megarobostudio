@@ -27,6 +27,8 @@ public:
     {
         setting_unk,
         setting_mrq_motion_unit,
+
+        setting_inst_mgr,
     };
 
 
@@ -57,9 +59,9 @@ Q_SIGNALS:
     void sigModified( bool b );
     void sigModified( modelView *pView, bool b );
 
-    void sigActiveDeviceChanged( const QString &devName );
+//    void sigActiveDeviceChanged( const QString &devName );
 
-    void sigSettingChanged( enumSetting setting, QVariant v );
+    void sigSettingChanged( modelView::enumSetting setting, QVariant v );
 
 protected Q_SLOTS:
     void slot_modified();
@@ -68,7 +70,7 @@ protected Q_SLOTS:
     void slot_request( const RpcRequest &req );
     void slot_device_busy( bool b);
 
-    void slot_setting_changed( enumSetting setting, QVariant v );
+    void slot_setting_changed( modelView::enumSetting setting, QVariant v );
     //! ui attr
 public:
     bool isCanceAble();
@@ -95,7 +97,9 @@ public:
     QStringList & filePattern();
 
     virtual void setMcModel( mcModel *pMcModel );
-
+protected:
+    virtual void onMcModelUpdated();
+public:
     bool modified();
 
     virtual void syncData();
@@ -106,7 +110,6 @@ public:
     virtual void setActive();
 
     virtual void settingChanged( enumSetting setting, const QVariant &v );
-
 protected:
     virtual void onRequest( RpcRequest &req );
 

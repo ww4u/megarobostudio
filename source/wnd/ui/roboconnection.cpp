@@ -6,6 +6,16 @@ roboConnection::roboConnection(QWidget *parent) :
     ui(new Ui::roboConnection)
 {
     ui->setupUi(this);
+
+    //! connect
+    connect( ui->widget, SIGNAL(currentIndexChanged(int)),
+             this, SIGNAL(signal_data_changed()) );
+    connect( ui->cmbRobotName, SIGNAL(currentIndexChanged(int)),
+             this, SIGNAL(signal_data_changed()) );
+
+
+    //!
+    ui->widget->setCurrentIndex( 0 );
 }
 
 roboConnection::~roboConnection()
@@ -35,8 +45,14 @@ void roboConnection::setCurrentName( const int index )
     ui->cmbRobotName->setCurrentIndex( index );
 }
 
-int roboConnection::page()
-{ return ui->widget->page(); }
+//int roboConnection::page()
+//{ return ui->widget->page(); }
+
+int roboConnection::roboPage()
+{ return ui->widget->currentIndex(); }
+
+QString roboConnection::roboName()
+{ return ui->cmbRobotName->currentText(); }
 
 QComboBox *roboConnection::getCombName()
 { return ui->cmbRobotName; }

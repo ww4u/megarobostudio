@@ -35,7 +35,16 @@ protected:
     virtual void context_add_below();
     virtual void context_clear();
 
+public:
+    virtual void settingChanged( enumSetting setting, const QVariant &v );
+
 protected:
+    virtual void onMcModelUpdated();
+
+protected:
+    virtual QString activeName();
+    virtual int activeAxes();
+
     virtual void onNetEvent(const QString &name,
                             int axes,
                             RoboMsg &msg);

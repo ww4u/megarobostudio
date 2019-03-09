@@ -68,7 +68,11 @@
     </widget>
    </item>
    <item>
-    <widget class="AxisPage" name="widget"/>
+    <widget class="AxisPage" name="widget">
+     <property name="toolTip">
+      <string>page</string>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

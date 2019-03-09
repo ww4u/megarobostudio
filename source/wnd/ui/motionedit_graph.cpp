@@ -136,7 +136,7 @@ logDbg();
     pRobo = currentRobot();
     if ( NULL == pRobo )
     {
-        sysError( tr("Invalid robot name"),  m_pmcModel->mConn.getRoboName() );
+        sysError( tr("Invalid robot name"),  ui->widget->roboName() );
         return false;
     }
 logDbg();

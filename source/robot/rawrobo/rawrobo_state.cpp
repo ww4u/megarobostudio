@@ -81,7 +81,10 @@ void RawRoboUnit::proc( int msg, RoboMsg &detail )
         selfFsm()->reqRun( false );
 
         //! \todo stop downloading
-        selfFsm()->Robot()->switchStop();
+        selfFsm()->Robot()->switchStop( tpvRegion( 0, selfFsm()->page() ) );
+
+        //! for each stop axes
+//        selfFsm()->Robot()->stopJoints( tpvRegion( 0, selfFsm()->page() ) );
 
         toState( MegaDevice::mrq_state_idle, detail );
 

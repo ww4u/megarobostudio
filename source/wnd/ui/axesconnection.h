@@ -15,6 +15,9 @@ public:
     explicit axesConnection(QWidget *parent = 0);
     ~axesConnection();
 
+Q_SIGNALS:
+    void signal_changed();
+
 protected:
     virtual void changeEvent( QEvent *event );
 
@@ -28,7 +31,13 @@ public:
     void setCurrentCH( const QString &str );
     void setCurrentCH( const int index );
 
-    int page();
+//    int page();
+
+    QString getDeviceName();
+    int getDeviceCH();
+    int devicePage();
+
+    void connectionAttr( QString &name, int &ch, int &page );
 
 public:
     QComboBox *getCombName();

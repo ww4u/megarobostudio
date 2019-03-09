@@ -9,6 +9,7 @@
 #include "../widget/megamessagebox.h"
 
 //! uis
+#include "modelview.h"
 
 #include "devicemgr.h"
 #include "robomgr.h"
@@ -141,7 +142,10 @@ Q_SIGNALS:
     void sig_view_added( const QString &str );
     void sig_view_removed( const QString &str );
 
+    void sig_setting_changed( modelView::enumSetting, QVariant );
 protected Q_SLOTS:
+    void slot_setting_changed( modelView::enumSetting, QVariant );
+
     void slot_trayicon_activated( QSystemTrayIcon::ActivationReason reason );
     void slot_downloadbar_clicked();
 
@@ -173,7 +177,7 @@ protected Q_SLOTS:
     void slot_instmgr_scene_robo_changed( MegaDevice::InstMgr *pMgr );
     void slot_instmgr_device_changed( MegaDevice::InstMgr *pMgr );
 
-    void slot_device_active_changed( const QString &name );
+//    void slot_device_active_changed( const QString &name );
 
     void slot_net_event( const QString &name,
                          int axes,
@@ -186,12 +190,12 @@ protected Q_SLOTS:
     void slot_prompt( const QString &str );
 
     //! connection
-    void slot_robo_name_changed( const QString& );
-    void slot_robo_page_changed( int page );
+//    void slot_robo_name_changed( const QString& );
+//    void slot_robo_page_changed( int page );
 
-    void slot_device_name_changed( const QString &name );
-    void slot_device_ch_index_changed( int id );
-    void slot_device_page_changed( int page );
+//    void slot_device_name_changed( const QString &name );
+//    void slot_device_ch_index_changed( int id );
+//    void slot_device_page_changed( int page );
 
     //! tabwidget
     void slot_tabwidget_currentChanged(int index);
@@ -341,12 +345,12 @@ private:
     QStringList mPluginList;
 
     //! toolbar
-    QToolBar *m_pToolbarRoboConn;
-    QToolBar *m_pToolbarAxesConn;
+//    QToolBar *m_pToolbarRoboConn;
+//    QToolBar *m_pToolbarAxesConn;
     QToolBar /**m_pBaseToolbarQuickOp,*/ *m_pToolbarQuickOp;
 
-    roboConnection *m_pRoboConnTool;
-    axesConnection *m_pAxesConnTool;
+//    roboConnection *m_pRoboConnTool;
+//    axesConnection *m_pAxesConnTool;
 
     //! editors
     QList< modelView *> mModelViews;

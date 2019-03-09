@@ -40,9 +40,9 @@ motionEdit::motionEdit(QWidget *parent) : tableEdit(parent),
     Q_ASSERT( NULL != m_pboolDelegate );
     ui->tableView->setItemDelegateForColumn( 0, m_pboolDelegate );
 
-    //! debug
-    setAgent( "test_2" );
-    setLink( true );
+//    //! debug
+//    setAgent( "test_2" );
+//    setLink( true );
 }
 
 void motionEdit::buildConnection()
@@ -52,6 +52,12 @@ void motionEdit::buildConnection()
 
     connect( &mDlySaveTime, SIGNAL(timeout()),
              this, SLOT(slot_timeout()) );
+
+    //! current name
+    connect( ui->widget->getCombName(),
+             SIGNAL(currentIndexChanged(const QString &)),
+             this,
+             SLOT(slot_robo_changed(const QString &)));
 }
 
 motionEdit::~motionEdit()
@@ -71,6 +77,29 @@ void motionEdit::changeEvent(QEvent * event)
 
         retranslateContextMenu();
     }
+}
+
+//! setting
+void motionEdit::settingChanged( enumSetting setting, const QVariant &v )
+{
+    if ( setting == modelView::setting_inst_mgr )
+    { onMcModelUpdated(); }
+}
+
+void motionEdit::onMcModelUpdated()
+{
+    Q_ASSERT( NULL != m_pmcModel );
+    ui->widget->setRoboNames( m_pmcModel->mConn.mRobos );
+
+    connect( ui->widget, SIGNAL(signal_data_changed()),
+             this, SLOT(slot_destination_changed()) );
+
+    if ( m_pmcModel->mConn.mRobos.size() > 0 )
+    { slot_destination_changed(); }
+
+    //! \todo
+    //! \note
+    slot_robo_changed( ui->widget->roboName() );
 }
 
 void motionEdit::setModelObj( mcModelObj *pObj )
@@ -123,7 +152,7 @@ void motionEdit::setModelObj( mcModelObj *pObj )
     { ui->tableView->setItemDelegateForColumn( col, m_pboolDelegate ); }
 
     //! robo change
-    slot_robo_changed( m_pmcModel->mConn.getRoboName() );
+//    slot_robo_changed( m_pmcModel->mConn.getRoboName() );
 
     slot_data_changed();
 }
@@ -143,6 +172,22 @@ int motionEdit::saveAs( QString &outFileName )
     return m_pMotionGroup->save( outFileName );
 }
 
+QString motionEdit::activeName()
+{
+    /*return ui->widget->roboName();*/
+
+    VRobot *pRobo;
+    pRobo = currentRobot();
+    if ( NULL == pRobo )
+    { return ""; }
+
+    return pRobo->name();
+
+}
+//! use -1
+//int motionEdit::activeAxes()
+//{ return ui->widget->roboPage(); }
+
 void motionEdit::onNetEvent(const QString &name,
                             int axes,
                             RoboMsg &msg)
@@ -151,7 +196,7 @@ void motionEdit::onNetEvent(const QString &name,
     {
         int stat;
         stat = msg.at(1).toInt();
-
+logDbg()<<name<<stat;
         onMotionStatus( -1, (MRQ_MOTION_STATE)stat );
     }
 
@@ -162,7 +207,8 @@ void motionEdit::onNetEvent(const QString &name,
 #define down_start_stop( bdown, bstart, bstop )     \
                                                 ui->btnDown->setEnabled( bdown );\
                                                 ui->btnStart->setEnabled( bstart );\
-                                                ui->btnStop->setEnabled( bstop );
+                                                ui->btnStop->setEnabled( bstop );\
+                                                ui->widget->setEnabled( !bstop );
 void motionEdit::onMotionStatus( int axes,
                                  MRQ_MOTION_STATE_2 stat )
 {
@@ -195,7 +241,11 @@ void motionEdit::onMotionStatus( int axes,
 //        setLink( false );
 //    }
 
-    if ( MegaDevice::mrq_state_idle == cvtStat )
+    if ( MegaDevice::mrq_state_unk == cvtStat )
+    {
+        down_start_stop( true, false, false );
+    }
+    else if ( MegaDevice::mrq_state_idle == cvtStat )
     {
 //        down_start_stop( true, false, false );
         down_start_stop( true, true, false );
@@ -325,7 +375,7 @@ void motionEdit::context_toHere()
     varList<<speed;
 
     //! go( varlist )
-    pRobot->routeTo( tpvRegion( 0, m_pmcModel->mConn.roboPage()),
+    pRobot->routeTo( tpvRegion( 0, ui->widget->roboPage()),
                      varList );
 }
 
@@ -333,7 +383,7 @@ VRobot *motionEdit::currentRobot()
 {
     Q_ASSERT( NULL != m_pmcModel );
     Q_ASSERT( NULL != m_pmcModel->m_pInstMgr );
-    return m_pmcModel->m_pInstMgr->findRobot( m_pmcModel->mConn.getRoboName() );
+    return m_pmcModel->m_pInstMgr->findRobot( ui->widget->roboName() );
 }
 
 void motionEdit::setExportOpt( const QStringList &optList )

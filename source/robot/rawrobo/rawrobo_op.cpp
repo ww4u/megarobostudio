@@ -14,6 +14,23 @@ int RawRobo::stop( const tpvRegion &region  )
     return 0;
 }
 
+int RawRobo::stopJoints( const tpvRegion &region )
+{
+    MegaDevice::deviceMRQ *pMrq;
+    int subAx;
+//    logDbg()<<mAxesConnectionName;
+    for ( int i = 0; i < axes(); i++ )
+    {
+        pMrq = jointDevice( i, &subAx );
+        if ( NULL == pMrq )
+        { sysError( __FUNCTION__ ); return -1; }
+
+        pMrq->stop( tpvRegion( subAx, region.page() ) );
+    }
+
+    return 0;
+}
+
 int RawRobo::call( const tpvRegion &region )
 {
     lpc()->postMsg( (eRoboMsg)(MegaDevice::mrq_msg_call), region );
@@ -77,6 +94,8 @@ void RawRobo::switchStop( const tpvRegion &region )
     m_pBus->write( id, MRQ_mc_MOTION, MRQ_sc_MOTION_SWITCH,
                    (mSubGroupId),
                    (byte)MRQ_MOTION_SWITCH_STOP,
+                   //! \note
+//                   (byte)MRQ_MOTION_SWITCH_RESET,
                    (byte)region.page() );
 }
 void RawRobo::switchRun( const tpvRegion &region )

@@ -83,7 +83,7 @@ int motionEdit::checkRobot()
     pRobo = currentRobot();
     if ( NULL == pRobo )
     {
-        sysError( tr("invalid robot name"),  m_pmcModel->mConn.getRoboName() );
+        sysError( tr("invalid robot name"),  ui->widget->roboName() );
         return ERR_INVALID_ROBOT_NAME;
     }
 

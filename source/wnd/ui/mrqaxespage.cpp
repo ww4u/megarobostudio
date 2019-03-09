@@ -15,8 +15,8 @@ MrqAxesPage::MrqAxesPage(QWidget *parent) :
     //! connect child signal to me
     foreach ( mrqView *pView, mSubViews )
     {
-        connect( pView, SIGNAL(sigSettingChanged(enumSetting,QVariant)),
-                 this, SIGNAL(sigSettingChanged(enumSetting,QVariant)) );
+        connect( pView, SIGNAL(sigSettingChanged(modelView::enumSetting,QVariant)),
+                 this, SIGNAL(sigSettingChanged(modelView::enumSetting,QVariant)) );
     }
 
     spyEdited();

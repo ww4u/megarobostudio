@@ -6,6 +6,16 @@ axesConnection::axesConnection(QWidget *parent) :
     ui(new Ui::axesConnection)
 {
     ui->setupUi(this);
+
+    ui->comboBox->setCurrentIndex( 0 );
+
+    //! connect
+    connect( ui->comboBox, SIGNAL(currentIndexChanged(int)),
+             this, SIGNAL(signal_changed()) );
+    connect( ui->cmbDeviceAxes, SIGNAL(currentIndexChanged(int)),
+             this, SIGNAL(signal_changed()) );
+    connect( ui->cmbDeviceName, SIGNAL(currentIndexChanged(int)),
+             this, SIGNAL(signal_changed()) );
 }
 
 axesConnection::~axesConnection()
@@ -56,8 +66,22 @@ void axesConnection::setCurrentCH( const int index )
     ui->cmbDeviceAxes->setCurrentIndex( index );
 }
 
-int axesConnection::page()
+//int axesConnection::page()
+//{ return ui->comboBox->currentIndex(); }
+
+QString axesConnection::getDeviceName()
+{ return ui->cmbDeviceName->currentText(); }
+int axesConnection::getDeviceCH()
+{ return ui->cmbDeviceAxes->currentIndex(); }
+int axesConnection::devicePage()
 { return ui->comboBox->currentIndex(); }
+
+void axesConnection::connectionAttr( QString &name, int &ch, int &page )
+{
+    name = getDeviceName();
+    ch = getDeviceCH();
+    page = devicePage();
+}
 
 QComboBox *axesConnection::getCombName()
 {

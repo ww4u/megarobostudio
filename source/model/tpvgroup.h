@@ -49,7 +49,7 @@ public:
     virtual bool removeRows(int position, int rows, const QModelIndex &parent);
 
     virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
-
+    virtual bool setHeaderData(int section, Qt::Orientation orientation, const QVariant &value, int role = Qt::EditRole);
 public:
     tpvItem * operator[]( int id );
     QList< tpvItem *> * getRows();
@@ -85,6 +85,8 @@ protected:
 
 public:
     QList< tpvItem *> mItems;
+
+    QVariantList mVHeader, mHHeader;
 
 };
 

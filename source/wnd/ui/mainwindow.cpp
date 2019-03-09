@@ -124,12 +124,12 @@ void MainWindow::init()
 {
     m_pLogout = NULL;
 
-    m_pToolbarAxesConn = NULL;
-    m_pToolbarRoboConn = NULL;
+//    m_pToolbarAxesConn = NULL;
+//    m_pToolbarRoboConn = NULL;
 
     m_pToolbarQuickOp = NULL;
-    m_pRoboConnTool = NULL;
-    m_pAxesConnTool = NULL;
+//    m_pRoboConnTool = NULL;
+//    m_pAxesConnTool = NULL;
 
     m_pSpyCfgModel = NULL;
     m_pSpyMgrView = NULL;
@@ -366,17 +366,17 @@ void MainWindow::setupToolbar()
     ui->mainToolBar->addSeparator();
     ui->mainToolBar->addAction( ui->actionEvent_E );
 
-    //! device conn
-    m_pToolbarAxesConn = new QToolBar( tr("Device") );
-    m_pAxesConnTool = new axesConnection();
-    m_pToolbarAxesConn->addWidget( m_pAxesConnTool );
-    addToolBar( m_pToolbarAxesConn );
+//    //! device conn
+//    m_pToolbarAxesConn = new QToolBar( tr("Device") );
+//    m_pAxesConnTool = new axesConnection();
+//    m_pToolbarAxesConn->addWidget( m_pAxesConnTool );
+//    addToolBar( m_pToolbarAxesConn );
 
-    //! robo conn
-    m_pToolbarRoboConn = new QToolBar( tr("Robot") );
-    m_pRoboConnTool = new roboConnection();
-    m_pToolbarRoboConn->addWidget( m_pRoboConnTool );
-    addToolBar( m_pToolbarRoboConn );
+//    //! robo conn
+//    m_pToolbarRoboConn = new QToolBar( tr("Robot") );
+//    m_pRoboConnTool = new roboConnection();
+//    m_pToolbarRoboConn->addWidget( m_pRoboConnTool );
+//    addToolBar( m_pToolbarRoboConn );
 
     //! base op tool
     ui->mainToolBar->addSeparator();
@@ -397,8 +397,8 @@ void MainWindow::setupToolbar()
 
     QPushButton *stopBtn = new QPushButton( );
     stopBtn->setObjectName( "emergeStop" );
-    stopBtn->setIcon( QIcon(":/res/image/icon/246.png") );
-    stopBtn->setText( tr("STOP") );
+    stopBtn->setIcon( QIcon(":/res/image/icon/stop2.png") );
+//    stopBtn->setText( tr("STOP") );
 
 //    EmergeStop *stopBtn = new EmergeStop();
     m_pToolbarQuickOp->addWidget( stopBtn );
@@ -412,8 +412,8 @@ void MainWindow::setupToolbar()
 
     addToolBar( m_pToolbarQuickOp );
 
-    m_pToolbarAxesConn->setVisible( false );
-    m_pToolbarRoboConn->setVisible( false );
+//    m_pToolbarAxesConn->setVisible( false );
+//    m_pToolbarRoboConn->setVisible( false );
 }
 void MainWindow::setupStatusbar()
 {
@@ -598,37 +598,37 @@ void MainWindow::buildConnection()
     connect( m_pRoboNetThread, SIGNAL(signal_emergeStop()),
              this, SLOT(on_actionForceStop_triggered()));
 
-    //! robo conn
-    connect( m_pRoboConnTool->getCombName(),
-             SIGNAL(currentTextChanged(const QString &)),
-//             SIGNAL(currentIndexChanged( const QString &)),
-             this,
-             SLOT(slot_robo_name_changed(const QString&))
-             );
-    connect( m_pRoboConnTool->getCombPage(),
-             SIGNAL(currentIndexChanged(int)),
-             this,
-             SLOT(slot_robo_page_changed(int))
-             );
+//    //! robo conn
+//    connect( m_pRoboConnTool->getCombName(),
+//             SIGNAL(currentTextChanged(const QString &)),
+////             SIGNAL(currentIndexChanged( const QString &)),
+//             this,
+//             SLOT(slot_robo_name_changed(const QString&))
+//             );
+//    connect( m_pRoboConnTool->getCombPage(),
+//             SIGNAL(currentIndexChanged(int)),
+//             this,
+//             SLOT(slot_robo_page_changed(int))
+//             );
 
     //! axes conn
-    connect( m_pAxesConnTool->getCombName(),
-             SIGNAL(currentTextChanged(const QString &)),
-             this,
-             SLOT(slot_device_name_changed(const QString&))
-             );
+//    connect( m_pAxesConnTool->getCombName(),
+//             SIGNAL(currentTextChanged(const QString &)),
+//             this,
+//             SLOT(slot_device_name_changed(const QString&))
+//             );
 
-    connect( m_pAxesConnTool->getCombCH(),
-             SIGNAL(currentIndexChanged(int)),
-             this,
-             SLOT(slot_device_ch_index_changed(int))
-             );
+//    connect( m_pAxesConnTool->getCombCH(),
+//             SIGNAL(currentIndexChanged(int)),
+//             this,
+//             SLOT(slot_device_ch_index_changed(int))
+//             );
 
-    connect( m_pAxesConnTool->getCombPage(),
-             SIGNAL(currentIndexChanged(int)),
-             this,
-             SLOT(slot_device_page_changed(int))
-             );
+//    connect( m_pAxesConnTool->getCombPage(),
+//             SIGNAL(currentIndexChanged(int)),
+//             this,
+//             SLOT(slot_device_page_changed(int))
+//             );
 
     //! motor panel
     Q_ASSERT( NULL != m_pRoboNetThread );
@@ -681,9 +681,9 @@ void MainWindow::setupData()
     if ( mMcModel.mSysPref.mbMaximizeStartup )
     { showMaximized(); }
 
-    //! conn
-    m_pAxesConnTool->getCombPage()->setCurrentIndex( mMcModel.mConn.mDevicePage );
-    m_pRoboConnTool->getCombPage()->setCurrentIndex( mMcModel.mConn.mRoboPage );
+//    //! conn
+//    m_pAxesConnTool->getCombPage()->setCurrentIndex( mMcModel.mConn.mDevicePage );
+//    m_pRoboConnTool->getCombPage()->setCurrentIndex( mMcModel.mConn.mRoboPage );
 }
 
 void MainWindow::applyConfigs()
@@ -821,6 +821,12 @@ void MainWindow::statusShow( const QString &str )
 {
     m_pStateBar->showState( str );
 //    ui->statusBar->showMessage( str, 1000 );
+}
+
+//! foreach view
+void MainWindow::slot_setting_changed( modelView::enumSetting setting, QVariant v )
+{
+    emit sig_setting_changed( setting, v );
 }
 
 void MainWindow::slot_trayicon_activated( QSystemTrayIcon::ActivationReason reason )
@@ -1082,12 +1088,18 @@ void MainWindow::slot_instmgr_changed( bool bEnd, MegaDevice::InstMgr *pMgr )
         //! add resrc
         Q_ASSERT( NULL != pMgr );
         QMap<QString, int> deviceMap = pMgr->getDeviceMap();
-        m_pAxesConnTool->setDeviceNames( deviceMap );
+//        m_pAxesConnTool->setDeviceNames( deviceMap );
 
         //! add robot
         QStringList strList;
         strList = mMcModel.m_pInstMgr->roboResources();
-        m_pRoboConnTool->setRoboNames( strList );
+//        m_pRoboConnTool->setRoboNames( strList );
+
+        //! device changed
+        mMcModel.mConn.setDeviceMap( deviceMap );
+        mMcModel.mConn.setRobots( strList );
+
+        emit sig_setting_changed( modelView::setting_inst_mgr, QVariant() );
 
         //! reset monitors
         m_pMotorMonitor->setMonitors( mMcModel.m_pInstMgr->getChans() );
@@ -1100,14 +1112,14 @@ void MainWindow::slot_instmgr_device_changed( MegaDevice::InstMgr *pMgr )
 {}
 
 //! device changed
-void MainWindow::slot_device_active_changed( const QString &name )
-{
-    //! change the device name
-    if ( name.length() > 0 )
-    {
-        m_pAxesConnTool->setCurrentName( name );
-    }
-}
+//void MainWindow::slot_device_active_changed( const QString &name )
+//{
+//    //! change the device name
+//    if ( name.length() > 0 )
+//    {
+//        m_pAxesConnTool->setCurrentName( name );
+//    }
+//}
 
 void MainWindow::slot_net_event(
                                 const QString &name,
@@ -1194,36 +1206,36 @@ void MainWindow::slot_prompt( const QString &str )
     m_pWarnPrompt->activateWindow();
 }
 
-void MainWindow::slot_robo_name_changed( const QString &name )
-{
-    mMcModel.mConn.setRoboName( name );
+//void MainWindow::slot_robo_name_changed( const QString &name )
+//{
+//    mMcModel.mConn.setRoboName( name );
 
-    emit sig_robo_name_changed( name );
-}
+//    emit sig_robo_name_changed( name );
+//}
 
-void MainWindow::slot_robo_page_changed( int page )
-{
-    mMcModel.mConn.setRoboPage( page );
-}
+//void MainWindow::slot_robo_page_changed( int page )
+//{
+//    mMcModel.mConn.setRoboPage( page );
+//}
 
-void MainWindow::slot_device_name_changed( const QString &name )
-{
-    mMcModel.mConn.setDeviceName( name );
-}
+//void MainWindow::slot_device_name_changed( const QString &name )
+//{
+//    mMcModel.mConn.setDeviceName( name );
+//}
 
-void MainWindow::slot_device_ch_index_changed( int id )
-{
-    mMcModel.mConn.setDeviceCH( id );
-}
+//void MainWindow::slot_device_ch_index_changed( int id )
+//{
+//    mMcModel.mConn.setDeviceCH( id );
+//}
 
-void MainWindow::slot_device_page_changed( int page )
-{ mMcModel.mConn.setDevicePage(page); }
+//void MainWindow::slot_device_page_changed( int page )
+//{ mMcModel.mConn.setDevicePage(page); }
 
 void MainWindow::slot_tabwidget_currentChanged(int index)
 {
     //! disable
-    m_pToolbarAxesConn->setVisible( false );
-    m_pToolbarRoboConn->setVisible( false );
+//    m_pToolbarAxesConn->setVisible( false );
+//    m_pToolbarRoboConn->setVisible( false );
 
     m_pRoboMgr->setOperable( false );
 
@@ -1244,11 +1256,11 @@ void MainWindow::slot_tabwidget_currentChanged(int index)
           || objType == mcModelObj::model_tp
           /*|| objType == mcModelObj::model_device*/ )
     {
-        m_pToolbarAxesConn->setVisible( true );
+//        m_pToolbarAxesConn->setVisible( true );
     }
     else if ( objType == mcModelObj::model_motion_file )
     {
-        m_pToolbarRoboConn->setVisible( true );
+//        m_pToolbarRoboConn->setVisible( true );
     }
 //    else if ( objType == mcModelObj::model_scene_variable )
 //    {
@@ -1337,6 +1349,16 @@ modelView *MainWindow::createModelView( modelView *pView,
     ui->widget->setCurrentWidget( pView );
     emit sig_view_added( ui->widget->tabText( ui->widget->currentIndex() ) );
 
+    //! setting changed
+    //! this->signal ->view
+    //!
+    connect( this, SIGNAL(sig_setting_changed(modelView::enumSetting,QVariant)),
+             pView, SLOT(slot_setting_changed(modelView::enumSetting,QVariant)) );
+
+    //! view-> signal -> this
+    //!
+    connect( pView, SIGNAL(sigSettingChanged(modelView::enumSetting,QVariant)),
+             this, SLOT(slot_setting_changed(modelView::enumSetting,QVariant)) );
 
     //! wnd manage
     connect( pView,
@@ -1404,8 +1426,8 @@ modelView *MainWindow::createRoboProp( mcModelObj *pObj )
         Q_ASSERT( NULL != pProp );
         createModelView( pProp, pBase );        //! device is a model
 
-        connect( pProp, SIGNAL(sigActiveDeviceChanged(const QString &)),
-                 this, SLOT(slot_device_active_changed(const QString &)));
+//        connect( pProp, SIGNAL(sigActiveDeviceChanged(const QString &)),
+//                 this, SLOT(slot_device_active_changed(const QString &)));
 
         return pProp;
     }
@@ -1418,8 +1440,8 @@ modelView *MainWindow::createRoboProp( mcModelObj *pObj )
         Q_ASSERT( NULL != pmrvProp );
         createModelView( pmrvProp, pBase );
 
-        connect( pmrvProp, SIGNAL(sigActiveDeviceChanged(const QString &)),
-                 this, SLOT(slot_device_active_changed(const QString &)));
+//        connect( pmrvProp, SIGNAL(sigActiveDeviceChanged(const QString &)),
+//                 this, SLOT(slot_device_active_changed(const QString &)));
 
         return pmrvProp;
     }

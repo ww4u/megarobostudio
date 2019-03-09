@@ -12,6 +12,23 @@
 #include "../../widget/megamessagebox.h"
 
 
+
+#define _get_dst_meta( ret )  \
+QString _deviceName; \
+int _axesId, _axesPage; \
+ui->widget->connectionAttr( _deviceName, _axesId, _axesPage );\
+MegaDevice::deviceMRQ *_pMrq = m_pmcModel->m_pInstMgr->findDevice( _deviceName,\
+                                                                  _axesId );\
+if ( NULL == _pMrq )\
+{\
+    sysError( QObject::tr("Invalid device ") + _deviceName );\
+
+#define get_dst_meta( )         _get_dst_meta() \
+                                return; \
+                                }
+#define get_dst_meta_ret( ret ) _get_dst_meta() \
+                                return ret; }
+
 pvtEdit::pvtEdit(QWidget *parent) :
     tableEdit(parent),
     ui(new Ui::pvtEdit)
@@ -52,6 +69,9 @@ pvtEdit::pvtEdit(QWidget *parent) :
     //! check box
     m_pboolDelegate =new checkDelegate(shape_check,this);
     Q_ASSERT( NULL != m_pboolDelegate );
+
+    //! linked
+    setLink( true );
 }
 
 pvtEdit::~pvtEdit()
@@ -97,6 +117,8 @@ void pvtEdit::setModelObj( mcModelObj *pObj )
              this, SLOT(slot_data_changed()) );
 
     slot_data_changed();
+
+    adapteAxes();
 }
 
 int pvtEdit::save( QString &outFileName )
@@ -111,6 +133,37 @@ int pvtEdit::saveAs( QString &outFileName )
     return mTpvGroup->save( outFileName );
 }
 
+//! setting
+void pvtEdit::settingChanged( enumSetting setting, const QVariant &v )
+{logDbg()<<setting;
+    if ( setting == modelView::setting_inst_mgr )
+    { onMcModelUpdated(); }
+    else if ( setting == modelView::setting_mrq_motion_unit )
+    { slot_destination_changed(); }
+    else
+    {}
+}
+
+void pvtEdit::onMcModelUpdated()
+{
+    Q_ASSERT( NULL != m_pmcModel );
+    ui->widget->setDeviceNames( m_pmcModel->mConn.mDeviceMap );
+
+    //! updated
+    //! dst changed
+    connect( ui->widget, SIGNAL(signal_changed()),
+             this, SLOT(slot_destination_changed()) );
+
+    //! changed
+    if ( m_pmcModel->mConn.mDeviceMap.size() > 0 )
+    { slot_destination_changed(); }
+}
+
+QString pvtEdit::activeName()
+{ return ui->widget->getDeviceName(); }
+int pvtEdit::activeAxes()
+{ return ui->widget->getDeviceCH(); }
+
 void pvtEdit::onNetEvent(const QString &name,
                          int axes,
                          RoboMsg &msg)
@@ -123,15 +176,21 @@ void pvtEdit::onNetEvent(const QString &name,
         {
             QByteArray ary;
             ary = msg.at(3).toByteArray();
-            onMotionStatus( axes, (MRQ_MOTION_STATE_2)ary.at(4) );
+            onMotionStatus( name, axes, (MRQ_MOTION_STATE_2)ary.at(4) );
         }
     }
     else
     {}
 }
 
-void pvtEdit::onMotionStatus( int axes, MRQ_MOTION_STATE_2 stat )
-{
+void pvtEdit::onMotionStatus( const QString &name, int axes, MRQ_MOTION_STATE_2 stat )
+{logDbg()<<axes<<stat<<name;
+
+    if ( str_is( name, ui->widget->getDeviceName() ) )
+    {}
+    else
+    { return; }
+
     if ( stat == MRQ_MOTION_STATE_2_IDLE )
     {
         ui->btnDown->setEnabled( true );
@@ -179,7 +238,6 @@ void pvtEdit::buildConnection()
 
     connect( &mDlySaveTimer, SIGNAL(timeout()),
              this, SLOT(slot_timeout()) );
-
 }
 
 bool pvtEdit::checkChan( const QString &name,
@@ -195,26 +253,28 @@ bool pvtEdit::checkChan( const QString &name,
 
 bool pvtEdit::checkChan()
 {
-    QString str;
-    int id;
-    str = m_pmcModel->getConnection().getDeviceName();
-    id = m_pmcModel->getConnection().getDeviceCH();
+//    QString str;
+//    int id;
+//    str = m_pmcModel->getConnection().getDeviceName();
+//    id = m_pmcModel->getConnection().getDeviceCH();
+
+    get_dst_meta_ret( false );
 
     bool b;
-    b = checkChan( str, id );
+    b = checkChan( _deviceName, _axesId );
 
     //! success
     if ( b )
     {
-        setAgent( str, id );
+        setAgent( _deviceName, _axesId );
         setLink( true );
     }
     //! fail
     else
     {
         sysError( QString( tr("Invalid Device:%1 %2") )
-                  .arg(str)
-                  .arg(id) );
+                  .arg(_deviceName)
+                  .arg(_axesId) );
 
         setLink(false);
     }
@@ -255,39 +315,43 @@ void pvtEdit::context_add_below()
 //! download
 int pvtEdit::postDownload( appMsg msg, void *pPara )
 {
-    QString str;
-    int axesId, page;
-    str = m_pmcModel->getConnection().getDeviceName();
-    axesId = m_pmcModel->getConnection().getDeviceCH();
-    page = m_pmcModel->getConnection().devicePage();
+    get_dst_meta_ret( -1 )
 
-    MegaDevice::deviceMRQ *pMrq = m_pmcModel->m_pInstMgr->findDevice( str,
-                                                                      axesId );
-//    Q_ASSERT( NULL != pMrq );
-    if ( NULL == pMrq )
-    {
-        sysError( QObject::tr("Invalid device ") + str );
-        return -1;
-    }
+//    str = m_pmcModel->getConnection().getDeviceName();
+//    axesId = m_pmcModel->getConnection().getDeviceCH();
+//    page = m_pmcModel->getConnection().devicePage();
+
+//    str = ui->widget->getDeviceName();
+//    axesId = ui->widget->getDeviceCH();
+//    page = ui->widget->devicePage();
+
+//    MegaDevice::deviceMRQ *pMrq = m_pmcModel->m_pInstMgr->findDevice( _deviceName,
+//                                                                      _axesId );
+////    Q_ASSERT( NULL != pMrq );
+//    if ( NULL == pMrq )
+//    {
+//        sysError( QObject::tr("Invalid device ") + str );
+//        return -1;
+//    }
 
     //! set loop count
     int ret;
-    ret = pMrq->setMOTIONPLAN_CYCLENUM( axesId,
-                                        (MRQ_MOTION_SWITCH_1)page,
+    ret = _pMrq->setMOTIONPLAN_CYCLENUM( _axesId,
+                                        (MRQ_MOTION_SWITCH_1)_axesPage,
                                         ui->spinLoop->value() );
     if ( ret != 0 )
     { return ret; }
 
     //! plan mode
-    ret = pMrq->setMOTIONPLAN_PLANMODE( axesId,
-                                        (MRQ_MOTION_SWITCH_1)page,
+    ret = _pMrq->setMOTIONPLAN_PLANMODE( _axesId,
+                                        (MRQ_MOTION_SWITCH_1)_axesPage,
                                         (MRQ_MOTIONPLAN_PLANMODE_1)ui->cmbPlanMode->currentIndex() );
     if ( ret != 0 )
     { return ret; }
 
     //! motion mode
-    ret = pMrq->setMOTIONPLAN_MOTIONMODE( axesId,
-                                        (MRQ_MOTION_SWITCH_1)page,
+    ret = _pMrq->setMOTIONPLAN_MOTIONMODE( _axesId,
+                                        (MRQ_MOTION_SWITCH_1)_axesPage,
                                         (MRQ_MOTIONPLAN_MOTIONMODE_1)ui->cmbMotionMode->currentIndex() );
     if ( ret != 0 )
     { return ret; }
@@ -309,7 +373,7 @@ int pvtEdit::postDownload( appMsg msg, void *pPara )
     { tpvRows[i].mT = ( tpvRows[i].mT ); }
 
     //! download
-    ret = pMrq->pvtWrite( tpvRegion(axesId, page ), tpvRows );
+    ret = _pMrq->pvtWrite( tpvRegion(_axesId, _axesPage ), tpvRows );
     if ( ret != 0 )
     { return ret; }
 
@@ -337,16 +401,18 @@ void pvtEdit::progDownload( int now, int from, int to, void *pPara )
 //! start
 int pvtEdit::postStart( appMsg msg, void *pPara )
 {
-    QString str;
-    int axesId;
-    str = m_pmcModel->getConnection().getDeviceName();
-    axesId = m_pmcModel->getConnection().getDeviceCH();
+//    QString str;
+//    int axesId;
+//    str = m_pmcModel->getConnection().getDeviceName();
+//    axesId = m_pmcModel->getConnection().getDeviceCH();
 
-    MegaDevice::deviceMRQ *pMrq = m_pmcModel->m_pInstMgr->findDevice( str,
-                                                                      axesId );
+    get_dst_meta_ret( -1 );
+
+    MegaDevice::deviceMRQ *pMrq = m_pmcModel->m_pInstMgr->findDevice( _deviceName,
+                                                                      _axesId );
     Q_ASSERT( NULL != pMrq );
     int ret;
-    ret = pMrq->run( tpvRegion(axesId, m_pmcModel->mConn.devicePage() ) );
+    ret = pMrq->run( tpvRegion(_axesId, _axesId ) );
 
     return ret;
 }
@@ -363,17 +429,21 @@ void pvtEdit::endStart( int ret, void *pPara )
 //! stop
 int pvtEdit::postStop( appMsg msg, void *pPara )
 {
-    QString str;
-    int axesId;
-    str = m_pmcModel->getConnection().getDeviceName();
-    axesId = m_pmcModel->getConnection().getDeviceCH();
+//    QString str;
+//    int axesId;
+//    str = m_pmcModel->getConnection().getDeviceName();
+//    axesId = m_pmcModel->getConnection().getDeviceCH();
 
-    MegaDevice::deviceMRQ *pMrq = m_pmcModel->m_pInstMgr->findDevice( str,
-                                                                      axesId );
-    Q_ASSERT( NULL != pMrq );
+    get_dst_meta_ret( -1 );
+
+//    MegaDevice::deviceMRQ *pMrq = m_pmcModel->m_pInstMgr->findDevice( _deviceName,
+//                                                                      _axesId );
+//    Q_ASSERT( NULL != pMrq );
 
     int ret;
-    ret = pMrq->stop( tpvRegion(axesId, m_pmcModel->mConn.devicePage() ) );
+    //! \note for all page
+    for( int page = 0; page < x_pages; page++ )
+    { ret = _pMrq->stop( tpvRegion(_axesId, page ) ); }
 
     return ret;
 }
@@ -617,6 +687,36 @@ void pvtEdit::stateIdle()
     ui->btnStop->setEnabled( false );
 }
 
+void pvtEdit::adapteAxes()
+{
+    get_dst_meta();
+
+//    _pMrq->requestMotionState( tpvRegion(_axesId,_axesPage) );
+
+    //! unit
+    MRQ_MOTOR_POSITIONUNIT unit;
+    _pMrq->getModel()->getMOTOR_POSITIONUNIT( _axesId, &unit );
+    QString strUnit;
+    do
+    {
+        if ( unit == MRQ_MOTOR_POSITIONUNIT_ANGLE )
+        { strUnit = (char_deg); }
+        else if ( unit == MRQ_MOTOR_POSITIONUNIT_RADIAN )
+        { strUnit = ("rad"); }
+        else if ( unit == MRQ_MOTOR_POSITIONUNIT_MILLIMETER )
+        { strUnit = ("mm"); }
+        else
+        { return; }
+
+    }while( 0 );
+
+    if ( ui->tableView->model() != NULL )
+    {
+        ui->tableView->model()->setHeaderData( 2,Qt::Horizontal, QString("(%1)").arg( strUnit ) );
+        ui->tableView->model()->setHeaderData( 3,Qt::Horizontal, QString("(%1/s)").arg( strUnit ) );
+    }
+}
+
 void pvtEdit::slot_timeout()
 {
     emit sigSaveRequest( this );
@@ -742,13 +842,15 @@ void pvtEdit::on_btnGraph_clicked()
 void pvtEdit::slot_download_cancel()
 {
     //! set model && axesid
-    QString str;
-    int id;
-    str = m_pmcModel->getConnection().getDeviceName();
-    id = m_pmcModel->getConnection().getDeviceCH();
+//    QString str;
+//    int id;
+//    str = m_pmcModel->getConnection().getDeviceName();
+//    id = m_pmcModel->getConnection().getDeviceCH();
 
-    MegaDevice::deviceMRQ *pMrq = m_pmcModel->m_pInstMgr->findDevice( str, id );
-    pMrq->terminate( tpvRegion(mAgentAxes, m_pmcModel->mConn.devicePage() ) );
+    get_dst_meta();
+
+//    MegaDevice::deviceMRQ *pMrq = m_pmcModel->m_pInstMgr->findDevice( _deviceName, _axesId );
+    _pMrq->terminate( tpvRegion(mAgentAxes, _axesPage ) );
 }
 
 void pvtEdit::on_spinLoop_valueChanged(int arg1)
@@ -756,17 +858,19 @@ void pvtEdit::on_spinLoop_valueChanged(int arg1)
     if ( !checkChan() )
     { return; }
 
-    QString str;
-    int axesId;
-    str = m_pmcModel->getConnection().getDeviceName();
-    axesId = m_pmcModel->getConnection().getDeviceCH();
+//    QString str;
+//    int axesId;
+//    str = m_pmcModel->getConnection().getDeviceName();
+//    axesId = m_pmcModel->getConnection().getDeviceCH();
 
-    MegaDevice::deviceMRQ *pMrq = m_pmcModel->m_pInstMgr->findDevice( str,
-                                                                      axesId );
-    Q_ASSERT( NULL != pMrq );
+    get_dst_meta();
 
-    pMrq->setMOTIONPLAN_CYCLENUM( axesId,
-                                  (MRQ_MOTION_SWITCH_1)m_pmcModel->mConn.devicePage(),
+//    MegaDevice::deviceMRQ *pMrq = m_pmcModel->m_pInstMgr->findDevice( _deviceName,
+//                                                                      _axesId );
+//    Q_ASSERT( NULL != pMrq );
+
+    _pMrq->setMOTIONPLAN_CYCLENUM( _axesId,
+                                  (MRQ_MOTION_SWITCH_1)_axesPage,
                                   arg1 );
 }
 
@@ -786,19 +890,21 @@ void pvtEdit::on_btnPref_clicked()
     if ( !checkChan() )
     { return; }
 
-    QString str;
-    int axesId;
-    str = m_pmcModel->getConnection().getDeviceName();
-    axesId = m_pmcModel->getConnection().getDeviceCH();
+    get_dst_meta();
 
-    MegaDevice::deviceMRQ *pMrq = m_pmcModel->m_pInstMgr->findDevice( str,
-                                                                      axesId );
-    if ( NULL == pMrq )
-    { return; }
+//    QString str;
+//    int axesId;
+//    str = m_pmcModel->getConnection().getDeviceName();
+//    axesId = m_pmcModel->getConnection().getDeviceCH();
+
+//    MegaDevice::deviceMRQ *pMrq = m_pmcModel->m_pInstMgr->findDevice( _deviceName,
+//                                                                      _axesId );
+//    if ( NULL == pMrq )
+//    { return; }
 
     QStringList stepList;
     int stepBase;
-    pMrq->microStepAttr( stepList, stepBase );
+    _pMrq->microStepAttr( stepList, stepBase );
     for ( int i = 0; i < stepBase; i++ )
     { stepList.removeAt( 0 ); }
 
@@ -849,6 +955,15 @@ void pvtEdit::slot_line_changed()
     {
         ui->btnGraph->setEnabled( false );
     }
+}
+
+void pvtEdit::slot_destination_changed()
+{
+    get_dst_meta();
+
+    _pMrq->requestMotionState( tpvRegion(_axesId,_axesPage) );
+
+    adapteAxes();
 }
 
 //! to abs or relative

@@ -47,10 +47,10 @@ int motionEdit::doDownload( QList<tpvGroup *> &groups,
 
     pRobo->onLine();
     pRobo->setLoop( ui->spinLoop->value(),
-                    tpvRegion(0,m_pmcModel->mConn.roboPage()) );
+                    tpvRegion(0,ui->widget->roboPage()) );
     pRobo->download( groups,
                      jointTabId,
-                     tpvRegion(0, m_pmcModel->mConn.roboPage() ) );
+                     tpvRegion(0, ui->widget->roboPage() ) );
     return 0;
 }
 

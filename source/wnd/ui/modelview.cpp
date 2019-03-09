@@ -110,7 +110,7 @@ void modelView::slot_device_busy( bool b)
     setEnabled( !b );
 }
 
-void modelView::slot_setting_changed( enumSetting setting, QVariant v )
+void modelView::slot_setting_changed( modelView::enumSetting setting, QVariant v )
 {
     settingChanged( setting, v );
 }
@@ -218,7 +218,12 @@ void modelView::setMcModel( mcModel *pMcModel )
     Q_ASSERT( NULL != pMcModel );
 
     m_pmcModel = pMcModel;
+
+    onMcModelUpdated();
 }
+
+void modelView::onMcModelUpdated()
+{}
 
 bool modelView::modified()
 { return mbModified; }

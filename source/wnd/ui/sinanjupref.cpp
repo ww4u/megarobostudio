@@ -159,6 +159,8 @@ void SinanjuPref::updateUi()
     for ( int i = 0; i < 4; i++ )
     {
         mInvertAngles.at(i)->setChecked( pBase->mAngleDir.at(i) );
+
+//        logDbg()<<pBase->mAngleDir.at(i);
     }
 
     //! zero hand
@@ -341,14 +343,12 @@ void SinanjuPref::on_btnUploadZero_clicked()
     ver = pBase->getMechanicalVersion();
     if ( ver == 0x5A )
     {
-//        ui->chkInvBase->setChecked(false);
         pBase->mAngleDir[0] = false;
         //! modify the base length
         pBase->mArmLengths[0] = 263.8;
     }
     else
     {
-//        ui->chkInvBase->setChecked(true);
         pBase->mAngleDir[0] = true;
         pBase->mArmLengths[0] = 257;
     }
@@ -365,9 +365,6 @@ void SinanjuPref::on_btnUploadZero_clicked()
     {
         pBase->mInitAngles[i] = zeros[i];
     }
-
-    //! save the dir
-    pBase->mAngleDir[0] = ui->chkInvBA->isChecked();
 
     //! \note widget is not roboprop
     emit sigSaveRequest( this );

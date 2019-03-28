@@ -7,6 +7,46 @@ namespace mega_device
         public MRQ() 
         {
         }
+        /// <summary>
+        /// only support "tp" and "tpv"
+        /// </summary>
+        /// <param name="fmt"></param>
+        /// <param name="dataSets"></param>
+        /// <returns></returns>
+        protected override string formatDataSets(string fmt, float[] dataSets)
+        {
+            String localFmt;
+            String fmtedStr;
+
+            localFmt = fmt.Trim().ToLower();
+
+            if (localFmt == "tp")
+            {
+                if (dataSets.Length < 1 || dataSets.Length % 2 != 0)
+                { return "";  }
+
+                //! fmt 
+            }
+            else if (localFmt == "tpv")
+            {
+                if (dataSets.Length < 1 || dataSets.Length % 3 != 0)
+                { return ""; }
+
+                //! format the data
+            }
+            else
+            { return ""; }
+
+            //! format 
+            fmtedStr = "";
+            //! format the data
+            foreach (float dat in dataSets)
+            {
+                fmtedStr += String.Format("{0},", dat);
+            }
+            //! remove the last ,
+            return fmtedStr.Substring(0, fmtedStr.Length - 1);
+        }
 
         public int move(int ax, int page, float t, float angle, float endV=0.0f)
         {

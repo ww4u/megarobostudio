@@ -52,11 +52,15 @@ static scpi_result_t _transfer_recv( scpi_t * context )
     byte *pBuf;
 //    logDbg();
     pBuf = _OBJ->recv( retLen );
-//    logDbg()<<retLen;
+    logDbg()<<retLen;
     if ( retLen > 0 )
     {
         if ( retLen > 1 && pBuf[retLen-1] == '\0' )
-        {
+        {logDbg();
+            SCPI_ResultCharacters( context, (char*)pBuf, retLen - 1 );
+        }
+        else if ( retLen > 1 && pBuf[retLen-1] == '\n' )
+        {logDbg();
             SCPI_ResultCharacters( context, (char*)pBuf, retLen - 1 );
         }
         else

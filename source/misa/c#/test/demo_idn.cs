@@ -35,6 +35,69 @@ namespace test
             return 0;
         }
 
+        static int testMrqDownload(int port = 1234)
+        {
+            MRQ mrq;
+
+            mrq = new MRQ();
+
+            int ret = mrq.miOpen("device1", "127.0.0.1", port);
+
+            //! tp
+            float[] dataSet = { 0, 0, 1, 36 };
+            mrq.download(0, 0, "tp", dataSet);
+            mrq.waitEnd(0, 0);
+            mrq.call(0, 0);
+            mrq.waitIdle(0, 0);
+
+            //! tpv
+            float[] dataSet3 = { 0, 0,0, 1, 36,36 };
+            mrq.download(0, 0, "tpv", dataSet3);
+            mrq.waitEnd(0, 0);
+            mrq.call(0, 0);
+            //mrq.waitIdle(0, 0);
+
+            //mrq.call(0, 0);
+
+            mrq.miClose();
+
+            return 0;
+        }
+
+        static void testTrig()
+        {
+            MRQ mrq;
+
+            mrq = new MRQ();
+
+            int ret = mrq.miOpen("device1", "127.0.0.1", 1234);
+
+            string outVal;
+
+            string[] srcs = new string[] { "TRIG1", "TRIG2" };
+            string[] onoff = new string[] { "ON", "OFF" };
+            string[] levType = new string[] { "RESERVE", "LOW", "RISE", "FALL","HIGH" };                
+            for (byte ch = 0; ch < 4; ch++)
+            { 
+                foreach (string src in srcs)
+                {
+                    foreach (string cmd in onoff)
+                    {
+                        mrq.setTRIGGER_LEVELSTATE(ch, src, cmd);
+                        mrq.getTRIGGER_LEVELSTATE(ch, src, out outVal);
+                        Console.WriteLine("ch:{0} src:{1} raw:{2} return:{3}", ch, src, cmd, outVal);
+                    }
+
+                    foreach (string cmd in levType)
+                    {
+                        mrq.setTRIGGER_LEVELTYPE(ch, src, cmd);
+                        mrq.getTRIGGER_LEVELTYPE(ch, src, out outVal);
+                        Console.WriteLine("ch:{0} src:{1} raw:{2} return:{3}", ch, src, cmd, outVal);
+                    }
+                }
+            }
+        }
+
         static void testIdn()
         {
             //! 创建
@@ -125,22 +188,50 @@ namespace test
             robo.miClose();
         }
 
+        static void testMrh_t()
+        {
+            MRH_T hub;
+            hub = new MRH_T();
+
+            hub.miOpen("hub1", "127.0.0.1");
+
+            //string idn;
+            //int ret = hub.getIdn(out idn);
+            //Console.WriteLine(idn);
+            int ret;
+
+            string[] xins = new string[] { "X1", "X2", "X3", "X4" };
+            int val;
+            foreach (string subStr in xins)
+            {
+                ret = hub.getXIn(subStr, out val);
+                Console.WriteLine( "{0} {1} {2}", subStr, ret, val );
+            }
+
+        }
+
         static void Main(string[] args)
         {
             //testIdn();
             //testH2();
 
-            //testDevMgr();
-            int failCnt = 0;
-            int ret; 
-            for (int i = 0; i < 10; i++)
-            {
-                ret = testMrq();
-                if (ret != 0)
-                { failCnt++;  }
+            //testMrqDownload();
 
-                Console.WriteLine("1234: {0}, fail:{1}", i, failCnt );
-            }
+            //testTrig();
+
+            testMrh_t();
+
+            //testDevMgr();
+            //int failCnt = 0;
+            //int ret; 
+            //for (int i = 0; i < 10; i++)
+            //{
+            //    ret = testMrq();
+            //    if (ret != 0)
+            //    { failCnt++;  }
+
+            //    Console.WriteLine("1234: {0}, fail:{1}", i, failCnt );
+            //}
 
             //for (int i = 0; i < 1; i++)
             //{

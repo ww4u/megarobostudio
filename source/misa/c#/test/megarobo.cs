@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using System.Collections.Generic;
 
 namespace mega_device
 {
@@ -23,23 +24,23 @@ namespace mega_device
         {
         }
 
-        public int roboSet( string args )
+        public int roboSet(string args)
         {
             int ret;
             ret = miSend(args);
             return ret;
         }
 
-        public int roboGet_str( string args, out string val0 )
+        public int roboGet_str(string args, out string val0)
         {
             //! init the out
             val0 = null;
 
             int ret;
-            
+
             string strRecv;
             int retCount;
-            ret = miQuery( args, out strRecv, out retCount);
+            ret = miQuery(args, out strRecv, out retCount);
             if (ret != 0) { return ret; }
             if (retCount < 1) { return -1; }
             string[] paras = strRecv.Split(',');
@@ -48,7 +49,7 @@ namespace mega_device
             val0 = paras[0];
             return 0;
         }
-        public int roboGet_int(string args, out int val0 )
+        public int roboGet_int(string args, out int val0)
         {
             //! init the out
             val0 = 0;
@@ -56,7 +57,7 @@ namespace mega_device
             int ret;
             string strRecv;
             int retCount;
-            
+
             ret = miQuery(args, out strRecv, out retCount);
 
             if (ret != 0) { return ret; }
@@ -67,7 +68,7 @@ namespace mega_device
             val0 = Convert.ToInt32(paras[0]);
             return 0;
         }
-        public int roboGet_float(string args, out float val0 )
+        public int roboGet_float(string args, out float val0)
         {
             //! init the out
             val0 = 0;
@@ -75,7 +76,7 @@ namespace mega_device
             int ret;
             string strRecv;
             int retCount;
-            ret = miQuery( args, out strRecv, out retCount);
+            ret = miQuery(args, out strRecv, out retCount);
             if (ret != 0) { return ret; }
             if (retCount < 1) { return -1; }
             string[] paras = strRecv.Split(',');
@@ -98,10 +99,10 @@ namespace mega_device
             val3 = 0;
 
             int ret;
-            
+
             string strRecv;
             int retCount;
-            ret = miQuery( args, out strRecv, out retCount);
+            ret = miQuery(args, out strRecv, out retCount);
             if (ret != 0) { return ret; }
             if (retCount < 1) { return -1; }
             string[] paras = strRecv.Split(',');
@@ -116,18 +117,18 @@ namespace mega_device
         }
 
         public int roboGet_stream(string args,
-                                   out byte []ary
+                                   out byte[] ary
                                    )
         {
-            ary = null; 
+            ary = null;
 
             int ret;
 
             string strRecv;
             int retCount;
-            ret = miQuery( args, out strRecv, out retCount);
+            ret = miQuery(args, out strRecv, out retCount);
             if (ret != 0) { return ret; }
-            if (retCount < 2 ) { return -1; }
+            if (retCount < 2) { return -1; }
 
             if (strRecv[0] != '#')
             { return -1; }
@@ -148,7 +149,7 @@ namespace mega_device
             if (strRecv.Length < (2 + headLen + padLen))
             { return -1; }
 
-            ary = new byte[ padLen ];
+            ary = new byte[padLen];
             for (int i = 0; i < padLen; i++)
             {
                 ary[i] = (byte)strRecv[2 + headLen + i];
@@ -157,9 +158,9 @@ namespace mega_device
             return 0;
         }
 
-        public int getIdn( out string val )
+        public int getIdn(out string val)
         {
-            return roboGet_str( "*IDN?", out val );
+            return roboGet_str("*IDN?", out val);
         }
 
         public int lrn(string val)
@@ -169,17 +170,48 @@ namespace mega_device
 
         public int hrst()
         {
-            return roboSet( "HRST" );
+            return roboSet("HRST");
         }
 
-        public int getVersion( out string val )
+        public int getVersion(out string val)
         {
             return roboGet_str("VERSION?", out val);
         }
 
-        public int program( int ax, int page, string file )
+        public int program(int ax, int page, string file)
         {
             return roboSet(string.Format("PROGRAM {0},{1},\"{2}\"", ax, page, file));
+        }
+
+        protected virtual string formatDataSets( string fmt, float []dataSets ) 
+        {
+            return "";
+        }
+
+        /// <summary>
+        /// download the dataset to the robot
+        /// \note 
+        /// the format is depends on the device
+        /// </summary>
+        /// <param name="ax"></param>
+        /// <param name="page"></param>
+        /// <param name="format"></param>
+        /// <param name="dataSets"></param>
+        /// <returns></returns>
+        public int download(int ax, int page, string format, float[] dataSets)
+        {
+            string fmtStr;
+
+            fmtStr = formatDataSets(format, dataSets);
+            if (fmtStr.Length < 1)
+            { return -1; }
+
+            return roboSet(string.Format("DOWNLOAD {0},{1},\"{2}\",{3}", ax, page, format, fmtStr));
+        }
+
+        public int download(int ax, int page, string format, List<float> dataSets)
+        {
+            return download(ax, page, format, dataSets.ToArray());
         }
 
         public int call(int ax, int page, int cycle=1, int mode=-1)

@@ -57,6 +57,16 @@ namespace mega_device
 
             return 0;
         }
+
+        protected int _miFlush()
+        {
+            if (mVi == 0)
+            { return -1; }
+
+            visa32.viFlush(mVi, visa32.VI_READ_BUF_DISCARD);
+
+            return 0;
+        }
 		
 		protected int _miSend( string send )
 		{
@@ -160,6 +170,8 @@ namespace mega_device
             { return -1; }
 
                 int ret;
+
+                _miFlush();
 
                 ret = _miSend(send);
                 if (ret != 0)

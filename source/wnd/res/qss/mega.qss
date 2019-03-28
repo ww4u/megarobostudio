@@ -91,7 +91,7 @@ QTabWidget::pane { /* The tab widget frame */
       margin: 0; /* if there is only one tab, we don't want overlapping margins */
   }
   
-QTableView,QTableWidget {
+QTableView,QTableWidget,QTreeView {
      background-color: #2c3d4f;
 	 border-color: #2c3d4f;
 	 

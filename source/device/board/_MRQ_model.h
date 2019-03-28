@@ -14,7 +14,6 @@ QString toString( MRQ_LINK_DEVICEINFO eType );
 QString toString( MRQ_LINK_DEVICEINFO_1 eType );
 QString toString( MRQ_SYSTEM_WORKMODE eType );
 QString toString( MRQ_SYSTEM_POWERON eType );
-QString toString( MRQ_SYSTEM_TYPE_1 eType );
 QString toString( MRQ_SYSTEM_REVMOTION eType );
 QString toString( MRQ_SYSTEM_ARMLEDPARA eType );
 QString toString( MRQ_RS232_BAUD eType );
@@ -86,7 +85,6 @@ int toValue( const QString &str, MRQ_LINK_DEVICEINFO *pEVal );
 int toValue( const QString &str, MRQ_LINK_DEVICEINFO_1 *pEVal );
 int toValue( const QString &str, MRQ_SYSTEM_WORKMODE *pEVal );
 int toValue( const QString &str, MRQ_SYSTEM_POWERON *pEVal );
-int toValue( const QString &str, MRQ_SYSTEM_TYPE_1 *pEVal );
 int toValue( const QString &str, MRQ_SYSTEM_REVMOTION *pEVal );
 int toValue( const QString &str, MRQ_SYSTEM_ARMLEDPARA *pEVal );
 int toValue( const QString &str, MRQ_RS232_BAUD *pEVal );
@@ -162,7 +160,7 @@ int getSYSTEM_WORKMODE(  MRQ_SYSTEM_WORKMODE * val0, bool bQuery=true );
 int setSYSTEM_POWERON( MRQ_SYSTEM_POWERON val0 );
 int getSYSTEM_POWERON(  MRQ_SYSTEM_POWERON * val0, bool bQuery=true );
 int getSYSTEM_SN(  byte * val0, char * val1, char * val2, char * val3, char * val4, char * val5, bool bQuery=true );
-int getSYSTEM_TYPE(  MRQ_LINK_DEVICEINFO * val0, MRQ_SYSTEM_TYPE_1 * val1, bool bQuery=true );
+int getSYSTEM_TYPE(  MRQ_LINK_DEVICEINFO * val0, MRQ_LINK_DEVICEINFO_1 * val1, bool bQuery=true );
 int getSYSTEM_SOFTVER(  char * val0, char * val1, char * val2, char * val3, bool bQuery=true );
 int getSYSTEM_FPGAVER(  char * val0, char * val1, char * val2, char * val3, char * val4, char * val5, bool bQuery=true );
 int getSYSTEM_HARDVER(  char * val0, char * val1, bool bQuery=true );
@@ -751,7 +749,7 @@ public:
 	char mSYSTEM_SN5;
 
 	MRQ_LINK_DEVICEINFO mSYSTEM_TYPE;
-	MRQ_SYSTEM_TYPE_1 mSYSTEM_TYPE1;
+	MRQ_LINK_DEVICEINFO_1 mSYSTEM_TYPE1;
 	char mSYSTEM_SOFTVER;
 	char mSYSTEM_SOFTVER1;
 

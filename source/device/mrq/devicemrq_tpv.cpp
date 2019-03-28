@@ -335,7 +335,7 @@ int deviceMRQ::pvtWrite( pvt_region,
               QList<tpvRow *> &list,
               int from,
               int len )
-{
+{logDbg()<<list.size();
     //! verify the memory
     if( pvtVerify( region, list ) )
     { }
@@ -349,7 +349,7 @@ int deviceMRQ::pvtWrite( pvt_region,
     MeasVector<float> measV;
     if ( measStepTime( region, list, measV ) )
     {
-        sysLog( QString("Meas max:%1,min:%2,avg:%3").arg(measV.mMax).arg(measV.mMin).arg(measV.mMin) );
+//        sysLog( QString("Meas max:%1,min:%2,avg:%3").arg(measV.mMax).arg(measV.mMin).arg(measV.mMin) );
     }
     else
     {}
@@ -360,7 +360,7 @@ int deviceMRQ::pvtWrite( pvt_region,
     tpvDownloader *pLoader = downloader( region );
     Q_ASSERT( NULL != pLoader );
 
-    if ( pLoader->isRunning() && !pLoader->wait( 10000 ) )
+    if ( pLoader->isRunning() /*&& !pLoader->wait( 10000 )*/ )
     {
         sysError( QObject::tr("Busy now, can not download") );
         sysError( QString::number(region.axes()), QString::number(region.page()) );
@@ -606,11 +606,17 @@ bool deviceMRQ::baseVerify( pvt_region,
 
 bool deviceMRQ::pvtVerify( pvt_region,
                 QList<tpvRow *> &list )
-{
+{   
     if ( baseVerify( region, list ) )
     {}
     else
     { return false; }
+logDbg()<<mbPageAble;
+    //! \note page able
+    if ( mbPageAble )
+    {}
+    else
+    { return true; }
 
     float dist = 0;
     for( int i = 1; i < list.size(); i++ )

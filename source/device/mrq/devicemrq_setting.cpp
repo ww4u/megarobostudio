@@ -152,7 +152,7 @@ QString deviceMRQ::loadDesc()
 {
     int ret;
     MRQ_LINK_DEVICEINFO type;
-    MRQ_SYSTEM_TYPE_1 type2;
+    MRQ_LINK_DEVICEINFO_1 type2;
     ret = getSYSTEM_TYPE( &type, &type2 );
     if ( ret != 0 )
     { return mDesc; }

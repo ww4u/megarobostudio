@@ -16,6 +16,9 @@ static value_desc _value_desc_MRQ_LINK_DEVICEINFO_1[] = {
 	{2,"M2304",},
 	{3,"MV",},
 	{4,"M1710",},
+	{5,"M2302",},
+	{6,"M2304_1",},
+	{7,"MV_1",},
 };
 static value_desc _value_desc_MRQ_SYSTEM_WORKMODE[] = {
 	{0,"NORMAL",},
@@ -24,14 +27,6 @@ static value_desc _value_desc_MRQ_SYSTEM_WORKMODE[] = {
 static value_desc _value_desc_MRQ_SYSTEM_POWERON[] = {
 	{0,"DEFAULT",},
 	{1,"LAST",},
-};
-static value_desc _value_desc_MRQ_SYSTEM_TYPE_1[] = {
-	{0,"C23D",},
-	{1,"C23S",},
-	{2,"M2304",},
-	{3,"MV",},
-	{4,"M1710",},
-	{5,"M2302",},
 };
 static value_desc _value_desc_MRQ_SYSTEM_REVMOTION[] = {
 	{0,"OFF",},
@@ -448,7 +443,7 @@ void _MRQ_model::loadOtp()
 	mSYSTEM_SN5 = (char)0;
 
 	mSYSTEM_TYPE = (MRQ_LINK_DEVICEINFO)0;
-	mSYSTEM_TYPE1 = (MRQ_SYSTEM_TYPE_1)0;
+	mSYSTEM_TYPE1 = (MRQ_LINK_DEVICEINFO_1)0;
 	mSYSTEM_SOFTVER = (char)0;
 	mSYSTEM_SOFTVER1 = (char)0;
 
@@ -1320,10 +1315,6 @@ QString _MRQ_model::toString( MRQ_SYSTEM_POWERON eType )
 {
 	return QString( MRQ_SYSTEM_POWERON_toString( eType ) );
 }
-QString _MRQ_model::toString( MRQ_SYSTEM_TYPE_1 eType )
-{
-	return QString( MRQ_SYSTEM_TYPE_1_toString( eType ) );
-}
 QString _MRQ_model::toString( MRQ_SYSTEM_REVMOTION eType )
 {
 	return QString( MRQ_SYSTEM_REVMOTION_toString( eType ) );
@@ -1607,10 +1598,6 @@ int _MRQ_model::toValue( const QString &str, MRQ_SYSTEM_WORKMODE *pEVal )
 int _MRQ_model::toValue( const QString &str, MRQ_SYSTEM_POWERON *pEVal )
 {
 	return ( MRQ_SYSTEM_POWERON_toValue( str.toLatin1().data(), pEVal) );
-}
-int _MRQ_model::toValue( const QString &str, MRQ_SYSTEM_TYPE_1 *pEVal )
-{
-	return ( MRQ_SYSTEM_TYPE_1_toValue( str.toLatin1().data(), pEVal) );
 }
 int _MRQ_model::toValue( const QString &str, MRQ_SYSTEM_REVMOTION *pEVal )
 {
@@ -1977,7 +1964,7 @@ int _MRQ_model::getSYSTEM_SN(  byte * val0, char * val1, char * val2, char * val
 }
 //! 
 //! 
-int _MRQ_model::getSYSTEM_TYPE(  MRQ_LINK_DEVICEINFO * val0, MRQ_SYSTEM_TYPE_1 * val1, bool bQuery )
+int _MRQ_model::getSYSTEM_TYPE(  MRQ_LINK_DEVICEINFO * val0, MRQ_LINK_DEVICEINFO_1 * val1, bool bQuery )
 {
 	//! 2 5
 	int ret = 0;

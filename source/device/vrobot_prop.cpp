@@ -171,6 +171,11 @@ void VRobot::setMrpAble( bool b )
 bool VRobot::mrpAble()
 { return mbMrpAble; }
 
+void VRobot::setPageAble( bool b )
+{ mbPageAble = b; }
+bool VRobot::pageAble()
+{ return mbPageAble; }
+
 bool VRobot::axesPOSAble( int ax )
 {
     if ( ax < 0 || ax >= mPOSAble.size() )

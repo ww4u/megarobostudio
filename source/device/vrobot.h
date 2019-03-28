@@ -330,6 +330,9 @@ public:
     void setMrpAble( bool b );
     bool mrpAble();
 
+    void setPageAble( bool b );
+    bool pageAble();
+
     bool axesPOSAble( int ax );
 
     void setDriverId( int id );
@@ -476,6 +479,7 @@ protected:
     bool mbRunWaveAble;
     bool mbTunningAble;
     bool mbCoordAble;
+    bool mbPageAble;
 
     //! ui attri
     bool mbJointPanelAble, mbRoboPanelAble;

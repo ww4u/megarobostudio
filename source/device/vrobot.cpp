@@ -99,6 +99,7 @@ VRobot::VRobot()
     mbJointPanelAble = false;
     mbRoboPanelAble = false;
     mbMrpAble = false;
+    mbPageAble = true;
 
     mDriverId = 0;
 

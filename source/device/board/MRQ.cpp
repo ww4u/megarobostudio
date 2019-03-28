@@ -168,7 +168,7 @@ int MRQ::getSYSTEM_SN(  byte * val0, char * val1, char * val2, char * val3, char
 }
 //! 
 //! 
-int MRQ::getSYSTEM_TYPE(  MRQ_LINK_DEVICEINFO * val0, MRQ_SYSTEM_TYPE_1 * val1, bool bQuery )
+int MRQ::getSYSTEM_TYPE(  MRQ_LINK_DEVICEINFO * val0, MRQ_LINK_DEVICEINFO_1 * val1, bool bQuery )
 {
 	//! 2 5
 	int ret = 0;
@@ -179,7 +179,7 @@ int MRQ::getSYSTEM_TYPE(  MRQ_LINK_DEVICEINFO * val0, MRQ_SYSTEM_TYPE_1 * val1, 
 	if ( ret != 0){ log_device(); } 
 	if ( ret != 0) return ret;
 	*val0 = (MRQ_LINK_DEVICEINFO)lval0;
-	*val1 = (MRQ_SYSTEM_TYPE_1)lval1;
+	*val1 = (MRQ_LINK_DEVICEINFO_1)lval1;
 	return 0;
 }
 //! 

@@ -103,6 +103,7 @@ deviceMRQ::deviceMRQ()
         deviceMRQ::_pUploader = new DataUploader();
         Q_ASSERT( NULL != deviceMRQ::_pUploader );
     }
+
 }
 
 deviceMRQ::~deviceMRQ()

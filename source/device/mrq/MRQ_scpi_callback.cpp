@@ -564,7 +564,7 @@ static scpi_result_t _scpi_download( scpi_t * context )
     }
 
     //! deparse the tpvs
-    float datasets[256];
+    float datasets[1024];
     size_t oCount;
     if ( SCPI_ParamArrayFloat( context, datasets, sizeof_array(datasets), &oCount, SCPI_FORMAT_ASCII, true ) )
     {}
@@ -906,7 +906,7 @@ static scpi_result_t _scpi_slew( scpi_t * context )
     if ( ax < 0 || ax >= LOCALMRQ()->axes() )
     { scpi_ret( SCPI_RES_ERR ); }
 
-    if ( acc <= 0 || dec <=0 || (acc+dec)>=100 )
+    if ( acc <= 0 || dec <=0 || (acc+dec)>100 )
     { scpi_ret( SCPI_RES_ERR ); }
 
     LOCALMRQ()->setAccScale( ax, acc/0.1 );

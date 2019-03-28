@@ -5,7 +5,7 @@
 #include <QMutex>
 #include "../model/mcmodelobj.h"
 
-#define DEF_IN_SIZE     1024
+#define DEF_IN_SIZE     4096
 #define DEF_OUT_SIZE    1024
 #define DEF_ERR_SIZE    16
 

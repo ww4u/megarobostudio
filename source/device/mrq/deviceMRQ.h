@@ -179,6 +179,7 @@ public:
                    bool bQuery = true );
 
 
+
     //! 1~100
     int setFanDuty( int duty );
     int setLedDuty( int ax, int duty );
@@ -356,7 +357,6 @@ public:
     QList< bool > mAngleDir;
 
 protected:
-
     QMap< tpvRegion, int > mSlewCache;
 
     QMap< tpvRegion, int > mTpvIndexes;

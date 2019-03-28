@@ -81,9 +81,16 @@ VRobot *robotFact::createRobot( const QString &str, bool bPost )
             break;
         }
 
-        if ( str_is_2(str, "geogoog", "MRQ-M-23-04") )
+        if ( str_is_2(str, "geogoog", "MRQ-M2304") )
         {
             pRobo = new roboGeogoog();
+            break;
+        }
+
+        if ( str_is(str, "MRQ-M2304_1") )
+        {
+            pRobo = new roboGeogoog();
+            pRobo->setPageAble( false );
             break;
         }
 
@@ -94,14 +101,22 @@ VRobot *robotFact::createRobot( const QString &str, bool bPost )
         }
 
         if ( str_is_2(str, "geogoog5_1", "MRQ-MV") )
-        {
+        {logDbg();
             pRobo = new roboGeo51();
+            break;
+        }
+
+        if ( str_is( str, "MRQ-MV_1") )
+        {logDbg();
+            pRobo = new roboGeo51();
+            pRobo->setPageAble( false );
             break;
         }
 
         if ( str_is(str, "MRQ-M2302") )
         {logDbg();
             pRobo = new roboGeo2();
+            pRobo->setPageAble( false );
             break;
         }
 

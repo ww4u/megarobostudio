@@ -159,7 +159,7 @@ static scpi_result_t _scpi_getSYSTEM_TYPE( scpi_t * context )
 
 	MRQ_LINK_DEVICEINFO oval0;
 
-	MRQ_SYSTEM_TYPE_1 oval1;
+	MRQ_LINK_DEVICEINFO_1 oval1;
 
 	(GET_OBJ(context))->getSYSTEM_TYPE( &oval0, &oval1 );
 	pLocalStr = MRQ_LINK_DEVICEINFO_toString( oval0);
@@ -167,7 +167,7 @@ static scpi_result_t _scpi_getSYSTEM_TYPE( scpi_t * context )
         { return SCPI_RES_ERR; } 
 	SCPI_ResultText(context, pLocalStr);
 
-	pLocalStr = MRQ_SYSTEM_TYPE_1_toString( oval1);
+	pLocalStr = MRQ_LINK_DEVICEINFO_1_toString( oval1);
 	if ( pLocalStr == NULL ) 
         { return SCPI_RES_ERR; } 
 	SCPI_ResultText(context, pLocalStr);

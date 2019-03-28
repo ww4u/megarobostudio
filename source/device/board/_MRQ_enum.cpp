@@ -13,6 +13,9 @@ static value_desc _value_desc_MRQ_LINK_DEVICEINFO_1[] = {
 	{2,"M2304",},
 	{3,"MV",},
 	{4,"M1710",},
+	{5,"M2302",},
+	{6,"M2304_1",},
+	{7,"MV_1",},
 };
 static value_desc _value_desc_MRQ_SYSTEM_WORKMODE[] = {
 	{0,"NORMAL",},
@@ -21,14 +24,6 @@ static value_desc _value_desc_MRQ_SYSTEM_WORKMODE[] = {
 static value_desc _value_desc_MRQ_SYSTEM_POWERON[] = {
 	{0,"DEFAULT",},
 	{1,"LAST",},
-};
-static value_desc _value_desc_MRQ_SYSTEM_TYPE_1[] = {
-	{0,"C23D",},
-	{1,"C23S",},
-	{2,"M2304",},
-	{3,"MV",},
-	{4,"M1710",},
-	{5,"M2302",},
 };
 static value_desc _value_desc_MRQ_SYSTEM_REVMOTION[] = {
 	{0,"OFF",},
@@ -443,10 +438,6 @@ const char* MRQ_SYSTEM_POWERON_toString( MRQ_SYSTEM_POWERON eType )
 {
 	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_SYSTEM_POWERON ) ); 
 }
-const char* MRQ_SYSTEM_TYPE_1_toString( MRQ_SYSTEM_TYPE_1 eType )
-{
-	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_SYSTEM_TYPE_1 ) ); 
-}
 const char* MRQ_SYSTEM_REVMOTION_toString( MRQ_SYSTEM_REVMOTION eType )
 {
 	return enum_toString( (int)eType, desc_table( _value_desc_MRQ_SYSTEM_REVMOTION ) ); 
@@ -749,14 +740,6 @@ int MRQ_SYSTEM_POWERON_toValue( const char *pStr, MRQ_SYSTEM_POWERON *pEVal )
 	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_SYSTEM_POWERON ), &lval );
 	if ( ret != 0 ) return ret; 
 	*pEVal=(MRQ_SYSTEM_POWERON)lval;
-	return 0;
-}
-int MRQ_SYSTEM_TYPE_1_toValue( const char *pStr, MRQ_SYSTEM_TYPE_1 *pEVal )
-{
-	int ret, lval;
-	ret = enum_toValue( pStr, desc_table( _value_desc_MRQ_SYSTEM_TYPE_1 ), &lval );
-	if ( ret != 0 ) return ret; 
-	*pEVal=(MRQ_SYSTEM_TYPE_1)lval;
 	return 0;
 }
 int MRQ_SYSTEM_REVMOTION_toValue( const char *pStr, MRQ_SYSTEM_REVMOTION *pEVal )

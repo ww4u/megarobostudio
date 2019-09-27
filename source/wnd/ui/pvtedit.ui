@@ -332,7 +332,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="comboBox">
+      <widget class="QComboBox" name="cmbTType">
        <item>
         <property name="text">
          <string>absolute</string>

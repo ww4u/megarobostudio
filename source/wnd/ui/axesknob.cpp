@@ -18,6 +18,10 @@ axesKnob::axesKnob( mcModel *pMcModel,
     ui->btnLr1->setStep( 1.0f );
     ui->btnLr10->setStep( 10.0f );
 
+    ui->btnLr01->setSingleStep( 0.1f );
+    ui->btnLr1->setSingleStep( 1.0f );
+    ui->btnLr10->setSingleStep( 10.0f );
+
     //! single
     connect( ui->btnLr01, SIGNAL(signal_step(float)),
              this, SLOT(slot_step(float)) );

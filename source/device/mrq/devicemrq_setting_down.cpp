@@ -277,6 +277,13 @@ MRQ_PROGRESS( 10, ("MOTION") );
         {
             checked_call( setABSENCALARM_STATE( (MRQ_IDENTITY_LABEL_1)i,
                                                 mABSENCALARM_STATE[i] ) );
+
+            //! limit
+            checked_call( setABSENCALARM_UPLIMIT( (MRQ_IDENTITY_LABEL_1)i,
+                                                mABSENCALARM_UPLIMIT[i] ) );
+            checked_call( setABSENCALARM_DOWNLIMIT( (MRQ_IDENTITY_LABEL_1)i,
+                                                mABSENCALARM_DOWNLIMIT[i] ) );
+
         }
         checked_call( setABSENCALARM_RESPONSE(
                                             mABSENCALARM_RESPONSE ) );

@@ -10,6 +10,8 @@
 #define DEF_WAV_BUF_SIZE        (125*1024)                  //! bytes
 
 
+#define ABS_ANGLE_STATE( angle )    ( ( (angle) >> 24 ) & 0xff)
+
 #define ABS_ANGLE_TO_DEG( angle )   (360.0f*(angle))/((1<<18)-1)
 #define INC_ANGLE_TO_DEG( angle )   (360.0f*(angle))/(1<<18)
 
@@ -477,6 +479,21 @@ float deviceMRQ::getAbsAngle( int ax )
     else
     {/*logDbg()<<QString::number(xangle,16);*/
         return ABS_ANGLE_TO_DEG( (xangle&0x0ffffff) );  //! only 24 bit
+    }
+}
+
+//! status
+quint8 deviceMRQ::getAbsAngleState( int ax )
+{
+    int ret;
+    quint32 xangle;
+
+    ret = MRQ::getREPORT_DATA( ax, MRQ_REPORT_STATE_ABSENC, &xangle );
+    if ( ret != 0 )
+    { return -1; }
+    else
+    {
+        return ABS_ANGLE_STATE( xangle );
     }
 }
 

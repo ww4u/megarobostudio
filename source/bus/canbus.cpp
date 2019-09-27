@@ -904,12 +904,14 @@ int CANBus::collectHash( const modelSysPref &pref,
         memcpy( &hashId, (readBuf + i * collectFrameSize) + 2, 4 );
 
         sendHashMap.insert( frameIds[i], hashId );
+        logDbg()<<frameIds[i]<<hashId;
     }
 
     //! 6. check hash count
     if ( frame > sendHashMap.size() )
     {
         sysWarn( QObject::tr("Hash conflict") );
+        sysWarn( QString::number( frame), QString::number(sendHashMap.size()));
     }
 
     return 0;

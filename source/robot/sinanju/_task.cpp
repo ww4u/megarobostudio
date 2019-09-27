@@ -25,7 +25,7 @@ SinanjuTask::SinanjuTask( QObject *pParent ) : RoboTask( pParent )
 //}
 
 void SinanjuTask::procRequest( RoboTaskRequest *pRequest )
-{logDbg();
+{
     //! convert robo
     robotSinanju *pRobo;
     pRobo = (robotSinanju*)pRequest->m_pRobo;

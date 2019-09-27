@@ -28,6 +28,9 @@ void LRButton::setStep( float stp )
 float LRButton::step()
 { return ui->singleSpin->value(); }
 
+void LRButton::setSingleStep( float singleStep )
+{ ui->singleSpin->setSingleStep( singleStep); }
+
 void LRButton::on_btnLeft_clicked()
 {
     emit signal_step( -step() );

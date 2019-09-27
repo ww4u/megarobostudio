@@ -113,6 +113,7 @@ protected Q_SLOTS:
     void on_spinLoop_valueChanged(int arg1);
     void on_cmbPlanMode_currentIndexChanged(int index);
     void on_cmbMotionMode_currentIndexChanged(int index);
+    void on_cmbTType_currentIndexChanged(int index);
 
     void on_btnPref_clicked();
 
@@ -121,8 +122,6 @@ protected Q_SLOTS:
 
     void slot_destination_changed();
 
-private slots:
-    void on_comboBox_currentIndexChanged(int index);
 
 private:
     Ui::pvtEdit *ui;

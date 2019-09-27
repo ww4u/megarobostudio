@@ -402,7 +402,6 @@ int robotSinanju::toAimSession( const tpvRegion &region,
     //! start
     Q_ASSERT( NULL != m_pRoboTask );
     m_pRoboTask->attachRequest( pReq );
-//    m_pRoboTask->start();
 
     return 0;
 }
@@ -569,12 +568,15 @@ void robotSinanju::beginZero( tpvRegion &region )
     if ( NULL == pMrq )
     { return; }
 
-    pMrq->setMOTIONPLAN_STOPMODE( 4,
-                                  (MRQ_MOTION_SWITCH_1)region.page(),
-                                  MRQ_MOTIONPLAN_STOPMODE_1_DISTANCE );
-    pMrq->setMOTIONPLAN_STOPDISTANCE( 4,
+    if ( mbHandAble )
+    {
+        pMrq->setMOTIONPLAN_STOPMODE( 4,
                                       (MRQ_MOTION_SWITCH_1)region.page(),
-                                      mHandStopAngle );
+                                      MRQ_MOTIONPLAN_STOPMODE_1_DISTANCE );
+        pMrq->setMOTIONPLAN_STOPDISTANCE( 4,
+                                          (MRQ_MOTION_SWITCH_1)region.page(),
+                                          mHandStopAngle );
+    }
 }
 void robotSinanju::endZero( tpvRegion &region )
 {

@@ -31,6 +31,7 @@ public:
     //! same except ts
     bool isLike( frameData &data );
 
+    QString toString( bool tTs = true, const QString &lineSep="\n" );
 protected:
     int mFrameId;
     int mDevId;

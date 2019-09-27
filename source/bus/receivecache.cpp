@@ -4,6 +4,9 @@
 #include "../../device/vrobot.h"
 #include "../../inst/instmgr.h"
 
+//! in main.cpp
+extern bool sysHasArgv( const QString &arg );
+
 frameEvent::frameEvent()
 {
     mEventId = event_none;
@@ -153,6 +156,31 @@ bool frameData::isLike( frameData &data )
     { return false; }
 
     return true;
+}
+
+QString frameData::toString( bool bTs,const QString &lineSep )
+{
+    QString fmtData;
+    QString sep=" ";
+    if ( bTs )
+    {
+        fmtData.append( QDateTime::currentDateTime().toString("yyyyMMdd_hhmmss.zzz") );
+        fmtData.append( sep );
+    }
+    fmtData.append( QString::number( mDevId, 16 ) );
+    fmtData.append( sep );
+
+    fmtData.append( QString::number( mFrameId, 16 ) );
+    fmtData.append( sep );
+
+    for ( int i = 0; i < size(); i++ )
+    {
+        fmtData.append( QString::number( (quint8)at(i), 16 ) );
+        fmtData.append( sep );
+    }
+
+    fmtData.append( lineSep );
+    return fmtData;
 }
 
 //! -- frame house
@@ -670,6 +698,17 @@ void receiveCache::run()
     //! highest
 //    QThread::setPriority( QThread::TimeCriticalPriority );
 
+    bool bOpened = false;
+
+    //! check the file
+    QString fileName = QDir::tempPath() + "/" + QString::number(m_pBus->devId()) +"_" + QDateTime::currentDateTime().toString("yyyyMMdd_hhmmss.zzz")+".txt";
+    QFile file( fileName );
+    if ( sysHasArgv ("-logcan") )
+    {
+        bOpened = file.open( QIODevice::WriteOnly );
+        sysLog( fileName );
+    }
+
     int ret;
     QList< frameData > frameCache;
     Q_FOREVER
@@ -707,7 +746,6 @@ void receiveCache::run()
             ret = m_pBus->doReceive( frameCache );
 
             receiveCache::unlock();
-//sysLog( QString::number(ret), QString::number(__LINE__) );
             //! success
             if ( ret == 0 )
             {
@@ -721,7 +759,14 @@ void receiveCache::run()
 //                    logDbg()<<frameCache[i].timeStamp();
                     append( frameCache[i] );
 //                    logDbg()<< frameCache.at(i).length() << QString::number( frameCache.at(i).getFrameId(), 16 );
+
+                    //! log can bus
+                    if ( bOpened )
+                    { file.write( frameCache[i].toString().toLatin1() ); }
                 }
+
+                if ( bOpened )
+                { file.flush(); }
             }
 //            else
 //            {
@@ -732,6 +777,9 @@ void receiveCache::run()
 
         }while( 0 );
     }
+
+    if ( bOpened )
+    { file.close(); }
 }
 
 bool receiveCache::detectEvent( frameData &ary )

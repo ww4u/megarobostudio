@@ -639,7 +639,7 @@ void StandbyMrqUnit::proc( int msg, RoboMsg &detail )
 
     //! device status
     else if ( msg == mrq_msg_idle )
-    { toState(mrq_state_idle, detail ); sysLog( __FUNCTION__, QString::number(__LINE__) );}
+    { toState(mrq_state_idle, detail ); /*sysLog( __FUNCTION__, QString::number(__LINE__) );*/ }
 
     else if ( msg == mrq_msg_calcing )
     { toState( mrq_state_calcing, detail ); }
@@ -785,7 +785,7 @@ void RunningMrqUnit::proc( int msg, RoboMsg &detail )
     }
     else
     {
-        toState( mrq_state_idle, detail ); sysLog( __FUNCTION__, QString::number(__LINE__), QString::number(msg) );
+        toState( mrq_state_idle, detail );
     }
 }
 

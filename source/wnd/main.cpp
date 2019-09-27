@@ -8,8 +8,7 @@
 
 #include "main_dbg.cpp"
 
-
-
+//! operator
 QDataStream &operator<<(QDataStream &out, const VRobot* &myObj)
 {
     out.writeRawData( (const char*)myObj, 4 );
@@ -24,24 +23,63 @@ QDataStream &operator>>(QDataStream &in, VRobot* &myObj)
     return in;
 }
 
+//! argument
+class sysArg
+{
+public:
+    int mArgc;
+    char **mArgv;
+};
+static sysArg _sysArg = { 0, NULL };
+
+void sysSetArg( int argc, char **argv )
+{
+    _sysArg.mArgc = argc;
+    _sysArg.mArgv = argv;
+}
+int sysArgc()
+{ return _sysArg.mArgc; }
+char** sysArgv()
+{ return _sysArg.mArgv; }
+
+bool sysHasArgv( const QString &arg )
+{
+    for ( int i = 1; i < _sysArg.mArgc; i++ )
+    {
+        if ( str_is( arg, _sysArg.mArgv[i]) )
+        { return true; }
+    }
+
+    return false;
+}
+
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+
+    //! save arg
+    sysSetArg( argc, argv );
 
 //    QTextCodec::setCodecForLocale(QTextCodec::codecForName("utf-8"));
 
 #ifdef ARCH_32
     //! single exist
-    QSharedMemory shareMem("share_megarobo_studio");
-    if ( shareMem.create(64) )
-    {}
-    else
+    do
     {
-        QMessageBox::information( NULL,
-                                  QObject::tr("Info"),
-                                  QObject::tr("MEGAROBO Studio is in running!") );
-        return 0;
-    }
+        //!
+        if ( sysHasArgv( "-nosingle") )
+        { break; }
+        QSharedMemory shareMem("share_megarobo_studio");
+        if ( shareMem.create(64) )
+        {}
+        else
+        {
+            QMessageBox::information( NULL,
+                                      QObject::tr("Info"),
+                                      QObject::tr("MEGAROBO Studio is in running!") );
+            return 0;
+        }
+    }while(0);
 #endif
 
     //! --meta type

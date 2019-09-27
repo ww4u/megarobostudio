@@ -22,6 +22,8 @@ public:
     void setStep( float stp );
     float step();
 
+    void setSingleStep( float singleStep );
+
 Q_SIGNALS:
     void signal_step( float step );
     void signal_step( float step, bool b );

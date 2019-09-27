@@ -730,6 +730,29 @@ static scpi_result_t _scpi_absdelta( scpi_t * context )
     return SCPI_RES_OK;
 }
 
+static scpi_result_t _scpi_absstate( scpi_t * context )
+{
+    DEF_LOCAL_VAR();
+
+    int ax;
+
+    if ( SCPI_RES_OK != SCPI_ParamInt32( context, &ax, true ) )
+    { scpi_ret( SCPI_RES_ERR ); }
+
+    quint8 val = 0;
+
+    DEF_MRQ();
+
+    CHECK_LINK( ax, 0 );
+
+    //! current angle
+    val = LOCALMRQ()->getAbsAngleState( ax );
+
+    SCPI_ResultInt32( context, val );
+
+    return SCPI_RES_OK;
+}
+
 //! ax
 static scpi_result_t _scpi_distance( scpi_t * context )
 {
@@ -1129,6 +1152,8 @@ static scpi_command_t _mrq_scpi_cmds[]=
     CMD_ITEM( "ANGLE:INCREASE?", _scpi_incangle ),
     CMD_ITEM( "ANGLE:ABSOLUTE?", _scpi_absangle ),
     CMD_ITEM( "ANGLE:ABSDELTA?", _scpi_absdelta ),
+    CMD_ITEM( "ANGLE:ABSSTATE?", _scpi_absstate ),
+
     CMD_ITEM( "DISTANCE?", _scpi_distance ),
 
     CMD_ITEM( "PROGRAM", _scpi_program ),

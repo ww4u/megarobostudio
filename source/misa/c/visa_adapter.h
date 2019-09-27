@@ -94,6 +94,7 @@ int parasDeInit( struPara *pCon );
                                                    recvBuf, RECV_BUF, &retCount ); \
                                     \
                                     if ( ret != 0 ){ return ret; }\
+                                    \
                                     if ( retCount < 1 ){ return -1; }\
                                     struPara para;\
                                     if ( parasInit( &para, recvBuf) != 0 ) { return -1; }\

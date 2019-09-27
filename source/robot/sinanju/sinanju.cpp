@@ -99,7 +99,7 @@ robotSinanju::robotSinanju()
     mSeperateAngles<<180<<180<<90<<270;
 
     mInitPos.clear();
-    mInitPos<<250<<0<<(257+255);
+    mInitPos<<250<<0<<(263.7+255);
 
     //! interp
     mbInterpAble = true;

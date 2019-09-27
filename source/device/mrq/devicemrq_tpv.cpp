@@ -360,7 +360,7 @@ int deviceMRQ::pvtWrite( pvt_region,
     tpvDownloader *pLoader = downloader( region );
     Q_ASSERT( NULL != pLoader );
 
-    if ( pLoader->isRunning() /*&& !pLoader->wait( 10000 )*/ )
+    if ( pLoader->isRunning() && !pLoader->wait( 10000 ) )
     {
         sysError( QObject::tr("Busy now, can not download") );
         sysError( QString::number(region.axes()), QString::number(region.page()) );

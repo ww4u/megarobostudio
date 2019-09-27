@@ -203,6 +203,7 @@ public:
 public:
     float getIncAngle( int ax );
     float getAbsAngle( int ax );
+    quint8 getAbsAngleState( int ax );
     float getDist( int ax );
 
     float getSensor( int ax, int dataId );

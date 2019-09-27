@@ -132,11 +132,16 @@ namespace mega_device
             { return -1; }
 
                 int ret;
-                ret = _miSend(send);
+				do
+				{
+					ret = _miSend(send);
+					if ( ret != 0 )
+					{ break; }
+				}while( false );
 
             visa32.viUnlock(mVi);
 
-            return 0;
+            return ret;
         }
 
         public int miRecv(out string recv, out int retCount)
@@ -150,12 +155,18 @@ namespace mega_device
             if (viSta != visa32.VI_SUCCESS)
             { return -1; }
 
-                int ret;
-                ret = _miRecv( out recv, out retCount );
+				int ret;
+				do 
+                {
+					ret = _miRecv( out recv, out retCount );
+					if (ret != 0)
+					{ break; }
+				
+				}while( false );
 
             visa32.viUnlock(mVi);
 
-            return 0;
+            return ret;
         }
 
         public int miQuery(string send, out string recv, out int retCount)
@@ -169,18 +180,20 @@ namespace mega_device
             if (viSta != visa32.VI_SUCCESS)
             { return -1; }
 
-                int ret;
+				int ret;
+				do
+				{
+					_miFlush();
 
-                _miFlush();
+					ret = _miSend(send);
+					if (ret != 0)
+					{ break; }
 
-                ret = _miSend(send);
-                if (ret != 0)
-                { return ret; }
+					ret = _miRecv(out recv, out retCount);
+					if (ret != 0)
+					{ break; }
 
-                ret = _miRecv(out recv, out retCount);
-                if (ret != 0)
-                { return ret; }
-
+				}while( false );
             visa32.viUnlock(mVi);
 
             return 0; 

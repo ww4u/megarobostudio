@@ -105,7 +105,7 @@ void pvtEdit::setModelObj( mcModelObj *pObj )
     ui->tableView->setModel( mTpvGroup );
 
     //! time type
-    ui->comboBox->setCurrentIndex( mTpvGroup->getTimeType() );
+    ui->cmbTType->setCurrentIndex( mTpvGroup->getTimeType() );
     logDbg()<<mTpvGroup->getTimeType();
 
     ui->tableView->setItemDelegateForColumn( 0, m_pboolDelegate );
@@ -412,7 +412,7 @@ int pvtEdit::postStart( appMsg msg, void *pPara )
                                                                       _axesId );
     Q_ASSERT( NULL != pMrq );
     int ret;
-    ret = pMrq->run( tpvRegion(_axesId, _axesId ) );
+    ret = pMrq->run( tpvRegion(_axesId, _axesPage ) );
 
     return ret;
 }
@@ -521,7 +521,7 @@ int pvtEdit::checkLine()
     }
 
     tpvItem *pItem;
-    float fT = 0;
+    float fT = -1;
     float fAbsT;
 
     mTpvGroup->rstAbsT();
@@ -539,7 +539,7 @@ int pvtEdit::checkLine()
 
         //! check input
         fAbsT = mTpvGroup->getAbsT( i );
-        if ( fAbsT < fT )
+        if ( fAbsT <= fT )
         {
             sysError( tr("Invalid time at line "), QString::number(i) );
             //! to the error time
@@ -884,6 +884,12 @@ void pvtEdit::on_cmbMotionMode_currentIndexChanged(int index)
     stateIdle();
 }
 
+//! to abs or relative
+void pvtEdit::on_cmbTType_currentIndexChanged(int index)
+{
+    mTpvGroup->setTimeType( (MegaTableModel::timeType)index );
+}
+
 void pvtEdit::on_btnPref_clicked()
 {
     //! link to device
@@ -964,10 +970,4 @@ void pvtEdit::slot_destination_changed()
     _pMrq->requestMotionState( tpvRegion(_axesId,_axesPage) );
 
     adapteAxes();
-}
-
-//! to abs or relative
-void pvtEdit::on_comboBox_currentIndexChanged(int index)
-{
-    mTpvGroup->setTimeType( (MegaTableModel::timeType)index );
 }

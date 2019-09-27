@@ -137,10 +137,6 @@ void RoboTask::gcRequest( RoboTaskRequest *pReq )
 {
     if ( NULL != pReq )
     {
-        //! arg
-        if ( NULL != pReq->m_pArg )
-        { delete pReq->m_pArg; }
-
         //! request
         delete pReq;
     }

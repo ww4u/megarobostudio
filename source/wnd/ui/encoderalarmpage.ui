@@ -33,6 +33,9 @@
      <property name="toolTip">
       <string>Up Limit</string>
      </property>
+     <property name="minimum">
+      <double>-360.000000000000000</double>
+     </property>
      <property name="maximum">
       <double>360.000000000000000</double>
      </property>
@@ -57,7 +60,7 @@
       <double>-360.000000000000000</double>
      </property>
      <property name="maximum">
-      <double>0.000000000000000</double>
+      <double>360.000000000000000</double>
      </property>
      <property name="value">
       <double>-180.000000000000000</double>

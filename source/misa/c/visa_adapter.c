@@ -17,7 +17,8 @@ int _doSend( ViSession vi, char *buf, int len )
     ViUInt32 retCount;
     ViStatus viSta;
 
-    char sendBuf[len + 2 ];     //! \r\n
+    //char sendBuf[len + 2 ];     //! \r\n
+    char sendBuf[2048];     //! \r\n
     memcpy( sendBuf, buf, len );
     sendBuf[ len ] = 0x0d;
     sendBuf[ len + 1] = 0x0a;
@@ -37,7 +38,8 @@ int _doRecv( ViSession vi, char *pBuf, int capCount, int *pRetCount )
     ViStatus viSta;
 
     ViUInt32 retCount;
-    char recvBuf[ capCount + 1];
+    //char recvBuf[ capCount + 1];
+    char recvBuf[2048];
     viSta = viRead( vi, (ViPBuf)recvBuf, capCount, &retCount );
     if ( viSta == VI_SUCCESS_TERM_CHAR || viSta == VI_SUCCESS )
     { }
@@ -53,6 +55,7 @@ int _doRecv( ViSession vi, char *pBuf, int capCount, int *pRetCount )
             pBuf[seqCnt++] = recvBuf[i];
         }
     }
+    pBuf[seqCnt] = 0;
 
     *pRetCount = seqCnt;
 

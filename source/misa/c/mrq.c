@@ -88,7 +88,8 @@ int MRQ_getSensorUartData( ViSession vi, char *pu, char *ps, char * ary, int len
     else
     { return -2; }
 
-    char header[ headLen + 1];
+    //char header[ headLen + 1];
+    char header[2048];
     strncpy( header, recvBuf+2, headLen );
     header[ headLen ] = 0;
 
